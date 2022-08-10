@@ -1,0 +1,296 @@
+﻿<main class="main-ac-system" ng-controller="QuanLyHopDongController">
+    <div class="container-fluid d-flex cons-ac-system">
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Hợp đồng
+                </h3>
+            </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item has-one-fl">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#ds_hop_dong" role="tab">D.S hợp đồng</a>
+                </li>
+
+                <li class="nav-item has-one-fl">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#ke_hoach" role="tab">Ứng kế hoạch tay</a>
+                </li>
+            </ul>
+
+            <div class="container">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="ds_hop_dong" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="main-action pb-2">
+                            <div class="d-flex align-items-center flex-wrap">
+                                <button class="btn-action-m" data-toggle="modal" data-target="#modalAddHopDong">
+                                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                                    <span>Thêm mới</span>
+                                </button>
+                                <button class="btn-action-m" ng-click="removeHopDong()">
+                                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                    <span>Xoá</span>
+                                </button>
+
+                                <button class="btn-action-m" data-toggle="modal" data-target="#modalSearch">
+                                    <img src="~/App_Assets/images/search_icon.svg" alt="">
+                                    <span>Tìm kiếm</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="content-table">
+                            <table class="table-responsive table-hover result-point">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th class="text-center balance">Công ty</th>
+                                        <th class="text-center balance">Số HĐ</th>
+                                        <th class="text-center balance">Tên HĐ</th>
+                                        <th class="text-center balance">Giá trị HĐ</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="itemCT in hdHopDong" class="tbody-hover">
+                                    <tr ng-repeat="item in itemCT.HD_HOP_DONGS" ng-click="ViewDetailHD(item, $index)" ng-class="{activerow:item.ID_HOP_DONG==selectedRow}">
+                                        <td ng-if="$index == 0" rowspan="{{ itemCT.HD_HOP_DONGS.length }}" ng-class="{activerow:itemCT.ID_CONG_TY==selectedRowCT}">{{ itemCT.TEN_CONG_TY }}</td>
+                                        <td class="clhd">{{item.SO_HD}}</td>
+                                        <td>{{item.TEN_HD}}</td>
+                                        <td class="text-right">{{item.GIA_TRI_HD | number}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="content-table pull-right">
+                                <div class="pages-switch">
+                                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="totalRecordHD" items-per-page="pageSizeHD" ng-model="pageIndexHD" ng-change="pageChangedHD()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="ke_hoach" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-system">
+            <div style="margin: 10px">
+                @Html.Partial("~/Views/QuanLyHopDong/_ThongTinHopDong.cshtml")
+            </div>
+            <div class="nav-tabs-box">
+                <ul class="nav nav-tabs tab-main" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#noi_dung" role="tab">1. Nội dung</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#phu_luc" role="tab">2. Phụ lục</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vat_tu_sx" role="tab">3. Vật tư sản xuất</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#kho_hop_dong" role="tab">4. Kho hợp đồng</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vay_sec" role="tab">5. Vay séc</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#ke_hoach_may" role="tab">6. Giao kế hoạch may đo</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#quyet_toan" role="tab">7. Quyết toán</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#chuyen_hop_dong" role="tab">8. Chuyển sang hợp đồng sau</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#test" role="tab">9. Giao kế hoặc may đo</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#test_2" role="tab">10. Quyết toán</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#test_3" role="tab">11. Test</a>
+                    </li>
+                    <button id="pick_up_changes_2" class="res-img">
+                        <img src="~/App_Assets/images/btn_ui.svg" alt="">
+                    </button>
+                </ul>
+            </div>
+
+            <div class="container-fluid">
+                <div class="tab-content" id="myTabContent">
+                    @Html.Partial("~/Views/QuanLyHopDong/_NoiDung.cshtml")
+
+
+                    <div class="tab-pane fade" id="phu_luc" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("~/Views/QuanLyHopDong/_PhuLuc.cshtml")
+                    </div>
+
+                    <div class="tab-pane fade" id="vat_tu_sx" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("~/Views/QuanLyHopDong/_VatTuSanXuat.cshtml")
+                    </div>
+
+                    <div class="tab-pane fade" id="kho_hop_dong" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="vay_sec" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="ke_hoach_may" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="quyet_toan" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="chuyen_hop_dong" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="test" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="test_2" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+
+                    <div class="tab-pane fade" id="test_3" role="tabpanel" aria-labelledby="profile-tab">
+                        demo
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/QuanLyHopDong/_AddHopDong.cshtml")
+    @Html.Partial("~/Views/QuanLyHopDong/_AddPhuLuc.cshtml")
+    @Html.Partial("~/Views/QuanLyHopDong/_AddVatTuNghiemThu.cshtml")
+    @Html.Partial("~/Views/QuanLyHopDong/_AddVatTu.cshtml")
+    @Html.Partial("~/Views/QuanLyHopDong/_DanhSachSanPham.cshtml")
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="modalSearchLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông tin chi tiết</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body md-sc form-infor">
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-12">
+                            <label for="">Năm kinh phí: </label>
+                            <select ng-model="modelSearch.namKinhPhi" class="form-control" ng-options="v for v in listNamKinhPhi"></select>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Số hợp đồng:</label>
+                            <input type="text" to-uppercase ng-model="modelSearch.soHopDong" class="form-control" />
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">Ngày ký hợp đồng</legend>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="" class="col-sm-4 col-form-label">Ngày bắt đầu:</label>
+                                        <div class="input-group date col-sm-8 w-datepicker" data-date-format="dd/mm/yyyy">
+                                            <input type="text" ng-model="modelSearch.ngayBatDauHopDong" class="form-control">
+                                            <span class="input-group-addon"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="" class="col-sm-4 col-form-label">Ngày kết thúc:</label>
+                                        <div id="dateForm" class="input-group date col-sm-8 w-datepicker" data-date-format="dd/mm/yyyy">
+                                            <input type="text" ng-model="modelSearch.ngayKetThucHopDong" class="form-control">
+                                            <span class="input-group-addon"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Loại hợp đồng:</label>
+                            <select ng-model="modelSearch.loaiHopDong" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option ng-repeat="item in listLoaiHD" value="{{item.id}}">{{item.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Công ty:</label>
+                            <select ng-model="modelSearch.congTy" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option ng-repeat="item in listCongTy" value="{{item.ID}}">{{item.TEN_CONG_TY}}</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">Thời gian giao hàng</legend>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="" class="col-sm-4 col-form-label">Ngày bắt đầu:</label>
+                                        <div class="input-group date col-sm-8 w-datepicker" data-date-format="dd/mm/yyyy">
+                                            <input type="text" ng-model="modelSearch.ngayBatDauGiaoHang" class="form-control">
+                                            <span class="input-group-addon"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="" class="col-sm-4 col-form-label">Ngày kết thúc:</label>
+                                        <div class="input-group date col-sm-8 w-datepicker" data-date-format="dd/mm/yyyy">
+                                            <input type="text" ng-model="modelSearch.ngayKetThucGiaoHang" class="form-control">
+                                            <span class="input-group-addon"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Trạng thái:</label>
+                            <select ng-model="modelSearch.trangThai" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option ng-repeat="item in listTrangThaiHD" value="{{item.id}}">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="main-action d-flex flex-wrap">
+                        <button class="btn-action-m cl-3" ng-click="getDanhSachHopDong()">
+                            <img src="~/App_Assets/images/icon_save.svg" alt="">
+                            <span>Tìm kiếm</span>
+                        </button>
+
+                        <button class="btn-action-m cl-3" data-dismiss="modal">
+                            <img src="~/App_Assets/images/ic_cancel_light.svg" alt="">
+                            <span>Đóng</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+@section scripts{
+    <script src="~/app/Controller/QuanLyHopDongController.js"></script>
+}

@@ -1,0 +1,42 @@
+﻿
+<div class="content-system" style="margin:0px">
+    <div class="nav-tabs-box">
+        <ul class="nav nav-tabs" id="myTabsss" role="tablist">
+            <li class="nav-item" ng-click="khoNTGetList()">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#giaybaonghiemthu" role="tab">Giấy báo nghiệm thu</a>
+            </li>
+
+            <li class="nav-item" ng-click="khoNhapKhoGetList()">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#nhapkhobo" role="tab">Nhập kho bộ</a>
+            </li>
+
+            <li class="nav-item" ng-click="khoPhieuGTGetList()">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#phieugiaothang" role="tab">Phiếu giao thẳng</a>
+            </li>
+
+            <li class="nav-item" ng-click="khoPhieuXTGetList()">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#phieuxuatthang" role="tab">Phiếu xuất thẳng</a>
+            </li>
+            <li class="nav-item" ng-click="khoTonKhoClicked()">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tonkhohopdong" role="tab">Tồn kho hợp đồng</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content hd-overflow-open">
+        <div class="tab-pane row active" id="giaybaonghiemthu">
+            @Html.Partial("_GiayBaoNghiemThu")
+        </div>
+        <div class="tab-pane row" id="nhapkhobo">
+            @Html.Partial("_NhapKhoBo")
+        </div>
+        <div class="tab-pane row" id="phieugiaothang">
+            @Html.Partial("_Kho_PhieuGiaoThang")
+        </div>
+        <div class="tab-pane row" id="phieuxuatthang">
+            @Html.Partial("_Kho_PhieuXuatThang")
+        </div>
+        <div class="tab-pane row" id="tonkhohopdong">
+            @Html.Partial("_Kho_TonKho")
+        </div>
+    </div>
+</div>

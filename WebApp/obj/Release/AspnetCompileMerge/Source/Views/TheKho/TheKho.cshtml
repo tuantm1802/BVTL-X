@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .form-control {
+        padding: 0px 0px;
+    }
+    #resizable {
+        height: 87vh
+    }
+
+    .table-responsive {
+        display: table
+    }
+</style>
+
+<nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Index">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thẻ kho</li>
+        </ol>
+    </nav>
+<div class="container-fluid d-flex cons-ac-system" style=" margin-top: 0px " ng-controller="TheKhoController">
+    @Html.Partial("~/Views/TheKho/HangDoiTheKho.cshtml")
+    <div class="content-system no-border pb-0">
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+            @*<div class="d-flex align-items-center flex-wrap">
+                    <button class="btn-action-m" ng-click="ThemPhieu()">
+                        <img src="~/App_Assets/images/icon_add.svg" alt="">
+                        <span>Thêm mới</span>
+                    </button>
+
+                    <button class="btn-action-m">
+                        <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                        <span>Sửa</span>
+                    </button>
+
+                    <button class="btn-action-m">
+                        <img src="~/App_Assets/images/icon_del.svg" alt="">
+                        <span>Xoá</span>
+                    </button>
+
+                    <button class="btn-action-m" ng-click="LuuPhieu()">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Lưu</span>
+                    </button>
+
+                    <button class="btn-action-m">
+                        <img src="~/App_Assets/images/icon_cancel.svg" alt="">
+                        <span>Huỷ thay đổi</span>
+                    </button>
+                </div>*@
+
+            <button class="btn-action-m bg-green">
+                <span>In báo cáo</span>
+            </button>
+        </div>
+        <div class="content-table mt-2">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="text-center" @*style="width:12%;"*@>Ngày chứng từ<i id="or_ntn"></i></th>
+                        <th style="width:11%;">Số chứng từ<i id="or_dv"></i></th>
+                        <th style="width:11%;">Loại chứng từ<i id="or_nn"></i></th>
+                        <th>Diễn giải<i id="or_nn"></i></th>
+                        <th style="width:10%;">Nhập<i id="or_ng"></i></th>
+                        <th style="width:10%;">Xuất<i id="or_ng"></i></th>
+                        <th style="width:10%;">Tồn<i id="or_ng"></i></th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:white">
+                    <tr>
+                        <td colspan="7" style="text-align:right">
+                            <label>Dư đầu kỳ:{{DuDauKy}}</label>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="item in dsTheKho">
+                        <td style="text-align:center;">{{item.NGAY_CT_VW}}</td>
+                        <td style="text-align:center;">{{item.SO_PHIEU}}</td>
+                        <td style="text-align:center;">{{item.LOAI_CT}}</td>
+                        <td>{{item.LY_DO}}</td>
+                        <td style="text-align: center;">{{item.SL_TANG}}</td>
+                        <td style="text-align: center;">{{item.item_SL_GIAM}}</td>
+                        <td style="text-align: center;">{{item.SL_TON}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Tổng cộng:</td>
+                        <td style="text-align: center;">{{TongTang}}</td>
+                        <td style="text-align:center;">{{TongGiam}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="text-align:right">
+                            <label>Tồn cuối:{{DuCuoiKy}}</label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row content-table pull-right">
+                <div class="pages-switch">
+                    <ul class="pagination pagination-sm m-0 float-right no-margin" uib-pagination total-items="SoLuongKetQua" items-per-page=10 ng-model="currentPage" ng-change="TimKiem(currentPage)" max-size=3 boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/app/Controller/Kho/TheKhoController.js"></script>
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("active");
+            if ($("#img-toggle").hasClass("img-normal")) {
+                $("#img-toggle").removeClass("img-normal").addClass("img-180-rotate");
+            }
+            else if ($("#img-toggle").hasClass("img-180-rotate")) {
+                $("#img-toggle").removeClass("img-180-rotate").addClass("img-normal");
+            }
+        });
+    </script>
+}

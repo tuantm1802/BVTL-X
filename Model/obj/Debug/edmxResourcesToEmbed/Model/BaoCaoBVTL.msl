@@ -1,0 +1,338 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="BaoCaoBVTLModelStoreContainer" CdmEntityContainer="BaoCaoBVTLEntities1">
+    <EntitySetMapping Name="ACETests">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.ACETest">
+        <MappingFragment StoreEntitySet="ACETest">
+          <ScalarProperty Name="PointACE" ColumnName="PointACE" />
+          <ScalarProperty Name="ResultTest" ColumnName="ResultTest" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearTest" ColumnName="YearTest" />
+          <ScalarProperty Name="MonthTest" ColumnName="MonthTest" />
+          <ScalarProperty Name="DayTest" ColumnName="DayTest" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Api_TableSaveData">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.Api_TableSaveData">
+        <MappingFragment StoreEntitySet="Api_TableSaveData">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="TableNameSaveData" ColumnName="TableNameSaveData" />
+          <ScalarProperty Name="InputApi" ColumnName="InputApi" />
+          <ScalarProperty Name="TypeApi" ColumnName="TypeApi" />
+          <ScalarProperty Name="HrefApi" ColumnName="HrefApi" />
+          <ScalarProperty Name="NameSyncdata" ColumnName="NameSyncdata" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AssistTests">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.AssistTest">
+        <MappingFragment StoreEntitySet="AssistTest">
+          <ScalarProperty Name="CacThuocKhac_NguyCo" ColumnName="CacThuocKhac_NguyCo" />
+          <ScalarProperty Name="CacThuocKhac_Diem" ColumnName="CacThuocKhac_Diem" />
+          <ScalarProperty Name="ChatThuocPhien_NguyCo" ColumnName="ChatThuocPhien_NguyCo" />
+          <ScalarProperty Name="ChatThuocPhien_Diem" ColumnName="ChatThuocPhien_Diem" />
+          <ScalarProperty Name="ChatGayAoGiac_NguyCo" ColumnName="ChatGayAoGiac_NguyCo" />
+          <ScalarProperty Name="ChatGayAoGiac_Diem" ColumnName="ChatGayAoGiac_Diem" />
+          <ScalarProperty Name="ThuocAnThan_NguyCo" ColumnName="ThuocAnThan_NguyCo" />
+          <ScalarProperty Name="ThuocAnThan_Diem" ColumnName="ThuocAnThan_Diem" />
+          <ScalarProperty Name="KhiXongHit_NguyCo" ColumnName="KhiXongHit_NguyCo" />
+          <ScalarProperty Name="KhiXongHit_Diem" ColumnName="KhiXongHit_Diem" />
+          <ScalarProperty Name="MaTuyDa_NguyCo" ColumnName="MaTuyDa_NguyCo" />
+          <ScalarProperty Name="MaTuyDa_Diem" ColumnName="MaTuyDa_Diem" />
+          <ScalarProperty Name="Cocaine_NguyCo" ColumnName="Cocaine_NguyCo" />
+          <ScalarProperty Name="Cocaine_Diem" ColumnName="Cocaine_Diem" />
+          <ScalarProperty Name="CanSa_NguyCo" ColumnName="CanSa_NguyCo" />
+          <ScalarProperty Name="CanSa_Diem" ColumnName="CanSa_Diem" />
+          <ScalarProperty Name="ConRuou_NguyCo" ColumnName="ConRuou_NguyCo" />
+          <ScalarProperty Name="ConRuou_Diem" ColumnName="ConRuou_Diem" />
+          <ScalarProperty Name="ThuocLa_NguyCo" ColumnName="ThuocLa_NguyCo" />
+          <ScalarProperty Name="ThuocLa_Diem" ColumnName="ThuocLa_Diem" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearTest" ColumnName="YearTest" />
+          <ScalarProperty Name="MonthTest" ColumnName="MonthTest" />
+          <ScalarProperty Name="DayTest" ColumnName="DayTest" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cities">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.City">
+        <MappingFragment StoreEntitySet="Cities">
+          <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
+          <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="UnitId" ColumnName="UnitId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Customers">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.Customer">
+        <MappingFragment StoreEntitySet="Customer">
+          <ScalarProperty Name="Code_TCV" ColumnName="Code_TCV" />
+          <ScalarProperty Name="TypeObject" ColumnName="TypeObject" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DeliveryServices">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.DeliveryService">
+        <MappingFragment StoreEntitySet="DeliveryService">
+          <ScalarProperty Name="Other" ColumnName="Other" />
+          <ScalarProperty Name="Methadone" ColumnName="Methadone" />
+          <ScalarProperty Name="VGC" ColumnName="VGC" />
+          <ScalarProperty Name="STIs" ColumnName="STIs" />
+          <ScalarProperty Name="PEP" ColumnName="PEP" />
+          <ScalarProperty Name="PREP" ColumnName="PREP" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearDelivery" ColumnName="YearDelivery" />
+          <ScalarProperty Name="MonthDelivery" ColumnName="MonthDelivery" />
+          <ScalarProperty Name="DayDelivery" ColumnName="DayDelivery" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HTVTests">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.HTVTest">
+        <MappingFragment StoreEntitySet="HTVTest">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UnderTreatmentHIV" ColumnName="UnderTreatmentHIV" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearTest" ColumnName="YearTest" />
+          <ScalarProperty Name="MonthTest" ColumnName="MonthTest" />
+          <ScalarProperty Name="DayTest" ColumnName="DayTest" />
+          <ScalarProperty Name="ResultTest" ColumnName="ResultTest" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PageActions">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.PageAction">
+        <MappingFragment StoreEntitySet="PageAction">
+          <ScalarProperty Name="CONTROL_DESC" ColumnName="CONTROL_DESC" />
+          <ScalarProperty Name="CONTROL_NAME" ColumnName="CONTROL_NAME" />
+          <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PageMenus">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.PageMenu">
+        <MappingFragment StoreEntitySet="PageMenu">
+          <ScalarProperty Name="IS_SYSTEM_ROLE" ColumnName="IS_SYSTEM_ROLE" />
+          <ScalarProperty Name="PARENT_PAGE_ID" ColumnName="PARENT_PAGE_ID" />
+          <ScalarProperty Name="HREF_URL" ColumnName="HREF_URL" />
+          <ScalarProperty Name="CONTROLLER_NAME" ColumnName="CONTROLLER_NAME" />
+          <ScalarProperty Name="ORDER_BY" ColumnName="ORDER_BY" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+          <ScalarProperty Name="NAME" ColumnName="NAME" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProvideReductionItems">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.ProvideReductionItem">
+        <MappingFragment StoreEntitySet="ProvideReductionItems">
+          <ScalarProperty Name="NumberCBT" ColumnName="NumberCBT" />
+          <ScalarProperty Name="NumberCondom" ColumnName="NumberCondom" />
+          <ScalarProperty Name="NumberDocuments" ColumnName="NumberDocuments" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearProvide" ColumnName="YearProvide" />
+          <ScalarProperty Name="MonthProvide" ColumnName="MonthProvide" />
+          <ScalarProperty Name="DayProvide" ColumnName="DayProvide" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.Role">
+        <MappingFragment StoreEntitySet="Role">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Descripttion" ColumnName="Descripttion" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RolePages">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.RolePage">
+        <MappingFragment StoreEntitySet="RolePage">
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="CONTROL_STRING" ColumnName="CONTROL_STRING" />
+          <ScalarProperty Name="PageID" ColumnName="PageID" />
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SKTTTests">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.SKTTTest">
+        <MappingFragment StoreEntitySet="SKTTTest">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="PointQST" ColumnName="PointQST" />
+          <ScalarProperty Name="ResultTest" ColumnName="ResultTest" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearTest" ColumnName="YearTest" />
+          <ScalarProperty Name="MonthTest" ColumnName="MonthTest" />
+          <ScalarProperty Name="DayTest" ColumnName="DayTest" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SocialSupports">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.SocialSupport">
+        <MappingFragment StoreEntitySet="SocialSupport">
+          <ScalarProperty Name="JobIntroduction" ColumnName="JobIntroduction" />
+          <ScalarProperty Name="ApprenticeshipIntroduction" ColumnName="ApprenticeshipIntroduction" />
+          <ScalarProperty Name="Juridical" ColumnName="Juridical" />
+          <ScalarProperty Name="Loans" ColumnName="Loans" />
+          <ScalarProperty Name="RegistrationPersonalDocuments" ColumnName="RegistrationPersonalDocuments" />
+          <ScalarProperty Name="BuyBHYT" ColumnName="BuyBHYT" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearSupport" ColumnName="YearSupport" />
+          <ScalarProperty Name="MonthSupport" ColumnName="MonthSupport" />
+          <ScalarProperty Name="DaySupport" ColumnName="DaySupport" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SysLogs">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.SysLog">
+        <MappingFragment StoreEntitySet="SysLog">
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="DateLog" ColumnName="DateLog" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SysParameters">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.SysParameter">
+        <MappingFragment StoreEntitySet="SysParameters">
+          <ScalarProperty Name="ParamValueType" ColumnName="ParamValueType" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Desctiption" ColumnName="Desctiption" />
+          <ScalarProperty Name="ParamValue" ColumnName="ParamValue" />
+          <ScalarProperty Name="ParamCode" ColumnName="ParamCode" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TestGroups">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.TestGroup">
+        <MappingFragment StoreEntitySet="TestGroup">
+          <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
+          <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UrineTests">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.UrineTest">
+        <MappingFragment StoreEntitySet="UrineTest">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="CityId" ColumnName="CityId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="YearTest" ColumnName="YearTest" />
+          <ScalarProperty Name="MonthTest" ColumnName="MonthTest" />
+          <ScalarProperty Name="DayTest" ColumnName="DayTest" />
+          <ScalarProperty Name="ResultTest" ColumnName="ResultTest" />
+          <ScalarProperty Name="Customer_Code" ColumnName="Customer_Code" />
+          <ScalarProperty Name="OrdinalNumber" ColumnName="OrdinalNumber" />
+          <ScalarProperty Name="CodeTCV" ColumnName="CodeTCV" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.User">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="OriginId" ColumnName="OriginId" />
+          <ScalarProperty Name="OperativeLevel" ColumnName="OperativeLevel" />
+          <ScalarProperty Name="Possition" ColumnName="Possition" />
+          <ScalarProperty Name="IdNumber" ColumnName="IdNumber" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="DistrictID" ColumnName="DistrictID" />
+          <ScalarProperty Name="ProvinceID" ColumnName="ProvinceID" />
+          <ScalarProperty Name="Avartar" ColumnName="Avartar" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User_TestGroup">
+      <EntityTypeMapping TypeName="BaoCaoBVTLModel.User_TestGroup">
+        <MappingFragment StoreEntitySet="User_TestGroup">
+          <ScalarProperty Name="Is_Active" ColumnName="Is_Active" />
+          <ScalarProperty Name="TestGroupId" ColumnName="TestGroupId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

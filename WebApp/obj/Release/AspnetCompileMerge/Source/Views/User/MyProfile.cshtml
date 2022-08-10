@@ -1,0 +1,174 @@
+﻿@{
+    ViewBag.Title = "Thông tin tài khoản";
+}
+
+<div class="content-wrapper" ng-controller="MyProfileController">
+    <div class="fill-box-bread-crumb" style="background: #fff;">
+        <h3 class="bread_crumb">
+            <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>/ Thông tin tài khoản
+        </h3>
+    </div>
+    <div class="container">
+
+        <div class="row pt-3" style="display:block">
+            <div class="col-xs-12">
+
+                <div class="activity-overview plain rounded businesscard" style="padding: 20px 30px;">
+
+                    @*<a href="#manage-avatar" data-toggle="modal" style="margin: 0 auto;display: none;" data-tooltip="Tap to change your avatar">
+                            <div class="business-logo" style="position: relative; background-image: url('dist/img/elon.jpg');">
+                                <div class="box-shadow-dark"><i class="fa fa-pencil"></i></div>
+                            </div>
+                        </a>*@
+
+
+                    <div class="business-info">
+
+                        <h1>{{MyProfile.FULL_NAME}}</h1>
+                        <p class="summ">Quản lý hồ sơ cá nhân của bạn</p>
+
+                    </div>
+
+
+                    <div class="business-options">
+
+                        <button class="btn btn-info community-button" style="background-color:#67a961;border-color:#5ea858" data-toggle="modal" data-target="#change-password"><i class="fa fa-lock"></i> &nbsp; Thay đổi mật khẩu</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+
+                <!-- Info -->
+                <div id="profile-info">
+                    <form id="frmProfileInfo" name="frmProfileInfo" ng-validate="validationOptions">
+                        <div class="activity-overview plain rounded form-infor" style="padding: 30px;padding-bottom: 20px !important;">
+                            <div class="titlezone">
+                                <h5>Hồ sơ</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Họ và tên (*)</label>
+                                        <input type="text" class="form-control" ng-change="UpdateMyProfile()" ng-model-options="{debounce: 1000}" required name="FULL_NAME" ng-model="MyProfile.FULL_NAME">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Tên truy cập</label>
+                                        <input type="text" class="form-control" disabled required name="LOGIN_NAME" ng-model="MyProfile.LOGIN_NAME">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Đơn vị</label>
+                                        <input type="text" class="form-control" disabled required ng-model="MyProfile.UNIT_NAME" name="UNIT_NAME">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Số điện thoại</label>
+                                        <input type="text" class="form-control" ng-change="UpdateMyProfile()" ng-model-options="{debounce: 1000}" name="TEL_NO" ng-model="MyProfile.TEL_NO">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Chức danh</label>
+                                        <input type="text" class="form-control" ng-change="UpdateMyProfile()" ng-model-options="{debounce: 1000}" name="TITLE_NAME" ng-model="MyProfile.TITLE_NAME">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="tel">Cấp bậc</label>
+                                        <select class="form-control" ng-change="UpdateMyProfile()" ng-model="MyProfile.LEVEL_ID" select2 name="LEVEL_ID" required null-option="anyCapBac" ng-options="item.ID as item.TEN_CB for item in DmCapBac"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Mô tả tóm tắt về bản thân bạn</label>
+                                <textarea name="USER_DESC" class="form-control" ng-change="UpdateMyProfile()" ng-model-options="{debounce: 1000}" ng-model="MyProfile.USER_DESC" style="max-width: 100%; height: 80px;" maxlength="500"></textarea>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <!-- END Info -->
+            </div>
+        </div>
+
+        <br><br>
+
+    </div>
+    <div class="modal fade right" id="change-password" role="dialog" aria-labelledby="change-password" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-weight:bold">Thay đổi mật khẩu của tôi</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="activity-overview generic help-text form-infor">
+                        <form name="password-reset" method="post" action="" id="password-reset">
+
+                            <div class="well custom">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="row" style="margin-bottom:10px;">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label>Mật khẩu cũ</label>
+                                                    <div class="input-group" style="margin: 0;">
+                                                        <input type="password" ng-model="ModelPassword.PasswordOld" ng-attr-type="{{ IsShowPassword.passOld ? 'text' : 'password' }}" name="PasswordOld" class="form-control">
+                                                        <span class="input-group-addon"><a href="#" ng-click="IsShowPassword.passOld=!IsShowPassword.passOld;" class="toggle-pw" style="color: #333;"><i class="fa fa-eye"></i></a></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-bottom:10px;">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label>Mật khẩu mới</label>
+                                                    <div class="input-group" style="margin: 0;">
+                                                        <input type="password" ng-model="ModelPassword.PasswordNew" ng-attr-type="{{ IsShowPassword.passNew ? 'text' : 'password' }}" name="PasswordNew" class="form-control">
+                                                        <span class="input-group-addon"><a href="#" ng-click="IsShowPassword.passNew=!IsShowPassword.passNew;" class="toggle-pw" style="color: #333;"><i class="fa fa-eye"></i></a></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-bottom:10px;">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label>Nhập lại mật khẩu mới</label>
+                                                    <div class="input-group" style="margin: 0;">
+                                                        <input type="password" ng-model="ModelPassword.PasswordReNew" ng-attr-type="{{ IsShowPassword.passReNew ? 'text' : 'password' }}" name="PasswordReNew" class="form-control">
+                                                        <span class="input-group-addon"><a href="#" ng-click="IsShowPassword.passReNew=!IsShowPassword.passReNew;" class="toggle-pw" style="color: #333;"><i class="fa fa-eye"></i></a></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="#" class="btn btn-danger btn-small" ng-click="ResetModalChangePass()" data-dismiss="modal">Huỷ bỏ</a>
+                            <button type="button" ng-click="ChangePassword()" class="btn btn-success btn-small">Cập nhật mật khẩu</button>
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/app/Controller/MyProfileController.js"></script>
+}

@@ -1,0 +1,66 @@
+﻿
+<div class="col-sm-12">
+    <div class="main-action d-flex align-items-center justify-content-between flex-wrap mb-2 mt-2">
+        <div class="row col-12 ct-w ml-3 ml-0 mr-0 pl-0">
+            <div class="ml-0 mr-0 pl-0">
+                <label for="">Nơi chuyển đến:</label>
+            </div>
+            <div class="col-3">
+                <select ng-model="hdChuyenHDGTId" ng-options="item.ID_HOP_DONG as item.NAME_HOP_DONG for item in listHopdong"
+                        select2 class="form-control" style="width:100%">
+                </select>
+            </div>
+            <button class="btn-action-m col-1" ng-click="chuyenHDGTConfirm()" ng-show="chuyenPhieuGiaoThang">
+                <span>Xác nhận</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="col-sm-12 none-padding-right">
+        <div class="row">
+            <div class="col-12 col-sm-12 content-table none-padding">
+                <div class="row ml-0 mr-0">
+                    <div class="col-sm-12 none-padding-right">
+                        <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="center">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" ng-model="isCheckAllVatTuKhongQuaKhoView" class="ace" ng-change="changeCheckAllVatTuKhongQuaKhoView()" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </th>
+                                    <th class="center">STT</th>
+                                    <th class="center">Chi tiết</th>
+                                    <th class="center balance">Mã lệnh</th>
+                                    <th class="center balance">Hợp đồng chuyển đến</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr ng-repeat="item in chuyenHDPhieuGTList" ng-class="item.SO_HD_CHUYEN ? 'row_disable': ''">
+                                    <td class="center">
+                                        <label class="pos-rel" ng-if="!item.SO_HD_CHUYEN">
+                                            <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                    <td>{{$index + 1}}</td>
+                                    <td>
+                                        <button class="btn-action-m" data-toggle="modal" data-target="#modalAddNhapKhoBoTraHD"
+                                                ng-click="khoTraHDOpenModal(item)" style="background: transparent">
+                                            <img src="~/App_Assets/images/icon_edit_green.svg" alt="">
+                                        </button>
+                                    </td>
+                                    <td>{{item.SO_PHIEU}}</td>
+                                    <td>{{item.SO_HD_CHUYEN}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("_HD_Chuyen_HD_Phieu_NK_Detail")

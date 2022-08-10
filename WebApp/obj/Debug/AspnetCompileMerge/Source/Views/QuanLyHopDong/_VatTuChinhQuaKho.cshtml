@@ -1,0 +1,94 @@
+﻿
+<div class="col-sm-12">
+    <div class="col-sm-12">
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap mt-1 mb-2">
+            <div class="d-flex align-items-center flex-wrap ct-w">
+                <button class="btn-action-m" data-toggle="modal" data-target="#modalAddVatTu" ng-click="addVatTuModal()" ng-disabled="isDisableHD" ng-show="luuGiaoVatTuChinhQuaKho">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới</span>
+                </button>
+                @*<button class="btn-action-m" ng-click="updateVatTuModal()">
+                        <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                        <span>Sửa</span>
+                    </button>*@
+                <button class="btn-action-m" ng-click="removeVatTu()" ng-disabled="isDisableHD" ng-show="xoaGiaoVatTuChinhQuaKho">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá</span>
+                </button>
+            </div>
+
+            <div class="d-flex align-items-center flex-wrap">
+                <div class="main-action pt-3">
+                    <div class="form-search" style="margin-right: 0px">
+                        <input type="text" ng-model="modelVatTuQuaKho.timKiem" placeholder="Tìm kiếm">
+                        <button ng-click="pageVatTuChanged()">
+                            <img src="~/App_Assets/images/search_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-12 col-sm-12 content-table none-padding">
+                    <div class="row ml-0 mr-0">
+                        <div class="col-sm-12 pl-0 pr-0">
+                            <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" ng-model="isCheckAllVatTuQuaKhoView" class="ace" ng-change="changeCheckAllVatTuQuaKhoView()" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </th>
+                                        <th class="center">STT</th>
+                                        <th class="center">Chi tiết</th>
+                                        <th class="center">Số phiếu</th>
+                                        <th class="center">Số phiếu tài chính</th>
+                                        <th class="center">Nơi giao</th>
+                                        <th class="center">Nơi nhận</th>
+                                        <th class="center">Ngày thực nhập</th>
+                                        <th class="center">Lý do từ chối duyệt</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in listVatTuQuaKho" ng-click="viewDetailVatTu(item, 1, $index,'true')" ng-class="{activerow:$index==selectedRowVatTuQuaKho}">
+                                        <td class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </td>
+                                        <td>{{$index + 1}}</td>
+                                        <td>
+                                            <button ng-click="updateVatTuModal(item)" style="background-color:transparent">
+                                                <img src="~/App_Assets/images/icon_edit_green.svg" alt="">
+                                            </button>
+                                        </td>
+                                        <td>{{item.SO_PHIEU}}</td>
+                                        <td>{{item.SO_PHIEU_H55}}</td>
+                                        <td>{{item.TEN_KHO}}</td>
+                                        <td>{{item.SO_HD_DEN}}</td>
+                                        @*<td>{{item.NGAY_TAO |mydate| date:"dd/MM/yyyy"}}</td>*@
+                                        <td>{{item.NGAY_GIAO}}</td>
+                                        <td>{{item.LY_DO_TU_CHOI_DUYET}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-sm-12 pl-0 pr-0 pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelVatTuQuaKho.totalItems" items-per-page="modelVatTuQuaKho.pageSize" ng-model="modelVatTuQuaKho.pageIndex" ng-change="pageVatTuChanged()" max-size="modelVatTuQuaKho.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,41 @@
+﻿<div class="modal fade" id="AddNhomDinhMuc">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content" style="width: 700px;">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm mới nhóm định mức</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class=" col-md-12" id="formSubmit">
+                    <div class="row">
+                        <div class="col-sm-12" style="padding:0px;padding-right:10px;">
+                            <label for="">Tên nhóm định mức </label>
+                            <input type="text" ng-model="AddNhomDM_TenNhomDM" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="AddNhomDM_ThemNhomDM()">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        <span>Lưu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

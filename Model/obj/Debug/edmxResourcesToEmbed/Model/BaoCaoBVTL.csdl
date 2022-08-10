@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BaoCaoBVTLModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="BaoCaoBVTLEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ACETests" EntityType="BaoCaoBVTLModel.ACETest" />
+    <EntitySet Name="Api_TableSaveData" EntityType="BaoCaoBVTLModel.Api_TableSaveData" />
+    <EntitySet Name="AssistTests" EntityType="BaoCaoBVTLModel.AssistTest" />
+    <EntitySet Name="Cities" EntityType="BaoCaoBVTLModel.City" />
+    <EntitySet Name="Customers" EntityType="BaoCaoBVTLModel.Customer" />
+    <EntitySet Name="DeliveryServices" EntityType="BaoCaoBVTLModel.DeliveryService" />
+    <EntitySet Name="HTVTests" EntityType="BaoCaoBVTLModel.HTVTest" />
+    <EntitySet Name="PageActions" EntityType="BaoCaoBVTLModel.PageAction" />
+    <EntitySet Name="PageMenus" EntityType="BaoCaoBVTLModel.PageMenu" />
+    <EntitySet Name="ProvideReductionItems" EntityType="BaoCaoBVTLModel.ProvideReductionItem" />
+    <EntitySet Name="Roles" EntityType="BaoCaoBVTLModel.Role" />
+    <EntitySet Name="RolePages" EntityType="BaoCaoBVTLModel.RolePage" />
+    <EntitySet Name="SKTTTests" EntityType="BaoCaoBVTLModel.SKTTTest" />
+    <EntitySet Name="SocialSupports" EntityType="BaoCaoBVTLModel.SocialSupport" />
+    <EntitySet Name="SysLogs" EntityType="BaoCaoBVTLModel.SysLog" />
+    <EntitySet Name="SysParameters" EntityType="BaoCaoBVTLModel.SysParameter" />
+    <EntitySet Name="TestGroups" EntityType="BaoCaoBVTLModel.TestGroup" />
+    <EntitySet Name="UrineTests" EntityType="BaoCaoBVTLModel.UrineTest" />
+    <EntitySet Name="Users" EntityType="BaoCaoBVTLModel.User" />
+    <EntitySet Name="User_TestGroup" EntityType="BaoCaoBVTLModel.User_TestGroup" />
+    <AssociationSet Name="FK_User_User" Association="BaoCaoBVTLModel.FK_User_User">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="ACETest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DayTest" Type="Int32" Nullable="false" />
+    <Property Name="MonthTest" Type="Int32" Nullable="false" />
+    <Property Name="YearTest" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ResultTest" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="PointACE" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Api_TableSaveData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NameSyncdata" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="HrefApi" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="TypeApi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="InputApi" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="TableNameSaveData" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AssistTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DayTest" Type="Int32" Nullable="false" />
+    <Property Name="MonthTest" Type="Int32" Nullable="false" />
+    <Property Name="YearTest" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ThuocLa_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ThuocLa_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="ConRuou_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ConRuou_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="CanSa_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CanSa_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="Cocaine_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="Cocaine_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="MaTuyDa_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="MaTuyDa_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="KhiXongHit_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="KhiXongHit_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="ThuocAnThan_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ThuocAnThan_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="ChatGayAoGiac_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ChatGayAoGiac_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="ChatThuocPhien_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ChatThuocPhien_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+    <Property Name="CacThuocKhac_Diem" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CacThuocKhac_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="City">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="UnitId" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="LastUpdateBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DateOfBirth" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="CityId" Type="Int32" />
+    <Property Name="TypeObject" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="Code_TCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DeliveryService">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DayDelivery" Type="Int32" Nullable="false" />
+    <Property Name="MonthDelivery" Type="Int32" Nullable="false" />
+    <Property Name="YearDelivery" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="PREP" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PEP" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="STIs" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="VGC" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Methadone" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Other" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="HTVTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ResultTest" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="DayTest" Type="Int32" Nullable="false" />
+    <Property Name="MonthTest" Type="Int32" Nullable="false" />
+    <Property Name="YearTest" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="UnderTreatmentHIV" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PageAction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
+    <Property Name="CONTROL_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CONTROL_DESC" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="PageMenu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NAME" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="IS_ACTIVE" Type="Boolean" Nullable="false" />
+    <Property Name="ORDER_BY" Type="Int32" Nullable="false" />
+    <Property Name="CONTROLLER_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="HREF_URL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="PARENT_PAGE_ID" Type="Int32" />
+    <Property Name="IS_SYSTEM_ROLE" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProvideReductionItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DayProvide" Type="Int32" Nullable="false" />
+    <Property Name="MonthProvide" Type="Int32" Nullable="false" />
+    <Property Name="YearProvide" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="NumberDocuments" Type="Int32" />
+    <Property Name="NumberCondom" Type="Int32" />
+    <Property Name="NumberCBT" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Descripttion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Users" Relationship="BaoCaoBVTLModel.FK_User_User" FromRole="Role" ToRole="User" />
+  </EntityType>
+  <EntityType Name="RolePage">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PageID" Type="Int32" Nullable="false" />
+    <Property Name="CONTROL_STRING" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="IS_ACTIVE" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SKTTTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DayTest" Type="Int32" Nullable="false" />
+    <Property Name="MonthTest" Type="Int32" Nullable="false" />
+    <Property Name="YearTest" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="ResultTest" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="PointQST" Type="Int32" Nullable="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SocialSupport">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DaySupport" Type="Int32" Nullable="false" />
+    <Property Name="MonthSupport" Type="Int32" Nullable="false" />
+    <Property Name="YearSupport" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="BuyBHYT" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="RegistrationPersonalDocuments" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Loans" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Juridical" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="ApprenticeshipIntroduction" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="JobIntroduction" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="SysLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ControllerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DateLog" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Content" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="SysParameter">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ParamCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ParamValue" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Desctiption" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="ParamValueType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="TestGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="LastUpdateBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="UrineTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CodeTCV" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="OrdinalNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Customer_Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ResultTest" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+    <Property Name="DayTest" Type="Int32" Nullable="false" />
+    <Property Name="MonthTest" Type="Int32" Nullable="false" />
+    <Property Name="YearTest" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CityId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="GroupID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Avartar" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="ProvinceID" Type="Int32" />
+    <Property Name="DistrictID" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="Boolean" Nullable="false" />
+    <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+    <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="IdNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Possition" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="OperativeLevel" Type="Int32" />
+    <Property Name="OriginId" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Role" Relationship="BaoCaoBVTLModel.FK_User_User" FromRole="User" ToRole="Role" />
+  </EntityType>
+  <EntityType Name="User_TestGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="TestGroupId" Type="Int32" Nullable="false" />
+    <Property Name="Is_Active" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_User_User">
+    <End Type="BaoCaoBVTLModel.Role" Role="Role" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="GroupID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

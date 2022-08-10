@@ -1,0 +1,13 @@
+﻿
+@using ReportViewerForMvc;
+@{
+    var reportviewer = ViewBag.ReportViewer != null ? (ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer) : null;
+}
+@if (reportviewer != null)
+{
+    @Html.ReportViewer(reportviewer, new { style = "width:100%" })
+}
+else
+{
+    <h1>Không có dữ liệu!</h1>
+}

@@ -1,0 +1,96 @@
+﻿@model Simple.Base.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="MobileOptimized" content="device-width" />
+    <link rel="shortcut icon" href="~/App_Assets/images/logo_login.svg" type="image/svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="~/App_Assets/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/App_Assets/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/App_Assets/animate_wow_js/animate.css" rel="stylesheet">
+    <link href="~/App_Assets/date_picker/datepicker.css" rel="stylesheet">
+    <link href="~/App_Assets/css/style.css" rel="stylesheet" />
+    <title>Đăng nhập</title>
+</head>
+<body>
+
+
+    <main class="main-login">
+        <div class="login-box">
+            <div class="row">
+                <div class="col-12 col-md-6 align-self-center">
+                    <div class="logo mx-auto text-center">
+                        <img src="~/App_Assets/images/logo_login.svg" alt="">
+                        <img src="~/App_Assets/images/Text_dang nhap.svg" alt="">
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="content-box">
+                        <div class="sub-text">
+                            <img src="~/App_Assets/images/text_login.svg" alt="">
+                        </div>
+                        @using (Html.BeginForm("Auth", "Login", FormMethod.Post, new { @class = "login100-form validate-form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(false, "", "error")
+                            <div class="form">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <img src="~/App_Assets/images/user_lg.svg" alt="">
+                                                </div>
+                                            </div>
+                                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Tên đăng nhập" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <img src="~/App_Assets/images/pass_lg.svg" alt="">
+                                                </div>
+                                            </div>
+                                            @Html.PasswordFor(model => model.Password, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Mật  khẩu" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <button type="submit" class="btn-login">Đăng nhập</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <p>Thiếu tướng <b>BÙI THIỆN DŨNG</b> - Cục trưởng Cục Trang bị và Kho vận</p>
+            </div>
+        </div>
+    </main>
+
+
+
+
+    <script src="~/App_Assets/js/jquery.min.js"></script>
+    <script src="~/App_Assets/bootstrap/bootstrap.min.js"></script>
+    <script src="~/App_Assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="~/App_Assets/date_picker/bootstrap-datepicker.js"></script>
+    <script src="~/App_Assets/js/hc-offcanvas-nav.js"></script>
+    <script src="~/App_Assets/animate_wow_js/wow.min.js"></script>
+    <script src="~/App_Assets/js/main.js"></script>
+</body>
+</html>
+

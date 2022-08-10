@@ -1,0 +1,35 @@
+﻿<div class="content-system" style="margin:0px">
+    <div class="nav-tabs-box">
+        <ul class="nav nav-tabs" id="myTabsss" role="tablist">
+            <li class="nav-item" ng-click="pageNTVatTuChanged()">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#vt1" role="tab">Nghiệm thu vật tư</a>
+            </li>
+
+            <li class="nav-item" ng-click="changeTabVatTu(1)">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vt2" role="tab">Giao vật tư chính qua kho</a>
+            </li>
+
+            <li class="nav-item" ng-click="tabGTVTKhongQuaKhoSelect()">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vt3" role="tab">Giao vật tư chính không qua kho</a>
+            </li>
+
+            <li class="nav-item" ng-click="changeTabVatTu(4)">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#vt4" role="tab">Nhập trả vật tư</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content hd-overflow-open">
+        <div class="tab-pane row active" id="vt1">
+            @Html.Partial("~/Views/QuanLyHopDong/_VatTuPhu.cshtml")
+        </div>
+        <div class="tab-pane row" id="vt2">
+            @Html.Partial("~/Views/QuanLyHopDong/_VatTuChinhQuaKho.cshtml")
+        </div>
+        <div class="tab-pane row" id="vt3">
+            @Html.Partial("~/Views/QuanLyHopDong/_VatTuChinhKhongQuaKho.cshtml")
+        </div>
+        <div class="tab-pane row" id="vt4">
+            @Html.Partial("~/Views/QuanLyHopDong/_VatTuNhapTra.cshtml")
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+﻿<form id="formAddFile" enctype="multipart/form-data" name="formAddFile">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Chọn tệp đính kèm</h4>
+        <button type="button" class="no_bg_color_white" ng-click="cancel()">
+            <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body">
+        <div class="col-md-12">
+            <div class="form-group">
+                <input type="file" class="custom-file-input" id="file-input">
+                <label class="custom-file-label" for="customFile">Chọn tệp</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer d-flex justify-content-between">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+            <button class="btn-action-m bg-green cl-3" ng-click="Upload()">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+                <span>Tải lên</span>
+            </button>
+
+            <button class="btn-action-m  bg-orange cl-3" ng-click="cancel()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                <span>Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>

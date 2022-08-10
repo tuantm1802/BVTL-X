@@ -1,0 +1,255 @@
+﻿<main class="main-ac-system">
+    <div class="container-fluid d-flex cons-ac-system">
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Lệnh điều xe
+                </h3>
+            </div>
+            
+            <div class="container">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="ds_hop_dong" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="main-action pb-2">
+                            <div class="d-flex align-items-center flex-wrap">
+                                <div class="form-search w-100">
+                                    <input type="text" placeholder="Tìm kiếm" ng-model="TC_MaDoiTieuChuan">
+                                    <button>
+                                        <img src="~/App_Assets/images/search_icon.svg" ng-click="TC_TimKiem()" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-table">
+                            <table class="table-responsive table-hover result-point">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th class="text-center balance">STT</th>
+                                        <th class="text-center balance">Số lệnh DX</th>
+                                        <th class="text-center balance">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="tbody-hover">
+                                    <tr>
+                                        <td class="text-center balance">1</td>
+                                        <td class="text-center balance">DX-001</td>
+                                        <td class="text-center balance">Hiệu lực</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center balance">2</td>
+                                        <td class="text-center balance">DX-002</td>
+                                        <td class="text-center balance">Hiệu lực</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center balance">3</td>
+                                        <td class="text-center balance">DX-003</td>
+                                        <td class="text-center balance">Hiệu lực</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="content-table pull-right">
+                                <div class="pages-switch">
+                                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="totalRecordHD" items-per-page="pageSizeHD" ng-model="pageIndexHD" ng-change="pageChangedHD()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-system" style="border:0px;">
+            
+            <div class="container-fluid">
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="noi_dung" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+                            <div class="d-flex align-items-center flex-wrap">
+                                <button class="btn-action-m" ng-click="ThemPhieu()">
+                                    <img src="/App_Assets/images/icon_add.svg" alt="">
+                                    <span>Thêm mới</span>
+                                </button>
+
+                                <button class="btn-action-m">
+                                    <img src="/App_Assets/images/icon_edit.svg" alt="">
+                                    <span>Sửa</span>
+                                </button>
+
+                                <button class="btn-action-m">
+                                    <img src="/App_Assets/images/icon_del.svg" alt="">
+                                    <span>Xoá</span>
+                                </button>
+
+                                <button class="btn-action-m" ng-click="LuuPhieu()">
+                                    <img src="/App_Assets/images/icon_save.svg" alt="">
+                                    <span>Lưu</span>
+                                </button>
+
+                                <button class="btn-action-m">
+                                    <img src="/App_Assets/images/icon_cancel.svg" alt="">
+                                    <span>Huỷ thay đổi</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-infor has-border p-3" style="margin-top: 8.5px;">
+                            <h4 class="form-title">
+                                Nội dung
+                            </h4>
+
+                            <div class="row no-gutters">
+                                <div class="col-12 col-md-3">
+                                    <label for="">VBYC vận chuyển:</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Ngày:</label>
+                                    <div id="dateFrom" class="input-group date" data-date-format="dd-mm-yyyy">
+                                        <input type="text" class="form-control">
+                                        <span class="input-group-addon"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Lái xe: </label>
+                                    <select class="form-control"></select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Phụ xe: </label>
+                                    <select class="form-control"></select>
+                                </div>
+
+                                <div class="col-12 col-md-3">
+                                    <label for="">Phương tiện: </label>
+                                    <select class="form-control"></select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Biển kiểm sát: </label>
+                                    <input type="text" disabled class="form-control">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Trọng tải: </label>
+                                    <input type="text" disabled class="form-control">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Người áp tải: </label>
+                                    <select class="form-control"></select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label for="">Tổng nhiên liệu cấp: </label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-12 col-md-9">
+                                </div>
+
+                            </div>
+                            <div class="content-table mt-2">
+                                <table class="table-responsive table-hover result-point">
+                                    <thead class="point-table-head">
+                                        <tr>
+                                            <th class="e-cursor-pointer" style="width:3%">
+                                                <button type="button" class="btn btn-primary" id="btnThemHangHoa">
+                                                    <i class="glyphicon glyphicon-plus-sign"></i>
+                                                </button>
+                                            </th>
+                                            <th class="text-center" style="width:3%;">STT </th>
+                                            <th class="text-center">Hàng VC<i id="or_ntn"></i></th>
+                                            <th class="text-center">Từ<i id="or_dv"></i></th>
+                                            <th class="text-center">Đến<i id="or_nn"></i></th>
+                                            <th class="text-center" title="Trọng lượng hàng hóa">TL HH<i id="or_ng"></i></th>
+                                            <th class="text-center">Quãng đường<i id="or_ng"></i></th>
+                                            <th class="text-center">Nhiên liệu TT<i id="or_ng"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="background-color:white">
+                                        <tr>
+                                            <td class="text-center list-receipt" style="color:red">
+                                                <button style="vertical-align: -webkit-baseline-middle;" id="btnXoaHangHoa">
+                                                    <i class="glyphicon glyphicon-minus-sign"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <label class="form-control">1</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Thiết bị soi chiếu">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Hà Nội">
+                                            </td>
+                                            <td><input type="text" class="form-control" value="Hải Phòng"></td>
+                                            <td><input type="number" step="10000" class="form-control" value="5.0"></td>
+                                            <td><input type="number" class="form-control" value="120"></td>
+                                            <td><input type="number" class="form-control" value="25"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center list-receipt" style="color:red">
+                                                <button style="vertical-align: -webkit-baseline-middle;" id="btnXoaHangHoa">
+                                                    <i class="glyphicon glyphicon-minus-sign"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <label class="form-control">2</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Máy phát điện">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Hải Phòng">
+                                            </td>
+                                            <td><input type="text" class="form-control" value="Tây Nguyên"></td>
+                                            <td><input type="number" step="10000" class="form-control" value="3.5"></td>
+                                            <td><input type="number" class="form-control" value="2.900"></td>
+                                            <td><input type="number" class="form-control" value="725"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center list-receipt" style="color:red">
+                                                <button style="vertical-align: -webkit-baseline-middle;" id="btnXoaHangHoa">
+                                                    <i class="glyphicon glyphicon-minus-sign"></i>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <label class="form-control">3</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Thiết bị chữa cháy">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" value="Tây Nguyên">
+                                            </td>
+                                            <td><input type="text" class="form-control" value="Hà Nội"></td>
+                                            <td><input type="number" step="10000" class="form-control" value="0"></td>
+                                            <td><input type="number" class="form-control" value="2.750"></td>
+                                            <td><input type="number" class="form-control" value="650"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div style="float:left;padding-top:16px" ng-show="CoKetQua">{{SoLuongHienThi}}/{{SoLuongKetQua}} kết quả</div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row content-table pull-right">
+                                        <div class="pages-switch">
+                                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</main>
+

@@ -1,0 +1,163 @@
+﻿<div class="col-md-12">
+    <div id="exTab_NhanTienDoiTC" class="row">
+        <div class="tb-cu">
+            <ul class="nav nav-tabs" id="nhantienDTCTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="nhanTien-tab" data-toggle="tab" href="#nt_1" role="tab">Nhận tiền</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="doiTieuChuan-tab" data-toggle="tab" href="#nt_2" role="tab">Đổi tiêu chuẩn</a>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-1 pl-3 pr-3">
+                <div class="tab-pane fade show active" id="nt_1" role="tabpanel" aria-labelledby="nhanTien-tab">
+                    <div class="col-md-6 text-left pull-left">
+                        <div class="row">
+                            <div class="main-action d-flex flex-wrap" style="margin-bottom:5px; margin-top:15px">
+                                <button class="btn-action-m bg-green pull-left" ng-click="btnDSDKNhanTien()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>  <span>SL đăng ký</span>
+                                </button>
+                                @*<button class="btn-action-m bg-green pull-left" ng-click="btnDSDKNhanTienTuDong()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>  <span>Đề xuất (tự động)</span>
+                                </button>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right pull-right">
+                        <div>
+                            <div class="main-action d-flex flex-wrap" style="margin-bottom:5px; margin-top:15px">
+                                <div class="form-search w-100">
+                                    <input type="text" placeholder="Tìm kiếm" ng-model="TrangPhucText">
+                                    <button class="bg-green" style="color:white" ng-click="ChangeLoaiTrangPhuc()">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">  </div>
+                    <div class="content-table small-table">
+                        <div class="row" style="max-height:350px; overflow-y:scroll">
+                            <div class="col-12 col-md-12 col-lg-12">
+                                <tree-grid show-checkbox="tree_Table_Checkbox_nt"
+                                           expand-level="3"
+                                           body-defs="body_defs_nt"
+                                           tree-data="tree_data_nt"
+                                           expand-on="expanding_property_nt"
+                                           col-defs="col_defs_nt"
+                                           icon-leaf="v_treetable_docu_nt"
+                                           icon-expand="treetable_close_nt"
+                                           icon-collapse="treetable_open_nt"
+                                           event-change-checkbox="ChangeTreeTableCheckbox_nt(item)"
+                                           event-choose-row="ClickTreeTableRow_nt(item)"></tree-grid>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="nt_2" role="tabpanel" aria-labelledby="doiTieuChuan-tab">
+                    <div class="row">
+                        <div class="col-sm-6" style="padding:0px;padding-right:10px;">
+                            <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                                <legend class="scheduler-border" style="width: 270px;"><label class="bold-label">Danh sách đổi tiêu chuẩn</label></legend>
+                                <div class="row">
+                                    <div class="col-12 col-md-5 col-lg-5 align-self-end" style="padding-right:0px !important;">
+                                        <div class="main-action d-flex align-items-center flex-wrap" style="margin-bottom:5px">
+                                            <button class="btn-action-m bg-green" ng-click="DanhSachSPDoiTC()">
+                                                <i class="fa fa-list" aria-hidden="true"></i>   <span> Chọn sản phẩm đổi T.chuẩn </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-12 col-md-7 col-lg-7">
+                                            <div class="main-action pt-3">
+                                                <div class="form-search w-100">
+                                                    <input type="text" placeholder="Tìm kiếm" ng-model="SPN_TenSanPham" ng-change="SPN_TimKiem()">
+                                                    <button class="bg-green" style="color:white" ng-click="SPN_TimKiem()">
+                                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+                                <div class="content-table">
+                                    <div style="height:310px; overflow-y:scroll;">
+                                        <table class="table-responsive table-hover result-point small-table">
+                                            <thead class="point-table-head">
+                                                <tr>
+                                                    <th class="text-center" style="width:5%">TT </th>
+                                                    <th class="left">Trang phục</th>
+                                                    <th class="text-right" style="width:15%">SL Cấp </th>
+                                                    <th class="text-right" style="width:15%">SL Đổi </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="">
+                                                <tr ng-repeat="item in ListDoiTC" @*ng-click="CP_SelectSpDoi(item,$index)"*@>
+                                                    <td class="text-center"> {{$index +1}}</td>
+                                                    <td>{{item.TEN_SP}} </td>
+                                                    <td class="text-center"> {{item.SL_KE_HOACH}} </td>
+                                                    <td class="text-center"><input class="form-control text-right" type="number" ng-model="item.SL_DOI" ng-change="CP_DoiTCChange(item.SL_DOI)"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="pages-switch" style="padding:10px 0 !important;">
+                                        <div class="main-action d-flex align-items-center flex-wrap">
+                                            <button class="btn-action-m ct-fix-lap bg-green" ng-disabled="disableKHDuyet" ng-click="LuuDanhSachDoiTC()">
+                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                <span>Lưu</span>
+                                            </button>
+                                            <button class="btn-action-m ct-fix-lap bg-green"  type="button" ng-click="HuyDanhSachDoiTC()">
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                <span>Hủy thay đổi</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6" style="padding:0px;">
+                            <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                                <legend class="scheduler-border" style="width: 235px;"><label class="bold-label">Danh sách được nhận</label></legend>
+                                <div class="row">
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="main-action pt-3" style="margin-top:20px">
+                                            @*<div class="form-search w-100">
+                                                    <input type="text" placeholder="Tìm kiếm" ng-model="SPN_TenSanPham" ng-change="SPN_TimKiem()">
+                                                    <button class="bg-green" style="color:white" ng-click="SPN_TimKiem()">
+                                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-table" style="height:365px; overflow-y:scroll;">
+                                    <table class="table-responsive table-hover result-point small-table">
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th class="text-center" style="width:5%">TT </th>
+                                                <th class="left">Trang phục</th>
+                                                <th class="text-right" style="width:15%">SL nhận </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="">
+                                            <tr ng-repeat="item in ListSanPhamDich" style="cursor:pointer">
+                                                <td class="text-center"> {{$index +1}}</td>
+                                                <td>{{item.TEN_SP}} </td>
+                                                <td class="text-center"> {{item.SL_DOI}} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

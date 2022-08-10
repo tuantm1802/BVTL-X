@@ -1,0 +1,248 @@
+﻿<div class="row no-gutters mt-3">
+    @*<div class="col-12 col-lg-10">
+        <div class="noti-alert">
+            <h4>Lưu ý “Trừ nợ đơn vị”: Nếu chưa muốn trừ tại kế hoạch này, đề nghị “Cấp ứng” để ký nợ vào kế hoạch sau</h4>
+        </div>
+    </div>*@ 
+    <div class="col-12 col-lg-2 main-action d-flex align-items-center flex-wrap">
+        <button class="btn-action-m bg-green" ng-click="btnNienHan()">
+            <i class="fa fa-folder-open" aria-hidden="true"></i>  <span>Niên hạn đơn vị</span>
+        </button>
+    </div>
+</div>
+    <div class="row no-gutters mt-3">
+        <div class="col-12 col-lg-12 main-action d-flex align-items-center flex-wrap" style="margin-bottom:10px">
+            <div class="col-6 col-lg-6 main-action d-flex align-items-center flex-wrap" style="margin-bottom:10px">
+                <button class="btn-action-m bg-red" ng-click="btnKeHoachQuyetToan()">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i> <span>Q.toán nợ kế hoạch trước</span>
+                </button>
+                <button class="btn-action-m bg-red" ng-click="btnQtPhieuHoiVe()">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i> <span>Q.toán phiếu hồi về</span>
+                </button>
+                <button class="btn-action-m bg-red" ng-click="btnQuyetToanTruNoTonDV()">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i> <span>Trừ nợ tồn đơn vị</span>
+                </button>
+            </div>
+            <div class="col-6 col-lg-6 main-action d-flex justify-content-end flex-wrap" style="margin-bottom:10px">
+
+                <button class="btn-action-m bg-blue" ng-click="btnThemMoiQTTruNoTonDV()">
+                    <i class="fa fa-folder-open" aria-hidden="false"></i> <span>"Nợ - Tồn" đơn vị</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="main-action">
+                <div class="form-search w-100">
+                    <input type="text" placeholder="Tìm kiếm">
+                    <button class="bg-green" style="color:white">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-table small-table" style="margin-top: 15px">
+                @*<table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center tb-ip"><input type="checkbox"></th>
+                                <th class="text-center tb-clothes">Trang phục</th>
+                                <th class="text-center tb-number">Số lượng cấp</th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                        </tbody>
+                    </table>*@
+                <div class="row" style="max-height:350px; overflow-y:scroll">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <tree-grid show-checkbox="tree_Table_Checkbox"
+                                   expand-level="3"
+                                   body-defs="body_defs"
+                                   tree-data="tree_data"
+                                   expand-on="expanding_property"
+                                   col-defs="col_defs"
+                                   icon-leaf="v_treetable_docu"
+                                   icon-expand="treetable_close"
+                                   icon-collapse="treetable_open"
+                                   event-change-checkbox="ChangeTreeTableCheckbox(item)"
+                                   event-choose-row="ClickTreeTableRow(item)"></tree-grid>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="tb-cu">
+                
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#c1" role="tab">Cấp ứng tiêu chuẩn</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#c2" role="tab">Cấp bổ sung tiêu chuẩn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#c3" role="tab">Quyết toán</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-1 pl-3 pr-3 pb-2">
+
+                    <div class="tab-pane fade show active" id="c1" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="main-action d-flex flex-wrap" style="margin-bottom:5px; margin-top:15px">
+                            @*<button class="btn-action-m bg-green" ng-click="btnThemMoiCUTC()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới </span>
+                    </button>*@
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="btnThemMoiTheoDs('BX')">
+                                <i class="fa fa-list" aria-hidden="true"></i>  <span>Thêm theo danh sách</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="LuuCapUngTieuChuan('BX')">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="HuyThayDoiCPUTC('BX')">
+                                <i class="fa fa-ban" aria-hidden="true"></i>    <span> Huỷ thay đổi</span>
+                            </button>
+                            <button class="btn-action-m bg-red" ng-disabled="disableKHDuyet" ng-click="XoaThayDoiCPUTC('BX')">
+                                <i class="fa fa-trash" aria-hidden="true"></i>    <span> Xóa </span>
+                            </button>
+                        </div>
+                        <div class="content-table" style="max-height: calc(100vh - 390px); overflow: auto;">
+                            <table class="table-responsive table-hover result-point small-table">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th style="width: 5%;" class="text-center tb-ip"><input type="checkbox" ng-model="selectAll" ng-click="CheckAllCapUng()"></th>
+                                        <th style="width: 70%;" class="text-center tb-clothes">Trang phục</th>
+                                        <th style="width: 25%;" class="text-center tb-number">Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+                                    <tr ng-repeat="item in ListCapUngTC">
+                                        <td class="text-left"><input type="checkbox" ng-model="item.Selected" value="{{item.ID}}"></td>
+                                        <td class="text-left">
+                                            <input type="hidden" ng-model="item.ID_KH_CT" />
+                                            <select  ui-select2 ng-model="item.TrangPhuc" ng-options="item.ID as item.TEN_SP for item in listSanPhamModal" class="form-control" style="width:100% !important"></select>
+                                        </td>
+                                        <td class="text-right"><input class="form-control" type="number" ng-model="item.SoLuong" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="c2" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="main-action d-flex flex-wrap" style="margin-bottom:5px; margin-top:15px">
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="btnThemMoiTheoDs('UBX')">
+                                <i class="fa fa-list" aria-hidden="true"></i>  <span>Thêm theo danh sách</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="LuuCapUngTieuChuan('UBX')">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="HuyThayDoiCPUTC('UBX')">
+                                <i class="fa fa-ban" aria-hidden="true"></i>    <span> Huỷ thay đổi</span>
+                            </button>
+                            <button class="btn-action-m bg-red" ng-disabled="disableKHDuyet" ng-click="XoaThayDoiCPUTC('UBX')">
+                                <i class="fa fa-trash" aria-hidden="true"></i>    <span> Xóa </span>
+                            </button>
+                        </div>
+                        <div class="content-table" style="max-height: calc(100vh - 390px); overflow: auto;">
+                            <table class="table-responsive table-hover result-point small-table">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th style="width: 5%;" class="text-center tb-ip"><input type="checkbox" ng-model="selectAll" ng-click="CheckAllCapBoSungTC()"></th>
+                                        <th style="width: 50%;" class="text-center tb-clothes">Trang phục</th>
+                                        <th style="width: 25%;" class="text-center tb-number">Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+                                    <tr ng-repeat="item in ListCapBoSungTC">
+                                        <td class="text-left"><input type="checkbox" ng-model="item.Selected" value="{{item.ID}}"></td>
+                                        <td class="text-left">
+                                            <input type="hidden" ng-model="item.ID_KH_CT" />
+                                            <select ui-select2 ng-model="item.TrangPhuc" ng-options="item.ID as item.TEN_SP for item in listSanPhamModal" class="form-control"  style="width:100% !important"></select>
+                                        </td>
+                                        <td class="text-right"><input class="form-control" type="number" ng-model="item.SoLuong" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="c3" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="main-action d-flex flex-wrap" style="margin-bottom:5px; margin-top:15px">
+                            <button class="btn-action-m bg-green" ng-disabled="disableQuyetToanTraNo" ng-click="btnQtNoKeHoachTruoc()">
+                                <i class="fa fa-list" aria-hidden="true"></i>  <span>Xem chi tiết Q.Toán</span>
+                            </button>
+
+                        </div>
+                        <div class="content-table" style="max-height: calc(100vh - 390px); overflow: auto;">
+                            <table class="table-responsive table-hover result-point small-table">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th style="width: 5%;" class="text-center tb-ip">STT</th>
+                                        <th style="width: 35%;" class="text-center">Số QT</th>
+                                        <th style="width: 50%;" class="text-center tb-clothes">Trang phục</th>
+                                        <th style="width: 10%;" class="text-center tb-number">SL Q.Toán</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+                                    <tr><td colspan="4" style="background-color:#38a36b; color:white;">Nợ kế hoạch trước</td></tr>
+
+                                    <tr ng-repeat="item in dsSPDaChonQuyetToan">
+                                        <td class="text-center">{{$index + 1}}</td>
+                                        <td class="clhd">{{item.SO_KH_DUOC_TRA_NO}}</td>
+
+                                        <td class="text-left">
+                                            <input type="hidden" ng-model="item.ID" />
+                                            <label>{{item.TEN_SP}}</label>
+                                        </td>
+                                        <td class="text-right">
+                                            <label>{{item.SL_TRA_NO}}</label>
+                                            @*<input class="form-control" type="number" ng-model="item.SL_QUYET_TOAN" />*@
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody class="tbody-hover">
+                                    <tr><td colspan="4" style="background-color:#38a36b; color:white;">Phiếu hồi về</td></tr>
+                                    @*<tr style="cursor:pointer" ng-repeat="itemNoTonDV in dsSPQuyetToanNoTonDV">
+                                        <td class="text-center">{{$index + 1}}</td>
+                                        <td class="clhd">{{itemNoTonDV.TEN_SP}}</td>
+                                        <td class="balance">{{itemNoTonDV.SL_TRA_NO}}</td>
+                                    </tr>*@
+                                </tbody>
+                                <tbody class="tbody-hover">
+                                    <tr><td colspan="4" style="background-color:#38a36b; color:white;">Trừ "Nợ - Tồn" Đơn vị</td></tr>
+                                    <tr style="cursor:pointer" ng-repeat="itemNoTonDV in dsSPQuyetToanNoTonDV">
+                                        <td class="text-center">{{$index + 1}}</td>
+                                        <td class="clhd">{{itemNoTonDV.SO_KH_DUOC_TRA_NO}}</td>
+                                        <td class="clhd">{{itemNoTonDV.TEN_SP}}</td>
+                                        <td class="text-right">{{itemNoTonDV.SL_TRA_NO}}</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-buttun-ct mt-4" style="width: 100%;">
+        <div class="main-action d-flex align-items-center flex-wrap">
+            <button class="btn-action-m bg-green" ng-disabled="disableKHDuyet" ng-click="btnTinhLoaiKHTuDong()">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+                <span>Lập kế hoạch tự động</span>
+            </button>
+
+            <button class="btn-action-m bg-green" ng-click="GiaiTrinhCapPhat()">
+                <i class="fa fa-folder-open" aria-hidden="true"></i>
+                <span>Giải trình cấp phát</span>
+            </button>
+
+            <button class="btn-action-m bg-green">
+                <i class="fa fa-folder-open" aria-hidden="true"></i>
+                <span>Giải trình chi tiết</span>
+            </button>
+        </div>
+        <button class="absolute-list-changes" id="changes-list-btn">
+        </button>
+    </div>

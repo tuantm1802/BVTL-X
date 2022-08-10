@@ -1,0 +1,78 @@
+﻿<style>
+    .boxLoaiCapPhat label {
+        cursor: pointer;
+    }
+</style>
+<form id="formAddKeHoach" enctype="multipart/form-data" name="formAddKeHoach">
+    <div class="modal-header">
+        <h4 class="modal-title">Chọn loại kế hoạch</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-3 col-md-2 col-lg-2 padding-top-4">Kỳ: </label>
+                <div class="col-3 col-md-4  col-lg-4">
+                    <select ng-model="cbbKyNew" class="form-control"  ng-change="idx_ChangeKHTheoNam()">
+                        <option value="XH">Xuân hạ</option>
+                        <option value="TD">Thu đông</option>
+                        <option value="CN">Cả năm</option>
+                    </select>
+                </div>
+
+                <label class="col-3 col-md-2 col-lg-2 padding-top-4">Năm: </label>
+                <div class="col-3 col-md-4  col-lg-4">
+                    <select ng-model="cbbNamNew" class="form-control" ng-change="idx_ChangeKHTheoNam()">
+                        <option ng-repeat="item in ListNamNew" value="{{item.Id}}">{{item.Name}}</option>
+                    </select>
+                </div> 
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <div class="col-12 col-md-2 col-lg-2">
+                    <label>Kế hoạch: <span class="color-red">*</span> </label>
+                </div>
+                <div class="col-12 col-md-10 col-lg-10">
+                    <select ng-model="cbbKeHoach" ng-options="kh as kh.name for kh in DsKeHoach"  ng-change="CP_ChangeKeHoach()" class="form-control">
+                        {{cbbKeHoach.code}} {{cbbKeHoach.name}}
+                    </select> 
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" ng-show="showloaiTC">
+            <div class="form-group row">
+                <div class="col-12 col-md-2 col-lg-2">
+                    <label>Loại KH: <span class="color-red">*</span> </label>
+                </div>
+                <div class="col-12 col-md-10 col-lg-10">
+                    <select ng-model="cbbLoaiKeHoach" ng-options="lkh as lkh.name for lkh in DsLoaiKeHoach" ng-change="CP_ChangeLoaiKeHoach()" class="form-control">
+                        {{cbbLoaiKeHoach.code}} {{cbbLoaiKeHoach.name}}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <div class="col-12 col-md-2 col-lg-2">
+                    <label>Lý do cấp: <span class="color-red">*</span> </label>
+                </div>
+                <div class="col-12 col-md-10 col-lg-10">
+                    <textarea type="text" ng-model="txtarLyDoCap" class="form-control-area" rows="3" />
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+    <div class="modal-footer main-action">
+        <button type="button" class="btn-action-m bg-green cl-3" ng-click="CP_LuuKHCapPhat()">
+            <i class="fa fa-check-square-o" aria-hidden="true"></i>   <span>Chọn</span>
+        </button>
+        <button type="button" class="btn-action-m bg-orange cl-3" ng-click="cancel()">
+            <i class="fa fa-times" aria-hidden="true"></i>    <span> Đóng</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,30 @@
+﻿
+<div class="col-sm-12">
+    <!-- tabs -->
+    <div class="tabbable" style="margin-right:10px">
+        <div class="content-system">
+            <div class="tabs-left">
+                <ul class="nav nav-tabs nav-tabs-box mr-0 no-top-border">
+                    <li class="nav-item" ng-click="khoTonKhoSPGetList()">
+                        <a class="nav-link active" href="#khoTonKhoSP" data-toggle="tab">Thành phẩm</a>
+                    </li>
+                    <li class="nav-item" ng-click="khoTonKhoVTGetList()">
+                        <a class="nav-link" href="#khoTonKhoVT" data-toggle="tab">Vật tư chính</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="khoTonKhoSP">
+                    @Html.Partial("_Kho_TonKho_SanPham")
+                </div>
+                <div class="tab-pane" id="khoTonKhoVT">
+                    @Html.Partial("_Kho_TonKho_VatTu")
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /tabs -->
+
+</div>
+
+

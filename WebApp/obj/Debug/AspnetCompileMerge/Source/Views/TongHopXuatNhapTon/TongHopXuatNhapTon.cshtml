@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+
+}
+<style>
+    .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .form-control {
+        padding: 0px 0px;
+    }
+
+    #resizable {
+        height: 87vh
+    }
+
+    .table-responsive {
+        display: table
+    }
+</style>
+
+
+<div class="container-fluid d-flex cons-ac-system" style=" margin-top: 0px " ng-controller="TongHopXuatNhapTonController" ng-init="LoadThongTinUser('@userSession.Name','@userSession.Appcode','@userSession.UnitId')">
+    @Html.Partial("~/Views/TongHopXuatNhapTon/HangDoiXuatNhapTon.cshtml")
+    <div class="content-system no-border pb-0">
+        <div class="fill-box-bread-crumb">
+            <h3 class="bread_crumb">
+                <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>  /  Quản lý kho  /   Tổng hợp xuất nhập tồn
+            </h3>
+        </div>
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+
+            <button class="btn-action-m bg-green">
+                <i class="fa fa-print" aria-hidden="true"></i> <span>In báo cáo</span>
+            </button>
+
+        </div>
+        <div class="row no-gutters" id="detail-info">
+            <div class="content-table mt-2 col-12 col-md-12 has-border sticky-top" id="right-table">
+                <table class="table-responsive table-hover result-point" style="background-color:honeydew">
+                    <thead class="point-table-head sticky-top">
+                        <tr>
+                            <th style="text-align:center" rowspan="2">Hàng hóa<i id="or_dv"></i></th>
+                            <th style="width:5%; text-align:center" rowspan="2">DVT<i id="or_nn"></i></th>
+                            <th style="width:15%;text-align:center " colspan="2">Dư đầu kỳ<i id="or_nn"></i></th>
+                            <th style="width:15%;text-align:center" colspan="2">Phát sinh tăng<i id="or_nn"></i></th>
+                            <th style="width:15%;text-align:center" colspan="2">Phát sinh giảm<i id="or_ng"></i></th>
+                            <th style="width:15%;text-align:center" colspan="2">Dư cuối kỳ<i id="or_ng"></i></th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:center">Số lượng <i id="or_nn"></i></th>
+                            <th style="text-align:center">Số tiền<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số lượng<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số tiền<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số lượng<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số tiền<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số lượng<i id="or_nn"></i></th>
+                            <th style="text-align:center">Số tiền<i id="or_nn"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color:white">
+                        <tr ng-repeat="item in dsTongHop">
+                            <td>
+                                <select class="form-control" ng-model="item.ID_HANG" ng-options="option.ID_HANG_HOA as option.MA_HANG_HOA+' - '+option.TEN_HANG_HOA for option in hanghoa" disabled></select>
+                            </td>
+                            <td><input type="text" class="form-control" ng-model="item.DVT" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.SL_DU_DAU_KY" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.ST_DU_DAU_KY" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.TONG_SL_TANG" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.TONG_ST_TANG" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.TONG_SL_GIAM" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.TONG_ST_GIAM" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.SL_DU_CUOI_KY" disabled></td>
+                            <td><input type="text" class="form-control" ng-model="item.ST_DU_CUOI_KY" disabled></td>
+                        </tr>
+                    </tbody>
+                </table>
+                @*<div class="row content-table pull-right">
+                    <div class="pages-switch">
+                        <ul class="pagination pagination-sm m-0 float-right no-margin" uib-pagination total-items="SoLuongKetQua" items-per-page=10 ng-model="currentPage" ng-change="TimKiem(currentPage)" max-size=3 boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                    </div>
+                </div>*@
+            </div>
+            
+        </div>
+
+    </div>
+@section scripts{
+    <script src="~/app/Controller/Kho/TongHopXuatNhapTonController.js"></script>
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("active");
+            if ($("#img-toggle").hasClass("img-normal")) {
+                $("#img-toggle").removeClass("img-normal").addClass("img-180-rotate");
+            }
+            else if ($("#img-toggle").hasClass("img-180-rotate")) {
+                $("#img-toggle").removeClass("img-180-rotate").addClass("img-normal");
+            }
+        });
+    </script>
+}

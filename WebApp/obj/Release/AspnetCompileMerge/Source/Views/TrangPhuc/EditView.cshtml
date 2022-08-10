@@ -1,0 +1,117 @@
+﻿<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Cập nhập dữ liệu</h5>
+    </div>
+    <div class="modal-body">
+        <div class="form-infor has-border p-3">
+            <form class="row no-gutters">
+                <div class="col-12 col-md-4" ng-class="model.requiredMaH55 ? 'app-error': ''">
+                    <label for="">Mã hàng</label>
+                    <input class="form-control" type="text" placeholder="Nhập mã H55" ng-model="model.MA_H55" />
+                    <span ng-show="model.requiredMaH55" class="error">Mã không được để trống</span>
+                </div>
+
+                <div class="col-12 col-md-8" ng-class="model.requiredTenSP ? 'app-error': ''">
+                    <label for="">Tên trang phục<span>*</span></label>
+                    <input class="form-control" type="text" placeholder="Nhập tên trang phục" ng-model="model.TEN_SP" />
+                    <span ng-show="model.requiredTenSP" class="error">Tên trang phục không được để trống</span>
+                </div>
+
+                @*<div class="col-12 col-md-4">
+            <label for="">Trợ giá<span>%</span></label>
+            <input class="form-control" type="text" placeholder="Nhập trợ giá" ng-model="model.TRO_GIA" />
+        </div>*@
+
+                <div class="col-12 col-md-4" ng-class="model.requiredHam ? 'app-error': ''">
+                    <label for="">Loại hàm</label>
+                    <select ng-disabled="isDisabled" class="form" ng-model="model.LOAI_HAM"
+                            ng-options="x.id as x.text for x in listHam">
+                        <option value="">Chung</option>
+                    </select>
+                    <span ng-show="model.requiredHam" class="error">Loại hàm không được để trống</span>
+                </div>
+
+                <div class="col-12 col-md-4" ng-class="model.requiredCapBac ? 'app-error': ''">
+                    <label for="">Cấp bậc</label>
+                    <select ng-disabled="isDisabled" select2 ng-model="model.CAP_BAC_ID"
+                            ng-options="x.ID as x.TEN_CB for x in dataCapBac">
+                        <option value="">Chọn cấp bậc</option>
+                    </select>
+                    <span ng-show="model.requiredCapBac" class="error">Cấp bậc không được để trống</span>
+                </div>
+                <div class="col-12 col-md-4" ng-class="model.requiredSex ? 'app-error': ''">
+                    <label for="">Giới tính</label>
+                    <select ng-disabled="isDisabled" select2 ng-model="model.GIOI_TINH"
+                            ng-options="x.id as x.text for x in listGioiTinh">
+                        <option value="">-- Chọn giới tính --</option>
+                    </select>
+                    <span ng-show="model.requiredSex" class="error">Giới tính không được để trống</span>
+                </div>
+                <div class="col-12 col-md-4" ng-class="model.requiredDvt ? 'app-error': ''">
+                    <label for="">Đơn vị tính: <span>*</span></label>
+                    <select ng-disabled="isDisabled" select2 ng-model="model.DVT_ID"
+                            ng-options="x.ID as x.TEN_DVT for x in listdvt"></select>
+                    <span ng-show="model.requiredDvt" class="error">Đơn vị tính không được để trống</span>
+                </div>
+                <div class="col-12 col-md-4" ng-class="model.requiredNgayHuy ? 'app-error': ''">
+                    <label>Ngày hết hiệu lực</label>
+                    <div class="input-group">
+                        <input class="form-control" ui-datepicker data-date-format="dd/mm/yyyy"
+                               ng-model="model.NGAY_HUY_TEXT" type="text" />
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar bigger-110"></i>
+                        </span>
+                    </div>
+                    <span ng-show="model.requiredDvt" class="error">Bạn chưa chọn ngày hết hạn sản phẩm</span>
+                </div>
+                <div class="col-12 col-md-6 ">
+                    <label for="">Nhóm trang phục: </label>
+                    <select select2 ng-model="model.NHOM_SP_ID"
+                            ng-options="x.ID as x.TEN_NHOM_SP for x in lstNhomTrangPhuc"></select>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label for="">Trang phục cha: </label>
+                    <select select2 ng-model="model.edit_CHA_ID"
+                            ng-options="x.edit_CHA_ID as x.TEN_SP for x in dataSpCha">
+                        <option value="">-- Chọn trang phục cha --</option>
+                    </select>
+                </div>
+                @*<div class="col-12 col-md-2">
+                    <label for="">Có cỡ số</label>
+                    <input class="form-control" type="checkbox" ng-model="model.ICS"
+                           ng-disabled="model.IMD||model.IKHAC">
+                </div>*@
+                <div class="col-12 col-md-2">
+                    <label for="">May đo:</label>
+                    <input class="form-control" type="checkbox" ng-model="model.IMD"/>
+                </div>
+                @*<div class="col-12 col-md-2">
+                    <label for="">Khác</label>
+                    <input class="form-control" type="checkbox" ng-model="model.IKHAC"
+                           ng-disabled="model.ICS||model.IMD">
+                </div>*@
+                <div class="col-12 col-md-2">
+                    <label for="">Nhận tiền:</label>
+                    <input ng-disabled="isDisabled" class="form-control" type="checkbox" ng-model="model.INT" />
+                </div>
+                <div class="col-12 col-md-2">
+                    <label for="">Nhận hiện vật:</label>
+                    <input ng-disabled="isDisabled" class="form-control" type="checkbox" ng-model="model.ITP" />
+                </div>
+                <div ng-class="model.requiredChooseINTOrITP ? 'app-error': ''">
+                    <span ng-show="model.requiredChooseINTOrITP" class="error">Bạn phải chọn tối thiểu nhận tiền hoặc nhận hiện vật</span>
+                </div>
+                <div class="col-12">
+                    <label for="">Mô tả: </label>
+                    <input class="form-control" type="text" placeholder="Nhập mô tả" ng-model="model.MO_TA" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn-secondary bg-green" ng-click="save()" ng-show="RoleBtnSave">Lưu lại</button>
+        <button type="button" class="btn-secondary bg-green" ng-click="hiden()">Hủy thay đổi</button>
+        <button type="button" class="btn-secondary bg-red" ng-click="cancel()" data-bs-dismiss="modal">Đóng</button>
+    </div>
+
+</div>

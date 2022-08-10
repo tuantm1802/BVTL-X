@@ -1,0 +1,59 @@
+﻿
+<div class="main-action pb-2">
+    <div class="d-flex align-items-center flex-wrap mt-2 justify-content-between">
+        <div class="d-flex">
+            <button class="btn-action-m" data-toggle="modal" data-target="#modalAddHopDong"
+                    ng-click="openAddHDModel()" ng-show="luuHopDong">
+                <img src="~/App_Assets/images/icon_add.svg" alt="">
+                <span>Thêm mới</span>
+            </button>
+            <button class="btn-action-m" ng-click="removeHopDong()" ng-show="xoaHopDong">
+                <img src="~/App_Assets/images/icon_del.svg" alt="">
+                <span>Xoá</span>
+            </button>
+        </div>
+        <button class="btn-action-m" data-toggle="modal" data-target="#modalSearch">
+            <img src="~/App_Assets/images/search_icon.svg" alt="">
+            <span>Tìm kiếm</span>
+        </button>
+    </div>
+</div>
+
+<div class="main-action pb-2 d-flex justify-content-between">
+    <label for="" class="mr-3">Năm</label>
+    <select ui-select2 ng-model="hdPaging.namKP"
+            name="NAM_KP" class="form-control" ng-options="item.key as item.value for item in listNamKinhPhi"
+            ng-change="getDanhSachHopDong()"></select>
+</div>
+
+<div class="main-action pb-2">
+    <div class="d-flex align-items-center flex-wrap mt-2">
+        <input class="form-control" ng-model="hdPaging.timKiem" placeholder="Nội dung tìm kiếm" my-enter="getDanhSachHopDong()"/>
+    </div>
+</div>
+<div class="content-table">
+    <table class="table-responsive table-hover result-point">
+        <thead class="point-table-head">
+            <tr>
+                <th class="text-center balance">Số HĐ</th>
+                <th class="text-center balance">Tên HĐ</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="itemCT in hdHopDong" class="tbody-hover">
+            <tr><td colspan="2" style="background-color:#38a36b; color:white;">{{itemCT.TEN_CONG_TY}}</td></tr>
+            <tr style="cursor:pointer" ng-repeat="item in itemCT.HD_HOP_DONGS" ng-click="viewDetailHD(item, true)" ng-class="{activerow:item.ID_HOP_DONG==selectedRow}">
+                <td class="clhd">{{item.SO_HD}}</td>
+                <td class="balance">{{item.TEN_HD}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="content-table pull-right">
+        <div class="pages-switch">
+            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="hdPaging.totalRecord"
+                items-per-page="hdPaging.pageSize" ng-model="hdPaging.pageIndex" ng-change="getDanhSachHopDong()"
+                max-size="hdPaging.maxSize" class="pagination-sm" boundary-links="true"
+                rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿
+<div class="modal fade" id="AddCHSPDinhKem">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Cấu hình sản phẩm đính kèm</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row no-gutters">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <label for="">Mô tả: </label>
+                        <input type="text" ng-model="TC_SO_QUYET_DINH" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="TC_LuuTieuChuan()">
+                        <img src="~/App_Assets/images/d_save.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                        <span>Lưu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/d_close.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

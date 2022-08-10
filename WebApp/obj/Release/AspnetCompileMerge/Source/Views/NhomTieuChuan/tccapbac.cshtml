@@ -1,0 +1,42 @@
+﻿<div style="width:600px;">
+    <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Tiêu chuẩn cấp bậc</h4>
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">
+                <img src="~/App_Assets/images/close.svg" alt="">
+            </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body sl-row-1">
+            <div class="function-box">
+                <div class="accordion js-accordion">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeNhomCapBac" class="ztree"></ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <div class="main-action d-flex flex-wrap">
+                <button class="btn-action-m cl-3" ng-click="submit()">
+                    <img src="/App_Assets/images/d_save.svg" alt="" class="exsit">
+                    <img src="/App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                    <span>Lưu</span>
+                </button>
+                <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                    <img src="~/App_Assets/images/d_cancel.svg" alt="" class="exsit">
+                    <img src="~/App_Assets/images/ic_cancel_light.svg" alt="" class="hover_m">
+                    <span>Đóng</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+

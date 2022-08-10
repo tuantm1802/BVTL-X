@@ -1,0 +1,182 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Thêm mới người dùng</h4>
+    <a href="#" data-action="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+        <img src="~/App_Assets/images/close.svg" alt="">
+    </a>
+</div>
+<div class="modal-body">
+    <div class="bootbox-body">
+        <form class="bootbox-form form-infor" id="formSubmit" autocomplete="off">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tên truy cập (<span style="color:red">*</span>)</label>
+                                <input type="text" class="form-control" ng-model="model.LOGIN_NAME" name="LOGIN_NAME" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="requiredInput">Đơn vị (<span style="color:red">*</span>)</label>
+                                <select class="form-control" ng-model="model.UNIT_ID" ui-select2 name="UNIT_ID" required ng-change="ChangeUnit()" ng-options="item.UNIT_ID as item.UNIT_NAME for item in ListUnit"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mật khẩu (<span style="color:red">*</span>)</label>
+                                <input type="password" id="PASSWORD-ADD" class="form-control" ng-model="model.PASSWORD" name="PASSWORD" autocomplete="new-password" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mật khẩu nhắc lại (<span style="color:red">*</span>)</label>
+                                <input type="password" class="form-control" ng-model="model.RePASSWORD" name="RePASSWORD" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Họ và tên (<span style="color:red">*</span>)</label>
+                                <input type="text" class="form-control" ng-model="model.FULL_NAME" name="FULL_NAME" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input type="text" maxlength="10" name="TEL_NO" class="form-control" ng-model="model.TEL_NO">
+                                <span ng-show="formDemo.Phone.$error.pattern">Hãy nhập số điện thoại đúng định dạng!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="requiredInput">Nhóm quyền (<span style="color:red">*</span>)</label>
+                                <select class="form-control" ng-model="ListRole" multiple ui-select2 onchange="$(this).valid()" name="ListRole" required ng-options="item.ID as item.Name for item in ListUserGroup"></select>
+                                <label id="ListRole-error" class="error" for="ListRole" style="display:none;margin-top: 2px;">Hãy chọn nhóm quyền</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label>Nhóm người dùng</label>
+
+                                    <select class="form-control select2" select2 ng-model="model.USER_GROUP" ng-init="model.USER_GROUP='B'" name="USER_GROUP" required>
+                                        <option value="A">Quản trị</option>
+                                        <option value="B">Nghiệp vụ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-md-3">
+            <div class="form-group">
+                <label>Hiệu lực từ ngày</label>
+                <div class="input-group date" data-date-format="dd/mm/yyyy">
+                    <input type="text" ui-datepicker value="" style="width: 150px;" class="form-control" ng-model="model.START_DATE">
+                    <span class="input-group-addon"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Hiệu lực đến ngày</label>
+                <div class="input-group date" id="reEndDate" data-date-format="dd/mm/yyyy">
+                    <input type="text" ui-datepicker value="" style="width: 150px;" class="form-control" ng-model="model.END_DATE">
+                    <span class="input-group-addon"></span>
+                </div>
+            </div>
+        </div>*@
+                    </div>
+
+                </div>
+                <div class="col-md-2">
+                    <div>
+                        <label>&nbsp;</label>
+                        <img style="width:128px;" onclick="$('#file-input').trigger('click')" id="pathPhoto" src="~/Assest/dist/img/avatar.png" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="text" style="display: none" class="form-control" ng-model="model.IMG_PATH">
+                                <input type="file" class="custom-file-input hidden" onchange="angular.element(this).scope().SelectFile(event)" id="file-input">
+                                @*<label class="custom-file-label" for="customFile">Chọn tệp</label>*@
+                                @*<input type="file" ui-chose-file onchange="angular.element(this).scope().SelectFile(event)" class="custom-file-input" />*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Cấp</label>
+                        <select class="form-control select2" select2 ng-model="model.USER_CLASS" ng-init="model.USER_CLASS='E'" name="USER_CLASS" required>
+                            <option value="E" selected="selected">Cán bộ</option>
+                            <option value="L">Lãnh đạo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Ký duyệt</label>
+                        <input class="form-control" type="checkbox" ng-model="model.IS_APPROVER" name="IS_APPROVER" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" ng-show="IsShowChooseKho">
+                        <label>Kho</label>
+                        <select class="form-control" ng-model="model.ID_KHO" ui-select2 name="ID_KHO" required ng-options="item.ID as item.TEN_DON_VI for item in ListKho"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Chức danh</label>
+                        <input class="form-control" type="text" ng-model="model.TITLE_NAME" name="TITLE_NAME" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Cấp bậc</label>
+                        <select class="form-control" ng-model="model.LEVEL_ID" ui-select2 name="LEVEL_ID" required ng-options="item.ID as item.TEN_CB for item in ListLEVEL"></select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Trạng thái</label>
+                        <select class="form-control" ng-model="model.ENABLED_FLAG" select2 name="ENABLED_FLAG">
+                            <option value="Y">Sử dụng</option>
+                            <option value="N">Không sử dụng</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <textarea class="form-control" rows="2" ng-model="model.USER_DESC" name="USER_DESC"></textarea>
+                    </div>
+                </div>
+               
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="main-action d-flex flex-wrap">
+        <button class="btn-action-m" ng-click="submit()">
+            <img src="~/App_Assets/images/icon_save.svg" alt="">
+            <span>Lưu</span>
+        </button>
+        <button class="btn-action-cancel" data-dismiss="modal" ng-click="cancel()">
+            <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+            &nbsp;<span>Hủy</span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,175 @@
+﻿<div class="modal fade" id="modalAddNhapKhoBoNhapKho">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm mới</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-infor has-border p-3">
+                    <h4 class="form-title">
+                        Thông tin nhập kho
+                    </h4>
+
+                    <form class="row no-gutters" name="khoNhapKhoForm" ng-validate="khoNhapKhoValidation">
+                        <div class="col-12 col-md-4">
+                            <label for="">Số phiếu:</label>
+                            <input type="text" to-uppercase ng-model="khoNhapKhoModel.SO_PHIEU"
+                                   placeholder="Số phiếu sẽ tự sinh sau khi tạo thành công"
+                                   name="SO_PHIEU" class="form-control" readonly />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Ngày tháng:<span>*</span></label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control" ng-model="khoNhapKhoModel.NGAY_NHAP" name="NGAY_NHAP" horizontal="left"
+                                       value="" style="width: 100%" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Số phiếu tài chính:</label>
+                            <input type="text" ng-model="khoNhapKhoModel.SO_PHIEU_H55" name="SO_PHIEU_H55" class="form-control"
+                                   readonly>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Người giao: <span>*</span></label>
+                            <input type="text" ng-model="khoNhapKhoModel.NGUOI_GIAO" name="NGUOI_GIAO" class="form-control"
+                                   ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Nơi giao:</label>
+                            <input type="text" ng-model="khoNhapKhoModel.NOI_GIAO" name="NOI_GIAO" class="form-control" disabled>
+                        </div>
+                        <div class="col-12 col-md-4" ng-class="khoNhapKhoModel.ID_KHO_REQUIRED ? 'app-error': ''">
+                            <label for="">Nơi nhận: <span>*</span></label>
+                            <select ng-model="khoNhapKhoModel.ID_KHO" name="NOI_NHAN" ng-options="item.ID as item.TEN_DON_VI for item in listKho"
+                                    select2 class="form-control" style="width:100%" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                            </select>
+                            <span ng-show="khoNhapKhoModel.ID_KHO_REQUIRED" class="error font-weight-normal">Nơi nhận không được để trống</span>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Lãnh đạo:</label>
+                            <select ng-model="khoNhapKhoModel.LANH_DAO" name="LANH_DAO"
+                                    ng-options="item.USER_ID as item.FULL_NAME for item in listLanhDao" select2 class="form-control" style="width:100%"
+                                    ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4" ng-class="khoNhapKhoModel.PHUONG_THUC_VAN_CHUYEN_REQUIRED ? 'app-error': ''">
+                            <label for="">Phương thức vận chuyển:<span>*</span></label>
+                            <select ng-model="khoNhapKhoModel.PHUONG_THUC_VAN_CHUYEN" name="PHUONG_THUC_VAN_CHUYEN" 
+                                    ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'"
+                                    ng-options="item.FLEX_VALUE_ID as item.DESCRIPTION for item in listPhuongThucVanChuyen" select2 class="form-control" style="width:100%">
+                            </select>
+                            <span ng-show="khoNhapKhoModel.PHUONG_THUC_VAN_CHUYEN_REQUIRED" class="error">Phương thức vận chuyển không được để trống</span>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Mô tả:</label>
+                            <input type="text" ng-model="khoNhapKhoModel.MO_TA" name="moTa"
+                                   class="form-control" value="" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="main-action d-flex align-items-center justify-content-between flex-wrap pt-2 pb-2">
+                    <div class="d-flex align-items-center flex-wrap ct-w" ng-if="!isDisableHD">
+                        <button class="btn-action-m" ng-click="removeSP()" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                            <img src="~/App_Assets/images/icon_del.svg" alt="">
+                            <span>Xoá</span>
+                        </button>
+
+                        <button class="btn-action-m" ng-click="openDanhSachSP('HD','UPDATE_SL_TON')"
+                                ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'"
+                                data-toggle="modal" data-target="#modalDanhSachHD">
+                            <img src="~/App_Assets/images/icon_fl.svg" alt="">
+                            <span>Danh sách sản phẩm</span>
+                        </button>
+                    </div>
+                    <div ng-if="false">
+                        <div>
+                            <input type="checkbox" ng-model="khoNhapKhoModel.IS_SO_LUONG_TT" disabled />
+                            <span>Chốt số lượng thực tế</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-table">
+                    <table class="table table-bordered table-hover">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center">
+                                    <input type="checkbox" ng-model="listSPAddOpts.checkedAll"
+                                           class="ace" ng-change="checkAllSPClicked()">
+                                </th>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên hàng</th>
+                                <th class="text-center">ĐVT</th>
+                                <th class="text-center">SL còn lại</th>
+                                <th class="text-center">S.lượng KH</th>
+                                <th class="text-center">SL thực tế</th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr ng-repeat="item in listSPAdd">
+                                <td class="text-center">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </td>
+                                <td>{{$index + 1}}</td>
+                                <td>
+                                    {{item.TEN_SP}}
+                                </td>
+                                <td>{{item.DVT}}</td>
+                                <td>
+                                    {{item.SO_LUONG_CON_LAI}}
+                                </td>
+                                <td>
+                                    <input type="text" currency-input ng-class="item.SO_LUONG_KE_HOACH_ERROR? 'error': ''" 
+                                           ng-model="item.SO_LUONG_KE_HOACH" class="form-control" value="" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+                                    <div ng-show="item.SO_LUONG_KE_HOACH_ERROR">
+                                        <label class="error">Bạn chưa nhập số lượng</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" currency-input ng-model="item.SO_LUONG_THUC_TE" 
+                                           class="form-control" value="" ng-disabled="khoNhapKhoModel.CHUYEN_PHIEU == 'Y' || khoNhapKhoModel.TRANG_THAI !== 'I'">
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+
+                <h5 class="day-make">Ngày tạo: <i>@DateTime.Now.ToString("dd/MM/yyyy")</i></h5>
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="inPhieuNhapKho(khoNhapKhoModel.ID)" ng-disabled="!khoNhapKhoModel.ID">
+                        <img src="~/App_Assets/images/ic_print_light.svg" alt="">
+                        <span>In phiếu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" ng-click="khoNhapKhoCreateOrUpdate()" ng-if="!isDisableHD" ng-show="luuNhapKhoBo">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Lưu</span>
+                    </button>
+
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

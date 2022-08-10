@@ -1,0 +1,66 @@
+﻿<div class="modal fade" id="modalDinhMucVatTu">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Định mức vật tư</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="content-table">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center un-number">STT</th>
+                                <th class="text-center un-code">Mã H55</th>
+                                <th class="text-center un-name">Tên hàng</th>
+                                <th class="text-center un-dtv">ĐTV</th>
+                                <th class="text-center un-sl">SL KH</th>
+                                <th class="text-center un-dg">SL Cấp phát</th>
+                                <th class="text-center un-money">SL Tiêu hao</th>
+                                <th class="text-center un-money">SL ĐC</th>
+                                <th class="text-center un-money">SL Phải cấp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in listDinhMucVatTu">
+                                <td>{{$index + 1}}</td>
+                                <td>{{item.MA_H55}}</td>
+                                <td>{{item.TEN_SP}}</td>
+                                <td>{{item.DVT}}</td>
+                                <td class="text-right">{{item.SO_LUONG_KH | number}}</td>
+                                <td class="text-right">{{item.SO_LUONG_CP | number}}</td>
+                                <td class="text-right">{{item.SO_LUONG_TH | number}}</td>
+                                <td class="text-right">{{item.SO_LUONG_DC | number}}</td>
+                                <td class="text-right">{{item.SO_LUONG_XUAT | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+
+                <h5 class="day-make"> <i></i></h5>
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="inPhieuDinhMucVatTu()">
+                        <img src="~/App_Assets/images/ic_print_light.svg" alt="">
+                        <span>In phiếu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

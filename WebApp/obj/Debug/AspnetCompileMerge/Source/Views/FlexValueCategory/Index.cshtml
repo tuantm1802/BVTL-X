@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Danh mục Nhóm/Loại";
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Home/Index">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Danh mục Nhóm/Loại</li>
+    </ol>
+</nav>
+<div ng-controller="FlexValueCategoryController">
+    <main>
+        <div class="container-fluid d-flex cons-ac-system">
+            <div class="row  no-gutters w-100">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12" style="padding-left:0px;padding-right:2px;height:100%;">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 col-md-10 col-lg-10">
+
+                        </div>
+                        <div class="col-12 col-sm-2 col-md-2 col-lg-2">
+                            <div class="main-action d-flex align-items-center flex-wrap">
+                                <div class="d-flex align-items-center flex-wrap">
+                                </div>
+                                @if (userSession.UserGroup == "A")
+                                {
+                                    <button class="btn-action-m" ng-show="RoleBtnCreate == true && RoleViewDataByFLS == false" ng-click="add()" title="Thêm mới">
+                                        <img src="~/App_Assets/images/icon_add.svg" alt="">
+                                        Thêm mới
+                                    </button>
+                                }
+
+                                <button class="btn-action-m" ng-show="RoleBtnSearch == true" ng-click="Refesh()" title="Làm mới">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    Làm mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                            <input type="number" ng-model="modelSearch.pageSize" hidden />
+                            <form class="form-horizontal" role="form">
+                                <div class="row">
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label>Danh mục</label>
+                                        <select class="form-control" ng-model="modelSearch.FLEX_VALUE_SET_ID" ng-change="ChangeFlexValueSet()" ui-select2 name="FLEX_VALUE_SET_ID" ng-options="item.FLEX_VALUE_SET_ID as item.DESCRIPTION for item in ListFlexValueSet">
+                                        </select>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-6" ng-repeat="item in ListColumn" ng-if="item.SHOW_ON_SEARCHING == 'Y'">
+                                        <label ng-if="item.CONTROL_TYPE =='checkbox'" style="float:left;padding-top:28px;">{{item.END_USER_COLUMN_NAME}}</label>
+                                        <label ng-if="item.CONTROL_TYPE !='checkbox'">{{item.END_USER_COLUMN_NAME}}</label>
+                                        <input class="form-control inputCheckBox" style="float:left; width:100px;margin-top: 25px;" ng-if="item.CONTROL_NAME == 'input' && item.CONTROL_TYPE =='checkbox'" type="{{item.CONTROL_TYPE}}" ng-model="modelSearch[item.FLEX_COLUMN_NAME]" />
+                                        <input class="form-control" ng-if="item.CONTROL_NAME == 'input' && item.CONTROL_TYPE !='checkbox'" type="{{item.CONTROL_TYPE}}" ng-model="modelSearch[item.FLEX_COLUMN_NAME]" />
+
+                                        <select class="form-control" ng-if="item.CONTROL_NAME == 'select'" ng-model="modelSearch[item.FLEX_COLUMN_NAME]" ng-options="option.Value as option.Name for option in item.Options"></select>
+                                        <textarea class="form-control" rows="2" ng-if="item.CONTROL_NAME == 'textarea'" ng-model="modelSearch[item.FLEX_COLUMN_NAME]"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 5px;">
+                                    <div class="col-10 col-sm-10 col-md-10 col-lg-10">
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2 col-lg-2">
+                                        <div class="main-action d-flex align-items-center flex-wrap">
+                                            <div class="d-flex align-items-center flex-wrap">
+                                            </div>
+                                            <button class="btn-action-m" ng-show="RoleBtnSearch == true" ng-click="LoadPage()" title="Làm mới">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                                Tìm kiếm
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="content-table" style="height:400px; overflow-y:scroll">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th ng-repeat="item in ListColumn" ng-if="item.SHOW_ON_LIST == 'Y'" class="sort sorting center" ng-click="Sort($event, item.FLEX_COLUMN_NAME)">{{item.END_USER_COLUMN_NAME}} </th>
+                                    <th style="        width: 7%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in ListData" ng-class="{activerow:$index==selectedRow}">
+                                    <td style="text-align: left; " ng-repeat="itemColumn in ListColumn" ng-if="itemColumn.SHOW_ON_LIST == 'Y'">
+                                        <span ng-if="(itemColumn.CONTROL_NAME == 'input' && itemColumn.CONTROL_TYPE !='checkbox') || itemColumn.CONTROL_NAME == 'textarea'">{{GetValue(itemColumn.FLEX_COLUMN_NAME, item)}} </span>
+                                        <div style="width:100%; text-align:center !important;" ng-if="itemColumn.CONTROL_NAME == 'input' && itemColumn.CONTROL_TYPE =='checkbox'">
+                                            <input style="width: 20px;" ng-checked="((item[itemColumn.FLEX_COLUMN_NAME] == 'Y' && itemColumn.FLEX_COL_DATA_TYPE =='char') || item[itemColumn.FLEX_COLUMN_NAME] == true)" disabled  type="checkbox" ng-model="item[itemColumn.FLEX_COLUMN_NAME]" />
+                                        </div>
+                                        <span ng-if="itemColumn.CONTROL_NAME == 'select' && item[itemColumn.FLEX_COLUMN_NAME].toString() == option.Value" ng-repeat="option in itemColumn.Options">{{option.Name}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (userSession.UserGroup == "A")
+                                        {
+                                            <div class="main-action d-flex align-items-center flex-wrap" ng-show="CheckShowEditDelete(item)">
+                                                <button class="btn-action-m " ng-show="RoleBtnUpdate == true && CheckShowBtnEdit(item)" ng-click="edit(item.FLEX_VALUE_CATEGORY_ID)" title="Sửa">
+                                                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                                                </button>
+                                                <button class="btn-action-delete" ng-show="RoleBtnDelete == true" ng-click="delete(item.FLEX_VALUE_CATEGORY_ID, item.DESCRIPTION)" title="Xoá">
+                                                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                                </button>
+                                            </div>
+                                        }
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row" style="width:100%;">
+                        <div class="col-sm-12">
+                            <div class="row content-table pull-right">
+                                <div class="pages-switch">
+                                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+
+@section Scripts{
+    <script src="~/app/Controller/FlexValueCategoryController.js"></script>
+    <script src="~/Content/js/jquery.ztree.core.js"></script>
+    <script src="~/Content/js/jquery.ztree.excheck.js"></script>
+}

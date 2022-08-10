@@ -1,0 +1,235 @@
+﻿
+@{
+    ViewBag.Title = "Quân số chuyển đổi lực lượng trong kỳ";
+}
+    <main ng-controller="QSChuyenDoiLLTrongKyController" style="padding-top: 20px;">
+        <div class="container-fluid d-flex cons-ac-system">
+            <div class="action-system pd-two ui-widget-content" id="resizable">
+                <button id="btn-changes-s-nav">
+                    <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+                </button>
+
+                <div class="fill-box">
+                    <h3 class="title-fill">
+                        Đơn vị
+                    </h3>
+                </div>
+
+                <div class="container">
+                    <div class="main-action pt-3">
+                        <div class="form-search w-100">
+                            <input type="text" placeholder="Tìm kiếm">
+                            <button>
+                                <img src="../App_Assets/images/search_icon.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="function-box">
+                        <div class="ztreeRoleBackground left" style="width:100%;">
+                            <ul id="treeRole" class="ztree"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="content-system no-border pb-0" ng-show="IsShowRight">
+                <div class="form-infor has-border p-3 firts-to-h" style="padding-bottom: 5px !important;">
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-6 col-lg-7">
+                            <label for="">Đơn vị</label>
+                            <input type="text" class="form-control" placeholder="{{TEN_DON_VI}}" disabled>
+                        </div>
+
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <label for="">Năm</label>
+                            <select ng-model="NAM" class="form-control">
+                                <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label for="">Kỳ</label>
+                            <select ng-model="KY" class="form-control">
+                                <option value="XH">Xuân hạ</option>
+                                <option value="TD">Thu đông</option>
+                                <option value="CN">Cả năm</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="nav-box spe-height">
+                    <div class="nav-tabs-box">
+                        <ul class="nav nav-tabs tab-main" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#cb-cong-tac" role="tab" title="Chuyển đổi lực lượng">Chuyển đổi lực lượng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cb-cho-huu" role="tab" title="Chuyển đổi lực lượng (nội bộ)">Chuyển đổi lực lượng (nội bộ)</a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div class="container-fluid sl-1-row">
+                        <div class="tab-content mt-3" id="myTabContent">
+                            <div class="tab-pane fade show active" id="cb-cong-tac" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="nav-box spe-height">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="row no-gutters">
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Lực lượng: </label>
+                                                    <input type="text" id="luc-luong" ng-change="ChangeLucLuong()" ng-model="lucLuong" placeholder="Lực lượng" autocomplete="on" />
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Nhóm cấp bậc: </label>
+                                                    <input type="text" id="nhom-cap-bac" ng-change="ChangeNhomCapBac()" ng-model="nhomCapBac" placeholder="Nhóm cấp bậc" autocomplete="on" />
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Ngày QĐ: </label>
+                                                    <input class="date-picker form-control" ui-datepicker ng-model="model.START_DATE" type="text" data-date-format="dd-mm-yyyy" />
+                                                </div>
+                                                <div class="main-action">
+                                                    <label for=""> </label>
+                                                    <div class="form-search w-100" style="height: 32px;">
+                                                        <button ng-click="SearhData()">
+                                                            <img src="../App_Assets/images/search_icon.svg" alt="">
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="content-table">
+                                        <table class="table-responsive table-hover result-point" style="margin-bottom: 0px;">
+                                            <thead class="point-table-head">
+                                                <tr>
+                                                    <th class="center" style="width: 1%;">
+                                                        <label class="pos-rel">
+                                                            <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                                            <span class="lbl"></span>
+                                                        </label>
+                                                    </th>
+                                                    <th class="center">TT</th>
+                                                    <th class="center">Ngày quyết định</th>
+                                                    <th class="center">Lực lượng chuyển đến</th>
+                                                    <th class="center">Cấp bậc</th>
+                                                    <th class="center">Loại hàm </th>
+                                                    <th class="center">Nam </th>
+                                                    <th class="center">Nữ </th>
+                                                    <th class="center">Tổng cộng </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in ListData">
+                                                    <td class="center">
+                                                        <label class="pos-rel">
+                                                            <input type="checkbox" class="ace" ng-model="item.Selected" value="{{item.ID}}" />
+                                                            <span class="lbl"></span>
+                                                        </label>
+                                                    </td>
+                                                    <td class="text-center">{{$index + 1}}</td>
+                                                    <td class="tex-center">{{fdate(item.NGAY_TAO)}}</td>
+                                                    <td>{{item.TEN_LL}}</td>
+                                                    <td class="text-center">{{item.TEN_CB}}</td>
+                                                    <td class="text-center">{{item.LOAI_HAM}}</td>
+                                                    <td class="text-right">{{item.SL_NAM}}</td>
+                                                    <td class="text-right">{{item.SL_NU}}</td>
+                                                    <td class="text-right">{{item.TONG}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="cb-cho-huu" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="nav-box spe-height">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="row no-gutters">
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Lực lượng: </label>
+                                                    <input type="text" id="luc-luong-tab2" ng-change="ChangeLucLuong()" ng-model="lucLuong" placeholder="Lực lượng" autocomplete="on" />
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Nhóm cấp bậc: </label>
+                                                    <input type="text" id="nhom-cap-bac-tab2" ng-change="ChangeNhomCapBac()" ng-model="nhomCapBac" placeholder="Nhóm cấp bậc" autocomplete="on" />
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <label for="">Ngày QĐ: </label>
+                                                    <input class="date-picker form-control" ui-datepicker ng-model="model.START_DATE" type="text" data-date-format="dd-mm-yyyy" />
+                                                </div>
+                                                <div class="main-action">
+                                                    <label for=""> </label>
+                                                    <div class="form-search w-100" style="height: 32px;">
+                                                        <button ng-click="SearhData()">
+                                                            <img src="../App_Assets/images/search_icon.svg" alt="">
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="content-table">
+                                        <table class="table-responsive table-hover result-point" style="margin-bottom: 0px;">
+                                            <thead class="point-table-head">
+                                                <tr>
+                                                    <th class="center" style="width: 1%;">
+                                                        <label class="pos-rel">
+                                                            <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                                            <span class="lbl"></span>
+                                                        </label>
+                                                    </th>
+                                                    <th class="center">TT</th>
+                                                    <th class="center">Ngày quyết định</th>
+                                                    <th class="center">Lực lượng chuyển đến</th>
+                                                    <th class="center">Cấp bậc</th>
+                                                    <th class="center">Loại hàm </th>
+                                                    <th class="center">Nam </th>
+                                                    <th class="center">Nữ </th>
+                                                    <th class="center">Tổng cộng </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in ListDataNB">
+                                                    <td class="center">
+                                                        <label class="pos-rel">
+                                                            <input type="checkbox" class="ace" ng-model="item.Selected" value="{{item.ID}}" />
+                                                            <span class="lbl"></span>
+                                                        </label>
+                                                    </td>
+                                                    <td class="text-center">{{$index + 1}}</td>
+                                                    <td class="tex-center">{{fdate(item.NGAY_TAO)}}</td>
+                                                    <td>{{item.TEN_LL}}</td>
+                                                    <td class="text-center">{{item.TEN_CB}}</td>
+                                                    <td class="text-center">{{item.LOAI_HAM}}</td>
+                                                    <td class="text-right">{{item.SL_NAM}}</td>
+                                                    <td class="text-right">{{item.SL_NU}}</td>
+                                                    <td class="text-right">{{item.TONG}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+@section scripts{
+    <script src="~/app/Controller/QuanSo/QSChuyenDoiLLTrongKyController.js"></script>
+}

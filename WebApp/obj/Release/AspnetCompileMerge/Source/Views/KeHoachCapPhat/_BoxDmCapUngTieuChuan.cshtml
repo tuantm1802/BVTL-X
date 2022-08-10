@@ -1,0 +1,89 @@
+﻿
+<form id="formAddFile" enctype="multipart/form-data" name="formAddFile">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Thông tin chi tiết</h4>
+        <button type="button" class="bootbox-close-button close" ng-click="cancel()">×</button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body">
+        <div class="content-system no-border pb-0" style="margin: 0">
+            <div class="form-infor has-border p-3 firts-to-h" style="margin-bottom: 5px !important;">
+                <div class="row no-gutters">
+                    <div class="col-12 col-md-6 col-lg-7">
+                        <label for="">Số quyết định</label>
+                        <input type="text" class="form-control" placeholder="{{ModelItem.SO_KH}}" disabled>
+                    </div>
+
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <label for="">Năm</label>
+                        <select ng-model="ModelItem.NAM" class="form-control" disabled>
+                            <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label for="">Kỳ</label>
+                        <select ng-model="ModelItem.KY" class="form-control" disabled>
+                            <option value="XH">Xuân hạ</option>
+                            <option value="TD">Thu đông</option>
+                            <option value="CN">Cả năm</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-8">
+                        <label for="">Người nhận hàng</label>
+                        <input type="text" class="form-control" placeholder=" {{ModelItem.NGUOI_PHU_TRACH}}" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-action d-flex flex-wrap" style="margin-bottom:5px">
+            <button class="btn-action-m bg-green" ng-click="btnThemMoiCUTC()">
+                <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới từng dòng</span>
+            </button>
+            <button class="btn-action-m bg-green" ng-click="btnThemMoiTheoDs()">
+                <i class="fa fa-list" aria-hidden="true"></i>  <span>Thêm theo danh sách</span>
+            </button>
+            <button class="btn-action-m bg-red">
+                <i class="fa fa-trash" aria-hidden="true"></i>    <span> Xóa </span>
+            </button>
+        </div>
+        <div class="content-table" style="max-height: calc(100vh - 390px); overflow: auto;">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th style="width: 5%;" class="text-center tb-ip"><input type="checkbox" ng-model="checkAll" ng-change="CheckAllCapUng()"></th>
+                        <th style="width: 70%;" class="text-center tb-clothes">Trang phục</th>
+                        <th style="width: 25%;" class="text-center tb-number">Số lượng</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    <tr ng-repeat="item in ListCapUngTC">
+                        <td class="text-left"><input type="checkbox" ng-model="item.checked"></td>
+                        <td class="text-left"><select class="form-control" ui-select2 ng-model="item.TrangPhuc" ng-options="item.ID as item.TEN_SP for item in listSanPhamModal"></select></td>
+                        <td class="text-right"><input class="form-control" type="number" ng-model="item.SoLuong" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer d-flex justify-content-between">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+
+            <button class="btn-action-m bg-green" ng-click="LuuCapUngTieuChuan()">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+            </button>
+            <button class="btn-action-m bg-green" ng-click="HuyThayDoi()">
+                <i class="fa fa-ban" aria-hidden="true"></i>    <span> Huỷ thay đổi</span>
+            </button> 
+            <button class="btn-action-m bg-orange" ng-click="cancel()">
+                <i class="fa fa-times" aria-hidden="true"></i>    <span> Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>
+

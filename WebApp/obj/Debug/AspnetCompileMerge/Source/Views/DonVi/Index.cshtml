@@ -1,0 +1,240 @@
+﻿
+
+@{
+    ViewBag.Title = "Đơn Vị";
+}
+<style>
+    .function-box {
+        height: calc(100vh - 320px);
+    }
+
+    .content-table {
+        height: calc(100vh - 410px);
+    }
+
+    .nav-box {
+        height: calc(100vh - 221px) !important;
+    }
+
+    .list-buttun-ct {
+        width: calc(100% - 20px);
+    }
+
+        .list-buttun-ct .main-action .btn-action-m {
+            margin-bottom: 10px;
+        }
+   
+</style>
+<div class="fill-box-bread-crumb">
+    <h3 class="bread_crumb">
+        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>/ Danh mục đơn vị
+    </h3>
+</div>
+<div ng-controller="DonViController" style="padding-top: 15px;">
+    <div class="container-fluid d-flex cons-ac-system" style="height: calc(100vh - 182px);">
+        @* Menu left *@
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Đơn vị
+                </h3>
+            </div>
+            <div class="container">
+                <div class="btn-group" data-toggle="buttons" style="padding-top:10px; font-size:14px;">
+                    <label class="btn btn-primaryMenu active form-check-label waves-effect waves-light" ng-click="nhomDV(1)">
+                        <input class="form-check-input" name="rdoDmDonVi" type="radio" checked="" autocomplete="off" value="1" style="color:transparent"> <i class="fa fa-users" aria-hidden="true"></i> Nhóm đơn vị
+                    </label>
+
+                    <label class="btn btn-primaryMenu form-check-label waves-effect waves-light" ng-click="nhomDV(2)">
+                        <input class="form-check-input" name="rdoDmDonVi" type="radio" autocomplete="off" style="color:transparent" value="2" /><i class="fa fa-map-marker" aria-hidden="true"></i>  Khu vực
+                    </label>
+                </div>
+                <div class="btn-group main-action d-flex pull-right" style="padding-top:10px; font-size:14px;">
+                    <button class="btn-action-m" ng-click="addDonVi()" ng-show="RoleBtnCreate">
+                        <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+                    </button>
+                    <button class="btn-action-m bg-red" ng-click="delete()" ng-show="RoleBtnDelete">
+                        <i class="fa fa-trash" aria-hidden="true"></i>  <span>Xóa</span>
+                    </button>
+
+                </div>
+
+                <div class="main-action pt-3">
+                    <div class="form-search w-100">
+                        <input type="text" placeholder="Tìm kiếm" @*ng-change="ChangeSearch()"*@ ng-model="searchDonVi">
+                        <button class="btn-action-m" style="color:white" ng-click="GetDonVi()" ng-show="RoleBtnSearch">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="function-box">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeDonVi" class="ztree"></ul>
+                    </div>
+                </div>
+
+
+            </div>
+
+            </div>
+        @*End Menu left*@
+
+
+    <div class="content-system no-border pb-0" ng-hide="showhideForm" style="overflow: hidden;background-color: #f5f5f5;">
+        
+
+        <div class="form-infor has-border p-3 firts-to-h" style="height: calc(100vh - 183px); overflow-y: auto; ">
+            <form name="formDonVi" action="">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Dữ liệu dùng chung</legend>
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Mã đơn vị <span style="color:red">*</span></label>
+                            <input type="text" ng-pattern="/^([a-zA-Z0-9]+)$/" to-uppercase autocomplete="off" class="form-control" ng-model="model.PHIEN_HIEU" name="MaDonVi">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Tên đơn vị <span style="color:red">*</span></label>
+                            <input type="text" class="form-control" autocomplete="off" ng-model="model.TEN_DON_VI" name="TEN_DON_VI">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Nhóm đơn vị <span style="color:red">*</span> </label>
+                            <select class="form-control" ng-model="model.NHOM_DON_VI_ID" ng-change="chengaNhom()" select2 name="NHOM_DON_VI_ID" ng-options="item.ID as item.TEN_NHOM_DV for item in ListNhomDonVi" style="width:100%;">
+                                <option value="">--Chọn nhóm đơn vị--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                            <label>Đơn vị cha</label>
+                            @*<select class="form-control" ng-model="model.DON_VI_CHA_ID" select2 name="DonViCha_ID" ng-options="item.ID as item.TEN_DON_VI for item in ListDonVi" style="width:100%;">
+                            <option value="">--Chọn đơn vị cha--</option>
+                        </select>*@
+                            <select class="form-control" ng-model="model.DON_VI_CHA_ID" select2 name="DonViCha_ID" ng-options="item.ID as item.TEN_DON_VI for item in ListDonVi" style="width:100%;">
+                                <option value="">--Chọn đơn vị cha--</option>
+                                <option ng-repeat="item in ListDonVi" value="{{item.ID}}">{{item.TEN_DON_VI}}</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Hiệu lực</label>
+                            <input type="checkbox" class="form-control" ng-model="model.HIEU_LUC" ng-true-value="'Y'" ng-false-value="'N'" name="HIEU_LUC">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Dữ liệu dùng riêng</legend>
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Khu vực</label>
+                            <select class="form-control" ng-model="model.KHU_VUC_ID" ng-change="chengaKV()" select2 name="KHU_VUC_ID" ng-options="item.ID as item.TEN_KHU_VUC for item in ListKhuVuc" style="width:100%;">
+                                <option value="">--Chọn Khu vực--</option>
+                            </select>
+
+                        </div>
+
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Mô tả</label>
+                            <input type="text" class="form-control" autocomplete="off" ng-model="model.MO_TA" name="MO_TA">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Kho ưu tiên 1</label>
+                            <select class="form-control" ng-model="model.KHO_DEFAULT1_ID" select2 name="KHO_DEFAULT1_ID" ng-options="item.ID as item.TEN_DON_VI for item in ListKho" style="width:100%;">
+                                <option value="">--Chọn kho ưu tiên 1--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Kho ưu tiên 2</label>
+                            <select class="form-control" ng-model="model.KHO_DEFAULT2_ID" select2 name="KHO_DEFAULT2_ID" ng-options="item.ID as item.TEN_DON_VI for item in ListKho" style="width:100%;">
+                                <option value="">--Chọn kho ưu tiên 2--</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Công ty ưu tiên 1</label>
+                            <select class="form-control" ng-model="model.CONG_TY_DEFAULT1_ID" select2 name="CONGTY_DEFAULT2_ID" ng-options="item.ID as item.TEN_CONG_TY for item in ListCongTy" style="width:100%;">
+                                <option value="">--Chọn công ty ưu tiên 1--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4" style="margin-bottom:10px;">
+                            <label>Công ty ưu tiên 2</label>
+                            <select class="form-control" ng-model="model.CONG_TY_DEFAULT2_ID" select2 name="CONGTY_DEFAULT2_ID" ng-options="item.ID as item.TEN_CONG_TY for item in ListCongTy" style="width:100%;">
+                                <option value="">--Chọn công ty ưu tiên 2--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Tên người nhận</label>
+                            <input type="text" class="form-control"  autocomplete="off"ng-model="model.CONTACT_NAME" name="CONTACT_NAME">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>SĐT</label>
+                            <input type="text" class="form-control" autocomplete="off" ng-pattern="/^([0-9]+)$/" ng-model="model.CONTACT_TEL" name="CONTACT_TEL">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Số CMT</label>
+                            <input type="text" class="form-control" autocomplete="off" @*ng-pattern="/^([-0-9]+)$/"*@ ng-model="model.CONTACT_ID" name="CONTACT_ID">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control" autocomplete="off" ng-model="model.CONTACT_ADDRESS" name="CONTACT_ADDRESS">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+
+                        @*<div class="col-12 col-md-4 col-lg-4">
+                <label>Sử dụng đơn vị</label>
+                <input type="checkbox" class="form-control" ng-disabled="DisabledHieuLuc_SuDung" ng-model="model.DV_KHONG_DUNG" ng-true-value="'Y'" ng-false-value="'N'" name="DV_KHONG_DUNG">
+            </div>*@
+
+                        <div class="col-12 col-md-4 col-lg-4">
+
+                        </div>
+                    </div>
+                </fieldset>
+
+            </form>
+            <div class="col-12 pt-1">
+
+                <div class="main-action d-flex pull-left">
+                    <button class="btn-action-m" ng-click="cancel()" ng-show="RoleBtnCancel">
+                        <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy thay đổi</span>
+                    </button>
+                    <button class="btn-action-m" ng-click="submit()" ng-show="RoleBtnSave">
+                        <i class="fa fa-save" aria-hidden="true"></i>   <span>Lưu lại</span>
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/DonViController.js"></script>
+    <script src="~/Content/js/jquery.ztree.core.js"></script>
+    <script src="~/Content/js/jquery.ztree.excheck.js"></script>
+}

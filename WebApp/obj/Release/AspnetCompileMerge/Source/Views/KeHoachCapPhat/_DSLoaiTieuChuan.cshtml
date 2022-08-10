@@ -1,0 +1,38 @@
+﻿<form id="formDmLoaiTC" enctype="multipart/form-data" name="formDmLoaiTC">
+    <div class="modal-header">
+        <h4 class="modal-title">Chọn tiêu chuẩn</h4>
+        <button type="button" class="bootbox-close-button close" ng-click="cancel()">×</button>
+    </div>
+    <div class="modal-body">
+        <div class="bootbox-body">
+            <div class="row" style="max-height:350px; overflow-y:scroll">
+                <div class="col-sm-12">
+                    <tree-grid show-checkbox="tree_Table_Checkbox"
+                               expand-level="3"
+                               body-defs="body_defs"
+                               tree-data="tree_data"
+                               expand-on="expanding_property"
+                               col-defs="col_defs"
+                               icon-leaf="v_treetable_docu"
+                               icon-expand="treetable_close"
+                               icon-collapse="treetable_open"
+                               event-change-checkbox="ChangeTreeTableCheckbox(item)"
+                               event-choose-row="ClickTreeTableRow(item)"></tree-grid> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+            <button class="btn-action-m bg-green" ng-click="LapKeHoachTuDong()">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                <span>Lập kế hoạch tự động</span>
+            </button>
+
+            <button class="btn-action-m bg-orange" ng-click="cancel()">
+                <i class="fa fa-times" aria-hidden="true"></i>    <span> Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,84 @@
+﻿
+<div class="bootbox modal fade bootbox-prompt main-action" id="modalDanhSachHD" tabindex="-1" role="dialog" aria-labelledby="modalDanhSachHD" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 500px; margin-top: 100px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body md-sc-c">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-center flex-wrap">
+                            <div class="main-action pt-3">
+                                <div class="form-search" style="width:100%">
+                                    <input id="txtSearch" ng-model="txtSearchSanPham" name="txtSearch" placeholder="Tìm kiếm..." aria-controls="example1" type="text" />
+                                    <button ng-click="searchSanPham()">
+                                        <img src="~/App_Assets/images/search_icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="content-table">
+                            <table id="simple-table" class="table-responsive table-hover result-point" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" ng-model="isCheckAllSPModal" class="ace" ng-change="changeCheckAllSPModal()" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </th>
+                                        <th class="center">STT</th>
+                                        <th class="center">Mã hàng</th>
+                                        <th class="center">Tên sản phẩm</th>
+                                        <th class="center">ĐVT</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr ng-repeat="item in listSanPhamModal">
+                                        <td class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" class="ace" ng-model="item.checked" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </td>
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{item.MA_H55}}</td>
+                                        <td>{{item.TEN_SP}}</td>
+                                        <td>{{item.TEN_DVT}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row">
+                        <div class="col-sm-12">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+
+                        </div>
+                    </div>*@
+            </div>
+            <div class="modal-footer">
+                <button class="btn-action-m cl-3" ng-click="chooseSanPham()">
+                    <img src="~/App_Assets/images/icon_save.svg" alt="">
+                    <span>Chọn</span>
+                </button>
+                <button class="btn-action-m cl-3" data-dismiss="modal">
+                    <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                    <span>Đóng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

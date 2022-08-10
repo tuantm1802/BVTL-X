@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "9uqSXYrtuZg3G92X4DhLaCI16uSfx/jnYthfPBBUuJ1UTIGN9IQyNKyQ3wxtrX6tSWUnIsiepP8nXvubXTg9eg==",
+  "success": true,
+  "projectFilePath": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\laibk\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512"
+  ],
+  "logs": []
+}

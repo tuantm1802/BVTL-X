@@ -1,0 +1,23 @@
+﻿iframe#chat-box-iframe {
+    position: absolute;
+    float: right;
+    height: calc(100% - 106px);
+    width: 45%;
+    z-index: 1000;
+    right: 0px;
+    top: 106px;
+}
+
+.chat-box-icon {
+    width: 60px;
+    height: 60px;
+    background-image: url(../Content/chat-box.png);
+    background-size: cover;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.hide-chat-box {
+    display: none;
+}

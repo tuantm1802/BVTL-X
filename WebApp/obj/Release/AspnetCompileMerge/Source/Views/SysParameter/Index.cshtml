@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Tham số";
+}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Home/Index">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Tham số</li>
+    </ol>
+</nav>
+<div ng-controller="SysParameterController">
+    <main>
+        <div class="container-fluid d-flex cons-ac-system">
+            <div class="row  no-gutters w-100">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12" style="padding-left:0px;padding-right:2px;height:100%;">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 col-md-10 col-lg-10">
+
+                        </div>
+                        <div class="col-12 col-sm-1 col-md-1 col-lg-1">
+                            <div class="main-action d-flex align-items-center flex-wrap">
+                                <div class="d-flex align-items-center flex-wrap">
+                                </div>
+                                <button class="btn-action-m" ng-show="RoleBtnSearch == true" ng-click="Refesh()" title="Làm mới">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    Làm mới
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-table" style="height:400px; overflow-y:scroll">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="text-center" style="width:5%;">STT </th>
+                                    <th style="width:10%;" class="text-center">Mã </th>
+                                    <th style="width:10%;" class="text-center" >Giá trị </th>
+                                    <th style="width:10%;" class="text-center" >Kiểu dữ liệu </th>
+                                    <th style="width:auto;" class="text-center" >Mô tả </th>
+                                    <th style="width:9%;" class="text-center" >Trạng thái</th>
+                                    <th class="text-center" style="width:7%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in ListSysParameter" ng-click="ViewDetail(item.PARAM_ID, $index)" ng-class="{activerow:$index==selectedRow}">
+                                    <td class="text-center">{{$index + 1}}</td>
+                                    <td class="text-left">{{item.PARAM_CODE}}</td>
+                                    <td class="text-left">{{item.PARAM_VALUE}}</td>
+                                    <td class="text-left">{{item.PARAM_VALUE_TYPE == 'STRING' ? 'Kiểu chữ' : 'Kiểu số'}}</td>
+                                    <td class="text-left">{{item.PARAM_DESC}}</td>
+                                    <td class="text-center">{{item.ENABLED_FLAG == 'Y' ? 'Sử dụng' : 'Không sử dụng'}}</td>
+                                    <td class="text-center">
+                                        <div class="main-action d-flex align-items-center flex-wrap">
+                                            <button class="btn-action-m " ng-click="edit(item.PARAM_ID)" @*ng-show="RoleBtnUpdate == true"*@ title="Sửa">
+                                                <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row" style="width:100%;">
+                        <div class="col-sm-12">
+                            <div class="row content-table pull-right">
+                                <div class="pages-switch">
+                                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/SysparameterController.js"></script>
+}

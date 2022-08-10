@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "Chốt quân số đầu kỳ";
+}
+
+<main ng-controller="QSTanBinhTrongKyController" style="padding-top: 20px;">
+    <div class="container-fluid d-flex cons-ac-system">
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Đơn vị
+                </h3>
+            </div>
+
+            <div class="container">
+                <div class="main-action pt-3">
+                    <div class="form-search w-100">
+                        <input type="text" placeholder="Tìm kiếm">
+                        <button>
+                            <img src="../App_Assets/images/search_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="function-box" style="height: calc(100vh - 235px);">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeRole" class="ztree"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-system no-border pb-0 ng-hide" ng-init="IsShowRight = false" ng-show="IsShowRight">
+            <div class="form-infor has-border p-3 firts-to-h" style="padding-bottom: 5px !important;">
+                <div class="row no-gutters">
+                    <div class="col-12 col-md-6 col-lg-7">
+                        <label for="">Đơn vị</label>
+                        <input type="text" class="form-control" placeholder="{{TEN_DON_VI}}" disabled>
+                    </div>
+
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <label for="">Năm</label>
+                        <select ng-model="NAM" class="form-control">
+                            <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label for="">Kỳ</label>
+                        <select ng-model="KY" class="form-control">
+                            <option value="XH">Xuân hạ</option>
+                            <option value="TD">Thu đông</option>
+                            <option value="CN">Cả năm</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="nav-box spe-height" style="padding-bottom: 0;">
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-infor row no-gutters">
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <div class="main-action d-flex align-items-center flex-wrap">
+                                    <button style="margin-top: 22px;margin-left: 10px;" class="btn-action-m ct-fix-lap" ng-click="AddTanBinhTrongKy()">
+                                        <img src="../App_Assets/images/icon_add.svg" alt="">
+                                        <span>Thêm mới</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3 mr-2">
+                                <label for="">Lực lượng: </label>
+                                <input type="text" id="luc-luong-index" ng-change="ChangeLucLuong()" ng-model="lucLuong" placeholder="Lực lượng" autocomplete="on" />
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3 mr-2">
+                                <label for="">Nhóm cấp bậc: </label>
+                                <input type="text" id="nhom-cap-bac-index" ng-change="ChangeNhomCapBac()" ng-model="nhomCapBac" placeholder="Nhóm cấp bậc" autocomplete="on" />
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <label for="">Ngày QĐ: </label>
+                                <div class="main-action" style="padding-top: 3px;">
+                                    <div class="main-action">
+                                        <div class="form-search" style="height: 32px;">
+                                            <input class="date-picker form-control" ui-datepicker ng-model="model.START_DATE" type="text" data-date-format="dd-mm-yyyy" />
+                                            <button class="btn-action-m" ng-click="SearhData()" style="height: 28px;margin-top: -12px;margin-left: 1px;">
+                                                <img src="../App_Assets/images/search_icon.svg" alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="container-fluid sl-1-row">
+                    <div class="content-table mt-2 row">
+                        <div class="col-12">
+                            <div id="jxl-qb-trong-ky" ui-jexel="" ng-model="JxlQSTanBinhTrKy" jexcel-init="JxlQSTanBinhTrKy" callback="TanBinhCallBack(data)"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="list-buttun-ct mt-3">
+                                <div class="main-action d-flex align-items-center flex-wrap">
+                                    <button class="btn-action-m cl-3" ng-click="HuyThayDoi()">
+                                        <span>Hủy thay đổi</span>
+                                    </button>
+
+                                    <button class="btn-action-m cl-3" ng-click="Save()">
+                                        <span>Lưu</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section scripts{
+    <script src="~/app/Controller/QuanSo/QSTanBinhTrongKyController.js"></script>
+}

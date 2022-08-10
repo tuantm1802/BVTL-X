@@ -1,0 +1,148 @@
+﻿<div class="modal" id="list_nhom_don_vi">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable b-width_1 ">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Chọn nhóm đơn vị</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class="form-infor has-border p-3">
+                    <div class="row no-gutters">
+                        <div class="col-12 col-md-7">
+                            <label for="">Phòng ban</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="{{TEN_PHONG_BAN}}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="main-action">
+                                <div class="form-search w-100">
+                                    <input type="text"
+                                           ng-model="searchInModal"
+                                           placeholder="Tìm kiếm"
+                                           class="form-control"
+                                           style="width:250px;margin-bottom:0px" />
+                                    <button class="btn-action-m form-control"
+                                            style="color:white;width:40px;margin-bottom:0px">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 none-padding">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">
+                                <label class="bold-label">Nhóm đơn vị chưa sử dụng</label>
+                                </legend>
+                                <div class="content-table" style="height:422px; overflow-y: scroll;">
+                                    <table class=" table-hover result-point" >
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th style="width:2%;" class="text-center">
+                                                    <input type="checkbox"
+                                                           ng-model="selectAllModal"
+                                                           ng-click="checkAllModal()" />
+                                                </th>
+                                                <th style="width:3%;">STT </th>
+                                                <th class="text-center">Tên nhóm đơn vị</th>
+                                                <th class="text-center">Loại nhóm đơn vị</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="background-color:white">
+                                            <tr ng-repeat="item in listAllNhomDonVi | filter : searchInModal">
+                                                <td class="text-center">
+                                                    <input type="checkbox"
+                                                           ng-model="item.Selected" />
+                                                </td>
+                                                <td class="text-center">
+                                                    {{$index +1}}
+                                                </td>
+                                                <td>
+                                                    {{item.TEN_NHOM_DV_PB}}
+                                                </td>
+                                                <td>
+                                                    {{item.LOAI_NHOM_DV_TEXT_PB}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="main-action d-flex pull-left p-3 bold-label">
+                                <button class="btn-action-m" ng-click="SubmitPhongBan()">
+                                    <span>>>></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="main-action d-flex pull-right p-3 bold-label">
+                                <button class="btn-action-m" ng-click="DeletePhongBan()">
+                                    <span><<<</span>
+                                </button>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-5 none-padding">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border">
+                                    <label class="bold-label">Nhóm đơn vị đang sử dụng</label>
+                                </legend>
+                                <div class="content-table" style="height:422px; overflow-y:scroll;">
+                                    <table class=" table-hover result-point">
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th style="width:2%;" class="text-center">
+                                                    <input type="checkbox"
+                                                           ng-model="selectAll" 
+                                                           ng-click="checkAll()" />
+                                                </th>
+                                                <th style="width:3%;">STT </th>
+                                                <th class="text-center">Tên nhóm đơn vị</th>
+                                                <th class="text-center">Loại nhóm đơn vị</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="background-color:white">
+                                            <tr ng-repeat="item in GetNDV | filter : searchInModal">
+                                                <td class="text-center">
+                                                    <input type="checkbox"
+                                                           ng-model="item.select" />
+                                                </td>
+                                                <td class="text-center">
+                                                    {{$index +1}}
+                                                </td>
+                                                <td>
+                                                    {{item.TEN_NHOM_DV}}
+                                                </td>
+                                                <td>
+                                                    {{item.LOAI_NHOM_DV_TEXT}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary bg-red"
+                                ng-click="cancel()" data-bs-dismiss="modal">
+                            <span>Đóng</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

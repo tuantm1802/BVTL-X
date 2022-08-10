@@ -1,0 +1,126 @@
+﻿<div class="col-sm-12">
+    <div class="row">
+        <div class="row" style="border: 1px solid black; width:100%; margin-left:1em; margin-right:1em">
+            <div class="row" style="width: 100%; margin-top: 1em">
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Kho kiểm kê: </label>
+                    <select class="col-sm-7" select2 ng-model="thongTinBienBan.ID_KHO" ng-disabled="true">
+                        <option ng-repeat="item in danhSachKho" value="{{item.ID}}">{{item.TEN_DON_VI}}</option>
+                    </select>
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Kiểm kê từ ngày: </label>
+                    <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                        <input type="text" ng-model="thongTinBienBan.NGAY_KIEM_KE" class="form-control" ng-disabled="true" />
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Đến ngày: </label>
+                    <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                        <input type="text" ng-model="thongTinBienBan.KIEM_KE_DEN_NGAY" class="form-control" ng-disabled="true" />
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width: 100%; margin-top: 1em">
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Nhóm dữ liệu: </label>
+                    <select class="col-sm-7" select2 ng-model="thongTinBienBan.NHOM_DU_LIEU" ng-disabled="true">
+                        <option ng-repeat="item in danhSachNhomDuLieu" value="{{item.ID}}">{{item.NAME}}</option>
+                    </select>
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Căn cứ quyết định: </label>
+                    <input class="col-sm-7 form-control" type="text" ng-model="thongTinBienBan.CAN_CU_QUYET_DINH" ng-disabled="true" />
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Căn cứ kế hoạch: </label>
+                    <input type="text" class="col-sm-7 form-control" ng-model="thongTinBienBan.SO_KE_HOACH" ng-disabled="true" />
+                </div>
+            </div>
+            <div class="row" style="width: 100%; margin-top: 1em; margin-bottom: 1em">
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Ngày chốt kiểm kê: </label>
+                    <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                        <input type="text" ng-model="thongTinBienBan.NGAY_CHOT_KIEM_KE" class="form-control" ng-disabled="true" />
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Ngày lập biên bản: </label>
+                    <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                        <input type="text" ng-model="thongTinBienBan.NGAY_CT" class="form-control" ng-disabled="true" />
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Người lập biên bản: </label>
+                    <select class="col-sm-7" select2 ng-model="thongTinBienBan.NGUOI_VIET_PHIEU" ng-disabled="true">
+                        <option ng-repeat="item in danhSachCanBo" value="{{item.ID}}">{{item.TEN}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="width: 100%; margin-top: 1em; margin-bottom: 1em">
+                <div class="d-flex col-sm-4">
+                    <label class="col-sm-5">Đính kèm ảnh: </label>
+                    <form method="post" enctype="multipart/form-data" id="frmUpload">
+                        <input type="file" name="file" id="file" accept="image/jpeg" style="width: 100%;" onchange="angular.element(this).scope().ImageUpload(event)" ng-disabled="true" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-end" style="width:100%; padding:10px">
+            <div class="main-action col-6 d-flex align-items-end justify-content-end flex-wrap ">
+                <button class="btn-action-m bg-green" ng-click="copyDuLieuTheoHTToTheoTT()" ng-disabled="!appCodeType2">
+                    <span>Copy Dữ liệu</span>
+                </button>
+            </div>
+        </div>
+        <div class="content-table" style="margin-top: 10px;height: 55vh">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center" rowspan="2">Mã hàng</th>
+                        <th class="text-center" rowspan="2">Tên hàng</th>
+                        <th class="text-center" rowspan="2">ĐVT</th>
+                        <th class="text-center" colspan="2">Theo hệ thống</th>
+                        <th class="text-center" colspan="2">Theo thực tế</th>
+                        <th class="text-center" colspan="2">Thừa</th>
+                        <th class="text-center" colspan="2">Thiếu</th>
+                        <th class="text-center" rowspan="2">Phân loại tài sản</th>
+                        <th class="text-center" rowspan="2">Ghi chú</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-center">Số tiền</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-center">Số tiền</th>
+                        <th class="text-center">Số lg</th>
+                        <th class="text-center">Số tiền</th>
+                        <th class="text-center">Số lg</th>
+                        <th class="text-center">Số tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in danhSachHangHoa">
+                        <td style="display: none">{{item.ID_BD_CT}}</td>
+                        <td>{{item.MA_HANG}}</td>
+                        <td>{{item.TEN_HANG}}</td>
+                        <td>{{item.DVT}}</td>
+                        <td>{{item.SO_LUONG_KH}}</td>
+                        <td>{{item.THANH_TIEN_KH | number}}</td>
+                        <td><input type="text" ng-change="changeSLTT($index)" ng-model="item.SO_LUONG_TT" style="width: 4em" ng-disabled="!appCodeType2" /></td>
+                        <td><input type="text" ng-change="changeTien($index)" ng-model="item.THANH_TIEN_TT" style="width: 6em" ng-disabled="!appCodeType2" /></td>
+                        <td>{{item.SO_LUONG_THUA}}</td>
+                        <td>{{item.THANH_TIEN_THUA}}</td>
+                        <td>{{item.SO_LUONG_THIEU}}</td>
+                        <td>{{item.THANH_TIEN_THIEU | number}}</td>
+                        <td><input type="text" ng-model="item.PHAN_LOAI_TAI_SAN" style="width: 100%" ng-disabled="!appCodeType2" /></td>
+                        <td><input type="text" ng-model="item.GHI_CHU" style="width: 100%" ng-disabled="!appCodeType2" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

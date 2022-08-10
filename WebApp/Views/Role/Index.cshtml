@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Nhóm quyền";
+}
+
+<!-- Begin Page Content -->
+<div class="container-fluid" ng-controller="RoleController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Nhóm quyền</h1>
+    <p class="mb-4">
+
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary" ng-show="RoleBtnCreate == true" ng-click="add()">
+                    <i class="fas fa-plus"></i> Thêm mới
+                </button>
+                <button type="button" class="btn btn-primary" ng-show="RoleBtnSearch == true" ng-click="Refesh()">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="edit()" ng-show="RoleBtnUpdate == true" title="Cập nhật">
+                    <i class="fas fa-pencil-alt"></i> Cập nhật
+                </button>
+                <button type="button" class="btn btn-danger" ng-click="delete()" ng-show="RoleBtnDelete == true" title="Xóa">
+                    <i class="fas fa-times"></i> Xóa
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableRole" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;">STT </th>
+                            <th style="width:20%;">Mã </th>
+                            <th style="width:auto;">Tên quyền </th>
+                            <th style="width: auto;">Mô tả </th>
+                            <th style="width:15%;">Trạng thái</th>
+                            @*<th style="width:10%;">Thao tác</th>*@
+                        </tr>
+                    </thead>
+                    @*<tbody>
+                            <tr ng-repeat="item in ListRole1" ng-click="ViewDetail(item.ID, $index)" ng-class="{activerow:$index==selectedRow}">
+                                <td class="text-center">{{$index + 1}}</td>
+                                <td>{{item.ID}}</td>
+                                <td>{{item.Name}}</td>
+                                <td>{{item.Descripttion}}</td>
+                                <td>{{item.IsActive == true ? 'Sử dụng' : 'Không sử dụng'}}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-primary" ng-click="edit(item.ID)" ng-show="RoleBtnUpdate == true" title="Cập nhật">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" ng-click="delete(item.ID)" ng-show="RoleBtnDelete == true" title="Xóa">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>*@
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+@section Scripts{
+    <script src="~/app/Controller/RoleController.js"></script>
+    <script src="~/Content/js/jquery.ztree.core.js"></script>
+    <script src="~/Content/js/jquery.ztree.excheck.js"></script>
+}

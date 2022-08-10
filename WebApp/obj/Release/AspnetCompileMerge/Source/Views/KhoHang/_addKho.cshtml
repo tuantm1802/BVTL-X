@@ -1,0 +1,104 @@
+﻿<div class="modal fade" id="AddKho">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="bootbox-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Mã kho<span style="color:red">*</span></label>
+                            <input type="text" to-uppercase class="form-control" ng-model="model.PHIEN_HIEU" name="MaDonVi">
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Tên kho<span style="color:red">*</span></label>
+                            <input type="text" class="form-control" ng-model="model.TEN_DON_VI" name="TEN_DON_VI">
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Khu vực <span style="color:red">*</span></label>
+                            <select class="form-control" ng-model="model.KHU_VUC_ID" ng-change="chengaKV()" select2 name="KHU_VUC_ID" ng-options="item.ID as item.TEN_KHU_VUC for item in ListKhuVuc" style="width:100%;">
+                                <option value="">--Chọn Khu vực--</option>
+                            </select>
+
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Nhóm đơn vị <span style="color:red">*</span> </label>
+                            <select class="form-control" ng-model="model.NHOM_DON_VI_ID" ng-change="chengaNhom()" select2 name="NHOM_DON_VI_ID" ng-options="item.ID as item.TEN_NHOM_DV for item in ListNhomDonVi" style="width:100%;">
+                                <option value="">--Chọn nhóm đơn vị--</option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Tên người nhận</label>
+                            <input type="text" class="form-control" ng-model="model.CONTACT_NAME" name="CONTACT_NAME">
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>SĐT</label>
+                            <input type="text" class="form-control" ng-model="model.CONTACT_TEL" name="CONTACT_TEL">
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Số CMT</label>
+                            <input type="text" class="form-control" ng-model="model.CONTACT_ID" name="CONTACT_ID">
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control" ng-model="model.CONTACT_ADDRESS" name="CONTACT_ADDRESS">
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Đơn vị cha</label>
+
+                            <select class="form-control" ng-model="model.DON_VI_CHA_ID" select2 name="DonViCha_ID" ng-options="item.ID as item.TEN_DON_VI for item in ListDonVi" style="width:100%;">
+                                <option value="">--Chọn đơn vị cha--</option>
+                                <option ng-repeat="item in ListDonVi" value="{{item.ID}}">{{item.TEN_DON_VI}}</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Hiệu lực</label>
+                            <input type="checkbox" style="height:26px !important; width:26px !important;" class="form-control" ng-model="model.HIEU_LUU" ng-true-value="'Y'" ng-false-value="'N'" name="HIEU_LUC">
+                        </div>
+
+
+                        <div class="col-12 col-md-6 col-lg-6 pt-3">
+                            <label>Mô tả</label>
+                            <input type="text" class="form-control" ng-model="model.MO_TA" name="MO_TA">
+                        </div>
+
+
+                    </div>
+                </div>
+               
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="submit()">
+                        <img src="~/App_Assets/images/d_save.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                        <span>Lưu</span>
+                    </button>
+                  
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/d_close.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

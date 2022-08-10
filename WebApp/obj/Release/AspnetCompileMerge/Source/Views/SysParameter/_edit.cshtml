@@ -1,0 +1,53 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Cập nhật tham số</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form class=" col-md-12" id="formSubmit">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Mã<span class="error">*</span></label>
+                            <input type="text" class="form-control" ng-disabled="true" ng-model="model.PARAM_CODE" name="ParamCode" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Giá trị<span class="error">*</span></label>
+                            <input type="text" class="form-control" ng-model="model.PARAM_VALUE" name="ParamValue" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Kiểu dữ liệu<span class="error">*</span></label>
+                            <select style="width: 400px;" ui-select2 ng-model="model.PARAM_VALUE_TYPE" name="ParamValueType" required>
+                                <option ng-repeat="item in ListValueType" value="{{item.value}}">{{item.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Mô tả</label>
+                            <textarea class="form-control" ng-model="model.PARAM_DESC"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="submit()">Lưu</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Hủy</button>
+</div>
+

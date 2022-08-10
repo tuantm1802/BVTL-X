@@ -1,0 +1,76 @@
+﻿<div class="action-system ui-widget-content" id="resizable">
+    <button id="btn-changes-s-nav">
+        <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+    </button>
+    <div class="container">
+        <div class="form-infor p-3">
+            <h4 class="form-title">
+                Tìm kiếm
+            </h4>
+            <form id="e-danhsachhoso">
+                <div class="row no-gutters">
+
+                    <div class="col-12 col-md-12">
+                        <label>Kho</label>
+                        <select class="form-control" ng-model="hangDoi.Kho" ng-options="option.TEN for option in danhmuckho">
+                            <option value="">- - - Chọn kho nhập - - -</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-12">
+                        <label>Tên hàng</label>
+                        <select class="form-control" ng-model="hangDoi.HANG_HOA" ng-options="option.ID_HANG_HOA as option.MA_HANG_HOA+' - '+option.TEN_HANG_HOA for option in hanghoa">
+                            <option value="">- - - Chọn hàng hóa - - -</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label>Từ ngày</label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="hangDoi.TuNgay">
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label>Đến ngày</label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="hangDoi.DenNgay">
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex align-item-center">
+            <div class="main-action" style="margin: 0 auto;">
+                <button class="btn-action-m" ng-click="TimKiem()">
+                    <img src="~/App_Assets/images/icon_search.svg" alt="">
+                    <span>Tìm kiếm</span>
+                </button>
+            </div>
+        </div>
+        <div class="content-table mt-2">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="e-cursor-pointer">
+                            <div class="e-th-table-boder">Kho</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-click="ShowThongTin(item,$index)" ng-repeat="item in dsKetQua" class="e-cursor-pointer" ng-class="{'selected':$index == selectedRow}">
+                        <td>{{ item.TEN}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-12"ng-show="CoKetQua">
+            <div style="float:left;padding-top:16px" >{{SoLuongHienThi}}/{{SoLuongKetQua}} kết quả</div>
+            <div class="row content-table pull-right">
+                <div class="pages-switch">
+                    <ul class="pagination pagination-sm m-0 float-right no-margin" uib-pagination total-items="SoLuongKetQua" items-per-page=10 ng-model="currentPage" ng-change="TimKiem(currentPage)" max-size=3 boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

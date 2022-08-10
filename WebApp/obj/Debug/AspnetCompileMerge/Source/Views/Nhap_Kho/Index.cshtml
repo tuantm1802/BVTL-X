@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@*<style>
+        .modal-ku {
+            width: 1200px;
+            margin: auto;
+        }
+    </style>*@
+
+
+<div class="row" ng-controller="NhapKhoController">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                Danh Sách Nhập Kho
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:8%;">Stt </th>
+                            <th style="width:10%;" ng-click="ORDER_KH($event)">Số kế hoạch  <i id="or_skh"></i></th>
+                            <th style="width:12%;" ng-click="ORDER_NTN()">Nguồn tiếp nhận  <i id="or_ntn"></i></th>
+                            <th style="width:11%;" ng-click="ORDER_DV()">Đơn vị nhận  <i id="or_dv"></i></th>
+                            <th style="width:11%;" ng-click="ORDER_NN()">Người nhập  <i id="or_nn"></i></th>
+                            <th style="width:10%;" ng-click="ORDER_NG()">Ngày nhập  <i id="or_ng"></i></th>
+                            <th style="width: 8%;">Trạng thái</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-primary" ng-click="TimKiem()">
+                                    <i class="fa fa-sort-amount-desc"></i> Tìm kiếm
+
+                                </button>
+                            </td>
+                            <td><input type="text" class="form-control" ng-model="modelSearch.SO_KE_HOACH" name="SO_KE_HOACH"></td>
+                            <td>
+                                <select class="form-control" style="width:100%" ng-model="modelSearch.NGUON_TIEP_NHAN_ID" ui-select2 name="NGUON_TIEP_NHAN_ID" required ng-options="item.ID as item.NAME for item in nguonNhan">
+                                    <option value="">--Tất cả--</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" style="width:100%" ng-model="modelSearch.DON_VI_NHAP_NHAN_ID" ui-select2 name="DON_VI_NHAP_NHAN" required ng-options="item.UNIT_ID as item.UNIT_NAME for item in dsDonVi">
+                                    <option value="">--Tất cả--</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <select class="form-control" style="width:100%" ng-model="modelSearch.NGUOI_NHAP_NHAN_ID" ui-select2 name="NGUOI_NHAP_NHAN" required ng-options="item.ID as item.NAME for item in dsNguoiNhan">
+                                        <option value="">--Tất cả--</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group date" id="reStartDatet" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.TU_NGAY" data-target="#reStartDatet">
+                                    <div class="input-group-append" data-target="#reStartDatet" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <select class="form-control" style="width:100%" ng-model="modelSearch.TRANG_THAI" ui-select2 required ng-options="item.MA as item.NAME for item in trangthai">
+                                    <option value="">--Tất cả--</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr ng-repeat="item in dsNhapKho" ng-class="{'selected':item.ID_NHAP_XUAT==ID_NHAP_XUAT}" ng-click="chiTiet(item, $index)">
+                            <td class="text-center">{{$index + 1}}</td>
+                            <td>{{item.SO_KE_HOACH}}</td>
+                            <td>{{item.NGUON_TIEP_NHAN_ID != null ? (nguonNhan|filter:{ID:item.NGUON_TIEP_NHAN_ID}:true)[0].NAME : ""}}</td>
+                            <td>{{item.DON_VI_NHAP_NHAN}}</td>
+                            <td>{{item.NGUOI_NHAP_NHAN}}</td>
+
+                            <td class="text-center">{{item.NGAY_NHAP_NHAN.substring(6, 8) + '/' + item.NGAY_NHAP_NHAN.substring(4, 6) + '/' + item.NGAY_NHAP_NHAN.substring(0, 4)}}</td>
+                            <td class="text-center">
+                                {{item.TRANG_THAI != null ? (trangthai|filter:{MA:item.TRANG_THAI}:true)[0].NAME : ""}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+            </div>
+            <!-- /.card-body -->
+
+
+            <div class="card-footer">
+                <div id="btm-toolbar">
+                    <ul class="line">
+                        <li>
+                            <button type="button" class="btn btn-primary" ng-click="add()"><i class="fas fa-plus"></i> Thêm mới</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary" ng-click="edit()"> <i class="fas fa-pencil-alt"></i> Sửa </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-danger" ng-click="delete()"><i class="fas fa-times"></i> Xóa</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- /.card -->
+
+
+    </div>
+
+
+
+    @Html.Partial("~/Views/Nhap_Kho/_add.cshtml")
+    @Html.Partial("~/Views/Nhap_Kho/_addct.cshtml")
+</div>
+@section scripts{
+    <script src="~/app/Controller/NhapKhoController.js"></script>
+   
+}

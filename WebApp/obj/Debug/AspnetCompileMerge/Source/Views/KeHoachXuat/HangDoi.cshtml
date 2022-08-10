@@ -1,0 +1,86 @@
+﻿<div class="action-system ui-widget-content" id="resizable">
+    <button id="btn-changes-s-nav">
+        <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+    </button>
+    <div class="container">
+        <div class="form-infor p-3">
+            <h4 class="form-title">
+                Tìm kiếm
+            </h4>
+            <form id="e-danhsachhoso">
+                <div class="row no-gutters">
+
+                    <div class="col-12 col-md-12">
+                        <label>Số kế hoạch</label>
+                        <input type="text" ng-model="hangDoi.SoKeHoach" class="form-control" />
+                    </div>
+
+                    <div class="col-12 col-md-12">
+                        <label>Trạng thái</label>
+                        <select class="form-control" ng-model="hangDoi.TrangThai">
+                            <option value="true">Chờ nhập</option>
+                            <option value="false">Chưa nhập</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label>Từ ngày</label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="hangDoi.TuNgay">
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label>Đến ngày</label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="hangDoi.DenNgay">
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="d-flex align-item-center">
+            <div class="main-action" style="margin: 0 auto;">
+                <button class="btn-action-m" ng-click="TimKiem()">
+                    <img src="~/App_Assets/images/icon_search.svg" alt="">
+                    <span>Tìm kiếm</span>
+                </button>
+            </div>
+        </div>
+        <div class="content-table mt-2">
+            <table class="table-responsive table-hover result-point" style="display: block">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="text-center balance">
+                            <div class="e-th-table-boder">Số phiếu</div>
+                        </th>
+                        <th class="text-center balance">
+                            <div class="e-th-table-boder">Ngày lập</div>
+                        </th>
+                        <th class="text-center balance">
+                            <div class="e-th-table-boder">Trạng thái</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-click="ShowThongTin(item,$index)" ng-repeat="item in dsKetQua" class="e-cursor-pointer" ng-class="{'selected':$index == selectedRow}">
+                        <td>{{ item.SO_KH}}</td>
+                        <td>{{ item.NGAY_TAO}}</td>
+                        <td>{{ item.TRANG_THAI_VW}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-12">
+            <div style="float:left;padding-top:16px" ng-show="CoKetQua">{{SoLuongHienThi}}/{{SoLuongKetQua}} kết quả</div>
+            <div class="row content-table pull-right">
+                <div class="pages-switch">
+                    <ul class="pagination pagination-sm m-0 float-right no-margin" uib-pagination total-items="SoLuongKetQua" items-per-page=10 ng-model="currentPage" ng-change="TimKiem(currentPage)" max-size=3 boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

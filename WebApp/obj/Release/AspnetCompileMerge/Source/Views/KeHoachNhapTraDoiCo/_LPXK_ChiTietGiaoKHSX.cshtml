@@ -1,0 +1,85 @@
+﻿<div class="modal fade" id="LPXK_ChiTietGiaoKHSX">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Giao kế hoạch sản xuất</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class=" col-md-12" id="formSubmit">
+                    <div class="row">
+                        <div class="col-sm-12" style="padding:0px;padding-right:10px;">
+                            <div class="form-infor has-border p-3">
+                                <div class="row">
+                                    <div class="col-6 col-md-6">
+                                        <label for="">Mã giao KHSX</label>
+                                        <input disabled class="form-control" ng-model="LPXK_PhieuXuatKho.MA_PHIEU" />
+                                    </div>
+                                    <div class="col-6 col-md-6">
+                                        <label>Ngày tạo</label>
+                                        <input disabled class="form-control" ng-model="LPXK_PhieuXuatKho.NGAY_TAO_TEXT" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-6">
+                                        <label for="">Công ty</label>
+                                        <input disabled class="form-control" ng-model="LPXK_PhieuXuatKho.TEN_CONG_TY" />
+                                    </div>
+                                    <div class="col-6 col-md-6">
+                                        <label>Hợp đồng</label>
+                                        <input disabled class="form-control" ng-model="LPXK_PhieuXuatKho.SO_HD" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-table" style="height:300px; overflow-y:scroll;">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="LPXK_CT_CheckAllKho" ng-change="LPXK_CT_ChangeCheckAllKho()" /> </th>
+                                    <th>STT</th>
+                                    <th>Tên hàng</th>
+                                    <th>ĐVT</th>
+                                    <th>SL kế hoạch</th>
+                                    <th>SL sản xuất</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in LPXK_ListPXK_Detail">
+                                    <td class="center"><input type="checkbox" ng-change="LPXK_CT_CheckedKho($index)" class="form-control" ng-model="item.SELECTED" /> </td>
+                                    <td>{{$index +1}}</td>
+                                    <td>{{item.TEN_SP}}</td>
+                                    <td>{{item.TEN_DVT}}</td>
+                                    <td>{{item.SL_KE_HOACH}}</td>
+                                    <td>{{item.SL_SAN_XUAT}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    @*<button class="btn-action-m cl-3" ng-click="LPXK_TaoPhieuXuatKhoKhac()">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Xuất hàng</span>
+                    </button>*@
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

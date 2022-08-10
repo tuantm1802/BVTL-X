@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="SAN_PHAM_DATA_SET" targetNamespace="http://tempuri.org/SAN_PHAM_DATA_SET.xsd" xmlns:mstns="http://tempuri.org/SAN_PHAM_DATA_SET.xsd" xmlns="http://tempuri.org/SAN_PHAM_DATA_SET.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="SAN_PHAM_DATA_SET" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="SAN_PHAM_DATA_SET" msprop:Generator_UserDSName="SAN_PHAM_DATA_SET">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SAN_PHAM_CHI_TIET" msprop:Generator_TableClassName="SAN_PHAM_CHI_TIETDataTable" msprop:Generator_TableVarName="tableSAN_PHAM_CHI_TIET" msprop:Generator_RowChangedName="SAN_PHAM_CHI_TIETRowChanged" msprop:Generator_TablePropName="SAN_PHAM_CHI_TIET" msprop:Generator_RowDeletingName="SAN_PHAM_CHI_TIETRowDeleting" msprop:Generator_RowChangingName="SAN_PHAM_CHI_TIETRowChanging" msprop:Generator_RowEvHandlerName="SAN_PHAM_CHI_TIETRowChangeEventHandler" msprop:Generator_RowDeletedName="SAN_PHAM_CHI_TIETRowDeleted" msprop:Generator_RowClassName="SAN_PHAM_CHI_TIETRow" msprop:Generator_UserTableName="SAN_PHAM_CHI_TIET" msprop:Generator_RowEvArgName="SAN_PHAM_CHI_TIETRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="STT" msprop:Generator_ColumnVarNameInTable="columnSTT" msprop:Generator_ColumnPropNameInRow="STT" msprop:Generator_ColumnPropNameInTable="STTColumn" msprop:Generator_UserColumnName="STT" type="xs:string" minOccurs="0" />
+              <xs:element name="MA_H55" msprop:Generator_ColumnVarNameInTable="columnMA_H55" msprop:Generator_ColumnPropNameInRow="MA_H55" msprop:Generator_ColumnPropNameInTable="MA_H55Column" msprop:Generator_UserColumnName="MA_H55" type="xs:string" minOccurs="0" />
+              <xs:element name="TEN_SP" msprop:Generator_ColumnVarNameInTable="columnTEN_SP" msprop:Generator_ColumnPropNameInRow="TEN_SP" msprop:Generator_ColumnPropNameInTable="TEN_SPColumn" msprop:Generator_UserColumnName="TEN_SP" type="xs:string" minOccurs="0" />
+              <xs:element name="TEN_DVT" msprop:Generator_ColumnVarNameInTable="columnTEN_DVT" msprop:Generator_ColumnPropNameInRow="TEN_DVT" msprop:Generator_ColumnPropNameInTable="TEN_DVTColumn" msprop:Generator_UserColumnName="TEN_DVT" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_KE_HOACH" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_KE_HOACH" msprop:Generator_ColumnPropNameInRow="SO_LUONG_KE_HOACH" msprop:Generator_ColumnPropNameInTable="SO_LUONG_KE_HOACHColumn" msprop:Generator_UserColumnName="SO_LUONG_KE_HOACH" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_THUC_TE" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_THUC_TE" msprop:Generator_ColumnPropNameInRow="SO_LUONG_THUC_TE" msprop:Generator_ColumnPropNameInTable="SO_LUONG_THUC_TEColumn" msprop:Generator_UserColumnName="SO_LUONG_THUC_TE" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

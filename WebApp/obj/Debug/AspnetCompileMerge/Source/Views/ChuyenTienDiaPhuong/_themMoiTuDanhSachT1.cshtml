@@ -1,0 +1,102 @@
+﻿<form id="formThemMoiTuDanhSachT1" name="formThemMoiTuDanhSachT1">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Danh sách sản phẩm</h4>
+        <button type="button" class="close" ng-click="cancel()">
+            <img src="../App_Assets/images/close.svg" alt="">
+        </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body">
+       
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <label for="">Biểu giá</label>
+                    <input type="text" name="BIEU_GIA" ng-pattern="/^([0-9]+)$/" ng-model="model.BIEU_GIA" /><b>VNĐ</b>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <label for="">Trợ giá</label>
+                    <input type="text" name="PHAN_TRAM_TRO_GIA" ng-pattern="/^([0-9]+)$/" ng-model="model.PHAN_TRAM_TRO_GIA" /><b>%</b>
+                </div>
+            </div>
+        
+        <div class="row">
+            <div class="col-sm-6" style="padding:0px;padding-right:10px;">
+                <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                    <legend class="scheduler-border"><label class="bold-label">Danh sách Sản phẩm</label></legend>
+                    <div class="form-infor has-border p-3">
+                        <div class="row no-gutters">
+                            <div class="col-12 col-md-12">
+                                <div class="main-action">
+                                    <div class="form-search w-100">
+                                        <input type="text" placeholder="Tìm kiếm" ng-model="AddSPNhan_Keyword">
+                                        <button>
+                                            <img src="~/App_Assets/images/search_icon.svg" ng-click="AddSPNhan_SearchSanPham()" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-table" style="height:374px; overflow-y: scroll;">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AddSPNhan_CheckAllTP" ng-change="AddSPNhan_ChangeCheckAllTP()" /> </th>
+                                    <th>Tên sản phẩm</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in AddSPNhan_SanPhams">
+                                    <td class="center"><input type="checkbox" ng-change="AddSPNhan_CheckedTrangPhuc($index)" class="form-control" ng-model="item.SELECT" /> </td>
+                                    <td>{{item.TEN_SP}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-sm-6" style="padding:0px;">
+                <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                    <legend class="scheduler-border"><label class="bold-label">Sản phẩm chọn</label></legend>
+                    <div class="content-table" style="height:422px; overflow-y:scroll;">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AddSPNhan_CheckAllTPChon" ng-change="AddSPNhan_ChangeCheckAllTPChon()" /> </th>
+                                    <th>Tên sản phẩm</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in AddSPNhan_SanPhamChons">
+                                    <td class="center"><input type="checkbox" ng-change="AddSPNhan_CheckedTrangPhucChon($index)" class="form-control" ng-model="item.SELECT" /> </td>
+                                    <td>{{item.TEN_SP}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer d-flex justify-content-between">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+            <button class="btn-action-m cl-3" ng-click="ChonSanPham()">
+                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_print_light.svg" alt="" class="hover_m">
+                <span>Chọn</span>
+            </button>
+
+            <button class="btn-action-m cl-3" ng-click="cancel()">
+                <img src="../App_Assets/images/d_close.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                <span>Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>
+

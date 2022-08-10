@@ -1,0 +1,135 @@
+﻿.error {
+    color: red;
+}
+
+.none-padding-left {
+    padding-left: 0px !important;
+}
+
+.none-padding-right {
+    padding-right: 0px !important;
+}
+
+.none-padding {
+    padding: 0px !important;
+}
+
+.padding-top-10 {
+    padding-top: 10px !important;
+}
+
+.padding-top-15 {
+    padding-top: 15px !important;
+}
+
+.padding-left-15 {
+    padding-left: 15px !important;
+}
+
+.bg-color-white {
+    background-color: #ffffff;
+}
+
+.border-right {
+    border-right: 1px solid #c4c4c4;
+}
+.requiredInput {
+    color: red !important;
+}
+
+.requiredInput:after {
+    content: "*" !important;
+    color: red !important;
+}
+
+.mdi:before, .mdi-set {
+    display: inline-block;
+    font: normal normal normal 24px/1 "Material Design Icons";
+    font-size: 18px !important;
+    text-rendering: auto;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.colorStatusKT {
+    color: #868585 !important;
+}
+
+.colorStatusDTC {
+    color: #4bc0c0 !important;
+}
+
+.colorStatusSC {
+    color: #fe3535 !important;
+}
+
+.colorStatusCTC {
+    color: #ffcd56 !important;
+}
+
+.noteKT {
+    border: 1px solid #868585;
+    background-color: #868585;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 6px;
+    margin-right: 5px;
+}
+
+    .noteKT > div {
+        float: left;
+    }
+
+.noteDTC {
+    border: 1px solid #4bc0c0;
+    background-color: #4bc0c0;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 6px;
+    margin-right: 5px;
+}
+
+    .noteDTC > div {
+        float: left;
+    }
+
+.noteCTC {
+    border: 1px solid #ffcd56;
+    background-color: #ffcd56;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 6px;
+    margin-right: 5px;
+}
+
+    .noteCTC > div {
+        float: left;
+    }
+
+.table thead th {
+    color: #000;
+    font-weight: 400;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle !important;
+    background-color: rgba(147,157,170,.2);
+}
+
+.main-content {
+    padding-left:10px !important;
+    padding-right:10px !important;
+}
+
+.tccbcsParentcolor {
+    background-color: #ffe2e2 !important;
+    color: #900 !important;
+}
+
+.underlined-li-menu {
+    border-bottom: 1px solid #8d8d8d !important;
+}

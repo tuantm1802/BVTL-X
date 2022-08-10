@@ -1,0 +1,206 @@
+﻿<div class="col-md-12" style=" position:relative">
+    <div class="row">
+        <div class="col-md-6" style="padding:0px; padding-right:5px;">
+            <div class="form-infor has-border p-3">
+                <h4 class="form-title">
+                    Phiếu xuất kho
+                </h4>
+                <div class="row no-gutters">
+                    <div class="content-table" style="height:300px; overflow-y:scroll;width: 100%;">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="text-center" style="width:5%"><input type="checkbox" /></th>
+                                    <th class="text-center" style="width:15%">Chi tiết</th>
+                                    <th class="text-center" style="width:20%">Mã phiếu</th>
+                                    @*<th class="text-center" style="width:20%">Số phiếu H55</th>*@
+                                    <th class="text-left">Kho xuất</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in LPXK_ListPhieuXuatKho">
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div class="main-action d-flex align-items-center flex-wrap">
+                                            <button class="btn-action-m ct-fix-lap" type="button" title="Xem chi tiết" ng-click="LPXK_GetDetailPXK(1,item)">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{{item.MA_LENH}}</td>
+                                    @*<td>{{item.SO_PHIEU_H55}}</td>*@
+                                <td>{{(item.TEN_KHO_XUAT != null && item.TEN_KHO_XUAT != '') ? item.TEN_KHO_XUAT : item.TEN_CONG_TY }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="form-infor has-border p-3" style="margin-top: 8.5px;">
+                <h4 class="form-title">
+                    Giao kế hoạch sản xuất
+                </h4>
+                <div class="row no-gutters">
+                    <div class="content-table" style="height:300px; overflow-y:scroll;width: 100%;">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="text-center" style="width:5%"><input type="checkbox" /></th>
+                                    <th class="text-center" style="width:15%">Chi tiết</th>
+                                    <th class="text-center" style="width:15%">Mã phiếu</th>
+                                    <th class="text-left">Công ty</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in LPXK_ListGKHSX ">
+                                    <td><input type="checkbox" /></td>
+                                    <td>
+                                        <div class="main-action d-flex align-items-center flex-wrap">
+                                            <button class="btn-action-m ct-fix-lap" type="button" title="Xem chi tiết" ng-click="LPXK_GetDetailPXK(0,item)">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{{item.MA_PHIEU}}</td>
+                                    <td>{{item.TEN_CONG_TY}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" style="padding:0px; ">
+            <div class="tb-cu">
+                <ul class="nav nav-tabs" id="nhantienDTCTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="lpxkQTNKH-tab" data-toggle="tab" href="#lpxk_1" role="tab">Quyết toán nợ kế hoạch</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="lpxkUTKH-tab" data-toggle="tab" href="#lpxk_2" role="tab">Ứng trước kế hoạch</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-1 pl-3 pr-3" style="padding-left:10px !important; padding-right:10px !important;">
+                    <div class="tab-pane fade show active" id="lpxk_1" role="tabpanel" aria-labelledby="lpxkQTNKH-tab">
+                        <div class="col-md-12 text-right pull-right">
+                            <div class="row">
+                                <div class="col-sm-4 no-padding text-right">
+                                    <label>Tìm kiếm</label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="main-action">
+                                        <div class="form-search w-100">
+                                            <input type="text" placeholder="Tìm kiếm" ng-model="LPXK_TenHangText">
+                                            <button class="bg-green" style="color:white" ng-click="LPXK_GetSearchDetailPXK()">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+
+                        </div>
+                        <div class="content-table">
+                            <div style="height:610px; overflow-y:scroll;">
+                                <table class="table-responsive table-hover result-point">
+                                    <thead class="point-table-head">
+                                        <tr>
+                                            <th class="left">Tên hàng</th>
+                                            <th class="text-right" style="width:20%">Số lượng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="">
+                                        <tr ng-repeat="item in LPXK_ListSPNKH">
+                                            <td>{{item.TEN_SP}}</td>
+                                            <td>{{item.SL_NO_KY_TRUOC}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="lpxk_2" role="tabpanel" aria-labelledby="lpxkUTKH-tab">
+                        <div class="row">
+                            <div class="col-sm-12" style="padding:0px;padding-right:10px;">
+                                <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                                    <legend class="scheduler-border" style="width: 270px;"><label class="bold-label">Danh sách đổi tiêu chuẩn</label></legend>
+                                    <div class="row">
+                                        <div class="col-md-12 text-right pull-right">
+                                            <div class="row">
+                                                <div class="col-sm-4 no-padding text-right">
+                                                    <label>Tìm kiếm</label>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="main-action">
+                                                        <div class="form-search w-100">
+                                                            <input type="text" placeholder="Tìm kiếm" ng-model="TrangPhucText">
+                                                            <button class="bg-green" style="color:white" ng-click="ChangeLoaiTrangPhuc()">
+                                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="content-table">
+                                        <div style="height:310px; overflow-y:scroll;">
+                                            <table class="table-responsive table-hover result-point">
+                                                <thead class="point-table-head">
+                                                    <tr>
+                                                        <th class="left">Tên hàng</th>
+                                                        <th class="text-right" style="width:20%">Số lượng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="">
+                                                    <tr ng-repeat="item in LPXK_ListSPD">
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 5px;">
+        <div class="col-md-4">
+            <div class="main-action d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-disabled="disableKHDuyet" ng-click="LPXK_XuatKhoUuTien()">
+                    <span>Xuất kho ưu tiên</span>
+                </button>
+                <button class="btn-action-m" ng-disabled="disableKHDuyet" ng-click="LPXK_XuatKhoKhac()">
+                    <span>Xuất kho khác</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <p>{{LPXK_Message}}</p>
+        </div>
+        <div class="col-md-4">
+            <div class="main-action d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-disabled="disableKHDuyet" ng-click="LPXK_XuatGiaoTay()">
+                    <span>Xuất giao tay</span>
+                </button>
+                <button class="btn-action-m" ng-disabled="disableKHDuyet" ng-click="LPXK_XuatThangTuHD()">
+                    <span>Xuất thẳng từ hợp đồng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="space-2"></div>

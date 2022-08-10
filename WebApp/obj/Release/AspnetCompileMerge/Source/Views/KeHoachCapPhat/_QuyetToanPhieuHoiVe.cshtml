@@ -1,0 +1,59 @@
+﻿<form id="formDmTrangPhuc" enctype="multipart/form-data" name="formDmTrangPhuc">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Chọn kế hoạch quyết toán phiếu hồi về</h4>
+        <button type="button" class="bootbox-close-button close" ng-click="cancel()">×</button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body" style="max-height: calc(100vh - 160px);">
+        <div class="main-action">
+            <div class="form-search w-100">
+                <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchSanPham">
+                <button class="bg-green" style="color:white" ng-click="searchSanPham()">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="content-table" style="max-height: calc(100vh - 255px); overflow: auto;">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="center" style="width:5%">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="center">TT</th>
+                        <th class="text-left">Số kế hoạch</th>
+                        <th class="center">Ngày tạo</th>
+                        <th class="text-left">Lý do cấp</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    @*<tr ng-repeat="item in listSanPhamModal">
+                            <td class="text-center tb-ip">
+                                <label class="pos-rel">
+                                    <input type="checkbox" class="ace" ng-model="item.checked" />
+                                    <span class="lbl"></span>
+                                </label>
+                            </td>
+                            <td>{{item.MA_H55}}</td>
+                            <td>{{item.TEN_SP}}</td>
+                        </tr>*@
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer main-action">
+        <button class="btn-action-m bg-green" ng-click="btnQuyetToan()">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+        </button>
+        <button class="btn-action-m bg-orange" ng-click="cancel()">
+            <i class="fa fa-times" aria-hidden="true"></i>    <span> Đóng</span>
+        </button>
+    </div>
+</form>
+

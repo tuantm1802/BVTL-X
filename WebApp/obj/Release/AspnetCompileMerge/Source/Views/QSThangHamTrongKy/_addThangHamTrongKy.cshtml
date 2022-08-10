@@ -1,0 +1,90 @@
+﻿<form id="formAddFile" enctype="multipart/form-data" name="formAddFile">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Chọn tiêu chuẩn</h4>
+        <button type="button" class="close" ng-click="cancel()">
+            <img src="../App_Assets/images/close.svg" alt="">
+        </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body">
+        <div class="row no-gutters">
+            <div class="col-12 col-md-4 col-lg-4">
+                <label for="">Lực lượng</label>
+                <input type="text" id="luc-luong" ng-change="ChangeLucLuong()" ng-model="lucLuong" placeholder="Lực lượng" autocomplete="on" />
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <label for="">Nhóm cấp bậc</label>
+                <input type="text" id="nhom-cap-bac" ng-change="ChangeNhomCapBac()" ng-model="nhomCapBac" placeholder="Nhóm cấp bậc" autocomplete="on" />
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <label for="">L.Hàm</label>
+                <select class="form-control" ng-model="LoaiHamId">
+                    <option value="{{item.ID}}" ng-repeat="item in ListLoaiHam">{{item.LOAI_HAM}}</option>
+                </select>
+            </div>
+            <div class="main-action d-flex flex-wrap col-12 col-md-1 col-lg-1">
+                <button class="btn-action-m" ng-click="SearchTieuChuan()" style="padding:10px; margin-top: 20px;">
+                    Tìm kiếm
+                </button>
+            </div>
+        </div>
+        <div class="content-table">
+            <table class="table-responsive table-hover result-point" style="max-height: calc(100vh - 390px);">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="center">TT</th>
+                        <th class="center">Lực lượng</th>
+                        <th class="center">Cấp bậc</th>
+                        <th class="center">Loại hàm </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in dsDmCBacLHam">
+                        <td class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="item.Selected" value="{{item.ID}}" />
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                        <td class="text-center">{{$index + 1}}</td>
+                        <td>{{item.TEN_LUC_LUONG}}</td>
+                        <td>{{item.TEN_CB}}</td>
+                        <td>{{item.TEN_LOAI_PHAM}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="col-sm-12">
+                <div class="row">
+                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer d-flex justify-content-between">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+            <button class="btn-action-m cl-3" ng-click="ChonTieuChuan()">
+                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_print_light.svg" alt="" class="hover_m">
+                <span>Chọn</span>
+            </button>
+
+            <button class="btn-action-m cl-3" ng-click="cancel()">
+                <img src="../App_Assets/images/d_close.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                <span>Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>
+

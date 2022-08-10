@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "Nhóm đơn vị";
+}
+<div class="fill-box-bread-crumb">
+    <h3 class="bread_crumb">
+        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>/ Nhóm đơn vị
+    </h3>
+</div>
+<div ng-controller="NhomDonViController">
+    <main class="main-system">
+        <div class="container-fluid d-flex flex-wrap">
+            <div class="row  no-gutters w-100" style="height:480px;">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;  padding-right: 2px;">
+                    <div class="well" style="background-color: #f5f5f5;padding:20px;margin:0 0;width:100%">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-lg-12" align-self-end>
+                                <div class="main-action d-flex pull-left">
+                                    <button class="btn-action-m bg-green" ng-click="AddData()" ng-show="RoleBtnCreate">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <span id="changeByUnitID">Thêm mới</span>
+                                    </button>
+                                    <button class="btn-action-m bg-green"
+                                            ng-click="Cancel()" ng-show="RoleBtnCancel"
+                                            style="margin-right: 10px;">
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        <span>Huỷ thay đổi</span>
+                                    </button>
+                                    <button class="btn-action-m bg-green"
+                                            ng-click="Submit()" ng-show="RoleBtnSave"
+                                            style="margin-right: 10px;">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        <span>Lưu</span>
+                                    </button>
+                                    <button class="btn-action-m"
+                                            ng-click="Delete()" ng-show="RoleBtnDelete"
+                                            style="margin-right: 10px;background-color:#f55442;">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <span id="deleteByUnitID"> Xóa </span>
+                                    </button>
+                                </div>
+                                <div class="main-action d-flex align-items-center flex-wrap pull-right" style="margin-left:5px;">
+                                    <div class="main-action">
+                                        <div class="d-flex form-group" style="margin-bottom:0px;vertical-align:middle">
+                                            <input type="text" ng-model="search" placeholder="Tìm kiếm" class="form-control" style="width:250px;margin-bottom:0px" />
+                                            <button class="btn-action-m form-control" style="color:white;width:40px;margin-bottom:0px">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-table" style="margin-top: 10px;">
+                        <table class="table-hover result-point mt-2">
+                            <thead class="point-table-head" style="width:100%">
+                                <tr>
+                                    <th style="width:2%;" class="text-center">
+                                        <input type="checkbox"
+                                               ng-disabled="isDisable"
+                                               ng-model="selectAll"
+                                               ng-click="checkAll()" />
+                                    </th>
+                                    <th style="width:2%;" class="text-center" ng-if="stt">STT</th>
+                                    <th style="width:30%;" class="text-left" ng-if="tenNhomDV">Tên nhóm đơn vị</th>
+                                    <th style="width:30%;" class="text-left" ng-if="moTa">Mô tả</th>
+                                    <th style="width:15%;" class="text-left" ng-if="loaiNhom">Loại nhóm đơn vị</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in GetNDV|filter:search" ng-dblclick="loadTemplate($index)">
+                                    <td class="text-center">
+                                        <label class="pos-rel">
+                                            <input type="checkbox"
+                                                   ng-disabled="isDisable"
+                                                   class="ace"
+                                                   ng-model="item.select" value="10" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                    <td ng-if="stt" class="text-center">
+                                        {{(modelSearch.pageSize * (modelSearch.currentPage-1)) + $index + 1}}
+                                    </td>
+                                    <td ng-if="tenNhomDV">
+                                        <span ng-if="!item.Edit">{{item.TEN_NHOM_DV}}</span>
+                                        <input type="text" ng-if="item.Edit" class="form-control" ng-model="item.TEN_NHOM_DV">
+                                    </td>
+                                    <td ng-if="moTa">
+                                        <span ng-if="!item.Edit">{{item.MO_TA}}</span>
+                                        <input type="text" ng-if="item.Edit" class="form-control" ng-model="item.MO_TA">
+                                    </td>
+                                    <td ng-if="loaiNhom">
+                                        <span ng-if="!item.Edit">{{item.LOAI_NHOM_DV_TEXT}}</span>
+                                        <select type="text" ng-if="item.Edit" ng-model="item.LOAI_NHOM_DV_TEXT" class="form-control">
+                                            <option ng-repeat="x in loaiNhom" value="{{x.text}}">{{x.text}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr ng-repeat="row in rows">
+                                    <td class="text-center">
+                                        <input type="checkbox" id="check" ng-model="item.selected" />
+                                    </td>
+                                    <td class="text-center">{{modelSearch.totalItems + 1 + $index}}</td>
+                                    <td>
+                                        <input type="text" ng-model="row.TEN_NHOM_DV" placeholder="Nhập tên nhóm đơn vị" />
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="row.MO_TA" placeholder="Nhập mô tả " />
+                                    </td>
+                                    <td>
+                                        <select type="text" ng-model="row.LOAI_NHOM_DV_TEXT" class="form-control">
+                                            <option ng-repeat="x in loaiNhom" value="{{x.text}}">{{x.text}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right"
+                                uib-pagination total-items="modelSearch.totalItems"
+                                show-length-per-page="true"
+                                items-per-page="modelSearch.pageSize"
+                                ng-model="modelSearch.currentPage"
+                                ng-change="pageChanged()"
+                                max-size="modelSearch.maxSize"
+                                boundary-links="true"
+                                rotate="false"
+                                previous-text="&lsaquo;"
+                                next-text="&rsaquo;"
+                                first-text="&laquo;"
+                                last-text="&raquo;"></ul>
+                        </div>
+                        @Html.Partial("~/Views/NhomDonVi/AddNhomDonVi.cshtml")*
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+@section scripts{
+    <script src="~/app/Controller/NhomDonViController.js"></script>
+}

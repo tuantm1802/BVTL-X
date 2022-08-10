@@ -1,0 +1,42 @@
+﻿<div class="modal fade" id="EnterLyDoKhongDuyet">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable b-width_1" style="width: 550px;">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Nhập lý do không duyệt</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class=" col-md-12" id="formSubmit">
+                    <div class="form-infor">
+                        <div class="row no-gutters">
+                            <div class="col-12 col-md-12">
+                                <label for="">Lý do từ chối duyệt </label>
+                                <textarea rows="2" class="form-control" ng-model="TxtLyDoKhongDuyet" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="XacNhanTuChoiDuyet()">
+                        <span>Từ chối duyệt</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

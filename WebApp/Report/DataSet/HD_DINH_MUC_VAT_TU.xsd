@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="HD_DINH_MUC_VAT_TU" targetNamespace="http://tempuri.org/HD_DINH_MUC_VAT_TU.xsd" xmlns:mstns="http://tempuri.org/HD_DINH_MUC_VAT_TU.xsd" xmlns="http://tempuri.org/HD_DINH_MUC_VAT_TU.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="HD_DINH_MUC_VAT_TU" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="HD_DINH_MUC_VAT_TU" msprop:Generator_UserDSName="HD_DINH_MUC_VAT_TU">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DINH_MUC_VAT_TU" msprop:Generator_TableClassName="DINH_MUC_VAT_TUDataTable" msprop:Generator_TableVarName="tableDINH_MUC_VAT_TU" msprop:Generator_TablePropName="DINH_MUC_VAT_TU" msprop:Generator_RowDeletingName="DINH_MUC_VAT_TURowDeleting" msprop:Generator_RowChangingName="DINH_MUC_VAT_TURowChanging" msprop:Generator_RowEvHandlerName="DINH_MUC_VAT_TURowChangeEventHandler" msprop:Generator_RowDeletedName="DINH_MUC_VAT_TURowDeleted" msprop:Generator_UserTableName="DINH_MUC_VAT_TU" msprop:Generator_RowChangedName="DINH_MUC_VAT_TURowChanged" msprop:Generator_RowEvArgName="DINH_MUC_VAT_TURowChangeEvent" msprop:Generator_RowClassName="DINH_MUC_VAT_TURow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="STT" msprop:Generator_ColumnVarNameInTable="columnSTT" msprop:Generator_ColumnPropNameInRow="STT" msprop:Generator_ColumnPropNameInTable="STTColumn" msprop:Generator_UserColumnName="STT" type="xs:string" minOccurs="0" />
+              <xs:element name="ID_SP" msprop:Generator_ColumnVarNameInTable="columnID_SP" msprop:Generator_ColumnPropNameInRow="ID_SP" msprop:Generator_ColumnPropNameInTable="ID_SPColumn" msprop:Generator_UserColumnName="ID_SP" type="xs:string" minOccurs="0" />
+              <xs:element name="MA_H55" msprop:Generator_ColumnVarNameInTable="columnMA_H55" msprop:Generator_ColumnPropNameInRow="MA_H55" msprop:Generator_ColumnPropNameInTable="MA_H55Column" msprop:Generator_UserColumnName="MA_H55" type="xs:string" minOccurs="0" />
+              <xs:element name="TEN_SP" msprop:Generator_ColumnVarNameInTable="columnTEN_SP" msprop:Generator_ColumnPropNameInRow="TEN_SP" msprop:Generator_ColumnPropNameInTable="TEN_SPColumn" msprop:Generator_UserColumnName="TEN_SP" type="xs:string" minOccurs="0" />
+              <xs:element name="DVT" msprop:Generator_ColumnVarNameInTable="columnDVT" msprop:Generator_ColumnPropNameInRow="DVT" msprop:Generator_ColumnPropNameInTable="DVTColumn" msprop:Generator_UserColumnName="DVT" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_KH" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_KH" msprop:Generator_ColumnPropNameInRow="SO_LUONG_KH" msprop:Generator_ColumnPropNameInTable="SO_LUONG_KHColumn" msprop:Generator_UserColumnName="SO_LUONG_KH" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_CP" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_CP" msprop:Generator_ColumnPropNameInRow="SO_LUONG_CP" msprop:Generator_ColumnPropNameInTable="SO_LUONG_CPColumn" msprop:Generator_UserColumnName="SO_LUONG_CP" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_TH" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_TH" msprop:Generator_ColumnPropNameInRow="SO_LUONG_TH" msprop:Generator_ColumnPropNameInTable="SO_LUONG_THColumn" msprop:Generator_UserColumnName="SO_LUONG_TH" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_DC" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_DC" msprop:Generator_ColumnPropNameInRow="SO_LUONG_DC" msprop:Generator_ColumnPropNameInTable="SO_LUONG_DCColumn" msprop:Generator_UserColumnName="SO_LUONG_DC" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_TON" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_TON" msprop:Generator_ColumnPropNameInRow="SO_LUONG_TON" msprop:Generator_ColumnPropNameInTable="SO_LUONG_TONColumn" msprop:Generator_UserColumnName="SO_LUONG_TON" type="xs:string" minOccurs="0" />
+              <xs:element name="SO_LUONG_XUAT" msprop:Generator_ColumnVarNameInTable="columnSO_LUONG_XUAT" msprop:Generator_ColumnPropNameInRow="SO_LUONG_XUAT" msprop:Generator_ColumnPropNameInTable="SO_LUONG_XUATColumn" msprop:Generator_UserColumnName="SO_LUONG_XUAT" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

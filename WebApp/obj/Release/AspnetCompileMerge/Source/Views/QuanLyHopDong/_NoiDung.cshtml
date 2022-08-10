@@ -1,0 +1,56 @@
+﻿
+<div class="main-action d-flex align-items-center justify-content-end flex-wrap pt-1">
+    <div class="d-flex align-items-center flex-wrap">
+        <div class="main-action pt-3">
+            <div class="form-search">
+                <input type="text" placeholder="Tìm kiếm" ng-model="noidungHDPage.timKiem">
+                <button ng-click="noidungHopDongGet()">
+                    <img src="~/App_Assets/images/search_icon.svg" alt="">
+                </button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="content-table mt-2">
+    <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+        <thead>
+            <tr>
+                <th class="center">STT</th>
+                <th class="center">Mã hàng</th>
+                <th class="center">Tên hàng</th>
+                <th class="center">ĐVT</th>
+                <th class="center">SL phụ lục</th>
+                <th class="center">Đơn giá KH</th>
+                <th class="center">Thành tiền</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr ng-repeat="item in noiDungHDSanPhamList">
+
+                <td>{{$index + 1}}</td>
+                <td>{{item.MA_HANG}}</td>
+                <td>
+                    {{item.TEN_HANG}}
+                </td>
+                <td>{{item.DVT}}</td>
+                <td class="text-right">
+                    {{item.SO_LUONG | number}}
+                </td>
+                <td class="text-right">
+                    {{item.DON_GIA | number}}
+                </td>
+                <td class="text-right">{{item.THANH_TIEN | number}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-flex flex-wrap justify-content-between align-items-center pt-1">
+        <h5 class="day-end" style="padding-top: 16px;">
+            Ngày tạo hợp đồng: {{modelHopDongView.NGAY_TAO}}
+        </h5>
+    </div>
+</div>
+
+

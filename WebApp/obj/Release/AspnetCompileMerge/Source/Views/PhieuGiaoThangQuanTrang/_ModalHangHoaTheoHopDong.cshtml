@@ -1,0 +1,99 @@
+﻿<div class="modal fade" id="cs_hang_hoa_theo_hd">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thông tin chi tiết hàng hóa</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="chi-tiet-form">
+                    <div class="col-12 col-md-4">
+                        <label for="">Kho xuất: <span>*</span></label>
+                        <select class="form-control" ng-model="chitietTheoHangHoa.ID_KHO" ng-options="option.ID as option.TEN for option in danhmuckho" name="khoxuat" disabled>
+                            <option value="">- - - Chọn kho - - -</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4" ng-click="LayDanhSachHopDong()">
+                        <label for="">Hợp đồng: </label>
+                        <select class="form-control" ng-model="chitietTheoHangHoa.ID_HOP_DONG" ng-options="option.ID_HOP_DONG as option.SO_HD for option in danhmuchopdong" name="hopdong" disabled>
+                            <option value="">- - - Chọn hợp đồng - - -</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="">Nhóm hàng: <span>*</span></label>
+                        <select class="form-control" ng-model="chitietTheoHangHoa.ID_NHOM_HH" ng-options="option.ID as option.TEN for option in dmnhomhang" name="nhomhang" disabled>
+                            <option value="">- - - Chọn nhóm hàng - - -</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="">Loại hàng: </label>
+                        <select class="form-control" ng-model="chitietTheoHangHoa.ID_LOAI_HH" ng-options="option.ID as option.TEN for option in dmloaihang" name="loaihang" disabled>
+                            <option value="">- - - Chọn loại hàng - - -</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="">Số lượng: <span>*</span></label>
+                        <input class=" form-control" type="number" ng-model="chitietTheoHangHoa.SO_LUONG" step="1" ng-change="ValueCount($index)" name="soluong" disabled />
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="">Chất lượng: <span>*</span></label>
+                        <select class="form-control" ng-model="chitietTheoHangHoa.ID_CHAT_LUONG" ng-options="option.ID as option.TEN for option in dmchatluong" name="chatluong" disabled>
+                            <option value="">- - - Chọn chất lượng - - -</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="">Model<span>*</span></label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.MODEL" name="model" />
+                    </div>
+                    <div class="col-12 col-md-4" ng-show="ShowTheoAppCode">
+                        <label for="">{{labelAppCode1}}<span>*</span></label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.MO_TA_CT1" name="sokhung" disabled />
+                    </div>
+                    <div class="col-12 col-md-4" ng-show="ShowTheoAppCode">
+                        <label for="">Số máy: </label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.MO_TA_CT2" name="somay" disabled />
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="">Năm sản xuất: <span>*</span></label>
+                        <input class=" form-control" type="number" ng-model="chitietTheoHangHoa.NAM_SX" step="1" name="namsanxuat" disabled />
+                    </div>
+                    <div class="col-12 col-md-4" ng-show="ShowTheoAppCode">
+                        <label for="">BKS: </label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.MO_TA_CT3" name="bks" disabled />
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="">Đơn giá: </label>
+                        <input class=" form-control" type="number" ng-model="chitietTheoHangHoa.DON_GIA" step="10000" ng-change="ValueCount($index)" name="dongia" disabled />
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="">Thành tiền: </label>
+                        <input class=" form-control" type="number" ng-model="chitietTheoHangHoa.THANH_TIEN" name="thanhtien" disabled />
+                    </div>
+
+                    <div class="col-12 col-md-8">
+                        <label for="">Ghi chú: </label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.GHI_CHU" name="ghichu" disabled />
+                    </div>
+
+                    <div class="col-12 col-md-12" ng-show="!SerialStatus">
+                        <label for="">Số serial: </label>
+                        <input class=" form-control" type="text" ng-model="chitietTheoHangHoa.SO_SERIAL" name="serial" ng-keyup="AddModel($event)" disabled />
+                    </div>
+
+                    <div ng-repeat="item in dsmodel track by $index" class="tag-widget" disabled>
+                        <span>{{item}}</span>
+                        <button class="tag-close" ng-click="XoaModel($index)">
+                            <i class="fa fa-times-circle"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

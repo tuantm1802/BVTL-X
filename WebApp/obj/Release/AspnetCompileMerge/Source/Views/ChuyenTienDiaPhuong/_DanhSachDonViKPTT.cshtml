@@ -1,0 +1,87 @@
+﻿
+<style>
+    .fixTableHead {
+        overflow-y: scroll;
+    }
+
+        .fixTableHead thead th {
+            position: sticky !important;
+            top: 1px;
+        }
+
+    .choose {
+        border-radius: 30px;
+    }
+
+        .choose :focus {
+            background-color: lightgreen;
+        }
+
+    .fixTableHead table {
+    }
+</style>
+<form id="DanhSachDonViKPTT" name="DanhSachDonViKPTT">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Danh sách đơn vị</h4>
+        <button type="button" class="close" ng-click="cancel()">
+            <img src="../App_Assets/images/close.svg" alt="">
+        </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body">
+        <div class="row no-gutters">
+            <div class="col-12 col-md-4 col-lg-4">
+                <label for="">Tìm kiếm</label>
+                <input type="text" ng-model="SearchKeyword" />
+            </div>
+        </div>
+        <hr />
+        <div class="content-system content-table mt-2 fixTableHead" style="border:none !important; height:calc(100vh - 340px);">
+            <table class="table-responsive table-hover result-point fixTableHead">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="center" style="width: 3%;">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="center" style="width: 97%;">Tên đơn vị</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in ListDonVi | filter : SearchKeyword">
+                        <td class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-disabled="item.Status" ng-model="item.Selected" value="{{item.ID}}" />
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                        <td>{{item.TEN_DON_VI}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <!-- Modal footer -->
+    <div class="modal-footer d-flex justify-content-between">
+        <h5 class="day-make"></h5>
+        <div class="main-action d-flex flex-wrap">
+            <button class="btn-action-m cl-3" ng-click="ChonDonVi()">
+                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_print_light.svg" alt="" class="hover_m">
+                <span>Chọn</span>
+            </button>
+
+            <button class="btn-action-m cl-3" ng-click="cancel()">
+                <img src="../App_Assets/images/d_close.svg" alt="" class="exsit">
+                <img src="../App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                <span>Đóng</span>
+            </button>
+        </div>
+    </div>
+</form>
+

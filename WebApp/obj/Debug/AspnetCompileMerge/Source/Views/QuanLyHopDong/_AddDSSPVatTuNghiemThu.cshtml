@@ -1,0 +1,61 @@
+﻿<div class="modal fade" id="modalAddDSNTVatTu">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Danh sách sản phẩm</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class=" col-md-12" id="formSubmit">
+                    <div class="row">
+                        <div class="col-sm-12" style="padding:0px;padding-right:10px;">
+                            <fieldset class="scheduler-border">
+                                <legend class="scheduler-border"><label class="bold-label">Danh sách Sản phẩm</label></legend>
+                                <div class="content-table" style="height:382px; overflow-y:scroll;">
+                                    <table class="table-responsive table-hover result-point">
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AddSPVTNTBanDauCheckAll" ng-change="AddSPVTNTSelectAll()" /> </th>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Đơn vị tính</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="">
+                                            <tr ng-repeat="item in listVatTuPhu" ng-if="item.ID !== ''">
+                                                <td class="center"><input type="checkbox" class="form-control" ng-model="item.SELECT" /> </td>
+                                                <td>{{item.TEN_SP}}</td>
+                                                <td>{{item.TEN_DVT}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="addSPVatTuNghiemThu()">
+                        <img src="~/App_Assets/images/d_save.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                        <span>Lưu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/d_close.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

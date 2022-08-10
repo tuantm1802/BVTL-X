@@ -1,0 +1,224 @@
+﻿<div class="container-fluid d-flex cons-ac-system" ng-controller="CauHinhSPDinhKemController" style="margin-top: 0px; padding-left: 0px; padding-right: 0px;">
+    <div class="row  no-gutters w-100" style="height: calc(100vh - 233px);">
+        <div class="col-12 col-sm-3 col-md-6 col-lg-3" style="padding-left:0px;padding-right:3px;height:100%;">
+            <fieldset class="scheduler-border" style="height: calc(100vh - 240px);">
+                <legend class="scheduler-border">Cấu hình sản phẩm đính kèm</legend>
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="main-action">
+                            <div class="form-search w-100" ng-show="RoleBtnView">
+                                <input type="text" placeholder="Tìm kiếm" ng-model="TC_MaDoiTieuChuan">
+                                <button ng-click="TC_TimKiem()">
+                                    <img src="~/App_Assets/images/search_icon.svg" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-table fixTableHead" style="height: calc(100vh - 345px);">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Ngày tạo</th>
+                                <th class="text-center">Mô tả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in DSTieuChuan" ng-class="{activerow:$index==selectedRowTieuChuan}" ng-click="TC_SelectTieuChuan(item,$index )">
+                                <td class="text-center">{{$index +1}}</td>
+                                <td class="text-center">{{item.NGAY_TAO_TEXT}}</td>
+                                <td class="text-left">{{item.SO_QUYET_DINH}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="pages-switch">
+                    <div class="main-action d-flex align-items-center flex-wrap pull-right">
+                        <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnView" ng-click="TC_LamMoi()">
+                            @*<img src="~/App_Assets/images/ic_cancel_light.svg" />*@
+                            <span>Làm mới</span>
+                        </button>
+                        <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnCreate" ng-click="TC_ThemMoi()">
+                            <img src="~/App_Assets/images/icon_add.svg" alt="">
+                            <span>Thêm mới</span>
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-12 col-sm-9 col-md-6 col-lg-9" style="padding-left: 2px;  padding-right: 2px;">
+            <div class="row" ng-show="ShowBoxRight">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6" style=" padding-right: 0px; padding-right: 2px;">
+                    <fieldset class="scheduler-border" style="width: 100%; padding-left: 5px !important; padding-right: 5px !important; height: calc(100vh - 240px);">
+                        <legend class="scheduler-border">Danh sách sản phẩm</legend>
+                        <div class="row">
+                            <div class="col-sm-12 text-left">
+                                <label><b>Mã cấu hình đính kèm: {{TC_TieuChuanSelect.SO_QUYET_DINH}}</b></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-lg-3 align-self-end">
+                                <div class="mb-2 main-action d-flex align-items-center flex-wrap">
+                                    <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnCreate" ng-click="SPD_ThemMoi()" title="Thêm mới">
+                                        <img src="~/App_Assets/images/icon_add.svg" alt="">
+                                    </button>
+                                    <button class="btn-action-delete ct-fix-lap" ng-show="RoleBtnDelete" ng-click="SPD_Xoa()" title="Xoá">
+                                        <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="main-action pt-3">
+                                    <div class="form-search w-100" ng-show="RoleBtnView">
+                                        <input type="text" placeholder="Tìm kiếm" ng-model="SPD_TenSanPham" ng-change="SPD_TimKiem()">
+                                        <button>
+                                            <img src="~/App_Assets/images/search_icon.svg" ng-click="SPD_TimKiem()" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-table fixTableHead" style="height: calc(100vh - 375px);">
+                            <table class="table-nested table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="cell-input">
+                                            @*<input ng-checked="(DSSanPhamDoi | selected).length == DSSanPhamDoi.length"  class="form-control" ng-click="toggleAllCheckboxes($event)" type="checkbox" />*@
+                                        </th>
+                                        <th style="width:8%;">
+                                            STT
+                                        </th>
+                                        <th class="cell-members">
+                                            Tên sản phẩm
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-repeat="item in DSSanPhamDoi">
+                                </tbody>
+                            </table>
+                            <script id="table_tree.html" type="text/ng-template">
+                                <tr ng-class="{parent: item.children}" ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
+                                    <td class="cell-input" ng-if="!item.parent">
+                                        <input ng-change="toggleCheckbox(item, parentScope)" ng-model="item.selected" class="form-control" type="checkbox" />
+                                    </td>
+                                    <td class="cell-name" ng-if="item.parent" ng-click="item.opened = !item.opened">
+                                        <div class="indent" style="padding-left: {{15*level}}px"></div>
+
+                                    </td>
+                                    <td class="cell-name" style="padding: 8px !important;" colspan="2" ng-if="item.parent">
+                                        <b>{{item.name}}</b>
+                                    </td>
+                                    <td class="cell-name" style="padding: 8px !important;width:8%;" ng-if="!item.parent">
+                                        {{$index +1}}
+                                    </td>
+                                    <td class="cell-members" style="padding: 8px !important;" ng-if="!item.parent">
+                                        {{item.name}}
+                                    </td>
+                                </tr>
+                                <tr class="children" ng-if="item.children &amp;&amp; item.children.length &gt; 0">
+                                    <td colspan="4">
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-init="level = level + 1" ng-repeat="item in item.children"></tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </script>
+
+                        </div>
+                        <div class="pages-switch">
+                            <div class="main-action d-flex align-items-center flex-wrap pull-right">
+                                <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnRollback" type="button" ng-click="SPD_HuyThayDoi()">
+                                    <img src="~/App_Assets/images/ic_cancel_light.svg" />
+                                    <span>Hủy thay đổi</span>
+                                </button>
+                                <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnSave" ng-click="SPD_Luu()">
+                                    <img src="~/App_Assets/images/ic_save_light.svg" alt="">
+                                    <span>Lưu</span>
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6" style="padding-left: 2px;">
+                    <fieldset class="scheduler-border" style="width: 100%; padding-left: 5px !important; padding-right: 5px !important; height: calc(100vh - 240px);">
+                        <legend class="scheduler-border">Danh sách sản phẩm đính kèm</legend>
+                        <div class="row">
+                            <div class="col-sm-12 text-left">
+                                <label><b>Sản phẩm: {{TenSanPhamDoi}}</b></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-lg-3 align-self-end">
+                                <div class="mb-2 main-action d-flex align-items-center flex-wrap">
+                                    <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnCreate" ng-click="SPN_ThemMoi()" title="Thêm mới">
+                                        <img src="~/App_Assets/images/icon_add.svg" alt="">
+                                    </button>
+                                    <button class="btn-action-delete ct-fix-lap" ng-show="RoleBtnDelete" ng-click="SPN_Xoa()" title="Xoá">
+                                        <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="main-action pt-3">
+                                    <div class="form-search w-100" ng-show="RoleBtnView">
+                                        <input type="text" placeholder="Tìm kiếm" ng-model="SPN_TenSanPham" ng-change="SPN_TimKiem()">
+                                        <button>
+                                            <img src="~/App_Assets/images/search_icon.svg" ng-click="SPN_TimKiem()" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-table fixTableHead" style="height: calc(100vh - 375px);">
+                            <table class="table-responsive table-hover result-point">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th class="center"><input type="checkbox" class="form-control" ng-model="SPN_CheckAll" ng-change="SPN_ChangeCheckAll()" /> </th>
+                                        <th class="center">STT </th>
+                                        <th class="center">Tên sản phẩm </th>
+                                        <th class="center">Số lượng </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+                                    <tr ng-repeat="item in DSSanPhamNhan">
+                                        <td class="center"><input ng-change="SPN_ChooseSanPhamNhan()" class="form-control" type="checkbox" class="form-control" ng-model="item.SELECT" /> </td>
+                                        <td class="text-center">{{$index +1}}</td>
+                                        <td class="text-left"><select class="form-control" ng-change="SPN_ChangeSanPhamNhan($index, item.TEN_SP)" ui-select2 ng-model="item.SP_ID" ng-options="item.ID as item.TEN_SP for item in ListSanPhamKhac"></select></td>
+                                        <td class="text-right"><input type="number" class="form-control" ng-model="item.SoLuong" min="1" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                        <div class="pages-switch">
+                            <div class="main-action d-flex align-items-center flex-wrap pull-right">
+                                <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnCreate" type="button" ng-click="SPN_DSSanPham()">
+                                    <img src="~/App_Assets/images/icon_fl.svg" />
+                                    <span>Danh sách sản phẩm</span>
+                                </button>
+                                <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnRollback" type="button" ng-click="SPN_HuyThayDoi()">
+                                    <img src="~/App_Assets/images/ic_cancel_light.svg" />
+                                    <span>Hủy thay đổi</span>
+                                </button>
+                                <button class="btn-action-m ct-fix-lap" ng-show="RoleBtnSave" ng-click="SPN_Luu()">
+                                    <img src="~/App_Assets/images/ic_save_light.svg" />
+                                    <span>Lưu</span>
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial("~/Views/TieuChuanCBCSPham/_addCHSPDinhKem.cshtml")
+    @Html.Partial("~/Views/TieuChuanCBCSPham/_addDsSanPham.cshtml")
+    @Html.Partial("~/Views/TieuChuanCBCSPham/_addSpDinhKem.cshtml")
+
+</div>

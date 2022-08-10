@@ -1,0 +1,178 @@
+﻿<div class="modal fade" id="modalAddDieuChuyenVatTu">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm mới điều chuyển vật tư</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-infor has-border p-3">
+                    <h4 class="form-title">
+                        Thông tin vật tư
+                    </h4>
+
+                    <form class="row no-gutters" name="dcvtkhongquakhoform" ng-validate="validationDieuChuyenVTKhongQuaKho">
+                        <div class="col-12 col-md-4">
+                            <label for="">Số phiếu: <span>*</span></label>
+                            <input type="text" to-uppercase ng-model="modelDieuChuyenVTKhongQuaKhoAE.soPhieu" name="soPhieu" class="form-control" readonly />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Ngày giao:<span>*</span></label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control" ng-model="modelDieuChuyenVTKhongQuaKhoAE.ngayThang" name="ngayThang" horizontal="left" value="" style="width: 100%">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Số phiếu tài chính:<span>*</span></label>
+                            <input type="text" ng-model="modelDieuChuyenVTKhongQuaKhoAE.soPhieuH55" name="soPhieuH55" class="form-control" value="">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Người giao:</label>
+                            <input type="text" ng-model="modelDieuChuyenVTKhongQuaKhoAE.nguoiNhan" name="nguoiNhan" class="form-control" value="">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="">Nơi giao:</label>
+                            <input type="text" disabled ng-model="modelDieuChuyenVTKhongQuaKhoAE.noiGiao" name="noiNhan" class="form-control">
+                        </div>
+                        <div class="col-12 col-md-4" ng-class="modelDieuChuyenVTKhongQuaKhoAE.requiredNoiNhan ? 'app-error': ''">
+                            <label for="">Nơi nhận:</label>
+                            <select ng-model="modelDieuChuyenVTKhongQuaKhoAE.noiNhan" name="noiGiao" ng-options="item.ID_HOP_DONG as item.NAME_HOP_DONG for item in listHopdong" select2 class="form-control" style="width:100%">
+                            </select>
+                            <span ng-show="modelDieuChuyenVTKhongQuaKhoAE.requiredNoiNhan" class="error">Nơi nhận không được để trống</span>
+                        </div>
+                        <div class="col-12 col-md-4" ng-class="modelDieuChuyenVTKhongQuaKhoAE.requiredLanhDao ? 'app-error': ''">
+                            <label for="">Lãnh đạo:</label>
+                            <select ng-model="modelDieuChuyenVTKhongQuaKhoAE.lanhDao" name="noiGiao" ng-options="item.USER_ID as item.FULL_NAME for item in listLanhDao" select2 class="form-control" style="width:100%">
+                            </select>
+                            <span ng-show="modelDieuChuyenVTKhongQuaKhoAE.requiredLanhDao" class="error">Lãnh đạo không được để trống</span>
+                        </div>
+                        <div class="col-12 col-md-4" ng-class="modelDieuChuyenVTKhongQuaKhoAE.requiredPhuongThucVanChuyen ? 'app-error': ''">
+                            <label for="">Phương thức vận chuyển:</label>
+                            <select ng-model="modelDieuChuyenVTKhongQuaKhoAE.phuongThucVanChuyen" name="phuongThucVanChuyen" ng-options="item.FLEX_VALUE_ID as item.DESCRIPTION for item in listPhuongThucVanChuyen" select2 class="form-control" style="width:100%">
+                            </select>
+                            <span ng-show="modelDieuChuyenVTKhongQuaKhoAE.requiredPhuongThucVanChuyen" class="error">Phương thức vận chuyển không được để trống</span>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Mô tả:</label>
+                            <input type="text" ng-model="modelDieuChuyenVTKhongQuaKhoAE.moTa" name="moTa" class="form-control" value="">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="main-action d-flex align-items-center justify-content-between flex-wrap pt-3">
+                    <div class="d-flex align-items-center flex-wrap ct-w">
+                        @*<button class="btn-action-m" ng-click="addSanPham()" ng-disabled="isDisableHD">
+                            <img src="~/App_Assets/images/icon_add.svg" alt="">
+                            <span>Thêm mới</span>
+                        </button>*@
+
+                        <button class="btn-action-m" ng-click="removeSanPham()" ng-disabled="isDisableHD || isChoDuyet">
+                            <img src="~/App_Assets/images/icon_del.svg" alt="">
+                            <span>Xoá</span>
+                        </button>
+
+                        <button class="btn-action-m" ng-click="addDsGTVatTuModal()" data-toggle="modal" data-target="#modalHDVatTuKhongKho" ng-disabled="isDisableHD || isChoDuyet">
+                            <img src="~/App_Assets/images/icon_fl.svg" alt="">
+                            <span>Danh sách sản phẩm</span>
+                        </button>
+                    </div>
+                    @*<div style="float:right">
+                        <input type="checkbox" ng-model="modelDieuChuyenVTKhongQuaKhoAE.capNhatSLTT" ng-disabled="isDisableHD || isChoDuyet"/>Cập nhật SLTT
+                    </div>*@
+                </div>
+
+                <div class="content-table">
+                    <table class="table table-bordered table-hover">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center"><input type="checkbox" ng-model="isCheckAllSP" class="ace" ng-change="changeCheckAllSP()"></th>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên hàng</th>
+                                <th class="text-center">ĐVT</th>
+                                <th class="text-center">SL tồn</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-center">SL thực tế</th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr ng-repeat="item in listSanPhamAdd">
+                                <td class="text-center">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" ng-model="item.checked" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </td>
+                                <td>{{$index + 1}}</td>
+                                <td ng-class="item.tenHang.error ?'error':''">
+                                    <div ng-switch="item.tenHang.edit">
+                                        <div ng-switch-when="true">
+                                            <select class="form-control" style="width:100%;" ng-change="changeThanhPhamCuaHD(item, 'true')" ng-model="item.tenHang.value" ui-select2 ng-options="item.ID_SP as item.TEN_SP for item in listSanPhamCuaHopDong">
+                                            </select>
+                                        </div>
+                                        <div ng-switch-default>
+                                            {{item.tenHang.value}}
+                                        </div>
+                                        <div ng-show="item.tenHang.error">
+                                            <label class="error">Bạn chưa chọn sản phẩm</label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{item.dvt}}</td>
+                                <td>{{item.soLuongTon}}</td>
+                                <td>
+                                    <input type="text" currency-input ng-class="item.soLuong.error? 'error': ''" ng-model="item.soLuong.value" class="form-control" value="">
+                                    <div ng-show="item.soLuong.error">
+                                        <label class="error">Bạn chưa nhập số lượng</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" currency-input ng-class="item.soLuongTT.error? 'error': ''" ng-model="item.soLuongTT.value" class="form-control" value="">
+                                    <div ng-show="item.soLuongTT.error">
+                                        <label class="error">Bạn chưa nhập số lượng thực tế</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+
+                <h5 class="day-make">Ngày tạo: <i>@DateTime.Now.ToString("dd/MM/yyyy")</i></h5>
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="inPhieuVatTuChinh(3)">
+                        <img src="~/App_Assets/images/ic_print_light.svg" alt="">
+
+                        <span>In phiếu</span>
+                    </button>
+
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/icon_cancel.svg" alt="">
+                        <span>Huỷ thay đổi</span>
+                    </button>
+
+                    <button class="btn-action-m cl-3" ng-click="addDieuChuyenVTKhongQuaKho()" ng-disabled="isDisableHD || isChoDuyet" ng-show="luuDieuChuyenVatTuChinhKhongQuaKho">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Lưu</span>
+                    </button>
+
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

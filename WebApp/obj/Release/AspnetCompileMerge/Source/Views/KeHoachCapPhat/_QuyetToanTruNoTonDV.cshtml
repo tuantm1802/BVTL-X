@@ -1,0 +1,107 @@
+﻿<form id="formQuyetToanTruNoTonDV" enctype="multipart/form-data" name="formQuyetToanTruNoTonDV">
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h4 class="modal-title">Phiếu quyết toán</h4>
+        <button type="button" class="bootbox-close-button close" ng-click="cancel()">×</button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body" style="max-height: calc(100vh - 160px);">
+        @*<div class="main-action">
+            <div class="form-search w-100">
+                <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchSanPham">
+                <button class="bg-green" style="color:white" ng-click="searchSanPham()">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>*@
+        <div class="content-table" style="max-height: calc(100vh - 255px); overflow: auto;">
+
+            <div ng-show="alertMessage" class="text-center ">
+                <span class="font-italic text-warning">Không có phiếu quyết!</span>
+                <span ng-click="showHideMessage()"> (x) </span>
+            </div>
+
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        @*<th class="center" style="width:5%">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="selectAllKeHoach" ng-click="checkAllDsKeHoach()" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="center">TT</th>*@
+                        <th class="text-left">Số quyết toán</th>
+                        <th class="text-center">Ngày tạo phiếu</th>
+                        <th class="text-center">Năm kinh phí</th>
+                    </tr>
+                </thead>
+
+                <tbody class="tbody-hover">
+                    <tr>
+                        <td class="text-center tb-ip">
+                            <select class="form-control" ng-change="showChiTietKHQT(thongTinQT.ID_KH)" ng-model="thongTinQT.ID_KH" ng-options="option.ID_KH as option.SO_KH for option in dsQuyetToanTruNoTonDV" name="quyettoan">
+                                <option value="">- - - Chọn số quyết toán - - -</option>
+                            </select>                        
+                        </td>
+                        <td class="text-center">{{thongTinQT.NGAY_TAO_TEXT}}</td>
+                        <td class="text-center">{{thongTinQT.NAM}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="content-table" style="max-height: calc(100vh - 255px); overflow: auto;">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="center" style="width:5%">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="thongTinQT.selectAllSP" ng-click="checkAllDsSanPhamTruNoDV()" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="center">TT</th>
+                        <th class="text-left">Mã hàng</th>
+                        <th class="center">Tên hàng</th>
+                        <th class="text-left">ĐVT</th>
+                        <th class="text-left">Số lượng Nợ</th>
+                        <th class="text-left">Số Q.toán</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    <tr ng-repeat="item in ListDsSanPhamTruNoDV">
+                        <td class="text-center tb-ip">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" ng-model="item.Selected" ng-click="checkValDsSanPhamTruNoDV($index)" />
+                            </label>
+                        </td>
+                        <td>{{$index + 1}}</td>
+                        <td>{{item.MA_H55}}</td>
+                        <td>{{item.TEN_SP}}</td>
+                        <td>{{item.TEN_DVT}}</td>
+                        <td>{{item.SL_NO_CON_LAI}}</td>
+                        <td>
+                            <input class=" form-control" type="number" ng-model="item.SL_TRA_NO" ng-init="item.SL_TRA_NO = item.SL_NO_CON_LAI"  />
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal footer -->
+    <div class="modal-footer main-action">
+        <button class="btn-action-m bg-green" ng-click="btnQuyetToanTruNoTonDV()">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Quyết toán</span>
+        </button>
+        <button class="btn-action-m bg-orange" ng-click="cancel()">
+            <i class="fa fa-times" aria-hidden="true"></i>    <span> Đóng</span>
+        </button>
+    </div>
+</form>
+

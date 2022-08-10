@@ -1,0 +1,156 @@
+﻿
+    <div class="tab-pane fade show active" id="bieu-gia" role="tabpanel" aria-labelledby="home-tab">
+        <div class="row">
+            <div class="col-md-6 none-padding">
+                <div class="fill-box">
+                    <h3 class="title-fill">
+                        Biếu giá trang phục
+                    </h3>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="btn-group main-action d-flex pull-left ">
+                                
+                                <button class="btn-action-m" style="margin-left:20px;">
+                                    <i class="fa fa-plus" aria-hidden="true"></i> <span>CH trang phục</span>
+                                </button>
+                                <button class="btn-action-m" ng-click="ThemMoiTuDanhSach()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i> <span>Thêm mới từ DS</span>
+                                </button>
+                            </div>
+                           
+                        </div>
+                    </div>
+
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="main-action">
+                                <div class="form-search w-100" style=" margin:0px !important;">
+                                    <input type="text" placeholder="Tìm kiếm" ng-model="bieuGia_Keyword">
+                                    <button>
+                                        <img src="~/App_Assets/images/search_icon.svg" ng-click="bieuGia_Search()" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="content-table fixTableHead" style="height: calc(100vh - 337px);">
+                    <table class="table-nested table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="cell-input" style="width:6%;">
+                                    <input ng-model="toggleAllCheckboxes" class="form-control" ng-change="changeToggleAllCheckboxes()" type="checkbox" />
+                                </th>
+                                <th class="cell-members" style="width:30%;">
+                                    Tên sản phẩm
+                                </th>
+                                <th class="cell-members" style="width:15%;">
+                                    biểu giá
+                                </th>
+                                <th class="cell-members" style="width:15%;">
+                                    %trợ giá
+                                </th>
+                                <th class="cell-members" style="width:15%;">
+                                    Mô tả
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-repeat="item in dsBieuGia">
+                        </tbody>
+                    </table>
+                    <script id="table_tree.html" type="text/ng-template">
+                        <tr ng-class="{parent: item.children}" ng-init="parentScope = $parent.$parent; initCheckbox(item, parentScope.item)">
+                            <td class="cell-input" ng-if="!item.parent" style="width: 8%;">
+                                <input ng-model="item.CHECKEDBG" class="form-control" ng-change="changeCheck(item.CHECKEDBG)" type="checkbox" />
+                            </td>
+                            <td class="cell-name" ng-if="item.parent" style="width: 8%;" ng-click="item.opened = !item.opened">
+                                <div class="indent" style="padding-left: 10px"></div>
+                                @*<input ng-model="item.CHECK" class="form-control" ng-change="changeCheck()" type="checkbox" />*@
+                            </td>
+                            <td class="cell-name" style="padding: 5px !important; width: 37%;">
+                                {{item.name}}
+                            </td>
+                            <td class="cell-members" style="padding: 5px !important; width:15%; text-align:right" ng-if="!item.parent">
+                                {{item.bieu_gia}}
+                            </td>
+                            <td class="cell-members" style="padding: 5px !important; width:15%; text-align:right" ng-if="!item.parent">
+                                {{item.phan_tram}}
+                            </td>
+                            <td class="cell-members" style="padding: 0px !important; width:15%;" ng-if="item.parent">
+                                <input type="number" ng-change="changeSua($index)" style="text-align: right" class="form-control" ng-model="item.bieu_gia">
+                            </td>
+                            <td class="cell-members" style="padding: 0px !important; width:15%;" ng-if="item.parent">
+                                <input type="number" ng-change="changeSua($index)" style="text-align: right" class="form-control" ng-model="item.phan_tram">
+                            </td>
+                            <td class="cell-name" style="padding: 5px !important; width: 15%;">
+                            </td>
+                        </tr>
+                        <tr class="children" ng-if="item.children &amp;&amp; item.children.length &gt; 0">
+                            <td colspan="5">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <tbody ng-class="{opened: item.opened}" ng-include="&#39;table_tree.html&#39;" ng-init="level = level + 1" ng-repeat="item in item.children"></tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </script>
+                </div>
+                <div class="col-md-12 main-action">
+                    <div class="row pull-right">
+                        <button class="btn-action-m bg-red" ng-click="xoaBieuGia()">
+                            <i class="fa fa-trash" aria-hidden="true"></i>  <span>Xóa</span>
+                        </button>
+                        <button class="btn-action-m" ng-click="huyBieuGia()">
+                            <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy thay đổi</span>
+                        </button>
+                        <button class="btn-action-m" ng-click="luuBieuGia()">
+                            <i class="fa fa-save" aria-hidden="true"></i> <span>Lưu</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 none-padding-right">
+                <div class="fill-box">
+                    <h3 class="title-fill">
+                        Danh sách đơn vị được trợ giá
+                    </h3>
+                </div>
+                <div class="col-md-12 main-action">
+                    <div class="row">
+                        <button class="btn-action-m" ng-click="ThemDVTroGia()">
+                            <i class="fa fa-plus" aria-hidden="true"></i> <span>Thêm đơn vị</span>
+                        </button>
+                        <button class="btn-action-m bg-red" ng-click="xoaDVTroGia()">
+                            <i class="fa fa-trash" aria-hidden="true"></i>  <span>Xóa</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="content-table fixTableHead" style="height: calc(100vh - 310px);">
+                    <table class="table-hover result-point">
+                        <thead class="point-table-head" style="width:100%">
+                            <tr>
+                                <th style="width:5%;" class="text-center">
+                                    <input ng-model="toggleAllDonVi" class="form-control" ng-change="changeToggleAllDonVi()" type="checkbox" />
+                                </th>
+                                <th style="width:5%;">STT</th>
+                                <th style="width:90%;" class="text-left">Tên đơn vị</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in dsDV_TroGia">
+                                <td class="text-center">
+                                        <input ng-model="item.CHECKEDDV" class="form-control" ng-change="changeCheckDV()" type="checkbox" />
+                                </td>
+                                <td>
+                                    {{$index + 1}}
+                                </td>
+                                <td>
+                                    {{item.TEN_DON_VI}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,50 @@
+﻿<div class="modal fade" id="CoppyDinhMucNamTruoc">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable b-width_1" style="width: 510px !important;">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Định mức vật tư theo năm trước</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class="col-md-12" style="margin-bottom:15px; margin-top:10px; margin-right:20px;">
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12 align-self-end">
+                            <div class="main-action">
+                                <div class="form-search w-100">
+                                    <div class="col-sm-4 no-padding text-right">
+                                        <label>Năm coppy dữ liệu</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <select ng-model="NamBanHanhTheoNT" class="form-control">
+                                            <option value="{{item.Value}}" ng-repeat="item in ListYearBH">{{item.Name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="CoppyDMNamTruoc_CoppyDuLieu()">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Lưu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

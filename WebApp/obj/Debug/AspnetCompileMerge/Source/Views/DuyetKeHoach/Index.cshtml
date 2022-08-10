@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách duyệt kế hoạch";
+}
+<main ng-controller="DuyetKeHoachController" style="padding-top: 20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="fill-box-bread-crumb">
+                    <h3 class="bread_crumb">
+                        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>  /  Duyệt kế hoạch
+                    </h3>
+                </div>
+            </div>
+        </div>
+        @*Menu action*@
+        <div class="row fill-box-action">
+            <h3 class="col-12 col-md-4 col-lg-4 body_title">
+                <i class="fa fa-folder-open" aria-hidden="true"></i> Danh sách kế hoạch
+            </h3>
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="main-action d-flex pull-right">
+                    <button class="btn-action-m bg-green" ng-click="btnPheDuyetKeHoach()">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i> <span>Duyệt kế hoạch</span>
+                    </button>
+                    <button class="btn-action-m  bg-green" ng-click="btnTuChoiDuyetKH()">
+                        <i class="fa fa-ban" aria-hidden="true"></i>    <span> Từ chối duyệt </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        @*End menu action*@
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <form class="row">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label for="">  </label>
+                        <input type="text" class="form-control" ng-model="SO_KH" placeholder="Số kế hoạch" />
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label for="">  </label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="TU_NGAY" placeholder="Từ ngày">
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label for="">  </label>
+                        <div class="input-group date" data-date-format="dd/mm/yyyy">
+                            <input type="text" customzdatetime class="form-control" ng-model="DEN_NGAY" placeholder="Đến ngày">
+                            <span class="input-group-addon"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label for="">  </label>
+                        <select ng-model="cbbLoaiKeHoach" ng-options="lkh as lkh.name for lkh in DsLoaiKeHoach" class="form-control">
+                            {{cbbLoaiKeHoach.code}} {{cbbLoaiKeHoach.name}}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <label for="">  </label>
+                        <select ng-model="cbbTrangThai" ng-options="lkh as lkh.name for lkh in ListTrangThai" class="form-control">
+                            {{cbbTrangThai.code}} {{cbbTrangThai.name}}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 main-action">
+                        <label for="">  </label>
+                        <button class="btn-action-m bg-green form-control" ng-click="btnSearchKeHoach()">
+                            <i class="fa fa-search" aria-hidden="true"></i> <span>Tìm kiếm</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-xl-12">
+                <div class="content-table">
+                    <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </th>
+                                <th class="text-center">TT</th>
+                                <th class="text-center">Loại kế hoạch</th>
+                                <th class="text-center">Số kế hoạch </th>
+                                <th class="text-center">Ngày tạo KH </th>
+                                <th class="text-center">Hình thức vận chuyển </th>
+                                <th class="text-center">Trạng thái </th>
+                                <th class="text-center">Chi tiết KH </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in DanhSachDuyetKH" ng-class="item.TRANG_THAI == 'U'?'fontchuaduyet':''">
+                                <td class="text-center">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" ng-model="item.Selected" value="{{item.ID_KH}}" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </td>
+                                <td class="text-center">{{$index + 1}}</td>
+                                <td class="text-center">
+                                    {{item.LOAI_KH_TEXT}}
+                                </td>
+                                <td>{{item.SO_KH}}</td>
+                                <td class="text-center">{{item.NGAY_TAO_TEXT}}</td>
+                                <td>{{item.HINH_THUC_VAN_CHUYEN}}</td>
+                                <td class="text-center">
+                                    {{item.TRANG_THAI == 'U' ? 'Chờ duyệt' : (item.TRANG_THAI == 'A' || item.TRANG_THAI == 'C') ? 'Đã duyệt' : 'Từ chối duyệt'}}
+                                </td>
+                                <td class="text-center">
+                                    <i class="fa fa-file-excel-o" aria-hidden="true" ng-click="XemChiTietKh(item)" style="cursor:pointer"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="content-table pull-right" style="width:100%; margin-bottom:20px">
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="check-pass">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nhập mật khẩu</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-pass">
+                        <div class="col-12 col-md-12">
+                            <input class="form-control" type="password" name="Password" ng-model="Password" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer main-action">
+                    <button class="btn-action-m bg-green" ng-click="CheckPass()">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i> <span>Đồng ý</span>
+                    </button>
+                    <button class="btn-action-m bg-green" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="box_ykien">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nhập lý do</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-ykien">
+                        <div class="col-12 col-md-12"> 
+                            <textarea id="lydo" ng-model="txtLyDo" class="form-control-area" rows="3"> 
+                            </textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer main-action">
+                    <button class="btn-action-m bg-green" ng-click="btnTuChoiKH()">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i> <span>Đồng ý</span>
+                    </button>
+                    <button class="btn-action-m bg-green" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@section scripts{
+    <script src="~/app/Controller/DuyetKeHoach/DuyetKeHoachController.js"></script>
+}

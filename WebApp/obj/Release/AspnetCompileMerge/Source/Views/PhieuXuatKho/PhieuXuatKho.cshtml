@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .form-control {
+        padding: 0px 0px;
+    }
+    #resizable {
+        height: 87vh
+    }
+    .table-responsive {
+        display: table
+    }
+</style>
+
+
+<div class="container-fluid d-flex cons-ac-system" style=" margin-top: 0px " ng-controller="PhieuXuatKhoController">
+    @Html.Partial("~/Views/PhieuXuatKho/HangDoiPhieuXuatKho.cshtml")
+
+    <div class="content-system no-border pb-0">
+        <div style="font-size: 20pt;font-weight: bold;color: #00933f; text-align:center; align-content:center;justify-content:center">
+            PHIẾU XUẤT KHO
+        </div>
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-click="ThemPhieu()">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới</span>
+                </button>
+
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                    <span>Sửa</span>
+                </button>
+
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="LuuPhieu()">
+                    <img src="~/App_Assets/images/icon_save.svg" alt="">
+                    <span>Lưu</span>
+                </button>
+
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_cancel.svg" alt="">
+                    <span>Huỷ thay đổi</span>
+                </button>
+            </div>
+
+            <button class="btn-action-m">
+                <img src="~/App_Assets/images/l7_hover.svg" alt="">
+                <span>In phiếu xuất</span>
+            </button>
+
+        </div>
+        <div class="form-infor has-border p-3">
+            <h4 class="form-title">
+                Thông tin phiếu
+            </h4>
+            <div class="row no-gutters">
+                <div class="col-12 col-md-4">
+                    <label for="">Số phiếu: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="thongTinKho.SO_PHIEU" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Kho xuất: <span>*</span></label>
+                    <select class="form-control" ng-model="thongTinKho.KHO" ui-select2 ng-options="option.NAME for option in danhmuckho">
+                        <option value="">- - - Chọn kho xuất - - -</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Ngày viết phiếu: <span>*</span></label>
+                    <div id="dateFrom_2" class="input-group date" data-date-format="dd/mm/yyyy">
+                        <input type="text" customzdatetime class="form-control" ng-model="thongTinKho.NGAY_CT_VW">
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Kế hoạch số: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="thongTinKho.SO_KE_HOACH" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Ngày lập KH: <span>*</span></label>
+                    <div class="input-group date" data-date-format="dd/mm/yyyy">
+                        <input type="text" customzdatetime class="form-control" ng-model="ngayLapKh">
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Cán bộ phụ trách: </label>
+                    <select class="form-control" ng-model="thongTinKho.NGUOI_PHU_TRACH_VW" ng-options="option.CapBac+' '+option.HoTen for option in canbo">
+                        <option value="">- - - Chọn cán bộ - - -</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Người viết phiếu: </label>
+                    <select class="form-control" ng-model="thongTinKho.NGUOI_KY_2" ui-select2 ng-options="option.CapBac+' '+option.HoTen for option in canbo">
+                        <option value="">- - - Chọn cán bộ - - -</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Lãnh đạo phòng 9: </label>
+                    <select class="form-control" ng-model="thongTinKho.NGUOI_KY_2" ui-select2 ng-options="option.CapBac+' '+option.HoTen for option in canbo">
+                        <option value="">- - - Chọn cán bộ - - -</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Kế toán: </label>
+                    <select class="form-control" ng-model="thongTinKho.NGUOI_KY_3" ui-select2 ng-options="option.CapBac+' '+option.HoTen for option in canbo">
+                        <option value="">- - - Chọn cán bộ - - -</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-8">
+                    <label for="">Lý do xuất: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="thongTinKho.LY_DO_XUAT" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Vận chuyển: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-table mt-2">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="e-cursor-pointer" style="width:3%">
+                            <button type="button" class="btn btn-primary" ng-click="ThemHangHoa()" id="btnThemHangHoa">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                        </th>
+                        <th class="text-center" style="width:3%;">STT </th>
+                        <th class="text-center" @*style="width:12%;"*@>Hàng hóa<i id="or_ntn"></i></th>
+                        <th class="text-center" style="width:10%;">Đơn vị tính<i id="or_dv"></i></th>
+                        <th class="text-center" style="width:10%;">SL kế hoạch<i id="or_nn"></i></th>
+                        <th class="text-center" style="width:10%;">Đơn giá<i id="or_ng"></i></th>
+                        <th class="text-center" style="width:10%;">Thành tiền<i id="or_ng"></i></th>
+                        <th class="text-center" style="width:25%;">Ghi chú<i id="or_ng"></i></th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:white">
+                    <tr ng-repeat="item in dsXuatKho" @*ng-class="{'selected':item.ID_NHAP_XUAT==ID_NHAP_XUAT}" ng-click="chiTiet(item, $index)*@>
+                        <td class="text-center list-receipt" style="color:red">
+                            <button ng-click="XoaHangHoa($index)" style="vertical-align: -webkit-baseline-middle;" id="btnXoaHangHoa">
+                                <i class="glyphicon glyphicon-minus-sign"></i>
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            <label class="form-control">{{item.STT}}</label>
+                        </td>
+                        <td>
+                            <select class="form-control" ng-model="item.HANG_HOA" ui-select2 ng-options="option.MaHang+' - '+option.TenHang for option in hanghoa"></select>
+                        </td>
+                        <td>
+                            <select class="form-control" ng-model="item.DVT_VW" ui-select2 ng-options="option.NAME for option in donvitinh"></select>
+                        </td>
+                        <td><input type="number" class="form-control" ng-model="item.SO_LUONG_KH" ng-change="ValueCount(item,$index)"></td>
+                        <td><input type="number" step="10000" class="form-control" ng-model="item.DON_GIA" ng-change="ValueCount(item,$index)"></td>
+                        <td><input type="number" class="form-control" ng-model="item.THANH_TIEN_KH" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.GHI_CHU" ng-keydown="TabThemHangHoa($event)"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/app/Controller/Kho/PhieuXuatKhoController.js"></script>
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("active");
+            if ($("#img-toggle").hasClass("img-normal")) {
+                $("#img-toggle").removeClass("img-normal").addClass("img-180-rotate");
+            }
+            else if ($("#img-toggle").hasClass("img-180-rotate")) {
+                $("#img-toggle").removeClass("img-180-rotate").addClass("img-normal");
+            }
+        });
+    </script>
+}

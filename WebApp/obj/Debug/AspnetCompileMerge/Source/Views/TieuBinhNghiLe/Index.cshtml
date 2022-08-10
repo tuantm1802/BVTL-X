@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "Tiêu Binh Nghi Lễ";
+}
+<style>
+    .jexcel_selectall {
+        display: none !important;
+    }
+</style>
+<main ng-controller="TieuBinhNghiLeController" style="padding-top: 20px;">
+    <div class="container-fluid d-flex cons-ac-system">
+        @* Menu left *@
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    <i class="fa fa-folder-open color-green" aria-hidden="true"></i>  Đơn vị
+                </h3>
+            </div>
+            <div class="container">
+                <div class="btn-group" data-toggle="buttons" style="padding-top:10px; font-size:14px;">
+                    <label class="btn btn-primaryMenu active form-check-label waves-effect waves-light" ng-click="ChangeTreeViewDmDonVi(1)">
+                        <input class="form-check-input" name="rdoDmDonVi" type="radio" checked="" autocomplete="off" value="1" style="color:transparent"> <i class="fa fa-users" aria-hidden="true"></i> Nhóm đơn vị
+                    </label>
+
+                    <label class="btn btn-primaryMenu form-check-label waves-effect waves-light" ng-click="ChangeTreeViewDmDonVi(2)">
+                        <input class="form-check-input" name="rdoDmDonVi" type="radio" autocomplete="off" style="color:transparent" value="2" /><i class="fa fa-map-marker" aria-hidden="true"></i>  Khu vực
+                    </label>
+                </div>
+                <div class="main-action pt-3">
+                    <div class="form-search w-100">
+                        <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchDmDonVi">
+                        <button class="bg-green" style="color:white" ng-click="btnSearchDmDonVi()">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="function-box" style="height: calc(100vh - 265px);">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeRole" class="ztree"></ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @*End Menu left*@
+
+
+        <div class="content-system no-border pb-0 ng-hide" ng-init="IsVisibleTab=false" ng-show="IsVisibleTab">
+            @* bread crumb *@
+            <div class="fill-box-bread-crumb">
+                <h3 class="bread_crumb">
+                    <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>  /  Quân số  /   Tiêu binh nghi lễ
+                </h3>
+            </div>
+            @*End bread crumb*@
+            @*info*@
+            <div class="box-info row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-12 label-top4 pull-left color-lable">Đơn vị: <span class="color-input-bold"> {{TEN_DON_VI}} </span></label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="col-md-12 label-top4 pull-left color-lable">Trợ lý Quân Trang: <span class="color-input-bold"> {{TRO_LY_QT}} </span></label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="col-md-12 label-top4 pull-left color-lable">Cán bộ P7/H03: <span class="color-input-bold"> @ViewBag.HoTen  </span></label>
+                    </div>
+                </div>
+                @*<div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-md-12 label-top4 pull-left color-lable">Năm: <span class="color-input-bold"> {{NAM_HIEN_TAI}} </span></label>
+                        </div>
+                    </div>*@
+            </div>
+            @* End info *@
+            @*Menu action*@
+            <div class="col-12 col-md-12 col-lg-12 fill-box-action">
+                <div class="row">
+                    <h3 class="col-12 col-md-4 col-lg-4 body_title">
+                        <i class="fa fa-folder-open" aria-hidden="true"></i> Danh sách tiêu binh nghi lễ
+                    </h3>
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="main-action d-flex pull-right">
+                            <button class="btn-action-m bg-green" ng-click="AddTBTheoCapBacLoaiHamPartial()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-click="ImpFileTieuBinh(DON_VI_ID, cbbNam)">
+                                <i class="fa fa-upload" aria-hidden="true"></i> <span>Import file</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-click="Delete()">
+                                <i class="fa fa-trash" aria-hidden="true"></i> <span>Xóa</span>
+                            </button>
+                            <button class="btn-action-m bg-green" ng-click="btnLuuQsTieuBinh()">
+                                <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+                            </button>
+                            <button class="btn-action-m  bg-green" ng-click="btnHuyQsTieuBinh()">
+                                <i class="fa fa-ban" aria-hidden="true"></i>    <span> Huỷ thay đổi</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*End menu action*@
+            <div class="content-table row">
+                <div class="col-12 col-lg-12">
+                    <div class="row no-gutters cHide">
+                        <div class="col-12 col-md-12">
+                            <form class="row  pt-3 pb-3">
+                                <div class="col-12 col-md-4 col-lg-3">
+                                    <select ng-model="cbbNam" class="form-control">
+                                        <option value="">Chọn năm</option>
+                                        <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-5 col-lg-4">
+                                    <input type="text" id="nhom-cap-bac-tb" class="form-control" ng-change="ChangeNhomCapBac()" ng-model="CB" placeholder="Nhóm cấp bậc" autocomplete="on" />
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-3">
+                                    <select class="form-control" ng-model="LoaiHamId">
+                                        <option value="">Chọn loại hàm</option>
+                                        <option value="{{item.ID}}" ng-repeat="item in ListLoaiHam">{{item.LOAI_HAM}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3 col-lg-2 main-action">
+                                    <button class="btn-action-m bg-green form-control" ng-click="SearchTieuBinhDs()">
+                                        <i class="fa fa-search" aria-hidden="true"></i> <span>Tìm kiếm</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-table mt-2 row" style="">
+                <table class="table-responsive table-hover result-point" style="margin-bottom: 0px;">
+                    <thead class="point-table-head">
+                        <tr>
+                            <th class="text-center">
+                                <label class="pos-rel">
+                                    <input type="checkbox" class="ace" ng-model="selectAll" ng-click="checkAll()" />
+                                    <span class="lbl"></span>
+                                </label>
+                            </th>
+                            <th class="text-center">Cấp bậc</th>
+                            <th class="text-center">Loại hàm</th>
+                            <th class="text-center">Nam</th>
+                            <th class="text-center">Nữ</th>
+                            <th class="text-center">Tổng </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in ListTieuBinhNghiLe">
+                            <td class="text-center" style="width: 5%">
+                                <label class="pos-rel">
+                                    <input type="checkbox" class="ace" ng-model="item.Selected" value="{{item.ID}}" />
+                                    <span class="lbl"></span>
+                                </label>
+                            </td>
+                            <td style="width: 30%">
+                                {{GetCapBacText(item.CAP_BAC_ID)}}
+                            </td>
+                            <td style="width: 20%">
+                                {{GetLoaiHamText(item.LOAI_HAM_ID)}}
+                            </td>
+                            <td style="width: 15%">
+                                <input class="form-control" type="number" ng-model="item.SL_NAM_HT" ng-change="ChangeSoLuong('nam')" />
+                            </td>
+                            <td style="width: 15%">
+                                <input class="form-control" type="number" ng-model="item.SL_NU_HT"  ng-change="ChangeSoLuong('nu')" />
+                            </td>
+                            <td style="width: 15%">
+                                {{item.SL_NU_HT + item.SL_NAM_HT}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td class="text-center" colspan="3">
+                                <b>Tổng  cộng</b>
+                            </td>
+                            <td>
+                                {{SLNamTong}}
+                            </td>
+                            <td>
+                                {{SLNuTong}}
+                            </td>
+                            <td>
+                                {{SLNamTong + SLNuTong}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+    <div class="modal fade" id="check-pass">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nhập mật khẩu</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-pass">
+                        <div class="col-12 col-md-12">
+                            <input class="form-control" type="password" name="Password" ng-model="Password" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer main-action">
+                    <button class="btn-action-m bg-green" ng-click="CheckPass()">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i> <span>Đồng ý</span>
+                    </button>
+                    <button class="btn-action-m bg-green" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@section scripts{
+    <script src="~/app/Controller/QuanSo/TieuBinhNghiLeController.js"></script>
+}

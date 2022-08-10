@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    label.error {
+        color: red;
+        border:none
+    }
+    .error {
+        border: 2px solid red;
+    }
+    .form-control {
+        padding: 0px 0px;
+    }
+    #resizable {
+        height: 87vh
+    }
+    .table-responsive {
+        display: table
+    }
+</style>
+
+
+<div class="container-fluid d-flex cons-ac-system" style=" margin-top: 0px " ng-controller="SinhPhieuController">
+    @Html.Partial("~/Views/SinhPhieuKho/HangDoiSinhPhieu.cshtml")
+
+    <div class="content-system no-border pb-0">
+        <div style="font-size: 20pt;font-weight: bold;color: #00933f; text-align:center; align-content:center;justify-content:center">QUẢN LÝ CHỨNG TỪ KHO</div>
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-click="ThemPhieu()">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="TaoPhieu()">
+                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                    <span>Tạo phiếu</span>
+                </button>
+
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="LuuPhieu()">
+                    <img src="~/App_Assets/images/icon_save.svg" alt="">
+                    <span>Lưu</span>
+                </button>
+
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_cancel.svg" alt="">
+                    <span>Huỷ thay đổi</span>
+                </button>
+            </div>
+
+            <button class="btn-action-m">
+                <img src="~/App_Assets/images/l7_hover.svg" alt="">
+                <span>In quyết toán</span>
+            </button>
+
+        </div>
+        <div class="nav-box">
+            <div class="nav-tabs-box">
+                <ul class="nav nav-tabs tab-main" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#nhap_kho" title="Nhập kho" role="tab">Nhập kho</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#xuat_kho" title="Xuất kho" role="tab">Xuất kho</a>
+                    </li>
+                    @*<li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#giao_thang" title="Giao thằng" role="tab">Giao thẳng</a>
+                    </li>*@
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#dieu_chuyen" title="Điều chuyển" role="tab">Điều chuyển</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="container-fluid sl-1-row">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="xuat_kho" role="tabpanel" aria-labelledby="home-tab">
+                        @Html.Partial("~/Views/SinhPhieuKho/_TabXuatKho.cshtml")
+                    </div>
+
+                    <div class="tab-pane fade" id="giao_thang" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("~/Views/SinhPhieuKho/_TabGiaoThang.cshtml")
+                    </div>
+                    <div class="tab-pane fade " id="nhap_kho" role="tabpanel" aria-labelledby="home-tab">
+                        @Html.Partial("~/Views/SinhPhieuKho/_TabNhapKho.cshtml")
+                    </div>
+
+                    <div class="tab-pane fade" id="dieu_chuyen" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("~/Views/SinhPhieuKho/_TabDieuChuyen.cshtml")
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-table mt-2">
+            <table class="table-responsive table-hover result-point">
+                <thead class="point-table-head">
+                    <tr>
+                        <th class="text-center" style="width:3%;">STT </th>
+                        <th class="text-center" style="width:10%;">Kho</th>
+                        <th class="text-center" @*style="width:12%;"*@>Hàng hóa<i id="or_ntn"></i></th>
+                        <th class="text-center" style="width:10%;">Đơn vị tính<i id="or_dv"></i></th>
+                        <th class="text-center" style="width:10%;">Hợp đồng<i id="or_dv"></i></th>
+                        <th class="text-center" style="width:10%;">Số lượng<i id="or_nn"></i></th>
+                        <th class="text-center" style="width:10%;">Chất lượng<i id="or_ng"></i></th>
+                        <th class="text-center" style="width:10%;">Năm SX<i id="or_ng"></i></th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:white">
+                    <tr ng-repeat="item in thongtinHangHoa">
+                        <td class="text-center">
+                            <label class="form-control">{{item.STT}}</label>
+                        </td>
+                        <td><input type="text" class="form-control" ng-model="item.KHO" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.TEN_HANG" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.DVT" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.HOP_DONG" disabled></td>
+                        <td><input type="text" step="10000" class="form-control" ng-model="item.SO_LUONG_KH" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.CHAT_LUONG" disabled></td>
+                        <td><input type="text" class="form-control" ng-model="item.NAM_SX" disabled></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/app/Controller/Kho/SinhPhieuController.js"></script>
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("active");
+            if ($("#img-toggle").hasClass("img-normal")) {
+                $("#img-toggle").removeClass("img-normal").addClass("img-180-rotate");
+            }
+            else if ($("#img-toggle").hasClass("img-180-rotate")) {
+                $("#img-toggle").removeClass("img-180-rotate").addClass("img-normal");
+            }
+        });
+    </script>
+}

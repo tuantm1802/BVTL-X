@@ -1,0 +1,287 @@
+﻿
+@{
+    ViewBag.Title = "Chốt quân số đầu kỳ";
+}
+<style>
+    .function-box {
+        height: calc(100vh - 235px);
+    }
+
+    .content-table {
+        height: calc(100vh - 348px);
+    }
+
+    .nav-box {
+        height: calc(100vh - 194px) !important;
+    }
+
+    .list-buttun-ct {
+        width: calc(100% - 20px);
+    }
+
+        .list-buttun-ct .main-action .btn-action-m {
+            margin-bottom: 10px;
+        }
+
+    .content-table table thead tr th {
+        padding: .1rem;
+    }
+
+    .tree-grid .tree-grid-row td {
+        padding: 5px !important;
+    }
+</style>
+<main ng-controller="ChotQuanSoDauKyController" style="padding-top: 20px;">
+    <div class="container-fluid d-flex cons-ac-system" style="height: calc(100vh - 125px);">
+        <div class="action-system pd-two ui-widget-content" id="resizable" style="width:20%">
+            <button id="btn-changes-s-nav">
+                <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Đơn vị
+                </h3>
+            </div>
+
+            <div class="container">
+                <div class="main-action pt-3">
+                    <div class="form-search w-100">
+                        <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchDmDonVi">
+                        <button class="bg-green" style="color:#ffffff;" ng-click="btnSearchDmDonVi()">
+                            <img src="../App_Assets/images/search_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="function-box">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeRole" class="ztree"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-system no-border pb-0 ng-hide" style="overflow:hidden" ng-show="IsShowRight">
+            <div class="form-infor has-border p-3 firts-to-h" style="padding-bottom: 5px !important;">
+                <div class="row no-gutters">
+                    <div class="col-12 col-md-6 col-lg-7">
+                        @*<label for="">Đơn vị</label>*@
+                        <input type="text" class="form-control" placeholder="{{TEN_DON_VI}}" disabled>
+                    </div>
+
+                    <div class="col-12 col-md-3 col-lg-2">
+                        @*<label for="">Năm</label>*@
+                        <select ng-model="NAM" class="form-control" ng-change="ChangeNam()">
+                            <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        @*<label for="">Kỳ</label>*@
+                        <select ng-model="KY" class="form-control" ng-change="ChangeKy()">
+                            <option value="XH">Xuân hạ</option>
+                            <option value="TD">Thu đông</option>
+                            @*<option value="CN">Cả năm</option>*@
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="nav-box" style="height: auto !important;">
+                <div class="nav-tabs-box">
+                    <ul class="nav nav-tabs tab-main" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#cbcs-dau-ky" role="tab">CBCS đầu kỳ (full)</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cb-cho-huu" role="tab">Nghỉ chờ hưu</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cb-biet-phai" role="tab">CB Đi học/biệt phái</a>
+                        </li>
+
+                        @*<li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cb-hoc-vien" role="tab" ng-show="HocVien">Học viên</a>
+                        </li>*@
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#cb-tuyen-moi" role="tab">CB Tuyển mới</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#chuyen-ll" role="tab">Chuyển đổi LL</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tang-giam" role="tab">Tăng - giảm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#du-kien-thang-ham" role="tab">Dự kiến thăng hàm</a>
+                        </li>
+                        <button id="pick_up_changes_2" class="res-img">
+                            <img src="../App_Assets/images/btn_ui.svg" alt="">
+                        </button>
+                    </ul>
+                </div>
+
+                <div class="container-fluid sl-1-row">
+                    <div class="tab-content mt-3" id="myTabContent">
+                        <div class="tab-pane fade show active" id="cbcs-dau-ky" role="tabpanel" aria-labelledby="home-tab">
+                            @Html.Partial("_cBChienSyDauKy")
+                        </div>
+
+                        <div class="tab-pane fade" id="cb-cho-huu" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_nghiChoHuu")
+                        </div>
+
+                        <div class="tab-pane fade" id="cb-biet-phai" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_diHocBietPhai")
+                        </div>
+
+                        @*<div class="tab-pane fade" id="cb-hoc-vien" role="tabpanel" aria-labelledby="profile-tab" ng-show="HocVien">
+                            @Html.Partial("_hocVien")
+                        </div>*@
+
+                        <div class="tab-pane fade" id="cb-tuyen-moi" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_tuyenMoi")
+                        </div>
+
+                        <div class="tab-pane fade" id="chuyen-ll" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_chuyenLucLuong")
+                        </div>
+
+                        <div class="tab-pane fade" id="tang-giam" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_tangGiam")
+                        </div>
+                        <div class="tab-pane fade" id="du-kien-thang-ham" role="tabpanel" aria-labelledby="profile-tab">
+                            @Html.Partial("_duKienThangHam")
+                        </div>
+                    </div>
+                    <div class="list-buttun-ct mt-3">
+                        <div class="main-action d-flex align-items-center flex-wrap" @*ng-hide="RoleQuanSo"*@>
+                            <button class="btn-action-m cl-3" ng-click="ExportTemplate()">
+                                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l7_hover.svg" alt="" class="hover_m">
+                                <span>Tải mẫu nhập liệu</span>
+                            </button>
+
+                            <button class="btn-action-m cl-3" ng-disabled="KiemTraTrongKy" ng-click="AddFileChotQuanSoDauKy(DON_VI_ID, KY, NAM)">
+                                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l7_hover.svg" alt="" class="hover_m">
+                                <span>Tải dữ liệu quân số đầu kỳ từ file</span>
+                            </button>
+
+                            <button class="btn-action-m cl-3" ng-click="AddFileChotQuanSoTrongKy(DON_VI_ID, KY, NAM)">
+                                <img src="../App_Assets/images/l7.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l7_hover.svg" alt="" class="hover_m">
+                                <span>Tải dữ liệu quân số trong kỳ từ file</span>
+                            </button>
+
+                            <button class="btn-action-m cl-3" ng-click="DanhSachLoi(DON_VI_ID, KY, NAM)">
+                                <img src="../App_Assets/images/l8.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l8_hover.svg" alt="" class="hover_m">
+                                <span>Danh sách upload lỗi gần nhất</span>
+                            </button>
+
+                            <button class="btn-action-m cl-3" ng-click="DanhSachChiTietQuanSo()">
+                                <img src="../App_Assets/images/l8.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l8_hover.svg" alt="" class="hover_m">
+                                <span>Danh sách quân số chi tiết</span>
+                            </button>
+
+                            <button class="btn-action-m cl-3" ng-click="XoaToanBoQuanSo()">
+                                <img src="../App_Assets/images/l9.svg" alt="" class="exsit">
+                                <img src="../App_Assets/images/l9_hover.svg" alt="" class="hover_m">
+                                <span>Xoá toàn bộ quân số</span>
+                            </button>
+                            @*<button class="btn-action-m cl-3" ng-click="SaveToMainTable()">
+                                    <img src="../App_Assets/images/icon_save.svg" alt="" class="exsit">
+                                    <img src="../App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                                    <span>Lưu</span>
+                                </button>*@
+                        </div>
+
+                        <button class="absolute-list-changes" id="changes-list-btn">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="add-khoa-hoc">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm mới khóa học</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-khoa-hoc">
+                        <div class="col-12 col-md-12">
+                            <label for="">Năm học: <span class="text-danger">*</span></label>
+                            <select class="form-control" name="NAM_HOC" ng-model="khoaHoc.NAM_HOC" required>
+                                <option value="">Chọn năm học</option>
+                                <option value="1">HV năm 1 nhập học</option>
+                                <option value="2">Năm 1 -> 2</option>
+                                <option value="3">Năm 2 -> 3</option>
+                                <option value="4">Năm 3 -> 4</option>
+                                <option value="5">Năm 4 -> 5</option>
+                                <option value="6">Năm 5 -> 6</option>
+                                <option value="7">HV kỳ cuối</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Tên khóa học: <span class="text-danger">*</span></label>
+                            <input class="form-control" name="TEN_KHOA_HOC" ng-model="khoaHoc.TEN_KHOA_HOC" required />
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="">Mô tả: </label>
+                            <textarea class="form-control" ng-model="khoaHoc.MO_TA" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-action-m bg-teal" ng-click="LuuKhoaHoc()">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="check-pass">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Nhập mật khẩu</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-pass">
+                        <div class="col-12 col-md-12">
+                            <input class="form-control" type="password" name="Password" ng-model="Password" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer main-action">
+                    <button class="btn-action-m bg-green" ng-click="CheckPass()">
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i> <span>Đồng ý</span>
+                    </button>
+                    <button class="btn-action-m bg-green" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i>  <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+@section scripts{
+    <script src="~/app/Controller/ChotQuanSoDauKyController.js"></script>
+}

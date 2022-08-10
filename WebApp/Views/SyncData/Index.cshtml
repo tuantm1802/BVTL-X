@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Đồng bộ dữ liệu";
+}
+
+<div class="container-fluid" ng-controller="SyncDataController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Đồng bộ dữ liệu</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary" ng-show="RoleBtnSearch == true" ng-click="Refesh()">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+                <button type="button" class="btn btn-primary" ng-show="RoleBtnSyncData == true" ng-click="SyncDataAPI()">
+                    <i class="fas fa-pencil-alt"></i> Đồng bộ
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableApiSync" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:10%;">STT </th>
+                            <th style="width:auto;">Tên tiến trình </th>
+                            <th style="width: auto;">Đường dẫn API </th>
+                            <th style="width: auto;">Bảng lưu dữ liệu </th>
+                            <th style="width:10%;">Trạng thái </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/app/Controller/SyncDataController.js"></script>
+}

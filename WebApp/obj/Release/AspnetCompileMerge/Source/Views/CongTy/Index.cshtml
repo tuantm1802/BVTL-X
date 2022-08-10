@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewBag.Title = "Công ty";
+}
+<div class="fill-box-bread-crumb">
+    <h3 class="bread_crumb">
+        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>/ Danh mục công ty
+    </h3>
+</div>
+<div ng-controller="CongTyController">
+    <main class="main-system">
+        <div class="container-fluid d-flex flex-wrap">
+            <div class="row  no-gutters w-100">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12" align-self-end>
+                    <div class="well" style="background-color: #f5f5f5;padding:20px;margin:0 0;width:100%">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-lg-12" align-self-end>
+                                <div class="main-action d-flex pull-left">
+                                    <button class="btn-action-m" ng-click="Add()" ng-show="RoleBtnCreate">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <span>Thêm mới</span>
+                                    </button>
+                                    <button class="btn-action-m" ng-click="btnCauHinh()" ng-show="RoleBtnCauHinh">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <span>Cấu hình</span>
+                                    </button>
+                                    <button class="btn-action-m bg-red" ng-click="Delete()" ng-show="RoleBtnDelete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        <span> Xóa </span>
+                                    </button>
+                                    <button class="btn-action-m" ng-click="Undo()" ng-show="RoleBtnCancel">
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        <span>Huỷ thay đổi</span>
+                                    </button>
+                                    <button class="btn-action-m" ng-click="Submit()" ng-show="RoleBtnSave">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        <span>Lưu lại</span>
+                                    </button>
+                                </div>
+                                <div class="main-action d-flex align-items-center flex-wrap pull-right" style="margin-left:5px;">
+                                    <div class="main-action">
+                                        <div class="d-flex form-group" style="margin-bottom:0px;vertical-align:middle">
+                                            <input type="text" class="form-control" style="width:250px;margin-bottom:0px" placeholder="Tìm kiếm" ng-model="modelSearch.search">
+                                            <button class="btn-action-m form-control" style="color:white;width:100px;margin-left:10px;margin-bottom:0px" ng-click="getCongTy()">
+                                                <i class="fa fa-search" aria-hidden="true"></i>
+                                                Tìm kiếm
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-table" style=" height: calc(100vh - 245px) !important;margin-top: 10px;">
+                        <table class="table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th style="width:3%;" class="text-center">
+                                        <input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected" />
+                                    </th>
+                                    <th style="width:3%;" class="text-left">STT</th>
+                                    <th style="width:10%;" class="text-left">Tên viết tắt</th>
+                                    <th style="width:20%;" class="text-left">Tên công ty</th>
+                                    <th style="width:30%;" class="text-left">Địa chỉ</th>
+                                    <th style="width:20%;" class="text-left">Thông tin chi tiết</th>
+                                    <th style="width:6%;" class="text-left" ng-show="HieuLuc">Hiệu lực</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in DanhSach track by $index" ng-click="loadTemplate($index, item)">
+                                    <td class="text-center">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" class="ace" ng-disabled="!HieuLuc" ng-change="optionToggled()" ng-model="item.CHECKED" value="10" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                    <td class="text-center">{{(modelSearch.pageSize * (modelSearch.currentPage-1)) + $index + 1}}</td>
+                                    <td class="text-left">
+                                        <span ng-if="!item.Edit">{{item.TEN_VIET_TAT}}</span>
+                                        <from id="idSua">
+                                            <input type="text" ng-if="item.Edit" ng-pattern="/^([a-zA-Z0-9]+)$/" name="tenVT_sua" to-uppercase class="form-control" ng-change="changeCty($index)" ng-model="item.TEN_VIET_TAT">
+                                        </from>
+
+                                    </td>
+                                    <td class="text-left">
+                                        <span ng-if="!item.Edit">{{item.TEN_CONG_TY}}</span>
+                                        <input type="text" ng-if="item.Edit" class="form-control" ng-change="changeCty($index)" ng-model="item.TEN_CONG_TY">
+                                    </td>
+                                    <td class="text-left">
+                                        <span ng-if="!item.Edit">{{item.DIA_CHI}}</span>
+                                        <input type="text" ng-if="item.Edit" class="form-control" ng-change="changeCty($index)" ng-model="item.DIA_CHI">
+                                    </td>
+                                    <td class="text-left">
+                                        <span ng-if="!item.Edit">{{item.MO_TA}}</span>
+                                        <input type="text" ng-if="item.Edit" class="form-control" ng-change="changeCty($index)" ng-model="item.MO_TA">
+                                    </td>
+                                    <td class="text-lg-center" ng-show="HieuLuc">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" class="ace" ng-disabled="DisabledHieuLuc_SuDung" ng-true-value="'Y'" ng-false-value="'N'" ng-change="changeCty($index)" ng-disabled="item.MNG_UNIT_ID != unit_id" ng-model="item.HIEU_LUC" value="10" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr ng-repeat="row in rows">
+                                    <td class="text-center">
+                                        @*<input type="checkbox" id="check" ng-model="item.CHECKED" />*@
+                                    </td>
+                                    <td class="text-center">@*{{(modelSearch.totalItems+1)+ $index}}*@</td>
+                                    <td class="text-left">
+                                        <from id="idThem">
+                                            <input type="text" name="tenVT_them" ng-pattern="/^([a-zA-Z0-9]+)$/" ng-model="row.TEN_VIET_TAT" to-uppercase style="width:100%" placeholder="Nhập tên viết tắt" />
+                                        </from>
+                                    </td>
+                                    <td class="text-left">
+                                        <input type="text" ng-model="row.TEN_CONG_TY" style="width:100%" placeholder="Nhập tên công ty" />
+                                    </td>
+                                    <td class="text-left">
+                                        <input type="text" ng-model="row.DIA_CHI" style="width:100%" placeholder="Nhập địa chỉ" />
+                                    </td>
+                                    <td class="text-left">
+                                        <input type="text" ng-model="row.MO_TA" style="width:100%" placeholder="Nhập mô tả,tên ngắn gọn gợi nhớ" />
+                                    </td>
+
+                                    <td class="text-center" ng-show="HieuLuc">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" ng-disabled="DisabledHieuLuc_SuDung" class="ace" ng-true-value="'Y'" ng-false-value="'N'" ng-model="row.HIEU_LUC" value="10" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" show-length-per-page="true" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bootbox modal fade bootbox-prompt" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="modal fade" id="modal_CH">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Danh sách Công ty</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form class=" col-md-12" id="formSubmit">
+
+                        <div class="col-5 none-padding-left">
+                            <div class="main-action">
+                                <div class="form-search w-100">
+                                    <input type="text" placeholder="Tìm kiếm" ng-model="KeywordCH">
+                                    <button>
+                                        <img src="~/App_Assets/images/search_icon.svg" ng-click="SearchKeywordCH()" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 none-padding">
+                                <fieldset class="scheduler-border">
+                                    <legend class="scheduler-border"><label class="bold-label">Danh sách công ty chưa sử dụng</label></legend>
+
+                                    <div class="content-table" style="height:422px; overflow-y: scroll;">
+                                        <table class="table-responsive table-hover result-point">
+                                            <thead class="point-table-head">
+                                                <tr>
+                                                    <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AllChuaSD" ng-change="CheckAllChuaSD()" /> </th>
+                                                    <th>STT</th>
+                                                    <th>Tên công ty</th>
+                                                    <th>Tên viết tắt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="">
+                                                <tr ng-repeat="item in ds_chua_sd">
+                                                    <td class="center"><input type="checkbox" ng-change="CheckChuaSD($index)" class="form-control" ng-model="item.SELECT" /> </td>
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{item.TEN_CONG_TY}}</td>
+                                                    <td>{{item.TEN_VIET_TAT}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-1">
+
+                                <div class="main-action d-flex pull-left p-3 bold-label">
+                                    <button class="btn-action-m" ng-click="CoSD()">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span></span>
+                                    </button>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+
+                                <div class="main-action d-flex pull-right p-3 bold-label">
+
+                                    <button class="btn-action-m" ng-click="KhongSD()">
+                                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                        <span></span>
+                                    </button>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-5 none-padding">
+                                <fieldset class="scheduler-border">
+                                    <legend class="scheduler-border"><label class="bold-label">Danh sách công ty đang sử dụng</label></legend>
+                                    <div class="content-table" style="height:422px; overflow-y:scroll;">
+                                        <table class="table-responsive table-hover result-point">
+                                            <thead class="point-table-head">
+                                                <tr>
+                                                    <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AllDangSD" ng-change="CheckAllDangSD()" /> </th>
+                                                    <th>STT</th>
+                                                    <th>Tên công ty</th>
+                                                    <th>Tên viết tắt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="">
+                                                <tr ng-repeat="item in ds_dang_ssd">
+                                                    <td class="center"><input type="checkbox" ng-change="CheckDangSD()" class="form-control" ng-model="item.SELECT" /> </td>
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{item.TEN_CONG_TY}}</td>
+                                                    <td>{{item.TEN_VIET_TAT}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer d-flex justify-content-between">
+                    <h5 class="day-make"></h5>
+                    <div class="main-action d-flex flex-wrap">
+
+                        <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                            <img src="~/App_Assets/images/d_close.svg" alt="" class="exsit">
+                            <img src="~/App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                            <span>Đóng</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts{
+    <script src="~/app/Controller/CongTyController.js"></script>
+}

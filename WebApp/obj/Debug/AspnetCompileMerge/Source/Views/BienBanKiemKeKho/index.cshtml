@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "Biên bản kiểm kê kho";
+}
+
+<main class="main-ac-system" ng-controller="BienBanKiemKeKhoController">
+    <div class="container-fluid d-flex cons-ac-system">
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    Tìm Kiếm
+                </h3>
+            </div>
+            <div class="container">
+                <div class="tab-content form-infor" id="myTabContent">
+                    <div class="tab-pane fade show active" id="ds_bien_ban" role="tabpanel" aria-labelledby="home-tab">
+
+                        <div class="row no-gutters">
+                            <div class="col-12 col-md-12 hd-flex-sl">
+                                <label for="">Kho kiểm kê:</label>
+                                <select select2 ng-model="modelSearch_khoKiemKe" class="form-control">
+                                    <option ng-repeat="item in danhSachKho" value="{{item.ID}}">{{item.TEN_DON_VI}}</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-12 hd-flex-sl">
+                                <label for="">Từ ngày:</label>
+                                <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                    <input type="text" ng-model="modelSearch_tuNgay" class="form-control">
+                                    <span class="input-group-addon"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-12 hd-flex-sl">
+                                <label for="">Đến ngày:</label>
+                                <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                    <input type="text" ng-model="modelSearch_denNgay" class="form-control">
+                                    <span class="input-group-addon"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-12 hd-flex-sl">
+                                <label for="">Trạng thái:</label>
+                                <select select2 ng-model="modelSearch_trangThai" class="form-control">
+                                    <option value="">Tất cả</option>
+                                    <option value="C">Chưa kiểm kê</option>
+                                    <option value="D">Đang kiểm kê</option>
+                                    <option value="K">Kết thúc kiểm kê</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="main-action pb-2">
+                            <div class="d-flex align-items-center flex-wrap" style="padding-top: 10px; justify-content:center">
+                                <button class="btn-action-m bg-green form-control" ng-click="getDanhSachBienBan(pageIndexBB = 1)">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    <span>Tìm kiếm</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="content-table">
+                            <table class="table-responsive table-hover result-point">
+                                <thead class="point-table-head">
+                                    <tr>
+                                        <th style="display: none"></th>
+                                        <th class="text-center balance">Kho</th>
+                                        <th class="text-center balance">Ngày lập biên bản</th>
+                                        <th class="text-center balance">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in listBienBan" ng-click="LoadDetailBienBan(item, $index)" ng-class="{activerow: $index==selectedRow}">
+                                        <td style="display: none">{{item.ID_BD}}</td>
+                                        <td>{{item.TEN_KHO}}</td>
+                                        <td>{{item.NGAY_CT}}</td>
+                                        <td>{{item.TRANG_THAI == 'C' ? 'Chưa kiểm kê' :(item.TRANG_THAI == 'D' ? 'Đang kiểm kê' :'Kết thúc kiểm kê')}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div style="float:left;padding-top:16px">{{displayNumber}}/{{totalRecordBB}} kết quả</div>
+                    <div class="row content-table pull-right">
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="totalRecordBB" items-per-page="pageSizeBB" ng-model="pageIndexBB" ng-change="getDanhSachBienBan(pageIndexBB)" max-size=5 boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-system">
+            <div class="fill-box-bread-crumb">
+                <h3 class="bread_crumb">
+                    <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>  /  Biên bản kiểm kê kho
+                </h3>
+            </div>
+            <div style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px">
+                <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="d-flex align-items-center flex-wrap ct-w">
+                        <button class="btn-action-m bg-blue-grey" ng-click="saveChange()" ng-show="appCodeType2">
+                            <span>Lưu</span>
+                        </button>
+                        <button class="btn-action-m bg-blue-grey" ng-click="cancelUpdate()" ng-show="appCodeType2">
+                            <span>Hủy thay đổi</span>
+                        </button>
+                        <button class="btn-action-m bg-green" data-toggle="modal" data-target="#kho_anh" ng-show="showBtnDinhKem">
+                            <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            <span>Đính kèm</span>
+                        </button>
+                    </div>
+                    @*<button class="btn-action-m bg-green" ng-click="printBienBan()">
+                        <span>In tổng hợp kiểm kê</span>
+                    </button>*@
+                </div>
+            </div>
+            <div>
+                <div class="nav-tabs-box">
+                    <ul class="nav nav-tabs tab-main" id="myTab" role="tablist">
+                        <li class="nav-item" ng-click="changeTab(0)">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#thong_tin_chung" role="tab">Thông tin chung</a>
+                        </li>
+                        <li class="nav-item" ng-click="changeTab(1)">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#thong_tin_hoi_dong" role="tab">Thông tin hội đồng</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="thong_tin_chung" role="tabpanel" aria-labelledby="home-tab">
+                        @Html.Partial("~/Views/BienBanKiemKeKho/_ThongTinChung.cshtml")
+                    </div>
+                    <div class="tab-pane fade" id="thong_tin_hoi_dong" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("~/Views/BienBanKiemKeKho/_ThongTinHoiDong.cshtml")
+                    </div>
+                </div>
+            </div>
+        </div>
+        @Html.Partial("~/Views/BienBanKiemKeKho/_ModalKhoAnh.cshtml")
+    </div>
+</main>
+
+@section scripts{
+    <script src="~/app/Controller/BienBanKiemKeKhoController.js"></script>
+}

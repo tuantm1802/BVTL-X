@@ -1,0 +1,102 @@
+﻿<div class="modal fade" id="AddSPDoi">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Danh sách sản phẩm đổi tiêu chuẩn</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form class=" col-md-12" id="formSubmit">
+                    <div class="row">
+                        <div class="col-sm-6" style="padding:0px;padding-right:10px;">
+                            <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                                <legend class="scheduler-border" style="width: 225px;"><label class="bold-label">Danh sách sản phẩm</label></legend>
+                                <div class="form-infor has-border p-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-12 col-md-6">
+                                            <label for="">Khu vực: </label>
+                                            <select class="form-control" style="width:100%;" ui-select2 ng-model="AddSPDoi_KhuVuc" ng-change="AddSPDoi_SearchSanPham()" ng-options="item.ID as item.TEN_KHU_VUC for item in ListKhuVuc">
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label style="color:white;" for="">Tìm kiếm: </label>
+                                            <div class="main-action">
+                                                <div class="form-search w-100">
+                                                    <input type="text" placeholder="Tìm kiếm" ng-model="AddSPDoi_Keyword">
+                                                    <button>
+                                                        <img src="~/App_Assets/images/search_icon.svg" ng-click="AddSPDoi_SearchSanPham()" alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-table" style="height:300px; overflow-y:scroll;">
+                                    <table class="table-responsive table-hover result-point">
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AddSPDoi_CheckAllTP" ng-change="AddSPDoi_ChangeCheckAllTP()" /> </th>
+                                                <th>Tên sản phẩm</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="">
+                                            <tr ng-repeat="item in AddSPDoi_SanPhams">
+                                                <td class="center"><input type="checkbox" ng-change="AddSPDoi_CheckedTrangPhuc($index)" class="form-control" ng-model="item.SELECT" /> </td>
+                                                <td>{{item.TEN_SP}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6" style="padding:0px;">
+                            <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;">
+                                <legend class="scheduler-border" style="width: 200px;"><label class="bold-label">Sản phẩm chọn</label></legend>
+                                <div class="content-table" style="height:382px; overflow-y:scroll;">
+                                    <table class="table-responsive table-hover result-point">
+                                        <thead class="point-table-head">
+                                            <tr>
+                                                <th class="center" style="width: 8%;"><input type="checkbox" class="form-control" ng-model="AddSPDoi_CheckAllTPChon" ng-change="AddSPDoi_ChangeCheckAllTPChon()" /> </th>
+                                                <th>Tên sản phẩm</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="">
+                                            <tr ng-repeat="item in AddSPDoi_SanPhamChons">
+                                                <td class="center"><input type="checkbox" ng-change="AddSPDoi_CheckedTrangPhucChon($index)" class="form-control" ng-model="item.SELECT" /> </td>
+                                                <td>{{item.TEN_SP}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <h5 class="day-make"></h5>
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="AddSPDoi_ThemSP()">
+                        <img src="~/App_Assets/images/d_save.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="" class="hover_m">
+                        <span>Lưu</span>
+                    </button>
+                    <button class="btn-action-m cl-3" data-dismiss="modal" ng-click="cancel()">
+                        <img src="~/App_Assets/images/d_close.svg" alt="" class="exsit">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+                        <span>Hủy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

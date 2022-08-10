@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "Lực Lượng";
+}
+<div class="fill-box-bread-crumb">
+    <h3 class="bread_crumb">
+        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>/ Danh mục Lực lượng
+    </h3>
+</div>
+<div ng-controller="LucLuongController">
+    <main style="padding-top: 10px;">
+
+        <div class="container-fluid d-flex cons-ac-system" 
+             style="height: calc(100vh - 165px);width:100%">
+
+            <div style="margin-left:15px;">
+                <div class="action-system pd-two ui-widget-content" 
+                     id="resizable" style="height:100%">
+                    <button id="btn-changes-s-nav">
+                        <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+                    </button>
+                    <div class="fill-box">
+                        <h3 class="title-fill">
+                            Lực lượng
+                        </h3>
+                    </div>
+                    <div class="container">
+                        <div class="main-action pt-3">
+                            <div class="form-search w-100">
+                                <input type="text" 
+                                       placeholder="Tìm kiếm" 
+                                       ng-change="GetLucLuong()" 
+                                       ng-model="searchLucLuong">
+                                <button type="submit" ng-click="GetLucLuong()">
+                                    <img src="../App_Assets/images/search_icon.svg" alt="">
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="function-box" style="height: calc(100vh - 270px);">
+                            <div class="ztreeRoleBackground left" style="width:100%;">
+                                <ul id="treeLucLuong" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-left:10px;width: 100%;height:100%">
+                <div class="well form-infor" style="background-color: #f5f5f5;padding:25px;height:100%">
+                    <div class="row form">
+                        <div class="col-lg-12">
+                            <form class="form" role="form" id="formSubmit">
+                                <div class="form-group">
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8">
+                                            <label>Tên lực lượng</label>
+                                            <input ng-class="tenLLerror? 'error': ''" type="text" class="form-control"
+                                                   ng-model="model.TEN_LL"
+                                                   name="TEN_LL" ng-change="changeLL()">
+                                            <div ng-show="tenLLerror">
+                                                <label class="error">{{TenLLstringerror}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8">
+                                            <label>Mô tả</label>
+                                            <textarea class="form-control" style="height:50px"
+                                                      ng-model="model.MO_TA"
+                                                      name="MO_TA"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8">
+                                            <label>Lực lượng cha</label>
+                                            <select select2 class="form-control" ng-model="model.ID"
+                                                     name="LL_CHA_ID"
+                                                    ng-options="item.ID as item.TEN_LL for item in ListLucLuong">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8">
+                                            <label>Ký hiệu viết tắt</label>
+                                            <input ng-class="tenVietTaterror? 'error': ''" type="text" class="form-control"
+                                                   ng-model="model.KY_HIEU_VIET_TAT"
+                                                   name="KY_HIEU_VIET_TAT">
+                                            <div ng-show="tenVietTaterror">
+                                                <label class="error">Bạn chưa nhập ký hiệu viết tắt!</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8">
+                                            <label>Số thứ tự</label>
+                                            <input ng-class="STTerror? 'error': ''" type="text" class="form-control"
+                                                   ng-model="model.SO_THU_TU"
+                                                   name="SO_THU_TU" ng-change="changeStt()">
+                                            <div ng-show="STTerror">
+                                                <label class="error">{{STTstringerror}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-bottom:10px;">
+                                        <div class="col-lg-8" >
+                                            <label for="">Nhận tiền</label>
+                                            <input class="form-control" ng-disabled="isDisable" type="checkbox" value="{{model.IS_NHANTIEN}}"
+                                                    ng-model="model.IS_NHANTIEN">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row form" style="margin-bottom:25px">
+                        <div class="col-12">
+                            <div class="form-group main-action d-flex align-items-center flex-wrap" 
+                                 style="padding-top: 5px;">
+                                <button class="btn-action-m" ng-click="addLucLuong()"
+                                        ng-show="RoleBtnCreate">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    <span>Thêm mới</span>
+                                </button>
+                                <button class="btn-action-m" 
+                                        ng-click="delete()" 
+                                        ng-show="RoleBtnDelete" 
+                                        style=" background-color:#f55442;">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    <span>Xoá</span>
+                                </button>
+                                <button class="btn-action-m"
+                                        ng-click="cancel()"
+                                        ng-show="RoleBtnCancel">
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    <span>Hủy thay đổi</span>
+                                </button>
+                                <button class="btn-action-m"
+                                        ng-click="submit()"
+                                        ng-show="RoleBtnSave">
+                                    <i class="fa fa-save" aria-hidden="true"></i>
+                                    <span>Lưu lại</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<div class="bootbox modal fade bootbox-prompt" 
+     id="exampleModal" tabindex="-1" 
+     role="dialog" aria-labelledby="exampleModalLabel" 
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/app/Controller/LucLuongController.js"></script>
+    <script src="~/Content/js/jquery.ztree.core.js"></script>
+    <script src="~/Content/js/jquery.ztree.excheck.js"></script>
+}

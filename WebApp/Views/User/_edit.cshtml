@@ -1,0 +1,125 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Cập nhật tài khoản</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form class=" col-md-12" id="formSubmit">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="requiredInput">Tên truy cập</label>
+                            <input type="text" class="form-control" disabled ng-model="model.UserName" name="UserName" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="requiredInput">Nhóm quyền</label>
+                            <select class="form-control" ui-select2 ng-model="model.GroupID" name="GroupID" required ng-options="item.ID as item.Name for item in ListUserGroup">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="requiredInput">Họ và tên</label>
+                            <input type="text" class="form-control" ng-model="model.Name" name="Name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label title="Nhóm thu thập dữ liệu">Nhóm TTDL</label>
+                            <select class="form-control" ui-select2 multiple ng-model="ListTestGroupId" name="ListTestGroupId" ng-options="item.Id as item.Name for item in ListTestGroup">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div style="margin-bottom: 20px;">
+                    <img style="width:100%" id="pathPhoto" src="~/Assest/dist/img/avatar.png" />
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @*<label>Ảnh đại diện</label>*@
+                            <div class="custom-file">
+                                <input type="text" hidden class="form-control" ng-model="model.Avartar">
+                                <input id="filePhoto" name="filePhoto" type="file" onchange="angular.element(this).scope().SelectFile(event)" class="custom-file-input">
+                                <label for="filePhoto" id="lableFile" class="custom-file-label text-truncate">Chọn file...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" ng-pattern="ph_numbr" maxlength="10" name="Phone" class="form-control" ng-model="model.Phone">
+                    <span ng-show="formDemo.Phone.$error.pattern">Hãy nhập số điện thoại đúng định dạng!</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="Email" ng-model="model.Email">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select class="form-control" ui-select2 ng-model="model.Status" name="Status" ng-options="item.ID as item.Name for item in ListStatus">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Giới tính</label>
+                    <select class="form-control" ui-select2 ng-model="model.Gender" name="Gender">
+                        <option value="M">Nam</option>
+                        <option value="M">Nữ</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <div class="input-group date" id="reDateOfBirth" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" ng-model="model.DateOfBirth" data-target="#reDateOfBirth">
+                        <div class="input-group-append" data-target="#reDateOfBirth" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Số CMND</label>
+                    <input type="text" class="form-control" ng-model="model.IdNumber">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" class="form-control" ng-model="model.Address">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="submit()">Lưu</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Hủy</button>
+</div>

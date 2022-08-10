@@ -1,0 +1,123 @@
+﻿@{
+    var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
+    var menus = Session["Menus"] as List<Model.ModelExtend.MenuModel>;
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    string avatar = string.Empty;
+    string userId = string.Empty;
+    if (userSession != null && !string.IsNullOrEmpty(userSession.Avartar))
+    {
+        avatar = userSession.Avartar;
+        userId = userSession.UserID == 0 ? "0" : userSession.UserID.ToString();
+    }
+
+    if (menus != null && menus.Count > 0)
+    {
+        menuLevel1 = menus.Where(x => x.PARENT_PAGE_ID == null || x.PARENT_PAGE_ID == 0).OrderBy(x => x.ORDER_BY).ToList();
+
+        if (menuLevel1 != null && menuLevel1.Count > 0)
+        {
+            for (int i = 0; i < menuLevel1.Count; i++)
+            {
+                var listChild = menus.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == menuLevel1[i].ID).ToList();
+                menuLevel1[i].CountChild = listChild != null ? listChild.Count : 0;
+            }
+            var menuLevel1IDs = menuLevel1.Select(x => x.ID).ToList();
+            menuLevel2 = menus.Where(x => menuLevel1IDs.Contains((int)x.PARENT_PAGE_ID)).OrderBy(x => x.ORDER_BY).ToList();
+            if (menuLevel2 != null && menuLevel2.Count > 0)
+            {
+                for (int i = 0; i < menuLevel2.Count; i++)
+                {
+                    var listChild2 = menus.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == menuLevel2[i].ID).ToList();
+                    menuLevel2[i].CountChild = listChild2 != null ? listChild2.Count : 0;
+                }
+                var menuLevel2IDs = menuLevel2.Select(x => x.ID).ToList();
+                menuLevel3 = menus.Where(x => menuLevel2IDs.Contains((int)x.PARENT_PAGE_ID)).OrderBy(x => x.ORDER_BY).ToList();
+                if (menuLevel3 != null && menuLevel3.Count > 0)
+                {
+                    for (int i = 0; i < menuLevel3.Count; i++)
+                    {
+                        var listChild3 = menus.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == menuLevel3[i].ID).ToList();
+                        menuLevel3[i].CountChild = listChild3 != null ? listChild3.Count : 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/Home/Index">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    @if (menuLevel1 != null && menuLevel1.Count > 0)
+    {
+        // lấy id menu đang active
+        string url = HttpContext.Current.Request.Url.AbsolutePath;
+        var meuActive = menus.FirstOrDefault(x => !string.IsNullOrEmpty(x.HREF_URL) && url.Contains(x.HREF_URL));
+
+        var idActive = 0;
+        if (meuActive != null)
+        {
+            idActive = meuActive.ID;
+        }
+
+        foreach (var itemM1 in menuLevel1)
+        {
+            if (itemM1.CountChild > 0)
+            {
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                var menuChikd2 = menuLevel2.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == itemM1.ID).ToList();
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@itemM1.HREF_URL" data-toggle="collapse" data-target="#collapseTwo@(itemM1.ID)"
+                       aria-expanded="true" aria-controls="collapseTwo@(itemM1.ID)">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>@itemM1.NAME</span>
+                    </a>
+                    <div id="collapseTwo@(itemM1.ID)" class="collapse" aria-labelledby="headingTwo@(itemM1.ID)" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            @foreach (var itemM2 in menuChikd2)
+                            {
+                                <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+            else
+            {
+                <!-- Nav Item - Cap 1 -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="@itemM1.HREF_URL">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>@itemM1.NAME</span>
+                    </a>
+                </li>
+            }
+        }
+    }
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
+<!-- End of Sidebar -->

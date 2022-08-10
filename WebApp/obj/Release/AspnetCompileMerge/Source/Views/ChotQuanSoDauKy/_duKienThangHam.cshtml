@@ -1,0 +1,65 @@
+﻿<div class="row">
+    <div class="col-md-12 main-action d-flex">
+        <button class="btn-action-m bg-green" ng-click="ThemMoiThangHam()">
+            <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+        </button>
+        <button class="btn-action-m bg-green" ng-click="LuuThangHam()">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+        </button>
+
+        <button class="btn-action-m bg-green" ng-click="XoaThangHam()">
+            <i class="fa fa-trash" aria-hidden="true"></i>    <span> Xóa </span>
+        </button>
+        <button class="btn-action-m bg-green" ng-click="TaoDLTuDong()">
+            <i class="fa fa-trash" aria-hidden="true"></i>    <span> Tạo DL tự động </span>
+        </button>
+    </div>
+</div>
+<div class="content-table">
+    <table class="table-hover result-point mt-2">
+        <thead class="point-table-head" style="width:100%">
+            <tr>
+                <th style="width:5%;" class="text-center" rowspan="2">
+                    <input type="checkbox" ng-model="itemCheckAllThangham" ng-click="CheckAllThangHam()" />
+                </th>
+                <th style="width:30%;" class="text-center" rowspan="2">Cấp bậc</th>
+                <th style="width:30%;" class="text-center" rowspan="2">Loại hàm</th>
+                <th style="width:14%;" class="text-center" rowspan="2">Dự kiến đề xuất</th>
+                <th style="width:21%;" class="text-center" colspan="3">Thực tế thăng hàm</th>
+            </tr>
+            <tr>
+                <th class="text-center" style="width:7%;">Nam</th>
+                <th class="text-center" style="width:7%;">Nữ</th>
+                <th class="text-center" style="width:7%;">Tổng cộng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in ListDuKienThangHam">
+                <td class="text-center">
+                    <label class="pos-rel">
+                        <input type="checkbox" class="ace" ng-model="item.selected" value="10" />
+                        <span class="lbl"></span>
+                    </label>
+                </td>
+                <td>
+                    <select class="form-control" ng-model="item.CAP_BAC_ID" ng-options="i.Id as i.Name for i in ListCapBac"></select>
+                </td>
+                <td>
+                    <select class="form-control" ng-model="item.LOAI_HAM" ng-options="i.Id as i.Name for i in ListLoaiHam"></select>
+                </td>
+                <td>
+                    <input class="form-control" ng-model="item.DU_KIEN_DE_XUAT" />
+                </td>
+                <td>
+                    <input class="form-control" type="number" ng-model="item.THUC_TE_NAM" />
+                </td>
+                <td>
+                    <input class="form-control" type="number" ng-model="item.THUC_TE_NU" />
+                </td>
+                <td>
+                    {{SumDataThangHam(item.THUC_TE_NAM, item.THUC_TE_NU, $index)}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

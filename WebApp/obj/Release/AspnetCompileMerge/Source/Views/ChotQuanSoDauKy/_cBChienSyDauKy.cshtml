@@ -1,0 +1,64 @@
+﻿<div class="row">
+    <div class="col-md-3">
+        <button class="btn-action-m bg-blue-grey" ng-click="CNVCA()">
+            <span> CNVCA </span>
+        </button>
+        <label>Nam: {{cnvca.SL_NAM}}, Nữ: {{cnvca.SL_NU}}</label>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row no-gutters">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        @*<label for="">Lực lượng: </label>*@
+                        <input type="text" ng-model="lucLuong" ng-change="ChangeLucLuong();SearchData('cbcs')" placeholder="Lực lượng" autocomplete="on"
+                               ui-combo-tree combo-tree-init="LucLuongTreeInit" on-callback="LucLuongCallback(data)" />
+                    </div>
+                    <!--
+                         <div class="col-12 col-md-6 col-lg-3">
+                            @*<label for="">Nhóm cấp bậc: </label>*@
+                            <input type="text" ng-model="nhomCapBac" ng-change="ChangeNhomCapBac()" placeholder="Nhóm cấp bậc" autocomplete="on"
+                                   ui-combo-tree combo-tree-init="NhomCBTreeInit" on-callback="NhomCBCallback(data)" />
+                        </div>
+                    -->
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <select class="form-control" ng-change="SearchData('cbcs')" ng-model="loaiHam" ng-options="item.Id as item.Name for item in ListLoaiHams">
+                            <option value="" selected>- Chọn loại hàm -</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        @*<label for="">Cấp bậc: </label>*@
+                        <select class="form-control" ng-change="SearchData('cbcs')" placeholder="Cấp bậc" ng-model="capBac" ng-options="item.Id as item.Name for item in ListCapBacs">
+                            <option value="" selected>Chọn cấp bậc</option>
+                        </select>
+                    </div>
+                    <div class="main-action">
+                        @*<label for=""> </label>*@
+                        <div class="form-search w-100" style="height: 28px; ">
+                            <button ng-click="SearchData('cbcs');" style="border-radius: 5px;">
+                                <img src="../App_Assets/images/search_icon.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content-table">
+    <tree-gridqs show-checkbox="tree_Table_Checkbox"
+                 expand-level="3"
+                 body-defs="body_defs"
+                 tree-data="cbcs_tree_data"
+                 expand-on="expanding_property"
+                 col-defs="col_defs"
+                 icon-leaf="treetable_docu_11"
+                 icon-expand="treetable_close"
+                 icon-collapse="treetable_open"
+                 event-change-checkbox="ChangeTreeTableCheckbox(item)"
+                 event-choose-row="ClickTreeTableRow(item)"></tree-gridqs>
+
+</div>
+@Html.Partial("_addCNVCA")

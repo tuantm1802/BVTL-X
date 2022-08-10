@@ -1,0 +1,81 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj": {}
+  },
+  "projects": {
+    "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj",
+        "projectName": "Model",
+        "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj",
+        "packagesPath": "C:\\Users\\laibk\\.nuget\\packages\\",
+        "outputPath": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\Offline Packages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\laibk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 21.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 21.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {
+              "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj": {
+                "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    },
+    "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj",
+        "projectName": "Simple",
+        "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/ErrorPage/Error500.cshtml" hash="50912155" filehash="ffffc9be5369797b" flags="110000" assembly="App_Web_u4gnglbq" type="ASP._Page_Views_ErrorPage_Error500_cshtml">
+    <filedeps>
+        <filedep name="/Views/ErrorPage/Error500.cshtml" />
+    </filedeps>
+</preserve>

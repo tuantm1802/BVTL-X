@@ -1,0 +1,139 @@
+﻿<div class="row">
+    <div class="action-system pd-two ui-widget-content col-md-3" style="padding: 0px">
+        <div class="fill-box">
+            <h3 class="title-fill">
+                Khóa học
+            </h3>
+        </div>
+
+        <div class="container">
+            <div class="main-action pt-3">
+                <div class="form-search w-100">
+                    <input type="text" placeholder="Tìm kiếm">
+                    <button>
+                        <img src="../App_Assets/images/search_icon.svg" alt="">
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn-action-m bg-green" ng-click="AddKhoaHoc()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+                    </button>
+                    <button class="btn-action-m bg-red" ng-click="DeleteKhoaHoc()">
+                        <i class="fa fa-trash" aria-hidden="true"></i>    <span> Xóa </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="function-box">
+                <div class="ztreeRoleBackground left" style="width:100%;">
+                    <ul class="ztree">
+                        <li ng-repeat="item in ListKhoaHoc" ng-click="SelectedKhoaHoc(item)" class="level0" tabindex="0" hidefocus="true" treenode="">
+                            <span title="" class="button level0 switch center_docu" treenode_switch=""></span>
+                            <a class="level0" title="{{item.TEN_KHOA_HOC}}">
+                                <span title="" treenode_ico="" class="button ico_docu" style=""></span>
+                                <span class="node_name">{{item.TEN_KHOA_HOC}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="no-border pb-0 col-md-9">
+        <div class="nav-box">
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(0)">
+                        <span> HV năm 1 nhập học</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(1)">
+                        <span> Năm 1 -> 2</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(2)">
+                        <span> Năm 2 -> 3</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(3)">
+                        <span> Năm 3 -> 4</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(4)">
+                        <span>Năm 4 -> 5</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(5)">
+                        <span> Năm 5 -> 6</span>
+                    </button>
+                    <button class="btn btn-default" ng-click="SelectedNamHoc(6)">
+                        <span> HV kỳ cuối</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn-action-m bg-green" ng-click="AddHocVien()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+                    </button>
+                    <button class="btn-action-m bg-red">
+                        <i class="fa fa-trash" aria-hidden="true" ng-click="DeleteHocVien()"></i>    <span> Xóa </span>
+                    </button>
+                </div>
+            </div>
+            <div class="content-table">
+                <tree-grid show-checkbox="hv_tree_Table_Checkbox"
+                           expand-level="2"
+                           body-defs="hv_body_defs"
+                           tree-data="hv_tree_data"
+                           expand-on="hv_expanding_property"
+                           col-defs="hv_col_defs"
+                           icon-leaf="chtreetable_docu"
+                           icon-expand="treetable_close"
+                           icon-collapse="treetable_open"
+                           event-change-checkbox="hv_ChangeTreeTableCheckbox(item)"
+                           event-choose-row="hv_ClickTreeTableRow(item)"></tree-grid>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="add-hoc-vien">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm học viên</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <img src="~/App_Assets/images/close.svg" alt="">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="form-hoc-vien">
+                        <div class="col-6 col-md-6">
+                            <label for="">Lực lượng: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="lucLuong" ng-change="ChangeLucLuong()" placeholder="Lực lượng" autocomplete="on"
+                                   ui-combo-tree combo-tree-init="LucLuongTreeInit" on-callback="LucLuongCallback(data)" />
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <label for="">Cấp bậc: <span class="text-danger">*</span></label>
+                            <select class="form-control" ng-model="HocVienModel.CAP_BAC_ID" ng-options="item.Id as item.Name for item in ListCapBacs">
+                            </select>
+                        </div>
+                        <div class="col-4 col-md-4">
+                            <label for="">Số lượng nam: <span class="text-danger">*</span></label>
+                            <input class="form-control" type="number" name="SL_NAM" ng-model="HocVienModel.SL_NAM" required />
+                        </div>
+                        <div class="col-4 col-md-4">
+                            <label for="">Số lượng nữ: <span class="text-danger">*</span></label>
+                            <input class="form-control" type="number" name="SL_NU" ng-model="HocVienModel.SL_NU" required />
+                        </div>
+                        <div class="col-4 col-md-4">
+                            <label for="">Tổng cộng: <span class="text-danger">*</span></label>
+                            <input class="form-control" type="number" name="SL_TONG" ng-model="HocVienModel.SL_TONG" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-action-m bg-teal" ng-click="LuuHocVien()">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i> <span>Lưu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

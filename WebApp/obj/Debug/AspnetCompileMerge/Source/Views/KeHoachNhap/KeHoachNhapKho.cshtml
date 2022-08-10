@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Index";
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+}
+<style>
+    .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .form-control {
+        padding: 0px 0px;
+    }
+
+    .table-responsive {
+        display: table
+    }
+
+    .modal .btn-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .centered {
+        margin: 0;
+        position: absolute;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    table {
+        border: 1px solid black;
+    }
+    #resizable {
+        height: 87vh
+    }
+    .sticky-top {
+        position: sticky;
+        top: 0;
+    }
+
+</style>
+
+
+<div class="container-fluid d-flex cons-ac-system" ng-controller="KeHoachNhapController" style=" margin-top: 0px ">
+    @Html.Partial("~/Views/KeHoachNhap/HangDoi.cshtml")
+    <div class="content-system no-border pb-0">
+        <div style="font-size: 20pt;font-weight: bold;color: #00933f; text-align:center; align-content:center;justify-content:center">
+            KẾ HOẠCH NHẬP KHO
+        </div>
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-click="ThemKeHoach('@userSession.Name','@userSession.Appcode')">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="SuaKeHoach()" ng-disabled="HsStatus">
+                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                    <span>Sửa</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="DuyetPhieu()" ng-disabled="HsStatus">
+                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                    <span>Duyệt phiếu</span>
+                </button>
+
+
+                <button class="btn-action-m" ng-click="XoaKeHoach()" ng-disabled="HsStatus">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá</span>
+                </button>
+
+                <button class="btn-action-m" ng-click="LuuPhieu()" ng-disabled="HsStatus">
+                    <img src="~/App_Assets/images/icon_save.svg" alt="">
+                    <span>Lưu</span>
+                </button>
+            </div>
+
+            <button class="btn-action-m" ng-disabled="HsStatus">
+                <img src="~/App_Assets/images/l7_hover.svg" alt="">
+                <span>In phiếu nhập</span>
+            </button>
+        </div>
+        <form class="form-infor has-border p-3" id="main-info">
+            <div class="row no-gutters">
+                <div class="col-12 col-md-4">
+                    <label for="">Kế hoạch số: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="thongTinKh.SO_KH" readonly name="sokehoach"/>
+                </div>
+            </div>
+
+            <h4 class="form-title">
+                Thông tin chung
+            </h4>
+            <div class="row no-gutters">
+                <div class="col-12 col-md-4">
+                    <label for="">Căn cứ: <span>*</span></label>
+                    <input class=" form-control" type="text" ng-model="thongTinKh.CAN_CU" name="cancu" required/>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Người lập KH: </label>
+                    <input type="text" class="form-control" ng-model="thongTinKh.NGUOI_LAP" readonly required/>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Ngày lập KH: <span>*</span></label>
+                    <div class="input-group date" data-date-format="dd/mm/yyyy">
+                        <input type="text" customzdatetime class="form-control" ng-model="thongTinKh.NGAY_KH_VW" name="ngaylap" required>
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Nguồn hàng: <span>*</span></label>
+                    <select class="form-control" ng-model="thongTinKh.ID_NGUON_GOC" ng-options="option.ID as option.TEN for option in dmnguonhang" name="nguonhang" required>
+                        <option value="">- - - Chọn nguồn hàng - - -</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Nguồn kinh phí: <span>*</span></label>
+                    <select class="form-control" ng-model="thongTinKh.ID_NGUON_KP" ng-options="option.ID as option.TEN for option in dmnguonkinhphi" name="nguonkinhphi" required>
+                        <option value="">- - - Chọn nguồn kinh phí - - -</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="">Ngày nhập dự kiến: <span>*</span></label>
+                    <div class="input-group date" data-date-format="dd/mm/yyyy">
+                        <input type="text" customzdatetime class="form-control" ng-model="thongTinKh.NGAY_NHAP_DK_VW" required>
+                        <span class="input-group-addon"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-8">
+                    <label for="">Lý do nhập: </label>
+                    <input class=" form-control" type="text" ng-model="thongTinKh.LY_DO" name="lydonhap"/>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="">Vận chuyển: </label>
+                    <select class="form-control" ng-model="thongTinKh.HT_VAN_CHUYEN" ng-options="option.ID as option.TEN_HINH_THUC for option in dmhtvanchuyen" name="vanchuyen">
+                        <option value="">- - - Chọn hình thức vận chuyển - - -</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap" id="sub-action">
+            <div class="d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" data-toggle="modal" data-target="#them_hang_hoa">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới hàng hóa</span>
+                </button>
+                <button class="btn-action-m" ng-click="XoaHangHoaDaChon()">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá hàng hóa</span>
+                </button>
+            </div>
+             <div>Tên hàng: {{tenHangHoaDaChon}}</div>
+            <div>Số lượng: {{soLuongDaChon}}</div>
+            <div>Thành tiền: {{thanhTienDaChon}}</div>
+            <div class="d-flex align-items-center flex-wrap">
+                <button class="btn-action-m" ng-click="ThemMoiChiTietHangHoa()">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm chi tiết</span>
+                </button>
+                <button class="btn-action-m">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xóa</span>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="row no-gutters" id="detail-info">
+            <div class="content-table mt-2 col-12 col-md-3 has-border" id="left-table">
+                <table class="table-responsive table-hover result-point">
+                    <thead class="point-table-head">
+                        <tr>
+                            <th class="text-center" style="width:3%;"><input type="checkbox" ng-model="checkAllHangHoa" ng-click="ChonTatCaHangHoa(2)"/> </th>
+                            <th class="text-center" style="width:3%;">STT </th>
+                            <th class="text-center">Hàng hóa<i id="or_ntn"></i></th>
+                            <th class="text-center" style="width:3%;">Số lượng<i id="or_nn"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color:white">
+                        <tr ng-repeat="item in dsHangHoaDaChon" ng-click="ShowChiTietHangHoa($index)" ng-class="{'selected':$index == selectedGood}">
+                            <td class="text-center"><input type="checkbox" ng-model="item.oSELECTED" ng-click="TichChonHangHoa(2,$index)" ng-disabled="EditStatus"/></td>
+                            <td class="text-center">
+                                <label >{{item.STT}}</label>
+                            </td>
+                            <td>
+                                <label>{{item.MA_HANG+' - '+item.TEN_HANG}}</label>
+                            </td>
+                            <td class="text-center"> <label >{{item.SO_LUONG}}</label></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="content-table mt-2 col-12 col-md-9 has-border sticky-top" id="right-table">
+                <table class="table-responsive table-hover result-point" style="background-color:honeydew">
+                    <thead class="point-table-head sticky-top">
+                        <tr>
+                            <th class="text-center sticky-top" style="width:3%;"><img class="img-normal" id="img-toggle" src="~/App_Assets/images/ic_back_xx.svg" alt="" ng-click="ThayDoiTableChiTiet()"></th>
+                            <th class="text-center sticky-top">Kho<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">Hợp đồng<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">Số khung<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">Số máy<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">Model<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">SL<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top">Chất lượng<i id="or_ntn"></i></th>
+                            <th class="text-center sticky-top"><i id="or_ntn"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color:honeydew">
+                        <tr ng-repeat="item in dsChitietTheoHangHoa" style="padding-top:0; padding-bottom:0">
+                            <td class="text-center right-table-padding">{{item.STT}}</td>
+                            <td class="text-center right-table-padding"> {{item.KHO.NAME}}</td>
+                            <td class="text-center right-table-padding"> {{item.HOP_DONG.NAME}}</td>
+                            <td class="text-center right-table-padding">{{item.MO_TA_CT1}}</td>
+                            <td class="text-center right-table-padding">{{item.MO_TA_CT2}}</td>
+                            <td class="text-center right-table-padding">{{item.MODEL}}</td>
+                            <td class="text-center right-table-padding">{{item.SO_LUONG}}</td>
+                            <td class="text-center right-table-padding">{{item.CHAT_LUONG.TEN_CHAT_LUONG}}</td>
+                            <td class="text-center right-table-padding">
+                                <input type="button" ng-click="SuaChiTietHangHoa($index)" class="next" ng-disabled="EditStatus" value="Sửa" style="text-decoration:underline"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @Html.Partial("~/Views/KeHoachNhap/_ModalThemMoi.cshtml")
+        @Html.Partial("~/Views/KeHoachNhap/_ModalChiTiet.cshtml")
+        @Html.Partial("~/Views/KeHoachNhap/_ModalHangHoaTheoHopDong.cshtml")
+        @Html.Partial("~/Views/KeHoachNhap/_ModalChinhSuaHangHoaTheoHopDong.cshtml")
+    </div>
+</div>
+@section scripts{
+    <script src="~/app/Controller/KeHoach/KeHoachNhapController.js"></script>
+    <script>
+        $(function () {
+            $("#resizable").resizable();
+        });
+        $('#chi-tiet-form').on('keyup keypress', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
+   
+}

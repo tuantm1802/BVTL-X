@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<div class="row" ng-controller="MenuDVController">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Menu cho đơn vị</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary" ng-show="RoleBtnCreate == true" ng-click="add()">
+                        <i class="fas fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-show="RoleBtnSearch == true" ng-click="LoadPage()">
+                        <i class="fas fa-sync-alt"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:10px;">STT </th>
+                            <th style="width:100px;">Tiêu đề 1 </th>
+                            <th style="width:300px;">Tiêu đề 2 </th>
+                            <th style="width:100px;">Tiêu đề 3 </th>
+                            <th style="width:100px;">Tiêu đề 4 </th>
+                            <th style="width:100px;">Tiêu đề 5 </th>
+                            <th style="width: 8%;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-class="{activerow:$index==selectedRow}">
+                            <td class="text-center">1</td>
+                            <td>Giá trị 1</td>
+                            <td>Giá trị 2</td>
+                            <td>Giá trị 3</td>
+                            <td>Giá trị 4</td>
+                            <td>Giá trị 5</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-primary" ng-show="RoleBtnUpdate == true" ng-click="edit(item.USER_ID)">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger" ng-show="RoleBtnDelete == true" ng-click="delete(item.USER_ID, item.FULL_NAME)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+@section scripts{
+    <script src="~/app/Controller/MenuDVController.js"></script>
+}

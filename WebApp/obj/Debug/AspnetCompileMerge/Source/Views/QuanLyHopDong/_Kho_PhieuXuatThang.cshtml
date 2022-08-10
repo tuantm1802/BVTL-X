@@ -1,0 +1,84 @@
+﻿<div class="col-sm-12">
+    <div class="main-action d-flex align-items-center justify-content-between flex-wrap mb-2 mt-1 mr-3">
+        <div class="d-flex align-items-center flex-wrap ct-w ml-3">
+            <button class="btn-action-m" data-toggle="modal" data-target="#modalAddKhoPhieuXuatThang" 
+                    ng-click="khoPhieuXTOpenModal()" ng-disabled="isDisableHD" ng-show="luuXuatThangKhoHopDong">
+                <img src="~/App_Assets/images/icon_add.svg" alt="">
+                <span>Thêm mới</span>
+            </button>
+            <button class="btn-action-m" ng-click="khoPhieuXTRemove()" ng-disabled="isDisableHD" ng-show="xoaXuatThangKhoHopDong">
+                <img src="~/App_Assets/images/icon_del.svg" alt="">
+                <span>Xoá</span>
+            </button>
+        </div>
+
+        <div class="d-flex align-items-center flex-wrap ml-3">
+            <div class="main-action pt-3">
+                <div class="form-search" style="margin-right: 0px">
+                    <input type="text" ng-model="khoPhieuXTPaging.timKiem" placeholder="Tìm kiếm">
+                    <button ng-click="khoPhieuXTGetList()">
+                        <img src="~/App_Assets/images/search_icon.svg" alt="">
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-12 col-sm-12 content-table none-padding">
+                <div class="row ml-0 mr-0">
+                    <div class="col-sm-12">
+                        <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="center">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" ng-model="isCheckAllVatTuKhongQuaKhoView" class="ace" ng-change="changeCheckAllVatTuKhongQuaKhoView()" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </th>
+                                    <th class="center">STT</th>
+                                    <th class="center">Chi tiết</th>
+                                    <th class="center">Số phiếu</th>
+                                    <th class="center">Số phiếu tài chính</th>
+                                    <th class="center">Đơn vị</th>
+                                    <th class="center">Ngày thực xuất</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr ng-repeat="item in khoPhieuXTListData">
+                                    <td class="center">
+                                        <label class="pos-rel">
+                                            <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                    <td>{{$index + 1}}</td>
+                                    <td>
+                                        <button ng-click="khoPhieuXTOpenModal(item)" style="background-color:transparent">
+                                            <img src="~/App_Assets/images/icon_edit_green.svg" alt="">
+                                        </button>
+                                    </td>
+                                    <td>{{item.SO_PHIEU}}</td>
+                                    <td>{{item.SO_PHIEU_H55}}</td>
+                                    <td>{{item.SO_HD_DEN}}</td>
+                                    <td>{{item.NGAY_GIAO}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row ml-0 mr-0">
+                    <div class="col-sm-12 pages-switch">
+                        <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="khoPhieuXTPaging.totalItems"
+                            items-per-page="khoPhieuXTPaging.pageSize" ng-model="khoPhieuXTPaging.pageIndex" ng-change="khoPhieuXTGetList()"
+                            max-size="khoPhieuXTPaging.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

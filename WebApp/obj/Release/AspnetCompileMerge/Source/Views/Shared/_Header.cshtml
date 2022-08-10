@@ -1,0 +1,242 @@
+﻿@using Common
+@{
+    var allApps = new Data.Admin.PageMenuDA().GetAppCode();
+    var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
+    var menus = Session["Menus"] as List<Model.ModelExtend.MenuModel>;
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    string avatar = string.Empty;
+    string userId = string.Empty;
+    if (userSession != null && !string.IsNullOrEmpty(userSession.Avartar))
+    {
+        avatar = userSession.Avartar;
+        userId = userSession.UserID == 0 ? "0" : userSession.UserID.ToString();
+    }
+
+    if (menus != null && menus.Count > 0)
+    {
+        menuLevel1 = menus.Where(x => x.PARENT_ID == null || x.PARENT_ID == 0).OrderBy(x => x.ORDER_LEVEL).ToList();
+
+        if (menuLevel1 != null && menuLevel1.Count > 0)
+        {
+            for (int i = 0; i < menuLevel1.Count; i++)
+            {
+                var listChild = menus.Where(x => x.PARENT_ID != null && x.PARENT_ID == menuLevel1[i].PAGE_ID).ToList();
+                menuLevel1[i].CountChild = listChild != null ? listChild.Count : 0;
+            }
+            var menuLevel1IDs = menuLevel1.Select(x => x.PAGE_ID).ToList();
+            menuLevel2 = menus.Where(x => menuLevel1IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+            if (menuLevel2 != null && menuLevel2.Count > 0)
+            {
+                for (int i = 0; i < menuLevel2.Count; i++)
+                {
+                    var listChild2 = menus.Where(x => x.PARENT_ID != null && x.PARENT_ID == menuLevel2[i].PAGE_ID).ToList();
+                    menuLevel2[i].CountChild = listChild2 != null ? listChild2.Count : 0;
+                }
+                var menuLevel2IDs = menuLevel2.Select(x => x.PAGE_ID).ToList();
+                menuLevel3 = menus.Where(x => menuLevel2IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+                if (menuLevel3 != null && menuLevel3.Count > 0)
+                {
+                    for (int i = 0; i < menuLevel3.Count; i++)
+                    {
+                        var listChild3 = menus.Where(x => x.PARENT_ID != null && x.PARENT_ID == menuLevel3[i].PAGE_ID).ToList();
+                        menuLevel3[i].CountChild = listChild3 != null ? listChild3.Count : 0;
+                    }
+                }
+            }
+        }
+    }
+    string chatUri= System.Configuration.ConfigurationManager.AppSettings["ChatUri"];
+}
+<header id="header" class="header">
+    <div class="header-main">
+        <div class="container-fluid d-flex align-items-center flex-wrap justify-content-between">
+            <div class="logo">
+                <a href="">
+                    <img src="~/App_Assets/images/logo_system.svg" alt="">
+                </a>
+            </div>
+            <div class="action-header">
+                <div class="moblie-bar">
+                    <button class="icon-mobile toggle hc-nav-trigger hc-nav-1">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <ul id="thongbao-container" class="nav ace-nav" ng-controller="ThongBaoHeaderController">
+                    <li class="green dropdown-modal dropdown-notify">
+                        <a class="chat-box-icon-top" data-host="@chatUri?appcode=@userSession.Appcode" href="#" aria-expanded="false">
+                            <i class="ace-icon fa fa-weixin"></i>
+                            <span class="badge badge-important" style="display:none">0</span>
+                        </a>
+                    </li>
+                    <!-- Notifications -->
+                    <li class="green dropdown-modal dropdown-notify">
+
+                        <a data-toggle="dropdown" class="dropdown-toggle pointer-event" href="javascript:void(0);" aria-expanded="false">
+                            <i class="ace-icon fa fa-bell"></i>
+                            <span class="badge badge-important ng-hide" ng-init="IsVisibleNf=false;TotalThongBao=0;" ng-show="IsVisibleNf">{{TotalThongBao}}</span>
+                        </a>
+
+                        <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close thongbao-box" style="margin-top: 11px;">
+                            <li class="dropdown-header">
+                                <i class="ace-icon fa fa-envelope-o"></i>
+                                <span>Thông báo</span>
+                            </li>
+
+                            <li class="dropdown-content">
+                                <ul class="dropdown-menu dropdown-navbar" ng-repeat="item in ListThongBao">
+                                    <li ng-click="CapNhatTrangThaiTB(item)">
+                                        <a href="{{item.URL_CHUC_NANG}}" class="clearfix" target="_blank">
+                                            <img src="/App_Assets/images/user_sys.svg" class="msg-photo" alt="" />
+                                            <span class="msg-body">
+                                                <span class="msg-title" ng-class="fontbold(item.TRANG_THAI)">
+                                                    <span class="blue">{{item.TEN_CB_DV_NGUOI_GUI}}:</span>
+                                                    {{item.NOI_DUNG}}
+                                                </span>
+                                                <span class="msg-time">
+                                                    <i class="ace-icon fa fa-clock-o"></i>
+                                                    <span>{{fdate(item.NGAY_TAO)}}</span>
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown-footer">
+                                <a href="/ThongBao" style="border-top:none">
+                                    Xem danh sách
+                                    <i class="ace-icon fa fa-arrow-right"></i>
+                                </a>
+
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- #END# Notifications -->
+                    <li class="has-child" style="margin-right:25px;">
+                        <h5 class="admin">
+                            @*<img src="@(userSession?.Avartar??"/App_Assets/images/user_sys.svg")" alt="">*@
+                            <span class="name-user">@Html.Raw(userSession != null ? userSession.Name : "")</span>
+                        </h5>
+
+                        <ul class="drop-user">
+                            <li>
+                                <a href="/User/MyProfile">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    Thay đổi thông tin
+                                </a>
+                            </li>
+                            <li>
+                                <a href="~/Login/Logout">
+                                    <i class="fa fa-power-off"></i>
+                                    Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<header class="header has-fixed">
+    <div class="header-bottom">
+        <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between">
+            @if (menuLevel1 != null && menuLevel1.Count > 0)
+            {
+                // lấy id menu đang active
+                string url = HttpContext.Current.Request.Url.AbsolutePath;
+                var meuActive = menus.FirstOrDefault(x => !string.IsNullOrEmpty(x.HREF_URL) && url.Contains(x.HREF_URL));
+
+                var idActive = 0;
+                if (meuActive != null)
+                {
+                    idActive = meuActive.PAGE_ID;
+                }
+                <ul class="nav-menu">
+                    @foreach (var itemM1 in menuLevel1)
+                    {
+                        var img = itemM1.CSS_CLASS;
+                        var img_hover = itemM1.CSS_CLASS;
+                        <li class="@(idActive == itemM1.PAGE_ID ? "active" :"") has-child">
+                            @if (itemM1.CountChild > 0)
+                            {
+                                var menuChikd2 = menuLevel2.Where(x => x.PARENT_ID != null &&  x.PARENT_ID == itemM1.PAGE_ID).ToList();
+                                <a href="@Common.UrlAbsolute(allApps,menuChikd2.FirstOrDefault())">
+                                    @*<i class="menu-icon fa @(!string.IsNullOrEmpty(itemM1.CSS_CLASS) ? itemM1.CSS_CLASS : "fa-desktop")"></i>*@
+                                    <div class="ic-menu">
+                                        <img alt="" src="~/App_Assets/images/@(img).svg">
+                                        <img src="~/App_Assets/images/@(img_hover)_hover.svg" alt="">
+                                    </div>
+                                    <span class="menu-text">
+                                        @itemM1.PAGE_NAME
+                                    </span>
+                                </a>
+                                <ul class="drop-menu">
+                                    @foreach (var itemM2 in menuChikd2)
+                                    {
+                                    <li class="@(idActive == itemM2.PAGE_ID ? "active" :"") has-child  " style="@(itemM2.IS_UNDERLINED == 0 ? "" : "border-bottom: 1px solid #d2d2d2 !important;")">
+
+                                        @if (itemM2.CountChild > 0)
+                                        {
+                                            var menuChikd3 = menuLevel3.Where(x => x.PARENT_ID != null && x.PARENT_ID == itemM2.PAGE_ID).ToList();
+
+                                            <a href="@Common.UrlAbsolute(allApps,menuChikd3.FirstOrDefault())">
+                                                <span>@itemM2.PAGE_NAME</span>
+                                            </a>
+                                            <ul class="drop-menu3">
+                                                @foreach (var itemM3 in menuChikd3)
+                                                {
+                                                    <li class="@(idActive == itemM3.PAGE_ID ? "active" :"")">
+                                                        <a href="@Common.UrlAbsolute(allApps,itemM3)">
+                                                            <span>@itemM3.PAGE_NAME</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            if (itemM2.HREF_URL == "TCTNT")
+                                            {
+                                                <a data-toggle="modal" data-target="#modelTieuChuanTheoNam">
+                                                    <span>@itemM2.PAGE_NAME</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Common.UrlAbsolute(allApps,itemM2)">
+                                                    <span>@itemM2.PAGE_NAME</span>
+                                                </a>
+                                            }
+                                        }
+                                    </li>
+                                    }
+                                </ul>
+
+                            }
+                            else
+                            {
+                                <a href="@Common.UrlAbsolute(allApps,itemM1)">
+                                    <div class="ic-menu">
+                                        <img alt="" src="~/App_Assets/images/@(img).svg">
+                                        <img src="~/App_Assets/images/@(img_hover)_hover.svg" alt="">
+                                    </div>
+                                    <span class="menu-text">
+                                        @itemM1.PAGE_NAME
+                                    </span>
+                                </a>
+                            }
+
+                        </li>
+
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</header>
+@section scripts{
+    <script src="~/app/Controller/ThongBaoHeaderController.js"></script>
+} 

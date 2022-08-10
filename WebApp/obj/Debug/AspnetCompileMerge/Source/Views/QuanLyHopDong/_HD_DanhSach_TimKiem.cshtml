@@ -1,0 +1,55 @@
+﻿<div class="modal fade" id="modalHopDongTimKiem">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tìm kiếm hợp đồng</h4>
+                <button type="button" class="close" ng-click="closeTimKiemHD()">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="content-table">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center balance">Số hợp đồng</th>
+                                <th class="text-center balance">Tên hợp đồng</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="itemCT in hdTimKiem" class="tbody-hover">
+                            <tr><td colspan="2" style="background-color:#38a36b; color:white;">{{itemCT.TEN_CONG_TY}}</td></tr>
+                            <tr style="cursor:pointer" ng-repeat="item in itemCT.HD_HOP_DONGS" ng-click="viewDetailHDFromTimKiem(item, true)" ng-class="{activerow:item.ID_HOP_DONG==selectedRow}">
+                                <td class="clhd">{{item.SO_HD}}</td>
+                                <td>{{item.TEN_HD}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="content-table pull-right">
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalRecord"
+                                items-per-page="modelSearch.pageSize" ng-model="modelSearch.pageIndex" ng-change="timkiemHD(true)"
+                                max-size="hdPaging.maxSize" class="pagination-sm" boundary-links="true"
+                                rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-end">
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="closeTimKiemHD()">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

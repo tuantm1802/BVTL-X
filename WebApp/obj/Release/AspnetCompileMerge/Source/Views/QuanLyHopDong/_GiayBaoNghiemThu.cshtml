@@ -1,0 +1,112 @@
+﻿
+
+<div class="col-sm-12 pl-0 pr-0">
+    <div class="col-sm-12">
+        <div class="main-action d-flex align-items-center justify-content-between flex-wrap mb-2 mt-1">
+            <div class="d-flex align-items-center flex-wrap ct-w ml-3">
+                <button class="btn-action-m" data-toggle="modal" data-target="#modalAddGiayBaoNghiemThu"
+                        ng-click="khoNTOpenAddModal()" ng-disabled="isDisableHD" ng-show="luuGiaBaoNghiemThuKho">
+                    <img src="~/App_Assets/images/icon_add.svg" alt="">
+                    <span>Thêm mới</span>
+                </button>
+                <button class="btn-action-m" ng-click="khoNTOpenEditModal()" ng-disabled="isDisableHD" ng-show="luuGiaBaoNghiemThuKho">
+                    <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                    <span>Sửa</span>
+                </button>
+                <button class="btn-action-m" ng-click="khoNTRemove()" ng-disabled="isDisableHD" ng-show="xoaGiaBaoNghiemThuKho">
+                    <img src="~/App_Assets/images/icon_del.svg" alt="">
+                    <span>Xoá</span>
+                </button>
+            </div>
+
+            <div class="d-flex align-items-center flex-wrap mr-3 ml-3">
+                <div class="main-action pt-3">
+                    <div class="form-search" style="margin-right: 0px">
+                        <input type="text" ng-model="khoNTPaging.timKiem" placeholder="Tìm kiếm">
+                        <button ng-click="khoNTGetList()">
+                            <img src="~/App_Assets/images/search_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-12 col-sm-6 content-table none-padding">
+                    <div class="row ml-0 mr-0">
+                        <div class="col-sm-12">
+                            <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" ng-model="khoNTIsCheckAll" class="ace" ng-change="khoNTonCheck()" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </th>
+                                        <th class="center">STT</th>
+                                        @*<th class="center">Chi tiết</th>*@
+                                        <th class="center">Số phiếu</th>
+                                        <th class="center">Ngày NT</th>
+                                        <th class="center">Người NT</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in khoNTListData" ng-class="{activerow:$index==khoNTSelectedRow}">
+                                        <td class="center">
+                                            <label class="pos-rel">
+                                                <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </td>
+                                        <td ng-click="khoNTListSPGet(item, $index,'true')">{{$index + 1}}</td>
+                                        @*<td></td>*@
+                                        <td ng-click="khoNTListSPGet(item, $index,'true')">{{item.SO_PHIEU_NT}}</td>
+                                        <td ng-click="khoNTListSPGet(item, $index,'true')">{{item.NGAY_NT}}</td>
+                                        <td ng-click="khoNTListSPGet(item, $index,'true')">{{item.NGUOI_NT}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-sm-12 pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="khoNTPaging.totalItems"
+                                items-per-page="khoNTPaging.pageSize" ng-model="khoNTPaging.pageIndex" ng-change="khoNTGetList()"
+                                max-size="khoNTPaging.maxSize" class="pagination-sm" boundary-links="true" rotate="false"
+                                previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 none-padding-right content-table">
+
+                    <div class="row ml-0 mr-0">
+                        <div class="col-sm-12">
+                            <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th class="center">STT</th>
+                                        <th class="center">Tên sản phẩm</th>
+                                        <th class="center">Số lượng</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in khoNTListSP">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{item.TEN_SP}}</td>
+                                        <td class="text-right">{{item.SL}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

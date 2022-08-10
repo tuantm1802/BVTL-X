@@ -1,0 +1,215 @@
+﻿<div class="modal fade" id="modalAddHopDong">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm mới hợp đồng</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-infor has-border p-3">
+                    <h4 class="form-title">
+                        Thông tin hợp đồng
+                    </h4>
+
+                    <form class="row no-gutters" name="hopdongform" ng-validate="validationOptions">
+                        <div class="col-12 col-md-4" style="margin-bottom: 10px" ng-class="modelHopDongAE.LOAI_HD_REQUIRED ? 'app-error': ''">
+                            <label for="">Loại hợp đồng: <span>*</span></label>
+                            <select select2 ng-model="modelHopDongAE.LOAI_HD" name="LOAI_HD" ng-options="item.id as item.name for item in listLoaiHD" class="form-control">
+                            </select>
+                            <span ng-show="modelHopDongAE.LOAI_HD_REQUIRED" class="error">Loại hợp đồng không được để trống</span>
+                        </div>
+
+                        <div class="col-12 col-md-4" ng-class="modelHopDongAE.NAM_KP_REQUIRED ? 'app-error': ''">
+                            <label for="">Năm kinh phí: <span>*</span></label>
+                            <select ui-select2 ng-model="modelHopDongAE.NAM_KP"
+                                    name="NAM_KP" class="form-control" ng-options="item.key as item.value for item in listNamKinhPhi"></select>
+                            <span ng-show="modelHopDongAE.NAM_KP_REQUIRED" class="error">Năm kinh phí không được để trống</span>
+                        </div>
+
+                        <div class="col-12 col-md-4" ng-class="modelHopDongAE.TRANG_THAI_REQUIRED ? 'app-error': ''">
+                            <label for="">Trạng thái: <span>*</span></label>
+                            <select ui-select2 ng-model="modelHopDongAE.TRANG_THAI" ng-options="item.id as item.name for item in listTrangThaiHD" name="TRANG_THAI" class="form-control">
+                            </select>
+                            <span ng-show="modelHopDongAE.TRANG_THAI_REQUIRED" class="error">Trạng thái không được để trống</span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="">Số hợp đồng: <span>*</span></label>
+                            <input type="text" to-uppercase ng-model="modelHopDongAE.SO_HD" name="SO_HD" class="form-control" />
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="">Tên hợp đồng: <span>*</span></label>
+                            <input type="text" ng-model="modelHopDongAE.TEN_HD" name="TEN_HD" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="">Ngày ký: <span>*</span></label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control" ng-model="modelHopDongAE.NGAY_KY" name="NGAY_KY" horizontal="left" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4" ng-class="modelHopDongAE.ID_CONG_TY_REQUIRED ? 'app-error': ''">
+                            <label for="">Công ty: <span>*</span></label>
+                            <select ui-select2 ng-model="modelHopDongAE.ID_CONG_TY" ng-options="item.ID as item.TEN_CONG_TY for item in listCongTy" name="ID_CONG_TY" class="form-control">
+                            </select>
+                            <span ng-show="modelHopDongAE.ID_CONG_TY_REQUIRED" class="error">Công ty không được để trống</span>
+                        </div>
+
+                        <div class="col-12 col-md-4" ng-class="modelHopDongAE.NGUOI_PHU_TRACH_REQUIRED ? 'app-error': ''">
+                            <label for="">Người phụ trách: <span>*</span></label>
+                            <select ui-select2 ng-model="modelHopDongAE.NGUOI_PHU_TRACH" ng-options="item.USER_ID as item.FULL_NAME for item in listNguoiPhuTrach" name="NGUOI_PHU_TRACH" class="form-control">
+                            </select>
+                            <span ng-show="modelHopDongAE.NGUOI_PHU_TRACH_REQUIRED" class="error">Người phụ trách không được để trống</span>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="">Số ngày thực hiện: </label>
+                            <input type="text" currency-input ng-model="modelHopDongAE.SO_NGAY_TH" name="SO_NGAY_TH" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="">Dự kiến thanh lý: </label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input type="text" ng-model="modelHopDongAE.NGAY_DK_THANH_LY" name="NGAY_DK_THANH_LY" horizontal="right" class="form-control" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="">Ngày thanh lý:</label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input type="text" class="form-control" ng-model="modelHopDongAE.NGAY_CHOT_HD" name="NGAY_CHOT_HD" horizontal="right" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="">Giá trị HĐ: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongAE.GIA_TRI_HD" name="GIA_TRI_HD" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="">Giá trị TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongAE.GIA_TRI_THUC_TE" name="GIA_TRI_THUC_TE" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="">Đã TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongAE.GT_DA_THANH_TOAN" name="GT_DA_THANH_TOAN" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="">Còn TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongAE.GT_CON_THANH_TOAN" name="GT_CON_THANH_TOAN" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-12">
+                            <label for="">Mô tả: </label>
+                            <input type="text" ng-model="modelHopDongAE.MO_TA" name="MO_TA" class="form-control" value="">
+                        </div>
+                    </form>
+                </div>
+
+                <div ng-if="hdPaging.type=='HD'">
+                    <div class="main-action d-flex align-items-center justify-content-between flex-wrap pt-3 pb-2">
+                        <div class="d-flex align-items-center flex-wrap ct-w">
+                            <button class="btn-action-m" ng-click="removeSP()">
+                                <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                <span>Xoá</span>
+                            </button>
+
+                            <button class="btn-action-m" data-target="#modalHDSanPham" ng-click="openDanhSachSP()">
+                                <img src="~/App_Assets/images/icon_fl.svg" alt="">
+                                <span>Danh sách sản phẩm</span>
+                            </button>
+                        </div>
+
+                        <div class="d-flex align-items-center flex-wrap">
+                            <div class="main-action pt-3">
+                                <div class="form-search">
+                                    <input type="text" placeholder="Tìm kiếm" ng-model="listSPAddOpts.timKiem">
+                                    <button>
+                                        <img src="~/App_Assets/images/search_icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="content-table">
+                        <table class="table-responsive table-hover result-point">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="text-center un-ip"><input type="checkbox" ng-model="listSPAddOpts.checkedAll" class="ace" ng-change="checkAllSPClicked()"></th>
+                                    <th class="text-center un-number">STT</th>
+                                    <th class="text-center un-code">Mã Hàng</th>
+                                    <th class="text-center un-name">Tên hàng</th>
+                                    <th class="text-center un-dtv">ĐTV</th>
+                                    <th class="text-center un-sl">SLHĐ</th>
+                                    <th class="text-center un-dg">Đơn giá KH</th>
+                                    <th class="text-center un-money">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in listSPAdd"
+                                    ng-if="item.MA_H55.includes(listSPAddOpts.timKiem) || item.TEN_SP.includes(listSPAddOpts.timKiem)">
+                                    <td class="center">
+                                        <input type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                    </td>
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{item.MA_H55}}</td>
+                                    <td>
+                                        {{item.TEN_SP}}
+                                    </td>
+                                    <td>{{item.TEN_DVT}}</td>
+                                    <td>
+                                        <input type="text" currency-input ng-class="item.SO_LUONG_ERROR? 'error': ''" ng-model="item.SO_LUONG" class="form-control" value="">
+                                        <div ng-show="item.SO_LUONG_ERROR">
+                                            <label class="error">Bạn chưa nhập số lượng hợp đồng</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" currency-input ng-class="item.DON_GIA_ERROR? 'error': ''" ng-model="item.DON_GIA" class="form-control" value="">
+                                        <div ng-show="item.DON_GIA_ERROR">
+                                            <label class="error">Bạn chưa nhập đơn giá khách hàng</label>
+                                        </div>
+                                    </td>
+                                    <td>{{item.SO_LUONG * item.DON_GIA | number}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex justify-content-between">
+
+                <h5 class="day-make">Ngày tạo hợp đồng <i>@DateTime.Now.ToString("dd/MM/yyyy")</i></h5>
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" ng-click="register()">
+                        <img src="~/App_Assets/images/icon_save.svg" alt="">
+                        <span>Lưu</span>
+                    </button>
+
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

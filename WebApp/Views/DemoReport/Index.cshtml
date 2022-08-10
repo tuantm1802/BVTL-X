@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Báo cáo";
+}
+
+<div class="container-fluid" ng-controller="DemoReportController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Báo cáo</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        @*<div class="card-header py-3">
+                <div class="card-tools">
+                    <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Làm mới
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="edit()" ng-show="RoleBtnUpdate == true">
+                        <i class="fas fa-pencil-alt"></i> Cập nhật
+                    </button>
+                </div>
+            </div>*@
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" @*id="dataTableReport"*@ width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;"># </th>
+                            <th  style="width: 39%;" colspan="2">Thông tin báo cáo </th>
+                            <th style="width: 8%;">MSM </th>
+                            <th style="width: 8%; ">PUD </th>
+                            <th style="width: 8%; ">SW </th>
+                            <th style="width: 8%; ">Nam</th>
+                            <th style="width: 8%; ">Nữ</th>
+                            <th style="width: 8%; ">Chuyển giới</th>
+                            <th style="width: 8%; ">Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in ListData">
+                            <td class="text-center">{{item.STT}}</td>
+                            <td class="text-left" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}" ng-if="item.Rowpan  > 0"> <span ng-show="item.BoldText = 'N'">{{item.ThongTinBC}}</span> <b ng-show="item.BoldText = 'Y'">{{item.ThongTinBC}}</b> </td>
+                            <td class="text-left" ng-if="item.Colpan <= 1">{{item.ThongTinBC_Them }}</td>
+                            <td class="text-right">{{item.MSM | number}}</td>
+                            <td class="text-right">{{item.PUD | number}}</td>
+                            <td class="text-right">{{item.SW | number}}</td>
+                            <td class="text-right">{{item.Nam | number}}</td>
+                            <td class="text-right">{{item.Nu | number}}</td>
+                            <td class="text-right">{{item.ChuyenGioi | number}}</td>
+                            <td class="text-right">{{item.Tong | number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/DemoReportController.js"></script>
+}

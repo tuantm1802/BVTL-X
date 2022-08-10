@@ -1,0 +1,11 @@
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\Model.dll.config
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\Model.dll
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\EntityFramework.dll
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\EntityFramework.SqlServer.dll
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\Simple.dll
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\EntityFramework.xml
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\bin\ViewCompilation\EntityFramework.SqlServer.xml
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\obj\ViewCompilation\Model.csproj.AssemblyReference.cache
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\obj\ViewCompilation\Model.csproj.CoreCompileInputs.cache
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\obj\ViewCompilation\Model.csproj.CopyComplete
+F:\OutSource\Quan_Ly_Thiet_Bi\Code\Source\DevCustomColor\Model\obj\ViewCompilation\Model.dll

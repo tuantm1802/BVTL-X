@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BaoCaoBVTLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ACETest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DayTest" Type="int" Nullable="false" />
+    <Property Name="MonthTest" Type="int" Nullable="false" />
+    <Property Name="YearTest" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="ResultTest" Type="char" MaxLength="10" />
+    <Property Name="PointACE" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Api_TableSaveData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NameSyncdata" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="HrefApi" Type="varchar" MaxLength="250" Nullable="false" />
+    <Property Name="TypeApi" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="InputApi" Type="nvarchar" MaxLength="500" />
+    <Property Name="TableNameSaveData" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AssistTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DayTest" Type="int" Nullable="false" />
+    <Property Name="MonthTest" Type="int" Nullable="false" />
+    <Property Name="YearTest" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="ThuocLa_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ThuocLa_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="ConRuou_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ConRuou_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="CanSa_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="CanSa_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="Cocaine_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Cocaine_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="MaTuyDa_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="MaTuyDa_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="KhiXongHit_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="KhiXongHit_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="ThuocAnThan_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ThuocAnThan_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="ChatGayAoGiac_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ChatGayAoGiac_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="ChatThuocPhien_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="ChatThuocPhien_NguyCo" Type="char" MaxLength="5" />
+    <Property Name="CacThuocKhac_Diem" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="CacThuocKhac_NguyCo" Type="char" MaxLength="5" />
+  </EntityType>
+  <EntityType Name="Cities">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="UnitId" Type="int" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="LastUpdateDate" Type="datetime" />
+    <Property Name="LastUpdateBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Gender" Type="char" MaxLength="1" />
+    <Property Name="DateOfBirth" Type="varchar" MaxLength="8" />
+    <Property Name="CityId" Type="int" />
+    <Property Name="TypeObject" Type="char" MaxLength="10" Nullable="false" />
+    <Property Name="Code_TCV" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DeliveryService">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DayDelivery" Type="int" Nullable="false" />
+    <Property Name="MonthDelivery" Type="int" Nullable="false" />
+    <Property Name="YearDelivery" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="PREP" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="PEP" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="STIs" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="VGC" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Methadone" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Other" Type="char" MaxLength="1" Nullable="false" />
+  </EntityType>
+  <EntityType Name="HTVTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ResultTest" Type="char" MaxLength="10" Nullable="false" />
+    <Property Name="DayTest" Type="int" Nullable="false" />
+    <Property Name="MonthTest" Type="int" Nullable="false" />
+    <Property Name="YearTest" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="UnderTreatmentHIV" Type="char" MaxLength="1" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PageAction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PAGE_ID" Type="int" Nullable="false" />
+    <Property Name="CONTROL_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="CONTROL_DESC" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="PageMenu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NAME" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="DESCRIPTION" Type="nvarchar" MaxLength="500" />
+    <Property Name="IS_ACTIVE" Type="bit" Nullable="false" />
+    <Property Name="ORDER_BY" Type="int" Nullable="false" />
+    <Property Name="CONTROLLER_NAME" Type="nvarchar" MaxLength="100" />
+    <Property Name="HREF_URL" Type="nvarchar" MaxLength="500" />
+    <Property Name="PARENT_PAGE_ID" Type="int" />
+    <Property Name="IS_SYSTEM_ROLE" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProvideReductionItems">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DayProvide" Type="int" Nullable="false" />
+    <Property Name="MonthProvide" Type="int" Nullable="false" />
+    <Property Name="YearProvide" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="NumberDocuments" Type="int" />
+    <Property Name="NumberCondom" Type="int" />
+    <Property Name="NumberCBT" Type="int" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="Descripttion" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RolePage">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleID" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="PageID" Type="int" Nullable="false" />
+    <Property Name="CONTROL_STRING" Type="varchar" MaxLength="250" />
+    <Property Name="IS_ACTIVE" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SKTTTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DayTest" Type="int" Nullable="false" />
+    <Property Name="MonthTest" Type="int" Nullable="false" />
+    <Property Name="YearTest" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="ResultTest" Type="char" MaxLength="10" />
+    <Property Name="PointQST" Type="int" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SocialSupport">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="DaySupport" Type="int" Nullable="false" />
+    <Property Name="MonthSupport" Type="int" Nullable="false" />
+    <Property Name="YearSupport" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="BuyBHYT" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="RegistrationPersonalDocuments" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Loans" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Juridical" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="ApprenticeshipIntroduction" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="JobIntroduction" Type="char" MaxLength="1" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SysLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ControllerName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserName" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="DateLog" Type="datetime" Nullable="false" />
+    <Property Name="Content" Type="nvarchar" MaxLength="1000" />
+  </EntityType>
+  <EntityType Name="SysParameters">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ParamCode" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ParamValue" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Desctiption" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="ParamValueType" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TestGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="LastUpdateDate" Type="datetime" />
+    <Property Name="LastUpdateBy" Type="int" />
+  </EntityType>
+  <EntityType Name="UrineTest">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CodeTCV" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="OrdinalNumber" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Customer_Code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ResultTest" Type="char" MaxLength="10" Nullable="false" />
+    <Property Name="DayTest" Type="int" Nullable="false" />
+    <Property Name="MonthTest" Type="int" Nullable="false" />
+    <Property Name="YearTest" Type="int" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="varchar" MaxLength="50" />
+    <Property Name="Password" Type="varchar" MaxLength="32" />
+    <Property Name="GroupID" Type="varchar" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" />
+    <Property Name="Address" Type="nvarchar" MaxLength="250" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+    <Property Name="Avartar" Type="nvarchar" MaxLength="1000" />
+    <Property Name="ProvinceID" Type="int" />
+    <Property Name="DistrictID" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+    <Property Name="Status" Type="bit" Nullable="false" />
+    <Property Name="IsAdmin" Type="bit" Nullable="false" />
+    <Property Name="DateOfBirth" Type="datetime" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" />
+    <Property Name="IdNumber" Type="varchar" MaxLength="50" />
+    <Property Name="Possition" Type="nvarchar" MaxLength="100" />
+    <Property Name="OperativeLevel" Type="int" />
+    <Property Name="OriginId" Type="int" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="User_TestGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="TestGroupId" Type="int" Nullable="false" />
+    <Property Name="Is_Active" Type="bit" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_User_User">
+    <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="GroupID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BaoCaoBVTLModelStoreContainer">
+    <EntitySet Name="ACETest" EntityType="Self.ACETest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Api_TableSaveData" EntityType="Self.Api_TableSaveData" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AssistTest" EntityType="Self.AssistTest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DeliveryService" EntityType="Self.DeliveryService" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="HTVTest" EntityType="Self.HTVTest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PageAction" EntityType="Self.PageAction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PageMenu" EntityType="Self.PageMenu" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProvideReductionItems" EntityType="Self.ProvideReductionItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RolePage" EntityType="Self.RolePage" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SKTTTest" EntityType="Self.SKTTTest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SocialSupport" EntityType="Self.SocialSupport" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SysLog" EntityType="Self.SysLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SysParameters" EntityType="Self.SysParameters" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TestGroup" EntityType="Self.TestGroup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UrineTest" EntityType="Self.UrineTest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User_TestGroup" EntityType="Self.User_TestGroup" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_User_User" Association="Self.FK_User_User">
+      <End Role="Role" EntitySet="Role" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

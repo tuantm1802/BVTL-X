@@ -1,0 +1,434 @@
+﻿@{
+    var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
+    var menus = Session["Menus"] as List<Model.ModelExtend.MenuModel>;
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    if (menus != null && menus.Count > 0)
+    {
+        menuLevel1 = menus.Where(x => x.PARENT_ID == null || x.PARENT_ID == 0).OrderBy(x => x.ORDER_LEVEL).ToList();
+
+        if (menuLevel1 != null && menuLevel1.Count > 0)
+        {
+            for (int i = 0; i < menuLevel1.Count; i++)
+            {
+                var listChild = menus.Where(x => x.PARENT_ID == menuLevel1[i].PAGE_ID).ToList();
+                menuLevel1[i].CountChild = listChild != null ? listChild.Count : 0;
+            }
+            var menuLevel1IDs = menuLevel1.Select(x => x.PAGE_ID).ToList();
+            menuLevel2 = menus.Where(x => menuLevel1IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+            if (menuLevel2 != null && menuLevel2.Count > 0)
+            {
+                for (int i = 0; i < menuLevel2.Count; i++)
+                {
+                    var listChild2 = menus.Where(x => x.PARENT_ID == menuLevel2[i].PAGE_ID).ToList();
+                    menuLevel2[i].CountChild = listChild2 != null ? listChild2.Count : 0;
+                }
+                var menuLevel2IDs = menuLevel2.Select(x => x.PAGE_ID).ToList();
+                menuLevel3 = menus.Where(x => menuLevel2IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+                if (menuLevel3 != null && menuLevel3.Count > 0)
+                {
+                    for (int i = 0; i < menuLevel3.Count; i++)
+                    {
+                        var listChild3 = menus.Where(x => x.PARENT_ID == menuLevel3[i].PAGE_ID).ToList();
+                        menuLevel3[i].CountChild = listChild3 != null ? listChild3.Count : 0;
+                    }
+                }
+            }
+        }
+    }
+}
+    <div id="sidebar" class="sidebar responsive ace-save-state">
+        <script type="text/javascript">
+            try { ace.settings.loadState('sidebar') } catch (e) { }
+        </script>
+
+        <ul class="nav nav-list">
+            <li class="active open">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-desktop"></i>
+                    <span class="menu-text">
+                        Quân số
+                    </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="active open">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-caret-right"></i>
+
+                            Chốt quân số đầu kỳ(đầu kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="typography.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Tân binh nghỉ lễ
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="elements.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Quân số tăng giảm(trong kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="buttons.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Quân số tân binh(trong kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="content-slider.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Quân số thăng hàm(trong kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="treeview.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Quân số tuyển mới(trong kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="jquery-ui.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Quân số chuyển đổi lực lượng(trong kỳ)
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="nestable-list.html">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Xóa quân số trùng
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-list"></i>
+                    <span class="menu-text"> Cấp phát </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Kế hoạch cấp phát nhiều đ.vi
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Chuyển tiền địa phương
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Hủy dự án
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-pencil-square-o"></i>
+                    <span class="menu-text"> Hợp đồng </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a href="#">
+                    <i class="menu-icon fa fa-list-alt"></i>
+                    <span class="menu-text"> Kho </span>
+                </a>
+
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Điều chuyển kho
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Kiểm kê kho
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Điều chỉnh kho nội bộ
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Giữ hàng trong kho
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Cấu hình dừng cấp phát
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Chốt lệnh xuất kho
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Chốt lệnh điều chuyển kho
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Chuyển đổi mã
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+            <li class="">
+                <a href="#">
+                    <i class="menu-icon fa fa-list-alt"></i>
+                    <span class="menu-text"> Danh mục </span>
+                </a>
+
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Kho hàng
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Công ty
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Lực lượng
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Đơn vị tính
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Nhóm tiêu chuẩn
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Khu vực
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Nhóm đơn vị
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Đơn vị
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Nhóm cấp bậc
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Cấp bậc
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Nhóm trang phục
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/Home/Contact">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Trang phục
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Nhóm vật tư phụ
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="#">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Vật tư phụ
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+            <li class="">
+                <a href="gallery.html">
+                    <i class="menu-icon fa fa-picture-o"></i>
+                    <span class="menu-text"> Tiêu chuẩn - định mức </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tag"></i>
+                    <span class="menu-text"> Khởi tạo số liệu </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-file-o"></i>
+
+                    <span class="menu-text">
+                        Báo cáo
+                    </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-file-o"></i>
+
+                    <span class="menu-text">
+                        Hệ thống
+                    </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+        </ul><!-- /.nav-list -->
+
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+    </div>

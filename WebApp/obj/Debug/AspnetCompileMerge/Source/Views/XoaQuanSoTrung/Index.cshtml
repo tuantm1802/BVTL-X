@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "Xóa quân số trùng";
+}
+<main ng-controller="XoaQuanSoTrungController" style="padding-top: 20px;">
+    <div class="container-fluid d-flex flex-wrap">
+        <div class="row  no-gutters w-100">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;  padding-right: 2px;">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            @*<label for="">Đơn vị</label>
+                                <input type="text" class="form-control" placeholder="{{TEN_DON_VI}}" disabled>*@
+                        </div>
+
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <label for="">Năm</label>
+                            <select ng-model="NAM" class="form-control">
+                                <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-2">
+                            <label for="">Kỳ</label>
+                            <select ng-model="KY" class="form-control">
+                                <option value="XH">Xuân hạ</option>
+                                <option value="TD">Thu đông</option>
+                                @*<option value="CN">Cả năm</option>*@
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-1">
+                            <label style="color:#fff">Năm</label>
+                            <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <button class="btn-action-m bg-green" ng-click="QuetQSTrung()">
+                                        <i class="fa fa-search" aria-hidden="true"></i> <span>Quét QS trùng</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-table" style="overflow: auto;max-height: calc(100vh - 245px);padding-top:10px;">
+                    <table class="table-responsive table-hover result-point" style="margin-bottom: 0px;">
+                        <thead class="point-table-head">
+                            <tr>
+
+                                <th class="text-center" rowspan="3">STT</th>
+                                <th class="text-center" rowspan="3">Số hiệu CAND</th>
+                                <th class="text-center" rowspan="3">Giới tính</th>
+                                <th class="text-center" colspan="5">Đơn vị trùng số hiệu CSND</th>
+                                <th class="text-center" rowspan="3">Cỡ giày</th>
+                                <th class="text-center" rowspan="3">Cỡ mũ</th>
+                                <th class="text-center" rowspan="3">Cỡ QA</th>
+                                <th class="text-center" rowspan="3">Loại CB</th>
+                                <th class="text-center" rowspan="3">Trạng thái</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center" colspan="2">Cấp bậc - loại hàm (hiện tại)</th>
+                                <th class="text-center" colspan="3">Chức vụ - đơn vị - lực lượng (hiện tại) </th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cấp bậc</th>
+                                <th class="text-center">Loại hàm</th>
+                                <th class="text-center">Chức vụ</th>
+                                <th class="text-center">Vị trí công tác</th>
+                                <th class="text-center">Lực lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in ListQSTrungLog">
+                                
+                                <td class="text-center">{{$index + 1}}</td>
+                                <td>{{item.SO_HIEU_TEXT}}</td>
+                                <td>{{item.GIOI_TINH_TEXT}}</td>
+                                <td>{{item.TEN_CAP_BAC}}</td>
+                                <td>{{item.TEN_LOAI_HAM}}</td>
+                                <td>{{item.CHUC_VU}}</td>
+                                <td>{{item.TEN_DON_VI}}</td>
+                                <td>{{item.TEN_LUC_LUONG}}</td>
+                                <td>{{item.CO_GIAY}}</td>
+                                <td>{{item.CO_MU}}</td>
+                                <td>{{item.CO_QA}}</td>
+                                <td>{{item.LOAI_CB}}</td>
+                                <td>{{item.TRANG_THAI_TEXT}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row content-table pull-right">
+                        <div class="pages-switch">
+                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="SoLuongKetQua" items-per-page="10" ng-model="currentPage" ng-change="pageChanged()" max-size="3" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/XoaQuanSoTrung/_qsTrung.cshtml")
+</main>
+@section scripts{
+    <script src="~/app/Controller/QuanSo/XoaQuanSoTrungController.js"></script>
+}

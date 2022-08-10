@@ -1,0 +1,99 @@
+﻿
+<div class="modal fade" id="modalVaySec">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Vay séc</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row mb-3">
+                    <div class="col-md-4 d-flex justify-content-between">
+                        <label class="font-weight-bold">Số tiền phải TT: &nbsp;&nbsp;&nbsp;{{modelHopDongView.GIA_TRI_THUC_TE | currency:''}}</label>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-between">
+                        <label class="font-weight-bold">Số tiền đã TT:&nbsp;&nbsp;&nbsp;{{modelHopDongView.GT_DA_THANH_TOAN | currency:''}}</label>
+                    </div>
+                    <div class="col-md-4 d-flex justify-content-between">
+                        <label class="font-weight-bold">Số tiền còn phải TT:&nbsp;&nbsp;&nbsp;{{modelHopDongView.GT_CON_THANH_TOAN | currency:''}}</label>
+                    </div>
+                </div>
+                <div class="main-action pb-3">
+                    <div class="d-flex align-items-center flex-wrap">
+                        <button class="btn-action-m" data-toggle="modal" data-target="#modalAddVaySec" ng-click="openAddVaySecModal()" ng-show="luuVaySec">
+                            <img src="~/App_Assets/images/icon_add.svg" alt="">
+                            <span>Thêm mới</span>
+                        </button>
+                        <button class="btn-action-m" ng-click="removeVaySec()" ng-show="xoaVaySec">
+                            <img src="~/App_Assets/images/icon_del.svg" alt="">
+                            <span>Xoá</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-table">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="center">
+                                    <label class="pos-rel" style="margin-left:-3px">
+                                        <input type="checkbox" class="ace" ng-model="vaySecListCheckAll" ng-change="vaySecCheckAllOnCheck()" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </th>
+                                <th class="center">Chi tiết</th>
+                                <th class="center">Số phiếu tài chính</th>
+                                <th class="center">Ngày lập phiếu</th>
+                                <th class="center">Người lập phiếu</th>
+                                <th class="center">Người nhận</th>
+                                <th class="center">Số tiền thanh toán</th>
+                                <th class="center">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in listVaySec" ng-class="{activerow:$index==selectedRowPL, row_chuyen_phieu:item.ID_CHUYEN}">
+                                <td class="center">
+                                    <label class="pos-rel" ng-if="!item.ID_CHUYEN">
+                                        <input ng-change="vaySecListIsCheckAll()" type="checkbox" class="ace" ng-model="item.CHECKED" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </td>
+                                <td class="center">
+                                    <button class="btn-action-m" data-toggle="modal" data-target="#modalAddVaySec"
+                                            ng-click="openAddVaySecModal(item.ID)" style="background: transparent">
+                                        <img src="~/App_Assets/images/icon_edit_green.svg" alt="">
+                                    </button>
+                                </td>
+                                <td>{{item.SO_PHIEU_H55}}</td>
+                                <td>{{item.NGAY_TAO}}</td>
+                                <td>{{item.NGUOI_TAO}}</td>
+                                <td>{{item.NGUOI_NHAN}}</td>
+                                <td>{{item.SO_TIEN_THANH_TOAN | currency:""}}</td>
+                                <td>{{item.GHI_CHU}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+
+                <h5 class="day-make"> <i></i></h5>
+
+                <div class="main-action d-flex flex-wrap">
+                    <button class="btn-action-m cl-3" data-dismiss="modal">
+                        <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+                        <span>Đóng</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

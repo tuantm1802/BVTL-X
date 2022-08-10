@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="SOLUONG_HOCVIEN_CAND_DS" targetNamespace="http://tempuri.org/SOLUONG_HOCVIEN_CAND_DS.xsd" xmlns:mstns="http://tempuri.org/SOLUONG_HOCVIEN_CAND_DS.xsd" xmlns="http://tempuri.org/SOLUONG_HOCVIEN_CAND_DS.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="SOLUONG_HOCVIEN_CAND_DS" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="SOLUONG_HOCVIEN_CAND_DS" msprop:Generator_UserDSName="SOLUONG_HOCVIEN_CAND_DS">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SOLUONG_HOCVIEN_CAND" msprop:Generator_TableClassName="SOLUONG_HOCVIEN_CANDDataTable" msprop:Generator_TableVarName="tableSOLUONG_HOCVIEN_CAND" msprop:Generator_RowChangedName="SOLUONG_HOCVIEN_CANDRowChanged" msprop:Generator_TablePropName="SOLUONG_HOCVIEN_CAND" msprop:Generator_RowDeletingName="SOLUONG_HOCVIEN_CANDRowDeleting" msprop:Generator_RowChangingName="SOLUONG_HOCVIEN_CANDRowChanging" msprop:Generator_RowEvHandlerName="SOLUONG_HOCVIEN_CANDRowChangeEventHandler" msprop:Generator_RowDeletedName="SOLUONG_HOCVIEN_CANDRowDeleted" msprop:Generator_RowClassName="SOLUONG_HOCVIEN_CANDRow" msprop:Generator_UserTableName="SOLUONG_HOCVIEN_CAND" msprop:Generator_RowEvArgName="SOLUONG_HOCVIEN_CANDRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="STT" msprop:Generator_ColumnVarNameInTable="columnSTT" msprop:Generator_ColumnPropNameInRow="STT" msprop:Generator_ColumnPropNameInTable="STTColumn" msprop:Generator_UserColumnName="STT" type="xs:string" minOccurs="0" />
+              <xs:element name="TEN_KHOA_HOC" msprop:Generator_ColumnVarNameInTable="columnTEN_KHOA_HOC" msprop:Generator_ColumnPropNameInRow="TEN_KHOA_HOC" msprop:Generator_ColumnPropNameInTable="TEN_KHOA_HOCColumn" msprop:Generator_UserColumnName="TEN_KHOA_HOC" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM1_NAM" msprop:Generator_ColumnVarNameInTable="columnNAM1_NAM" msprop:Generator_ColumnPropNameInRow="NAM1_NAM" msprop:Generator_ColumnPropNameInTable="NAM1_NAMColumn" msprop:Generator_UserColumnName="NAM1_NAM" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM1_NU" msprop:Generator_ColumnVarNameInTable="columnNAM1_NU" msprop:Generator_ColumnPropNameInRow="NAM1_NU" msprop:Generator_ColumnPropNameInTable="NAM1_NUColumn" msprop:Generator_UserColumnName="NAM1_NU" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM2_NAM" msprop:Generator_ColumnVarNameInTable="columnNAM2_NAM" msprop:Generator_ColumnPropNameInRow="NAM2_NAM" msprop:Generator_ColumnPropNameInTable="NAM2_NAMColumn" msprop:Generator_UserColumnName="NAM2_NAM" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM2_NU" msprop:Generator_ColumnVarNameInTable="columnNAM2_NU" msprop:Generator_ColumnPropNameInRow="NAM2_NU" msprop:Generator_ColumnPropNameInTable="NAM2_NUColumn" msprop:Generator_UserColumnName="NAM2_NU" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM3_NAM" msprop:Generator_ColumnVarNameInTable="columnNAM3_NAM" msprop:Generator_ColumnPropNameInRow="NAM3_NAM" msprop:Generator_ColumnPropNameInTable="NAM3_NAMColumn" msprop:Generator_UserColumnName="NAM3_NAM" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM3_NU" msprop:Generator_ColumnVarNameInTable="columnNAM3_NU" msprop:Generator_ColumnPropNameInRow="NAM3_NU" msprop:Generator_ColumnPropNameInTable="NAM3_NUColumn" msprop:Generator_UserColumnName="NAM3_NU" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM4_NAM" msprop:Generator_ColumnVarNameInTable="columnNAM4_NAM" msprop:Generator_ColumnPropNameInRow="NAM4_NAM" msprop:Generator_ColumnPropNameInTable="NAM4_NAMColumn" msprop:Generator_UserColumnName="NAM4_NAM" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM4_NU" msprop:Generator_ColumnVarNameInTable="columnNAM4_NU" msprop:Generator_ColumnPropNameInRow="NAM4_NU" msprop:Generator_ColumnPropNameInTable="NAM4_NUColumn" msprop:Generator_UserColumnName="NAM4_NU" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM5_NAM" msprop:Generator_ColumnVarNameInTable="columnNAM5_NAM" msprop:Generator_ColumnPropNameInRow="NAM5_NAM" msprop:Generator_ColumnPropNameInTable="NAM5_NAMColumn" msprop:Generator_UserColumnName="NAM5_NAM" type="xs:string" minOccurs="0" />
+              <xs:element name="NAM5_NU" msprop:Generator_ColumnVarNameInTable="columnNAM5_NU" msprop:Generator_ColumnPropNameInRow="NAM5_NU" msprop:Generator_ColumnPropNameInTable="NAM5_NUColumn" msprop:Generator_UserColumnName="NAM5_NU" type="xs:string" minOccurs="0" />
+              <xs:element name="GROUP_NAME" msprop:Generator_ColumnVarNameInTable="columnGROUP_NAME" msprop:Generator_ColumnPropNameInRow="GROUP_NAME" msprop:Generator_ColumnPropNameInTable="GROUP_NAMEColumn" msprop:Generator_UserColumnName="GROUP_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="IDX" msprop:Generator_ColumnVarNameInTable="columnIDX" msprop:Generator_ColumnPropNameInRow="IDX" msprop:Generator_ColumnPropNameInTable="IDXColumn" msprop:Generator_UserColumnName="IDX" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

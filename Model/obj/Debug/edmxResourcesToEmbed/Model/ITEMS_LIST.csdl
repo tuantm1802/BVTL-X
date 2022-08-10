@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ITEMS_LISTModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DM_CONG_TY">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_CONG_TY" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="TEN_VIET_TAT" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DIA_CHI" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="ID_DON_VI_QL" Type="Int32" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="MNG_UNIT_ID" Type="Int32" />
+    <Property Name="IS_DM_CHUNG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DV_KHONG_DUNG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_DON_VI">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_DON_VI" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="PHIEN_HIEU" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="NHOM_DON_VI_ID" Type="Int32" />
+    <Property Name="DON_VI_CHA_ID" Type="Int32" />
+    <Property Name="KHU_VUC_ID" Type="Int32" />
+    <Property Name="IS_QUAN_LY_KHO" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="CONTACT_NAME" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CONTACT_TEL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ADDRESS" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="SO_NAM_DAO_TAO" Type="Int32" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="IS_DON_VI_SU_DUNG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PHONG_QUAN_LY" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="MNG_UNIT_ID" Type="Int32" />
+    <Property Name="IS_DM_CHUNG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DV_KHONG_DUNG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="NHOM_DV_SU_DUNG" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="CAP_DV" Type="Int32" />
+    <Property Name="TRANG_THAI" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LOAI_KHO" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_DON_VI_NHOM">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="TEN_NHOM_DV" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="LOAI_NHOM_DV" Type="Int32" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="IS_HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_DON_VI_TINH">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_DVT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_HANG_SX">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_HANG" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UNIT_ID" Type="Int32" Nullable="false" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DM_KHU_VUC">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_KHU_VUC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_LOAI_HAM">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="LOAI_HAM" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="DM_LUC_LUONG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_LL" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="IS_TAN_BINH" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LL_CHA_ID" Type="Int32" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_CAP_NHAT" Type="DateTime" Precision="3" />
+    <Property Name="NGUOI_CAP_NHAT" Type="Int32" />
+    <Property Name="SO_THU_TU" Type="Int32" />
+    <Property Name="KY_HIEU_VIET_TAT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IS_NHAN_TIEN" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="DM_XUAT_XU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="XUAT_XU" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DV_DUOC_CHIA_SE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="LT_DATA_TYPES">
+    <Key>
+      <PropertyRef Name="DATA_TYPE_ID" />
+    </Key>
+    <Property Name="DATA_TYPE_ID" Type="Int16" Nullable="false" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DATABASE_DATA_TYPE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="DATA_TYPE_FORMAT" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="LT_DESC_FLEX_COLUMN_USAGES">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_SET_ID" />
+      <PropertyRef Name="FLEX_COLUMN_NAME" />
+    </Key>
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" />
+    <Property Name="FLEX_COLUMN_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FLEX_VALUE_SET" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="FLEX_COL_DATA_TYPE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="REQUIRED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="END_USER_COLUMN_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="DISPLAY_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DEFAULT_VALUE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="COLUMN_SEQ_NUM" Type="Int32" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="CONTROL_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="IS_CATEGORY_COLUMN" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="FLEX_VALUE_CATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="FLEX_COL_DATA_LENGTH" Type="Int32" />
+    <Property Name="CONTROL_TYPE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="VIEW_COLUMN_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="SHOW_ON_SEARCHING" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="SHOW_ON_LIST" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="LT_FLEX_VALUE_CATEGORIES">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_CATEGORY_ID" />
+    </Key>
+    <Property Name="FLEX_VALUE_CATEGORY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" />
+    <Property Name="FLEX_VALUE_CATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="BRIEF_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="CREATION_DATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Int32" />
+    <Property Name="PARENT_FLEX_VALUE_CATEGORY" Type="Int32" />
+    <Property Name="NOTE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="DATA_SOURCE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ATTRIBUTE1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="LT_FLEX_VALUE_SETS" Relationship="Self.FK_LT_FLEX_VALUE_CATEGORIES_LT_FLEX_VALUE_SETS" FromRole="LT_FLEX_VALUE_CATEGORIES" ToRole="LT_FLEX_VALUE_SETS" />
+  </EntityType>
+  <EntityType Name="LT_FLEX_VALUE_SETS">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_SET_ID" />
+    </Key>
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FLEX_VALUE_SET_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="CREATION_DATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Int32" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="FLEX_TYPE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="SCOPE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="FORM_DISPLAY_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="LT_FLEX_VALUE_CATEGORIES" Relationship="Self.FK_LT_FLEX_VALUE_CATEGORIES_LT_FLEX_VALUE_SETS" FromRole="LT_FLEX_VALUE_SETS" ToRole="LT_FLEX_VALUE_CATEGORIES" />
+  </EntityType>
+  <EntityType Name="LT_FLEX_VALUES">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_ID" />
+    </Key>
+    <Property Name="FLEX_VALUE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" />
+    <Property Name="FLEX_VALUE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="CREATION_DATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Int32" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="SUMMARY_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="PARENT_FLEX_VALUE_ID" Type="Int32" />
+    <Property Name="HIERARCHY_LEVEL" Type="Int16" />
+    <Property Name="FLEX_VALUE_CATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ATTRIBUTE1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TCDM_PCM_DM_NHOM_HH">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_NHOM_HH" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DON_VI_TINH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="NGAY_TAO" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="TCDM_PCM_DON_VI" Relationship="Self.FK_NHOM_HH_DON_VI" FromRole="TCDM_PCM_DM_NHOM_HH" ToRole="TCDM_PCM_DON_VI" />
+  </EntityType>
+  <EntityType Name="TCDM_PCM_DON_VI">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_NHOM_HH_TCDM" Type="Int32" Nullable="false" />
+    <Property Name="ID_DON_VI" Type="Int32" Nullable="false" />
+    <Property Name="NAM" Type="Int32" Nullable="false" />
+    <Property Name="DINH_MUC" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="SO_LUONG_HIEN_TAI" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="NGAY_TAO" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ID_NGUOI_TAO" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="TCDM_PCM_DM_NHOM_HH" Relationship="Self.FK_NHOM_HH_DON_VI" FromRole="TCDM_PCM_DON_VI" ToRole="TCDM_PCM_DM_NHOM_HH" />
+  </EntityType>
+  <EntityType Name="TCDM_PCM_FILE_MAU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_MAU" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PATH" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TEN_FILE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="NGAY_TAO" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ID_NGUOI_TAO" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="loaihangp3">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_CATEGORY_ID" />
+      <PropertyRef Name="FLEX_VALUE_SET_ID" />
+    </Key>
+    <Property Name="FLEX_VALUE_CATEGORY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" />
+    <Property Name="FLEX_VALUE_CATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="BRIEF_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="CREATION_DATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Int32" />
+    <Property Name="PARENT_FLEX_VALUE_CATEGORY" Type="Int32" />
+    <Property Name="NOTE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="DATA_SOURCE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ATTRIBUTE1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="VW_DM_DON_VI">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_DON_VI" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PHIEN_HIEU" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DON_VI_CHA_ID" Type="Int32" />
+    <Property Name="NHOM_DON_VI_ID" Type="Int32" />
+    <Property Name="KHU_VUC_ID" Type="Int32" />
+    <Property Name="CONTACT_NAME" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CONTACT_TEL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ADDRESS" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PHONG_QUAN_LY" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="VW_DM_KHO">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN_DON_VI" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PHIEN_HIEU" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MO_TA" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="DON_VI_CHA_ID" Type="Int32" />
+    <Property Name="NHOM_DON_VI_ID" Type="Int32" />
+    <Property Name="KHU_VUC_ID" Type="Int32" />
+    <Property Name="CONTACT_NAME" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CONTACT_TEL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CONTACT_ADDRESS" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="HIEU_LUC" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PHONG_QUAN_LY" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="TRANG_THAI" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LOAI_KHO" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="VW_NGUON_KINH_PHI">
+    <Key>
+      <PropertyRef Name="FLEX_VALUE_ID" />
+      <PropertyRef Name="FLEX_VALUE_SET_ID" />
+    </Key>
+    <Property Name="FLEX_VALUE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FLEX_VALUE_SET_ID" Type="Int32" Nullable="false" />
+    <Property Name="FLEX_VALUE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="CREATION_DATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATED_BY" Type="Int32" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="SUMMARY_FLAG" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="PARENT_FLEX_VALUE_ID" Type="Int32" />
+    <Property Name="HIERARCHY_LEVEL" Type="Int16" />
+    <Property Name="FLEX_VALUE_CATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ATTRIBUTE1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ATTRIBUTE10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <Association Name="FK_LT_FLEX_VALUE_CATEGORIES_LT_FLEX_VALUE_SETS">
+    <End Role="LT_FLEX_VALUE_SETS" Type="Self.LT_FLEX_VALUE_SETS" Multiplicity="1" />
+    <End Role="LT_FLEX_VALUE_CATEGORIES" Type="Self.LT_FLEX_VALUE_CATEGORIES" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LT_FLEX_VALUE_SETS">
+        <PropertyRef Name="FLEX_VALUE_SET_ID" />
+      </Principal>
+      <Dependent Role="LT_FLEX_VALUE_CATEGORIES">
+        <PropertyRef Name="FLEX_VALUE_SET_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NHOM_HH_DON_VI">
+    <End Role="TCDM_PCM_DM_NHOM_HH" Type="Self.TCDM_PCM_DM_NHOM_HH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="TCDM_PCM_DON_VI" Type="Self.TCDM_PCM_DON_VI" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TCDM_PCM_DM_NHOM_HH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TCDM_PCM_DON_VI">
+        <PropertyRef Name="ID_NHOM_HH_TCDM" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ITEMS_LISTEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DM_CONG_TY" EntityType="Self.DM_CONG_TY" />
+    <EntitySet Name="DM_DON_VI" EntityType="Self.DM_DON_VI" />
+    <EntitySet Name="DM_DON_VI_NHOM" EntityType="Self.DM_DON_VI_NHOM" />
+    <EntitySet Name="DM_DON_VI_TINH" EntityType="Self.DM_DON_VI_TINH" />
+    <EntitySet Name="DM_HANG_SX" EntityType="Self.DM_HANG_SX" />
+    <EntitySet Name="DM_KHU_VUC" EntityType="Self.DM_KHU_VUC" />
+    <EntitySet Name="DM_LOAI_HAM" EntityType="Self.DM_LOAI_HAM" />
+    <EntitySet Name="DM_LUC_LUONG" EntityType="Self.DM_LUC_LUONG" />
+    <EntitySet Name="DM_XUAT_XU" EntityType="Self.DM_XUAT_XU" />
+    <EntitySet Name="LT_DATA_TYPES" EntityType="Self.LT_DATA_TYPES" />
+    <EntitySet Name="LT_DESC_FLEX_COLUMN_USAGES" EntityType="Self.LT_DESC_FLEX_COLUMN_USAGES" />
+    <EntitySet Name="LT_FLEX_VALUE_CATEGORIES" EntityType="Self.LT_FLEX_VALUE_CATEGORIES" />
+    <EntitySet Name="LT_FLEX_VALUE_SETS" EntityType="Self.LT_FLEX_VALUE_SETS" />
+    <EntitySet Name="LT_FLEX_VALUES" EntityType="Self.LT_FLEX_VALUES" />
+    <EntitySet Name="TCDM_PCM_DM_NHOM_HH" EntityType="Self.TCDM_PCM_DM_NHOM_HH" />
+    <EntitySet Name="TCDM_PCM_DON_VI" EntityType="Self.TCDM_PCM_DON_VI" />
+    <EntitySet Name="TCDM_PCM_FILE_MAU" EntityType="Self.TCDM_PCM_FILE_MAU" />
+    <EntitySet Name="loaihangp3" EntityType="Self.loaihangp3" />
+    <EntitySet Name="VW_DM_DON_VI" EntityType="Self.VW_DM_DON_VI" />
+    <EntitySet Name="VW_DM_KHO" EntityType="Self.VW_DM_KHO" />
+    <EntitySet Name="VW_NGUON_KINH_PHI" EntityType="Self.VW_NGUON_KINH_PHI" />
+    <AssociationSet Name="FK_LT_FLEX_VALUE_CATEGORIES_LT_FLEX_VALUE_SETS" Association="Self.FK_LT_FLEX_VALUE_CATEGORIES_LT_FLEX_VALUE_SETS">
+      <End Role="LT_FLEX_VALUE_SETS" EntitySet="LT_FLEX_VALUE_SETS" />
+      <End Role="LT_FLEX_VALUE_CATEGORIES" EntitySet="LT_FLEX_VALUE_CATEGORIES" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NHOM_HH_DON_VI" Association="Self.FK_NHOM_HH_DON_VI">
+      <End Role="TCDM_PCM_DM_NHOM_HH" EntitySet="TCDM_PCM_DM_NHOM_HH" />
+      <End Role="TCDM_PCM_DON_VI" EntitySet="TCDM_PCM_DON_VI" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

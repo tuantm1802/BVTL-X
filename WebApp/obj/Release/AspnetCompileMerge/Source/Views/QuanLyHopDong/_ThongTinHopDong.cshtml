@@ -1,0 +1,141 @@
+﻿<div class="form-infor has-border p-3" style="margin-top: 8.5px;">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title form-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Thông tin hợp đồng
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <form class="row no-gutters" name="hopdongViewform" ng-validate="validationOptions">
+                        <div class="col-12 col-md-4 hd-flex" style="margin-bottom: 10px">
+                            <label for="">Loại hợp đồng: <span>*</span></label>
+                            <select select2 ng-disabled="isDisableHD" ng-model="modelHopDongView.LOAI_HD" name="LOAI_HD" ng-options="item.id as item.name for item in listLoaiHD" class="form-control">
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Năm kinh phí: <span>*</span></label>
+                            <select ng-disabled="isDisableHD" ng-model="modelHopDongView.NAM_KP" name="NAM_KP" select2 class="form-control" ng-options="item.key as item.value for item in listNamKinhPhi"></select>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Trạng thái: <span>*</span></label>
+                            <select ng-if="!isDisableHD" select2 ng-model="modelHopDongView.TRANG_THAI" ng-options="item.id as item.name for item in listTrangThaiHD" name="TRANG_THAI" class="form-control">
+                            <input ng-if="isDisableHD" type="text" class="form-control" value="Quyết toán" disabled/>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6 hd-flex">
+                            <label for="">Số hợp đồng: <span>*</span></label>
+                            <input ng-disabled="isDisableHD" type="text" to-uppercase ng-model="modelHopDongView.SO_HD" name="SO_HD" class="form-control" />
+                        </div>
+
+                        <div class="col-12 col-md-6 hd-flex">
+                            <label for="">Tên hợp đồng: <span>*</span></label>
+                            <input ng-disabled="isDisableHD" type="text" ng-model="modelHopDongView.TEN_HD" name="TEN_HD" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Ngày ký: <span>*</span></label>
+                            <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                <input ng-disabled="isDisableHD" type="text" class="form-control" ng-model="modelHopDongView.NGAY_KY" name="NGAY_KY" horizontal="left" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Công ty: <span>*</span></label>
+                            <select ng-disabled="isDisableHD" select2 ng-model="modelHopDongView.ID_CONG_TY" ng-options="item.ID as item.TEN_CONG_TY for item in listCongTy" name="ID_CONG_TY" class="form-control">
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Người phụ trách: </label>
+                            <select ng-disabled="isDisableHD" select2 ng-model="modelHopDongView.NGUOI_PHU_TRACH" ng-options="item.USER_ID as item.FULL_NAME for item in listNguoiPhuTrach" name="NGUOI_PHU_TRACH" class="form-control">
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Số ngày thực hiện: </label>
+                            <input ng-disabled="isDisableHD" type="text" ng-model="modelHopDongView.SO_NGAY_TH" name="SO_NGAY_TH" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Dự kiến thanh lý: <span>*</span></label>
+                            <div class="input-group date w-datepicker" data-date-format="dd-mm-yyyy">
+                                <input ng-disabled="isDisableHD" type="text" class="form-control" ng-model="modelHopDongView.NGAY_DK_THANH_LY" name="NGAY_DK_THANH_LY" horizontal="right" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4 hd-flex">
+                            <label for="">Ngày thanh lý: </label>
+                            <div class="input-group date w-datepicker" data-date-format="dd-mm-yyyy">
+                                <input ng-disabled="isDisableHD" type="text" class="form-control" ng-model="modelHopDongView.NGAY_CHOT_HD" name="NGAY_CHOT_HD" horizontal="right" value="">
+                                <span class="input-group-addon"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-3 hd-flex">
+                            <label for="">Giá trị HĐ: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongView.GIA_TRI_HD" name="GIA_TRI_HD" class="form-control txtnmber" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3 hd-flex">
+                            <label for="">Giá trị TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongView.GIA_TRI_THUC_TE" name="GIA_TRI_THUC_TE" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3 hd-flex">
+                            <label for="">Đã TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongView.GT_DA_THANH_TOAN" name="GT_DA_THANH_TOAN" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-3 hd-flex">
+                            <label for="">Còn TT: </label>
+                            <input type="text" disabled currency-input ng-model="modelHopDongView.GT_CON_THANH_TOAN" name="GT_CON_THANH_TOAN" class="form-control" value="">
+                        </div>
+
+                        <div class="col-12 col-md-8 hd-flex-ol">
+                            <label for="">Mô tả: </label>
+                            <input ng-disabled="isDisableHD" type="text" ng-model="modelHopDongView.MO_TA" name="MO_TA" class="form-control" value="">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="main-action d-flex flex-wrap justify-content-between align-items-center pull-right">
+                                <button class="btn-action-m" data-toggle="modal" data-target="#modalNoiDungHopDongBanDau" ng-click="hopDongNDungBdau()" ng-show="viewNoiDungBanDau">
+                                    <img src="~/App_Assets/images/icon_shot.svg" alt="">
+                                    <span>Nội dung ban đầu</span>
+                                </button>
+                                <button class="btn-action-m" data-toggle="modal" data-target="#modalVaySec" ng-click="openVaySecModal()" ng-disabled="isDisableHD" ng-show="viewVaySec">
+                                    <img src="~/App_Assets/images/icon_shot.svg" alt="">
+                                    <span>Vay séc</span>
+                                </button>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="col-12 d-flex justify-content-end pt-3 mb-3" style="border-top: 1px solid #CBCBCB;">
+                            <div class="main-action d-flex flex-wrap justify-content-between align-items-center pull-right">
+                                <button class="btn-action-m" data-toggle="modal" data-target="#modalDinhMucVatTu" ng-click="hopDongDinhMucVatTu()" ng-show="viewDinhMucVatTu">
+                                    <img src="~/App_Assets/images/icon_shot.svg" alt="">
+                                    <span>Định mức vật tư</span>
+                                </button>
+                                <button class="btn-action-m" ng-disabled="isDisableHD">
+                                    <img src="~/App_Assets/images/icon_cancel.svg" alt="">
+                                    <span>Hủy thay đổi</span>
+                                </button>
+                                <button ng-disabled="isDisableHD" class="btn-action-m" ng-click="saveView()" ng-show="luuHopDong">
+                                    <img src="~/App_Assets/images/icon_save.svg" alt="">
+                                    <span>Lưu</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ITEMS_SYSTEMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="APP">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AppCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="AppName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Sort" Type="Int32" />
+  </EntityType>
+  <EntityType Name="APPS_CONF">
+    <Key>
+      <PropertyRef Name="APP_CODE" />
+    </Key>
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="NOTE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AppName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Url_USEFOR_DEV" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Sort" Type="Int32" />
+  </EntityType>
+  <EntityType Name="SLOG_ACTION">
+    <Key>
+      <PropertyRef Name="ACTION_ID" />
+    </Key>
+    <Property Name="ACTION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USER_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IP_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LINK_PAGE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LINK_ACCESSED" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="ACTION" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="APP_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DATA" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TIME_STAMP" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="SLOG_ERROR">
+    <Key>
+      <PropertyRef Name="ERROR_ID" />
+    </Key>
+    <Property Name="ERROR_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TIME_STAMP" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="THREAD" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LEVEL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LOGGER" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MESSAGE" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+    <Property Name="EXCEPTION" Type="String" MaxLength="4000" FixedLength="false" Unicode="false" />
+    <Property Name="USER_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IP_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="SLOG_KE_HOACH">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FIELD_CHANGE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="OLD_VALUE" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="NEW_VALUE" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="OPERATION_TYPE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="CLIENT_IP_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="OPERATION_TIME" Type="DateTime" Precision="3" />
+    <Property Name="OPERATED_BY" Type="Int32" />
+    <Property Name="TARGET_ID" Type="Int32" />
+    <Property Name="TARGET_TYPE" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="ST_PAGE_FUNCTIONS">
+    <Key>
+      <PropertyRef Name="PAGE_ID" />
+      <PropertyRef Name="APP_CODE" />
+      <PropertyRef Name="CONTROL_NAME" />
+    </Key>
+    <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DISPLAY_ORDER" Type="Int32" />
+    <Property Name="CONTROL_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CONTROL_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="ST_PAGES_MENU">
+    <Key>
+      <PropertyRef Name="PAGE_ID" />
+    </Key>
+    <Property Name="PAGE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="PAGE_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="PAGE_DESC" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+    <Property Name="FILE_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="PARENT_ID" Type="Int32" />
+    <Property Name="ORDER_LEVEL" Type="Int32" />
+    <Property Name="MODULE_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="CSS_CLASS" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="HREF_URL" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
+    <Property Name="PERMISSION_REQUIRE" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+    <Property Name="IS_UNDERLINED" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ST_PARAMETERS">
+    <Key>
+      <PropertyRef Name="PARAM_ID" />
+    </Key>
+    <Property Name="PARAM_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="PARAM_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="PARAM_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PARAM_VALUE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="PARAM_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="PARAM_VALUE_TYPE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="APP_CAN_EDIT" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="MODULE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="SCOPE" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DOMAIN_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="UNIT_ID" Type="Int32" />
+    <Property Name="ID_BO_PHAN" Type="Int32" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="USING_EFFECT_DATE" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DISPLAY_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="ST_PARAMETERS_EFF_DATE">
+    <Key>
+      <PropertyRef Name="PARAM_ID" />
+      <PropertyRef Name="EFFECT_DATE" />
+    </Key>
+    <Property Name="PARAM_ID" Type="Int32" Nullable="false" />
+    <Property Name="EFFECT_DATE" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="PARAM_VALUE" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="DESCRIPTION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ST_ROLE_PAGES">
+    <Key>
+      <PropertyRef Name="ROLE_ID" />
+      <PropertyRef Name="PAGE_ID" />
+    </Key>
+    <Property Name="ROLE_ID" Type="Int32" Nullable="false" />
+    <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="CONTROL_STRING" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+  </EntityType>
+  <EntityType Name="ST_ROLES">
+    <Key>
+      <PropertyRef Name="ROLE_ID" />
+    </Key>
+    <Property Name="ROLE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ROLE_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ROLE_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SCOPE" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="DOMAIN_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="UNIT_ID" Type="Int32" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LAST_UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="LAST_UPDATED_BY" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ST_TOKENS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TOKEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="EXPIRE_TIME" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="ST_UNITS">
+    <Key>
+      <PropertyRef Name="UNIT_ID" />
+    </Key>
+    <Property Name="UNIT_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UNIT_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="UNIT_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UNIT_DESC" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+    <Property Name="UNIT_PARENT_ID" Type="Int32" />
+    <Property Name="OFFICE_TYPE" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="ADDRESS_1" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="ADDRESS_2" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="UNIT_LEVEL" Type="Int32" />
+    <Property Name="OFFICE_TEL" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="DIRECTOR" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="CHIEF_ACCOUNTANT" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="MNG_UNIT" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="DOMAIN_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="UNIT_CLASS" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ST_USERS" Relationship="Self.FK_ST_USERS_ST_UNITS" FromRole="ST_UNITS" ToRole="ST_USERS" />
+  </EntityType>
+  <EntityType Name="ST_USER_ROLES">
+    <Key>
+      <PropertyRef Name="USER_ID" />
+      <PropertyRef Name="ROLE_ID" />
+    </Key>
+    <Property Name="USER_ID" Type="Int32" Nullable="false" />
+    <Property Name="ROLE_ID" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ST_USER_SCOPE_MNG">
+    <Key>
+      <PropertyRef Name="USER_ID" />
+      <PropertyRef Name="APP_CODE" />
+      <PropertyRef Name="DON_VI_ID" />
+    </Key>
+    <Property Name="USER_ID" Type="Int32" Nullable="false" />
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DON_VI_ID" Type="Int32" Nullable="false" />
+    <Property Name="IS_QUAN_LY_KHO" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ST_USERS">
+    <Key>
+      <PropertyRef Name="USER_ID" />
+    </Key>
+    <Property Name="USER_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LOGIN_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="PASSWORD" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="FULL_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UNIT_ID" Type="Int32" />
+    <Property Name="START_DATE" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="END_DATE" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="USER_GROUP" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="USER_CLASS" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="LAST_SIGNED_IN" Type="DateTime" Precision="3" />
+    <Property Name="USER_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="FAIL_LOGIN_COUNT" Type="Int32" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="TEL_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="IMG_PATH" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="UPDATED_BY" Type="Int32" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Precision="3" />
+    <Property Name="SHORT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TITLE_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="LEVEL_ID" Type="Int32" />
+    <Property Name="IS_APPROVER" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="ID_KHO" Type="Int32" />
+    <NavigationProperty Name="ST_UNITS" Relationship="Self.FK_ST_USERS_ST_UNITS" FromRole="ST_USERS" ToRole="ST_UNITS" />
+  </EntityType>
+  <EntityType Name="TF_TASKFLOW_CONF">
+    <Key>
+      <PropertyRef Name="APP_CODE" />
+      <PropertyRef Name="ITEMS_CLASS" />
+      <PropertyRef Name="STEP_NO" />
+    </Key>
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ITEMS_CLASS" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="STEP_NO" Type="Int32" Nullable="false" />
+    <Property Name="INIT_STATE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="CONTROLLER_NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="ACTIONS_TO_NEXT" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="STATE_OF_NEXT" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="ACTIONS_TO_BACK" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="STATE_OF_BACK" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="STATES_LIST_OF_STEP" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="UNITS_CAN_VIEW" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="UNITS_CAN_EDIT" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="THONG_BAO">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NOI_DUNG" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+    <Property Name="CHUC_NANG" Type="Int32" />
+    <Property Name="ID_NGUOI_GUI" Type="Int32" />
+    <Property Name="TEN_CB_DV_NGUOI_GUI" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="ID_NGUOI_NHAN" Type="Int32" />
+    <Property Name="TRANG_THAI" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="NGAY_TAO" Type="DateTime" Precision="3" />
+    <Property Name="NGAY_XEM" Type="DateTime" Precision="3" />
+    <Property Name="URL_CHUC_NANG" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="ID_CHUC_NANG" Type="Int32" />
+    <Property Name="TU_TAT_THONG_BAO" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="TEN_CHUC_NANG" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="USER_LOCK">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USER_LOCKED_ID" Type="Int32" Nullable="false" />
+    <Property Name="USER_LOCK_BY" Type="Int32" Nullable="false" />
+    <Property Name="UPDATED_BY" Type="Int32" Nullable="false" />
+    <Property Name="UPDATE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ENABLED_FLAG" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="CONTENT_LOCK" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UT_DOCS_FREFIX_CURRENT">
+    <Key>
+      <PropertyRef Name="APP_CODE" />
+      <PropertyRef Name="MODULE" />
+      <PropertyRef Name="DOC_TYPE" />
+      <PropertyRef Name="DOC_PREFIX" />
+      <PropertyRef Name="DOC_YEAR" />
+      <PropertyRef Name="CURRENT_NO" />
+    </Key>
+    <Property Name="APP_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MODULE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DOC_TYPE" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DOC_PREFIX" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DOC_YEAR" Type="Int16" Nullable="false" />
+    <Property Name="DOC_MONTH" Type="Int16" />
+    <Property Name="CURRENT_NO" Type="Int16" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_ST_USERS_ST_UNITS">
+    <End Role="ST_UNITS" Type="Self.ST_UNITS" Multiplicity="0..1" />
+    <End Role="ST_USERS" Type="Self.ST_USERS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ST_UNITS">
+        <PropertyRef Name="UNIT_ID" />
+      </Principal>
+      <Dependent Role="ST_USERS">
+        <PropertyRef Name="UNIT_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ITEMS_SYSTEMEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="APPs" EntityType="Self.APP" />
+    <EntitySet Name="APPS_CONF" EntityType="Self.APPS_CONF" />
+    <EntitySet Name="SLOG_ACTION" EntityType="Self.SLOG_ACTION" />
+    <EntitySet Name="SLOG_ERROR" EntityType="Self.SLOG_ERROR" />
+    <EntitySet Name="SLOG_KE_HOACH" EntityType="Self.SLOG_KE_HOACH" />
+    <EntitySet Name="ST_PAGE_FUNCTIONS" EntityType="Self.ST_PAGE_FUNCTIONS" />
+    <EntitySet Name="ST_PAGES_MENU" EntityType="Self.ST_PAGES_MENU" />
+    <EntitySet Name="ST_PARAMETERS" EntityType="Self.ST_PARAMETERS" />
+    <EntitySet Name="ST_PARAMETERS_EFF_DATE" EntityType="Self.ST_PARAMETERS_EFF_DATE" />
+    <EntitySet Name="ST_ROLE_PAGES" EntityType="Self.ST_ROLE_PAGES" />
+    <EntitySet Name="ST_ROLES" EntityType="Self.ST_ROLES" />
+    <EntitySet Name="ST_TOKENS" EntityType="Self.ST_TOKENS" />
+    <EntitySet Name="ST_UNITS" EntityType="Self.ST_UNITS" />
+    <EntitySet Name="ST_USER_ROLES" EntityType="Self.ST_USER_ROLES" />
+    <EntitySet Name="ST_USER_SCOPE_MNG" EntityType="Self.ST_USER_SCOPE_MNG" />
+    <EntitySet Name="ST_USERS" EntityType="Self.ST_USERS" />
+    <EntitySet Name="TF_TASKFLOW_CONF" EntityType="Self.TF_TASKFLOW_CONF" />
+    <EntitySet Name="THONG_BAO" EntityType="Self.THONG_BAO" />
+    <EntitySet Name="USER_LOCK" EntityType="Self.USER_LOCK" />
+    <EntitySet Name="UT_DOCS_FREFIX_CURRENT" EntityType="Self.UT_DOCS_FREFIX_CURRENT" />
+    <AssociationSet Name="FK_ST_USERS_ST_UNITS" Association="Self.FK_ST_USERS_ST_UNITS">
+      <End Role="ST_UNITS" EntitySet="ST_UNITS" />
+      <End Role="ST_USERS" EntitySet="ST_USERS" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

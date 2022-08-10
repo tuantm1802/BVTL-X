@@ -1,0 +1,282 @@
+﻿@{
+    ViewBag.Title = "Nhóm tiêu chuẩn";
+}
+<div ng-controller="NhomTieuChuanController" style="margin-top: 15px;">
+    <main @*class="main-system"*@>
+        <div class="container-fluid d-flex cons-ac-system">
+            <div class="action-system pd-two ui-widget-content" id="resizable">
+                <button id="btn-changes-s-nav">
+                    <img src="~/App_Assets/images/ic_back_xx.svg" alt="">
+                </button>
+                <div class="fill-box">
+                    <h3 class="title-fill">
+                       
+                    </h3>
+                </div>
+                <div class="container">
+                    <div class="function-box">
+                        <div class="accordion js-accordion">
+                            <div class="ztreeRoleBackground left" style="width:100%;">
+                                <ul id="treeRole" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-action pt-3">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-system no-border pb-0" ng-show="ShowContent">
+                <div class="fill-box-bread-crumb">
+                    <h3 class="bread_crumb">
+                        <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a> / Nhóm tiêu chuẩn
+                    </h3>
+                </div>
+                <div class="nav-box less-pd" style="margin-top:0px; padding-bottom:0px;">
+                    <div class="container-fluid">
+                        <div class="form-infor pt-3 pb-3">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row no-gutters">
+                                        <div class="col-12 col-md-6 col-lg-6 align-self-end" style="margin-bottom: 10px;">
+                                            <div class="main-action d-flex align-items-center flex-wrap" style="padding-top: 21px; margin-top: -38px;">
+                                                <button class="btn-action-m bg-green" type="button"
+                                                        ng-click="Addmm()" ng-show="RoleBtnCreate">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    <span>Thêm mới</span>
+                                                </button>
+                                                <button class="btn-action-m bg-green"
+                                                        ng-click="Hiden()" ng-show="RoleBtnCancel"
+                                                        style="margin-right: 10px;">
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    <span>Huỷ thay đổi</span>
+                                                </button>
+                                                <button class="btn-action-m bg-green"
+                                                        ng-click="submit()" ng-show="RoleBtnSave"
+                                                        style="margin-right: 10px;">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                    <span>Lưu</span>
+                                                </button>
+                                                <button class="btn-action-m bg-red"
+                                                        ng-click="delete()" ng-show="RoleBtnDelete"
+                                                        style="margin-right: 10px;">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    <span>Xoá</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-4 col-lg-4">
+                                            <div class="main-action pt-3">
+                                                <div class="d-flex form-group" style="margin-bottom:0px;vertical-align:middle">
+                                                    <input type="text" ng-model="modelSearch.KEYWORD" placeholder="Tìm kiếm" class="form-control" style="width:250px;margin-bottom:0px" />
+                                                    <button class="btn-action-m form-control" style="color:white;width:40px;margin-bottom:0px" ng-click="TimKiemNhomTC()">
+                                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-2 col-lg-2">
+                                            <select ng-model="modelSearch.NAM" style="margin-top:10px;" class="form-control" ng-change="ChangeYear()" ng-options="x.Id as x.Name for x in ListYear"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="content-table">
+                                    <div style="overflow-x:scroll;">
+                                        <table class="table-hover result-point mt-2">
+                                            <thead class="point-table-head" style="width:100%">
+                                                <tr>
+                                                    <th style="width:3%;" class="text-center">
+                                                        <input type="checkbox" ng-model="selectAll" ng-click="checkAll()" />
+                                                    </th>
+                                                    <th style="width:3%;" class="text-left">STT</th>
+                                                    <th style="width:auto;" class="text-left">Tên nhóm</th>
+                                                    <th style="width:10%;" class="text-left">Mùa</th>
+                                                    <th style="width:auto;" class="text-left">Loại tiêu chuẩn</th>
+                                                    <th style="width:8%;" class="text-left">Niên hạn</th>
+                                                    <th style="width:8%;" class="text-left" title="Ngày hết hiệu lực">Ngày hết HL</th>
+                                                    <th style="width:8%;" class="text-left">Nhóm TC khu vực</th>
+                                                    <th style="width:8%;" class="text-left">Nhóm TC cấp bậc</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in DanhSach|filter:search"
+                                                    ng-click="loadTemplate($index)" style="width:100%"
+                                                    class="point-table-head">
+                                                    <td style="width:3%" class="text-center">
+                                                        <label class="pos-rel">
+                                                            <input type="checkbox" class="ace" ng-model="item.SELECT" value="10" />
+                                                            <span class="lbl"></span>
+                                                        </label>
+                                                    </td>
+                                                    <td style="width:3%" class="text-center">
+                                                        {{(10 * (modelSearch.currentPage-1)) + $index + 1}}
+                                                    </td>
+                                                    <td style="width:auto" class="text-left">
+                                                        <span ng-if="!item.Edit">{{item.TEN_NHOM_TC}}</span>
+                                                        <input type="text" ng-if="item.Edit"
+                                                               class="form-control" ng-model="item.TEN_NHOM_TC">
+                                                    </td>
+                                                    @*<td style="width:auto" ng-if="loaiNhomTieuChuan">
+                                    <span ng-if="!item.Edit">{{item.PHAN_LOAI_TC}}</span>
+                                    <select select2 type="text" ng-if="item.Edit"
+                                            ng-model="item.PHAN_LOAI_TC" class="form-control">
+                                        <option ng-repeat="x in loaiNhomTieuChuan" value="{{x.text}}">
+                                            {{x.text}}
+                                        </option>
+                                    </select>
+                                </td>*@
+                                                    <td style="width:10%" class="text-left">
+                                                        <span ng-if="!item.Edit">{{item.MUA}}</span>
+                                                        <div ng-if="item.Edit">
+                                                            <select select2 ng-model="item.MUA">
+                                                                <option ng-repeat="x in mua" value="{{x.Name}}">{{x.Name}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:auto" class="text-left">
+                                                        <span ng-if="!item.Edit">{{item.LOAI_TC}}</span>
+                                                        <div ng-if="item.Edit">
+                                                            <select select2 ng-model="item.LOAI_TC_ID"
+                                                                    ng-options="x.ID as x.TEN_LOAI for x in loaitc">
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:8%" class="text-left">
+                                                        <span ng-if="!item.Edit">{{item.NIEN_HAN}}</span>
+                                                        <div ng-if="item.Edit">
+                                                            <select select2 ng-model="item.NIEN_HAN"
+                                                                    ng-options="x.id as x.text for x in nienhan">
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:8%" class="text-left">
+                                                        <span ng-if="!item.Edit">{{item.NGAY_HET_HAN}}</span>
+                                                        <div ng-if="item.Edit">
+                                                            <input type="date" class="form-control" ng-model="item.NGAY_HET_HAN_E">
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:8%" class="text-center">
+                                                        <button ng-click="tckhuvuc(item.ID_NHOM)">
+                                                            <img src="~/App_Assets/images/r_f.svg" alt="">
+                                                        </button>
+                                                    </td>
+                                                    <td style="width:8%" class="text-center">
+                                                        <button ng-click="tccapbac(item.ID_NHOM)">
+                                                            <img src="~/App_Assets/images/r_f.svg" alt="">
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr class="point-table-head" style="width:100%" ng-repeat="row in rows">
+                                                    <td style="width:3%" class="text-center">
+                                                        <input type="checkbox" id="check" ng-true-value="{{item.ID}}"
+                                                               ng-false-value="''"
+                                                               ng-model="item.selected" />
+                                                    </td>
+                                                    <td style="width:3%" class="text-left">{{modelSearch.totalItems+1+$index}}</td>
+                                                    <td style="width:auto" class="text-left">
+                                                        <input type="text" ng-class="row.TN? 'error': ''"
+                                                               placeholder="Nhập tên nhóm tiêu chuẩn"
+                                                               ng-model="row.TEN_NHOM_TC" />
+                                                        <div ng-show="row.TN">
+                                                            <label class="error">Bạn chưa nhập tên nhóm tiêu chuẩn</label>
+                                                        </div>
+                                                    </td>
+                                                    @*<td style="width:auto" class="text-left">
+                                    <select select2 ng-class="row.loaiNTC? 'error': ''" ng-model="row.PHAN_LOAI_TC">
+                                        <option ng-repeat="x in loaiNhomTieuChuan" value="{{x.text}}">
+                                            {{x.text}}
+                                        </option>
+                                    </select>
+                                    <div ng-show="row.loaiNTC">
+                                        <label class="error">Bạn chưa chọn loại nhóm tiêu chuẩn</label>
+                                    </div>
+                                </td>*@
+                                                    <td style="width:10%" class="text-left">
+                                                        <select select2 ng-class="row.MA? 'error': ''" ng-model="row.MUA">
+                                                            <option ng-repeat="x in mua" value="{{x.Name}}">{{x.Name}}</option>
+                                                        </select>
+                                                        <div ng-show="row.MA">
+                                                            <label class="error">Bạn chưa chọn mùa</label>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:auto" class="text-left">
+                                                        <select select2 ng-class="row.LTC? 'error': ''" ng-model="row.LOAI_TC_ID">
+                                                            <option ng-repeat="x in loaitc" value="{{x.ID}}">{{x.TEN_LOAI}}</option>
+                                                        </select>
+                                                        <div ng-show="row.LTC">
+                                                            <label class="error">Bạn chưa chọn loại tiêu chuẩn</label>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:8%" class="text-left">
+                                                        <select select2 ng-class="row.NH? 'error': ''" ng-model="row.NIEN_HAN">
+                                                            <option ng-repeat="x in nienhan" value="{{x.id}}">{{x.id}}</option>
+                                                        </select>
+                                                        <div ng-show="row.NH">
+                                                            <label class="error">Bạn chưa chọn niên hạn</label>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:8%" class="text-left">
+                                                        <input type="date" class="form-control" ng-model="row.NGAY_HET_HAN">
+                                                    </td>
+                                                    <td style="width:8%" class="text-center">
+                                                        <button ng-click="tckhuvuc(item.ID)">
+                                                            <img src="~/App_Assets/images/r_f.svg">
+                                                        </button>
+                                                    </td>
+                                                    <td style="width:8%" class="text-center">
+                                                        <button ng-click="tccapbac(item.ID)">
+                                                            <img src="~/App_Assets/images/r_f.svg">
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    @*<div class="pages-switch">
+
+                                        <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="3" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                    </div>*@
+                                </div>
+                            </div>
+                            @*<div class="col-sm-12">
+                                <div class="row content-table pull-right">
+                                    <div class="pages-switch">
+                                        <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged1()" max-size="3" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                    </div>
+                                </div>
+                            </div>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="bootbox modal fade bootbox-prompt"
+                 id="exampleModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+@section scripts{
+<script src="~/app/Controller/NhomTieuChuan.js"></script>
+<script src="~/Content/js/jquery.ztree.core.js"></script>
+<script src="~/Content/js/jquery.ztree.excheck.js"></script>
+<script src="~/Assest/js/angular-drag-and-drop-lists.js"></script>
+}

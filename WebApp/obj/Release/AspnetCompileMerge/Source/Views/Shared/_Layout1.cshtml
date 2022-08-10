@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>QTTB</title>
+
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="~/Assest/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Assest/font-awesome/4.5.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Assest/css/fonts.googleapis.com.css" />
+    <link rel="stylesheet" href="~/Assest/css/ace_1.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="~/Assest/css/ace-skins.min.css" />
+    <link rel="stylesheet" href="~/Assest/css/ace-rtl.min.css" />
+    <script src="~/Assest/js/ace-extra.min.js"></script>
+    <style>
+        .main-container:before {
+            background-image: url(/Content/Images/logo_bca.png);
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            position: fixed;
+            background-size: auto 100%;
+            background-position: center;
+        }
+        .navbar, .ace-nav > li.light-blue > a {
+            background-color: #f2672e;
+        }
+
+        .ace-nav > li {
+            border-left: none;
+        }
+
+            .ace-nav > li.open.light-blue > a, .ace-nav > li.light-blue > a:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        .no-skin .nav-list > li > .submenu li.open > a, .no-skin .nav-list > li > .submenu li > .submenu li.active > a, .no-skin .nav-list > li > .submenu li > .submenu li.open > a {
+            color: #f2672e;
+        }
+        .no-skin .nav-list > li .submenu > li > a:hover {
+            color: #f2672e;
+        }
+    </style>
+</head>
+
+<body class="no-skin">
+    @Html.Partial("_Header")
+
+    <div class="main-container ace-save-state" id="main-container">
+        <script type="text/javascript">
+            try { ace.settings.loadState('main-container') } catch (e) { }
+        </script>
+
+        @Html.Partial("_MenuLeft1")
+
+        <div class="main-content">
+            <div class="main-content-inner">
+                <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+                    <ul class="nav nav-list">
+                        <li class="hover">
+                            <a href="#">
+                                <i class="menu-icon fa fa-tachometer"></i>
+                                <span class="menu-text"> Trang chủ </span>
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+
+                        <li class="hover">
+                            <a href="#">
+                                <i class="menu-icon fa fa-list-alt"></i>
+                                <span class="menu-text">Quân số</span>
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+
+                        <li class="hover">
+                            <a href="#">
+                                <i class="menu-icon fa fa-calendar"></i>
+
+                                <span class="menu-text">
+                                    Cấp phát
+                                </span>
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+
+                        <li class="hover">
+                            <a href="#">
+                                <i class="menu-icon fa fa-picture-o"></i>
+                                <span class="menu-text"> Hợp đồng </span>
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+
+                        <li class="hover">
+                            <a class="dropdown-toggle" href="#">
+                                <i class="menu-icon fa fa-tag"></i>
+                                <span class="menu-text"> Báo cáo </span>
+
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+
+                            <b class="arrow"></b>
+
+                        </li>
+                        <li class="hover">
+                            <a class="dropdown-toggle" href="#">
+                                <i class="menu-icon fa fa-tag"></i>
+                                <span class="menu-text"> Hệ thống </span>
+
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+
+                            <b class="arrow"></b>
+
+                        </li>
+                    </ul><!-- /.nav-list -->
+                </div><!-- .sidebar -->
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="~/Assest/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+        if ('ontouchstart' in document.documentElement) document.write("<script src='~/Assest/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    </script>
+    <script src="~/Assest/js/bootstrap.min.js"></script>
+    <script src="~/Assest/js/ace-elements.min.js"></script>
+    <script src="~/Assest/js/ace.min.js"></script>
+    <script src="~/Assest/js/tree.min.js"></script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('#sidebar2').insertBefore('.page-content');
+
+            $('.navbar-toggle[data-target="#sidebar2"]').insertAfter('#menu-toggler');
+
+
+            $(document).on('settings.ace.two_menu', function (e, event_name, event_val) {
+                if (event_name == 'sidebar_fixed') {
+                    if ($('#sidebar').hasClass('sidebar-fixed')) {
+                        $('#sidebar2').addClass('sidebar-fixed');
+                        $('#navbar').addClass('h-navbar');
+                    }
+                    else {
+                        $('#sidebar2').removeClass('sidebar-fixed')
+                        $('#navbar').removeClass('h-navbar');
+                    }
+                }
+            }).triggerHandler('settings.ace.two_menu', ['sidebar_fixed', $('#sidebar').hasClass('sidebar-fixed')]);
+        })
+    </script>
+</body>
+@RenderSection("scripts", required: false)
+</body>
+</html>

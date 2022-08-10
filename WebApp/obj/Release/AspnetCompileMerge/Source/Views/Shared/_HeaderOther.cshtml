@@ -1,0 +1,593 @@
+﻿
+@{
+    var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
+    var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
+    var menus = Session["Menus"] as List<Model.ModelExtend.MenuModel>;
+    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    bool checkUsserSession = true;
+    string avatar = string.Empty;
+    string userId = string.Empty;
+    if (userSession != null && !string.IsNullOrEmpty(userSession.Avartar))
+    {
+        checkUsserSession = true;
+        avatar = userSession.Avartar;
+        userId = userSession.UserID == null ? "0" : userSession.UserID.ToString();
+    }
+    else
+    {
+        checkUsserSession = false;
+    }
+    if (menus != null && menus.Count > 0)
+    {
+        menuLevel1 = menus.Where(x => x.PARENT_ID == null || x.PARENT_ID == 0).OrderBy(x => x.ORDER_LEVEL).ToList();
+
+        if (menuLevel1 != null && menuLevel1.Count > 0)
+        {
+            for (int i = 0; i < menuLevel1.Count; i++)
+            {
+                var listChild = menus.Where(x => x.PARENT_ID == menuLevel1[i].PAGE_ID).ToList();
+                menuLevel1[i].CountChild = listChild != null ? listChild.Count : 0;
+            }
+            var menuLevel1IDs = menuLevel1.Select(x => x.PAGE_ID).ToList();
+            menuLevel2 = menus.Where(x => menuLevel1IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+            if (menuLevel2 != null && menuLevel2.Count > 0)
+            {
+                for (int i = 0; i < menuLevel2.Count; i++)
+                {
+                    var listChild2 = menus.Where(x => x.PARENT_ID == menuLevel2[i].PAGE_ID).ToList();
+                    menuLevel2[i].CountChild = listChild2 != null ? listChild2.Count : 0;
+                }
+                var menuLevel2IDs = menuLevel2.Select(x => x.PAGE_ID).ToList();
+                menuLevel3 = menus.Where(x => menuLevel2IDs.Contains((int)x.PARENT_ID)).OrderBy(x => x.ORDER_LEVEL).ToList();
+                if (menuLevel3 != null && menuLevel3.Count > 0)
+                {
+                    for (int i = 0; i < menuLevel3.Count; i++)
+                    {
+                        var listChild3 = menus.Where(x => x.PARENT_ID == menuLevel3[i].PAGE_ID).ToList();
+                        menuLevel3[i].CountChild = listChild3 != null ? listChild3.Count : 0;
+                    }
+                }
+            }
+        }
+    }
+}
+<header id="header" class="header">
+    <div class="header-main">
+        <div class="container-fluid d-flex align-items-center flex-wrap justify-content-between">
+
+            <div class="logo">
+                <a href="">
+                    <img src="~/App_Assets/images/logo_system.svg" alt="">
+                </a>
+            </div>
+
+            <div class="action-header">
+                <div class="moblie-bar">
+                    <button class="icon-mobile toggle hc-nav-trigger hc-nav-1">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <ul>
+                    <li>
+                        <button class="ring-noti">
+                            <img src="~/App_Assets/images/ring.svg" alt="">
+                            <span class="noti">2</span>
+                        </button>
+                    </li>
+
+                    <li class="has-child">
+                        <h5 class="admin">
+                            <img src="~/App_Assets/images/user_sys.svg" alt="">
+                            <span class="name-user">@userSession.Name</span>
+                        </h5>
+
+                        <ul class="drop-user">
+                            <li>
+                                <a href="">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    Thay đổi thông tin
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa fa-cogs"></i>
+                                    Cài đặt
+                                </a>
+                            </li>
+                            <li>
+                                <a href="~/Login/Logout">
+                                    <i class="fa fa-power-off"></i>
+                                    Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<header class="header has-fixed">
+    <div class="header-bottom">
+        <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between">
+            <ul class="nav-menu">
+                <li class="has-child">
+                        <a href="/ChotQuanSoDauKy/Index">
+
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn2.svg">
+                                <img src="/App_Assets/images/icn2_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                Sửa chữa Bảo dưỡng
+                            </span>
+                        </a>
+                        <ul class="drop-menu">
+                            <li class="has-child">
+                                <a href="/ChotQuanSoDauKy/Index">
+                                    <span>Chốt quân số (đầu kỳ)</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/TieuBinhNghiLe/Index">
+                                    <span>Tiêu binh nghi lễ</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/QSTangGiamTrongKy/Index">
+                                    <span>Quân số tăng-giảm(trong kỳ)</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/QSTanBinhTrongKy/Index">
+                                    <span>Quân số tân binh(trong kỳ)</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/QSThangHamTrongKy/Index">
+                                    <span>Quân số thăng hàm(trong kỳ)</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/QSTuyenMoiTrongKy/Index">
+                                    <span>Quân số tuyển mới(trong kỳ)</span>
+                                </a>
+                            </li>
+                            <li class="has-child">
+                                <a href="/QSChuyenDoiLLTrongKy/Index">
+                                    <span>Quân số chuyển đổi lực lượng(trong kỳ)</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+                <li class=" has-child">
+                        <a href="/KeHoachCapPhat/Index">
+
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn3.svg">
+                                <img src="/App_Assets/images/icn3_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                QL Đăng kiểm
+                            </span>
+                        </a>
+                        <ul class="drop-menu">
+                            <li class="">
+                                <a href="/KeHoachCapPhat/Index">
+                                    <span>Kế hoạch cấp phát</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/KHCPNhieuDonVi/Index">
+                                    <span>Kế hoạch cấp phát nhiều đ.vi</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/ChuyenTienDiaPhuong/Index">
+                                    <span>Chuyển tiền địa phương</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="#">
+                                    <span>Hủy dự toán</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+                <li class="active  has-child">
+                    <a href="/QuanLyHopDong/Index">
+
+                        <div class="ic-menu">
+                            <img alt="" src="/App_Assets/images/icn4.svg">
+                            <img src="/App_Assets/images/icn4_hover.svg" alt="">
+                        </div>
+                        <span class="menu-text">
+                            KH Vận chuyển
+                        </span>
+                    </a>
+                    <ul class="drop-menu">
+                        <li class="">
+                            <a href="/QuanLyHopDong/Index">
+                                <span>Quản lý hợp đồng</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/DinhMuc/Index">
+                                <span>Định mức</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li class="has-child">
+                        <a href="/QuanLyHopDong/Index">
+
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn4.svg">
+                                <img src="/App_Assets/images/icn4_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                QL Xăng dầu
+                            </span>
+                        </a>
+                        <ul class="drop-menu">
+                            <li class="">
+                                <a href="/QuanLyHopDong/Index">
+                                    <span>Quản lý hợp đồng</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/DinhMuc/Index">
+                                    <span>Định mức</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+                @*<li class=" has-child">
+                        <a href="">
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn8.svg">
+                                <img src="/App_Assets/images/icn8_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                QL tài liệu
+                            </span>
+                        </a>
+
+                    </li>*@
+                @*<li class="has-child">
+                    <a href="/PhieuNhapKho/Index">
+
+                        <div class="ic-menu">
+                            <img alt="" src="/App_Assets/images/icn5.svg">
+                            <img src="/App_Assets/images/icn5_hover.svg" alt="">
+                        </div>
+                        <span class="menu-text">
+                            Kho
+                        </span>
+                    </a>
+                    <ul class="drop-menu">
+                        <li class="">
+                            <a href="/PhieuNhapKho/Index">
+                                <span>Phiếu nhập kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/NhapKho/Index">
+                                <span>Nhập kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/PhieuXuatKho/Index">
+                                <span>Phiếu xuất kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/XuatKho/Index">
+                                <span>Xuất kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/PhieuDieuChuyenKho/Index">
+                                <span>Phiếu điều chuyển kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/DieuChuyenKho/Index">
+                                <span>Điều chuyển kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/BienBanKiemKe/Index">
+                                <span>Biên bản kiểm kê</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Kiểm kê kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Điều chỉnh kho nội bộ</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/TheKho/Index">
+                                <span>Thẻ kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/TonKho/Index">
+                                <span>Tồn kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/TongHopXuatNhapTon/Index">
+                                <span>Tổng hợp xuất nhập tồn</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Giữ hàng trong kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Cấu hình dừng cấp phát</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Chốt lệnh xuất kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Chốt lệnh điều chuyển kho</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Chuyển đổi mã</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/SinhPhieuKho/Index">
+                                <span>Quản lý chứng từ kho</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>*@
+                @*<li class=" has-child">
+                        <a href="/KeHoach_XuatKho/Index">
+
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn7.svg">
+                                <img src="/App_Assets/images/icn7_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                Kế hoạch
+                            </span>
+                        </a>
+                        <ul class="drop-menu">
+                            <li class="">
+                                <a href="/KeHoach_XuatKho/Index">
+                                    <span>Xuất kho</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>*@
+                @*<li class=" has-child">
+                    <a href="/FlexValue/Index">
+
+                        <div class="ic-menu">
+                            <img alt="" src="/App_Assets/images/icn6.svg">
+                            <img src="/App_Assets/images/icn6_hover.svg" alt="">
+                        </div>
+                        <span class="menu-text">
+                            Danh mục
+                        </span>
+                    </a>
+                    <ul class="drop-menu">
+                        <li class="">
+                            <a href="/FlexValue/Index">
+                                <span>Danh mục</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/FlexValueCategory/Index">
+                                <span>Nhóm loại</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Kho hàng</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/CongTy/Index">
+                                <span>Công ty</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/LucLuong/Index">
+                                <span>Lực lượng</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/DonViTinh/Index">
+                                <span>Đơn vị tính</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/NhomTieuChuan/Index">
+                                <span>Nhóm tiêu chuẩn</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/KhuVuc/Index">
+                                <span>Khu vực</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/NhomDonVi/Index">
+                                <span>Nhóm đơn vị</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/DonVi/Index">
+                                <span>Đơn vị</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/NhomCapBac/Index">
+                                <span>Nhóm cấp bậc</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/CapBac/Index">
+                                <span>Cấp bậc</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Nhóm trang phục</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Trang phục</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/NhomVatTuPhu/Index">
+                                <span>Nhóm vật tư phụ</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                <span>Vật tư phụ</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>*@
+                @*<li class=" has-child">
+                        <a href="/TieuChuanCBCS/Index">
+
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn7.svg">
+                                <img src="/App_Assets/images/icn7_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                Tiêu chuẩn - Định mức
+                            </span>
+                        </a>
+                        <ul class="drop-menu">
+                            <li class="">
+                                <a href="/TieuChuanCBCS/Index">
+                                    <span>Tiêu chuẩn CBCS</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/TieuChuanPham/Index">
+                                    <span>Tiêu chuẩn phạm</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a data-toggle="modal" data-target="#modelTieuChuanTheoNam">
+                                    <span>Tiêu chuẩn theo năm trước</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/CauHinhDoiTieuChuan/Index">
+                                    <span>Cấu hình đổi tiêu chuẩn</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/CauHinhSPDinhKem/Index">
+                                    <span>Cấu hình SP đính kèm</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>*@
+                @*<li class=" has-child">
+                        <a href="">
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn8.svg">
+                                <img src="/App_Assets/images/icn8_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                Khởi tạo số liệu
+                            </span>
+                        </a>
+
+                    </li>*@
+                <li class=" has-child">
+                    <a href="">
+                        <div class="ic-menu">
+                            <img alt="" src="/App_Assets/images/icn9.svg">
+                            <img src="/App_Assets/images/icn9_hover.svg" alt="">
+                        </div>
+                        <span class="menu-text">
+                            Báo cáo
+                        </span>
+                    </a>
+
+                </li>
+                @*<li class=" has-child">
+                    <a href="/Role/Index">
+
+                        <div class="ic-menu">
+                            <img alt="" src="/App_Assets/images/icn10.svg">
+                            <img src="/App_Assets/images/icn10_hover.svg" alt="">
+                        </div>
+                        <span class="menu-text">
+                            Hệ thống
+                        </span>
+                    </a>
+                    <ul class="drop-menu">
+                        <li class="">
+                            <a href="/Role/Index">
+                                <span>Quản lý quyền</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/User/Index">
+                                <span>Người dùng</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="/SysParameter/Index">
+                                <span>Tham số</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </li>*@
+                @*<li class=" has-child">
+                        <a href="">
+                            <div class="ic-menu">
+                                <img alt="" src="/App_Assets/images/icn9.svg">
+                                <img src="/App_Assets/images/icn9_hover.svg" alt="">
+                            </div>
+                            <span class="menu-text">
+                                Tra cứu
+                            </span>
+                        </a>
+
+                    </li>*@
+
+            </ul>
+        </div>
+    </div>
+</header>

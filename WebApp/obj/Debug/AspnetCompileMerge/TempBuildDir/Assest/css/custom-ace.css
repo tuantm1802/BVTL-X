@@ -1,0 +1,414 @@
+﻿@media (min-width:992px)and (max-width:1200px) {
+    .modal-dialog.modal-lg, .modal-dialog.modal-xl {
+        max-width: 800px !important
+    }
+}
+
+@media (min-width:1200px) {
+    .modal-dialog.modal-xl {
+        max-width: 1140px !important
+    }
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    .modal-dialog.modal-lg, .modal-dialog.modal-xl, .modal-dialog.modal-xs {
+        max-width: 600px !important
+    }
+}
+
+.tree-container {
+    min-height: none;
+    max-width: none;
+}
+
+input[type=text].comboTreeInputBox {
+    padding: 2px 5px 3px 5px !important;
+}
+
+input[type=email], input[type=url], input[type=search], input[type=tel], input[type=color], input[type=text], input[type=password], input[type=datetime], input[type=datetime-local], input[type=date], input[type=month], input[type=time], input[type=week], input[type=number], textarea {
+    padding: 0px 5px 0px 5px !important;
+}
+
+select {
+    padding: 1px;
+    height: 25px !important;
+}
+
+.btn-header {
+    background-color: #00933f;
+    color: #fff;
+}
+
+.pagination > li.active > a, .pagination > li.active > a:focus, .pagination > li.active > a:hover {
+    background-color: #00933f;
+    color: #fff
+}
+
+.btn {
+    padding: 2px 12px;
+}
+
+    .btn.btn-bold, .btn.btn-round {
+        border-bottom-width: 1px;
+    }
+
+.form-control:not(textarea) {
+    height: 28px !important;
+    padding: 0px 5px 0px 5px;
+}
+
+.select2-container--default .select2-selection {
+    line-height: unset !important;
+}
+
+.select2-container .select2-selection--multiple {
+    height: 28px !important;
+    min-height: unset !important;
+}
+
+
+.wrapper {
+    position: relative;
+    min-height: 100%;
+}
+
+.main-sidebar {
+    height: inherit;
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    overflow-y: hidden;
+    z-index: 1038;
+    transition: margin-left .3s ease-in-out,width .3s ease-in-out;
+    width: 250px;
+}
+
+.sidebar {
+    height: calc(100% - (3.5rem + 1px));
+    overflow-y: initial;
+    padding-bottom: 0;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    padding-top: 0;
+}
+
+.hd-w-1 {
+    width: 50%
+}
+
+.hd-w-2 {
+    width: 49.7%
+}
+
+.requiredInput {
+    color: red
+}
+
+.hd .form-group-hd input[type=text] {
+    border-radius: 4px;
+}
+
+.col-sm-23 {
+    width: 23%
+}
+
+.col-sm-77 {
+    width: 77%
+}
+
+.btn-group > .btn.btn-left {
+    margin-left: 10px;
+}
+
+.btn-group > .btn.btn-right {
+    margin-right: 10px;
+}
+
+.hd-overflow {
+    /*overflow-y: hidden;*/
+}
+
+.md-sc {
+    height: calc(100vh - 200px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.md-sc-c {
+    height: calc(100vh - 300px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.hd-overflow-open {
+    height: calc(100vh - 190px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+    .hd-overflow-open::-webkit-scrollbar {
+        display: none;
+    }
+
+.hd-overflow-open {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hd-s-container {
+    position: relative;
+    height: 100%
+}
+
+.tr-hover:hover {
+    cursor: pointer
+}
+
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 0 1.4em !important;
+    -webkit-box-shadow: 0px 0px 0px 0px #000;
+    box-shadow: 0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width: auto;
+    padding: 0 10px;
+    border-bottom: none;
+    margin-bottom: 5px;
+}
+
+.hd-btn-s {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.select2-container--default .select2-selection--single {
+    border-radius: 0px;
+}
+
+.form-infor .form-control.error, .form-control.error {
+    border: 1px solid red;
+}
+
+.form-infor label.error, label.error {
+    color: red;
+    width: 100%;
+    text-align: left;
+    font-weight: normal;
+}
+
+.input-group-addon {
+    padding: 0
+}
+
+#modalDanhSachHD button.btn.btn-info {
+    float: right;
+    border: none;
+}
+
+td.error span.select2-selection.select2-selection--single {
+    border-color: red
+}
+
+.btn {
+    padding: 2px 12px !important;
+    font-size: 14px;
+}
+
+.float-right {
+    float: right;
+}
+
+tr.activerow {
+    background-color: #b9d4c5 !important;
+}
+
+td.activerow {
+    background-color: #b9d4c5;
+}
+
+.inputcheckBox {
+    width: 20px !important;
+}
+
+input[type=checkbox] {
+    width: 18px !important;
+}
+
+.none-padding {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.none-padding-left {
+    padding-left: 0px;
+}
+
+.none-padding-right {
+    padding-right: 0px;
+}
+
+.w-ui-select2 span.select2-container {
+    width: 100%
+}
+
+.select2-container--default .select2-selection--single {
+    border-radius: .25rem;
+    border: 1px solid #D4D4D4;
+}
+
+.text-right {
+    text-align: right
+}
+
+.tab-pane .content-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.main-ac-system {
+    padding-top: 20px;
+}
+
+.tbody-hover:hover > tr:first-child > td:first-child {
+    background-color: #D1E5CF
+}
+
+.ng-confirm .ng-confirm-box .ng-confirm-buttons button.btn-blue {
+    background-color: #38a36b !important;
+    color: #FFF;
+    text-shadow: none;
+    -webkit-transition: background .2s;
+    transition: background .2s;
+}
+
+.ng-confirm.ng-confirm-light .ng-confirm-box .ng-confirm-buttons button.btn-default:hover, .ng-confirm.ng-confirm-white .ng-confirm-box .ng-confirm-buttons button.btn-default {
+    background: #e59729;
+    color: white;
+}
+
+    .ng-confirm.ng-confirm-light .ng-confirm-box .ng-confirm-buttons button.btn-default:hover, .ng-confirm.ng-confirm-white .ng-confirm-box .ng-confirm-buttons button.btn-default:hover {
+        background: #a5650b;
+        color: white;
+    }
+
+.hd-flex-ol {
+    display: flex
+}
+
+    .hd-flex-ol label {
+        flex: 0.3
+    }
+
+    .hd-flex-ol input {
+        flex: 1.7
+    }
+
+.hd-flex {
+    display: flex
+}
+
+    .hd-flex label, .hd-flex input, .hd-flex select, .hd-flex .input-group, .hd-flex span.select2 {
+        flex: 0.5
+    }
+
+    .hd-flex span.select2 {
+        width: 50% !important;
+        height: 28px
+    }
+
+.app-s span.select2 {
+    width: 100% !important;
+}
+
+form span.select2 {
+    width: 100% !important;
+}
+
+.app-error .error {
+    display: block !important;
+}
+
+.app-error .select2-selection {
+    border: 1px solid red;
+}
+
+.app-error span.error {
+    color: red;
+    display: block;
+    margin-bottom: 1px;
+}
+
+form label.error {
+    margin-top: -10px;
+}
+
+.w-datepicker input {
+    width: 100% !important;
+}
+
+.tabs-left > .nav-tabs {
+    border-bottom: 0;
+    display: block;
+    width: auto;
+    z-index: 666;
+}
+
+.tab-content > .tab-pane,
+.pill-content > .pill-pane {
+    display: none;
+}
+
+.tab-content > .active,
+.pill-content > .active {
+    display: block;
+}
+
+.tabs-left > .nav-tabs > li {
+    float: none;
+}
+
+    .tabs-left > .nav-tabs > li > a {
+        min-width: 74px;
+        margin-right: 0;
+        margin-bottom: 3px;
+    }
+
+.tabs-left > .nav-tabs {
+    float: left;
+    margin-right: 19px;
+    border-right: 1px solid #ddd;
+}
+
+    .tabs-left > .nav-tabs > li > a {
+        margin-right: -1px;
+        -webkit-border-radius: 4px 0 0 4px;
+        -moz-border-radius: 4px 0 0 4px;
+        border-radius: 4px 0 0 4px;
+    }
+
+        .tabs-left > .nav-tabs > li > a:hover,
+        .tabs-left > .nav-tabs > li > a:focus {
+            border-color: #eeeeee #dddddd #eeeeee #eeeeee;
+        }
+
+    .tabs-left > .nav-tabs .active > a,
+    .tabs-left > .nav-tabs .active > a:hover,
+    .tabs-left > .nav-tabs .active > a:focus {
+        border-color: #ddd transparent #ddd #ddd;
+        *border-right-color: #ffffff;
+    }
+.select2-container--default .select2-selection--multiple {
+    background-color: #fff;
+    border: 1px solid #D4D4D4;
+    border-radius: 0;
+    cursor: text;
+}
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        margin-top: 2px;
+    }

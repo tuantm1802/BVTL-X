@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "Kế hoạch nhập trả kho bộ";
+}
+<style>
+
+    .nav-tabs .nav-item .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 1px;
+        height: 23px;
+        background: #666666;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+</style>
+<main ng-controller="KeHoachNhapTraKBController" style="margin-top: 20px;">
+    <div class="container-fluid d-flex cons-ac-system">
+        <div class="action-system pd-two ui-widget-content" id="resizable">
+            <button id="btn-changes-s-nav">
+                <img src="../App_Assets/images/ic_back_xx.svg" alt="">
+            </button>
+
+            <div class="fill-box">
+                <h3 class="title-fill">
+                    <i class="fa fa-folder-open color-green" aria-hidden="true"></i>  Đơn vị
+                </h3>
+            </div>
+
+            <div class="container">
+                <div class="main-action pt-3">
+                    <div class="form-search w-100">
+                        <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchDmDonVi">
+                        <button class="bg-green" style="color:white" ng-click="btnSearchDmDonVi()">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="function-box">
+                    <div class="ztreeRoleBackground left" style="width:100%;">
+                        <ul id="treeRole" class="ztree"></ul>
+                    </div>
+                </div>
+
+                <div class="content-table ng-hide" ng-init="IsVisibleTab=false" ng-show="IsVisibleTab">
+                    <div class="row" style="padding-top:10px;">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group row">
+                                <lable class="col-12 col-md-2 col-lg-2" style="padding-top:3px">Năm: </lable>
+                                <div class="col-12 col-md-10 col-lg-10">
+                                    <select ng-model="cbbNam" class="form-control" ng-change="idx_ChangeKHTheoNam()">
+                                        <option ng-repeat="item in ListNam" value="{{item.Id}}">{{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6" ng-show="RoleBtnCreate">
+                            <div class="form-group row">
+                                <div class="col-12 col-md-12 col-lg-12 main-action">
+                                    <button class="btn-action-m bg-green form-control" ng-click="ThemKeHoach()">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>  <span>Thêm mới</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-table" style="height:300px; overflow-y:scroll;width: 100%;">
+                        <table class="table-responsive table-hover result-point mt-2 small-table">
+                            <thead class="point-table-head">
+                                <tr>
+                                    <th class="text-center mn-number">Số KH</th>
+                                    <th class="text-center mn-day">Ngày tạo</th>
+                                    <th class="text-center mn-status">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody class="">
+                                <tr ng-repeat="item in ListKeHoach" ng-class="{activerow:$index==selectedRowKeHoach}" style="cursor:pointer">
+                                    <td class="text-center" ng-click="ShowThongTin(item,$index)">{{item.SO_KH}}</td>
+                                    <td class="text-center" ng-click="ShowThongTin(item,$index)">{{item.NGAY_TAO_TEXT}}</td>
+                                    <td class="text-center" ng-click="ShowThongTin(item,$index)">
+                                        {{item.TRANG_THAI_TEXT}}
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-system no-border pb-0 ng-hide" ng-show="ViewKeHoach">
+            @* bread crumb *@
+            <div class="fill-box-bread-crumb">
+                <h3 class="bread_crumb">
+                    <a href="/"> <i class="fa fa-home" aria-hidden="true"></i>Trang chủ </a>  /  Cấp phát  /   Kế hoạch nhập trả kho bộ
+                </h3>
+            </div>
+            @*End bread crumb*@
+
+
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="main-action d-flex align-items-center justify-content-between flex-wrap">
+                        <div class="d-flex align-items-center flex-wrap">
+                            <button class="btn-action-delete" ng-show="RoleBtnDelete" ng-click="XoaKeHoach()" ng-disabled="disabledDelete">
+                                <img src="~/App_Assets/images/icon_del.svg" alt="">
+                                <span>Xoá</span>
+                            </button>
+                            <button class="btn-action-m" ng-show="RoleBtnRollback" ng-click="HuyThayDoi()" ng-disabled="disabledRollback">
+                                <span>Hủy thay đổi</span>
+                            </button>
+                            <button class="btn-action-m" ng-show="RoleBtnUpdate" ng-click="SuaKeHoach()" ng-disabled="disabledEdit">
+                                <img src="~/App_Assets/images/icon_edit.svg" alt="">
+                                <span>Sửa</span>
+                            </button>
+                            <button class="btn-action-m" ng-show="RoleBtnSave" ng-click="LuuPhieu()" ng-disabled="disabledSave">
+                                <img src="~/App_Assets/images/icon_save.svg" alt="">
+                                <span>Lưu</span>
+                            </button>
+                            <button class="btn-action-m" ng-show="RoleBtnSendApprove" ng-click="TrinhDuyet()" ng-disabled="disabledSendApprove">
+                                <img src="~/App_Assets/images/icon_save.svg" alt="">
+                                <span>Trình duyệt</span>
+                            </button>
+                            <button class="btn-action-m" ng-show="RoleBtnPrint" ng-click="InPhieu()" ng-disabled="disabledPrint">
+                                <img src="~/App_Assets/images/l7_hover.svg" alt="">
+                                <span>In kế hoạch</span>
+                            </button>
+
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <form class="form-infor" id="main-info">
+                
+
+                <div class="row">
+                    <div class="col-12 col-md-12">
+                        <fieldset class="scheduler-border" style="width:100%;padding-left: 5px !important; padding-right: 5px !important;margin-bottom: 5px;">
+                            <legend class="scheduler-border" style="width: 150px;"><label class="bold-label"><b>Thông tin chung</b></label></legend>
+                            <div class="row">
+                                <div class="col-4 col-md-4">
+                                    <label>Số kế hoạch</label>
+                                    <input type="text" name="NGUOI_LAP" ng-model="thongTinKh.SO_KH" class="form-control" />
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Nơi giao</label>
+                                    <input type="text" name="NGUOI_LAP" ng-model="thongTinKh.TEN_DON_VI" class="form-control" />
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Kho nhập <span>*</span></label>
+                                    <select class="form-control" ng-disabled="HsStatus" name="KhoNhap" ng-model="thongTinKh.ID_KHO_NHAP" ng-options="item.ID as item.TEN_DON_VI for item in dmKhos">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 col-md-4">
+                                    <label>Ngày lập kế hoạch <span>*</span></label>
+                                    <div class="input-group date" ng-disabled="HsStatus" data-date-format="dd/mm/yyyy">
+                                        <input type="text" customzdatetime class="form-control" name="ngayLapKH" ng-disabled="HsStatus" ng-model="thongTinKh.NGAY_TAO">
+                                        <span class="input-group-addon"></span>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Ngày thực nhập</label>
+                                    <div class="input-group date" ng-disabled="true" data-date-format="dd/mm/yyyy">
+                                        <input type="text" customzdatetime class="form-control" name="ngayLapKH" ng-disabled="true" ng-model="thongTinKh.NGAY_NHAP_TT_W">
+                                        <span class="input-group-addon"></span>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Người giao</label>
+                                    <input type="text" name="TEN_NGUOI_GIAO"  ng-disabled="HsStatus"ng-model="thongTinKh.TEN_NGUOI_GIAO" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 col-md-4">
+                                    <label>Số phiếu tài chính</label>
+                                    <input type="text" name="NGUOI_LAP" ng-model="thongTinKh.SO_PHIEU_TC" class="form-control" />
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Lý do nhập</label>
+                                    <textarea class="form-control" ng-disabled="HsStatus" ng-trim="true" ng-model="thongTinKh.MO_TA"></textarea>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <label>Hình thức vận chuyển <span>*</span></label>
+                                    <select class="form-control" name="vanChuyen" ng-disabled="HsStatus" ng-model="thongTinKh.PHUONG_THUC_VAN_CHUYEN" ng-options="item.FLEX_VALUE_ID as item.DESCRIPTION for item in hinhThucVanChuyens">
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-4 col-md-4" style="margin-bottom:10px;">
+                        <div class="main-action d-flex align-items-center flex-wrap">
+                            <button class="btn-action-m" data-toggle="modal" ng-disabled="HsStatus" ng-click="ThemHangHoa()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                <span>Thêm mới hàng hóa</span>
+                            </button>
+                            <button class="btn-action-m" ng-disabled="HsStatus" ng-click="XoaHangHoaDaChon()">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                <span>Xoá hàng hóa</span>
+                            </button>
+                        </div>
+                </div>
+                <div class="col-8 col-md-8 col-lg-8 align-self-end" style="        margin-bottom: 5px;">
+                    <div class="main-action pt-3">
+                        @*<div class="form-search w-100">
+                            <input type="text" placeholder="Tìm kiếm" ng-model="txtSearchDmDonVi">
+                            <button class="bg-green" style="color:white" ng-click="btnSearchDmDonVi()">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters" id="detail-info">
+                <div class="col-12 col-md-12 content-table" style="width:100%;" id="left-table">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                            <tr>
+                                <th class="text-center" style="width:3%;"><input type="checkbox" ng-model="checkAllHangHoa" ng-click="ChonTatCaHangHoa(2)" /> </th>
+                                <th class="text-center" >STT </th>
+                                <th class="text-center">Tên hàng</th>
+                                <th class="text-center">ĐVT</th>
+                                <th class="text-center" >SL kế hoạch</th>
+                                <th class="text-center">SL trả</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color:white">
+                            <tr ng-repeat="item in dsHangHoaDaChon" ng-class="{'selected':$index == selectedGood}">
+                                <td class="text-center"><input type="checkbox" ng-model="item.SELECT" ng-click="TichChonHangHoa(2,$index)" ng-disabled="EditStatus" /></td>
+                                <td class="text-center">
+                                    <label>{{$index +1}}</label>
+                                </td>
+                                <td>
+                                    <label>{{item.MA_H55+' - '+item.TEN_SP}}</label>
+                                </td>
+                                <td class="text-left"> <label>{{item.TEN_DVT}}</label></td>
+                                <td class="text-right"> <label>{{item.SL_TONG}}</label></td>
+                                <td class="text-right"> <label>{{item.SO_LUONG_CON_LAI}}</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                @Html.Partial("~/Views/KeHoachNhapTraKB/_PopupThemHangHoa.cshtml")
+
+                @Html.Partial("~/Views/KeHoachNhapTraKB/_enterPassword.cshtml")
+                @Html.Partial("~/Views/KeHoachNhapTraKB/_PopupChonNguoiDuyet.cshtml")
+            </div>
+        </div>
+
+
+
+    </div>
+</main>
+@section scripts{
+    <script src="~/app/Controller/CapPhat/KeHoachNhapTraKBController.js"></script>
+}

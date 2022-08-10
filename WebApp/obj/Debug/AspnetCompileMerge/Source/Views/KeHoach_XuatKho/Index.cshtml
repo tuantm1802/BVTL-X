@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewBag.Title = "Kế hoạch - Xuất kho";
+}
+<div class="breadcrumbs ace-save-state" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="">Trang chủ</a>
+        </li>
+        <li class="active">Kế hoạch - Xuất kho</li>
+    </ul>
+</div>
+<div class="page-content" ng-controller="KeHoach_XuatKhoController">
+    <div class="row">
+        <div class="col-xs-12">
+            <div>
+                <div class="row search-page" id="search-page-1">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-3">
+                                        <div class="search-area well well-sm">
+                                            <div class="search-filter-header btn-header">
+                                                <h5 class="smaller no-margin-bottom">
+                                                    <i class="ace-icon fa fa-sliders light-green bigger-130"></i>  Lực lượng
+                                                </h5>
+                                            </div>
+                                            <div class="space-10"></div>
+
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" name="keywords" placeholder="" ng-change="SearchDonVi()" ng-model="TenDonVi" />
+                                                            <div class="input-group-btn">
+                                                                <button type="button" class="btn btn-default no-border btn-sm" ng-click="SearchDonVi()">
+                                                                    <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div class="hr hr-dotted"></div>
+                                            <div style="background: #fff;    height: 250px;overflow-y: scroll;">
+                                                <ul id="cat-tree" ui-tree-view="" ng-model="treeData" tree-view-init="treeData"></ul>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div style="background: #fff;    height: 200px;overflow-y: scroll;margin-top: 10px;">
+                                                <div class="row">
+                                                    <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="center">Số kế hoạch</th>
+                                                                <th class="center">Ngày lập</th>
+                                                                <th class="center">Trạng thái</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr ng-repeat="item in ListUser" ng-click="ViewDetail(item.USER_ID, $index)" ng-class="{activerow:$index==selectedRow}">
+                                                                <td>{{item.LOGIN_NAME}}</td>
+                                                                <td>{{item.FULL_NAME}}</td>
+                                                                <td>{{item.TEL_NO}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="row">
+                                                            <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                                        </div><!-- /.span -->
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label>Thời gian</label>
+                                                    </div>
+                                                    <div class="col-md-8 text-right">
+                                                        <select ng-model="KY" class="form-control">
+                                                            <option value="1">Trong tuần</option>
+                                                            <option value="2">Trong tháng</option>
+                                                            <option value="3">Trong quý</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 pull-right" @*ng-show="IsShowRight"*@>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Đơn vị: {{TEN_DON_VI}}</label>
+                                            </div>
+                                            <div class="col-md-4 text-right">
+                                                <label>Ngày cập nhật: </label>
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <input class="form-control" type="date" ng-model="CurrentDate" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <select ng-model="KY" class="form-control">
+                                                    <option value="1">Xuất từ kho Bộ</option>
+                                                    <option value="2">Xuất từ kho A</option>
+                                                    <option value="3">Xuất từ kho B</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-9 text-right">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckKHX">
+                                                            <label class="form-check-label" for="flexCheckKHX">
+                                                                Kế hoạch xuất
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckPXK">
+                                                            <label class="form-check-label" for="flexCheckPXK">
+                                                                Phiếu xuất kho
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckXK">
+                                                            <label class="form-check-label" for="flexCheckXK">
+                                                                Xuất kho
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckHT">
+                                                            <label class="form-check-label" for="flexCheckHT">
+                                                                Hoàn thành
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="widget-box">
+                                                    <div class="widget-header">
+                                                        <h4 class="smaller">Thông tin chung</h4>
+                                                    </div> <div class="widget-body">
+                                                        <div class="widget-main">
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Kế hoạch số</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="text" id="" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Kho xuất</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <select ng-model="KY" class="form-control">
+                                                                        <option value="1">Đại Mỗ</option>
+                                                                        <option value="2">Xuất từ kho A</option>
+                                                                        <option value="3">Xuất từ kho B</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Căn cứ</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="text" id="" />
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="space-4"></div>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Ngày ký kết</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="date" id="" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Ngày hết hạn</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="date" id="" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Ngày lập KH</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="date" id="" />
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="space-4"></div>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Nguồn tiếp nhận</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <select ng-model="KY" class="form-control">
+                                                                        <option value="1">Đại Mỗ</option>
+                                                                        <option value="2">Xuất từ kho A</option>
+                                                                        <option value="3">Xuất từ kho B</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Người lập KH</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="text" id="" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Ngày xuất DK</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <input class="form-control" type="date" id="" />
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="space-4"></div>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Lý do xuất</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <input class="form-control" type="text" id="" />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="control-label">Vận chuyển</label>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <select ng-model="KY" class="form-control">
+                                                                        <option value="1">Đại Mỗ</option>
+                                                                        <option value="2">Xuất từ kho A</option>
+                                                                        <option value="3">Xuất từ kho B</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="space-2"></div>
+                                        <div class="row">
+                                            <div class="col-sm-12" style="text-align:center;">
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-plus bigger-130"></i> Thêm hàng hóa
+                                                </a>
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-list bigger-130"></i> Danh sách sản phẩm
+                                                </a>
+                                                <a class="btn btn-red btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-trash-o bigger-130"></i> Xóa
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="space-2"></div>
+                                        <div class="row">
+                                            <table id="simple-table" class="table table-bordered table-hover" style="margin-bottom: 0px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center"><input class="form-control" type="checkbox" /></th>
+                                                        <th class="center">STT</th>
+                                                        <th class="center">Mã hàng</th>
+                                                        <th class="center">Tên hàng</th>
+                                                        <th class="center">ĐVT</th>
+                                                        <th class="center">Hợp đồng</th>
+                                                        <th class="center">Số lượng</th>
+                                                        <th class="center">Chất lượng</th>
+                                                        <th class="center">Năm SX</th>
+                                                        <th class="center">Ghi chú</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr ng-repeat="item in ListUser" ng-click="ViewDetail(item.USER_ID, $index)" ng-class="{activerow:$index==selectedRow}">
+                                                        <td><input class="form-control" type="checkbox" ng-model="item.Selected" /></td>
+                                                        <td>{{$index +1}}</td>
+                                                        <td>{{item.MaHang}}</td>
+                                                        <td>{{item.TenHang}}</td>
+                                                        <td>{{item.DVT}}</td>
+                                                        <td>{{item.HopDong}}</td>
+                                                        <td>{{item.SoLuong}}</td>
+                                                        <td>{{item.ChatLuong}}</td>
+                                                        <td>{{item.NamSX}}</td>
+                                                        <td>{{item.GhiChu}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <ul class="pagination pagination-sm m-0 float-right" uib-pagination total-items="modelSearch.totalItems" items-per-page="modelSearch.pageSize" ng-model="modelSearch.currentPage" ng-change="pageChanged()" max-size="modelSearch.maxSize" class="pagination-sm" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                                                </div><!-- /.span -->
+                                            </div>
+                                        </div>
+                                        <div class="space-2"></div>
+                                        <div class="row">
+                                            <div class="col-sm-12" style="text-align:center;">
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-plus bigger-130"></i> Thêm mới
+                                                </a>
+                                                <a class="btn btn-red btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-trash-o bigger-130"></i> Xóa kế hoạch
+                                                </a>
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-mail-reply bigger-130"></i> Hủy thay đổi
+                                                </a>
+
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-save bigger-130"></i> Lưu
+                                                </a>
+                                                <a class="btn btn-default btn-xs" href="#" @*ng-disabled="disabledSaveChange"*@ ng-click="TC_ThemMoi()">
+                                                    <i class="ace-icon fa fa-check bigger-130"></i> Duyệt kế hoạch
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bootbox modal fade bootbox-prompt" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+
+                </div>
+            </div>
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div>
+
+@section scripts{
+    <script src="~/app/Controller/KeHoach/KeHoach_XuatKhoController.js"></script>
+}

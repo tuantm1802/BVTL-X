@@ -1,0 +1,46 @@
+﻿<style type="text/css">
+    .requiredInput:after {
+        content: "*";
+        color: red;
+    }
+
+    .inputCheckBox {
+        margin-left: -48%;
+    }
+</style>
+<div class="modal-header">
+    <h4 class="modal-title">{{FlexValueSetName}}</h4>
+    <a href="#" data-action="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+        <img src="~/App_Assets/images/close.svg" alt="">
+    </a>
+</div>
+<div class="modal-body">
+    <div class="row" style="margin-left: 10px; margin-right: 10px;">
+        <div class="col-lg-12">
+            <form class="form-horizontal" role="form" id="formSubmit">
+                <div class="form-group" ng-repeat="item in ListColumn" ng-if="item.DISPLAY_FLAG == 'Y' && item.FLEX_COLUMN_NAME != 'FLEX_VALUE_SET_ID'">
+                    <label ng-class="{'requiredInput':item.REQUIRED_FLAG == 'Y'}" ng-if="item.CONTROL_TYPE =='checkbox'" style="float:left;padding-top:5px;padding-right: 5px;">{{item.END_USER_COLUMN_NAME}}</label>
+                    <label ng-class="{'requiredInput':item.REQUIRED_FLAG == 'Y'}" ng-if="item.CONTROL_TYPE !='checkbox'">{{item.END_USER_COLUMN_NAME}}</label>
+                    <input class="form-control inputCheckBox" style=" width:100px;" ng-if="item.CONTROL_NAME == 'input' && item.CONTROL_TYPE =='checkbox'" ng-checked="((model[item.FLEX_COLUMN_NAME] == 'Y' && item.FLEX_COL_DATA_TYPE =='char') || model[item.FLEX_COLUMN_NAME] == true)" type="{{item.CONTROL_TYPE}}" ng-model="model[item.FLEX_COLUMN_NAME]" />
+                    <input class="form-control" ng-if="item.CONTROL_NAME == 'input' && item.CONTROL_TYPE !='checkbox' && item.FLEX_COLUMN_NAME != 'FLEX_VALUE_CATEGORY'" ng-checked="model[item.FLEX_COLUMN_NAME] == 'Y'" type="{{item.CONTROL_TYPE}}" ng-model="model[item.FLEX_COLUMN_NAME]" />
+                    <input class="form-control" ng-if="item.CONTROL_NAME == 'input' && item.CONTROL_TYPE !='checkbox' && item.FLEX_COLUMN_NAME == 'FLEX_VALUE_CATEGORY'" onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 48 && event.charCode <= 57)" ng-checked="model[item.FLEX_COLUMN_NAME] == 'Y'" type="{{item.CONTROL_TYPE}}" ng-model="model[item.FLEX_COLUMN_NAME]" />
+                    <select class="form-control" ng-if="item.CONTROL_NAME == 'select'" ng-model="model[item.FLEX_COLUMN_NAME]" ng-options="option.Value as option.Name for option in item.Options"></select>
+                    <textarea class="form-control" rows="2" ng-if="item.CONTROL_NAME == 'textarea'" ng-model="model[item.FLEX_COLUMN_NAME]"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="main-action d-flex flex-wrap">
+        <button class="btn-action-m" ng-click="submit()">
+            <img src="~/App_Assets/images/icon_save.svg" alt="">
+            <span>Lưu</span>
+        </button>
+        <button class="btn-action-cancel" data-dismiss="modal" ng-click="cancel()">
+            <img src="~/App_Assets/images/ic_close_r_light.svg" alt="">
+            <span>Hủy</span>
+        </button>
+    </div>
+</div>
+

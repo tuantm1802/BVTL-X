@@ -1,0 +1,92 @@
+﻿<div class="modal fade" id="TheKhoVL" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable b-width_1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thẻ kho</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <img src="~/App_Assets/images/close.svg" alt="">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-infor has-border p-3">
+                    <h4 class="form-title">
+                        Thông tin thẻ kho
+                    </h4>
+                    <form id="e-danhsachhoso">
+                        <h1 style="text-align:center;font-size:24px;font-weight:bold;">THẺ KHO</h1><br/>
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <label style="font-weight: bold;">{{SelectedKhoVL}}</label>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <label style="font-weight: bold;">Mã hàng: {{SelectedHangHoa.CODE}}</label>
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <label style="font-weight: bold;">Tên hàng: {{SelectedHangHoa.NAME}} (ĐVT: {{SelectedHangHoa.DVT}})</label>
+                            </div>
+                            <div class="col-12 col-md-6" style="margin-top:5px;">
+                                <label>Từ ngày</label>
+                                <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                    <input type="text" customzdatetime class="form-control" ng-change="GetChiTietTheKho()" ng-model="StartDate">
+                                    <span class="input-group-addon"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6" style="margin-top:5px;">
+                                <label>Đến ngày</label>
+                                <div class="input-group date w-datepicker" data-date-format="dd/mm/yyyy">
+                                    <input type="text" customzdatetime class="form-control" ng-change="GetChiTietTheKho()" ng-model="EndDate">
+                                    <span class="input-group-addon"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <br/>
+                </div>
+                <div class="content-table mt-2 fixTableHead">
+                    <table class="table-responsive table-hover result-point">
+                        <thead class="point-table-head">
+                        <tr>
+                            <th class="text-center" style="width:10%;">STT<i id="or_ntn"></i></th>
+                            <th style="width:15%;">Số phiếu<i id="or_dv"></i></th>
+                            <th style="width:15%;">Ngày<i id="or_dv"></i></th>
+                            <th style="width:45%;">Tên đơn vị<i id="or_nn"></i></th>
+                            <th style="width:5%;">Nhập<i id="or_ng"></i></th>
+                            <th style="width:5%;">Xuất<i id="or_ng"></i></th>
+                            <th style="width:5%">Tồn<i id="or_ng"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody style="background-color:white">
+                        <tr>
+                            <td colspan="7" style="text-align:right">
+                                <label>Dư đầu kỳ:{{DuDauKy}}</label>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="item in ListTheKho">
+                            <td style="text-align:center;">{{$index+1}}</td>
+                            <td style="text-align:center;">{{item.SO_PHIEU}}</td>
+                            <td style="text-align:center;">{{item.NGAY_CT}}</td>
+                            <td style="text-align:center;">{{item.TEN_DON_VI}}</td>
+                            <td style="text-align: center;">{{item.SL_TANG}}</td>
+                            <td style="text-align: center;">{{item.SL_GIAM}}</td>
+                            <td style="text-align: center;">{{item.SL_TON}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Tổng cộng:</td>
+                            <td style="text-align: center;">{{TongTang}}</td>
+                            <td style="text-align:center;">{{TongGiam}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="text-align:right">
+                                <label>Tồn cuối:{{DuCuoiKy}}</label>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary bg-red" ng-click="Cancel()" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

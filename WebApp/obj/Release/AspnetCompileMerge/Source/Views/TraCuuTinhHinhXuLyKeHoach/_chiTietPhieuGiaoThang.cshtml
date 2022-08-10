@@ -1,0 +1,261 @@
+﻿<!-- Modal Header -->
+<div class="modal-header">
+    <h4 class="modal-title">Chi tiết chứng từ</h4>
+    <button type="button" class="close" ng-click="cancel()">
+        <img src="~/App_Assets/images/close.svg" alt="">
+    </button>
+</div>
+<!-- Modal body -->
+<div class="modal-body">
+    <div class="form-infor has-border p-3">
+        <form class="row" id="thuc-luc-form">
+            <div class="col-4 col-md-4">
+                <label for="">Số phiếu </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.SO_PHIEU" name="SO_PHIEU" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Hợp đồng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.SO_HOP_DONG" name="SO_HOP_DONG" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Căn cứ </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.CAN_CU" name="CAN_CU" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Ngày hợp đồng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGAY_HOP_DONG" name="NGAY_HOP_DONG" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Đơn vị sản xuất </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.DON_VI_SAN_XUAT" name="DON_VI_SAN_XUAT" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Nguồn hàng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGUON_HANG" name="NGUON_HANG" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Đơn vị nhận hàng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.TEN_DON_VI_NHAN" name="TEN_DON_VI_NHAN" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Người nhận </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGUOI_NHAN" name="NGUOI_NHAN" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Vận chuyển </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.HT_VAN_CHUYEN" name="HT_VAN_CHUYEN" disabled />
+            </div>
+            <div class="col-8 col-md-8">
+                <label for="">Lý do </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.LY_DO_XUAT" name="LY_DO_XUAT" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Xuất dự kiến từ </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGAY_XUAT_DK_TU" name="NGAY_XUAT_DK_TU" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Đến ngày </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGAY_XUAT_DK_DEN" name="NGAY_XUAT_DK_DEN" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Ngày nhận dự kiến </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGAY_NHAN_DK" name="NGAY_NHAN_DK" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Ngày viết phiếu </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGAY_CT" name="TEN_NGUOI_GIAO" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Người viết phiếu </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.NGUOI_VIET_PHIEU" name="NGUOI_VIET_PHIEU" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Lãnh đạo phòng 10 </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThang.TEN_NGUOI_KY_1" name="TEN_NGUOI_KY_1" disabled />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Ngày nhận hàng </label>
+                <div class="input-group date" data-date-format="dd/mm/yyyy">
+                    <input type="text" customzdatetime class="form-control" ng-model="ChiTietGiaoThangNhap.NGAY_NHAN_DK" name="NGAY_NHAN_DK">
+                    <span class="input-group-addon"></span>
+                </div>
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Cán bộ nhận hàng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThangNhap.CAN_BO_NHAN_HANG" name="CAN_BO_NHAN_HANG" />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">Lãnh đạo đơn vị nhận hàng </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThangNhap.LANH_DAO_DON_VI_NHAN_HANG" name="LANH_DAO_DON_VI_NHAN_HANG" />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">
+                    Cán bộ vận chuyển 
+                    (nếu H03 vận chuyển)
+                </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThangNhap.CAN_BO_VAN_CHUYEN" name="CAN_BO_VAN_CHUYEN" />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">
+                    Cán bộ đơn vị sản xuất
+                </label>
+                <input class=" form-control" type="text" ng-model="ChiTietGiaoThangNhap.CAN_BO_DON_VI_SAN_XUAT" name="CAN_BO_DON_VI_SAN_XUAT" />
+            </div>
+            <div class="col-4 col-md-4">
+                <label for="">
+                    Đính kèm
+                </label>
+                <div class="form-group col-md-12">
+                    <input type="file" class="custom-file-input" id="file-input">
+                    <label class="custom-file-label" for="file-input">Chọn tệp</label>
+                </div>
+                @*<div class="form-group">
+                    <input type="text" style="display: none" class="form-control" ng-model="ChiTietGiaoThangNhap.DINH_KEM">
+                    <input type="file" class="custom-file-input hidden" onchange="angular.element(this).scope().SelectFile(event)" id="file-input">
+                </div>*@
+            </div>
+            <div class="col-md-5">
+                <div class="content-table">
+                    <table class="table-responsive result-point">
+                        <thead class="point-table-head">
+                            <tr class="bd-normal">
+                                <th class="text-center ht3-number-cand">
+                                    STT
+                                </th>
+                                <th class="text-center ht3-genral">
+                                    Mã hàng
+                                </th>
+                                <th class="text-center ht3-rank">
+                                    Tên hàng
+                                </th>
+                                <th class="text-center ht3-position">
+                                    ĐVT
+                                </th>
+                                <th class="text-center ht3-size">
+                                    SL
+                                </th>
+                                <th class="text-center ht3-size">
+                                    Tổng tiền
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr ng-repeat="item in DanhSachHangHoaGiaoThang"  ng-click="ChonHangGiaoThang(item, $index)" ng-class="{'active-tr': selectedItem == $index}">
+                                <td class="text-center">
+                                    {{$index + 1}}
+                                </td>
+                                <td class="text-center">
+                                    {{item.MA_HANG}}
+                                </td>
+                                <td class="text-left">
+                                    {{item.TEN_HANG}}
+                                </td>
+                                <td class="text-left">
+                                    {{item.DVT}}
+                                </td>
+                                <td class="text-left">
+                                    {{item.SO_LUONG_TT}}
+                                </td>
+                                <td class="text-left">
+                                    {{item.THANH_TIEN_TT}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="form-infor has-border p-3 firts-to-h" style="padding-bottom: 5px !important;">
+                    <div class="row no-gutters">
+                        <div class="col-md-6"> <label for="">Chi tiết: <span>{{tenHangDaChon}}</span></label></div>
+                        <div class="col-md-6"> <label for="">Số lượng: <span>{{soLuongDaChon}}</span></label></div>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="content-table" style="width: 100%;">
+                            <table class="table-responsive result-point" style="display: block;">
+                                <thead class="point-table-head">
+                                    <tr class="bd-normal">
+                                        <th class="text-center ht3-number-cand">
+                                            Kho nhập
+                                        </th>
+                                        <th class="text-center ht3-genral">
+                                            Hợp đồng
+                                        </th>
+                                        <th class="text-center ht3-rank">
+                                            SL
+                                        </th>
+                                        <th class="text-center ht3-position">
+                                            Số khung
+                                        </th>
+                                        <th class="text-center ht3-size">
+                                            Số máy
+                                        </th>
+                                        <th class="text-center ht3-size">
+                                            Serial
+                                        </th>
+                                        <th class="text-center ht3-size">
+                                            Model
+                                        </th>
+                                        <th class="text-center ht3-size">
+                                            Năm SX
+                                        </th>
+                                        <th class="text-center ht3-size">
+                                            Thành tiền
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="">
+                                    <tr ng-repeat="item in DanhSachHangHoaGiaoThangChiTiet | filter:{ID_HANG:idHangHoaDaChon}">
+                                        <td class="text-center">
+                                            {{$index + 1}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{item.SO_HOP_DONG}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{item.SO_LUONG_TT}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal footer -->
+<div class="modal-footer d-flex justify-content-between">
+    <h5 class="day-make"></h5>
+    <div class="main-action d-flex flex-wrap">
+        <button class="btn-action-m cl-3" ng-click="capNhatGiaoThang()">
+            <img src="../App_Assets/images/icon_save.svg" alt="" class="exsit">
+            <img src="../App_Assets/images/icon_save.svg" alt="" class="hover_m">
+            <span>Lưu</span>
+        </button>
+        <button class="btn-action-m cl-3" ng-click="cancel()">
+            <img src="../App_Assets/images/d_close.svg" alt="" class="exsit">
+            <img src="../App_Assets/images/ic_close_r_light.svg" alt="" class="hover_m">
+            <span>Đóng</span>
+        </button>
+    </div>
+</div>
