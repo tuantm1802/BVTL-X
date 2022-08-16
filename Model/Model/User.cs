@@ -38,7 +38,5 @@ namespace Model.Model
         public Nullable<int> OperativeLevel { get; set; }
         public Nullable<int> OriginId { get; set; }
         public bool IsActive { get; set; }
-    
-        public virtual Role Role { get; set; }
     }
 }

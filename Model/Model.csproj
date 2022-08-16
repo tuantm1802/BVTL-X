@@ -87,6 +87,45 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BaoCaoBVTL.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\BVTL_API.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_3TH.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_TX3TH.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_DUONG_SU_DUNG.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_KHACH_HANG.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_KQ_SL_ACE.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_KQ_SL_ASSIST.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_KQ_SL_SKTT.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_KQ_XN_HIV.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_LOAI_DOI_TUONG.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_MASTER_TABLE.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_NHOM_TBH.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_TAN_SUAT_SU_DUNG.cs">
+      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\City.cs">
       <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
     </Compile>

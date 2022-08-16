@@ -14,6 +14,12 @@ namespace Model.Model
     
     public partial class City
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public City()
+        {
+            this.BVTL_KHACH_HANG = new HashSet<BVTL_KHACH_HANG>();
+        }
+    
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
@@ -23,5 +29,8 @@ namespace Model.Model
         public int CreatedBy { get; set; }
         public Nullable<System.DateTime> LastUpdateDate { get; set; }
         public Nullable<int> LastUpdateBy { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_KHACH_HANG> BVTL_KHACH_HANG { get; set; }
     }
 }

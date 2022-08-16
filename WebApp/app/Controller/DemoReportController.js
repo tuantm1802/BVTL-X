@@ -102,16 +102,17 @@
                     { "data": "ChuyenGioi" },
                     { "data": "Tong" }
                 ],
-                dom: "<'row'<'col-sm-12'B>>"
-                   // + "<'row'<'col-sm-12'f>>" 
-                    + "<'row'<'col-sm-12'tr>>"
-                        //+
-                    //"<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>"
-                ,
+                //dom: "<'row'<'col-sm-12'B>>"
+                //    + "<'row'<'col-sm-12'f>>" 
+                //    + "<'row'<'col-sm-12'tr>>"
+                //        //+
+                //    //"<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>"
+                //,
                 //'rowsGroup': [1],
                 //colsGroup: [
                 //    'ThongTinBC'
                 //],
+                dom: 'Bfrtip',
                 'rowsGroup': [1],
                 'createdRow': function (row, data, dataIndex) {
                     console.log("Data");
@@ -144,11 +145,37 @@
                     {
                         extend: 'pdfHtml5',
                         title: 'Xuất PDF'
-                    }
+                    },
+                    'colvis'
                 ],
                 scroller: {
                     loadingIndicator: true
                 },
+            });
+
+            $('#example').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copyHtml5',
+                        exportOptions: {
+                            columns: [0, ':visible']
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: [0, 1, 2, 5]
+                        }
+                    },
+                    'colvis'
+                ]
             });
         } else {
             dataTableReport.ajax.reload();
@@ -159,5 +186,30 @@
     $scope.Refesh = function () {
         $scope.LoadPage(0);
     };
+
+    $scope.ExportExcel = function () {
+        //var strData = '';
+        //angular.forEach($scope.modelSearch.City, function (val, key) {
+        //    if (val !== '') {
+        //        if (strData !== '')
+        //            strData += ',';
+        //        strData += parseInt(val);
+        //    }
+        //});
+
+        //var strDataUnit = '';
+        //angular.forEach($scope.modelSearch.Unit, function (val, key) {
+        //    if (val !== '') {
+        //        if (strDataUnit !== '')
+        //            strDataUnit += ',';
+        //        strDataUnit += parseInt(val);
+        //    }
+        //});
+
+        //window.location.href = '/ReportExplosiveByCareer/ExportData?listCities=' + strData + '&fromDate=' + moment($scope.modelSearch.SearchFromDate).format('YYYYMMDD') + '&toDate=' + moment($scope.modelSearch.SearchToDate).format('YYYYMMDD') + '&listUnitId=' + strDataUnit + "&isThucTe=" + parseInt($scope.modelSearch.isThucTe);;
+
+        window.location.href = '/DemoReport/ExportExcel';
+    }
+
    
 });

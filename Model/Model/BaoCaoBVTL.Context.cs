@@ -28,6 +28,19 @@ namespace Model.Model
         public virtual DbSet<ACETest> ACETests { get; set; }
         public virtual DbSet<Api_TableSaveData> Api_TableSaveData { get; set; }
         public virtual DbSet<AssistTest> AssistTests { get; set; }
+        public virtual DbSet<BVTL_API> BVTL_API { get; set; }
+        public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_3TH> BVTL_CHAT_GAY_NGHIEN_3TH { get; set; }
+        public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_TX3TH> BVTL_CHAT_GAY_NGHIEN_TX3TH { get; set; }
+        public virtual DbSet<BVTL_DUONG_SU_DUNG> BVTL_DUONG_SU_DUNG { get; set; }
+        public virtual DbSet<BVTL_KHACH_HANG> BVTL_KHACH_HANG { get; set; }
+        public virtual DbSet<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }
+        public virtual DbSet<BVTL_KQ_SL_ASSIST> BVTL_KQ_SL_ASSIST { get; set; }
+        public virtual DbSet<BVTL_KQ_SL_SKTT> BVTL_KQ_SL_SKTT { get; set; }
+        public virtual DbSet<BVTL_KQ_XN_HIV> BVTL_KQ_XN_HIV { get; set; }
+        public virtual DbSet<BVTL_LOAI_DOI_TUONG> BVTL_LOAI_DOI_TUONG { get; set; }
+        public virtual DbSet<BVTL_MASTER_TABLE> BVTL_MASTER_TABLE { get; set; }
+        public virtual DbSet<BVTL_NHOM_TBH> BVTL_NHOM_TBH { get; set; }
+        public virtual DbSet<BVTL_TAN_SUAT_SU_DUNG> BVTL_TAN_SUAT_SU_DUNG { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<DeliveryService> DeliveryServices { get; set; }

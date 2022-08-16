@@ -40,3 +40,15 @@ D:\Code\BC_YTe\Code\Web\Model\bin\Debug\EntityFramework.dll
 D:\Code\BC_YTe\Code\Web\Model\bin\Debug\Simple.dll
 D:\Code\BC_YTe\Code\Web\Model\bin\Debug\Simple.pdb
 D:\Code\BC_YTe\Code\Web\Model\obj\Debug\Model.csproj.CopyComplete
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\Model.dll.config
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\Model.dll
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\Model.pdb
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\EntityFramework.SqlServer.dll
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\EntityFramework.dll
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\Simple.dll
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\Simple.pdb
+D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.csproj.AssemblyReference.cache
+D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.csproj.CoreCompileInputs.cache
+D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.csproj.CopyComplete
+D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.dll
+D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.pdb

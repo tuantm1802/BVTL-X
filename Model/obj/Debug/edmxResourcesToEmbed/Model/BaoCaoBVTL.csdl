@@ -4,6 +4,19 @@
     <EntitySet Name="ACETests" EntityType="BaoCaoBVTLModel.ACETest" />
     <EntitySet Name="Api_TableSaveData" EntityType="BaoCaoBVTLModel.Api_TableSaveData" />
     <EntitySet Name="AssistTests" EntityType="BaoCaoBVTLModel.AssistTest" />
+    <EntitySet Name="BVTL_API" EntityType="BaoCaoBVTLModel.BVTL_API" />
+    <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="BaoCaoBVTLModel.BVTL_CHAT_GAY_NGHIEN_3TH" />
+    <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="BaoCaoBVTLModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" />
+    <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="BaoCaoBVTLModel.BVTL_DUONG_SU_DUNG" />
+    <EntitySet Name="BVTL_KHACH_HANG" EntityType="BaoCaoBVTLModel.BVTL_KHACH_HANG" />
+    <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_ACE" />
+    <EntitySet Name="BVTL_KQ_SL_ASSIST" EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_ASSIST" />
+    <EntitySet Name="BVTL_KQ_SL_SKTT" EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_SKTT" />
+    <EntitySet Name="BVTL_KQ_XN_HIV" EntityType="BaoCaoBVTLModel.BVTL_KQ_XN_HIV" />
+    <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="BaoCaoBVTLModel.BVTL_LOAI_DOI_TUONG" />
+    <EntitySet Name="BVTL_MASTER_TABLE" EntityType="BaoCaoBVTLModel.BVTL_MASTER_TABLE" />
+    <EntitySet Name="BVTL_NHOM_TBH" EntityType="BaoCaoBVTLModel.BVTL_NHOM_TBH" />
+    <EntitySet Name="BVTL_TAN_SUAT_SU_DUNG" EntityType="BaoCaoBVTLModel.BVTL_TAN_SUAT_SU_DUNG" />
     <EntitySet Name="Cities" EntityType="BaoCaoBVTLModel.City" />
     <EntitySet Name="Customers" EntityType="BaoCaoBVTLModel.Customer" />
     <EntitySet Name="DeliveryServices" EntityType="BaoCaoBVTLModel.DeliveryService" />
@@ -21,9 +34,49 @@
     <EntitySet Name="UrineTests" EntityType="BaoCaoBVTLModel.UrineTest" />
     <EntitySet Name="Users" EntityType="BaoCaoBVTLModel.User" />
     <EntitySet Name="User_TestGroup" EntityType="BaoCaoBVTLModel.User_TestGroup" />
-    <AssociationSet Name="FK_User_User" Association="BaoCaoBVTLModel.FK_User_User">
-      <End Role="Role" EntitySet="Roles" />
-      <End Role="User" EntitySet="Users" />
+    <AssociationSet Name="fk_BVTL_MASTER_TABLE_BVTL_API_1" Association="BaoCaoBVTLModel.fk_BVTL_MASTER_TABLE_BVTL_API_1">
+      <End Role="BVTL_API" EntitySet="BVTL_API" />
+      <End Role="BVTL_MASTER_TABLE" EntitySet="BVTL_MASTER_TABLE" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1" Association="BaoCaoBVTLModel.fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1">
+      <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1">
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+      <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1">
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+      <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1">
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+      <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1">
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+      <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+    </AssociationSet>
+    <AssociationSet Name="fk_Khach_Hang_City" Association="BaoCaoBVTLModel.fk_Khach_Hang_City">
+      <End Role="City" EntitySet="Cities" />
+      <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
+      <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+      <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1">
+      <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+      <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1">
+      <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+      <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" Association="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1">
+      <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+      <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="ACETest">
@@ -90,6 +143,187 @@
     <Property Name="CacThuocKhac_Diem" Type="Decimal" Precision="18" Scale="2" />
     <Property Name="CacThuocKhac_NguyCo" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
   </EntityType>
+  <EntityType Name="BVTL_API">
+    <Key>
+      <PropertyRef Name="Api_Id" />
+    </Key>
+    <Property Name="Api_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Api_Code" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+    <Property Name="NameSyncdata" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="HrefApi" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="TypeApi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TokenApi" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TableNameSaveData" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TimeReCall" Type="Int32" />
+    <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BaoCaoBVTLModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
+  </EntityType>
+  <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ten_cgn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ghichu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="BVTL_CHAT_GAY_NGHIEN_TX3TH">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ten_cgn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ghichu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="BVTL_DUONG_SU_DUNG">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="mota" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="BVTL_KHACH_HANG">
+    <Key>
+      <PropertyRef Name="khachhang_id" />
+    </Key>
+    <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="hoten" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="gioitinh" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="namsinh" Type="Int32" />
+    <Property Name="loai_doi_tuong_id" Type="Int32" />
+    <Property Name="ngaytiepcan" Type="DateTime" Precision="0" />
+    <Property Name="ngayngungchamsoc" Type="DateTime" Precision="0" />
+    <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+    <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="city_id" Type="Int32" />
+    <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BaoCaoBVTLModel.fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
+    <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ACE" />
+    <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ASSIST" />
+    <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_SKTT" />
+    <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_XN_HIV" />
+    <NavigationProperty Name="City" Relationship="BaoCaoBVTLModel.fk_Khach_Hang_City" FromRole="BVTL_KHACH_HANG" ToRole="City" />
+  </EntityType>
+  <EntityType Name="BVTL_KQ_SL_ACE">
+    <Key>
+      <PropertyRef Name="kqslace_id" />
+    </Key>
+    <Property Name="kqslace_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_year" Type="Int32" Nullable="false" />
+    <Property Name="tongdiem_ace" Type="Int32" />
+    <Property Name="ketqua_ace" Type="Int32" />
+    <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_KHACH_HANG" />
+    <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_NHOM_TBH" />
+  </EntityType>
+  <EntityType Name="BVTL_KQ_SL_ASSIST">
+    <Key>
+      <PropertyRef Name="kqslassist_id" />
+    </Key>
+    <Property Name="kqslassist_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_year" Type="Int32" Nullable="false" />
+    <Property Name="thuocla_diem" Type="Int32" />
+    <Property Name="thuocla_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="conruou_diem" Type="Int32" />
+    <Property Name="conruou_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="cansa_diem" Type="Int32" />
+    <Property Name="cansa_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="cocaine_diem" Type="Int32" />
+    <Property Name="cocaine_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="matuyda_diem" Type="Int32" />
+    <Property Name="matuyda_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="khixonghit_diem" Type="Int32" />
+    <Property Name="khixonghit_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="thuocanthan_diem" Type="Int32" />
+    <Property Name="thuocanthan_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="chatgayaogiac_diem" Type="Int32" />
+    <Property Name="chatgayaogiac_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="thuocphien_diem" Type="Int32" />
+    <Property Name="thuocphien_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="chatkhac_diem" Type="Int32" />
+    <Property Name="chatkhac_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ghichu" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_KHACH_HANG" />
+    <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_NHOM_TBH" />
+  </EntityType>
+  <EntityType Name="BVTL_KQ_SL_SKTT">
+    <Key>
+      <PropertyRef Name="kqslsktt_id" />
+    </Key>
+    <Property Name="kqslsktt_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="khachhang_id" Type="Int32" />
+    <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
+    <Property Name="ngaysl_year" Type="Int32" Nullable="false" />
+    <Property Name="diem_QST" Type="Int32" />
+    <Property Name="ketqua_QST" Type="Int32" />
+    <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_KHACH_HANG" />
+    <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_NHOM_TBH" />
+  </EntityType>
+  <EntityType Name="BVTL_KQ_XN_HIV">
+    <Key>
+      <PropertyRef Name="kqxnhiv_id" />
+    </Key>
+    <Property Name="kqxnhiv_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+    <Property Name="ngayxn" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ngayxn_date" Type="Int32" Nullable="false" />
+    <Property Name="ngayxn_month" Type="Int32" Nullable="false" />
+    <Property Name="ngayxn_year" Type="Int32" Nullable="false" />
+    <Property Name="ketqua" Type="Int32" Nullable="false" />
+    <Property Name="dangdieutri_hiv" Type="Int32" />
+    <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_KHACH_HANG" />
+    <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
+  </EntityType>
+  <EntityType Name="BVTL_LOAI_DOI_TUONG">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="code" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1" FromRole="BVTL_LOAI_DOI_TUONG" ToRole="BVTL_KHACH_HANG" />
+  </EntityType>
+  <EntityType Name="BVTL_MASTER_TABLE">
+    <Key>
+      <PropertyRef Name="table_id" />
+    </Key>
+    <Property Name="table_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="table_name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="table_status" Type="Int32" Nullable="false" />
+    <Property Name="Api_Id" Type="Int32" />
+    <NavigationProperty Name="BVTL_API" Relationship="BaoCaoBVTLModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_MASTER_TABLE" ToRole="BVTL_API" />
+  </EntityType>
+  <EntityType Name="BVTL_NHOM_TBH">
+    <Key>
+      <PropertyRef Name="manhom_tbh" />
+    </Key>
+    <Property Name="manhom_tbh" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+    <Property Name="tennhom_tbh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_ACE" />
+    <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_ASSIST" />
+    <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_SKTT" />
+    <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_XN_HIV" />
+  </EntityType>
+  <EntityType Name="BVTL_TAN_SUAT_SU_DUNG">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="mota" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
   <EntityType Name="City">
     <Key>
       <PropertyRef Name="Id" />
@@ -103,6 +337,7 @@
     <Property Name="CreatedBy" Type="Int32" Nullable="false" />
     <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
     <Property Name="LastUpdateBy" Type="Int32" />
+    <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BaoCaoBVTLModel.fk_Khach_Hang_City" FromRole="City" ToRole="BVTL_KHACH_HANG" />
   </EntityType>
   <EntityType Name="Customer">
     <Key>
@@ -202,7 +437,6 @@
     <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Descripttion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
     <Property Name="IsActive" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="Users" Relationship="BaoCaoBVTLModel.FK_User_User" FromRole="Role" ToRole="User" />
   </EntityType>
   <EntityType Name="RolePage">
     <Key>
@@ -330,7 +564,6 @@
     <Property Name="OperativeLevel" Type="Int32" />
     <Property Name="OriginId" Type="Int32" />
     <Property Name="IsActive" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="Role" Relationship="BaoCaoBVTLModel.FK_User_User" FromRole="User" ToRole="Role" />
   </EntityType>
   <EntityType Name="User_TestGroup">
     <Key>
@@ -341,15 +574,135 @@
     <Property Name="TestGroupId" Type="Int32" Nullable="false" />
     <Property Name="Is_Active" Type="Boolean" Nullable="false" />
   </EntityType>
-  <Association Name="FK_User_User">
-    <End Type="BaoCaoBVTLModel.Role" Role="Role" Multiplicity="0..1" />
-    <End Type="BaoCaoBVTLModel.User" Role="User" Multiplicity="*" />
+  <Association Name="fk_BVTL_MASTER_TABLE_BVTL_API_1">
+    <End Type="BaoCaoBVTLModel.BVTL_API" Role="BVTL_API" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_MASTER_TABLE" Role="BVTL_MASTER_TABLE" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Role">
-        <PropertyRef Name="ID" />
+      <Principal Role="BVTL_API">
+        <PropertyRef Name="Api_Id" />
       </Principal>
-      <Dependent Role="User">
-        <PropertyRef Name="GroupID" />
+      <Dependent Role="BVTL_MASTER_TABLE">
+        <PropertyRef Name="Api_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1">
+    <End Type="BaoCaoBVTLModel.BVTL_LOAI_DOI_TUONG" Role="BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_LOAI_DOI_TUONG">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="loai_doi_tuong_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1">
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="khachhang_id" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_ACE">
+        <PropertyRef Name="khachhang_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1">
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_ASSIST" Role="BVTL_KQ_SL_ASSIST" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="khachhang_id" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_ASSIST">
+        <PropertyRef Name="khachhang_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1">
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_SKTT" Role="BVTL_KQ_SL_SKTT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="khachhang_id" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_SKTT">
+        <PropertyRef Name="khachhang_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1">
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_XN_HIV" Role="BVTL_KQ_XN_HIV" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="khachhang_id" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_XN_HIV">
+        <PropertyRef Name="khachhang_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_Khach_Hang_City">
+    <End Type="BaoCaoBVTLModel.City" Role="City" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="City">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BVTL_KHACH_HANG">
+        <PropertyRef Name="city_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
+    <End Type="BaoCaoBVTLModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_NHOM_TBH">
+        <PropertyRef Name="manhom_tbh" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_ACE">
+        <PropertyRef Name="manhom_tbh" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1">
+    <End Type="BaoCaoBVTLModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_ASSIST" Role="BVTL_KQ_SL_ASSIST" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_NHOM_TBH">
+        <PropertyRef Name="manhom_tbh" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_ASSIST">
+        <PropertyRef Name="manhom_tbh" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1">
+    <End Type="BaoCaoBVTLModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_SL_SKTT" Role="BVTL_KQ_SL_SKTT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_NHOM_TBH">
+        <PropertyRef Name="manhom_tbh" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_SL_SKTT">
+        <PropertyRef Name="manhom_tbh" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1">
+    <End Type="BaoCaoBVTLModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+    <End Type="BaoCaoBVTLModel.BVTL_KQ_XN_HIV" Role="BVTL_KQ_XN_HIV" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BVTL_NHOM_TBH">
+        <PropertyRef Name="manhom_tbh" />
+      </Principal>
+      <Dependent Role="BVTL_KQ_XN_HIV">
+        <PropertyRef Name="manhom_tbh" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

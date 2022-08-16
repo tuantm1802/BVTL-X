@@ -5,27 +5,50 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="abe285943db04427b68eb0bad2142443" Name="Diagram1">
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.ACETest" Width="1.5" PointX="5.75" PointY="0.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.Api_TableSaveData" Width="1.5" PointX="5.75" PointY="5.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.AssistTest" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.City" Width="1.5" PointX="0.75" PointY="7.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.Customer" Width="1.5" PointX="2.75" PointY="7.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.DeliveryService" Width="1.5" PointX="7.75" PointY="8.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.HTVTest" Width="1.5" PointX="9.75" PointY="0.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.PageAction" Width="1.5" PointX="4.75" PointY="9.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.PageMenu" Width="1.5" PointX="9.75" PointY="5.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.ProvideReductionItem" Width="1.5" PointX="9.75" PointY="9.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.Role" Width="1.5" PointX="0.75" PointY="3" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.RolePage" Width="1.5" PointX="11.75" PointY="0.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.SKTTTest" Width="1.5" PointX="0.75" PointY="11.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.SocialSupport" Width="1.5" PointX="11.75" PointY="3.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.SysLog" Width="1.5" PointX="11.75" PointY="8.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.SysParameter" Width="1.5" PointX="11.75" PointY="11.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.TestGroup" Width="1.5" PointX="2.75" PointY="12.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.UrineTest" Width="1.5" PointX="4.75" PointY="12.75" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.User" Width="1.5" PointX="3" PointY="1.125" />
-        <EntityTypeShape EntityType="BaoCaoBVTLModel.User_TestGroup" Width="1.5" PointX="13.75" PointY="0.75" />
-        <AssociationConnector Association="BaoCaoBVTLModel.FK_User_User" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.ACETest" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.Api_TableSaveData" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.AssistTest" Width="1.5" PointX="10.75" PointY="9.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_API" Width="1.5" PointX="7.75" PointY="1" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_CHAT_GAY_NGHIEN_3TH" Width="1.5" PointX="11.75" PointY="4.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_DUONG_SU_DUNG" Width="1.5" PointX="12.75" PointY="7.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_KHACH_HANG" Width="1.5" PointX="3" PointY="8.875" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="5.25" PointY="9.375" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_ASSIST" Width="1.5" PointX="5.25" PointY="1.625" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_KQ_SL_SKTT" Width="1.5" PointX="8.25" PointY="9.375" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="5.25" PointY="13.375" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_LOAI_DOI_TUONG" Width="1.5" PointX="0.75" PointY="6.125" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_MASTER_TABLE" Width="1.5" PointX="10" PointY="1.5" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_NHOM_TBH" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.BVTL_TAN_SUAT_SU_DUNG" Width="1.5" PointX="12.75" PointY="10.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.City" Width="1.5" PointX="0.75" PointY="9.5" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.Customer" Width="1.5" PointX="13.75" PointY="3.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.DeliveryService" Width="1.5" PointX="7.75" PointY="13.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.HTVTest" Width="1.5" PointX="12.75" PointY="13.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.PageAction" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.PageMenu" Width="1.5" PointX="0.75" PointY="14.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.ProvideReductionItem" Width="1.5" PointX="14.75" PointY="7.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.Role" Width="1.5" PointX="14.75" PointY="12.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.RolePage" Width="1.5" PointX="15.75" PointY="3.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.SKTTTest" Width="1.5" PointX="14.75" PointY="15.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.SocialSupport" Width="1.5" PointX="16.75" PointY="6.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.SysLog" Width="1.5" PointX="16.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.SysParameter" Width="1.5" PointX="16.75" PointY="11.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.TestGroup" Width="1.5" PointX="16.75" PointY="14.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.UrineTest" Width="1.5" PointX="2.75" PointY="17.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.User" Width="1.5" PointX="4.75" PointY="17.75" />
+        <EntityTypeShape EntityType="BaoCaoBVTLModel.User_TestGroup" Width="1.5" PointX="17.75" PointY="3.75" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_Khach_Hang_City" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" />
+        <AssociationConnector Association="BaoCaoBVTLModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

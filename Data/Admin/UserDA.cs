@@ -50,8 +50,8 @@ namespace Data.Admin
             result.Phone = user.Phone;
             result.Status = user.Status;
             result.UserName = user.UserName;
-            result.Role = user.Role;
-            result.RoleName = user.Role.Name;
+            result.GroupID = user.GroupID;
+            result.RoleName = db.Roles.FirstOrDefault(x=>x.ID == user.GroupID).Name;
             result.Address = user.Address;
             result.Avartar = user.Avartar;
             result.Email = user.Email;

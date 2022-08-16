@@ -40,12 +40,16 @@ namespace WebApp.Controllers
                 Avartar = x.Avartar,
                 Email = x.Email,
                 CreatedDate = x.CreatedDate,
-                ROLE_DESC = x.Role.Name,
+                //ROLE_DESC = x.Role.Name,
             }).FirstOrDefault(x => x.ID == Id);
 
             if (!string.IsNullOrEmpty(model.Avartar))
             {
                 model.Avartar = GetBase64Avatar(model.Avartar);
+            }
+            if (!string.IsNullOrEmpty(model.GroupID))
+            {
+                model.ROLE_DESC = db.Roles.FirstOrDefault(x=>x.ID == model.GroupID).Name;
             }
 
             AddLog("Lấy dữ liệu chi tiết bảng Người dùng( ID: " + Id + ") thành công.");
@@ -81,20 +85,24 @@ namespace WebApp.Controllers
             {
                 int totalItems = db.Users.Where(x => x.IsAdmin == false).Count();
                 int skipRows = (modelSearch.currentPage - 1) * modelSearch.pageSize;
-                var data = db.Users.Where(x => x.IsAdmin == false).Select(x => new
-                {
-                    x.ID,
-                    x.Name,
-                    x.Phone,
-                    x.Status,
-                    x.UserName,
-                    Role = x.Role.Name,
-                    x.Address,
-                    x.Avartar,
-                    x.Email,
-                    x.CreatedDate
-                })
-                .Where(x => !string.IsNullOrEmpty(modelSearch.KeyWord) ? (x.UserName.Contains(modelSearch.KeyWord) || x.Name.Contains(modelSearch.KeyWord) || x.Phone.Contains(modelSearch.KeyWord)) : true)
+                var data = (from u in db.Users
+                           join r in db.Roles on u.GroupID equals r.ID
+                           where u.IsAdmin == false && (
+                           !string.IsNullOrEmpty(modelSearch.KeyWord) ? (u.UserName.Contains(modelSearch.KeyWord) || u.Name.Contains(modelSearch.KeyWord) || u.Phone.Contains(modelSearch.KeyWord)) : true
+                           )
+                           select new
+                           {
+                               ID=  u.ID,
+                               Name= u.Name,
+                               Phone= u.Phone,
+                               Status= u.Status,
+                               UserName=u.UserName,
+                               Role= r.Name,
+                               Address= u.Address,
+                               Avartar= u.Avartar,
+                               Email= u.Email,
+                               CreatedDate =u.CreatedDate
+                           }).ToList()
                 .OrderBy(x => x.Name).Skip(skipRows).Take(modelSearch.pageSize).ToList();
 
                 AddLog("Lấy dữ liệu theo trang bảng Người dùng( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
@@ -154,26 +162,29 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.Users.Select(x => new
-                {
-                    x.ID,
-                    x.Name,
-                    x.Phone,
-                    x.Status,
-                    x.UserName,
-                    Role = x.Role.Name,
-                    UserGroupID = x.Role.ID,
-                    x.Address,
-                    x.Avartar,
-                    x.Email,
-                    x.CreatedDate,
-                    x.DateOfBirth,
-                    x.Gender,
-                    x.IdNumber,
-                    x.Possition,
-                    x.OperativeLevel,
-                    x.OriginId
-                }).FirstOrDefault(x => x.ID == Id);
+                var data = (from u in db.Users
+                            join r in db.Roles on u.GroupID equals r.ID
+                            where u.ID == Id
+                            select new
+                            {
+                                u.ID,
+                                u.Name,
+                                u.Phone,
+                                u.Status,
+                                u.UserName,
+                                Role = r.Name,
+                                UserGroupID = u.GroupID,
+                                u.Address,
+                                u.Avartar,
+                                u.Email,
+                                u.CreatedDate,
+                                u.DateOfBirth,
+                                u.Gender,
+                                u.IdNumber,
+                                u.Possition,
+                                u.OperativeLevel,
+                                u.OriginId
+                            }).FirstOrDefault();
 
                 // Lấy danh sách id nhóm thu thập dữ liệu
                 var testGroupIds = db.User_TestGroup.Where(x => x.UserId == Id).Select(x => x.TestGroupId).ToList();

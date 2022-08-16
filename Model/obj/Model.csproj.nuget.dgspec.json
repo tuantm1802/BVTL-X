@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj": {}
+    "D:\\Code\\BC_YTe\\Code_full\\Web\\Model\\Model.csproj": {}
   },
   "projects": {
-    "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj": {
+    "D:\\Code\\BC_YTe\\Code_full\\Web\\Model\\Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj",
+        "projectUniqueName": "D:\\Code\\BC_YTe\\Code_full\\Web\\Model\\Model.csproj",
         "projectName": "Model",
-        "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\Model.csproj",
+        "projectPath": "D:\\Code\\BC_YTe\\Code_full\\Web\\Model\\Model.csproj",
         "packagesPath": "C:\\Users\\laibk\\.nuget\\packages\\",
-        "outputPath": "D:\\Code\\BC_YTe\\Code\\Web\\Model\\obj\\",
+        "outputPath": "D:\\Code\\BC_YTe\\Code_full\\Web\\Model\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "fallbackFolders": [
@@ -33,8 +33,8 @@
         "frameworks": {
           "net472": {
             "projectReferences": {
-              "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj": {
-                "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj"
+              "D:\\Code\\BC_YTe\\Code_full\\Web\\Simple\\Simple.csproj": {
+                "projectPath": "D:\\Code\\BC_YTe\\Code_full\\Web\\Simple\\Simple.csproj"
               }
             }
           }
@@ -62,11 +62,11 @@
         }
       }
     },
-    "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj": {
+    "D:\\Code\\BC_YTe\\Code_full\\Web\\Simple\\Simple.csproj": {
       "restore": {
-        "projectUniqueName": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj",
+        "projectUniqueName": "D:\\Code\\BC_YTe\\Code_full\\Web\\Simple\\Simple.csproj",
         "projectName": "Simple",
-        "projectPath": "D:\\Code\\BC_YTe\\Code\\Web\\Simple\\Simple.csproj",
+        "projectPath": "D:\\Code\\BC_YTe\\Code_full\\Web\\Simple\\Simple.csproj",
         "frameworks": {
           "net472": {
             "projectReferences": {}
