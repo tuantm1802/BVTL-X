@@ -16,7 +16,7 @@ namespace WebApp.Controllers
 {
     public class UserController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         UserDA _userDA = new UserDA();
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -29,7 +29,7 @@ namespace WebApp.Controllers
         }
         public ActionResult GetProfile(int Id)
         {
-            var model = db.Users.Select(x => new UserPageModel
+            var model = db.BVTL_QT_NGUOI_DUNG.Select(x => new UserPageModel
             {
                 ID = x.ID,
                 Name = x.Name,
@@ -40,7 +40,6 @@ namespace WebApp.Controllers
                 Avartar = x.Avartar,
                 Email = x.Email,
                 CreatedDate = x.CreatedDate,
-                //ROLE_DESC = x.Role.Name,
             }).FirstOrDefault(x => x.ID == Id);
 
             if (!string.IsNullOrEmpty(model.Avartar))
@@ -49,7 +48,7 @@ namespace WebApp.Controllers
             }
             if (!string.IsNullOrEmpty(model.GroupID))
             {
-                model.ROLE_DESC = db.Roles.FirstOrDefault(x=>x.ID == model.GroupID).Name;
+                model.ROLE_DESC = db.BVTL_QT_QUYEN.FirstOrDefault(x=>x.ID == model.GroupID).Name;
             }
 
             AddLog("Lấy dữ liệu chi tiết bảng Người dùng( ID: " + Id + ") thành công.");
@@ -83,10 +82,10 @@ namespace WebApp.Controllers
             };
             try
             {
-                int totalItems = db.Users.Where(x => x.IsAdmin == false).Count();
+                int totalItems = db.BVTL_QT_NGUOI_DUNG.Where(x => x.IsAdmin == false).Count();
                 int skipRows = (modelSearch.currentPage - 1) * modelSearch.pageSize;
-                var data = (from u in db.Users
-                           join r in db.Roles on u.GroupID equals r.ID
+                var data = (from u in db.BVTL_QT_NGUOI_DUNG
+                            join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
                            where u.IsAdmin == false && (
                            !string.IsNullOrEmpty(modelSearch.KeyWord) ? (u.UserName.Contains(modelSearch.KeyWord) || u.Name.Contains(modelSearch.KeyWord) || u.Phone.Contains(modelSearch.KeyWord)) : true
                            )
@@ -129,7 +128,7 @@ namespace WebApp.Controllers
             try
             {
                 // danh sách nhóm quyền
-                var dataRole = db.Roles.Select(x => new
+                var dataRole = db.BVTL_QT_QUYEN.Select(x => new
                 {
                     x.ID,
                     x.Name
@@ -137,10 +136,10 @@ namespace WebApp.Controllers
                 .OrderBy(x => x.Name).ToList();
 
                 // danh sách nhóm thu thập dữ liệu
-                var dataTestGroup = db.TestGroups.Select(x => new
+                var dataTestGroup = db.BVTL_NHOM_TBH.Select(x => new
                 {
-                    x.Id,
-                    x.Name
+                    Id= x.manhom_tbh,
+                    Name = x.tennhom_tbh
                 })
                 .OrderBy(x => x.Name).ToList();
 
@@ -162,8 +161,8 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = (from u in db.Users
-                            join r in db.Roles on u.GroupID equals r.ID
+                var data = (from u in db.BVTL_QT_NGUOI_DUNG
+                            join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
                             where u.ID == Id
                             select new
                             {
@@ -187,10 +186,10 @@ namespace WebApp.Controllers
                             }).FirstOrDefault();
 
                 // Lấy danh sách id nhóm thu thập dữ liệu
-                var testGroupIds = db.User_TestGroup.Where(x => x.UserId == Id).Select(x => x.TestGroupId).ToList();
+                var testGroupIds = db.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == Id).Select(x => x.NhomTBHMa).ToList();
 
                 if (testGroupIds == null)
-                    testGroupIds = new List<int>();
+                    testGroupIds = new List<string>();
 
                 AddLog("Lấy dữ liệu theo ID bảng Người dùng( ID: " + Id + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds });
@@ -302,13 +301,13 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object Add(User user, string fileName, List<int> testGroupId)
+        public object Add(BVTL_QT_NGUOI_DUNG user, string fileName, List<string> testGroupMa)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;
             try
             {
-                var checkTrungUser = db.Users.Where(x => x.UserName == user.UserName).ToList();
+                var checkTrungUser = db.BVTL_QT_NGUOI_DUNG.Where(x => x.UserName == user.UserName).ToList();
                 if (checkTrungUser == null || checkTrungUser.Count == 0)
                 {
                     if (!string.IsNullOrEmpty(user.Avartar))
@@ -320,9 +319,9 @@ namespace WebApp.Controllers
                     var userLogin = Session["USER_SESSION"] as UserLogin;
                     user.CreatedBy = userLogin.UserID.ToString();
                     user.CreatedDate = DateTime.Now;
-                    if (testGroupId == null)
-                        testGroupId = new List<int>();
-                    obj = _userDA.Add(user, testGroupId);
+                    if (testGroupMa == null)
+                        testGroupMa = new List<string>();
+                    obj = _userDA.Add(user, testGroupMa);
                     if (obj.Error)
                     {
                         if (!string.IsNullOrEmpty(user.Avartar))
@@ -421,7 +420,7 @@ namespace WebApp.Controllers
 
 
         [HttpPost]
-        public object Edit(User user, string fileName, List<int> testGroupId)
+        public object Edit(BVTL_QT_NGUOI_DUNG user, string fileName, List<string> testGroupMa)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;
@@ -430,7 +429,7 @@ namespace WebApp.Controllers
                 if (!string.IsNullOrEmpty(user.Avartar) && !string.IsNullOrEmpty(fileName))
                 {
                     // xóa file cũ
-                    var userOld = db.Users.FirstOrDefault(x => x.ID == user.ID);
+                    var userOld = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == user.ID);
                     if (!string.IsNullOrEmpty(userOld.Avartar))
                     {
                         DeleteAvatar(user.Avartar, user.UserName, user.Name);
@@ -442,9 +441,9 @@ namespace WebApp.Controllers
                 var userLogin = Session["USER_SESSION"] as UserLogin;
                 user.ModifiedBy = userLogin.UserID.ToString();
                 user.ModifiedDate = DateTime.Now;
-                if (testGroupId == null)
-                    testGroupId = new List<int>();
-                obj = _userDA.Edit(user, testGroupId);
+                if (testGroupMa == null)
+                    testGroupMa = new List<string>();
+                obj = _userDA.Edit(user, testGroupMa);
                 if (obj.Error)
                 {
                     if (!string.IsNullOrEmpty(user.Avartar) && !string.IsNullOrEmpty(fileName))
@@ -523,7 +522,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "User",
                         UserName = user.UserName,

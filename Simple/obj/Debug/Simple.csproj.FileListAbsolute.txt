@@ -38,3 +38,4 @@ D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.csproj.CoreCompileInputs.ca
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.dll
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.pdb
+D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.csproj.AssemblyReference.cache

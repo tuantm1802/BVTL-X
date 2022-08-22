@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using System.Configuration;
 using System.Data;
 using System.ComponentModel;
+using Data.API;
+using System.Threading.Tasks;
 
 namespace WebApp.Controllers
 {
@@ -22,6 +24,10 @@ namespace WebApp.Controllers
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         SyncDataDA _syncDataDA = new SyncDataDA();
+        InsertDataDA _insertDataDA = new InsertDataDA();
+        GetDataFromAPI _getDataFromAPI = new GetDataFromAPI();
+        SyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
+
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -84,7 +90,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "Role",
                         UserName = user.UserName,
@@ -95,7 +101,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object SyncDataFromApi(int Id)
+        public async Task<object> SyncDataFromApi(int Id)
         {
             ObjectMessage obj = new ObjectMessage
             {
@@ -104,25 +110,12 @@ namespace WebApp.Controllers
             try
             {
                 var session = (UserLogin)Session["USER_SESSION"];
-                var infoApi = _syncDataDA.GetItemById(Id);
-                string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                var apiResilt = GetDataFromApi(infoApi.InputApi, infoApi.HrefApi, infoApi.TypeApi);
-                if(apiResilt.code == "200")
-                {
-                    // Xóa dữ liệu cũ
-                    var resultDelete = _syncDataDA.DeleteData(infoApi.TableNameSaveData);
+                var tableNames = new List<string>();
+                var infoApi = _insertDataDA.GetApiInfo(Id, ref tableNames);
 
-                    // thêm dữ liệu mới
-                    var dataTable = ConvertToDataTable(apiResilt.data);
-
-                    obj = _syncDataDA.InsertDataFromApi(dataTable, infoApi.TableNameSaveData, stringConnect);
-                }
-                else
-                {
-                    obj.Error = true;
-                    obj.Title = apiResilt.message;
-                }
-                
+                var apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(infoApi.HrefApi, infoApi.TokenApi, infoApi.ReportId, tableNames);
+                obj.Error = !apiResult.Success;
+                obj.Title = apiResult.Success ? "Đồng bộ thành công.": apiResult.Message;
 
                 if (obj.Error)
                     AddLog("Lấy dữ liệu từ api (" + infoApi.HrefApi + ") lỗi: " + obj.Title);

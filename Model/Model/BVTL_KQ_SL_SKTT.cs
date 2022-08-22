@@ -23,7 +23,9 @@ namespace Model.Model
         public Nullable<int> diem_QST { get; set; }
         public Nullable<int> ketqua_QST { get; set; }
         public string manhom_tbh { get; set; }
+        public string city_code { get; set; }
     
+        public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_KHACH_HANG BVTL_KHACH_HANG { get; set; }
         public virtual BVTL_NHOM_TBH BVTL_NHOM_TBH { get; set; }
     }

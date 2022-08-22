@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="BVTL_REPORTINGModelStoreContainer" CdmEntityContainer="BVTL_REPORTINGEntities">
+    <EntitySetMapping Name="BVTL_API">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
+        <MappingFragment StoreEntitySet="BVTL_API">
+          <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
+          <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="TableNameSaveData" ColumnName="TableNameSaveData" />
+          <ScalarProperty Name="TokenApi" ColumnName="TokenApi" />
+          <ScalarProperty Name="TypeApi" ColumnName="TypeApi" />
+          <ScalarProperty Name="HrefApi" ColumnName="HrefApi" />
+          <ScalarProperty Name="NameSyncdata" ColumnName="NameSyncdata" />
+          <ScalarProperty Name="Api_Code" ColumnName="Api_Code" />
+          <ScalarProperty Name="Api_Id" ColumnName="Api_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_CHAT_GAY_NGHIEN_3TH">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH">
+        <MappingFragment StoreEntitySet="BVTL_CHAT_GAY_NGHIEN_3TH">
+          <ScalarProperty Name="ghichu" ColumnName="ghichu" />
+          <ScalarProperty Name="ten_cgn" ColumnName="ten_cgn" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_CHAT_GAY_NGHIEN_TX3TH">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH">
+        <MappingFragment StoreEntitySet="BVTL_CHAT_GAY_NGHIEN_TX3TH">
+          <ScalarProperty Name="ghichu" ColumnName="ghichu" />
+          <ScalarProperty Name="ten_cgn" ColumnName="ten_cgn" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_CITES">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CITES">
+        <MappingFragment StoreEntitySet="BVTL_CITES">
+          <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
+          <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_DUONG_SU_DUNG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG">
+        <MappingFragment StoreEntitySet="BVTL_DUONG_SU_DUNG">
+          <ScalarProperty Name="mota" ColumnName="mota" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_KHACH_HANG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
+        <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="diachi" ColumnName="diachi" />
+          <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
+          <ScalarProperty Name="ngayngungchamsoc" ColumnName="ngayngungchamsoc" />
+          <ScalarProperty Name="ngaytiepcan" ColumnName="ngaytiepcan" />
+          <ScalarProperty Name="loai_doi_tuong_id" ColumnName="loai_doi_tuong_id" />
+          <ScalarProperty Name="namsinh" ColumnName="namsinh" />
+          <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
+          <ScalarProperty Name="hoten" ColumnName="hoten" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
+          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_KQ_SL_ACE">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE">
+        <MappingFragment StoreEntitySet="BVTL_KQ_SL_ACE">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="ketqua_ace" ColumnName="ketqua_ace" />
+          <ScalarProperty Name="tongdiem_ace" ColumnName="tongdiem_ace" />
+          <ScalarProperty Name="ngaysl_year" ColumnName="ngaysl_year" />
+          <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
+          <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
+          <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
+          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="kqslace_id" ColumnName="kqslace_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_KQ_SL_ASSIST">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST">
+        <MappingFragment StoreEntitySet="BVTL_KQ_SL_ASSIST">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="ghichu" ColumnName="ghichu" />
+          <ScalarProperty Name="chatkhac_nguyco" ColumnName="chatkhac_nguyco" />
+          <ScalarProperty Name="chatkhac_diem" ColumnName="chatkhac_diem" />
+          <ScalarProperty Name="thuocphien_nguyco" ColumnName="thuocphien_nguyco" />
+          <ScalarProperty Name="thuocphien_diem" ColumnName="thuocphien_diem" />
+          <ScalarProperty Name="chatgayaogiac_nguyco" ColumnName="chatgayaogiac_nguyco" />
+          <ScalarProperty Name="chatgayaogiac_diem" ColumnName="chatgayaogiac_diem" />
+          <ScalarProperty Name="thuocanthan_nguyco" ColumnName="thuocanthan_nguyco" />
+          <ScalarProperty Name="thuocanthan_diem" ColumnName="thuocanthan_diem" />
+          <ScalarProperty Name="khixonghit_nguyco" ColumnName="khixonghit_nguyco" />
+          <ScalarProperty Name="khixonghit_diem" ColumnName="khixonghit_diem" />
+          <ScalarProperty Name="matuyda_nguyco" ColumnName="matuyda_nguyco" />
+          <ScalarProperty Name="matuyda_diem" ColumnName="matuyda_diem" />
+          <ScalarProperty Name="cocaine_nguyco" ColumnName="cocaine_nguyco" />
+          <ScalarProperty Name="cocaine_diem" ColumnName="cocaine_diem" />
+          <ScalarProperty Name="cansa_nguyco" ColumnName="cansa_nguyco" />
+          <ScalarProperty Name="cansa_diem" ColumnName="cansa_diem" />
+          <ScalarProperty Name="conruou_nguyco" ColumnName="conruou_nguyco" />
+          <ScalarProperty Name="conruou_diem" ColumnName="conruou_diem" />
+          <ScalarProperty Name="thuocla_nguyco" ColumnName="thuocla_nguyco" />
+          <ScalarProperty Name="thuocla_diem" ColumnName="thuocla_diem" />
+          <ScalarProperty Name="ngaysl_year" ColumnName="ngaysl_year" />
+          <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
+          <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
+          <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
+          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="kqslassist_id" ColumnName="kqslassist_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_KQ_SL_SKTT">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT">
+        <MappingFragment StoreEntitySet="BVTL_KQ_SL_SKTT">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="ketqua_QST" ColumnName="ketqua_QST" />
+          <ScalarProperty Name="diem_QST" ColumnName="diem_QST" />
+          <ScalarProperty Name="ngaysl_year" ColumnName="ngaysl_year" />
+          <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
+          <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
+          <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
+          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="kqslsktt_id" ColumnName="kqslsktt_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_KQ_XN_HIV">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
+        <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="dangdieutri_hiv" ColumnName="dangdieutri_hiv" />
+          <ScalarProperty Name="ketqua" ColumnName="ketqua" />
+          <ScalarProperty Name="ngayxn_year" ColumnName="ngayxn_year" />
+          <ScalarProperty Name="ngayxn_month" ColumnName="ngayxn_month" />
+          <ScalarProperty Name="ngayxn_date" ColumnName="ngayxn_date" />
+          <ScalarProperty Name="ngayxn" ColumnName="ngayxn" />
+          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="kqxnhiv_id" ColumnName="kqxnhiv_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_LOAI_DOI_TUONG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG">
+        <MappingFragment StoreEntitySet="BVTL_LOAI_DOI_TUONG">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_MASTER_TABLE">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_MASTER_TABLE">
+        <MappingFragment StoreEntitySet="BVTL_MASTER_TABLE">
+          <ScalarProperty Name="Api_Id" ColumnName="Api_Id" />
+          <ScalarProperty Name="table_status" ColumnName="table_status" />
+          <ScalarProperty Name="table_name" ColumnName="table_name" />
+          <ScalarProperty Name="table_id" ColumnName="table_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_NHOM_TBH">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_NHOM_TBH">
+        <MappingFragment StoreEntitySet="BVTL_NHOM_TBH">
+          <ScalarProperty Name="tennhom_tbh" ColumnName="tennhom_tbh" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_LOG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_LOG">
+        <MappingFragment StoreEntitySet="BVTL_QT_LOG">
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="DateLog" ColumnName="DateLog" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_NGUOI_DUNG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG">
+        <MappingFragment StoreEntitySet="BVTL_QT_NGUOI_DUNG">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="OriginId" ColumnName="OriginId" />
+          <ScalarProperty Name="OperativeLevel" ColumnName="OperativeLevel" />
+          <ScalarProperty Name="Possition" ColumnName="Possition" />
+          <ScalarProperty Name="IdNumber" ColumnName="IdNumber" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="DistrictID" ColumnName="DistrictID" />
+          <ScalarProperty Name="ProvinceID" ColumnName="ProvinceID" />
+          <ScalarProperty Name="Avartar" ColumnName="Avartar" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG_NHOM_TBH">
+        <MappingFragment StoreEntitySet="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="NhomTBHMa" ColumnName="NhomTBHMa" />
+          <ScalarProperty Name="NguoiDungId" ColumnName="NguoiDungId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_PAGE_ACTION">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_PAGE_ACTION">
+        <MappingFragment StoreEntitySet="BVTL_QT_PAGE_ACTION">
+          <ScalarProperty Name="CONTROL_DESC" ColumnName="CONTROL_DESC" />
+          <ScalarProperty Name="CONTROL_NAME" ColumnName="CONTROL_NAME" />
+          <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_PAGE_MENU">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_PAGE_MENU">
+        <MappingFragment StoreEntitySet="BVTL_QT_PAGE_MENU">
+          <ScalarProperty Name="IS_SYSTEM_ROLE" ColumnName="IS_SYSTEM_ROLE" />
+          <ScalarProperty Name="PARENT_PAGE_ID" ColumnName="PARENT_PAGE_ID" />
+          <ScalarProperty Name="HREF_URL" ColumnName="HREF_URL" />
+          <ScalarProperty Name="CONTROLLER_NAME" ColumnName="CONTROLLER_NAME" />
+          <ScalarProperty Name="ORDER_BY" ColumnName="ORDER_BY" />
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+          <ScalarProperty Name="NAME" ColumnName="NAME" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_QUYEN">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_QUYEN">
+        <MappingFragment StoreEntitySet="BVTL_QT_QUYEN">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Descripttion" ColumnName="Descripttion" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_QUYEN_PAGE">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_QUYEN_PAGE">
+        <MappingFragment StoreEntitySet="BVTL_QT_QUYEN_PAGE">
+          <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+          <ScalarProperty Name="CONTROL_STRING" ColumnName="CONTROL_STRING" />
+          <ScalarProperty Name="PageID" ColumnName="PageID" />
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_QT_THAM_SO">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_THAM_SO">
+        <MappingFragment StoreEntitySet="BVTL_QT_THAM_SO">
+          <ScalarProperty Name="ParamValueType" ColumnName="ParamValueType" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="Desctiption" ColumnName="Desctiption" />
+          <ScalarProperty Name="ParamValue" ColumnName="ParamValue" />
+          <ScalarProperty Name="ParamCode" ColumnName="ParamCode" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_TAN_SUAT_SU_DUNG">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_TAN_SUAT_SU_DUNG">
+        <MappingFragment StoreEntitySet="BVTL_TAN_SUAT_SU_DUNG">
+          <ScalarProperty Name="mota" ColumnName="mota" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,148 @@
+﻿2022-08-16 00:00:33,209 ERROR SyncBVTL.Core.Helper.ApiBase - Failed: Cannot add value because header 'Content-Type' does not support multiple values.
+    at System.Net.Http.Headers.HttpHeaders.ParseAndAddValue(String name, HeaderStoreItemInfo info, String value)
+   at System.Net.Http.Headers.HttpHeaders.Add(String name, String value)
+   at SyncBVTL.Core.Helper.ApiBase.<PostJsonAsyncRaw>d__10.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Core\Helper\ApiBase.cs:line 331 
+2022-08-16 00:00:33,325 INFO SyncBVTL.Push.Services.BaseServices - Số bản ghi api trả ra: 0 
+2022-08-16 00:00:33,325 INFO SyncBVTL.Push.Services.BaseServices - ****************************Kết thúc lấy dữ liệu  api , report id:  ******************************** 
+2022-08-16 00:00:44,673 ERROR Quartz.Core.JobRunShell - Job DEFAULT.d3a5625c-c37f-45d1-b8a3-64efaa029ae5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-16 00:00:44,704 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.d3a5625c-c37f-45d1-b8a3-64efaa029ae5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-16 00:01:00,037 ERROR Quartz.Core.JobRunShell - Job DEFAULT.c32b185b-baf7-4469-9727-97dc936e4606 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-16 00:01:00,038 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.c32b185b-baf7-4469-9727-97dc936e4606 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-16 00:01:32,466 INFO SyncBVTL.Push.Services.BaseServices - ****************************Bắt đầu lấy dữ liệu  api , report id:  ******************************** 
+2022-08-16 00:01:32,489 ERROR SyncBVTL.Core.Helper.ApiBase - Failed: Cannot add value because header 'Content-Type' does not support multiple values.
+    at System.Net.Http.Headers.HttpHeaders.ParseAndAddValue(String name, HeaderStoreItemInfo info, String value)
+   at System.Net.Http.Headers.HttpHeaders.Add(String name, String value)
+   at SyncBVTL.Core.Helper.ApiBase.<PostJsonAsyncRaw>d__10.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Core\Helper\ApiBase.cs:line 331 
+2022-08-16 00:01:32,490 INFO SyncBVTL.Push.Services.BaseServices - Số bản ghi api trả ra: 0 
+2022-08-16 00:01:32,491 INFO SyncBVTL.Push.Services.BaseServices - ****************************Kết thúc lấy dữ liệu  api , report id:  ******************************** 
+2022-08-16 00:10:01,147 ERROR SyncBVTL.Core.Helper.ApiBase - Failed: Cannot add value because header 'Content-Type' does not support multiple values.
+    at System.Net.Http.Headers.HttpHeaders.ParseAndAddValue(String name, HeaderStoreItemInfo info, String value)
+   at System.Net.Http.Headers.HttpHeaders.Add(String name, String value)
+   at SyncBVTL.Core.Helper.ApiBase.<PostJsonAsyncRaw>d__10.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Core\Helper\ApiBase.cs:line 331 
+2022-08-16 00:16:11,752 INFO SyncBVTL.Push.Services.BaseServices - Số bản ghi api trả ra: 336 
+2022-08-16 00:16:12,191 INFO SyncBVTL.Push.Services.BaseServices - ****************************Kết thúc lấy dữ liệu  api https://rcap.scdi.org.vn/api/, report id: 1344 ******************************** 
+2022-08-16 00:16:28,292 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Bắt đầu xóa dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:16:28,742 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Kết thúc xóa dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:16:28,915 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Bắt đầu insert dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:16:31,887 INFO SyncBVTL.Core.Data.InsertDataDA - Tổng số bản ghi thêm: 336 
+2022-08-16 00:16:32,024 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Kết thúc insert dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:16:37,629 ERROR Quartz.Core.JobRunShell - Job DEFAULT.9a4607ff-6153-4f0a-952e-0433783d4641 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-16 00:16:37,658 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.9a4607ff-6153-4f0a-952e-0433783d4641 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-16 00:16:52,256 INFO SyncBVTL.Push.Services.BaseServices - ****************************Bắt đầu lấy dữ liệu  api https://rcap.scdi.org.vn/api/, report id: 1344 ******************************** 
+2022-08-16 00:16:57,132 INFO SyncBVTL.Push.Services.BaseServices - Số bản ghi api trả ra: 336 
+2022-08-16 00:16:57,132 INFO SyncBVTL.Push.Services.BaseServices - ****************************Kết thúc lấy dữ liệu  api https://rcap.scdi.org.vn/api/, report id: 1344 ******************************** 
+2022-08-16 00:17:03,529 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Bắt đầu xóa dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:17:03,566 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Kết thúc xóa dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:17:03,566 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Bắt đầu insert dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:17:03,578 INFO SyncBVTL.Core.Data.InsertDataDA - Tổng số bản ghi thêm: 336 
+2022-08-16 00:17:03,578 INFO SyncBVTL.Core.Data.InsertDataDA - *******************Kết thúc insert dữ liệu bảng: SKTTTest********************* 
+2022-08-16 00:17:03,618 ERROR Quartz.Core.JobRunShell - Job DEFAULT.9a4607ff-6153-4f0a-952e-0433783d4641 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-16 00:17:03,618 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.9a4607ff-6153-4f0a-952e-0433783d4641 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\SKTTTest_20220816.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]

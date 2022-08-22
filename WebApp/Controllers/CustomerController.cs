@@ -12,7 +12,7 @@ namespace WebApp.Controllers
 {
     public class CustomerController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         CustomerDA _CustomerDA = new CustomerDA();
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -87,7 +87,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "Customer",
                         UserName = user.UserName,
@@ -103,17 +103,20 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.Customers.Select(x => new
+                var data = db.BVTL_KHACH_HANG.Select(x => new
                 {
-                    x.Id,
-                    x.Code,
-                    x.FullName,
-                    x.Gender,
-                    x.DateOfBirth,
-                    x.CityId,
-                    x.TypeObject,
-                    x.Code_TCV
-                }).FirstOrDefault(x => x.Id == Id);
+                    x.khachhang_id,
+                    x.makh,
+                    x.hoten,
+                    x.gioitinh,
+                    x.namsinh,
+                    x.loai_doi_tuong_id,
+                    x.ngaytiepcan,
+                    x.ngayngungchamsoc,
+                    x.sodienthoai,
+                    x.diachi,
+                    x.city_code
+                }).FirstOrDefault(x => x.khachhang_id == Id);
                 AddLog("Lấy dữ liệu theo ID bảng khách hàng( ID: " + Id + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
             }
@@ -123,79 +126,5 @@ namespace WebApp.Controllers
                 return Json(new { Error = true, Title = ex.Message });
             }
         }
-        //[HttpPost]
-        //public object Add(Customer Customer)
-        //{
-        //    ObjectMessage obj = new ObjectMessage
-        //    {
-        //        Error = false
-        //    };
-        //    try
-        //    {
-        //        obj = _CustomerDA.Add(Customer);
-        //        if (obj.Error)
-        //            AddLog("Thêm mới dữ liệu khách hàng(Code: " + Customer.Code + ", FullName: " + Customer.FullName + ") lỗi: " + obj.Title);
-        //        else
-        //            AddLog("Thêm mới dữ liệu khách hàng(Code: " + Customer.Code + ", FullName: " + Customer.FullName + ") thành công.");
-        //        return Json(obj);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        obj.Error = true;
-        //        obj.Title = ex.Message.ToString();
-        //        AddLog("Thêm mới dữ liệu khách hàng(Code: " + Customer.Code + ", FullName: " + Customer.FullName + ") lỗi: " + ex.Message);
-        //        return Json(obj);
-        //    }
-        //}
-
-        //[HttpPost]
-        //public object Edit(Customer Customer)
-        //{
-        //    ObjectMessage obj = new ObjectMessage
-        //    {
-        //        Error = false
-        //    };
-        //    try
-        //    {
-        //        obj = _CustomerDA.Edit(Customer);
-        //        if (obj.Error)
-        //            AddLog("Cập nhật dữ liệu khách hàng(Code: " + Customer.Code + ", FullName: " + Customer.FullName + ") lỗi: " + obj.Title);
-        //        else
-        //            AddLog("Cập nhật dữ liệu khách hàng( Code: " + Customer.Code + ", FullName: " + Customer.FullName + " ) thành công.");
-
-        //        return Json(obj);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        obj.Error = true;
-        //        obj.Title = ex.Message.ToString();
-        //        AddLog("Cập nhật dữ liệu khách hàng(Code: " + Customer.Code + ", FullName: " + Customer.FullName + ") lỗi: " + ex.Message);
-        //        return Json(obj);
-        //    }
-        //}
-        //[HttpPost]
-        //public object Delete(int Id)
-        //{
-        //    ObjectMessage obj = new ObjectMessage
-        //    {
-        //        Error = false
-        //    };
-        //    try
-        //    {
-        //        obj = _CustomerDA.Delete(Id);
-        //        if (obj.Error)
-        //            AddLog("Xóa dữ liệu khách hàng( ID: " + Id + " ) lỗi: " + obj.Title);
-        //        else
-        //            AddLog("Xóa dữ liệu khách hàng( ID: " + Id + " ) thành công.");
-        //        return Json(obj);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        obj.Error = true;
-        //        obj.Title = ex.Message.ToString();
-        //        AddLog("Xóa dữ liệu khách hàng( ID: " + Id + " ) lỗi: " + ex.Message + ".");
-        //        return Json(obj);
-        //    }
-        //}
     }
 }

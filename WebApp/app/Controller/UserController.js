@@ -386,7 +386,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             $.ajax({
                 type: 'post',
                 url: '/User/Add',
-                data: { user: $scope.model, fileName: $scope.FileName, testGroupId: $scope.ListTestGroupId },
+                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId },
                 success: function (data) {
                     if (data.Error) {
                         toastr.error(data.Title);
@@ -522,7 +522,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
             $.ajax({
                 type: 'post',
                 url: '/User/Edit',
-                data: { user: $scope.model, fileName: $scope.FileName, testGroupId: $scope.ListTestGroupId },
+                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId },
                 success: function (data) {
                     if (data.Error) {
                         toastr.error(data.Title);

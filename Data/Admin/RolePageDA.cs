@@ -12,20 +12,20 @@ namespace Data.Admin
 {
     public class RolePageDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
 
-        public List<RolePage> GetAllByRole(string roleID)
+        public List<BVTL_QT_QUYEN_PAGE> GetAllByRole(string roleID)
         {
-            return db.RolePages.Where(x => x.RoleID == roleID && x.IS_ACTIVE).ToList();
+            return db.BVTL_QT_QUYEN_PAGE.Where(x => x.RoleID == roleID && x.IS_ACTIVE).ToList();
         }
 
-        public ObjectMessage Add(RolePage rolePage)
+        public ObjectMessage Add(BVTL_QT_QUYEN_PAGE rolePage)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                db.RolePages.Add(rolePage);
+                db.BVTL_QT_QUYEN_PAGE.Add(rolePage);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
@@ -39,12 +39,12 @@ namespace Data.Admin
             }
 
         }
-        public ObjectMessage Edit(RolePage rolePage)
+        public ObjectMessage Edit(BVTL_QT_QUYEN_PAGE rolePage)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.RolePages.FirstOrDefault(x => x.ID == rolePage.ID);
+                var data = db.BVTL_QT_QUYEN_PAGE.FirstOrDefault(x => x.ID == rolePage.ID);
                 data.RoleID = rolePage.RoleID;
                 data.PageID = rolePage.PageID;
                 data.CONTROL_STRING = rolePage.CONTROL_STRING;
@@ -67,8 +67,8 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var itemDelete = db.RolePages.Find(Id);
-                db.RolePages.Remove(itemDelete);
+                var itemDelete = db.BVTL_QT_QUYEN_PAGE.Find(Id);
+                db.BVTL_QT_QUYEN_PAGE.Remove(itemDelete);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Xóa thành công!";

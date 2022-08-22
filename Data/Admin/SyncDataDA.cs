@@ -17,19 +17,20 @@ namespace Data.Admin
     public class SyncDataDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
         /// <summary>
         /// Lấy tất cả Nhóm thu thập dữ liệu theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-        public List<Api_TableSaveData> GetAllByPage(ModelSearch modelSearch, ref int totalRow)
+        public List<BVTL_API> GetAllByPage(ModelSearch modelSearch, ref int totalRow)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             int skipRows = (modelSearch.currentPage - 1) * modelSearch.pageSize;
             if (string.IsNullOrEmpty(modelSearch.KeyWord))
             {
-                var queryResultPage = db.Api_TableSaveData.Where(x => x.IsActive == true).ToList();
+                var queryResultPage = db.BVTL_API.Where(x => x.IsActive == true).ToList();
 
                 totalRow = queryResultPage.Count();
                 queryResultPage = queryResultPage.Skip(skipRows) .Take(modelSearch.pageSize).ToList();
@@ -37,7 +38,7 @@ namespace Data.Admin
             }
             else
             {
-                var queryResultPage = db.Api_TableSaveData.Where(x => x.IsActive == true && x.NameSyncdata.Contains(modelSearch.KeyWord)).ToList();
+                var queryResultPage = db.BVTL_API.Where(x => x.IsActive == true && x.NameSyncdata.Contains(modelSearch.KeyWord)).ToList();
 
                 totalRow = queryResultPage.Count();
                 queryResultPage = queryResultPage.Skip(skipRows) .Take(modelSearch.pageSize).ToList();
@@ -45,15 +46,6 @@ namespace Data.Admin
             }
         }
 
-        /// <summary>
-        /// Lấy Nhóm thu thập dữ liệu theo id
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        public Api_TableSaveData GetItemById(int Id)
-        {
-            return db.Api_TableSaveData.FirstOrDefault(x => x.Id == Id);
-        }
 
         /// <summary>
         /// Thêm dữ liệu bảng SKTTTest
@@ -88,7 +80,7 @@ namespace Data.Admin
             {
                 transaction.Rollback();
                 conn.Close();
-                log.Error("InsertDataDA - Thêm SKTTTest: " + ex.Message);
+                log.Error("InsertDataDA - Thêm "+ tableName + ": " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
             }

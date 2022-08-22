@@ -4,11 +4,11 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "Name DESC";
+    $scope.modelSearch.SortColumn = "tennhom_tbh DESC";
     $scope.ListData = [];
 
     var dataTableNhomTTDL = null;
-    $scope.NhomTTDLIdSeleted = 0;
+    $scope.NhomTTDLIdSeleted = "";
     angular.element(document).ready(function () {
 
         GetBottomAction();
@@ -90,10 +90,10 @@
                                 for (var i = 0; i < respone.data.length; i++) {
                                     var tmp = {
                                         STT: i + 1,
-                                        Code: respone.data[i].Code,
-                                        Name: respone.data[i].Name,
-                                        IsActive: respone.data[i].IsActive == true ? 'Sử dụng' : 'Không sử dụng',
-                                        Id: respone.data[i].Id
+                                        Code: respone.data[i].manhom_tbh,
+                                        Name: respone.data[i].tennhom_tbh,
+                                        //IsActive: respone.data[i].IsActive == true ? 'Sử dụng' : 'Không sử dụng',
+                                       // Id: respone.data[i].Id
                                     }
                                     dataUser.push(tmp);
                                 }
@@ -110,7 +110,7 @@
                         });
                     }, 50);
                 },
-                rowId: 'Id',
+                rowId: 'Code',
                 select: {
                     info: false
                 },
@@ -118,7 +118,7 @@
                     { "data": "STT", },
                     { "data": "Code" },
                     { "data": "Name" },
-                    { "data": "IsActive" },
+                    //{ "data": "IsActive" },
                 ],
                 dom: "<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -159,12 +159,12 @@
         var seletedRow = dataTableNhomTTDL.rows({ selected: true });
         var count = seletedRow.count();
         if (count > 0) {
-            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Id;
+            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Code;
         } else {
-            $scope.NhomTTDLIdSeleted = 0;
+            $scope.NhomTTDLIdSeleted ="";
         }
 
-        if ($scope.NhomTTDLIdSeleted > 0 && $scope.NhomTTDLIdSeleted != undefined) {
+        if ($scope.NhomTTDLIdSeleted != null && $scope.NhomTTDLIdSeleted != ''  && $scope.NhomTTDLIdSeleted != undefined) {
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
                 templateUrl: '/TestGroup/_Edit',
@@ -190,16 +190,16 @@
         var seletedRow = dataTableNhomTTDL.rows({ selected: true });
         var count = seletedRow.count();
         if (count > 0) {
-            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Id;
+            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Code;
         } else {
-            $scope.NhomTTDLIdSeleted = 0;
+            $scope.NhomTTDLIdSeleted = "";
         }
 
-        if ($scope.NhomTTDLIdSeleted > 0 && $scope.NhomTTDLIdSeleted != undefined) {
+        if ($scope.NhomTTDLIdSeleted != null && $scope.NhomTTDLIdSeleted != '' && $scope.NhomTTDLIdSeleted != undefined) {
 
             var name = $scope.ListData.filter(function (item) {
-                return item.Id === $scope.NhomTTDLIdSeleted;
-            })[0].Name;
+                return item.manhom_tbh === $scope.NhomTTDLIdSeleted;
+            })[0].tennhom_tbh;
 
             $ngConfirm({
                 title: 'Thông báo',
@@ -213,7 +213,7 @@
                             $.ajax({
                                 type: 'post',
                                 url: '/TestGroup/Delete',
-                                data: { Id: $scope.NhomTTDLIdSeleted },
+                                data: { maNhom: $scope.NhomTTDLIdSeleted },
                                 success: function (data) {
                                     if (data.Error) {
                                         toastr.error(data.Title);
@@ -299,7 +299,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         $.ajax({
             type: 'post',
             url: '/TestGroup/GetItemByID',
-            data: { Id: itemId },
+            data: { maNhom: itemId },
             success: function (data) {
                 if (data.Error) {
                     toastr.error(data.Title);

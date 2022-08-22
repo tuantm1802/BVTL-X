@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.ModelExtend
 {
-    public class UserPageModel : Model.User
+    public class UserPageModel : BVTL_QT_NGUOI_DUNG
     {
         public string UNIT_NAME { get; set; }
         public string ROLE_DESC { get; set; }
@@ -55,7 +55,7 @@ namespace Model.ModelExtend
             }
         }
 
-        public List<TestGroup> TestGroups { get; set; }
+        public List<BVTL_NHOM_TBH> TestGroups { get; set; }
 
     }
 }

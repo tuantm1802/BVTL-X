@@ -91,3 +91,7 @@ D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.csproj.CoreCompileInputs.ca
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.dll
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.pdb
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Common.dll.config
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.dll
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.xml
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.xml

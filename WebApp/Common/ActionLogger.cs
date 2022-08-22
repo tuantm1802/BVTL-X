@@ -48,7 +48,7 @@ namespace WebApp.Common
                     DATA = json
                 };
 
-                SysLog log = new SysLog()
+                BVTL_QT_LOG log = new BVTL_QT_LOG()
                 {
                     ControllerName = controllerName,
                     UserName = session.UserName,

@@ -10,18 +10,18 @@ namespace Data.Admin
 {
     public class SysLogDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
         /// <summary>
         /// Lấy danh sách log theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-        public List<SysLog> GetLogByPage(ModelSearch modelSearch)
+        public List<BVTL_QT_LOG> GetLogByPage(ModelSearch modelSearch)
         {
             if (string.IsNullOrEmpty(modelSearch.KeyWord))
             {
-                var queryResultPage = db.SysLogs
+                var queryResultPage = db.BVTL_QT_LOG
               .Skip(modelSearch.pageSize * modelSearch.currentPage)
               .Take(modelSearch.pageSize);
 
@@ -29,7 +29,7 @@ namespace Data.Admin
             }
             else
             {
-                var queryResultPage = db.SysLogs.Where(x => x.Content.Contains(modelSearch.KeyWord) || x.ControllerName.Contains(modelSearch.KeyWord))
+                var queryResultPage = db.BVTL_QT_LOG.Where(x => x.Content.Contains(modelSearch.KeyWord) || x.ControllerName.Contains(modelSearch.KeyWord))
               .Skip(modelSearch.pageSize * modelSearch.currentPage)
               .Take(modelSearch.pageSize);
 
@@ -37,12 +37,12 @@ namespace Data.Admin
             }
         }
 
-        public ObjectMessage Add(SysLog sysLog)
+        public ObjectMessage Add(BVTL_QT_LOG model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                db.SysLogs.Add(sysLog);
+                db.BVTL_QT_LOG.Add(model);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
@@ -56,16 +56,16 @@ namespace Data.Admin
             }
 
         }
-        public ObjectMessage Edit(SysLog sysLog)
+        public ObjectMessage Edit(BVTL_QT_LOG model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.SysLogs.FirstOrDefault(x => x.ID == sysLog.ID);
-                data.ControllerName = sysLog.ControllerName;
-                data.UserName = sysLog.UserName;
-                data.DateLog = sysLog.DateLog;
-                data.Content = sysLog.Content;
+                var data = db.BVTL_QT_LOG.FirstOrDefault(x => x.ID == model.ID);
+                data.ControllerName = model.ControllerName;
+                data.UserName = model.UserName;
+                data.DateLog = model.DateLog;
+                data.Content = model.Content;
 
                 db.SaveChanges();
                 obj.Error = false;

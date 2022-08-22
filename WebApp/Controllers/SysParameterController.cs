@@ -12,7 +12,7 @@ namespace WebApp.Controllers
 {
     public class SysParameterController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         SysParameterDA _sysParameterDA = new SysParameterDA();
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -87,7 +87,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "SysParameter",
                         UserName = user.UserName,
@@ -103,7 +103,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.SysParameters.Select(x => new
+                var data = db.BVTL_QT_THAM_SO.Select(x => new
                 {
                     x.ID,
                     x.ParamValue,
@@ -122,7 +122,7 @@ namespace WebApp.Controllers
             }
         }
         [HttpPost]
-        public object Add(SysParameter sysParameter)
+        public object Add(BVTL_QT_THAM_SO sysParameter)
         {
             ObjectMessage obj = new ObjectMessage
             {
@@ -147,7 +147,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object Edit(SysParameter sysParameter)
+        public object Edit(BVTL_QT_THAM_SO sysParameter)
         {
             ObjectMessage obj = new ObjectMessage
             {

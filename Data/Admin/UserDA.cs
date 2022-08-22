@@ -17,10 +17,10 @@ namespace Data.Admin
     public class UserDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         public int Login(string userName, string password)
         {
-            var result = db.Users.FirstOrDefault(x => x.UserName == userName);
+            var result = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
             if (result == null)
                 return 0;
             else
@@ -36,31 +36,31 @@ namespace Data.Admin
                 }
             }
         }
-        public User GetItemByUserName(string userName)
+        public BVTL_QT_NGUOI_DUNG GetItemByUserName(string userName)
         {
-            return db.Users.FirstOrDefault(x => x.UserName == userName);
+            return db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
         }
         public UserPageModel GetItemById(int Id)
         {
             var result = new UserPageModel();
 
-            var user = db.Users.FirstOrDefault(x => x.ID == Id);
-            result.ID = user.ID;
-            result.Name = user.Name;
-            result.Phone = user.Phone;
-            result.Status = user.Status;
-            result.UserName = user.UserName;
-            result.GroupID = user.GroupID;
-            result.RoleName = db.Roles.FirstOrDefault(x=>x.ID == user.GroupID).Name;
-            result.Address = user.Address;
-            result.Avartar = user.Avartar;
-            result.Email = user.Email;
-            result.CreatedDate = user.CreatedDate;
+            var BVTL_QT_NGUOI_DUNG = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
+            result.ID = BVTL_QT_NGUOI_DUNG.ID;
+            result.Name = BVTL_QT_NGUOI_DUNG.Name;
+            result.Phone = BVTL_QT_NGUOI_DUNG.Phone;
+            result.Status = BVTL_QT_NGUOI_DUNG.Status;
+            result.UserName = BVTL_QT_NGUOI_DUNG.UserName;
+            result.GroupID = BVTL_QT_NGUOI_DUNG.GroupID;
+            result.RoleName = db.BVTL_QT_QUYEN.FirstOrDefault(x=>x.ID == BVTL_QT_NGUOI_DUNG.GroupID).Name;
+            result.Address = BVTL_QT_NGUOI_DUNG.Address;
+            result.Avartar = BVTL_QT_NGUOI_DUNG.Avartar;
+            result.Email = BVTL_QT_NGUOI_DUNG.Email;
+            result.CreatedDate = BVTL_QT_NGUOI_DUNG.CreatedDate;
 
             // Lấy danh sách nhóm thu thập dữ liệu
-            result.TestGroups = (from tg in db.TestGroups
-                                 join utg in db.User_TestGroup on tg.Id equals utg.TestGroupId
-                                 where utg.UserId == Id
+            result.TestGroups = (from tg in db.BVTL_NHOM_TBH
+                                 join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa
+                                 where utg.NguoiDungId == Id
                                  select tg).ToList();
 
             return result;
@@ -68,9 +68,9 @@ namespace Data.Admin
 
         public List<string> GetListCredentials(string userName)
         {
-            var query = from pm in db.PageMenus
-                        join rp in db.RolePages on pm.ID equals rp.PageID
-                        join u in db.Users on rp.RoleID equals u.GroupID
+            var query = from pm in db.BVTL_QT_PAGE_MENU
+                        join rp in db.BVTL_QT_QUYEN_PAGE on pm.ID equals rp.PageID
+                        join u in db.BVTL_QT_NGUOI_DUNG on rp.RoleID equals u.GroupID
                         where u.UserName == userName && !string.IsNullOrEmpty(pm.CONTROLLER_NAME)
                         select new
                         {
@@ -80,28 +80,28 @@ namespace Data.Admin
             return query.Select(x => x.ID).ToList();
         }
 
-        public ObjectMessage Add(User user, List<int> testGroupId)
+        public ObjectMessage Add(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs)
         {
             ObjectMessage obj = new ObjectMessage();
 
-            using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
+            using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
                     try
                     {
                         // Thêm người dùng
-                        user.Password = Encryptor.MD5Hash("123456789a@");
-                        user.IsActive = true;
-                        context.Users.Add(user);
+                        model.Password = Encryptor.MD5Hash("123456789a@");
+                        model.IsActive = true;
+                        context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
 
                         // Thêm người dùng vào nhóm
-                        if (user.ID > 0 && testGroupId.Count > 0)
+                        if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-                            for (int i = 0; i < testGroupId.Count; i++)
+                            for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
-                                context.User_TestGroup.Add(new User_TestGroup { UserId = (int)user.ID, TestGroupId = testGroupId[i], Is_Active = true });
+                                context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
                             }
                             context.SaveChanges();
                         }
@@ -121,55 +121,55 @@ namespace Data.Admin
             }
             return obj;
         }
-        public ObjectMessage Edit(User user, List<int> testGroupId)
+        public ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs)
         {
             ObjectMessage obj = new ObjectMessage();
-            using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
+            using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
                 {
                     try
                     {
-                        var data = context.Users.FirstOrDefault(x => x.ID == user.ID);
-                        data.UserName = user.UserName;
-                        data.Address = user.Address;
-                        data.Name = user.Name;
-                        data.Email = user.Email;
-                        data.Phone = user.Phone;
-                        data.Avartar = user.Avartar;
-                        data.Status = user.Status;
-                        data.DateOfBirth = user.DateOfBirth;
-                        data.Gender = user.Gender;
-                        data.IdNumber = user.IdNumber;
-                        data.Possition = user.Possition;
-                        data.GroupID = user.GroupID;
+                        var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == model.ID);
+                        data.UserName = model.UserName;
+                        data.Address = model.Address;
+                        data.Name = model.Name;
+                        data.Email = model.Email;
+                        data.Phone = model.Phone;
+                        data.Avartar = model.Avartar;
+                        data.Status = model.Status;
+                        data.DateOfBirth = model.DateOfBirth;
+                        data.Gender = model.Gender;
+                        data.IdNumber = model.IdNumber;
+                        data.Possition = model.Possition;
+                        data.GroupID = model.GroupID;
                         context.SaveChanges();
 
-                        if (user.ID > 0 && testGroupId.Count > 0)
+                        if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-                            var allTestGroup = context.User_TestGroup.Where(x => x.UserId == (int)user.ID).ToList();
+                            var allTestGroup = context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == (int)model.ID).ToList();
                             if (allTestGroup != null && allTestGroup.Count > 0)
                             {
                                 for (int i = 0; i < allTestGroup.Count; i++)
                                 {
-                                    allTestGroup[i].Is_Active = false;
+                                    allTestGroup[i].IsActive = false;
 
                                 }
                                 context.SaveChanges();
                             }
                             var check = 0;
-                            var checkTGs = new List<User_TestGroup>();
-                            for (int i = 0; i < testGroupId.Count; i++)
+                            var checkTGs = new List<BVTL_QT_NGUOI_DUNG_NHOM_TBH>();
+                            for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
-                                check = allTestGroup.Where(x => x.UserId == user.ID && x.TestGroupId == testGroupId[i]).Count();
+                                check = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).Count();
                                 if (check == 0)
-                                    context.User_TestGroup.Add(new User_TestGroup { UserId = (int)user.ID, TestGroupId = testGroupId[i], Is_Active = true });
+                                    context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
                                 else
                                 {
-                                    checkTGs = allTestGroup.Where(x => x.UserId == user.ID && x.TestGroupId == testGroupId[i]).ToList();
+                                    checkTGs = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).ToList();
                                     for (int j = 0; j < checkTGs.Count; j++)
                                     {
-                                        checkTGs[j].Is_Active = false;
+                                        checkTGs[j].IsActive = false;
                                     }
                                 }
                             }
@@ -192,12 +192,12 @@ namespace Data.Admin
             return obj;
         }
 
-        public ObjectMessage ChangePassword(long userId, string passwordOd, string passwordNew)
+        public ObjectMessage ChangePassword(long nguoiDungId, string passwordOd, string passwordNew)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.Users.FirstOrDefault(x => x.ID == userId);
+                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
                 var passwordOldb = data.Password;
                 string passwordOd1 = Encryptor.MD5Hash(passwordOd);
                 if (passwordOldb != passwordOd1)
@@ -229,7 +229,7 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.Users.FirstOrDefault(x => x.ID == Id);
+                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
                 data.IsActive = false;
                 db.SaveChanges();
                 obj.Error = false;
@@ -246,18 +246,18 @@ namespace Data.Admin
         }
 
         /// <summary>
-        /// Kiểm tra xem user có bị khóa không
+        /// Kiểm tra xem BVTL_QT_NGUOI_DUNG có bị khóa không
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="nguoiDungId"></param>
         /// <returns></returns>
-        public bool CheckLock(int userId)
+        public bool CheckLock(int nguoiDungId)
         {
             var result = false;
 
-            using (var context = new BaoCaoBVTLEntities())
+            using (var context = new BVTL_REPORTINGEntities())
             {
 
-                var resultPro = context.Users.Where(x => x.IsActive == false).ToList();
+                var resultPro = context.BVTL_QT_NGUOI_DUNG.Where(x => x.IsActive == false).ToList();
                 if (resultPro != null && resultPro.Count > 0)
                     result = true;
                 else

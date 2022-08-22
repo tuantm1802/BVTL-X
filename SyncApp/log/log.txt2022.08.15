@@ -1,0 +1,493 @@
+﻿2022-08-15 21:12:43,652 ERROR Quartz.Core.JobRunShell - Job DEFAULT.5c8acad8-cec5-4473-8ba4-6fe5533a1767 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:12:43,720 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.5c8acad8-cec5-4473-8ba4-6fe5533a1767 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:13:00,039 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:13:00,040 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:14:00,058 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:14:00,058 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:15:00,041 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:15:00,041 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:16:00,033 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:16:00,034 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:17:00,033 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:17:00,033 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:18:00,029 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:18:00,029 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:19:00,035 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:19:00,035 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:20:00,025 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:20:00,025 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:21:00,040 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:21:00,040 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:22:00,034 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:22:00,034 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:23:00,023 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:23:00,023 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:24:00,039 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:24:00,040 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:25:00,026 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:25:00,026 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:26:00,038 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:26:00,038 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:27:00,023 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:27:00,024 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-15 21:28:00,040 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-15 21:28:00,040 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ad7cda50-f3a4-4bff-a076-5c7c0edc9cd5 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220815.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code_full\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]

@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Model.ModelExtend
 {
-    public class CustomerPageModel : Customer
+    public class CustomerPageModel : BVTL_KHACH_HANG
     {
         public int TotalRow { get; set; }
         public string CityName { get; set; }
-        public string GenderText { get; set; }
-        public string DateOfBirthText { get; set; }
+        public string GioiTinhText { get; set; }
+        public string LoaiDoiTuong { get; set; }
+        public string ngaytiepcantext { get; set; }
     }
 }

@@ -80,3 +80,4 @@ D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.dll
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.pdb
+D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Common.dll.config

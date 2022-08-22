@@ -17,7 +17,7 @@ namespace WebApp.Controllers
         SysLogDA _sysLogDA = new SysLogDA();
         SysParameterDA _sysParameterDA = new SysParameterDA();
         PageMenuDA _pageMenuDA = new PageMenuDA();
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         // GET: Login
         public ActionResult Index()
         {
@@ -112,7 +112,7 @@ namespace WebApp.Controllers
         private void AddLog(string content)
         {
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "Login",
                         UserName = "",
@@ -127,7 +127,7 @@ namespace WebApp.Controllers
             var user = Session["USER_SESSION"] as UserLogin;
             AddLog("Đăng xuất( UserName: " + user.UserName + ") thành công.");
             Session["USER_SESSION"] = null;
-            return Redirect("/Login/Login");
+            return Redirect("/Login/Index");
         }
     }
 }

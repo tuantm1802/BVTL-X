@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.ModelExtend
 {
-    public class PageMenuModel: PageMenu
+    public class PageMenuModel: BVTL_QT_PAGE_MENU
     {
         public string APP_CODE_TEXT { get; set; }
         public string PARENT_NAME { get; set; }

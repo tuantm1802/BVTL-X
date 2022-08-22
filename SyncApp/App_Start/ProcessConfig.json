@@ -1,0 +1,8 @@
+[
+  {
+    "Code": "GetDataFromAPI",
+    "Name": "Nhận dữ liệu từ API",
+    "TimeLoop": 60,
+    "Active": true
+  }
+]

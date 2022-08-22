@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.ModelExtend
 {
-    public class RolePageModel: Role
+    public class RolePageModel: BVTL_QT_QUYEN
     {
         public int TotalRow { get; set; }
         public string UNIT_NAME { get; set; }

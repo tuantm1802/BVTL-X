@@ -12,13 +12,13 @@ namespace Data.Admin
 {
     public class SysParameterDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public SysParameter GetItemByCode(string code)
+        public BVTL_QT_THAM_SO GetItemByCode(string code)
         {
-            return db.SysParameters.FirstOrDefault(x => x.ParamCode == code);
+            return db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == code);
         }
 
         public List<SysParameterPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)
@@ -27,11 +27,11 @@ namespace Data.Admin
             pageSize = 10;
             try
             {
-                var param = db.SysParameters.FirstOrDefault(x => x.ParamCode == "PageSize");
+                var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
                 if (param != null)
                     pageSize = Convert.ToInt32(param.ParamValue);
 
-                var sqlString = "SELECT *, count(ID) over() as TotalRow FROM [SysParameters] WHERE IsActive =1";
+                var sqlString = "SELECT *, count(ID) over() as TotalRow FROM [BVTL_QT_THAM_SO] WHERE IsActive =1";
                 if (!string.IsNullOrEmpty(modelSearch.KeyWord))
                 {
                     sqlString += " AND (ParamCode LIKE N'%" + modelSearch.KeyWord + "%' OR Desctiption LIKE N'%" + modelSearch.KeyWord + "%')";
@@ -43,32 +43,32 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                var log = new SysLog
+                var log = new BVTL_QT_LOG
                 {
-                    ControllerName = "SysParameterDA",
+                    ControllerName = "BVTL_QT_THAM_SODA",
                     UserName = "",
                     DateLog = DateTime.Now,
                     Content = "Lấy danh sách tham số theo trang lỗi:" + ex.Message
                 };
-                db.SysLogs.Add(log);
+                db.BVTL_QT_LOG.Add(log);
                 result = new List<SysParameterPageModel>();
             }
             return result;
         }
 
-        public List<SysParameter> GetAll()
+        public List<BVTL_QT_THAM_SO> GetAll()
         {
-            return db.SysParameters.ToList();
+            return db.BVTL_QT_THAM_SO.ToList();
         }
 
 
-        public ObjectMessage Add(SysParameter sysParameter)
+        public ObjectMessage Add(BVTL_QT_THAM_SO model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                sysParameter.IsActive = true;
-                db.SysParameters.Add(sysParameter);
+                model.IsActive = true;
+                db.BVTL_QT_THAM_SO.Add(model);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
@@ -82,20 +82,20 @@ namespace Data.Admin
             }
 
         }
-        public ObjectMessage Edit(SysParameter sysParameter)
+        public ObjectMessage Edit(BVTL_QT_THAM_SO model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
+                using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
                 {
                     using (var dbContextTransaction = context.Database.BeginTransaction())
                     {
 
-                        var data = context.SysParameters.FirstOrDefault(x => x.ID == sysParameter.ID);
-                        data.ParamCode = sysParameter.ParamCode;
-                        data.ParamValue = sysParameter.ParamValue;
-                        data.Desctiption = sysParameter.Desctiption;
+                        var data = context.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ID == model.ID);
+                        data.ParamCode = model.ParamCode;
+                        data.ParamValue = model.ParamValue;
+                        data.Desctiption = model.Desctiption;
 
                         context.SaveChanges();
                         dbContextTransaction.Commit();
@@ -122,8 +122,8 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var itemDelete = db.SysParameters.Find(Id);
-                db.SysParameters.Remove(itemDelete);
+                var itemDelete = db.BVTL_QT_THAM_SO.Find(Id);
+                db.BVTL_QT_THAM_SO.Remove(itemDelete);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Xóa thành công!";

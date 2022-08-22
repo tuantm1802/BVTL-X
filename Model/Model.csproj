@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModelExtend\API\ApiResult.cs" />
+    <Compile Include="ModelExtend\API\TableNameModel.cs" />
+    <Compile Include="ModelExtend\BaseResult.cs" />
+    <Compile Include="ModelExtend\API\ResultApi1344Model.cs" />
     <Compile Include="ModelExtend\AuditModel.cs" />
     <Compile Include="ModelExtend\MenuModel.cs" />
     <Compile Include="ModelExtend\PageMenuModel.cs" />
@@ -63,130 +66,97 @@
     <Compile Include="ModelExtend\UserPageModel.cs" />
     <Compile Include="ModelExtend\User\MY_PROFILE_Model.cs" />
     <Compile Include="ModelExtend\User\ViewProfile.cs" />
-    <Compile Include="Model\ACETest.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Api_TableSaveData.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\AssistTest.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\BaoCaoBVTL.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BaoCaoBVTL.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\BaoCaoBVTL.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\BaoCaoBVTL.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BaoCaoBVTL.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Model\BVTL_API.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_3TH.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_TX3TH.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_CITES.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_DUONG_SU_DUNG.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KHACH_HANG.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KQ_SL_ACE.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KQ_SL_ASSIST.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KQ_SL_SKTT.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KQ_XN_HIV.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_LOAI_DOI_TUONG.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_MASTER_TABLE.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_NHOM_TBH.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_LOG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_NGUOI_DUNG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_NGUOI_DUNG_NHOM_TBH.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_PAGE_ACTION.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_PAGE_MENU.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_QUYEN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_QUYEN_PAGE.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_QT_THAM_SO.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_REPORTING.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BVTL_REPORTING.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_REPORTING.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_REPORTING.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_TAN_SUAT_SU_DUNG.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\City.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Customer.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\DeliveryService.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\HTVTest.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\PageAction.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\PageMenu.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\ProvideReductionItem.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Role.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\RolePage.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\SKTTTest.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\SocialSupport.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\SysLog.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\SysParameter.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\TestGroup.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\UrineTest.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\User.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\User_TestGroup.cs">
-      <DependentUpon>BaoCaoBVTL.tt</DependentUpon>
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <EntityDeploy Include="Model\BaoCaoBVTL.edmx">
+    <EntityDeploy Include="Model\BVTL_REPORTING.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>BaoCaoBVTL.Designer.cs</LastGenOutput>
+      <LastGenOutput>BVTL_REPORTING.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Model\BaoCaoBVTL.edmx.diagram">
-      <DependentUpon>BaoCaoBVTL.edmx</DependentUpon>
+    <None Include="Model\BVTL_REPORTING.edmx.diagram">
+      <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -205,15 +175,15 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Model\BaoCaoBVTL.Context.tt">
+    <Content Include="Model\BVTL_REPORTING.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BaoCaoBVTL.edmx</DependentUpon>
-      <LastGenOutput>BaoCaoBVTL.Context.cs</LastGenOutput>
+      <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
+      <LastGenOutput>BVTL_REPORTING.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Model\BaoCaoBVTL.tt">
+    <Content Include="Model\BVTL_REPORTING.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BaoCaoBVTL.edmx</DependentUpon>
-      <LastGenOutput>BaoCaoBVTL.cs</LastGenOutput>
+      <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
+      <LastGenOutput>BVTL_REPORTING.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

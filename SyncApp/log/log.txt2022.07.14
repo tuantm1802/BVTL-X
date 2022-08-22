@@ -1,0 +1,75 @@
+﻿2022-07-14 23:28:55,427 ERROR SyncBVTL.Core.Helper.ApiBase - Failed: A task was canceled.
+    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at SyncBVTL.Core.Helper.ApiBase.<PostJsonAsync>d__3.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Core\Helper\ApiBase.cs:line 65 
+2022-07-14 23:28:55,508 ERROR Quartz.Core.JobRunShell - Job DEFAULT.8fe54f52-dc3c-42e1-8475-0bbbc0daa865 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-07-14 23:28:55,519 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.8fe54f52-dc3c-42e1-8475-0bbbc0daa865 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-07-14 23:29:00,020 ERROR Quartz.Core.JobRunShell - Job DEFAULT.bc806aaa-83ad-4713-a6a2-94f21b55ae38 threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-07-14 23:29:00,049 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.bc806aaa-83ad-4713-a6a2-94f21b55ae38 threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\TrangThaiKetNoi_20220714.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.CheckConnectAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\CheckConnectAPIJob.cs:line 39
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]

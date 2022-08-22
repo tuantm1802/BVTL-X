@@ -12,18 +12,18 @@ namespace Data.Admin
 {
     public class RoleDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public Role GetItemByRoleName(string name)
+        public BVTL_QT_QUYEN GetItemByBVTL_QT_QUYENName(string name)
         {
-            return db.Roles.FirstOrDefault(x => x.Name == name);
+            return db.BVTL_QT_QUYEN.FirstOrDefault(x => x.Name == name);
         }
 
-        public List<Role> GetAll(int page)
+        public List<BVTL_QT_QUYEN> GetAll(int page)
         {
-            return db.Roles.ToList();
+            return db.BVTL_QT_QUYEN.ToList();
         }
 
         public List<RolePageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)
@@ -33,11 +33,11 @@ namespace Data.Admin
 
             try
             {
-                var param = db.SysParameters.FirstOrDefault(x => x.ParamCode == "PageSize");
+                var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
                 if (param != null)
                     pageSize = Convert.ToInt32(param.ParamValue);
 
-                var sqlString = "SELECT *, count(ID) over() as TotalRow FROM [Role] WHERE IsActive =1";
+                var sqlString = "SELECT *, count(ID) over() as TotalRow FROM [BVTL_QT_QUYEN] WHERE IsActive =1";
                 if (!string.IsNullOrEmpty(modelSearch.KeyWord))
                 {
                     sqlString += " AND (Name LIKE N'%" + modelSearch.KeyWord + "%' OR Descripttion LIKE N'%" + modelSearch.KeyWord + "%')";
@@ -49,30 +49,30 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                var log = new SysLog
+                var log = new BVTL_QT_LOG
                 {
-                    ControllerName = "RoleDA",
+                    ControllerName = "BVTL_QT_QUYENDA",
                     UserName = "",
                     DateLog = DateTime.Now,
                     Content = "Lấy danh sách quyền theo trang lỗi:" + ex.Message
                 };
-                db.SysLogs.Add(log);
+                db.BVTL_QT_LOG.Add(log);
                 result = new List<RolePageModel>();
             }
 
             return result;
         }
 
-        public ObjectMessage Add(Role role, List<TreeModel> pageMenus)
+        public ObjectMessage Add(BVTL_QT_QUYEN model, List<TreeModel> pageMenus)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                role.IsActive = true;
-                db.Roles.Add(role);
-                var roleID = role.ID;
+                model.IsActive = true;
+                db.BVTL_QT_QUYEN.Add(model);
+                var RoleId = model.ID;
                 // Thêm quyền sử dụng page
-                if (!string.IsNullOrEmpty(roleID))
+                if (!string.IsNullOrEmpty(RoleId))
                 {
                     var pageSelect = pageMenus.Where(x => x.@checked && x.id.IndexOf("/") <= 0).ToList();
                     if (pageSelect != null && pageSelect.Count > 0)
@@ -86,9 +86,9 @@ namespace Data.Admin
                             {
                                 action = string.Join("|", actions.Select(x => x.name_control));
                             }
-                            db.RolePages.Add(new RolePage
+                            db.BVTL_QT_QUYEN_PAGE.Add(new BVTL_QT_QUYEN_PAGE
                             {
-                                RoleID = roleID,
+                                RoleID = RoleId,
                                 CONTROL_STRING = action,
                                 PageID = Convert.ToInt32(pageID),
                                 IS_ACTIVE = true
@@ -115,26 +115,26 @@ namespace Data.Admin
             }
 
         }
-        public ObjectMessage Edit(Role role, List<TreeModel> pageMenus)
+        public ObjectMessage Edit(BVTL_QT_QUYEN model, List<TreeModel> pageMenus)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.Roles.FirstOrDefault(x => x.ID == role.ID);
-                data.Name = role.Name;
-                data.Descripttion = role.Descripttion;
+                var data = db.BVTL_QT_QUYEN.FirstOrDefault(x => x.ID == model.ID);
+                data.Name = model.Name;
+                data.Descripttion = model.Descripttion;
 
-                var roleID = role.ID;
+                var RoleId = model.ID;
                 // Thêm quyền sử dụng page
-                if (!string.IsNullOrEmpty(roleID))
+                if (!string.IsNullOrEmpty(RoleId))
                 {
-                    // Xóa rolepage cũ
-                    var itemDelete = db.RolePages.Where(x => x.RoleID == roleID).ToList();
+                    // Xóa BVTL_QT_QUYENpage cũ
+                    var itemDelete = db.BVTL_QT_QUYEN_PAGE.Where(x => x.RoleID == RoleId).ToList();
                     if (itemDelete != null && itemDelete.Count > 0)
                     {
                         for (int i = 0; i < itemDelete.Count; i++)
                         {
-                            db.RolePages.Remove(itemDelete[i]);
+                            db.BVTL_QT_QUYEN_PAGE.Remove(itemDelete[i]);
                         }
                     }
 
@@ -150,9 +150,9 @@ namespace Data.Admin
                             {
                                 action = string.Join("|", actions.Select(x => x.name_control));
                             }
-                            db.RolePages.Add(new RolePage
+                            db.BVTL_QT_QUYEN_PAGE.Add(new BVTL_QT_QUYEN_PAGE
                             {
-                                RoleID = roleID,
+                                RoleID = RoleId,
                                 CONTROL_STRING = action,
                                 PageID = Convert.ToInt32(pageID),
                                 IS_ACTIVE = true
@@ -184,17 +184,17 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var RolePage = db.RolePages.Where(x => x.RoleID == Id).ToList();
-                if (RolePage != null && RolePage.Count > 0)
+                var BVTL_QT_QUYENPage = db.BVTL_QT_QUYEN_PAGE.Where(x => x.RoleID == Id).ToList();
+                if (BVTL_QT_QUYENPage != null && BVTL_QT_QUYENPage.Count > 0)
                 {
-                    for (int i = 0; i < RolePage.Count; i++)
+                    for (int i = 0; i < BVTL_QT_QUYENPage.Count; i++)
                     {
-                        db.RolePages.Remove(RolePage[i]);
+                        db.BVTL_QT_QUYEN_PAGE.Remove(BVTL_QT_QUYENPage[i]);
                     }
 
                 }
-                var itemDelete = db.Roles.Find(Id);
-                db.Roles.Remove(itemDelete);
+                var itemDelete = db.BVTL_QT_QUYEN.Find(Id);
+                db.BVTL_QT_QUYEN.Remove(itemDelete);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Xóa thành công!";

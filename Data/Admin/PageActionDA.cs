@@ -12,20 +12,20 @@ namespace Data.Admin
 {
     public class PageActionDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public PageAction GetItemByPage(int pageId)
+        public BVTL_QT_PAGE_ACTION GetItemByPage(int pageId)
         {
-            return db.PageActions.FirstOrDefault(x => x.PAGE_ID == pageId);
+            return db.BVTL_QT_PAGE_ACTION.FirstOrDefault(x => x.PAGE_ID == pageId);
         }
 
-        public List<PageAction> GetAllByPage(int page)
+        public List<BVTL_QT_PAGE_ACTION> GetAllByPage(int page)
         {
             var pageSize = 10;
-            var param = db.SysParameters.FirstOrDefault(x => x.ParamCode == "PageSize");
+            var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
             if (param != null)
                 pageSize = Convert.ToInt32(param.ParamValue);
-            return db.PageActions.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            return db.BVTL_QT_PAGE_ACTION.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
         }
 
         /// <summary>
@@ -33,43 +33,43 @@ namespace Data.Admin
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        public List<PageAction> GetAllByPageMenu(int page)
+        public List<BVTL_QT_PAGE_ACTION> GetAllByPageMenu(int page)
         {
-            return db.PageActions.Where(x=>x.PAGE_ID == page).ToList();
+            return db.BVTL_QT_PAGE_ACTION.Where(x=>x.PAGE_ID == page).ToList();
         }
 
-        public List<PageAction> GetAll()
+        public List<BVTL_QT_PAGE_ACTION> GetAll()
         {
-            return db.PageActions.ToList();
+            return db.BVTL_QT_PAGE_ACTION.ToList();
         }
 
-        public ObjectMessage Add(PageAction pageAction)
+        public ObjectMessage Add(BVTL_QT_PAGE_ACTION model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                db.PageActions.Add(pageAction);
+                db.BVTL_QT_PAGE_ACTION.Add(model);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
                 return obj;
             }catch(Exception ex)
             {
-                log.Error("PageActionDA - Thêm action cho 1 trang(" + pageAction.CONTROL_NAME + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_ACTIONDA - Thêm action cho 1 trang(" + model.CONTROL_NAME + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
             }
 
         }
-        public ObjectMessage Edit(PageAction pageAction)
+        public ObjectMessage Edit(BVTL_QT_PAGE_ACTION model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.PageActions.FirstOrDefault(x => x.PAGE_ID == pageAction.PAGE_ID);
-                data.CONTROL_NAME = pageAction.CONTROL_NAME;
-                data.CONTROL_DESC = pageAction.CONTROL_DESC;
+                var data = db.BVTL_QT_PAGE_ACTION.FirstOrDefault(x => x.PAGE_ID == model.PAGE_ID);
+                data.CONTROL_NAME = model.CONTROL_NAME;
+                data.CONTROL_DESC = model.CONTROL_DESC;
 
                 db.SaveChanges();
                 obj.Error = false;
@@ -78,7 +78,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageActionDA - Sửa action cho 1 trang(" + pageAction.CONTROL_NAME + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_ACTIONDA - Sửa action cho 1 trang(" + model.CONTROL_NAME + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
@@ -90,8 +90,8 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var itemDelete = db.PageActions.Find(Id);
-                db.PageActions.Remove(itemDelete);
+                var itemDelete = db.BVTL_QT_PAGE_ACTION.Find(Id);
+                db.BVTL_QT_PAGE_ACTION.Remove(itemDelete);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Xóa thành công!";
@@ -99,7 +99,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageActionDA - Xóa action cho 1 trang(" + Id + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_ACTIONDA - Xóa action cho 1 trang(" + Id + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;

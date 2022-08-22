@@ -12,13 +12,13 @@ namespace Data.Admin
 {
     public class CustomerDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public Customer GetItemByCode(string code)
+        public BVTL_KHACH_HANG GetItemByCode(string code)
         {
-            return db.Customers.FirstOrDefault(x => x.Code == code);
+            return db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == code);
         }
 
         public List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)
@@ -27,19 +27,21 @@ namespace Data.Admin
             pageSize = 10;
             try
             {
-                var param = db.SysParameters.FirstOrDefault(x => x.ParamCode == "PageSize");
+                var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
                 if (param != null)
                     pageSize = Convert.ToInt32(param.ParamValue);
 
-                var sqlString = "SELECT c.*, c.Name as CityName, " +
-                    "(case when c.Gender  = 'M' then N'Nam' when c.Gender  = 'F' then N'Nữ'  else '' end) as GenderText, " +
-                     "(case when c.DateOfBirth  is not null then convert(varchar,CONVERT(date, c.DateOfBirth,112), 103)  else '' end) as DateOfBirthText, " +
-                    "count(c.Id) over() as TotalRow FROM [Customer] c" +
-                    " inner join Cities ci on ci.Id = c.CityId" +
+                var sqlString = "SELECT c.*, ci.Name as CityName, " +
+                    "(case when c.gioitinh  = 'M' then N'Nam' when c.gioitinh  = 'F' then N'Nữ'  else '' end) as GioiTinhText, " +
+                     "dt.name as LoaiDoiTuong, " +
+                     "(case when c.ngaytiepcan is not null then CONVERT(varchar, c.ngaytiepcan, 103) else '' end) as ngaytiepcantext, " +
+                    "count(c.khachhang_id) over() as TotalRow FROM [BVTL_KHACH_HANG] c" +
+                    " inner join BVTL_CITES ci on ci.Code = c.city_code" +
+                    " inner join BVTL_LOAI_DOI_TUONG dt on dt.id = c.loai_doi_tuong_id" +
                     " WHERE 1 =1";
                 if (!string.IsNullOrEmpty(modelSearch.KeyWord))
                 {
-                    sqlString += " AND (c.Code LIKE N'%" + modelSearch.KeyWord + "%' OR c.FullName LIKE N'%" + modelSearch.KeyWord + "%')";
+                    sqlString += " AND (c.makh LIKE N'%" + modelSearch.KeyWord + "%' OR c.hoten LIKE N'%" + modelSearch.KeyWord + "%')";
                 }
                 if (!string.IsNullOrEmpty(modelSearch.SortColumn))
                     sqlString += " ORDER BY " + modelSearch.SortColumn;
@@ -48,31 +50,31 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                var log = new SysLog
+                var log = new BVTL_QT_LOG
                 {
                     ControllerName = "CustomerDA",
                     UserName = "",
                     DateLog = DateTime.Now,
                     Content = "Lấy danh sách khách hàng theo trang lỗi:" + ex.Message
                 };
-                db.SysLogs.Add(log);
+                db.BVTL_QT_LOG.Add(log);
                 result = new List<CustomerPageModel>();
             }
             return result;
         }
 
-        public List<Customer> GetAll()
+        public List<BVTL_KHACH_HANG> GetAll()
         {
-            return db.Customers.ToList();
+            return db.BVTL_KHACH_HANG.ToList();
         }
 
 
-        public ObjectMessage Add(Customer Customer)
+        public ObjectMessage Add(BVTL_KHACH_HANG Customer)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                db.Customers.Add(Customer);
+                db.BVTL_KHACH_HANG.Add(Customer);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
@@ -86,52 +88,14 @@ namespace Data.Admin
             }
 
         }
-        public ObjectMessage Edit(Customer Customer)
-        {
-            ObjectMessage obj = new ObjectMessage();
-            try
-            {
-                using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
-                {
-                    using (var dbContextTransaction = context.Database.BeginTransaction())
-                    {
-
-                        var data = context.Customers.FirstOrDefault(x => x.Id == Customer.Id);
-                        data.Code = Customer.Code;
-                        data.FullName = Customer.FullName;
-                        data.Gender = Customer.Gender;
-                        data.DateOfBirth = Customer.DateOfBirth;
-                        data.CityId = Customer.CityId;
-                        data.TypeObject = Customer.TypeObject;
-                        data.Code_TCV = Customer.Code_TCV;
-
-                        context.SaveChanges();
-                        dbContextTransaction.Commit();
-                        obj.Error = false;
-                        obj.Title = "Cập nhật thành công!";
-
-                    }
-                }
-
-                obj.Error = false;
-                obj.Title = "Cập nhật thành công!";
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                obj.Error = true;
-                obj.Title = ex.Message;
-                return obj;
-            }
-
-        }
+        
         public ObjectMessage Delete(int Id)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var itemDelete = db.Customers.Find(Id);
-                db.Customers.Remove(itemDelete);
+                var itemDelete = db.BVTL_KHACH_HANG.Find(Id);
+                db.BVTL_KHACH_HANG.Remove(itemDelete);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Xóa thành công!";

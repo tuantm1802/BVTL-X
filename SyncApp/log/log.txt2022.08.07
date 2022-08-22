@@ -1,0 +1,36 @@
+﻿2022-08-07 15:29:45,562 ERROR SyncBVTL.Core.Helper.DatabaseSql - ERROR: Invalid object name 'SKTTTest'. 
+2022-08-07 15:30:06,129 ERROR SyncBVTL.Core.Helper.DatabaseSql - ERROR: ExecuteNonQuery requires the command to have a transaction when the connection assigned to the command is in a pending local transaction.  The Transaction property of the command has not been initialized. 
+2022-08-07 15:32:38,034 ERROR SyncBVTL.Core.Helper.DatabaseSql - ERROR: ExecuteNonQuery requires the command to have a transaction when the connection assigned to the command is in a pending local transaction.  The Transaction property of the command has not been initialized. 
+2022-08-07 15:32:57,956 ERROR SyncBVTL.Core.Data.InsertDataDA - InsertDataDA - Thêm SKTTTest: Cannot insert the value NULL into column 'UserId', table 'BaoCaoBVTL.dbo.SKTTTest'; column does not allow nulls. INSERT fails.
+The statement has been terminated. 
+2022-08-07 15:32:57,983 ERROR Quartz.Core.JobRunShell - Job DEFAULT.ce422e54-9389-4c00-96a2-5c80567184ca threw an unhandled Exception:  
+System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220807.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+2022-08-07 15:32:58,008 ERROR Quartz.Core.ErrorLogger - Job DEFAULT.ce422e54-9389-4c00-96a2-5c80567184ca threw an exception. 
+Quartz.SchedulerException: Job threw an unhandled exception. ---> System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220807.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()
+   --- End of inner exception stack trace --- [See nested exception: System.IO.IOException: The process cannot access the file 'C:\PushLogs\Sync-log\Log\GetDataFromAPI_20220807.log' because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at System.IO.File.Open(String path, FileMode mode, FileAccess access)
+   at SyncBVTL.Push.Jobs.PAJobs.GetDataAPIJob.<Execute>d__0.MoveNext() in D:\Code\BC_YTe\Code\DongBo\SyncBVTL.Web\Jobs\GetDataAPIJob.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at Quartz.Core.JobRunShell.<Run>d__9.MoveNext()]
+2022-08-07 15:35:52,193 ERROR SyncBVTL.Core.Helper.DatabaseSql - ERROR: ExecuteNonQuery requires the command to have a transaction when the connection assigned to the command is in a pending local transaction.  The Transaction property of the command has not been initialized. 
+2022-08-07 15:36:48,245 ERROR SyncBVTL.Core.Helper.DatabaseSql - ERROR: ExecuteNonQuery requires the command to have a transaction when the connection assigned to the command is in a pending local transaction.  The Transaction property of the command has not been initialized. 

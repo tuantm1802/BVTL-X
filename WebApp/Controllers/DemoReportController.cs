@@ -15,7 +15,7 @@ namespace WebApp.Controllers
 {
     public class DemoReportController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -193,7 +193,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "DemoReport",
                         UserName = user.UserName,

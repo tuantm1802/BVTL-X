@@ -14,7 +14,7 @@ namespace WebApp.Controllers
 {
     public class RoleController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         RoleDA _roleDA = new RoleDA();
         RolePageDA _rolePageDA = new RolePageDA();
         PageMenuDA _pageMenuDA = new PageMenuDA();
@@ -92,7 +92,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "Role",
                         UserName = user.UserName,
@@ -114,7 +114,7 @@ namespace WebApp.Controllers
                 var pageMenus = _pageMenuDA.GetAll();
                 var pageActions = _pageActionDA.GetAll();
                 List<TreeModel> lstTreeModel = new List<TreeModel>();
-                ConvertTreePageMenu(lstTreeModel, pageMenus, pageActions, null, new List<RolePage>());
+                ConvertTreePageMenu(lstTreeModel, pageMenus, pageActions, null, new List<BVTL_QT_QUYEN_PAGE>());
                 lstTreeModel = lstTreeModel.OrderBy(e => e.name).ToList();
                 AddLog("Lấy dữ liệu danh mục thành công.");
                 return Json(new { TreeDatas = lstTreeModel, Error = false, Title = "Lấy dữ liệu thành công." }); ;
@@ -133,14 +133,14 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.Roles.Select(x => new
+                var data = db.BVTL_QT_QUYEN.Select(x => new
                 {
                     x.ID,
                     x.Name,
                     x.Descripttion
                 }).FirstOrDefault(x => x.ID == Id);
 
-                var rolePages = new List<RolePage>();
+                var rolePages = new List<BVTL_QT_QUYEN_PAGE>();
                 if (!string.IsNullOrEmpty(Id))
                 {
                     rolePages = _rolePageDA.GetAllByRole(Id);
@@ -160,7 +160,7 @@ namespace WebApp.Controllers
             }
         }
         [HttpPost]
-        public object Add(Role role, List<TreeModel> pageMenus)
+        public object Add(BVTL_QT_QUYEN role, List<TreeModel> pageMenus)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;
@@ -189,11 +189,11 @@ namespace WebApp.Controllers
         /// <param name="pageMenu"></param>
         /// <param name="pageFunction"></param>
         /// <param name="parentId"></param>
-        public void ConvertTreePageMenu(List<TreeModel> lstTreeModel, List<PageMenu> pageMenu, List<PageAction> pageFunction, int? parentId, List<RolePage> rolePages)
+        public void ConvertTreePageMenu(List<TreeModel> lstTreeModel, List<BVTL_QT_PAGE_MENU> pageMenu, List<BVTL_QT_PAGE_ACTION> pageFunction, int? parentId, List<BVTL_QT_QUYEN_PAGE> rolePages)
         {
             if (pageMenu != null && pageMenu.Count > 0)
             {
-                var lstPageMenu = new List<PageMenu>();
+                var lstPageMenu = new List<BVTL_QT_PAGE_MENU>();
                 if (parentId > 0)
                     lstPageMenu = pageMenu.Where(x => x.PARENT_PAGE_ID == parentId).ToList();
                 else
@@ -243,7 +243,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object Edit(Role role, List<TreeModel> pageMenus)
+        public object Edit(BVTL_QT_QUYEN role, List<TreeModel> pageMenus)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;

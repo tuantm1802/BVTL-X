@@ -74,8 +74,11 @@
     <Compile Include="Admin\CustomerDA.cs" />
     <Compile Include="Admin\SysParameterDA.cs" />
     <Compile Include="Admin\SyncDataDA.cs" />
-    <Compile Include="Admin\TestGroupDA.cs" />
+    <Compile Include="Admin\BVTL_NHOM_TBHDA.cs" />
     <Compile Include="Admin\UserDA.cs" />
+    <Compile Include="API\InsertDataDA.cs" />
+    <Compile Include="API\GetDataFromAPI.cs" />
+    <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

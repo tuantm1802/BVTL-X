@@ -14,8 +14,8 @@ namespace WebApp.Controllers
 {
     public class TestGroupController : BaseController
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
-        TestGroupDA _testGroupDA = new TestGroupDA();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        BVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
         SysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -86,7 +86,7 @@ namespace WebApp.Controllers
         {
             var user = Session["USER_SESSION"] as UserLogin;
             _sysLogDA.Add(
-                    new SysLog
+                    new BVTL_QT_LOG
                     {
                         ControllerName = "Role",
                         UserName = user.UserName,
@@ -123,73 +123,72 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object GetItemByID(int Id)
+        public object GetItemByID(string maNhom)
         {
             try
             {
-                var data = db.TestGroups.FirstOrDefault(x => x.Id == Id);
+                var data = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom);
 
-                AddLog("Lấy dữ liệu theo ID bảng Nhóm thu thập DL(ID: " + Id + ") thành công.");
+                AddLog("Lấy dữ liệu theo ID bảng Nhóm thu thập DL(ID: " + maNhom + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
             }
             catch (Exception ex)
             {
-                AddLog("Lấy dữ liệu theo ID bảng Nhóm thu thập DL(ID: " + Id + ") lỗi: " + ex.Message);
+                AddLog("Lấy dữ liệu theo ID bảng Nhóm thu thập DL(ID: " + maNhom + ") lỗi: " + ex.Message);
                 return Json(new { Error = true, Title = ex.Message });
             }
         }
         [HttpPost]
-        public object Add(TestGroup model)
+        public object Add(BVTL_NHOM_TBH model)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;
             try
             {
                 var session = (UserLogin)Session["USER_SESSION"];
-                model.CreatedBy = (int)session.UserID;
                 obj = _testGroupDA.Add(model);
                 if (obj.Error)
-                    AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") lỗi: " + obj.Title);
+                    AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") lỗi: " + obj.Title);
                 else
-                    AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") thành công.");
+                    AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") thành công.");
                 return Json(obj);
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") lỗi: " + ex.Message);
+                AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
 
         [HttpPost]
-        public object Edit(TestGroup model)
+        public object Edit(BVTL_NHOM_TBH model)
         {
             ObjectMessage obj = new ObjectMessage();
             obj.Error = false;
             try
             {
                 var session = (UserLogin)Session["USER_SESSION"];
-                model.CreatedBy = (int)session.UserID;
+               
                 obj = _testGroupDA.Edit(model);
                 if (obj.Error)
-                    AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") lỗi: " + obj.Title);
+                    AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") lỗi: " + obj.Title);
                 else
-                    AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") thành công.");
+                    AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") thành công.");
                 return Json(obj);
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.Name + ", Descripttion: " + model.Code + ") lỗi: " + ex.Message);
+                AddLog("Cập nhật dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
 
         [HttpPost]
-        public object Delete(int Id)
+        public object Delete(string maNhom)
         {
             ObjectMessage obj = new ObjectMessage
             {
@@ -198,18 +197,18 @@ namespace WebApp.Controllers
             try
             {
                 var session = (UserLogin)Session["USER_SESSION"];
-                obj = _testGroupDA.Delete(Id, (int)session.UserID);
+                obj = _testGroupDA.Delete(maNhom, (int)session.UserID);
                 if (obj.Error)
-                    AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + Id + ") lỗi: " + obj.Title);
+                    AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + maNhom + ") lỗi: " + obj.Title);
                 else
-                    AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + Id + ") thành công.");
+                    AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + maNhom + ") thành công.");
                 return Json(obj);
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + Id + ") lỗi: " + ex.Message);
+                AddLog("Xóa dữ liệu bảng Nhóm thu thập DL(ID: " + maNhom + ") lỗi: " + ex.Message);
                 return Json(obj);
             }
         }

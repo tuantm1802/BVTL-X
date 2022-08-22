@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "FullName DESC";
+    $scope.modelSearch.SortColumn = "hoten DESC";
 
     var dataTableCustomer = null;
     $scope.ParamIdSeleted = 0;
@@ -81,17 +81,18 @@
                                 for (var i = 0; i < respone.data.length; i++) {
                                     var tmp = {
                                         STT: i + 1,
-                                        Code: respone.data[i].Code,
-                                        FullName: respone.data[i].FullName,
-                                        Gender: respone.data[i].Gender,
-                                        DateOfBirth: respone.data[i].DateOfBirth,
-                                        CityId: respone.data[i].CityId,
-                                        TypeObject: respone.data[i].TypeObject,
-                                        Code_TCV: respone.data[i].Code_TCV,
+                                        makh: respone.data[i].makh,
+                                        hoten: respone.data[i].hoten,
+                                        gioitinh: respone.data[i].gioitinh,
+                                        namsinh: respone.data[i].namsinh,
+                                        city_code: respone.data[i].city_code,
+                                        LoaiDoiTuong: respone.data[i].LoaiDoiTuong,
+                                        ngaytiepcantext: respone.data[i].ngaytiepcantext,
                                         CityName: respone.data[i].CityName,
-                                        GenderText: respone.data[i].GenderText,
-                                        DateOfBirthText: respone.data[i].DateOfBirthText,
-                                        Id: respone.data[i].Id
+                                        GioiTinhText: respone.data[i].GioiTinhText,
+                                        sodienthoai: respone.data[i].sodienthoai,
+                                        khachhang_id: respone.data[i].khachhang_id,
+                                        diachi: respone.data[i].diachi
                                     }
                                     dataUser.push(tmp);
                                 }
@@ -108,18 +109,21 @@
                         });
                     }, 50);
                 },
-                rowId: 'Id',
+                rowId: 'khachhang_id',
                 select: {
                     info: false
                 },
                 columns: [
                     { "data": "STT", },
-                    { "data": "Code" },
-                    { "data": "GenderText" },
-                    { "data": "DateOfBirthText" },
+                    { "data": "makh" },
+                    { "data": "hoten" },
+                    { "data": "GioiTinhText" },
+                    { "data": "namsinh" },
+                    { "data": "LoaiDoiTuong" },
+                    { "data": "ngaytiepcantext" },
+                    { "data": "sodienthoai" },
                     { "data": "CityName" },
-                    { "data": "TypeObject" },
-                    { "data": "Code_TCV" }
+                    { "data": "diachi" }
                 ],
                 dom: "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>",

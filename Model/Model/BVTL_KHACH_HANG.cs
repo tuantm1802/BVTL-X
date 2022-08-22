@@ -33,8 +33,9 @@ namespace Model.Model
         public Nullable<System.DateTime> ngayngungchamsoc { get; set; }
         public string sodienthoai { get; set; }
         public string diachi { get; set; }
-        public Nullable<int> city_id { get; set; }
+        public string city_code { get; set; }
     
+        public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_LOAI_DOI_TUONG BVTL_LOAI_DOI_TUONG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }
@@ -44,6 +45,5 @@ namespace Model.Model
         public virtual ICollection<BVTL_KQ_SL_SKTT> BVTL_KQ_SL_SKTT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_XN_HIV> BVTL_KQ_XN_HIV { get; set; }
-        public virtual City City { get; set; }
     }
 }

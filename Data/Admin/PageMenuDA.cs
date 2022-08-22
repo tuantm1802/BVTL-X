@@ -11,39 +11,39 @@ namespace Data.Admin
 {
     public class PageMenuDA
     {
-        BaoCaoBVTLEntities db = new BaoCaoBVTLEntities();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public PageMenu GetItemByName(string name)
+        public BVTL_QT_PAGE_MENU GetItemByName(string name)
         {
-            return db.PageMenus.FirstOrDefault(x => x.NAME == name);
+            return db.BVTL_QT_PAGE_MENU.FirstOrDefault(x => x.NAME == name);
         }
 
-        public List<PageMenu> GetAllByPage(ModelSearch modelSearch)
+        public List<BVTL_QT_PAGE_MENU> GetAllByPage(ModelSearch modelSearch)
         {
-            var pageMenuAlls = db.PageMenus.Where(x => x.IS_ACTIVE == true).ToList();
-            if (pageMenuAlls != null && pageMenuAlls.Count > 0)
+            var BVTL_QT_PAGE_MENUAlls = db.BVTL_QT_PAGE_MENU.Where(x => x.IS_ACTIVE == true).ToList();
+            if (BVTL_QT_PAGE_MENUAlls != null && BVTL_QT_PAGE_MENUAlls.Count > 0)
             {
                 if (!string.IsNullOrEmpty(modelSearch.KeyWord))
-                    pageMenuAlls.Where(x => x.NAME.Contains(modelSearch.KeyWord) || x.DESCRIPTION.Contains(modelSearch.KeyWord)).ToList();
+                    BVTL_QT_PAGE_MENUAlls.Where(x => x.NAME.Contains(modelSearch.KeyWord) || x.DESCRIPTION.Contains(modelSearch.KeyWord)).ToList();
             }
 
-            if (pageMenuAlls != null && pageMenuAlls.Count > 0)
+            if (BVTL_QT_PAGE_MENUAlls != null && BVTL_QT_PAGE_MENUAlls.Count > 0)
             {
-                return pageMenuAlls;
+                return BVTL_QT_PAGE_MENUAlls;
             }
             else
-                return new List<PageMenu>();
+                return new List<BVTL_QT_PAGE_MENU>();
 
         }
 
-        public List<PageMenu> GetAll()
+        public List<BVTL_QT_PAGE_MENU> GetAll()
         {
-            return db.PageMenus.Where(x => x.IS_ACTIVE == true).ToList();
+            return db.BVTL_QT_PAGE_MENU.Where(x => x.IS_ACTIVE == true).ToList();
         }
 
-        public List<PageMenu> GetAllByAppCode()
+        public List<BVTL_QT_PAGE_MENU> GetAllByAppCode()
         {
-            return db.PageMenus.Where(x => x.IS_ACTIVE == true).ToList();
+            return db.BVTL_QT_PAGE_MENU.Where(x => x.IS_ACTIVE == true).ToList();
         }
 
         /// <summary>
@@ -51,12 +51,12 @@ namespace Data.Admin
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        public string GetAllByPageMenu(int page)
+        public string GetAllByBVTL_QT_PAGE_MENU(int page)
         {
             var result = "";
             try
             {
-                var actions = db.PageActions.Where(x => x.PAGE_ID == page).Select(x => x.CONTROL_NAME).ToArray();
+                var actions = db.BVTL_QT_PAGE_ACTION.Where(x => x.PAGE_ID == page).Select(x => x.CONTROL_NAME).ToArray();
                 if (actions != null && actions.Length > 0)
                 {
                     result = string.Join("|", actions);
@@ -64,7 +64,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageMenuDA - Lấy danh sách action trên 1 page menu(" + page + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_MENUDA - Lấy danh sách action trên 1 page menu(" + page + ") lỗi: " + ex.Message);
                 result = "";
             }
             return result;
@@ -80,11 +80,11 @@ namespace Data.Admin
             try
             {
                 // lấy thông tin user
-                var user = db.Users.FirstOrDefault(x => x.ID == userID);
+                var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == userID);
 
                 // Lấy danh sách menu
-                result = (from rp in db.RolePages
-                          join pm in db.PageMenus on rp.PageID equals pm.ID
+                result = (from rp in db.BVTL_QT_QUYEN_PAGE
+                          join pm in db.BVTL_QT_PAGE_MENU on rp.PageID equals pm.ID
                           where rp.RoleID == user.GroupID && pm.IS_ACTIVE == true && rp.IS_ACTIVE == true
                           select new MenuModel
                           {
@@ -103,10 +103,10 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                db.SysLogs.Add(
-                    new SysLog
+                db.BVTL_QT_LOG.Add(
+                    new BVTL_QT_LOG
                     {
-                        ControllerName = "PageMenuDA",
+                        ControllerName = "BVTL_QT_PAGE_MENUDA",
                         UserName = "",
                         DateLog = DateTime.Now,
                         Content = "Lấy danh sách menu lỗi: " + ex.Message
@@ -118,18 +118,18 @@ namespace Data.Admin
             return result;
         }
 
-        public ObjectMessage Add(PageMenu pageMenu, List<PageAction> pageFunctions)
+        public ObjectMessage Add(BVTL_QT_PAGE_MENU modelPage, List<BVTL_QT_PAGE_ACTION> pageFunctions)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
+                using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
                 {
                     using (var dbContextTransaction = context.Database.BeginTransaction())
                     {
-                        if (pageMenu.PARENT_PAGE_ID == null)
-                            pageMenu.PARENT_PAGE_ID = 0;
-                        context.PageMenus.Add(pageMenu);
+                        if (modelPage.PARENT_PAGE_ID == null)
+                            modelPage.PARENT_PAGE_ID = 0;
+                        context.BVTL_QT_PAGE_MENU.Add(modelPage);
                         context.SaveChanges();
 
                         if (pageFunctions != null && pageFunctions.Count > 0)
@@ -137,8 +137,8 @@ namespace Data.Admin
                             // Thêm biện button action
                             for (int i = 0; i < pageFunctions.Count; i++)
                             {
-                                pageFunctions[i].PAGE_ID = pageMenu.ID;
-                                context.PageActions.Add(pageFunctions[i]);
+                                pageFunctions[i].PAGE_ID = modelPage.ID;
+                                context.BVTL_QT_PAGE_ACTION.Add(pageFunctions[i]);
                                 context.SaveChanges();
                             }
                         }
@@ -153,43 +153,43 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageMenuDA - Thêm mới menu(HREF_URL: " + pageMenu.HREF_URL + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_MENUDA - Thêm mới menu(HREF_URL: " + modelPage.HREF_URL + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
             }
 
         }
-        public ObjectMessage Edit(PageMenu pageMenu, List<PageAction> pageFunctions)
+        public ObjectMessage Edit(BVTL_QT_PAGE_MENU modelPage, List<BVTL_QT_PAGE_ACTION> pageFunctions)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                using (BaoCaoBVTLEntities context = new BaoCaoBVTLEntities())
+                using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
                 {
                     using (var dbContextTransaction = context.Database.BeginTransaction())
                     {
-                        var data = context.PageMenus.FirstOrDefault(x => x.ID == pageMenu.ID);
+                        var data = context.BVTL_QT_PAGE_MENU.FirstOrDefault(x => x.ID == modelPage.ID);
 
-                        if (pageMenu.PARENT_PAGE_ID == null)
-                            pageMenu.PARENT_PAGE_ID = 0;
+                        if (modelPage.PARENT_PAGE_ID == null)
+                            modelPage.PARENT_PAGE_ID = 0;
 
-                        data.NAME = pageMenu.NAME;
-                        data.DESCRIPTION = pageMenu.DESCRIPTION;
-                        data.IS_ACTIVE = pageMenu.IS_ACTIVE;
-                        data.ORDER_BY = pageMenu.ORDER_BY;
-                        data.CONTROLLER_NAME = pageMenu.CONTROLLER_NAME;
-                        data.HREF_URL = pageMenu.HREF_URL;
-                        data.PARENT_PAGE_ID = pageMenu.PARENT_PAGE_ID;
-                        data.IS_SYSTEM_ROLE = pageMenu.IS_SYSTEM_ROLE;
+                        data.NAME = modelPage.NAME;
+                        data.DESCRIPTION = modelPage.DESCRIPTION;
+                        data.IS_ACTIVE = modelPage.IS_ACTIVE;
+                        data.ORDER_BY = modelPage.ORDER_BY;
+                        data.CONTROLLER_NAME = modelPage.CONTROLLER_NAME;
+                        data.HREF_URL = modelPage.HREF_URL;
+                        data.PARENT_PAGE_ID = modelPage.PARENT_PAGE_ID;
+                        data.IS_SYSTEM_ROLE = modelPage.IS_SYSTEM_ROLE;
                         context.SaveChanges();
 
-                        var deletes = context.PageActions.Where(x => x.PAGE_ID == data.ID).ToList();
+                        var deletes = context.BVTL_QT_PAGE_ACTION.Where(x => x.PAGE_ID == data.ID).ToList();
                         if (deletes != null && deletes.Count > 0)
                         {
                             foreach (var item in deletes)
                             {
-                                context.PageActions.Remove(item);
+                                context.BVTL_QT_PAGE_ACTION.Remove(item);
                             }
                             context.SaveChanges();
                         }
@@ -200,8 +200,8 @@ namespace Data.Admin
                             // Thêm biện button action
                             for (int i = 0; i < pageFunctions.Count; i++)
                             {
-                                pageFunctions[i].PAGE_ID = pageMenu.ID;
-                                context.PageActions.Add(pageFunctions[i]);
+                                pageFunctions[i].PAGE_ID = modelPage.ID;
+                                context.BVTL_QT_PAGE_ACTION.Add(pageFunctions[i]);
                                 context.SaveChanges();
                             }
 
@@ -217,7 +217,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageMenuDA - Sửa menu(HREF_URL: " + pageMenu.HREF_URL + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_MENUDA - Sửa menu(HREF_URL: " + modelPage.HREF_URL + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
@@ -229,7 +229,7 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.PageMenus.FirstOrDefault(x => x.ID == Id);
+                var data = db.BVTL_QT_PAGE_MENU.FirstOrDefault(x => x.ID == Id);
                 data.IS_ACTIVE = false;
 
                 db.SaveChanges();
@@ -239,7 +239,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error("PageMenuDA - Xóa menu(Id: " + Id + ", updateBy: " + updateBy + ") lỗi: " + ex.Message);
+                log.Error("BVTL_QT_PAGE_MENUDA - Xóa menu(Id: " + Id + ", updateBy: " + updateBy + ") lỗi: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;

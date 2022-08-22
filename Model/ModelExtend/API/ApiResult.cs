@@ -23,4 +23,19 @@ namespace Model.ModelExtend.API
 
         public List<object> data { get; set; }
     }
+
+    public class Response<T> : ApiResult
+    {
+        public T data { get; set; }
+    }
+
+    public class ResponseList<T> : ApiResult
+    {
+        public List<T> data { get; set; }
+    }
+
+    public class ApiResultUpdate : ApiResult
+    {
+        public string key { get; set; }
+    }
 }

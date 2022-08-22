@@ -113,6 +113,48 @@ namespace Common
                 con.Dispose();
             }
         }
+        public static IList<T> ExecuteCommanToList<T>(string sql, string connectStrDB)
+        {
+            var dt = new DataTable();
+            serializer.MaxJsonLength = Int32.MaxValue;
+            IList<T> objectsList = new List<T>();
+            try
+            {
+                //Execute procedure and get table result
+                dt = ExecuteTable(sql, connectStrDB);
+
+                if (dt.Rows.Count == 0) return objectsList;
+                //objectsList = ConvertToList<T>(dt);
+                //Covert datatable to json string
+                string jsonString = serializer.Serialize(ParseTableToDictionary(dt));
+
+                //Convert jsonString to List<T>
+                InvalidJsonElements = null;
+                var array = JArray.Parse(jsonString);
+
+                foreach (var item in array)
+                {
+                    try
+                    {
+                        //Map single json in array to object<T>.
+                        var itemMapped = item.ToObject<T>();
+
+                        objectsList.Add(itemMapped);
+                    }
+                    catch (Exception ex)
+                    {
+                        InvalidJsonElements = InvalidJsonElements ?? new List<string>();
+                        InvalidJsonElements.Add(item.ToString());
+                    }
+                }
+                return objectsList;
+            }
+            catch (Exception ex)
+            {
+                log.Error("ERROR: " + ex.Message);
+                return null;
+            }
+        }
         #endregion
 
         #region Execute Table for Store Procedure
@@ -180,6 +222,23 @@ namespace Common
             {
                 con.Close();
                 con.Dispose();
+            }
+        }
+        public static int ExecuteNonQueryTran(string sql, SqlConnection con, SqlTransaction sqlTrans)
+        {
+
+            SqlCommand cmd = new SqlCommand(sql, con, sqlTrans)
+            {
+                CommandType = CommandType.Text
+            };
+            try
+            {
+                return cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                log.Error("ERROR: " + ex.Message);
+                return 0;
             }
         }
         #endregion

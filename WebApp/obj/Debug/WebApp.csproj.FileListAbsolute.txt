@@ -902,3 +902,4 @@ D:\Code\BC_YTe\Code_full\Web\WebApp\obj\Debug\WebApp.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\WebApp\obj\Debug\WebApp.dll
 D:\Code\BC_YTe\Code_full\Web\WebApp\obj\Debug\WebApp.pdb
 D:\Code\BC_YTe\Code_full\Web\WebApp\bin\ClosedXML.dll
+D:\Code\BC_YTe\Code_full\Web\WebApp\bin\Common.dll.config
