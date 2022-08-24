@@ -47,6 +47,10 @@
         });
     }
 
+    $('#dataTableNhomTTDL').on('click', 'tr', function () {
+        $(this).toggleClass('selected');
+    });
+
     $scope.LoadPage = function (genTable) {
         showToast();
         //$.ajax({

@@ -165,6 +165,7 @@
                     //    }
                     //}
                 ],
+
                 dom: "<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>",
@@ -181,6 +182,10 @@
         }
         hideLoading();
     };
+
+    $('#dataTableRole').on('click', 'tr', function () {
+        $(this).toggleClass('selected');
+    });
 
 
 

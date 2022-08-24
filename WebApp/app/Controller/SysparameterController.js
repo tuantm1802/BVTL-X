@@ -38,6 +38,11 @@
         });
     }
 
+    $('#dataTableParam').on('click', 'tr', function () {
+        $(this).toggleClass('selected');
+    });
+
+
     $scope.LoadPage = function (genTable) {
         showToast();
         //$.ajax({
@@ -134,16 +139,16 @@
                 dom: "<'row'<'col-sm-12'B>>" +"<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>",
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Tham số hệ thống'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Data export'
-                    }
-                ],
+                //buttons: [
+                //    {
+                //        extend: 'excelHtml5',
+                //        title: 'Tham số hệ thống'
+                //    },
+                //    {
+                //        extend: 'pdfHtml5',
+                //        title: 'Data export'
+                //    }
+                //],
                 scroller: {
                     loadingIndicator: true
                 },
