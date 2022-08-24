@@ -60,8 +60,11 @@ D:\Code\BC_YTe\Code\Web\Common\bin\Debug\System.Web.WebPages.xml
 D:\Code\BC_YTe\Code\Web\Common\bin\Debug\System.Web.WebPages.Deployment.xml
 D:\Code\BC_YTe\Code\Web\Common\bin\Debug\System.Web.WebPages.Razor.xml
 D:\Code\BC_YTe\Code\Web\Common\obj\Debug\Common.csproj.CopyComplete
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Common.dll.config
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Common.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Common.pdb
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.dll
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EPPlus.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\log4net.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Microsoft.Web.Infrastructure.dll
@@ -74,10 +77,11 @@ D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\System.Web.Razor.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\System.Web.WebPages.Deployment.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\System.Web.WebPages.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\System.Web.WebPages.Razor.dll
-D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.dll
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Model.pdb
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Model.dll.config
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Simple.pdb
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.xml
+D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.xml
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\log4net.xml
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Newtonsoft.Json.xml
 D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\System.Web.Helpers.xml
@@ -91,7 +95,3 @@ D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.csproj.CoreCompileInputs.ca
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.dll
 D:\Code\BC_YTe\Code_full\Web\Common\obj\Debug\Common.pdb
-D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\Common.dll.config
-D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.dll
-D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.xml
-D:\Code\BC_YTe\Code_full\Web\Common\bin\Debug\EntityFramework.SqlServer.xml

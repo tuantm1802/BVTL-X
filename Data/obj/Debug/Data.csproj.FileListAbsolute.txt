@@ -59,6 +59,7 @@ D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\System.Web.Razor.dll
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Microsoft.Web.Infrastructure.dll
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\System.Web.WebPages.Deployment.dll
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Common.pdb
+D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Common.dll.config
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Simple.pdb
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\EntityFramework.xml
 D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\EntityFramework.SqlServer.xml
@@ -80,4 +81,3 @@ D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.dll
 D:\Code\BC_YTe\Code_full\Web\Data\obj\Debug\Data.pdb
-D:\Code\BC_YTe\Code_full\Web\Data\bin\Debug\Common.dll.config

@@ -208,7 +208,7 @@
 
         //window.location.href = '/ReportExplosiveByCareer/ExportData?listCities=' + strData + '&fromDate=' + moment($scope.modelSearch.SearchFromDate).format('YYYYMMDD') + '&toDate=' + moment($scope.modelSearch.SearchToDate).format('YYYYMMDD') + '&listUnitId=' + strDataUnit + "&isThucTe=" + parseInt($scope.modelSearch.isThucTe);;
 
-        window.location.href = '/DemoReport/ExportExcel';
+        window.location.href = '/DemoReport/ExportData';
     }
 
    

@@ -4,6 +4,7 @@ using Data.Admin;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Report;
+using OfficeOpenXml.Style;
 using Simple.Base;
 using System;
 using System.Collections.Generic;
@@ -205,7 +206,7 @@ namespace WebApp.Controllers
 
         #region Xuất dữ liệu ra excel
         [HttpGet]
-        public ActionResult ExportData(string listCities, string fromDate, string toDate, string listUnitId, int isThucTe)
+        public ActionResult ExportData()
         {
             try
             {
@@ -352,7 +353,7 @@ namespace WebApp.Controllers
                             InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                             // Thêm dữ liệu cột thông tin BC
-                            InsertDataCell(ws, "B", row, rowReport.ThongTinBC, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                            InsertDataCell(ws, "B", row, rowReport.ThongTinBC, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                             if(rowReport.Colpan > 0)
                             {
                                 columnNumber = ExcelColumnNameToNumber("B");
@@ -362,7 +363,7 @@ namespace WebApp.Controllers
                             else
                             {
                                 // Thêm dữ liệu cột thông tin BC - thêm
-                                InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                                InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                             }
 
                             if(rowReport.Rowpan > 0)
@@ -371,31 +372,35 @@ namespace WebApp.Controllers
                             }
 
                             // Thêm dữ liệu cột MSM
-                            InsertDataCell(ws, "D", row, rowReport.MSM  > 0 ? rowReport.MSM.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.MSM > 0 ? true : false);
+                            InsertDataCell(ws, "D", row, rowReport.MSM  > 0 ? rowReport.MSM.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.MSM > 0 ? true : false);
 
                             // Thêm dữ liệu cột PUD
-                            InsertDataCell(ws, "E", row, rowReport.PUD > 0 ? rowReport.PUD.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.PUD > 0 ? true : false);
+                            InsertDataCell(ws, "E", row, rowReport.PUD > 0 ? rowReport.PUD.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.PUD > 0 ? true : false);
 
                             // Thêm dữ liệu cột SW
-                            InsertDataCell(ws, "F", row, rowReport.SW > 0 ? rowReport.SW.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.SW > 0 ? true : false);
+                            InsertDataCell(ws, "F", row, rowReport.SW > 0 ? rowReport.SW.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SW > 0 ? true : false);
 
                             // Thêm dữ liệu cột Nam
-                            InsertDataCell(ws, "G", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
+                            InsertDataCell(ws, "G", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
 
                             // Thêm dữ liệu cột Nữ
-                            InsertDataCell(ws, "H", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
+                            InsertDataCell(ws, "H", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
 
                             // Thêm dữ liệu cột Chuyển giới
-                            InsertDataCell(ws, "I", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+                            InsertDataCell(ws, "I", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
 
                             // Thêm dữ liệu cột Tổng
-                            InsertDataCell(ws, "J", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
+                            InsertDataCell(ws, "J", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
                             row++;
                         }
                     }
 
                     ws.Range("A3:J" + row).Style.Font.FontName = "Times New Roman";
                     ws.Range("A3:J" + row).Style.Font.FontSize = 13;
+                    ws.Range("A3:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A3:J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A3:J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A3:J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {

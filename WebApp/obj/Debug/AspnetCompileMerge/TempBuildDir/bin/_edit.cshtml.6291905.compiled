@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="2" virtualPath="/Views/Role/_edit.cshtml" hash="50912155" filehash="1dd2c3c6ec40" flags="110000" assembly="App_Web_o0iulrn5" type="ASP._Page_Views_Role__edit_cshtml">
-    <filedeps>
-        <filedep name="/Views/Role/_edit.cshtml" />
-    </filedeps>
-</preserve>

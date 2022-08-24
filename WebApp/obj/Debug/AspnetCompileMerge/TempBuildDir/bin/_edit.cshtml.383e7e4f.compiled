@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="2" virtualPath="/Views/DinhMuc/_edit.cshtml" hash="50912155" filehash="ffffd5dbfedc6d27" flags="110000" assembly="App_Web_apptt0it" type="ASP._Page_Views_DinhMuc__edit_cshtml">
-    <filedeps>
-        <filedep name="/Views/DinhMuc/_edit.cshtml" />
-    </filedeps>
-</preserve>
