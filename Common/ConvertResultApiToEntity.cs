@@ -420,11 +420,11 @@ namespace Common
                     }
 
                     hiv.dangdieutri_hiv = 0;
-                    if (!string.IsNullOrEmpty(resultApiHIV.hiv))
-                    {
-                        if (resultApiHIV.hiv == "Có")
-                            hiv.dangdieutri_hiv = 1;
-                    }
+                    //if (!string.IsNullOrEmpty(resultApiHIV.hiv))
+                    //{
+                    //    if (resultApiHIV.hiv == "Có")
+                    //        hiv.dangdieutri_hiv = 1;
+                    //}
 
                     hivs.Add(hiv);
 
