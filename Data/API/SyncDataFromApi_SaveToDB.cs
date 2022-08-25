@@ -25,7 +25,7 @@ namespace Data.API
             {
 
                 #region Lưu dữ liệu từ api vào db
-                // Đầu api 1344
+                // Đầu api SKTT
                 if (tableNames.Contains("BVTL_KQ_SL_ASSIST"))
                 {
                     var dataResultApi = JsonConvert.DeserializeObject<List<ResultApi1344Model>>(resultApiString);
@@ -50,6 +50,25 @@ namespace Data.API
                         var dattableInsert = insertDataDA.ConvertToDataTable(assists);
 
                         result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ASSIST");
+                    }
+                }
+
+                // Đầu api HIV
+                if (tableNames.Contains("BVTL_KQ_XN_HIV"))
+                {
+                    var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiHIVModel>>(resultApiString);
+
+                    var hivs = new List<BVTL_KQ_XN_HIV>();
+
+                    // Chuyển đổi dữ liệu sang các bảng tương ứng
+                    ConvertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, ref hivs);
+
+                    // Thêm dữ liệu bảng BVTL_KQ_XN_HIV
+                    if (hivs != null && hivs.Count > 0)
+                    {
+                        var dattableInsert = insertDataDA.ConvertToDataTable(hivs);
+
+                        result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_XN_HIV");
                     }
                 }
 

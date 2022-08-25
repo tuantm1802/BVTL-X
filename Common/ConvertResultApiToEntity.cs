@@ -293,5 +293,149 @@ namespace Common
             }
             log.Info("********************************Kết thúc chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
         }
+
+
+        /// <summary>
+        /// CHuyển đổi kết quả api HIV sang 2 entity BVTL_KQ_XN_HIV
+        /// </summary>
+        /// <param name="resultApiHIVs"></param>
+        /// <param name="hivs"></param>
+        public static void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, ref List<BVTL_KQ_XN_HIV> hivs)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api hiv sang entity**************************************");
+            try
+            {
+                var hiv = new BVTL_KQ_XN_HIV();
+                var resultApiHIV = new ResultApiHIVModel();
+                var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var customer_id = 0;
+                var group_code = "";
+                var cityCode = "";
+                var nhomTBH = new BVTL_NHOM_TBH();
+                var month = 0;
+                var day = 0;
+                var year = 0;
+                var ngaynhap = "";
+                var ngaynhapD = DateTime.Today;
+
+                for (int i = 0; i < resultApiHIVs.Count; i++)
+                {
+                    customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+                    customer_id = 0;
+                    group_code = "";
+                    cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+                    month = 0;
+                    day = 0;
+                    year = 0;
+                    ngaynhap = "";
+                    ngaynhapD = DateTime.Today;
+
+                    resultApiHIV = resultApiHIVs[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+                    customer_code = resultApiHIV.makh;
+                    group_code = customer_code.Substring(0, 5);
+                    // Lấy id tỉnh
+                    if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 3);
+                    }
+
+                    // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
+                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                    if (customer != null && customer.khachhang_id > 0)
+                    {
+                        customer_id = customer.khachhang_id;
+                    }
+                    else
+                    {
+                        customer = new BVTL_KHACH_HANG
+                        {
+                            makh = resultApiHIV.makh,
+                            hoten = resultApiHIV.hoten,
+                            gioitinh = resultApiHIV.gioitinh == "Nam" ? "M" : (resultApiHIV.gioitinh == "Nữ" ? "F" : "O"),
+                            sodienthoai = resultApiHIV.dienthoai,
+                            diachi = resultApiHIV.diachi
+                        };
+                        customer.city_code = cityCode;
+                        if (!string.IsNullOrEmpty(resultApiHIV.namsinh))
+                            customer.namsinh = Convert.ToInt32(resultApiHIV.namsinh);
+
+                        if (!string.IsNullOrEmpty(resultApiHIV.doituong))
+                        {
+                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiHIV.doituong).id;
+                        }
+
+                        if (!string.IsNullOrEmpty(resultApiHIV.ngaytiepcan))
+                            customer.ngaytiepcan = DateTime.ParseExact(resultApiHIV.ngaytiepcan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+                        customer_id = CreateCustomer(customer);
+                    }
+
+                    // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
+                    nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
+                    if (nhomTBH == null)
+                    {
+                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiHIV.tbh });
+                        db.SaveChanges();
+                    }
+
+                    // Lấy ngay, tháng, năm nhập dữ liệu
+                    if (!string.IsNullOrEmpty(resultApiHIV.ngayhoi))
+                    {
+                        ngaynhap = resultApiHIV.ngayhoi;
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    day = ngaynhapD.Day;
+                    month = ngaynhapD.Month;
+                    year = ngaynhapD.Year;
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_SKTT
+                    hiv = new BVTL_KQ_XN_HIV()
+                    {
+                        khachhang_id = customer_id,
+                        ngayxn = ngaynhapD,
+                        ngayxn_date = day,
+                        ngayxn_month = month,
+                        ngayxn_year = year,
+                        manhom_tbh = group_code,
+                        city_code = cityCode
+                    };
+
+                    hiv.ketqua = 0;
+                    if (!string.IsNullOrEmpty(resultApiHIV.kqxn))
+                    {
+                        if (resultApiHIV.kqxn == "Âm tính")
+                            hiv.ketqua = -1;
+                        if (resultApiHIV.kqxn == "Dương tính")
+                            hiv.ketqua = 1;
+                    }
+
+                    hiv.dangdieutri_hiv = 0;
+                    if (!string.IsNullOrEmpty(resultApiHIV.hiv))
+                    {
+                        if (resultApiHIV.hiv == "Có")
+                            hiv.dangdieutri_hiv = 1;
+                    }
+
+                    hivs.Add(hiv);
+
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả api hiv sang entity lỗi: " + ex.Message);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api hiv sang entity**************************************");
+        }
     }
 }
