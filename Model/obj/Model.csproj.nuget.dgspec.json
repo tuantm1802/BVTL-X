@@ -41,14 +41,7 @@
         }
       },
       "frameworks": {
-        "net472": {
-          "dependencies": {
-            "EntityFramework": {
-              "target": "Package",
-              "version": "[6.4.4, )"
-            }
-          }
-        }
+        "net472": {}
       },
       "runtimes": {
         "win": {

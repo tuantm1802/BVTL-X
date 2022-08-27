@@ -1,6 +1,6 @@
-﻿using Quartz;
+﻿using Model.ModelExtend.API;
+using Quartz;
 using SyncBVTL.Push.Controllers.PA;
-using SyncBVTL.Push.Models;
 using SyncBVTL.Push.Utils;
 using System;
 using System.IO;

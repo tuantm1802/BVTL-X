@@ -60,9 +60,9 @@
             <PropertyRef Name="khachhang_id" />
           </Key>
           <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" />
-          <Property Name="hoten" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="gioitinh" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="hoten" Type="nvarchar" MaxLength="100" />
+          <Property Name="gioitinh" Type="varchar" MaxLength="1" />
           <Property Name="namsinh" Type="int" />
           <Property Name="loai_doi_tuong_id" Type="int" />
           <Property Name="ngaytiepcan" Type="date" />
@@ -695,9 +695,9 @@
             <PropertyRef Name="khachhang_id" />
           </Key>
           <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
-          <Property Name="hoten" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="gioitinh" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="hoten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="gioitinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="namsinh" Type="Int32" />
           <Property Name="loai_doi_tuong_id" Type="Int32" />
           <Property Name="ngaytiepcan" Type="DateTime" Precision="0" />

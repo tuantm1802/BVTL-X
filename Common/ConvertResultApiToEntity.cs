@@ -358,7 +358,7 @@ namespace Common
                         customer = new BVTL_KHACH_HANG
                         {
                             makh = resultApiHIV.makh,
-                            hoten = resultApiHIV.hoten,
+                            hoten = string.IsNullOrEmpty(resultApiHIV.hoten)? resultApiHIV.makh: resultApiHIV.hoten,
                             gioitinh = resultApiHIV.gioitinh == "Nam" ? "M" : (resultApiHIV.gioitinh == "Nữ" ? "F" : "O"),
                             sodienthoai = resultApiHIV.dienthoai,
                             diachi = resultApiHIV.diachi

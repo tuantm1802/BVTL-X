@@ -55,9 +55,9 @@
       <PropertyRef Name="khachhang_id" />
     </Key>
     <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="makh" Type="varchar" MaxLength="11" />
-    <Property Name="hoten" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="gioitinh" Type="varchar" MaxLength="1" Nullable="false" />
+    <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+    <Property Name="hoten" Type="nvarchar" MaxLength="100" />
+    <Property Name="gioitinh" Type="varchar" MaxLength="1" />
     <Property Name="namsinh" Type="int" />
     <Property Name="loai_doi_tuong_id" Type="int" />
     <Property Name="ngaytiepcan" Type="date" />

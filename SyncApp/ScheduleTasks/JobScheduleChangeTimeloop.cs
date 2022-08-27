@@ -4,8 +4,8 @@ using Quartz.Impl.Matchers;
 using SyncBVTL.Push.Jobs.PAJobs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SyncBVTL.Push.Models;
-using static SyncBVTL.Push.Utils.Constants;
+using Common;
+using Model.ModelExtend.API;
 
 namespace SyncBVTL.Push.ScheduleTasks
 {
@@ -44,7 +44,7 @@ namespace SyncBVTL.Push.ScheduleTasks
         {
             switch (code)
             {
-                case ProcessCode.GetDataFromAPI:
+                case Constants.GetDataFromAPI:
                     return JobBuilder.Create<GetDataAPIJob>().Build();
 
                 default:

@@ -112,8 +112,8 @@ namespace Data.API
             var result = new List<BVTL_API>();
             try
             {
-                string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = DatabaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;", stringConnect).ToList();
+                //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
+                result = DatabaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;", "ConnectionString").ToList();
             }
             catch (Exception ex)
             {
@@ -140,8 +140,8 @@ namespace Data.API
             var result = new List<BVTL_MASTER_TABLE>();
             try
             {
-                string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = DatabaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;", stringConnect).ToList();
+                //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
+                result = DatabaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;", "ConnectionString").ToList();
             }
             catch (Exception ex)
             {

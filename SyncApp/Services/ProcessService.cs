@@ -1,8 +1,7 @@
 ﻿using Data.API;
 using Model.Model;
+using Model.ModelExtend.API;
 using Newtonsoft.Json;
-using SyncBVTL.Push.Helpers;
-using SyncBVTL.Push.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

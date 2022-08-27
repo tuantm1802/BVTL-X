@@ -1,6 +1,5 @@
 ﻿using Model.ModelExtend.API;
 using Newtonsoft.Json;
-using SyncBVTL.Push.Models;
 using SyncBVTL.Push.ScheduleTasks;
 using SyncBVTL.Push.Services;
 using SyncBVTL.Push.Utils;

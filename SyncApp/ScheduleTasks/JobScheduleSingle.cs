@@ -1,11 +1,10 @@
-﻿using Quartz;
+﻿using Model.ModelExtend.API;
+using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.Jobs.PAJobs;
-using SyncBVTL.Push.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static SyncBVTL.Push.Utils.Constants;
 
 namespace SyncBVTL.Push.ScheduleTasks
 {

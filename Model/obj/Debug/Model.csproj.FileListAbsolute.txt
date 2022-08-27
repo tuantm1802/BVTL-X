@@ -52,3 +52,5 @@ D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.csproj.CoreCompileInputs.cach
 D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.dll
 D:\Code\BC_YTe\Code_full\Web\Model\obj\Debug\Model.pdb
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\EntityFramework.xml
+D:\Code\BC_YTe\Code_full\Web\Model\bin\Debug\EntityFramework.SqlServer.xml

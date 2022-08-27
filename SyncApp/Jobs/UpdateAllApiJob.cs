@@ -1,8 +1,8 @@
 ﻿using log4net;
+using Model.ModelExtend.API;
 using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.Controllers.PA;
-using SyncBVTL.Push.Models;
 using SyncBVTL.Push.Services;
 using SyncBVTL.Push.Utils;
 using System;
