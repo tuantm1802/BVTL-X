@@ -26,7 +26,7 @@ namespace SyncBVTL.Push.Controllers
         public ActionResult GetListProcess()
         {
             var model = processSrv.GetListProcess();
-            return Json(new ResponseList<ProcessModel> { code = "200", data = model }, JsonRequestBehavior.AllowGet);
+            return Json(new { code = "200", data = model }, JsonRequestBehavior.AllowGet);
         }
 
 
