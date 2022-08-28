@@ -42,11 +42,11 @@
 
                                 <ul class="list-group list-group-unbordered mb-3">
                                     <li class="list-group-item">
-                                        <b>Nhóm quyền</b> <a class="float-right">@Model.RoleName</a>
+                                        <b>Nhóm quyền</b> <a class="float-right">@Model.ROLE_DESC</a>
                                     </li>
-                                    <li class="list-group-item">
+                                    @*<li class="list-group-item">
                                         <b>Chức vụ</b> <a class="float-right">@Model.Possition</a>
-                                    </li>
+                                    </li>*@
                                     <li class="list-group-item">
                                         <b>Ngày sinh</b> <a class="float-right">@Model.DateOfBirth_Text</a>
                                     </li>
@@ -71,6 +71,9 @@
 
                                             @status
                                         </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Ngày tạo</b> <a class="float-right">@Model.CreatedDate_Text</a>
                                     </li>
                                 </ul>
 

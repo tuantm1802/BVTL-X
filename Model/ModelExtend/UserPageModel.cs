@@ -27,7 +27,20 @@ namespace Model.ModelExtend
             }
         }
         public string CreatedName { get; set; }
-        public string GanderName { get; set; }
+        public string GanderName {
+            get
+            {
+                var date = "";
+                if (!string.IsNullOrEmpty(Gender))
+                {
+                    if (Gender == "M")
+                        date = "Nam";
+                    if (Gender == "F")
+                        date = "Nữ";
+                }
+                return date;
+            }
+        }
         public string RoleName { get; set; }
         public string ModifiedDate_Text
         {

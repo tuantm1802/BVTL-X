@@ -39,7 +39,11 @@ namespace WebApp.Controllers
                 Address = x.Address,
                 Avartar = x.Avartar,
                 Email = x.Email,
+                DateOfBirth = x.DateOfBirth,
+                IdNumber = x.IdNumber,
+                Gender =x.Gender,
                 CreatedDate = x.CreatedDate,
+                GroupID = x.GroupID,
             }).FirstOrDefault(x => x.ID == Id);
 
             if (!string.IsNullOrEmpty(model.Avartar))
