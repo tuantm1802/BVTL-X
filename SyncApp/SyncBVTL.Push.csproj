@@ -56,6 +56,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Data\bin\Debug\Data.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
@@ -269,49 +277,23 @@
     <Content Include="Contents\css\toastr.min.css" />
     <Content Include="Contents\css\viewer.css" />
     <Content Include="Contents\css\zTreeStyle.css" />
-    <Content Include="Contents\Images\1.svg" />
-    <Content Include="Contents\Images\2.svg" />
-    <Content Include="Contents\Images\2019-08-27_10-37-34.png" />
-    <Content Include="Contents\Images\3.svg" />
     <Content Include="Contents\Images\31.gif" />
     <Content Include="Contents\Images\32.png" />
-    <Content Include="Contents\Images\363335-128.png" />
-    <Content Include="Contents\Images\363335-512.png" />
-    <Content Include="Contents\Images\4.svg" />
-    <Content Include="Contents\Images\5.svg" />
-    <Content Include="Contents\Images\6.svg" />
-    <Content Include="Contents\Images\7.svg" />
-    <Content Include="Contents\Images\8.svg" />
     <Content Include="Contents\Images\add.svg" />
     <Content Include="Contents\Images\back.svg" />
     <Content Include="Contents\Images\back1.svg" />
-    <Content Include="Contents\Images\bando-01.svg" />
-    <Content Include="Contents\Images\banner.svg" />
-    <Content Include="Contents\Images\banner2.svg" />
     <Content Include="Contents\Images\bao_cao_bv.svg" />
     <Content Include="Contents\Images\bao_cao_duoc_vat_tu.svg" />
     <Content Include="Contents\Images\benh_nhan.svg" />
     <Content Include="Contents\Images\bg-01.svg" />
-    <Content Include="Contents\Images\bg.jpg" />
-    <Content Include="Contents\Images\bg.png" />
-    <Content Include="Contents\Images\bg1.jpg" />
-    <Content Include="Contents\Images\bg2.jpg" />
-    <Content Include="Contents\Images\bg3.png" />
-    <Content Include="Contents\Images\bg4.jpg" />
     <Content Include="Contents\Images\bg_banner-01.jpg" />
-    <Content Include="Contents\Images\bg_banner-02.png" />
     <Content Include="Contents\Images\bg_body.png" />
-    <Content Include="Contents\Images\bg_button.jpg" />
     <Content Include="Contents\Images\bg_home.png" />
     <Content Include="Contents\Images\btn_xem.svg" />
     <Content Include="Contents\Images\canhan.svg" />
     <Content Include="Contents\Images\can_lam_sang.svg" />
     <Content Include="Contents\Images\can_lam_sang_icon.svg" />
-    <Content Include="Contents\Images\capcha.png" />
-    <Content Include="Contents\Images\capcha_1.svg" />
     <Content Include="Contents\Images\cap_phat_y_lenh.svg" />
-    <Content Include="Contents\Images\cathehoa.svg" />
-    <Content Include="Contents\Images\DanceTroll.gif" />
     <Content Include="Contents\Images\dangxuat.svg" />
     <Content Include="Contents\Images\danh_dau.svg" />
     <Content Include="Contents\Images\danh_muc.svg" />
@@ -333,29 +315,14 @@
     <Content Include="Contents\Images\duoc_vat_tu_icon.svg" />
     <Content Include="Contents\Images\duyet_w.svg" />
     <Content Include="Contents\Images\du_tru_thuoc.svg" />
-    <Content Include="Contents\Images\EPP_So_do_trien_khai.png" />
     <Content Include="Contents\Images\error-mesage.png" />
-    <Content Include="Contents\Images\ExBg.png" />
     <Content Include="Contents\Images\excel.svg" />
     <Content Include="Contents\Images\Exception.png" />
     <Content Include="Contents\Images\Exceptions.png" />
-    <Content Include="Contents\Images\ExceptionTroll.gif" />
     <Content Include="Contents\Images\fee.png" />
     <Content Include="Contents\Images\filter.svg" />
     <Content Include="Contents\Images\filter_hover.svg" />
-    <Content Include="Contents\Images\finger1.png" />
-    <Content Include="Contents\Images\finger10.png" />
-    <Content Include="Contents\Images\finger2.png" />
-    <Content Include="Contents\Images\finger3.png" />
-    <Content Include="Contents\Images\finger4.png" />
-    <Content Include="Contents\Images\finger5.png" />
-    <Content Include="Contents\Images\finger6.png" />
-    <Content Include="Contents\Images\finger7.png" />
-    <Content Include="Contents\Images\finger8.png" />
-    <Content Include="Contents\Images\finger9.png" />
-    <Content Include="Contents\Images\fingerprint.jpg" />
     <Content Include="Contents\Images\giphy.gif" />
-    <Content Include="Contents\Images\hc.png" />
     <Content Include="Contents\Images\he_thong_icon.svg" />
     <Content Include="Contents\Images\home.svg" />
     <Content Include="Contents\Images\icon-delete-white.svg" />
@@ -382,7 +349,6 @@
     <Content Include="Contents\Images\img_user2.svg" />
     <Content Include="Contents\Images\img_user_1.svg" />
     <Content Include="Contents\Images\in.svg" />
-    <Content Include="Contents\Images\inter.jpg" />
     <Content Include="Contents\Images\in_1.svg" />
     <Content Include="Contents\Images\in_hover.svg" />
     <Content Include="Contents\Images\ket_thuc.svg" />
@@ -392,14 +358,12 @@
     <Content Include="Contents\Images\lam_lai_w.svg" />
     <Content Include="Contents\Images\lephi-01.svg" />
     <Content Include="Contents\Images\lephi-ghi-01.svg" />
-    <Content Include="Contents\Images\lg.png" />
     <Content Include="Contents\Images\lich_su.svg" />
     <Content Include="Contents\Images\lich_su_kham.svg" />
     <Content Include="Contents\Images\lite-x-red.png" />
     <Content Include="Contents\Images\Loading.jpg" />
+    <Content Include="Contents\Images\logo.jpg" />
     <Content Include="Contents\Images\logo.svg" />
-    <Content Include="Contents\Images\logo1.svg" />
-    <Content Include="Contents\Images\logo_xnc.png" />
     <Content Include="Contents\Images\luu_w.svg" />
     <Content Include="Contents\Images\ma_capcha.svg" />
     <Content Include="Contents\Images\menu.svg" />
@@ -418,7 +382,6 @@
     <Content Include="Contents\Images\noimage.png" />
     <Content Include="Contents\Images\noimg.png" />
     <Content Include="Contents\Images\pass.svg" />
-    <Content Include="Contents\Images\Passport-logo.png" />
     <Content Include="Contents\Images\phan_quyen_ng_dung.svg" />
     <Content Include="Contents\Images\phathanhhochieudientu.svg" />
     <Content Include="Contents\Images\phieu_dieu_chuyen_kho.svg" />
@@ -432,7 +395,6 @@
     <Content Include="Contents\Images\power-on-icon.jpg" />
     <Content Include="Contents\Images\pre.svg" />
     <Content Include="Contents\Images\ql_bao_cao.svg" />
-    <Content Include="Contents\Images\quantrihethong.svg" />
     <Content Include="Contents\Images\Quan_ly_bao_cao_icon.svg" />
     <Content Include="Contents\Images\quan_ly_danh_muc.svg" />
     <Content Include="Contents\Images\quan_ly_danh_muc_icon.svg" />
@@ -443,7 +405,6 @@
     <Content Include="Contents\Images\Quan_ly_thu_tuc.svg" />
     <Content Include="Contents\Images\quan_ly_tu_truc.svg" />
     <Content Include="Contents\Images\Quan_tri_he_thong_icon.svg" />
-    <Content Include="Contents\Images\quan_tri_ht.svg" />
     <Content Include="Contents\Images\reset_1.svg" />
     <Content Include="Contents\Images\reset_2.svg" />
     <Content Include="Contents\Images\save.svg" />
@@ -458,7 +419,6 @@
     <Content Include="Contents\Images\sua_hover.svg" />
     <Content Include="Contents\Images\success_512.png" />
     <Content Include="Contents\Images\switch-on-icon.png" />
-    <Content Include="Contents\Images\text_banner2.png" />
     <Content Include="Contents\Images\tham_do_chuc_nang.svg" />
     <Content Include="Contents\Images\tham_so_he_thong.svg" />
     <Content Include="Contents\Images\thao_tac.svg" />
@@ -466,21 +426,11 @@
     <Content Include="Contents\Images\thaydoimk.svg" />
     <Content Include="Contents\Images\them.svg" />
     <Content Include="Contents\Images\thiet_lap_ht.svg" />
-    <Content Include="Contents\Images\thiet_lap_ht_1.svg" />
     <Content Include="Contents\Images\thiet_lap_ht_active.svg" />
     <Content Include="Contents\Images\thiet_lap_ht_icon.svg" />
     <Content Include="Contents\Images\thongtincanhan.svg" />
     <Content Include="Contents\Images\thong_tin_don_vi.svg" />
     <Content Include="Contents\Images\tiep don.svg" />
-    <Content Include="Contents\Images\tiep_don.svg" />
-    <Content Include="Contents\Images\tiep_nhan.svg" />
-    <Content Include="Contents\Images\tieude.svg" />
-    <Content Include="Contents\Images\tieu_de.svg" />
-    <Content Include="Contents\Images\to_khai.svg" />
-    <Content Include="Contents\Images\trungtamdieuhanh.svg" />
-    <Content Include="Contents\Images\trungtamluutru.svg" />
-    <Content Include="Contents\Images\user-id-icon.png" />
-    <Content Include="Contents\Images\user-male-icon.png" />
     <Content Include="Contents\Images\user.svg" />
     <Content Include="Contents\Images\X-quang.svg" />
     <Content Include="Contents\Images\xem.svg" />
@@ -489,7 +439,6 @@
     <Content Include="Contents\Images\xet_nghiem.svg" />
     <Content Include="Contents\Images\xoa.svg" />
     <Content Include="Contents\Images\xoa_hover.svg" />
-    <Content Include="Contents\Images\xulyhoso.svg" />
     <Content Include="Contents\js\angularjs\angular-local-storage.js" />
     <Content Include="Contents\js\angularjs\angular-validator.js" />
     <Content Include="Contents\js\angularjs\angular-validator.min.js" />
