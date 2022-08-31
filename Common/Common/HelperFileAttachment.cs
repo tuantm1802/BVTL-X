@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Drawing;
 
-namespace Common
+namespace Common.Common
 {
     public class HelperFileAttachment : Controller
     {

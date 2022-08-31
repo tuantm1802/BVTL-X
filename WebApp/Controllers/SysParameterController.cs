@@ -2,19 +2,21 @@
 using Data.Admin;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Common.Common;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class SysParameterController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        SysParameterDA _sysParameterDA = new SysParameterDA();
-        SysLogDA _sysLogDA = new SysLogDA();
+        ISysParameterDA _sysParameterDA = new SysParameterDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: SysParameter

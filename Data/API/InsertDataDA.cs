@@ -1,4 +1,7 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
+using Data.InterfaceDA.API;
 using log4net;
 using Model.Model;
 using Model.ModelExtend;
@@ -15,10 +18,11 @@ using System.Threading.Tasks;
 
 namespace Data.API
 {
-    public class InsertDataDA
+    public class InsertDataDA : IInsertDataDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IDatabaseSql _databaseSql = new DatabaseSql();
 
         /// <summary>
         /// Thêm dữ liệu bảng SKTTTest
@@ -41,7 +45,7 @@ namespace Data.API
             {
                 log.Info("*******************Bắt đầu xóa dữ liệu bảng: " + tableName + "*********************");
                 // Xóa dữ liệu bảng
-                var data = DatabaseSql.ExecuteNonQueryTran("Delete from " + tableName, conn, transaction);
+                var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName, conn, transaction);
                 log.Info("*******************Kết thúc xóa dữ liệu bảng: " + tableName + "*********************");
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
@@ -113,7 +117,7 @@ namespace Data.API
             try
             {
                 //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = DatabaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;", "ConnectionString").ToList();
+                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;", "ConnectionString").ToList();
             }
             catch (Exception ex)
             {
@@ -141,7 +145,7 @@ namespace Data.API
             try
             {
                 //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = DatabaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;", "ConnectionString").ToList();
+                result = _databaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;", "ConnectionString").ToList();
             }
             catch (Exception ex)
             {
@@ -169,7 +173,7 @@ namespace Data.API
             try
             {
                 //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = DatabaseSql.ExecuteCommanToList<TableNameModel>("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';", "ConnectionString").ToList().Select(x => x.TABLE_NAME).ToList();
+                result = _databaseSql.ExecuteCommanToList<TableNameModel>("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';", "ConnectionString").ToList().Select(x => x.TABLE_NAME).ToList();
             }
             catch (Exception ex)
             {

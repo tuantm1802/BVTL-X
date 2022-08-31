@@ -1,4 +1,7 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
+using Data.InterfaceDA.API;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.API;
@@ -11,10 +14,11 @@ using System.Threading.Tasks;
 
 namespace Data.API
 {
-    public class SyncDataFromApi_SaveToDB
+    public class SyncDataFromApi_SaveToDB: ISyncDataFromApi_SaveToDB
     {
-        InsertDataDA insertDataDA = new InsertDataDA();
-        GetDataFromAPI getDataFromAPI = new GetDataFromAPI();
+        IInsertDataDA insertDataDA = new InsertDataDA();
+        IGetDataFromAPI getDataFromAPI = new GetDataFromAPI();
+        IConvertResultApiToEntity _convertResultApiToEntity = new ConvertResultApiToEntity();
 
         public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, List<string> tableNames)
         {
@@ -34,7 +38,7 @@ namespace Data.API
                     var assists = new List<BVTL_KQ_SL_ASSIST>();
 
                     // Chuyển đổi dữ liệu sang các bảng tương ứng
-                    ConvertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi, ref sktts, ref assists);
+                    _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi, ref sktts, ref assists);
 
                     // Thêm dữ liệu bảng BVTL_KQ_SL_SKTT
                     if (sktts != null && sktts.Count > 0)
@@ -61,7 +65,7 @@ namespace Data.API
                     var hivs = new List<BVTL_KQ_XN_HIV>();
 
                     // Chuyển đổi dữ liệu sang các bảng tương ứng
-                    ConvertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, ref hivs);
+                    _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, ref hivs);
 
                     // Thêm dữ liệu bảng BVTL_KQ_XN_HIV
                     if (hivs != null && hivs.Count > 0)

@@ -1,7 +1,9 @@
 ﻿using Data.Admin;
+using Data.InterfaceDA.Admin;
 using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using Newtonsoft.Json;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,8 +18,8 @@ namespace WebApp.Controllers
 {
     public class BaseNoRoleController : Controller
     {
-        PageMenuDA _pageMenuDA = new PageMenuDA();
-        UserDA _userDA = new UserDA();
+        IPageMenuDA _pageMenuDA = new PageMenuDA();
+        IUserDA _userDA = new UserDA();
         ITokenService _ITokenService = new TokenService();
         private static readonly string AppCode = ConfigurationManager.AppSettings["AppCode"];
         private static readonly string ApiUri = ConfigurationManager.AppSettings["ApiUri"];

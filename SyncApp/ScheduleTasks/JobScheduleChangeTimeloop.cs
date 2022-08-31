@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common;
 using Model.ModelExtend.API;
+using Common.Common;
 
 namespace SyncBVTL.Push.ScheduleTasks
 {

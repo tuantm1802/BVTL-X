@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using Data.InterfaceDA.API;
 
 namespace SyncBVTL.Push.Services
 {
     public class ProcessService
     {
-        readonly InsertDataDA da = new InsertDataDA();
+        readonly IInsertDataDA da = new InsertDataDA();
 
         public List<ProcessModel> GetListProcess()
         {

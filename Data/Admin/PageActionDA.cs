@@ -1,16 +1,17 @@
 ﻿using Common;
 using log4net;
 using Model.Model;
-using Simple.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.InterfaceDA.Admin;
+using Model.ModelExtend.Base;
 
 namespace Data.Admin
 {
-    public class PageActionDA
+    public class PageActionDA: IPageActionDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

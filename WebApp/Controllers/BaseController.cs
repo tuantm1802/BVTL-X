@@ -2,7 +2,7 @@
 using Data.Admin;
 using Model.ModelExtend;
 using Newtonsoft.Json;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,13 +13,16 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Service;
 using Common;
+using Model.ModelExtend.Base;
+using Common.Common;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class BaseController : Controller
     {
-        PageMenuDA _pageMenuDA = new PageMenuDA();
-        UserDA _userDA = new UserDA();
+        IPageMenuDA _pageMenuDA = new PageMenuDA();
+        IUserDA _userDA = new UserDA();
         ITokenService _ITokenService = new TokenService();
         private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"].ToString();
         // GET: Base

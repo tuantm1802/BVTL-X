@@ -1,5 +1,6 @@
 ﻿using Common;
 using Data.API;
+using Data.InterfaceDA.API;
 using log4net;
 using Model.Model;
 using Model.ModelExtend;
@@ -20,7 +21,7 @@ namespace SyncBVTL.Push.Controllers.PA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string accessToken = "";
-        public SyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB;
+        public ISyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
 
         public ActionResult Index()
         {
@@ -31,7 +32,6 @@ namespace SyncBVTL.Push.Controllers.PA
         public async Task<BaseResult> GetDataFromAPI(ProcessModel model)
         {
             BaseResult apiResult = new BaseResult();
-            syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
             apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(model.Url, model.Token, model.ReportId, model.TableNames);
             return apiResult;
         }

@@ -1,8 +1,9 @@
 ﻿using Common;
+using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Data.Admin
 {
-    public class BVTL_NHOM_TBHDA
+    public class BVTL_NHOM_TBHDA: IBVTL_NHOM_TBHDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();

@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Common.ICommon;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common
+namespace Common.Common
 {
-    public class Common
+    public class Ultil: IUltil
     {
-        private static readonly string[] VietNamChar = new string[]
+        private  readonly string[] VietNamChar = new string[]
         {
             "aAeEoOuUiIdDyY",
             "áàạảãâấầậẩẫăắằặẳẵ",
@@ -29,7 +27,7 @@ namespace Common
             "ýỳỵỷỹ",
             "ÝỲỴỶỸ"
         };
-        public static string LocDau(string str)
+        public  string LocDau(string str)
         {
             //Thay thế và lọc dấu từng char      
             for (int i = 1; i < VietNamChar.Length; i++)
@@ -40,7 +38,7 @@ namespace Common
             return str;
         }
 
-        public static string ConvertDate2(string dateString)
+        public  string ConvertDate2(string dateString)
         {
             try
             {
@@ -52,7 +50,7 @@ namespace Common
                 return "";
             }
         }
-        public static string ConvertDate4(string dateString)
+        public  string ConvertDate4(string dateString)
         {
             try
             {
@@ -64,7 +62,7 @@ namespace Common
                 return "";
             }
         }
-        public static DateTime ConvertStringToDate(string dateString,string format = "yyyyMMdd")
+        public  DateTime ConvertStringToDate(string dateString,string format = "yyyyMMdd")
         {
             try
             {
@@ -75,7 +73,7 @@ namespace Common
                 return DateTime.MinValue;
             }
         }
-        public static string ListInt2String(List<int> data)
+        public  string ListInt2String(List<int> data)
         {
             string dReturn = string.Empty;
             if (data != null)
@@ -95,7 +93,7 @@ namespace Common
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns> 
-        public static List<int> ListIntConvertToString(string source)
+        public  List<int> ListIntConvertToString(string source)
         {
             try
             {
@@ -128,7 +126,7 @@ namespace Common
             }
         }
 
-        public static string ConvertToUnAsign(string str)
+        public  string ConvertToUnAsign(string str)
         {
             string[] signs = new string[] {"aAeEoOuUiIdDyY","áàạảãâấầậẩẫăắằặẳẵ","ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ","éèẹẻẽêếềệểễ",
             "ÉÈẸẺẼÊẾỀỆỂỄ","óòọỏõôốồộổỗơớờợởỡ","ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ","úùụủũưứừựửữ","ÚÙỤỦŨƯỨỪỰỬỮ","íìịỉĩ","ÍÌỊỈĨ","đ","Đ","ýỳỵỷỹ","ÝỲỴỶỸ"
@@ -148,7 +146,7 @@ namespace Common
         /// </summary>
         /// <param name="date">16/06/2017</param>
         /// <returns>20170616</returns>
-        public static string GetDate(string date)
+        public  string GetDate(string date)
         {
             string date8 = "";
             try
@@ -170,7 +168,7 @@ namespace Common
         /// </summary>
         /// <param name="date8">20170616</param>
         /// <returns>16/06/2017</returns>
-        public static string LoadDate(string date8)
+        public  string LoadDate(string date8)
         {
             string date = "";
             try
@@ -186,7 +184,7 @@ namespace Common
         /// </summary>
         /// <param name="date14"></param>
         /// <returns>20/06/2017 15:12:00</returns>
-        public static string LoadDateTime(string date14)
+        public  string LoadDateTime(string date14)
         {
             string date = "";
             try
@@ -200,7 +198,7 @@ namespace Common
             return date;
         }
         /// Chuỗi kết quả chuyển từ số
-        public static string NumberToText(double inputNumber, bool suffix = true)
+        public  string NumberToText(double inputNumber, bool suffix = true)
         {
             string[] unitNumbers = new string[] { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
             string[] placeValues = new string[] { "", "nghìn", "triệu", "tỷ" };
@@ -287,7 +285,7 @@ namespace Common
             if (isNegative) result = "Âm " + result;
             return result + (suffix ? " đồng chẵn" : "");
         }
-        public static string ConvertToBaseUri(string uri)
+        public  string ConvertToBaseUri(string uri)
         {
             var baseUri = new Uri(uri);
             return baseUri.GetLeftPart(System.UriPartial.Authority);
@@ -311,7 +309,7 @@ namespace Common
 
     public class Commonnumbers
     {
-        public static string NumberToText(double inputNumber, bool suffix = true)
+        public  string NumberToText(double inputNumber, bool suffix = true)
         {
             string[] unitNumbers = new string[] { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
             string[] placeValues = new string[] { "", "nghìn", "triệu", "tỷ" };

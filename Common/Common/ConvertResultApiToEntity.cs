@@ -6,20 +6,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.ICommon;
 
-namespace Common
+namespace Common.Common
 {
-    public class ConvertResultApiToEntity
+    public class ConvertResultApiToEntity: IConvertResultApiToEntity
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private  BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
         /// <summary>
         /// Thêm mới khách hàng
         /// </summary>
         /// <param name="customer"></param>
         /// <returns></returns>
-        private static int CreateCustomer(BVTL_KHACH_HANG customer)
+        public int CreateCustomer(BVTL_KHACH_HANG customer)
         {
             var result = 0;
             db.BVTL_KHACH_HANG.Add(customer);
@@ -34,7 +35,7 @@ namespace Common
         /// <param name="resultApi1344s"></param>
         /// <param name="sktts"></param>
         /// <param name="assists"></param>
-        public static void ConvertApi1344ToEntity(List<ResultApi1344Model> resultApi1344s, ref List<BVTL_KQ_SL_SKTT> sktts, ref List<BVTL_KQ_SL_ASSIST> assists)
+        public  void ConvertApi1344ToEntity(List<ResultApi1344Model> resultApi1344s, ref List<BVTL_KQ_SL_SKTT> sktts, ref List<BVTL_KQ_SL_ASSIST> assists)
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
@@ -294,13 +295,12 @@ namespace Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
         }
 
-
         /// <summary>
         /// CHuyển đổi kết quả api HIV sang 2 entity BVTL_KQ_XN_HIV
         /// </summary>
         /// <param name="resultApiHIVs"></param>
         /// <param name="hivs"></param>
-        public static void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, ref List<BVTL_KQ_XN_HIV> hivs)
+        public  void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, ref List<BVTL_KQ_XN_HIV> hivs)
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api hiv sang entity**************************************");

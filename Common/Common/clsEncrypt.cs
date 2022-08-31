@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text;using Common.ICommon;
+using Common.ICommon;
 
-namespace Common
+namespace Common.Common
 {
-    public static class clsEncrypt
+    public class clsEncrypt: IclsEncrypt
     {
-        public static string Decrypt(string cipherString, bool useHashing)
+        public  string Decrypt(string cipherString, bool useHashing)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Common
                 return "";
             }
         }
-        public static string Encrypt(string toEncrypt, bool useHashing)
+        public  string Encrypt(string toEncrypt, bool useHashing)
         {
             try
             {

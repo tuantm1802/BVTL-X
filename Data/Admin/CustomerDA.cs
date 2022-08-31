@@ -1,16 +1,17 @@
 ﻿using log4net;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.InterfaceDA.Admin;
+using Model.ModelExtend.Base;
 
 namespace Data.Admin
 {
-    public class CustomerDA
+    public class CustomerDA: ICustomerDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

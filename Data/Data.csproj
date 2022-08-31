@@ -80,16 +80,25 @@
     <Compile Include="API\InsertDataDA.cs" />
     <Compile Include="API\GetDataFromAPI.cs" />
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
+    <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IPageActionDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IPageMenuDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IRoleDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IRolePageDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ISyncDataDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ISysLogDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ISysParameterDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IUserDA.cs" />
+    <Compile Include="InterfaceDA\API\IGetDataFromAPI.cs" />
+    <Compile Include="InterfaceDA\API\IInsertDataDA.cs" />
+    <Compile Include="InterfaceDA\API\ISyncDataFromApi_SaveToDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{2fc54eff-1e67-448f-8eca-589c8e4c05ba}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simple\Simple.csproj">
-      <Project>{bd4a1e8a-d01f-430b-8369-d1ee837363d1}</Project>
-      <Name>Simple</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

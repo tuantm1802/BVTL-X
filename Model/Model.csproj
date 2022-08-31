@@ -60,6 +60,11 @@
     <Compile Include="ModelExtend\BaseResult.cs" />
     <Compile Include="ModelExtend\API\ResultApi1344Model.cs" />
     <Compile Include="ModelExtend\AuditModel.cs" />
+    <Compile Include="ModelExtend\Base\LoginModel.cs" />
+    <Compile Include="ModelExtend\Base\ModelSearch.cs" />
+    <Compile Include="ModelExtend\Base\ObjectMessage.cs" />
+    <Compile Include="ModelExtend\Base\PaginationModel.cs" />
+    <Compile Include="ModelExtend\Base\UserLogin.cs" />
     <Compile Include="ModelExtend\MenuModel.cs" />
     <Compile Include="ModelExtend\PageMenuModel.cs" />
     <Compile Include="ModelExtend\Report\BaoCaoModel.cs" />
@@ -166,12 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Simple\Simple.csproj">
-      <Project>{BD4A1E8A-D01F-430B-8369-D1EE837363D1}</Project>
-      <Name>Simple</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Model\BVTL_REPORTING.Context.tt">

@@ -7,9 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Common
+using Common.ICommon;
+namespace Common.Common
 {
-    public class ExportExcel
+    public class ExportExcel: IExportExcel
     {
         public Stream CreateExcelFile<T>(string linkFileTemplate, List<T> lsData, int rowStart, int columnStart)
         {

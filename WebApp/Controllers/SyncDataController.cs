@@ -1,13 +1,14 @@
 ﻿using Common;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Data.Admin;
 using log4net;
+using Data.InterfaceDA;
 using WebApp.Common;
 using Model.ModelExtend.API;
 using System.Net.Http;
@@ -17,18 +18,23 @@ using System.Data;
 using System.ComponentModel;
 using Data.API;
 using System.Threading.Tasks;
+using Data.InterfaceDA.API;
+using Model.ModelExtend.Base;
+using Common.Common;
+using Common.ICommon;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class SyncDataController : BaseController
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        SyncDataDA _syncDataDA = new SyncDataDA();
-        InsertDataDA _insertDataDA = new InsertDataDA();
-        GetDataFromAPI _getDataFromAPI = new GetDataFromAPI();
-        SyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
+        ISyncDataDA _syncDataDA = new SyncDataDA();
+        IInsertDataDA _insertDataDA = new InsertDataDA();
+        ISyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
+        IApiBase _apiBase = new ApiBase();
 
-        SysLogDA _sysLogDA = new SysLogDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: SyncData
@@ -132,141 +138,6 @@ namespace WebApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Chuyển đổi list model to datatable
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static DataTable ConvertToDataTable<T>(IList<T> data)
-        {
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(T));
-            DataTable table = new DataTable();
-            foreach (PropertyDescriptor prop in properties)
-                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-            foreach (T item in data)
-            {
-                DataRow row = table.NewRow();
-                foreach (PropertyDescriptor prop in properties)
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                table.Rows.Add(row);
-            }
-            return table;
-        }
-
-        /// <summary>
-        /// Lấy dữ liệu từ api
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="url"></param>
-        /// <param name="apitype"></param>
-        /// <returns></returns>
-        public static ApiResult GetDataFromApi(string input, string url, string apitype)
-        {
-            try
-            {
-                var resultSync = new ApiResult();
-                log.Info("****************************BEGIN GET DATA FROM API "+ url + " ********************************");
-                log.Info("JSON: " + input);
-
-                if (apitype == "POST")
-                {
-                    HttpResponseMessage response = (ApiBase.PostJsonAsync( url, input)).Result;
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        log.Info("****************************END GET DATA FROM API " + url + " ********************************");
-                        return new ApiResult
-                        {
-                            code = "401",
-                            message = "Bạn không có quyền sử dụng API này"
-                        };
-                    }
-                    else
-                    {
-                        string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
-                        log.Info(responseString);
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
-                        {
-                            resultSync = JsonConvert.DeserializeObject<ApiResult>(responseString);
-                        }
-                        else
-                        {
-                            
-                            resultSync.code = response.StatusCode.ToString();
-                            resultSync.message = responseString;
-                        }
-                        log.Info("****************************END GET DATA FROM API " + url + " *******************************");
-                        return resultSync;
-                    }
-                }
-                else if (apitype == "PUSH")
-                {
-                    HttpResponseMessage response = (ApiBase.PutJsonAsyncResponse( url, input)).Result;
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        log.Info("****************************END GET DATA FROM API " + url + " ********************************");
-                        return new ApiResult
-                        {
-                            code = "401",
-                            message = "Bạn không có quyền sử dụng API này"
-                        };
-                    }
-                    else
-                    {
-                        string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
-                        log.Info(responseString);
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
-                        {
-                            resultSync = JsonConvert.DeserializeObject<ApiResult>(responseString);
-                        }
-                        else
-                        {
-                           
-                            resultSync.code = response.StatusCode.ToString();
-                            resultSync.message = responseString;
-                        }
-                        log.Info("****************************END GET DATA FROM API " + url + " *******************************");
-                        return resultSync;
-                    }
-                }
-                else if (apitype == "GET")
-                {
-                    HttpResponseMessage response = (ApiBase.GetJsonAsyncResponse(url + input)).Result;
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        log.Info("****************************END GET DATA FROM API " + url + " ********************************");
-                        return new ApiResult
-                        {
-                            code = "401",
-                            message = "Bạn không có quyền sử dụng API này"
-                        };
-                    }
-                    else
-                    {
-                        string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
-                        log.Info(responseString);
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
-                        {
-                            resultSync = JsonConvert.DeserializeObject<ApiResult>(responseString);
-                        }
-                        else
-                        {
-
-                            resultSync.code = response.StatusCode.ToString();
-                            resultSync.message = responseString;
-                        }
-                        log.Info("****************************END GET DATA FROM API " + url + " *******************************");
-                        return resultSync;
-                    }
-                }
-                return resultSync;
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex.Message);
-                return new ApiResult { code = "404", message = "Lỗi xử lý dữ liệu." };
-            }
-        }
     }
 
 }

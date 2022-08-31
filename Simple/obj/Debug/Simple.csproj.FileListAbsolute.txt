@@ -38,3 +38,14 @@ D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.csproj.CoreCompileInputs.ca
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.csproj.CopyComplete
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.dll
 D:\Code\BC_YTe\Code_full\Web\Simple\obj\Debug\Simple.pdb
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\Simple.dll
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\Simple.pdb
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\log4net.dll
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\Newtonsoft.Json.dll
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\log4net.xml
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\bin\Debug\Newtonsoft.Json.xml
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\obj\Debug\Simple.csproj.CoreCompileInputs.cache
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\obj\Debug\Simple.csproj.CopyComplete
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\obj\Debug\Simple.dll
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\obj\Debug\Simple.pdb
+D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Simple\obj\Debug\Simple.csproj.AssemblyReference.cache

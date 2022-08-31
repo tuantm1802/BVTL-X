@@ -1,11 +1,14 @@
 ﻿using ClosedXML.Excel;
 using Common;
+using Common.Common;
 using Data.Admin;
+using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using Model.ModelExtend.Report;
 using OfficeOpenXml.Style;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +20,7 @@ namespace WebApp.Controllers
     public class DemoReportController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        SysLogDA _sysLogDA = new SysLogDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: DemoReport

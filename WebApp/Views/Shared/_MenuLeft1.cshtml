@@ -3,7 +3,7 @@
     var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
     var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
     var menus = Session["Menus"] as List<Model.ModelExtend.MenuModel>;
-    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    var userSession = (Model.ModelExtend.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
     if (menus != null && menus.Count > 0)
     {
         menuLevel1 = menus.Where(x => x.PARENT_ID == null || x.PARENT_ID == 0).OrderBy(x => x.ORDER_LEVEL).ToList();

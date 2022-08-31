@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Common.ICommon;
+using log4net;
 using Model.ModelExtend.API;
 using Newtonsoft.Json;
 using System;
@@ -9,16 +10,16 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Common.Common
 {
-    public class ApiBase
+    public class ApiBase : IApiBase
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //private static readonly string insideUrl = ConfigurationManager.AppSettings["insideUrl"].ToString();
-        private static readonly string insideUrl = "";
+        private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //private  readonly string insideUrl = ConfigurationManager.AppSettings["insideUrl"].ToString();
+        private  readonly string insideUrl = "";
 
 
-        public static async Task<HttpResponseMessage> UPPostJsonAsync( string uri, string json)
+        public  async Task<HttpResponseMessage> UPPostJsonAsync( string uri, string json)
         {
             try
             {
@@ -49,7 +50,7 @@ namespace Common
             }
         }
 
-        public static async Task<HttpResponseMessage> PostJsonAsync( string uri, string json)
+        public  async Task<HttpResponseMessage> PostJsonAsync( string uri, string json)
         {
             HttpResponseMessage response = null;
             try
@@ -80,7 +81,7 @@ namespace Common
             }
         }
         //TEST
-        public static async Task<HttpResponseMessage> ReCallPostJsonAsync( string uri, string json)
+        public  async Task<HttpResponseMessage> ReCallPostJsonAsync( string uri, string json)
         {
             try
             {
@@ -120,7 +121,7 @@ namespace Common
             }
         }
         //TEST
-        public static async Task<string> GetJsonAsync( string url)
+        public  async Task<string> GetJsonAsync( string url)
         {
             HttpResponseMessage response = null;
             try
@@ -160,7 +161,7 @@ namespace Common
             return null;
         }
 
-        public static async Task<HttpResponseMessage> GetJsonAsyncResponse( string url)
+        public  async Task<HttpResponseMessage> GetJsonAsyncResponse( string url)
         {
             HttpResponseMessage response = null;
             try
@@ -201,7 +202,7 @@ namespace Common
             }
         }
 
-        public static async Task<string> GetBase64Async( string url)
+        public  async Task<string> GetBase64Async( string url)
         {
             try
             {
@@ -224,7 +225,7 @@ namespace Common
         }
 
         // CuongHM add
-        public static async Task<string> PutJsonAsync( string url, string json)
+        public  async Task<string> PutJsonAsync( string url, string json)
         {
             try
             {
@@ -264,7 +265,7 @@ namespace Common
             return null;
         }
 
-        public static async Task<HttpResponseMessage> PutJsonAsyncResponse( string url, string json)
+        public  async Task<HttpResponseMessage> PutJsonAsyncResponse( string url, string json)
         {
             try
             {
@@ -302,7 +303,7 @@ namespace Common
             return null;
         }
 
-        public static async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId)
+        public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId)
         {
             HttpResponseMessage response = null;
             try

@@ -1,9 +1,12 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
+using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
 using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using Model.ModelExtend.User;
-using Simple.Base;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,10 +17,11 @@ using System.Threading.Tasks;
 
 namespace Data.Admin
 {
-    public class UserDA
+    public class UserDA: IUserDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IEncryptor _encryptor = new Encryptor();
         public int Login(string userName, string password)
         {
             var result = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
@@ -91,7 +95,7 @@ namespace Data.Admin
                     try
                     {
                         // Thêm người dùng
-                        model.Password = Encryptor.MD5Hash("123456789a@");
+                        model.Password = _encryptor.MD5Hash("123456789a@");
                         model.IsActive = true;
                         context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
@@ -199,7 +203,7 @@ namespace Data.Admin
             {
                 var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
                 var passwordOldb = data.Password;
-                string passwordOd1 = Encryptor.MD5Hash(passwordOd);
+                string passwordOd1 = _encryptor.MD5Hash(passwordOd);
                 if (passwordOldb != passwordOd1)
                 {
                     obj.Error = true;
@@ -207,7 +211,7 @@ namespace Data.Admin
                 }
                 else
                 {
-                    data.Password = Encryptor.MD5Hash(passwordNew);
+                    data.Password = _encryptor.MD5Hash(passwordNew);
                     db.SaveChanges();
                     obj.Error = false;
                     obj.Title = "Thêm mới thành công!";

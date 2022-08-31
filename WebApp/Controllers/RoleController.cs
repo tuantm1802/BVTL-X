@@ -1,7 +1,7 @@
 ﻿using Common;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +9,20 @@ using System.Web.Mvc;
 using Data.Admin;
 using log4net;
 using WebApp.Common;
+using Model.ModelExtend.Base;
+using Common.Common;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class RoleController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        RoleDA _roleDA = new RoleDA();
-        RolePageDA _rolePageDA = new RolePageDA();
-        PageMenuDA _pageMenuDA = new PageMenuDA();
-        PageActionDA _pageActionDA = new PageActionDA();
-        SysLogDA _sysLogDA = new SysLogDA();
+        IRoleDA _roleDA = new RoleDA();
+        IRolePageDA _rolePageDA = new RolePageDA();
+        IPageMenuDA _pageMenuDA = new PageMenuDA();
+        IPageActionDA _pageActionDA = new PageActionDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: User

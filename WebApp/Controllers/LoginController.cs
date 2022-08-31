@@ -1,7 +1,10 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
 using Data.Admin;
+using Data.InterfaceDA.Admin;
 using Model.Model;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,10 +17,11 @@ namespace WebApp.Controllers
 {
     public class LoginController : Controller
     {
-        SysLogDA _sysLogDA = new SysLogDA();
-        SysParameterDA _sysParameterDA = new SysParameterDA();
-        PageMenuDA _pageMenuDA = new PageMenuDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
+        ISysParameterDA _sysParameterDA = new SysParameterDA();
+        IPageMenuDA _pageMenuDA = new PageMenuDA();
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IEncryptor _encryptor = new Encryptor();
         // GET: Login
         public ActionResult Index()
         {
@@ -28,7 +32,7 @@ namespace WebApp.Controllers
             if (ModelState.IsValid)
             {
                 var _userDA = new UserDA();
-                var result = _userDA.Login(model.UserName, Encryptor.MD5Hash(model.Password));
+                var result = _userDA.Login(model.UserName, _encryptor.MD5Hash(model.Password));
                 if (result == 1)
                 {
                     var userSession = new UserLogin();

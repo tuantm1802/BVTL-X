@@ -1,5 +1,6 @@
-﻿using Model.Model;
-using Simple.Base;
+﻿using Data.InterfaceDA.Admin;
+using Model.Model;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Admin
 {
-    public class SysLogDA
+    public class SysLogDA: ISysLogDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 

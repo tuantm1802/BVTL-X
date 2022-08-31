@@ -89,28 +89,31 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiBase.cs" />
-    <Compile Include="clsEncrypt.cs" />
-    <Compile Include="Common.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="ConvertResultApiToEntity.cs" />
-    <Compile Include="DatabaseSql.cs" />
-    <Compile Include="Encryptor.cs" />
-    <Compile Include="ExportExcel.cs" />
-    <Compile Include="HasCredentialAttribute.cs" />
-    <Compile Include="HelperFileAttachment.cs" />
     <Compile Include="Cache\ICacheProvider.cs" />
     <Compile Include="Cache\MemoryCacheProvider.cs" />
+    <Compile Include="Common\ApiBase.cs" />
+    <Compile Include="Common\clsEncrypt.cs" />
+    <Compile Include="Common\Ultil.cs" />
+    <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\ConvertResultApiToEntity.cs" />
+    <Compile Include="Common\DatabaseSql.cs" />
+    <Compile Include="Common\Encryptor.cs" />
+    <Compile Include="Common\ExportExcel.cs" />
+    <Compile Include="Common\HasCredentialAttribute.cs" />
+    <Compile Include="Common\HelperFileAttachment.cs" />
+    <Compile Include="ICommon\IApiBase.cs" />
+    <Compile Include="ICommon\IclsEncrypt.cs" />
+    <Compile Include="ICommon\IUltil.cs" />
+    <Compile Include="ICommon\IConvertResultApiToEntity.cs" />
+    <Compile Include="ICommon\IDatabaseSql.cs" />
+    <Compile Include="ICommon\IEncryptor.cs" />
+    <Compile Include="ICommon\IExportExcel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{5e412635-0a53-4f04-9046-af424fc70278}</Project>
       <Name>Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simple\Simple.csproj">
-      <Project>{bd4a1e8a-d01f-430b-8369-d1ee837363d1}</Project>
-      <Name>Simple</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

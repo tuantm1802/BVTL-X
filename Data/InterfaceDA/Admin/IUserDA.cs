@@ -1,0 +1,34 @@
+﻿using Model.Model;
+using Model.ModelExtend;
+using Model.ModelExtend.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Data.InterfaceDA.Admin
+{
+    public interface IUserDA
+    {
+         int Login(string userName, string password);
+         BVTL_QT_NGUOI_DUNG GetItemByUserName(string userName);
+         UserPageModel GetItemById(int Id);
+
+         List<string> GetListCredentials(string userName);
+
+         ObjectMessage Add(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs);
+         ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs);
+
+         ObjectMessage ChangePassword(long nguoiDungId, string passwordOd, string passwordNew);
+
+         ObjectMessage Delete(int Id);
+
+        /// <summary>
+        /// Kiểm tra xem BVTL_QT_NGUOI_DUNG có bị khóa không
+        /// </summary>
+        /// <param name="nguoiDungId"></param>
+        /// <returns></returns>
+         bool CheckLock(int nguoiDungId);
+    }
+}

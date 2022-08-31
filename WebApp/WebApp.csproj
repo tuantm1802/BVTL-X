@@ -202,8 +202,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\API\APIResult.cs" />
-    <Compile Include="Models\API\ResultApiModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\DataSet\ChuyenTienDiaPhuongDataSet1.Designer.cs">
       <DependentUpon>ChuyenTienDiaPhuongDataSet.xsd</DependentUpon>
@@ -4568,13 +4566,10 @@
       <Project>{5e412635-0a53-4f04-9046-af424fc70278}</Project>
       <Name>Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Simple\Simple.csproj">
-      <Project>{bd4a1e8a-d01f-430b-8369-d1ee837363d1}</Project>
-      <Name>Simple</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Report\ReportFile\KeHoachChuyenTien.rdlc" />

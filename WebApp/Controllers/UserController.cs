@@ -2,7 +2,7 @@
 using Data.Admin;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,15 +10,16 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WebApp.Models;
+using Common.Common;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class UserController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        UserDA _userDA = new UserDA();
-        SysLogDA _sysLogDA = new SysLogDA();
+        IUserDA _userDA = new UserDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: User

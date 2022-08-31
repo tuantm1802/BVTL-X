@@ -11,12 +11,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Common.ICommon;
 
-namespace Common
+namespace Common.Common
 {
-    public class DatabaseSql
+    public class DatabaseSql: IDatabaseSql
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region Create connection
         /// <summary>
         /// Lấy kết nối đến DB
@@ -25,7 +26,7 @@ namespace Common
         /// lấy trong file Common.Constants
         /// </param>
         /// <returns></returns>
-        public static SqlConnection GetConnect(string connectStrDB)
+        public  SqlConnection GetConnect(string connectStrDB)
         {
             string stringConnect = ConfigurationManager.AppSettings[connectStrDB];
             SqlConnection con = new SqlConnection(stringConnect);
@@ -35,7 +36,7 @@ namespace Common
         #endregion
 
         #region Execute Table for query
-        public static DataTable ExecuteTable(string sql, string connectStrDB)
+        public  DataTable ExecuteTable(string sql, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             SqlCommand cmd = new SqlCommand(sql, con)
@@ -64,7 +65,7 @@ namespace Common
         #endregion
 
         #region Execute Non Query for query
-        public static int ExecuteNonQuery(string sql, string connectStrDB)
+        public  int ExecuteNonQuery(string sql, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             SqlCommand cmd = new SqlCommand(sql, con)
@@ -90,7 +91,7 @@ namespace Common
         #endregion
 
         #region Execute Scalar for query
-        public static int ExecuteScalar(string sql, string connectStrDB)
+        public  int ExecuteScalar(string sql, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             SqlCommand cmd = new SqlCommand(sql, con)
@@ -113,7 +114,7 @@ namespace Common
                 con.Dispose();
             }
         }
-        public static IList<T> ExecuteCommanToList<T>(string sql, string connectStrDB)
+        public  IList<T> ExecuteCommanToList<T>(string sql, string connectStrDB)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -158,7 +159,7 @@ namespace Common
         #endregion
 
         #region Execute Table for Store Procedure
-        public static DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             var dt = new DataTable();
@@ -192,7 +193,7 @@ namespace Common
         #endregion
 
         #region Execute DataSet for Store Procedure
-        public static DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             var ds = new DataSet();
@@ -224,7 +225,7 @@ namespace Common
                 con.Dispose();
             }
         }
-        public static int ExecuteNonQueryTran(string sql, SqlConnection con, SqlTransaction sqlTrans)
+        public  int ExecuteNonQueryTran(string sql, SqlConnection con, SqlTransaction sqlTrans)
         {
 
             SqlCommand cmd = new SqlCommand(sql, con, sqlTrans)
@@ -244,7 +245,7 @@ namespace Common
         #endregion
 
         #region Parse Datatable To Dictionary
-        public static List<Dictionary<string, object>> ParseTableToDictionary(DataTable dt)
+        public  List<Dictionary<string, object>> ParseTableToDictionary(DataTable dt)
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             Dictionary<string, object> row;
@@ -263,7 +264,7 @@ namespace Common
         #endregion
 
         #region Execute Non Query for Store Procedure
-        public static int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             var con = GetConnect(connectStrDB);
             try
@@ -321,7 +322,7 @@ namespace Common
             }
         }
 
-        public static int ExecuteProcNonQueryTran(string procName, List<SqlParameter> lstParam, SqlConnection connect, SqlTransaction tran)
+        public  int ExecuteProcNonQueryTran(string procName, List<SqlParameter> lstParam, SqlConnection connect, SqlTransaction tran)
         {
             try
             {
@@ -347,10 +348,10 @@ namespace Common
 
         #region Execute Store Procedure And Convert Result to List<T>
 
-        public static List<string> InvalidJsonElements;
-        static JavaScriptSerializer serializer = new JavaScriptSerializer();
+        public  List<string> InvalidJsonElements;
+         JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-        public static IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -393,7 +394,7 @@ namespace Common
             }
         }
 
-        public static IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -418,7 +419,7 @@ namespace Common
         #endregion
 
         #region Convert DataTable to Json
-        public static string ConvertDataTabletoJson(DataTable dt)
+        public  string ConvertDataTabletoJson(DataTable dt)
         {
             System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
@@ -437,7 +438,7 @@ namespace Common
         #endregion
 
         #region Convert DataTable to List<T>
-        public static List<T> ConvertDataTableToList<T>(DataTable dt)
+        public  List<T> ConvertDataTableToList<T>(DataTable dt)
         {
             var objectsList = new List<T>();
 
@@ -473,7 +474,7 @@ namespace Common
         //  DataTable dtTable = GetEmployeeDataTable();
         //  List<Employee> employeeList = dtTable.DataTableToList<Employee>();
 
-        public static IList<T> DataTableToList<T>(DataTable table)
+        public  IList<T> DataTableToList<T>(DataTable table)
         {
             try
             {
@@ -513,7 +514,7 @@ namespace Common
         #endregion
 
         #region Convert To List<T>
-        public static IList<T> ConvertToList<T>(DataTable dt)
+        public  IList<T> ConvertToList<T>(DataTable dt)
         {
             var columnNames = dt.Columns.Cast<DataColumn>()
                 .Select(c => c.ColumnName)
@@ -540,7 +541,7 @@ namespace Common
         }
         #endregion
         #region Execute proc table and convert to Json
-        public static string ExecuteProcToJson(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  string ExecuteProcToJson(string procName, List<SqlParameter> lstParam, string connectStrDB)
         {
             try
             {
@@ -558,7 +559,7 @@ namespace Common
         #endregion
 
         #region Convert class to SqlParameter
-        public static SqlParameter CreateSqlParameter(object value, string name)
+        public  SqlParameter CreateSqlParameter(object value, string name)
         {
             var param = new SqlParameter
             {
@@ -568,7 +569,7 @@ namespace Common
             return param;
         }
 
-        public static List<SqlParameter> ConvertClassToSqlParameter<T>(T dt)
+        public  List<SqlParameter> ConvertClassToSqlParameter<T>(T dt)
         {
             var listParam = new List<SqlParameter>();
             try
@@ -592,7 +593,7 @@ namespace Common
         }
 
 
-        public static List<SqlParameter> ConvertClassToSqlParameterNull<T>(T dt)
+        public  List<SqlParameter> ConvertClassToSqlParameterNull<T>(T dt)
         {
             var listParam = new List<SqlParameter>();
             try
@@ -615,7 +616,7 @@ namespace Common
             return listParam;
         }
 
-        public static DataTable ListToDataTable<T>(IList<T> data)
+        public  DataTable ListToDataTable<T>(IList<T> data)
         {
             DataTable table = new DataTable();
 
@@ -660,7 +661,7 @@ namespace Common
         }
         #endregion
         #region Convert List to DataTable
-        public static DataTable ToDataTable<T>(IList<T> data)
+        public  DataTable ToDataTable<T>(IList<T> data)
         {
             PropertyDescriptorCollection properties =
                 TypeDescriptor.GetProperties(typeof(T));
@@ -677,7 +678,7 @@ namespace Common
             return table;
         }
 
-        public static List<T> DataReaderMapToList<T>(IDataReader dr)
+        public  List<T> DataReaderMapToList<T>(IDataReader dr)
         {
             List<T> list = new List<T>();
             T obj = default(T);

@@ -1,4 +1,8 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
+using Data.InterfaceDA;
+using Data.InterfaceDA.API;
 using log4net;
 using Model.ModelExtend.API;
 using Newtonsoft.Json;
@@ -11,9 +15,10 @@ using System.Threading.Tasks;
 
 namespace Data.API
 {
-    public class GetDataFromAPI
+    public class GetDataFromAPI: IGetDataFromAPI
     {
         protected readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        IApiBase _apiBase = new ApiBase();
 
         /// <summary>
         /// Lấy dữ liệu từ đầu Api trả lại list T
@@ -28,7 +33,7 @@ namespace Data.API
             try
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
-                HttpResponseMessage response = await ApiBase.PostJsonAsyncRaw(url, token, reportId);
+                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return new List<T>();
@@ -67,7 +72,7 @@ namespace Data.API
             try
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
-                HttpResponseMessage response = await ApiBase.PostJsonAsyncRaw(url, token, reportId);
+                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return "";

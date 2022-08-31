@@ -4,12 +4,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Common.ICommon;
 
-namespace Common
+namespace Common.Common
 {
-    public class Encryptor
+    public class Encryptor: IEncryptor
     {
-        public static string MD5Hash(string text)
+        public  string MD5Hash(string text)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
 
@@ -30,7 +31,7 @@ namespace Common
             return strBuilder.ToString();
         }
 
-        public static string HmacSha256Hash(string rawData)
+        public  string HmacSha256Hash(string rawData)
         {
             // Create a SHA256   
             using (SHA256 sha256Hash = SHA256.Create())

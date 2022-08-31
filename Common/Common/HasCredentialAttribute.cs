@@ -1,6 +1,6 @@
 ﻿using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using Newtonsoft.Json;
-using Simple.Base;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Common
+namespace Common.Common
 {
     public class HasCredentialAttribute : AuthorizeAttribute
     {

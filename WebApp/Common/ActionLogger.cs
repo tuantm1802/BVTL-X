@@ -3,9 +3,9 @@ using Data.Admin;
 using log4net;
 using Model.Model;
 using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Simple.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -30,7 +30,7 @@ namespace WebApp.Common
             {
                 HttpRequestBase request = filterContext.HttpContext.Request;
                 string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
-                var session = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+                var session = (UserLogin)HttpContext.Current.Session["USER_SESSION"];
 
                 HttpRequest Request = HttpContext.Current.Request;
                 var json = new JavaScriptSerializer().Serialize(

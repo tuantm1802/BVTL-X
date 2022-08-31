@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{5B3EF086-9FED-4B6E-BDFC-F2F544BF9AA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "Simple\Simple.csproj", "{BD4A1E8A-D01F-430B-8369-D1EE837363D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{5E412635-0A53-4F04-9046-AF424FC70278}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncBVTL.Push", "SyncApp\SyncBVTL.Push.csproj", "{CB3BC51A-9BBD-458A-932F-215224995B94}"
@@ -40,12 +38,6 @@ Global
 		{5B3EF086-9FED-4B6E-BDFC-F2F544BF9AA2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B3EF086-9FED-4B6E-BDFC-F2F544BF9AA2}.ViewCompilation|Any CPU.ActiveCfg = ViewCompilation|Any CPU
 		{5B3EF086-9FED-4B6E-BDFC-F2F544BF9AA2}.ViewCompilation|Any CPU.Build.0 = ViewCompilation|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.ViewCompilation|Any CPU.ActiveCfg = ViewCompilation|Any CPU
-		{BD4A1E8A-D01F-430B-8369-D1EE837363D1}.ViewCompilation|Any CPU.Build.0 = ViewCompilation|Any CPU
 		{5E412635-0A53-4F04-9046-AF424FC70278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E412635-0A53-4F04-9046-AF424FC70278}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E412635-0A53-4F04-9046-AF424FC70278}.Release|Any CPU.ActiveCfg = Release|Any CPU

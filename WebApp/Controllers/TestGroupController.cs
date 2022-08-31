@@ -1,7 +1,7 @@
 ﻿using Common;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +9,17 @@ using System.Web.Mvc;
 using Data.Admin;
 using log4net;
 using WebApp.Common;
+using Model.ModelExtend.Base;
+using Common.Common;
+using Data.InterfaceDA.Admin;
 
 namespace WebApp.Controllers
 {
     public class TestGroupController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        BVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
-        SysLogDA _sysLogDA = new SysLogDA();
+        IBVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: TestGroup

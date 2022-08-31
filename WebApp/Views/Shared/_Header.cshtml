@@ -1,6 +1,6 @@
 ﻿@using Common
 @{
-    var userSession = (Simple.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    var userSession = (Model.ModelExtend.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
     string avatar = string.Empty;
     string userId = string.Empty;
     if (userSession != null && !string.IsNullOrEmpty(userSession.Avartar))

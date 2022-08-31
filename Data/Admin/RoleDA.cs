@@ -1,7 +1,8 @@
-﻿using log4net;
+﻿using Data.InterfaceDA.Admin;
+using log4net;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Linq;
 
 namespace Data.Admin
 {
-    public class RoleDA
+    public class RoleDA: IRoleDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

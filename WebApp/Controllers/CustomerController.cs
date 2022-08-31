@@ -1,8 +1,10 @@
 ﻿using Common;
+using Common.Common;
 using Data.Admin;
+using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend;
-using Simple.Base;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +15,8 @@ namespace WebApp.Controllers
     public class CustomerController : BaseController
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        CustomerDA _CustomerDA = new CustomerDA();
-        SysLogDA _sysLogDA = new SysLogDA();
+        ICustomerDA _CustomerDA = new CustomerDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
         // GET: Customer
