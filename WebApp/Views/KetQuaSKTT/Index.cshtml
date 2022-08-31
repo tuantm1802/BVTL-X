@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Kết quả SKTT";
+}
+
+<div class="container-fluid" ng-controller="KetQuaSKTTController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Kết quả SKTT</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableCustomer" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;">STT </th>
+                            <th style="width:9%;">Mã KH</th>
+                            <th style="width:auto;">Họ tên KH </th>
+                            <th style="width:9%;">Giới tính </th>
+                            <th style="width:9%;">Năm sinh </th>
+                            <th style="width:9%;">Đối tượng</th>
+                            <th style="width:9%;">Ngày tiếp cận</th>
+                            <th style="width:9%;">Số điện thoại</th>
+                            <th style="width:9%;">Tỉnh</th>
+                            <th style="width:9%;">Địa chỉ</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/KetQuaSKTTController.js"></script>
+}
