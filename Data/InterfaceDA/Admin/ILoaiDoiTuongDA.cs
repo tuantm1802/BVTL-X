@@ -9,28 +9,26 @@ using Model.ModelExtend.Base;
 
 namespace Data.InterfaceDA.Admin
 {
-    public interface IApiDA
+    public interface ILoaiDoiTuongDA
     {
-
         /// <summary>
-        /// Lấy thông tin api theo mã
+        /// Lấy loại đối tượng theo id
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        ApiPageModel GetItemByCode(string code);
+         BVTL_LOAI_DOI_TUONG GetItemById(int id);
 
         /// <summary>
-        /// Tìm kiếm api theo trang
+        /// Lấy danh sách loại đối tượng theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
-        /// <param name="pageSize"></param>
         /// <returns></returns>
-        List<ApiPageModel> GetAllByPage(ModelSearch modelSearch);
+         List<LoaiDoiTuongPageModel> GetAllByPage(ModelSearch modelSearch);
 
         /// <summary>
-        /// Lấy tất cả đầu api
+        /// Lấy tất cả loại đối tượng
         /// </summary>
         /// <returns></returns>
-        List<BVTL_API> GetAll();
+         List<BVTL_LOAI_DOI_TUONG> GetAll();
     }
 }

@@ -67,6 +67,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\ApiDA.cs" />
+    <Compile Include="Admin\ChatGayNghien3THDA.cs" />
+    <Compile Include="Admin\LoaiDoiTuongDA.cs" />
+    <Compile Include="Admin\KetQuaSKTTDA.cs" />
+    <Compile Include="Admin\KetQuaHIVDA.cs" />
+    <Compile Include="Admin\KetQuaASSISTDA.cs" />
+    <Compile Include="Admin\KetQuaACEDA.cs" />
+    <Compile Include="Admin\DuongSuDungDA.cs" />
+    <Compile Include="Admin\CityDA.cs" />
+    <Compile Include="Admin\ChatGayNghienTX3THDA.cs" />
     <Compile Include="Admin\PageActionDA.cs" />
     <Compile Include="Admin\PageMenuDA.cs" />
     <Compile Include="Admin\RoleDA.cs" />
@@ -80,7 +90,17 @@
     <Compile Include="API\InsertDataDA.cs" />
     <Compile Include="API\GetDataFromAPI.cs" />
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
+    <Compile Include="InterfaceDA\Admin\IApiDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ILoaiDoiTuongDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKetQuaSKTTDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKetQuaHIVDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKetQuaASSISTDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKetQuaACEDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IDuongSuDungDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ICityDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IChatGayNghienTX3THDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IChatGayNghien3THDA.cs" />
     <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPageActionDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPageMenuDA.cs" />

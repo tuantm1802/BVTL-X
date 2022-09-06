@@ -14,7 +14,7 @@ namespace Data.InterfaceDA.Admin
 
          BVTL_KHACH_HANG GetItemByCode(string code);
 
-         List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize);
+         List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch);
 
          List<BVTL_KHACH_HANG> GetAll();
 

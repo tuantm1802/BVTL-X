@@ -8,12 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Data.InterfaceDA.Admin;
 using Model.ModelExtend.Base;
+using Common.Common;
+using Common.ICommon;
+using System.Data.SqlClient;
 
 namespace Data.Admin
 {
     public class CustomerDA: ICustomerDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IDatabaseSql _DatabaseSql = new DatabaseSql();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
@@ -22,32 +26,19 @@ namespace Data.Admin
             return db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == code);
         }
 
-        public List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)
+        public List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch)
         {
             var result = new List<CustomerPageModel>();
-            pageSize = 10;
             try
             {
-                var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
-                if (param != null)
-                    pageSize = Convert.ToInt32(param.ParamValue);
-
-                var sqlString = "SELECT c.*, ci.Name as CityName, " +
-                    "(case when c.gioitinh  = 'M' then N'Nam' when c.gioitinh  = 'F' then N'Nữ'  else '' end) as GioiTinhText, " +
-                     "dt.name as LoaiDoiTuong, " +
-                     "(case when c.ngaytiepcan is not null then CONVERT(varchar, c.ngaytiepcan, 103) else '' end) as ngaytiepcantext, " +
-                    "count(c.khachhang_id) over() as TotalRow FROM [BVTL_KHACH_HANG] c" +
-                    " inner join BVTL_CITES ci on ci.Code = c.city_code" +
-                    " inner join BVTL_LOAI_DOI_TUONG dt on dt.id = c.loai_doi_tuong_id" +
-                    " WHERE 1 =1";
-                if (!string.IsNullOrEmpty(modelSearch.KeyWord))
+                var param = new List<SqlParameter>
                 {
-                    sqlString += " AND (c.makh LIKE N'%" + modelSearch.KeyWord + "%' OR c.hoten LIKE N'%" + modelSearch.KeyWord + "%')";
-                }
-                if (!string.IsNullOrEmpty(modelSearch.SortColumn))
-                    sqlString += " ORDER BY " + modelSearch.SortColumn;
-                sqlString += " OFFSET " + ((modelSearch.currentPage - 1) * modelSearch.pageSize) + " ROWS FETCH NEXT " + modelSearch.pageSize + " ROWS ONLY;";
-                result = db.Database.SqlQuery<CustomerPageModel>(sqlString).ToList();
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
+                    new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<CustomerPageModel>(Constants.SP_Customer_Get_By_Page, param).ToList();
             }
             catch (Exception ex)
             {

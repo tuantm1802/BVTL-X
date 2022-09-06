@@ -20,32 +20,31 @@ namespace Common.ICommon
         /// <summary>
         /// Lấy kết nối đến DB
         /// </summary>
-        /// <param name="connectStrDB">
         /// lấy trong file Common.Constants
         /// </param>
         /// <returns></returns>
-        SqlConnection GetConnect(string connectStrDB);
+        SqlConnection GetConnect();
         #endregion
 
         #region Execute Table for query
-        DataTable ExecuteTable(string sql, string connectStrDB);
+        DataTable ExecuteTable(string sql);
         #endregion
 
         #region Execute Non Query for query
-        int ExecuteNonQuery(string sql, string connectStrDB);
+        int ExecuteNonQuery(string sql);
         #endregion
 
         #region Execute Scalar for query
-        int ExecuteScalar(string sql, string connectStrDB);
-        IList<T> ExecuteCommanToList<T>(string sql, string connectStrDB);
+        int ExecuteScalar(string sql);
+        IList<T> ExecuteCommanToList<T>(string sql);
         #endregion
 
         #region Execute Table for Store Procedure
-        DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam);
         #endregion
 
         #region Execute DataSet for Store Procedure
-        DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam);
         int ExecuteNonQueryTran(string sql, SqlConnection con, SqlTransaction sqlTrans);
         #endregion
 
@@ -55,18 +54,18 @@ namespace Common.ICommon
         #endregion
 
         #region Execute Non Query for Store Procedure
-        int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam);
 
-        Task<int> ExecuteProcNonQueryAsync(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        Task<int> ExecuteProcNonQueryAsync(string procName, List<SqlParameter> lstParam);
 
         int ExecuteProcNonQueryTran(string procName, List<SqlParameter> lstParam, SqlConnection connect, SqlTransaction tran);
         #endregion
 
         #region Execute Store Procedure And Convert Result to List<T>
 
-        IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam);
 
-        IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam);
 
         #endregion
 
@@ -89,7 +88,7 @@ namespace Common.ICommon
         IList<T> ConvertToList<T>(DataTable dt);
         #endregion
         #region Execute proc table and convert to Json
-        string ExecuteProcToJson(string procName, List<SqlParameter> lstParam, string connectStrDB);
+        string ExecuteProcToJson(string procName, List<SqlParameter> lstParam);
         #endregion
 
         #region Convert class to SqlParameter

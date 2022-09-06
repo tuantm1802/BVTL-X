@@ -9,28 +9,22 @@ using Model.ModelExtend.Base;
 
 namespace Data.InterfaceDA.Admin
 {
-    public interface IApiDA
+    public interface IKetQuaACEDA
     {
 
         /// <summary>
-        /// Lấy thông tin api theo mã
+        /// Lấy kết quả ACE theo id
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        ApiPageModel GetItemByCode(string code);
+        KetQuaACEPageModel GetItemById(int id);
 
         /// <summary>
-        /// Tìm kiếm api theo trang
+        /// Lấy kết quả ACE theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        List<ApiPageModel> GetAllByPage(ModelSearch modelSearch);
-
-        /// <summary>
-        /// Lấy tất cả đầu api
-        /// </summary>
-        /// <returns></returns>
-        List<BVTL_API> GetAll();
+        List<KetQuaACEPageModel> GetAllByPage(ModelSearch modelSearch);
     }
 }

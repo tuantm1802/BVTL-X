@@ -9,28 +9,27 @@ using Model.ModelExtend.Base;
 
 namespace Data.InterfaceDA.Admin
 {
-    public interface IApiDA
+    public interface ICityDA
     {
 
         /// <summary>
-        /// Lấy thông tin api theo mã
+        /// Lấy thông tin tỉnh theo mã
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        ApiPageModel GetItemByCode(string code);
+        BVTL_CITES GetItemByCode(string code);
 
         /// <summary>
-        /// Tìm kiếm api theo trang
+        /// Lấy danh sách tỉnh theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
-        /// <param name="pageSize"></param>
         /// <returns></returns>
-        List<ApiPageModel> GetAllByPage(ModelSearch modelSearch);
+        List<CityPageModel> GetAllByPage(ModelSearch modelSearch);
 
         /// <summary>
-        /// Lấy tất cả đầu api
+        /// Lấy danh sách tỉnh
         /// </summary>
         /// <returns></returns>
-        List<BVTL_API> GetAll();
+        List<BVTL_CITES> GetAll();
     }
 }

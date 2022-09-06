@@ -65,6 +65,16 @@
     <Compile Include="ModelExtend\Base\ObjectMessage.cs" />
     <Compile Include="ModelExtend\Base\PaginationModel.cs" />
     <Compile Include="ModelExtend\Base\UserLogin.cs" />
+    <Compile Include="ModelExtend\ApiPageModel.cs" />
+    <Compile Include="ModelExtend\ChatGayNghien3THPageModel.cs" />
+    <Compile Include="ModelExtend\ChatGayNghienTX3THPageModel.cs" />
+    <Compile Include="ModelExtend\CityPageModel.cs" />
+    <Compile Include="ModelExtend\DuongSuDungPageModel.cs" />
+    <Compile Include="ModelExtend\KetQuaACEPageModel.cs" />
+    <Compile Include="ModelExtend\KetQuaASSISTModel.cs" />
+    <Compile Include="ModelExtend\KetQuaHIVPageModel.cs" />
+    <Compile Include="ModelExtend\KetQuaSKTTPageModel.cs" />
+    <Compile Include="ModelExtend\LoaiDoiTuongPageModel.cs" />
     <Compile Include="ModelExtend\MenuModel.cs" />
     <Compile Include="ModelExtend\PageMenuModel.cs" />
     <Compile Include="ModelExtend\Report\BaoCaoModel.cs" />

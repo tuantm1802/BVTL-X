@@ -14,5 +14,8 @@ namespace Model.ModelExtend.Base
         public string AppCode { get; set; }
         public string Permission_Require { get; set; }
         public string KeyWord { get; set; }
+        public string Months { get; set; }
+        public int? Year { get; set; }
+        public string CityCodes { get; set; }
     }
 }

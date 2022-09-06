@@ -11,5 +11,24 @@ namespace Common.Common
         public const string Cache_DM_DonviKey = "Cache_DM_DonviKey";
         public static readonly string[] ActionsAllowAcess = { "MyProfile", "GetUserInfo", "UpdateMyProfile"};
         public const string GetDataFromAPI = "GetDataFromAPI";
+
+        #region Tên các store procedures
+        public const string SP_Api_Get_By_Page = "Api_Get_By_Page";
+        public const string SP_ChatGayNghien3TH_Get_By_Page = "ChatGayNghien3TH_Get_By_Page";
+        public const string SP_ChatGayNghienTX3TH_Get_By_Page = "ChatGayNghienTX3TH_Get_By_Page";
+        public const string SP_City_Get_By_Page = "City_Get_By_Page";
+        public const string SP_Customer_Get_By_Page = "Customer_Get_By_Page";
+        public const string SP_DuongSuDung_Get_By_Page = "DuongSuDung_Get_By_Page";
+        public const string SP_KetQuaACE_Get_By_Page = "KetQuaACE_Get_By_Page";
+        public const string SP_KetQuaASSIST_Get_By_Page = "KetQuaASSIST_Get_By_Page";
+        public const string SP_KetQuaHIV_Get_By_Page = "KetQuaHIV_Get_By_Page";
+        public const string SP_KetQuaSKTT_Get_By_Page = "KetQuaSKTT_Get_By_Page";
+        public const string SP_LoaiDoiTuong_Get_By_Page = "LoaiDoiTuong_Get_By_Page";
+        public const string SP_KetQuaSKTT_Get_By_Id = "KetQuaSKTT_Get_By_Id";
+        public const string SP_KetQuaHIV_Get_By_Id = "KetQuaHIV_Get_By_Id";
+        public const string SP_KetQuaASSIST_Get_By_Id = "KetQuaASSIST_Get_By_Id";
+        public const string SP_KetQuaACE_Get_By_Id = "KetQuaACE_Get_By_Id";
+            
+        #endregion
     }
 }

@@ -189,6 +189,16 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseNoRoleController.cs" />
     <Compile Include="Controllers\ControlProjectController.cs" />
+    <Compile Include="Controllers\LoaiDoiTuongController.cs" />
+    <Compile Include="Controllers\KetQuaSKTTController.cs" />
+    <Compile Include="Controllers\KetQuaHIVController.cs" />
+    <Compile Include="Controllers\KetQuaASSISTController.cs" />
+    <Compile Include="Controllers\KetQuaACEController.cs" />
+    <Compile Include="Controllers\DuongSuDungController.cs" />
+    <Compile Include="Controllers\CityController.cs" />
+    <Compile Include="Controllers\ChatGayNghienTX3THController.cs" />
+    <Compile Include="Controllers\ChatGayNghien3THController.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\ErrorPageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -253,6 +263,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
+    <Content Include="app\Controller\LoaiDoiTuongController.js" />
+    <Content Include="app\Controller\KetQuaHIVController.js" />
+    <Content Include="app\Controller\KetQuaSKTTController.js" />
+    <Content Include="app\Controller\KetQuaASSISTController.js" />
+    <Content Include="app\Controller\KetQuaACEController.js" />
+    <Content Include="app\Controller\DuongSuDungController.js" />
+    <Content Include="app\Controller\ChatGayNghienTX3THController.js" />
+    <Content Include="app\Controller\ChatGayNghien3THController.js" />
+    <Content Include="app\Controller\CityController.js" />
+    <Content Include="app\Controller\ApiController.js" />
     <Content Include="app\Controller\SyncDataController.js" />
     <Content Include="app\Controller\DemoReportController.js" />
     <Content Include="app\Controller\CustomerController.js" />
@@ -4541,6 +4561,16 @@
     <Content Include="Views\SyncData\Index.cshtml" />
     <Content Include="Views\DemoReport\Index.cshtml" />
     <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Api\Index.cshtml" />
+    <Content Include="Views\ChatGayNghienTX3TH\Index.cshtml" />
+    <Content Include="Views\City\Index.cshtml" />
+    <Content Include="Views\DuongSuDung\Index.cshtml" />
+    <Content Include="Views\KetQuaACE\Index.cshtml" />
+    <Content Include="Views\KetQuaASSIST\Index.cshtml" />
+    <Content Include="Views\KetQuaHIV\Index.cshtml" />
+    <Content Include="Views\KetQuaSKTT\Index.cshtml" />
+    <Content Include="Views\LoaiDoiTuong\Index.cshtml" />
+    <Content Include="Views\ChatGayNghien3TH\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

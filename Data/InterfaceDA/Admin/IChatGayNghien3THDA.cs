@@ -9,28 +9,25 @@ using Model.ModelExtend.Base;
 
 namespace Data.InterfaceDA.Admin
 {
-    public interface IApiDA
+    public interface IChatGayNghien3THDA
     {
-
         /// <summary>
-        /// Lấy thông tin api theo mã
+        /// Lấy thông tin theo id
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        ApiPageModel GetItemByCode(string code);
+        BVTL_CHAT_GAY_NGHIEN_3TH GetItemById(int id);
 
         /// <summary>
-        /// Tìm kiếm api theo trang
+        /// Lấy dữ liệu theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
-        /// <param name="pageSize"></param>
         /// <returns></returns>
-        List<ApiPageModel> GetAllByPage(ModelSearch modelSearch);
-
+        List<ChatGayNghien3THPageModel> GetAllByPage(ModelSearch modelSearch);
         /// <summary>
-        /// Lấy tất cả đầu api
+        /// Lấy tất cả dữ liệu
         /// </summary>
         /// <returns></returns>
-        List<BVTL_API> GetAll();
+        List<BVTL_CHAT_GAY_NGHIEN_3TH> GetAll();
     }
 }

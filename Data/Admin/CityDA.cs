@@ -8,52 +8,36 @@ using System.Text;
 using System.Threading.Tasks;
 using Data.InterfaceDA.Admin;
 using Model.ModelExtend.Base;
-using Common.ICommon;
 using Common.Common;
+using Common.ICommon;
 using System.Data.SqlClient;
 
 namespace Data.Admin
 {
-    public class ApiDA : IApiDA
+    public class CityDA : ICityDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IDatabaseSql _DatabaseSql = new DatabaseSql();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
-        /// Lấy thông tin api theo mã
+        /// Lấy thông tin tỉnh theo mã
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public ApiPageModel GetItemByCode(string code)
+        public BVTL_CITES GetItemByCode(string code)
         {
-            var result = new ApiPageModel();
-            var api = db.BVTL_API.FirstOrDefault(x => x.Api_Code == code);
-            var tables = db.BVTL_MASTER_TABLE.Where(x => x.Api_Id == api.Api_Id).Select(x => x.table_name).ToList();
-
-            result.Api_Id = api.Api_Id;
-            result.Api_Code = api.Api_Code;
-            result.NameSyncdata = api.NameSyncdata;
-            result.HrefApi = api.HrefApi;
-            result.TypeApi = api.TypeApi;
-            result.TokenApi = api.TokenApi;
-            result.TableNameSaveData = api.TableNameSaveData;
-            result.IsActive = api.IsActive;
-            result.ReportId = api.ReportId;
-            result.TimeReCall = api.TimeReCall;
-            result.TableNames = tables;
-            return result;
+            return db.BVTL_CITES.FirstOrDefault(x => x.Code == code);
         }
 
         /// <summary>
-        /// Tìm kiếm api theo trang
+        /// Lấy danh sách tỉnh theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
-        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public List<ApiPageModel> GetAllByPage(ModelSearch modelSearch)
+        public List<CityPageModel> GetAllByPage(ModelSearch modelSearch)
         {
-            var result = new List<ApiPageModel>();
+            var result = new List<CityPageModel>();
             try
             {
                 var param = new List<SqlParameter>
@@ -63,30 +47,30 @@ namespace Data.Admin
                     new SqlParameter("Page", modelSearch.currentPage),
                     new SqlParameter("PageSize", modelSearch.pageSize)
                 };
-                result = _DatabaseSql.ExecuteProcToList<ApiPageModel>(Constants.SP_Api_Get_By_Page, param).ToList();
+                result = _DatabaseSql.ExecuteProcToList<CityPageModel>(Constants.SP_City_Get_By_Page, param).ToList();
             }
             catch (Exception ex)
             {
                 var log = new BVTL_QT_LOG
                 {
-                    ControllerName = "ApiDA",
+                    ControllerName = "CityDA",
                     UserName = "",
                     DateLog = DateTime.Now,
-                    Content = "Lấy danh sách Api theo trang lỗi:" + ex.Message
+                    Content = "Lấy danh sách tỉnh theo trang lỗi:" + ex.Message
                 };
                 db.BVTL_QT_LOG.Add(log);
-                result = new List<ApiPageModel>();
+                result = new List<CityPageModel>();
             }
             return result;
         }
 
         /// <summary>
-        /// Lấy tất cả đầu api
+        /// Lấy danh sách tỉnh
         /// </summary>
         /// <returns></returns>
-        public List<BVTL_API> GetAll()
+        public List<BVTL_CITES> GetAll()
         {
-            return db.BVTL_API.ToList();
+            return db.BVTL_CITES.ToList();
         }
     }
 }
