@@ -67,6 +67,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\ApiDA.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %282%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %283%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %284%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %285%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %286%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %287%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %288%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy %289%29.cs" />
+    <Compile Include="Admin\CustomerDA - Copy.cs" />
     <Compile Include="Admin\PageActionDA.cs" />
     <Compile Include="Admin\PageMenuDA.cs" />
     <Compile Include="Admin\RoleDA.cs" />
@@ -81,6 +91,15 @@
     <Compile Include="API\GetDataFromAPI.cs" />
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IApiDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %283%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %284%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %285%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %286%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %287%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %288%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy %289%29.cs" />
+    <Compile Include="InterfaceDA\Admin\ICustomerDA - Copy.cs" />
     <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPageActionDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPageMenuDA.cs" />
