@@ -14,7 +14,6 @@ namespace WebApp.Controllers
 {
     public class CustomerController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         ICustomerDA _CustomerDA = new CustomerDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();

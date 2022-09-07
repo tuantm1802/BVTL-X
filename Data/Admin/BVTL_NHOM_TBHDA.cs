@@ -53,11 +53,23 @@ namespace Data.Admin
         }
 
         /// <summary>
+        /// Lấy tất cả Nhóm thu thập dữ liệu
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<BVTL_NHOM_TBH> GetAll()
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            return db.BVTL_NHOM_TBH.ToList();
+        }
+
+
+        /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo id
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-        public BVTL_NHOM_TBH GetItemById(string maNhom)
+        public BVTL_NHOM_TBH GetItemByMaNhom(string maNhom)
         {
             return db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom);
         }
@@ -67,7 +79,7 @@ namespace Data.Admin
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-        public List<BVTL_QT_NGUOI_DUNG> GetAllUserById(string maNhom)
+        public List<BVTL_QT_NGUOI_DUNG> GetAllUserByMaNhom(string maNhom)
         {
             return (from tg in db.BVTL_NHOM_TBH
                     join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa

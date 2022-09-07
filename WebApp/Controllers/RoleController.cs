@@ -17,7 +17,6 @@ namespace WebApp.Controllers
 {
     public class RoleController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IRoleDA _roleDA = new RoleDA();
         IRolePageDA _rolePageDA = new RolePageDA();
         IPageMenuDA _pageMenuDA = new PageMenuDA();
@@ -136,12 +135,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.BVTL_QT_QUYEN.Select(x => new
-                {
-                    x.ID,
-                    x.Name,
-                    x.Descripttion
-                }).FirstOrDefault(x => x.ID == Id);
+                var data = _roleDA.GetItemById(Id);
 
                 var rolePages = new List<BVTL_QT_QUYEN_PAGE>();
                 if (!string.IsNullOrEmpty(Id))

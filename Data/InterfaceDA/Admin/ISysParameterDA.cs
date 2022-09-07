@@ -11,7 +11,7 @@ namespace Data.InterfaceDA.Admin
 {
     public interface ISysParameterDA
     {
-        BVTL_QT_THAM_SO GetItemByCode(string code);
+        BVTL_QT_THAM_SO GetItemById(int id);
         List<SysParameterPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize);
         List<BVTL_QT_THAM_SO> GetAll();
         ObjectMessage Add(BVTL_QT_THAM_SO model);

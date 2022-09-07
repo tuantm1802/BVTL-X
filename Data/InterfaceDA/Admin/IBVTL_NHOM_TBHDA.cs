@@ -19,18 +19,25 @@ namespace Data.InterfaceDA.Admin
          List<BVTL_NHOM_TBH> GetAllByPage(ModelSearch modelSearch, ref int totalRow);
 
         /// <summary>
+        /// Lấy tất cả Nhóm thu thập dữ liệu
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+         List<BVTL_NHOM_TBH> GetAll();
+
+        /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo id
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-        BVTL_NHOM_TBH GetItemById(string maNhom);
+        BVTL_NHOM_TBH GetItemByMaNhom(string maNhom);
 
         /// <summary>
         /// Lấy danh sách người dùng thep Nhóm thu thập dữ liệu theo id
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-         List<BVTL_QT_NGUOI_DUNG> GetAllUserById(string maNhom);
+         List<BVTL_QT_NGUOI_DUNG> GetAllUserByMaNhom(string maNhom);
 
         /// <summary>
         /// Thêm mới

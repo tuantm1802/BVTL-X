@@ -17,10 +17,11 @@ using System.Threading.Tasks;
 
 namespace Data.Admin
 {
-    public class UserDA: IUserDA
+    public class UserDA : IUserDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IDatabaseSql _DatabaseSql = new DatabaseSql();
         IEncryptor _encryptor = new Encryptor();
         public int Login(string userName, string password)
         {
@@ -46,27 +47,83 @@ namespace Data.Admin
         }
         public UserPageModel GetItemById(int Id)
         {
-            var result = new UserPageModel();
+            var result = (from u in db.BVTL_QT_NGUOI_DUNG
+                        join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
+                        where u.ID == Id
+                        select new UserPageModel
+                        {
+                            ID = u.ID,
+                            Name = u.Name,
+                            Phone = u.Phone,
+                            Status = u.Status,
+                            UserName = u.UserName,
+                            RoleName = r.Name,
+                            UserGroupID = u.GroupID,
+                            Address = u.Address,
+                            Avartar = u.Avartar,
+                            Email = u.Email,
+                            CreatedDate = u.CreatedDate,
+                            DateOfBirth = u.DateOfBirth,
+                            Gender = u.Gender,
+                            IdNumber = u.IdNumber,
+                            Possition = u.Possition,
+                            OperativeLevel = u.OperativeLevel,
+                            OriginId = u.OriginId,
+                            CityCodes = u.CityCodes
+                        }).FirstOrDefault();
 
-            var BVTL_QT_NGUOI_DUNG = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
-            result.ID = BVTL_QT_NGUOI_DUNG.ID;
-            result.Name = BVTL_QT_NGUOI_DUNG.Name;
-            result.Phone = BVTL_QT_NGUOI_DUNG.Phone;
-            result.Status = BVTL_QT_NGUOI_DUNG.Status;
-            result.UserName = BVTL_QT_NGUOI_DUNG.UserName;
-            result.GroupID = BVTL_QT_NGUOI_DUNG.GroupID;
-            result.RoleName = db.BVTL_QT_QUYEN.FirstOrDefault(x=>x.ID == BVTL_QT_NGUOI_DUNG.GroupID).Name;
-            result.Address = BVTL_QT_NGUOI_DUNG.Address;
-            result.Avartar = BVTL_QT_NGUOI_DUNG.Avartar;
-            result.Email = BVTL_QT_NGUOI_DUNG.Email;
-            result.CreatedDate = BVTL_QT_NGUOI_DUNG.CreatedDate;
+
+            result.RoleName = db.BVTL_QT_QUYEN.FirstOrDefault(x => x.ID == result.GroupID).Name;
 
             // Lấy danh sách nhóm thu thập dữ liệu
+            result.TestGroups = new List<BVTL_NHOM_TBH>();
             result.TestGroups = (from tg in db.BVTL_NHOM_TBH
                                  join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa
                                  where utg.NguoiDungId == Id
                                  select tg).ToList();
 
+            // Lấy danh sách tỉnh quản lý
+            result.Citys = new List<BVTL_CITES>();
+            if (!string.IsNullOrEmpty(result.CityCodes))
+            {
+                var cityCodes = result.CityCodes.Split(',').ToList();
+                result.Citys = db.BVTL_CITES.Where(x=> cityCodes.Contains(x.Code)).ToList();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu theo trang
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<UserPageModel> GetAllByPage(ModelSearch modelSearch)
+        {
+            var result = new List<UserPageModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
+                    new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<UserPageModel>(Constants.SP_User_Get_By_Page, param).ToList();
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "UserDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy danh sách người dùng theo trang lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<UserPageModel>();
+            }
             return result;
         }
 

@@ -14,7 +14,6 @@ namespace WebApp.Controllers
 {
     public class KetQuaACEController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IKetQuaACEDA _KetQuaACEDA = new KetQuaACEDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();

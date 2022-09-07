@@ -31,5 +31,12 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <returns></returns>
         List<BVTL_CITES> GetAll();
+
+        /// <summary>
+        /// Lấy danh sách tỉnh theo người dùng
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+         List<BVTL_CITES> GetCityReport(int userId);
     }
 }

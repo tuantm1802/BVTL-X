@@ -72,5 +72,35 @@ namespace Data.Admin
         {
             return db.BVTL_CITES.ToList();
         }
+
+        /// <summary>
+        /// Lấy danh sách tỉnh theo người dùng
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<BVTL_CITES> GetCityReport(int userId)
+        {
+            var result = new List<BVTL_CITES>();
+            try
+            {
+                var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x=>x.ID == userId);
+                if (!string.IsNullOrEmpty(user.CityCodes))
+                {
+                    var cityCodes = user.CityCodes.Split(',').ToList();
+                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList() ;
+                    return citys != null ? citys : new List<BVTL_CITES>();
+                }
+                else
+                {
+                    return db.BVTL_CITES.ToList();
+                }
+            }
+            catch (Exception)
+            {
+                result = new List<BVTL_CITES>();
+            }
+            return result;
+        }
+
     }
 }

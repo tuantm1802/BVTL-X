@@ -14,7 +14,6 @@ namespace WebApp.Controllers
 {
     public class LoaiDoiTuongController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         ILoaiDoiTuongDA _LoaiDoiTuongDA = new LoaiDoiTuongDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();

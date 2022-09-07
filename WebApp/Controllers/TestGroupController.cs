@@ -17,7 +17,6 @@ namespace WebApp.Controllers
 {
     public class TestGroupController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IBVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -130,7 +129,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom);
+                var data = _testGroupDA.GetItemByMaNhom(maNhom); 
 
                 AddLog("Lấy dữ liệu theo ID bảng Nhóm thu thập DL(ID: " + maNhom + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });

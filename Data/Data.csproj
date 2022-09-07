@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Admin\ApiDA.cs" />
     <Compile Include="Admin\ChatGayNghien3THDA.cs" />
+    <Compile Include="Admin\BaoCaoTongHopDA.cs" />
     <Compile Include="Admin\LoaiDoiTuongDA.cs" />
     <Compile Include="Admin\KetQuaSKTTDA.cs" />
     <Compile Include="Admin\KetQuaHIVDA.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
     <Compile Include="InterfaceDA\Admin\IApiDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IBaoCaoTongHopDA.cs" />
     <Compile Include="InterfaceDA\Admin\ILoaiDoiTuongDA.cs" />
     <Compile Include="InterfaceDA\Admin\IKetQuaSKTTDA.cs" />
     <Compile Include="InterfaceDA\Admin\IKetQuaHIVDA.cs" />

@@ -140,7 +140,7 @@
                                         UserName: respone.data[i].UserName,
                                         Name: respone.data[i].Name,
                                         IdNumber: (respone.data[i].IdNumber == null || respone.data[i].IdNumber == undefined) ? '' : respone.data[i].IdNumber,
-                                        Role: respone.data[i].Role,
+                                        RoleName: respone.data[i].RoleName,
                                         Status: respone.data[i].Status == true ? 'Sử dụng' : 'Không sử dụng',
                                         ID: respone.data[i].ID
                                     }
@@ -184,7 +184,7 @@
                     { "data": "UserName" },
                     { "data": "Name" },
                     { "data": "IdNumber" },
-                    { "data": "Role" },
+                    { "data": "RoleName" },
                     { "data": "Status" },
                     //{
                     //    "data": "ID", "render": function (data) {
@@ -326,6 +326,8 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.ListUserGroup = [];
     $scope.ListTestGroup = [];
     $scope.ListTestGroupId = [];
+    $scope.ListCity = [];
+    $scope.ListCityCode = [];
 
     $scope.FileName = "";
     angular.element(document).ready(function () {
@@ -337,7 +339,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     function GetDanhMuc() {
         $scope.ListUserGroup = [];
         $scope.ListTestGroup = [];
-
+        $scope.ListCity = [];
         $.ajax({
             type: 'post',
             url: '/User/GetDanhMuc',
@@ -352,6 +354,10 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
                 if (data.DataTestGroup != null && data.DataTestGroup.length > 0) {
                     $scope.ListTestGroup = data.DataTestGroup;
+                }
+
+                if (data.Citys != null && data.Citys.length > 0) {
+                    $scope.ListCity = data.Citys;
                 }
 
                 $scope.ListStatus = [{ ID: true, Name: 'Sử dụng' }, { ID: false, Name: 'Không sử dụng' }];
@@ -406,7 +412,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             $.ajax({
                 type: 'post',
                 url: '/User/Add',
-                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId },
+                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId, cityCodes: $scope.ListCityCode },
                 success: function (data) {
                     if (data.Error) {
                         toastr.error(data.Title);
@@ -419,7 +425,6 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             });
         }
     };
-
 
     $scope.cancel = function () {
         $uibModalInstance.close();
@@ -454,6 +459,8 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.ListUserGroup = [];
     $scope.ListTestGroup = [];
     $scope.ListTestGroupId = [];
+    $scope.ListCity = [];
+    $scope.ListCityCode = [];
     $scope.FileName = "";
     $scope.model = {};
     angular.element(document).ready(function () {
@@ -473,6 +480,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     $scope.model = data.data;
                     $scope.model.GroupID = $scope.model.UserGroupID;
                     $scope.ListTestGroupId = data.TestGroupId;
+                    $scope.ListCityCode = data.CityCodes;
                     hideLoading();
                     $scope.$apply();
 
@@ -485,6 +493,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     function GetDanhMuc() {
         $scope.ListTestGroup = [];
         $scope.ListUserGroup = [];
+        $scope.ListCity = [];
         $.ajax({
             type: 'post',
             url: '/User/GetDanhMuc',
@@ -497,6 +506,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }
                 if (data.DataTestGroup != null && data.DataTestGroup.length > 0) {
                     $scope.ListTestGroup = data.DataTestGroup;
+                }
+                if (data.Citys != null && data.Citys.length > 0) {
+                    $scope.ListCity = data.Citys;
                 }
                 $scope.$apply();
             }
@@ -542,7 +554,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
             $.ajax({
                 type: 'post',
                 url: '/User/Edit',
-                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId },
+                data: { user: $scope.model, fileName: $scope.FileName, testGroupMa: $scope.ListTestGroupId, cityCodes: $scope.ListCityCode  },
                 success: function (data) {
                     if (data.Error) {
                         toastr.error(data.Title);
@@ -589,6 +601,8 @@ app.controller('view', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.ListUserGroup = [];
     $scope.ListTestGroup = [];
     $scope.ListTestGroupId = [];
+    $scope.ListCity = [];
+    $scope.ListCityCode = [];
     $scope.FileName = "";
     $scope.model = {};
     angular.element(document).ready(function () {
@@ -608,6 +622,7 @@ app.controller('view', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     $scope.model = data.data;
                     $scope.model.GroupID = $scope.model.UserGroupID;
                     $scope.ListTestGroupId = data.TestGroupId;
+                    $scope.ListCityCode = data.CityCodes;
                     hideLoading();
                     $scope.$apply();
 
@@ -632,6 +647,9 @@ app.controller('view', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }
                 if (data.DataTestGroup != null && data.DataTestGroup.length > 0) {
                     $scope.ListTestGroup = data.DataTestGroup;
+                }
+                if (data.Citys != null && data.Citys.length > 0) {
+                    $scope.ListCity = data.Citys;
                 }
                 $scope.$apply();
             }

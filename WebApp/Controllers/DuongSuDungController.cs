@@ -14,7 +14,6 @@ namespace WebApp.Controllers
 {
     public class DuongSuDungController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IDuongSuDungDA _DuongSuDungDA = new DuongSuDungDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
