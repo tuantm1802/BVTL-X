@@ -25,15 +25,7 @@ namespace WebApp.Controllers
         {
             return View();
         }
-
-        public ActionResult _Add()
-        {
-            return PartialView("_add");
-        }
-        public ActionResult _Edit()
-        {
-            return PartialView("_edit");
-        }
+       
         [HttpPost]
         public ActionResult GetAll(ModelSearch modelSearch)
         {

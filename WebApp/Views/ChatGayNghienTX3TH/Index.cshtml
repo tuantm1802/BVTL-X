@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Khách hàng";
+    ViewBag.Title = "Chất gây nghiện TX3TH";
 }
 
-<div class="container-fluid" ng-controller="CustomerController">
+<div class="container-fluid" ng-controller="ChatGayNghienTX3THController">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Khách hàng</h1>
+    <h1 class="h3 mb-2 text-gray-800">Chất gây nghiện TX3TH</h1>
     <p class="mb-4">
     </p>
 
@@ -20,19 +20,12 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableCustomer" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="dataTableChatGayNghienTX3TH" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th style="width:5%;">STT </th>
-                            <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
-                            <th style="width:9%;">Giới tính </th>
-                            <th style="width:9%;">Năm sinh </th>
-                            <th style="width:9%;">Đối tượng</th>
-                            <th style="width:9%;">Ngày tiếp cận</th>
-                            <th style="width:9%;">Số điện thoại</th>
-                            <th style="width:9%;">Tỉnh</th>
-                            <th style="width:9%;">Địa chỉ</th>
+                            <th style="width: auto;">STT </th>
+                            <th style="width: auto;">Tên</th>
+                            <th style="width: auto;">Ghi chú </th>
                         </tr>
                     </thead>
                 </table>
@@ -42,5 +35,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/CustomerController.js"></script>
+    <script src="~/app/Controller/ChatGayNghienTX3THController.js"></script>
 }
