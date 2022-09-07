@@ -66,6 +66,13 @@
             return;
         }
 
+        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
+            $scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
+        } else {
+            toastr.error("Vui lòng chọn tháng!");
+            return;
+        }
+
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
@@ -103,11 +110,17 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
+        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
+            $scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
+        } else {
+            toastr.error("Vui lòng chọn tháng!");
+            return;
+        }
 
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
-        window.location.href = '/ReportExplosiveByCareer/ExportData?listCities=' + strData + '&fromDate=' + moment($scope.modelSearch.SearchFromDate).format('YYYYMMDD') + '&toDate=' + moment($scope.modelSearch.SearchToDate).format('YYYYMMDD') + '&listUnitId=' + strDataUnit + "&isThucTe=" + parseInt($scope.modelSearch.isThucTe);;
+        window.location.href = '/BaoCaoThang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + $scope.modelSearch.CityCodes;
     }
 
 

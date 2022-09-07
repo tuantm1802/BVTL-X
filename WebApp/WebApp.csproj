@@ -187,25 +187,17 @@
     <Compile Include="Common\ActionLogger.cs" />
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\BaoCaoNamController.cs" />
+    <Compile Include="Controllers\BaoCaoQuyController.cs" />
+    <Compile Include="Controllers\BaoCaoThangController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseNoRoleController.cs" />
     <Compile Include="Controllers\ChatGayNghien3THController.cs" />
     <Compile Include="Controllers\ChatGayNghienTX3THController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ControlProjectController.cs" />
-    <Compile Include="Controllers\BaoCaoThangController.cs" />
-    <Compile Include="Controllers\BaoCaoQuyController.cs" />
-    <Compile Include="Controllers\BaoCaoNamController.cs" />
-    <Compile Include="Controllers\LoaiDoiTuongController.cs" />
-    <Compile Include="Controllers\KetQuaSKTTController.cs" />
-    <Compile Include="Controllers\KetQuaHIVController.cs" />
-    <Compile Include="Controllers\KetQuaASSISTController.cs" />
-    <Compile Include="Controllers\KetQuaACEController.cs" />
-    <Compile Include="Controllers\DuongSuDungController.cs" />
-    <Compile Include="Controllers\CityController.cs" />
-    <Compile Include="Controllers\ChatGayNghienTX3THController.cs" />
-    <Compile Include="Controllers\ChatGayNghien3THController.cs" />
-    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\DemoReportController.cs" />
     <Compile Include="Controllers\DuongSuDungController.cs" />
     <Compile Include="Controllers\ErrorPageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -215,12 +207,10 @@
     <Compile Include="Controllers\KetQuaSKTTController.cs" />
     <Compile Include="Controllers\LoaiDoiTuongController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\SyncDataController.cs" />
-    <Compile Include="Controllers\DemoReportController.cs" />
-    <Compile Include="Controllers\CustomerController.cs" />
-    <Compile Include="Controllers\TestGroupController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SyncDataController.cs" />
     <Compile Include="Controllers\SysParameterController.cs" />
+    <Compile Include="Controllers\TestGroupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -276,12 +266,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
-    <Content Include="app\Controller\SyncDataController.js" />
-    <Content Include="app\Controller\DemoReportController.js" />
+    <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\BaoCaoNamController.js" />
+    <Content Include="app\Controller\BaoCaoQuyController.js" />
+    <Content Include="app\Controller\BaoCaoThangController.js" />
+    <Content Include="app\Controller\ChatGayNghien3THController.js" />
+    <Content Include="app\Controller\ChatGayNghienTX3THController.js" />
+    <Content Include="app\Controller\CityController.js" />
     <Content Include="app\Controller\CustomerController.js" />
-    <Content Include="app\Controller\TestGroupController.js" />
+    <Content Include="app\Controller\DemoReportController.js" />
+    <Content Include="app\Controller\DuongSuDungController.js" />
+    <Content Include="app\Controller\KetQuaACEController.js" />
+    <Content Include="app\Controller\KetQuaASSISTController.js" />
+    <Content Include="app\Controller\KetQuaHIVController.js" />
+    <Content Include="app\Controller\KetQuaSKTTController.js" />
+    <Content Include="app\Controller\LoaiDoiTuongController.js" />
     <Content Include="app\Controller\RoleController.js" />
+    <Content Include="app\Controller\SyncDataController.js" />
     <Content Include="app\Controller\SysparameterController.js" />
+    <Content Include="app\Controller\TestGroupController.js" />
     <Content Include="app\Controller\UserChangePasswordController.js" />
     <Content Include="app\Controller\UserController.js" />
     <Content Include="app\directives\tree-grid-template.html" />
@@ -4322,6 +4325,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\DemoReport\Index.cshtml" />
     <Content Include="Views\ErrorPage\Error404.cshtml" />
     <Content Include="Views\ErrorPage\Error500.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
@@ -4343,8 +4348,12 @@
     <Content Include="Views\Shared\_LayoutOther.cshtml" />
     <Content Include="Views\Shared\_MenuLeft.cshtml" />
     <Content Include="Views\Shared\_MenuLeft1.cshtml" />
+    <Content Include="Views\SyncData\Index.cshtml" />
     <Content Include="Views\SysParameter\Index.cshtml" />
     <Content Include="Views\SysParameter\_edit.cshtml" />
+    <Content Include="Views\TestGroup\Index.cshtml" />
+    <Content Include="Views\TestGroup\_add.cshtml" />
+    <Content Include="Views\TestGroup\_edit.cshtml" />
     <Content Include="Views\TheKho\HangDoiTheKho.cshtml" />
     <Content Include="Views\TheKho\TheKho.cshtml" />
     <Content Include="Views\User\ChangePassword.cshtml" />
@@ -4354,6 +4363,7 @@
     <Content Include="Views\User\_add.cshtml" />
     <Content Include="Views\User\_edit.cshtml" />
     <Content Include="Views\User\_lockUser.cshtml" />
+    <Content Include="Views\User\_view.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
@@ -4557,13 +4567,19 @@
     </None>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Views\TestGroup\_add.cshtml" />
-    <Content Include="Views\TestGroup\_edit.cshtml" />
-    <Content Include="Views\TestGroup\Index.cshtml" />
-    <Content Include="Views\User\_view.cshtml" />
-    <Content Include="Views\SyncData\Index.cshtml" />
-    <Content Include="Views\DemoReport\Index.cshtml" />
-    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Api\Index.cshtml" />
+    <Content Include="Views\BaoCaoNam\Index.cshtml" />
+    <Content Include="Views\BaoCaoQuy\Index.cshtml" />
+    <Content Include="Views\BaoCaoThang\Index.cshtml" />
+    <Content Include="Views\ChatGayNghien3TH\Index.cshtml" />
+    <Content Include="Views\ChatGayNghienTX3TH\Index.cshtml" />
+    <Content Include="Views\City\Index.cshtml" />
+    <Content Include="Views\DuongSuDung\Index.cshtml" />
+    <Content Include="Views\KetQuaACE\Index.cshtml" />
+    <Content Include="Views\KetQuaASSIST\Index.cshtml" />
+    <Content Include="Views\KetQuaHIV\Index.cshtml" />
+    <Content Include="Views\KetQuaSKTT\Index.cshtml" />
+    <Content Include="Views\LoaiDoiTuong\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

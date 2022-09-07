@@ -97,139 +97,21 @@ namespace WebApp.Controllers
 
         #region Xuất dữ liệu ra excel
         [HttpGet]
-        public ActionResult ExportData()
+        public ActionResult ExportData(int Year, string Months, string CityCodes, string quy)
         {
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
 
-                var data = new List<BaoCaoModel>() {
-                    new BaoCaoModel
-                    {
-                        ThongTinBC = "THÔNG TIN CHUNG",
-                        BoldText = "Y",
-                        Rowpan = 1,
-                        Colpan = 1
-
-                    },
-                    new BaoCaoModel
-                    {
-                        STT = "1",
-                        ThongTinBC = "Tổng số KH được hỗ trợ",
-                        ThongTinBC_Them = "Tổng số KH được hỗ trợ",
-                        BoldText = "N",
-                        Rowpan = 1,
-                        Colpan = 2,
-                        MSM = 30,
-                        PUD = 112,
-                        SW = 2,
-                        Nam = 101,
-                        Nu = 43,
-                        ChuyenGioi=2,
-                        Tong =146
-                    }
-                    ,
-                    new BaoCaoModel
-                    {
-                        STT = "2",
-                        ThongTinBC = "Số KH mới",
-                        ThongTinBC_Them= "Số KH mới",
-                        BoldText = "N",
-                        Rowpan = 1,
-                        Colpan = 2,
-                        MSM = 30,
-                        PUD = 112,
-                        SW = 2,
-                        Nam = 101,
-                        Nu = 43,
-                        ChuyenGioi=2,
-                        Tong =146
-                    }
-                    ,
-                    new BaoCaoModel
-                    {
-                        STT = "3",
-                        ThongTinBC = "Số KH mất dấu ",
-                        BoldText = "N",
-                        Rowpan = 1,
-                        Colpan = 1,
-                        MSM = 0,
-                        PUD = 0,
-                        SW = 0,
-                        Nam = 0,
-                        Nu = 0,
-                        ChuyenGioi=0,
-                        Tong =0
-                    }
-                    ,
-                    new BaoCaoModel
-                    {
-                        STT = "4",
-                        ThongTinBC = "Độ tuổi của KH",
-                         ThongTinBC_Them = "16- 18 tuổi",
-                        BoldText = "N",
-                        Rowpan = 3,
-                        Colpan = 1,
-                        MSM = 19,
-                        PUD = 34,
-                        SW = 0,
-                        Nam = 38,
-                        Nu = 15,
-                        ChuyenGioi=1,
-                        Tong =54
-                    }
-                     ,
-                    new BaoCaoModel
-                    {
-                        STT = "",
-                         ThongTinBC = "Độ tuổi của KH",
-                       ThongTinBC_Them = "19- 22 tuổi",
-                        BoldText = "N",
-                        Rowpan = 0,
-                        Colpan = 1,
-                        MSM = 48,
-                        PUD = 80,
-                        SW = 2,
-                        Nam = 86,
-                        Nu = 44,
-                        ChuyenGioi=2,
-                        Tong =132
-                    }
-                     ,
-                    new BaoCaoModel
-                    {
-                        STT = "",
-                         ThongTinBC = "Độ tuổi của KH",
-                        ThongTinBC_Them = "23- 24 tuổi",
-                        BoldText = "N",
-                        Rowpan = 0,
-                        Colpan = 1,
-                        MSM = 36,
-                        PUD = 52,
-                        SW = 0,
-                        Nam = 75,
-                        Nu = 13,
-                        ChuyenGioi=6,
-                        Tong =94
-                    }
-                };
-
-                //var paramList = new List<SqlParameter>
-                //    {
-                //         new SqlParameter(@"@cityIds", listCities),
-                //         new SqlParameter(@"@unitIds", listUnitId),
-                //         new SqlParameter(@"@currentId", currentId),
-                //         new SqlParameter(@"@fromDate", fromDate),
-                //         new SqlParameter(@"@toDate", toDate),
-                //         new SqlParameter(@"@isThucTe", isThucTe)
-                //    };
-                //var data = db.Database.SqlQuery<ExportExplosiveCareer>("exec [GetExportExplosiveByNganhNghe_Export] @cityIds, @unitIds, @currentId, @fromDate, @toDate, @isThucTe", paramList.ToArray()).ToList();
-                var file_name = "BaoCaoThang.xlsx";
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes};
+                var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
+                
+                var file_name = "BaoCaoQuy_"+quy+"_nam_"+Year+".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
-                    var ws = wb.Worksheets.Add("Báo cáo tháng");
-                    var titleReport = "BÁO CÁO 6 THÁNG";
+                    var ws = wb.Worksheets.Add("Báo cáo quý "+quy+" năm "+Year);
+                    var titleReport = "BÁO CÁO QUÝ "+quy+" NĂM "+Year;
                     CreateHeader(ws, titleReport, user);
 
                     var columnName = "";

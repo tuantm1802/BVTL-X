@@ -67,9 +67,25 @@
             return;
         }
 
+        if ($scope.Quy == null || $scope.Quy == '') {
+            toastr.error("Vui lòng chọn quý!");
+            return;
+        } else {
+            if ($scope.Quy == 'I') {
+                $scope.modelSearch.Months = '1,2,3';
+            } else if ($scope.Quy == 'II') {
+                $scope.modelSearch.Months = '4,5,6';
+            } else if ($scope.Quy == 'III') {
+                $scope.modelSearch.Months = '7,8,9';
+            } else if ($scope.Quy == 'IV') {
+                $scope.modelSearch.Months = '10,11,12';
+            }
+        }
+
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
+
         showToast();
         $scope.ListData = [];
         $.ajax({
@@ -106,17 +122,25 @@
             return;
         }
 
-        if (Quy == null || Quy == '') {
+        if ($scope.Quy == null || $scope.Quy == '') {
             toastr.error("Vui lòng chọn quý!");
             return;
         } else {
-
+            if ($scope.Quy == 'I') {
+                $scope.modelSearch.Months = '1,2,3';
+            } else if($scope.Quy == 'II') {
+                $scope.modelSearch.Months = '4,5,6';
+            } else if ($scope.Quy == 'III') {
+                $scope.modelSearch.Months = '7,8,9';
+            } else if ($scope.Quy == 'IV') {
+                $scope.modelSearch.Months = '10,11,12';
+            }
         }
 
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
-        window.location.href = '/ReportExplosiveByCareer/ExportData?listCities=' + strData + '&fromDate=' + moment($scope.modelSearch.SearchFromDate).format('YYYYMMDD') + '&toDate=' + moment($scope.modelSearch.SearchToDate).format('YYYYMMDD') + '&listUnitId=' + strDataUnit + "&isThucTe=" + parseInt($scope.modelSearch.isThucTe);;
+        window.location.href = '/BaoCaoQuy/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + $scope.modelSearch.CityCodes + '&quy=' + $scope.Quy;
     }
 
    
