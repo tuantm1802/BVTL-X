@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "id DESC";
+    $scope.modelSearch.SortColumn = "id";
 
     var dataTableChatGayNghienTX3TH = null;
     $scope.ParamIdSeleted = 0;
@@ -46,12 +46,15 @@
         showToast();
         
         $scope.ListChatGayNghienTX3TH = [];
-        if (genTable == 1) {
+        if (genTable == 1 || genTable == 2) {
+            if (genTable == 2)
+                dataTableChatGayNghienTX3TH.destroy();
             dataTableChatGayNghienTX3TH = $('#dataTableChatGayNghienTX3TH').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 serverSide: true,
                 ordering: false,
                 searching: true,
+                processing: true,
                 ajax: function (data, callback, settings) {
                     var dataUser = [];
                     var totalItems = 0;
@@ -59,9 +62,6 @@
 
                     $scope.modelSearch.currentPage = page;
                     $scope.modelSearch.pageSize = data.length;
-                    // Lấy điều kiện tìm kiếm
-                    var input = $('.dataTables_filter input')[0];
-                    $scope.modelSearch.KeyWord = input.value;
 
                     $.ajax({
                         type: 'post',

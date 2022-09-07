@@ -45,12 +45,15 @@
         showToast();
 
         $scope.ListKetQuaACE = [];
-        if (genTable == 1) {
+        if (genTable == 1 || genTable == 2) {
+            if (genTable == 2)
+                dataTableKetQuaACE.destroy();
             dataTableKetQuaACE = $('#dataTableKetQuaACE').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 serverSide: true,
                 ordering: false,
                 searching: true,
+                processing: true,
                 ajax: function (data, callback, settings) {
                     var dataUser = [];
                     var totalItems = 0;
@@ -58,9 +61,6 @@
 
                     $scope.modelSearch.currentPage = page;
                     $scope.modelSearch.pageSize = data.length;
-                    // Lấy điều kiện tìm kiếm
-                    var input = $('.dataTables_filter input')[0];
-                    $scope.modelSearch.KeyWord = input.value;
 
                     $.ajax({
                         type: 'post',

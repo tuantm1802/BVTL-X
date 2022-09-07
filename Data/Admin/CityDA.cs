@@ -27,6 +27,7 @@ namespace Data.Admin
         /// <returns></returns>
         public BVTL_CITES GetItemByCode(string code)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             return db.BVTL_CITES.FirstOrDefault(x => x.Code == code);
         }
 
@@ -70,6 +71,7 @@ namespace Data.Admin
         /// <returns></returns>
         public List<BVTL_CITES> GetAll()
         {
+            db.Configuration.ProxyCreationEnabled = false;
             return db.BVTL_CITES.ToList();
         }
 
@@ -80,6 +82,7 @@ namespace Data.Admin
         /// <returns></returns>
         public List<BVTL_CITES> GetCityReport(int userId)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             var result = new List<BVTL_CITES>();
             try
             {

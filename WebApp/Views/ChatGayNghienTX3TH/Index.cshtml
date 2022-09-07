@@ -13,9 +13,19 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="card-tools">
-                <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                </button>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>Từ khóa</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-body">

@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "Api_Code DESC";
+    $scope.modelSearch.SortColumn = "Api_Code";
 
     var dataTableApi = null;
     $scope.ParamIdSeleted = 0;
@@ -45,12 +45,15 @@
         showToast();
 
         $scope.ListApi = [];
-        if (genTable == 1) {
+        if (genTable == 1 || genTable == 2) {
+            if (genTable == 2)
+                dataTableApi.destroy();
             dataTableApi = $('#dataTableApi').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 serverSide: true,
                 ordering: false,
                 searching: true,
+                processing: true,
                 ajax: function (data, callback, settings) {
                     var dataUser = [];
                     var totalItems = 0;
@@ -58,9 +61,6 @@
 
                     $scope.modelSearch.currentPage = page;
                     $scope.modelSearch.pageSize = data.length;
-                    // Lấy điều kiện tìm kiếm
-                    var input = $('.dataTables_filter input')[0];
-                    $scope.modelSearch.KeyWord = input.value;
 
                     $.ajax({
                         type: 'post',
@@ -80,7 +80,8 @@
                                         HrefApi: respone.data[i].HrefApi,
                                         IsActive: respone.data[i].IsActive,
                                         ReportId: respone.data[i].ReportId,
-                                        TimeReCall: respone.data[i].TimeReCall
+                                        TimeReCall: respone.data[i].TimeReCall,
+                                        TypeApi: respone.data[i].TypeApi
                                     }
                                     dataUser.push(tmp);
                                 }

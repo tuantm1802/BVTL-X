@@ -47,6 +47,7 @@ namespace Data.Admin
         }
         public UserPageModel GetItemById(int Id)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             var result = (from u in db.BVTL_QT_NGUOI_DUNG
                         join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
                         where u.ID == Id
@@ -59,6 +60,7 @@ namespace Data.Admin
                             UserName = u.UserName,
                             RoleName = r.Name,
                             UserGroupID = u.GroupID,
+                            GroupID = u.GroupID,
                             Address = u.Address,
                             Avartar = u.Avartar,
                             Email = u.Email,
@@ -204,6 +206,7 @@ namespace Data.Admin
                         data.IdNumber = model.IdNumber;
                         data.Possition = model.Possition;
                         data.GroupID = model.GroupID;
+                        data.CityCodes = model.CityCodes;
                         context.SaveChanges();
 
                         if (model.ID > 0 && maNhomTBHs.Count > 0)

@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "UserName DESC";
+    $scope.modelSearch.SortColumn = "UserName";
     $scope.ListUserGroup = [];
     $scope.ListUser = [];
     var dataTableUser = null;
