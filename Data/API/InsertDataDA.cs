@@ -116,8 +116,7 @@ namespace Data.API
             var result = new List<BVTL_API>();
             try
             {
-                //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;", "ConnectionString").ToList();
+                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;").ToList();
             }
             catch (Exception ex)
             {
@@ -144,8 +143,7 @@ namespace Data.API
             var result = new List<BVTL_MASTER_TABLE>();
             try
             {
-                //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = _databaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;", "ConnectionString").ToList();
+                result = _databaseSql.ExecuteCommanToList<BVTL_MASTER_TABLE>("select * from BVTL_MASTER_TABLE;").ToList();
             }
             catch (Exception ex)
             {
@@ -172,8 +170,7 @@ namespace Data.API
             var result = new List<string>();
             try
             {
-                //string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
-                result = _databaseSql.ExecuteCommanToList<TableNameModel>("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';", "ConnectionString").ToList().Select(x => x.TABLE_NAME).ToList();
+                result = _databaseSql.ExecuteCommanToList<TableNameModel>("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';").ToList().Select(x => x.TABLE_NAME).ToList();
             }
             catch (Exception ex)
             {
