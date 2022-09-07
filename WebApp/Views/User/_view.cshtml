@@ -34,7 +34,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label title="Nhóm thu thập dữ liệu">Nhóm TTDL</label>
-                            <select class="form-control" ui-select2 multiple  disabled ng-model="ListTestGroupId" name="ListTestGroupId" ng-options="item.Id as item.Name for item in ListTestGroup">
+                            <select class="form-control" ui-select2 multiple disabled ng-model="ListTestGroupId" name="ListTestGroupId" ng-options="item.Id as item.Name for item in ListTestGroup">
                             </select>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Số điện thoại</label>
-                    <input type="text" ng-pattern="ph_numbr" maxlength="10"  disabled name="Phone" class="form-control" ng-model="model.Phone">
+                    <input type="text" ng-pattern="ph_numbr" maxlength="10" disabled name="Phone" class="form-control" ng-model="model.Phone">
                     <span ng-show="formDemo.Phone.$error.pattern">Hãy nhập số điện thoại đúng định dạng!</span>
                 </div>
             </div>
@@ -86,7 +86,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Giới tính</label>
-                    <select class="form-control" ui-select2 ng-model="model.Gender" disabled name="Gender" >
+                    <select class="form-control" ui-select2 ng-model="model.Gender" disabled name="Gender">
                         <option value="M">Nam</option>
                         <option value="M">Nữ</option>
                     </select>
@@ -107,6 +107,15 @@
                 <div class="form-group">
                     <label>Số CMND</label>
                     <input type="text" class="form-control" disabled ng-model="model.IdNumber">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label title="Tỉnh quản lý">Tỉnh quản lý</label>
+                    <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCityCode" ng-options="item.Code as item.Name for item in ListCity">
+                    </select>
                 </div>
             </div>
         </div>

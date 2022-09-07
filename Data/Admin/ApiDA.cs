@@ -8,107 +8,85 @@ using System.Text;
 using System.Threading.Tasks;
 using Data.InterfaceDA.Admin;
 using Model.ModelExtend.Base;
+using Common.ICommon;
+using Common.Common;
+using System.Data.SqlClient;
 
 namespace Data.Admin
 {
     public class ApiDA : IApiDA
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IDatabaseSql _DatabaseSql = new DatabaseSql();
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        public BVTL_KHACH_HANG GetItemByCode(string code)
+        /// <summary>
+        /// Lấy thông tin api theo mã
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public ApiPageModel GetItemByCode(string code)
         {
-            return db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == code);
+            var result = new ApiPageModel();
+            var api = db.BVTL_API.FirstOrDefault(x => x.Api_Code == code);
+            var tables = db.BVTL_MASTER_TABLE.Where(x => x.Api_Id == api.Api_Id).Select(x => x.table_name).ToList();
+
+            result.Api_Id = api.Api_Id;
+            result.Api_Code = api.Api_Code;
+            result.NameSyncdata = api.NameSyncdata;
+            result.HrefApi = api.HrefApi;
+            result.TypeApi = api.TypeApi;
+            result.TokenApi = api.TokenApi;
+            result.TableNameSaveData = api.TableNameSaveData;
+            result.IsActive = api.IsActive;
+            result.ReportId = api.ReportId;
+            result.TimeReCall = api.TimeReCall;
+            result.TableNames = tables;
+            return result;
         }
 
-        public List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)
+        /// <summary>
+        /// Tìm kiếm api theo trang
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public List<ApiPageModel> GetAllByPage(ModelSearch modelSearch)
         {
-            var result = new List<CustomerPageModel>();
-            pageSize = 10;
+            var result = new List<ApiPageModel>();
             try
             {
-                var param = db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == "PageSize");
-                if (param != null)
-                    pageSize = Convert.ToInt32(param.ParamValue);
-
-                var sqlString = "SELECT c.*, ci.Name as CityName, " +
-                    "(case when c.gioitinh  = 'M' then N'Nam' when c.gioitinh  = 'F' then N'Nữ'  else '' end) as GioiTinhText, " +
-                     "dt.name as LoaiDoiTuong, " +
-                     "(case when c.ngaytiepcan is not null then CONVERT(varchar, c.ngaytiepcan, 103) else '' end) as ngaytiepcantext, " +
-                    "count(c.khachhang_id) over() as TotalRow FROM [BVTL_KHACH_HANG] c" +
-                    " inner join BVTL_CITES ci on ci.Code = c.city_code" +
-                    " inner join BVTL_LOAI_DOI_TUONG dt on dt.id = c.loai_doi_tuong_id" +
-                    " WHERE 1 =1";
-                if (!string.IsNullOrEmpty(modelSearch.KeyWord))
+                var param = new List<SqlParameter>
                 {
-                    sqlString += " AND (c.makh LIKE N'%" + modelSearch.KeyWord + "%' OR c.hoten LIKE N'%" + modelSearch.KeyWord + "%')";
-                }
-                if (!string.IsNullOrEmpty(modelSearch.SortColumn))
-                    sqlString += " ORDER BY " + modelSearch.SortColumn;
-                sqlString += " OFFSET " + ((modelSearch.currentPage - 1) * modelSearch.pageSize) + " ROWS FETCH NEXT " + modelSearch.pageSize + " ROWS ONLY;";
-                result = db.Database.SqlQuery<CustomerPageModel>(sqlString).ToList();
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
+                    new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<ApiPageModel>(Constants.SP_Api_Get_By_Page, param).ToList();
             }
             catch (Exception ex)
             {
                 var log = new BVTL_QT_LOG
                 {
-                    ControllerName = "CustomerDA",
+                    ControllerName = "ApiDA",
                     UserName = "",
                     DateLog = DateTime.Now,
-                    Content = "Lấy danh sách khách hàng theo trang lỗi:" + ex.Message
+                    Content = "Lấy danh sách Api theo trang lỗi:" + ex.Message
                 };
                 db.BVTL_QT_LOG.Add(log);
-                result = new List<CustomerPageModel>();
+                result = new List<ApiPageModel>();
             }
             return result;
         }
 
-        public List<BVTL_KHACH_HANG> GetAll()
+        /// <summary>
+        /// Lấy tất cả đầu api
+        /// </summary>
+        /// <returns></returns>
+        public List<BVTL_API> GetAll()
         {
-            return db.BVTL_KHACH_HANG.ToList();
-        }
-
-
-        public ObjectMessage Add(BVTL_KHACH_HANG Customer)
-        {
-            ObjectMessage obj = new ObjectMessage();
-            try
-            {
-                db.BVTL_KHACH_HANG.Add(Customer);
-                db.SaveChanges();
-                obj.Error = false;
-                obj.Title = "Thêm mới thành công!";
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                obj.Error = true;
-                obj.Title = ex.Message;
-                return obj;
-            }
-
-        }
-        
-        public ObjectMessage Delete(int Id)
-        {
-            ObjectMessage obj = new ObjectMessage();
-            try
-            {
-                var itemDelete = db.BVTL_KHACH_HANG.Find(Id);
-                db.BVTL_KHACH_HANG.Remove(itemDelete);
-                db.SaveChanges();
-                obj.Error = false;
-                obj.Title = "Xóa thành công!";
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                obj.Error = true;
-                obj.Title = ex.Message;
-                return obj;
-            }
-
+            return db.BVTL_API.ToList();
         }
     }
 }

@@ -44,26 +44,14 @@
 
     $scope.LoadPage = function (genTable) {
         showToast();
-        //$.ajax({
-        //    type: 'post',
-        //    url: '/Customer/GetAll',
-        //    data: $scope.modelSearch,
-        //    success: function (data) {
-        //        $scope.modelSearch.totalItems = data.totalItems;
-        //        $scope.ListCustomer = data.data;
-        //        $scope.modelSearch.pageSize = data.pageSize;
-        //        $scope.$apply();
-        //        hideLoading();
-        //    }
-        //});
-
+        
         $scope.ListCustomer = [];
         if (genTable == 1) {
             dataTableCustomer = $('#dataTableCustomer').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 serverSide: true,
                 ordering: false,
-                searching: false,
+                searching: true,
                 ajax: function (data, callback, settings) {
                     var dataUser = [];
                     var totalItems = 0;
@@ -71,6 +59,9 @@
 
                     $scope.modelSearch.currentPage = page;
                     $scope.modelSearch.pageSize = data.length;
+                    // Lấy điều kiện tìm kiếm
+                    var input = $('.dataTables_filter input')[0];
+                    $scope.modelSearch.KeyWord = input.value;
 
                     $.ajax({
                         type: 'post',
@@ -194,83 +185,4 @@
         
     };
    
-});
-
-app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, showToast, hideLoading) {
-
-    $scope.model = {};
-    angular.element(document).ready(function () {
-        $.ajax({
-            type: 'post',
-            url: '/Customer/GetItemByID',
-            data: { Id: itemId },
-            success: function (data) {
-                if (data.Error) {
-                    toastr.error(data.Title);
-                } else {
-                    $scope.model = data.data;
-                    $scope.$apply();
-                }
-            }
-        });
-    });
-    $scope.ListValueType = [{ value: 'STRING', text: 'Kiểu chữ' }, { value: 'NUMBER', text: 'Kiểu số' }];
-    $scope.submit = function () {
-        $("#formSubmit").validate({
-            rules: {
-                ParamCode: {
-                    required: true,
-                    maxlength: 50
-                },
-                ParamValue: {
-                    required: true,
-                    maxlength: 500
-                },
-                ParamValueType: {
-                    required: true
-                },
-                Desctiption: {
-                    maxlength: 1000
-                }
-            },
-            messages: {
-                ParamCode: {
-                    required: "Vui lòng nhập mã",
-                    maxlength: "Mã không được vượt quá 50 ký tự"
-                },
-                ParamValue: {
-                    required: "Vui lòng nhập giá trị",
-                    maxlength: "Mã không được vượt quá 500 ký tự"
-                },
-                ParamValueType: {
-                    required: "Vui lòng chọn kiểu dữ liệu"
-                }
-            }
-        });
-        if ($("#formSubmit").valid()) {
-            // kiểm tra xem có nhập đúng kiểu dữ liệu không
-            if ($scope.model.ParamValueType == 'NUMBER' && !(!isNaN($scope.model.ParamValue) && angular.isNumber(+$scope.model.ParamValue))) {
-                toastr.error("Bạn nhập không đúng kiểu số.");
-                return;
-            }
-
-            $.ajax({
-                type: 'post',
-                url: '/Customer/Edit',
-                data: $scope.model,
-                success: function (data) {
-                    if (data.Error) {
-                        toastr.error(data.Title);
-                    } else {
-                        toastr.success(data.Title);
-                        $scope.cancel();
-                    }
-                }
-            });
-        }
-    };
-    
-    $scope.cancel = function () {
-        $uibModalInstance.close();
-    };
 });

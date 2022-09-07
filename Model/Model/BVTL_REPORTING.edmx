@@ -85,6 +85,7 @@
           <Property Name="ketqua_ace" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ASSIST">
           <Key>
@@ -119,6 +120,7 @@
           <Property Name="ghichu" Type="nvarchar" MaxLength="200" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_SKTT">
           <Key>
@@ -134,6 +136,7 @@
           <Property Name="ketqua_QST" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_HIV">
           <Key>
@@ -149,6 +152,7 @@
           <Property Name="dangdieutri_hiv" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -212,6 +216,7 @@
           <Property Name="OperativeLevel" Type="int" />
           <Property Name="OriginId" Type="int" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CityCodes" Type="varchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
           <Key>
@@ -726,6 +731,7 @@
           <Property Name="ketqua_ace" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_NHOM_TBH" />
@@ -763,6 +769,7 @@
           <Property Name="ghichu" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_NHOM_TBH" />
@@ -781,6 +788,7 @@
           <Property Name="ketqua_QST" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_NHOM_TBH" />
@@ -799,6 +807,7 @@
           <Property Name="dangdieutri_hiv" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
@@ -871,6 +880,7 @@
           <Property Name="OperativeLevel" Type="Int32" />
           <Property Name="OriginId" Type="Int32" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CityCodes" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
           <Key>
@@ -1202,6 +1212,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ACE">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ACE">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="ketqua_ace" ColumnName="ketqua_ace" />
@@ -1218,6 +1229,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ASSIST">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ASSIST">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="ghichu" ColumnName="ghichu" />
@@ -1253,6 +1265,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_SKTT">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_SKTT">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="ketqua_QST" ColumnName="ketqua_QST" />
@@ -1269,6 +1282,7 @@
           <EntitySetMapping Name="BVTL_KQ_XN_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
               <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="dangdieutri_hiv" ColumnName="dangdieutri_hiv" />
@@ -1323,6 +1337,7 @@
           <EntitySetMapping Name="BVTL_QT_NGUOI_DUNG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG">
               <MappingFragment StoreEntitySet="BVTL_QT_NGUOI_DUNG">
+                <ScalarProperty Name="CityCodes" ColumnName="CityCodes" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="OriginId" ColumnName="OriginId" />
                 <ScalarProperty Name="OperativeLevel" ColumnName="OperativeLevel" />

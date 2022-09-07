@@ -15,6 +15,13 @@ namespace Data.InterfaceDA.Admin
          BVTL_QT_NGUOI_DUNG GetItemByUserName(string userName);
          UserPageModel GetItemById(int Id);
 
+        /// <summary>
+        /// Lấy dữ liệu theo trang
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+         List<UserPageModel> GetAllByPage(ModelSearch modelSearch);
+
          List<string> GetListCredentials(string userName);
 
          ObjectMessage Add(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs);

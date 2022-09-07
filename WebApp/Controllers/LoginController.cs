@@ -20,7 +20,6 @@ namespace WebApp.Controllers
         ISysLogDA _sysLogDA = new SysLogDA();
         ISysParameterDA _sysParameterDA = new SysParameterDA();
         IPageMenuDA _pageMenuDA = new PageMenuDA();
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         IEncryptor _encryptor = new Encryptor();
         // GET: Login
         public ActionResult Index()

@@ -19,7 +19,6 @@ namespace WebApp.Controllers
 {
     public class DemoReportController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 

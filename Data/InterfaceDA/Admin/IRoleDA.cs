@@ -14,7 +14,13 @@ namespace Data.InterfaceDA.Admin
 
         BVTL_QT_QUYEN GetItemByBVTL_QT_QUYENName(string name);
 
-        List<BVTL_QT_QUYEN> GetAll(int page);
+        BVTL_QT_QUYEN GetItemById(string id);
+
+        /// <summary>
+        /// Lấy tất cả
+        /// </summary>
+        /// <returns></returns>
+        List<BVTL_QT_QUYEN> GetAll();
 
         List<RolePageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize);
 

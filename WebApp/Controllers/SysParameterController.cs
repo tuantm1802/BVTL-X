@@ -14,7 +14,6 @@ namespace WebApp.Controllers
 {
     public class SysParameterController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
         ISysParameterDA _sysParameterDA = new SysParameterDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -101,25 +100,17 @@ namespace WebApp.Controllers
 
 
         [HttpPost]
-        public object GetItemByID(int? Id)
+        public object GetItemByID(int Id)
         {
             try
             {
-                var data = db.BVTL_QT_THAM_SO.Select(x => new
-                {
-                    x.ID,
-                    x.ParamValue,
-                    x.ParamCode,
-                    x.Desctiption,
-                    x.IsActive,
-                    x.ParamValueType
-                }).FirstOrDefault(x => x.ID == Id);
-                AddLog("Lấy dữ liệu theo ID bảng Tham số( ID: " + Id + ") thành công.");
+                var data = _sysParameterDA.GetItemById(Id); 
+                AddLog("Lấy dữ liệu theo Id bảng Tham số( Id: " + Id + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
             }
             catch (Exception ex)
             {
-                AddLog("Lấy dữ liệu theo ID bảng Tham số( ID: " + Id + ") lỗi: " + ex.Message);
+                AddLog("Lấy dữ liệu theo Id bảng Tham số( Id: " + Id + ") lỗi: " + ex.Message);
                 return Json(new { Error = true, Title = ex.Message });
             }
         }

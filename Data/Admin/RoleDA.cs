@@ -22,7 +22,17 @@ namespace Data.Admin
             return db.BVTL_QT_QUYEN.FirstOrDefault(x => x.Name == name);
         }
 
-        public List<BVTL_QT_QUYEN> GetAll(int page)
+        public BVTL_QT_QUYEN GetItemById(string id)
+        {
+            return db.BVTL_QT_QUYEN.FirstOrDefault(x => x.ID == id);
+        }
+
+
+        /// <summary>
+        /// Lấy tất cả
+        /// </summary>
+        /// <returns></returns>
+        public List<BVTL_QT_QUYEN> GetAll()
         {
             return db.BVTL_QT_QUYEN.ToList();
         }

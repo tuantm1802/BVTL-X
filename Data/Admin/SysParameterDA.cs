@@ -17,9 +17,9 @@ namespace Data.Admin
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public BVTL_QT_THAM_SO GetItemByCode(string code)
+        public BVTL_QT_THAM_SO GetItemById(int id)
         {
-            return db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ParamCode == code);
+            return db.BVTL_QT_THAM_SO.FirstOrDefault(x => x.ID == id);
         }
 
         public List<SysParameterPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize)

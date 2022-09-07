@@ -12,15 +12,25 @@ namespace Data.InterfaceDA.Admin
     public interface IApiDA
     {
 
-         BVTL_KHACH_HANG GetItemByCode(string code);
+        /// <summary>
+        /// Lấy thông tin api theo mã
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        ApiPageModel GetItemByCode(string code);
 
-         List<CustomerPageModel> GetAllByPage(ModelSearch modelSearch, ref int pageSize);
+        /// <summary>
+        /// Tìm kiếm api theo trang
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        List<ApiPageModel> GetAllByPage(ModelSearch modelSearch);
 
-         List<BVTL_KHACH_HANG> GetAll();
-
-
-         ObjectMessage Add(BVTL_KHACH_HANG Customer);
-
-         ObjectMessage Delete(int Id);
+        /// <summary>
+        /// Lấy tất cả đầu api
+        /// </summary>
+        /// <returns></returns>
+        List<BVTL_API> GetAll();
     }
 }

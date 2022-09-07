@@ -10,10 +10,8 @@ namespace Model.ModelExtend
     public class UserPageModel : BVTL_QT_NGUOI_DUNG
     {
         public string UNIT_NAME { get; set; }
-        public string ROLE_DESC { get; set; }
         public int TotalRow { get; set; }
         public int? IsLock { get; set; }
-
         public string CreatedDate_Text
         {
             get
@@ -67,8 +65,8 @@ namespace Model.ModelExtend
                 return date;
             }
         }
-
+        public string UserGroupID { get; set; }
         public List<BVTL_NHOM_TBH> TestGroups { get; set; }
-
+        public List<BVTL_CITES> Citys { get; set; }
     }
 }

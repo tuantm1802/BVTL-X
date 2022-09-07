@@ -38,5 +38,6 @@ namespace Model.Model
         public Nullable<int> OperativeLevel { get; set; }
         public Nullable<int> OriginId { get; set; }
         public bool IsActive { get; set; }
+        public string CityCodes { get; set; }
     }
 }

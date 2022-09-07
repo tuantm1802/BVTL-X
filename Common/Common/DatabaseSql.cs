@@ -18,6 +18,7 @@ namespace Common.Common
     public class DatabaseSql: IDatabaseSql
     {
         private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
         #region Create connection
         /// <summary>
         /// Lấy kết nối đến DB
@@ -26,9 +27,8 @@ namespace Common.Common
         /// lấy trong file Common.Constants
         /// </param>
         /// <returns></returns>
-        public  SqlConnection GetConnect(string connectStrDB)
+        public  SqlConnection GetConnect()
         {
-            string stringConnect = ConfigurationManager.AppSettings[connectStrDB];
             SqlConnection con = new SqlConnection(stringConnect);
             if (con.State == ConnectionState.Closed) con.Open();
             return con;
@@ -36,9 +36,9 @@ namespace Common.Common
         #endregion
 
         #region Execute Table for query
-        public  DataTable ExecuteTable(string sql, string connectStrDB)
+        public  DataTable ExecuteTable(string sql)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             SqlCommand cmd = new SqlCommand(sql, con)
             {
                 CommandType = CommandType.Text,
@@ -65,9 +65,9 @@ namespace Common.Common
         #endregion
 
         #region Execute Non Query for query
-        public  int ExecuteNonQuery(string sql, string connectStrDB)
+        public  int ExecuteNonQuery(string sql)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             SqlCommand cmd = new SqlCommand(sql, con)
             {
                 CommandType = CommandType.Text,
@@ -91,9 +91,9 @@ namespace Common.Common
         #endregion
 
         #region Execute Scalar for query
-        public  int ExecuteScalar(string sql, string connectStrDB)
+        public  int ExecuteScalar(string sql)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             SqlCommand cmd = new SqlCommand(sql, con)
             {
                 CommandType = CommandType.Text,
@@ -114,7 +114,7 @@ namespace Common.Common
                 con.Dispose();
             }
         }
-        public  IList<T> ExecuteCommanToList<T>(string sql, string connectStrDB)
+        public  IList<T> ExecuteCommanToList<T>(string sql)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -122,7 +122,7 @@ namespace Common.Common
             try
             {
                 //Execute procedure and get table result
-                dt = ExecuteTable(sql, connectStrDB);
+                dt = ExecuteTable(sql);
 
                 if (dt.Rows.Count == 0) return objectsList;
                 //objectsList = ConvertToList<T>(dt);
@@ -159,9 +159,9 @@ namespace Common.Common
         #endregion
 
         #region Execute Table for Store Procedure
-        public  DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  DataTable ExecuteProcTable(string procName, List<SqlParameter> lstParam)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             var dt = new DataTable();
             try
             {
@@ -193,9 +193,9 @@ namespace Common.Common
         #endregion
 
         #region Execute DataSet for Store Procedure
-        public  DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  DataSet ExecuteProcDataSet(string procName, List<SqlParameter> lstParam)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             var ds = new DataSet();
             try
             {
@@ -264,9 +264,9 @@ namespace Common.Common
         #endregion
 
         #region Execute Non Query for Store Procedure
-        public  int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  int ExecuteProcNonQuery(string procName, List<SqlParameter> lstParam)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             try
             {
                 using (var cmd = new SqlCommand(procName, con))
@@ -293,9 +293,9 @@ namespace Common.Common
             }
         }
 
-        public async Task<int> ExecuteProcNonQueryAsync(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public async Task<int> ExecuteProcNonQueryAsync(string procName, List<SqlParameter> lstParam)
         {
-            var con = GetConnect(connectStrDB);
+            var con = GetConnect();
             try
             {
                 using (var cmd = new SqlCommand(procName, con))
@@ -351,7 +351,7 @@ namespace Common.Common
         public  List<string> InvalidJsonElements;
          JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-        public  IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  IList<T> ExecuteProcToList<T>(string procName, List<SqlParameter> lstParam)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -359,7 +359,7 @@ namespace Common.Common
             try
             {
                 //Execute procedure and get table result
-                dt = ExecuteProcTable(procName, lstParam, connectStrDB);
+                dt = ExecuteProcTable(procName, lstParam);
 
                 if (dt.Rows.Count == 0) return objectsList;
                 //objectsList = ConvertToList<T>(dt);
@@ -394,7 +394,7 @@ namespace Common.Common
             }
         }
 
-        public  IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  IList<T> ExecuteProcToList2<T>(string procName, List<SqlParameter> lstParam)
         {
             var dt = new DataTable();
             serializer.MaxJsonLength = Int32.MaxValue;
@@ -402,7 +402,7 @@ namespace Common.Common
             try
             {
                 //Execute procedure and get table result
-                dt = ExecuteProcTable(procName, lstParam, connectStrDB);
+                dt = ExecuteProcTable(procName, lstParam);
 
                 if (dt.Rows.Count == 0) return objectsList;
                 objectsList = DataTableToList<T>(dt);
@@ -541,11 +541,11 @@ namespace Common.Common
         }
         #endregion
         #region Execute proc table and convert to Json
-        public  string ExecuteProcToJson(string procName, List<SqlParameter> lstParam, string connectStrDB)
+        public  string ExecuteProcToJson(string procName, List<SqlParameter> lstParam)
         {
             try
             {
-                DataTable dt = ExecuteProcTable(procName, lstParam, connectStrDB);
+                DataTable dt = ExecuteProcTable(procName, lstParam);
                 var json = ConvertDataTabletoJson(dt);
                 return json;
             }

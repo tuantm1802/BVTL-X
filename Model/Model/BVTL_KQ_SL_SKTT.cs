@@ -24,6 +24,7 @@ namespace Model.Model
         public Nullable<int> ketqua_QST { get; set; }
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
+        public Nullable<System.DateTime> sync_date { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_KHACH_HANG BVTL_KHACH_HANG { get; set; }

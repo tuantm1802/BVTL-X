@@ -14,8 +14,7 @@ namespace WebApp.Controllers
 {
     public class KetQuaACEController : BaseController
     {
-        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        ICustomerDA _CustomerDA = new CustomerDA();
+        IKetQuaACEDA _KetQuaACEDA = new KetQuaACEDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -25,15 +24,7 @@ namespace WebApp.Controllers
         {
             return View();
         }
-
-        public ActionResult _Add()
-        {
-            return PartialView("_add");
-        }
-        public ActionResult _Edit()
-        {
-            return PartialView("_edit");
-        }
+       
         [HttpPost]
         public ActionResult GetAll(ModelSearch modelSearch)
         {
@@ -44,18 +35,17 @@ namespace WebApp.Controllers
             try
             {
                 int totalItems = 0;
-                int pageSize = 0;
-                var data = _CustomerDA.GetAllByPage(modelSearch, ref pageSize);
+                var data = _KetQuaACEDA.GetAllByPage(modelSearch);
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
-                AddLog("Lấy dữ liệu theo trang bảng khách hàng( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công.", pageSize = pageSize }); ;
+                AddLog("Lấy dữ liệu theo trang bảng kết quả ACE( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
+                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Lấy dữ liệu theo trang bảng khách hàng( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") lỗi: " + ex.Message);
+                AddLog("Lấy dữ liệu theo trang bảng kết quả ACE( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") lỗi: " + ex.Message);
 
                 return Json(obj);
             }
@@ -73,14 +63,14 @@ namespace WebApp.Controllers
                 var menu = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
-                AddLog("Lấy danh sách các botom được thực hiện trên from khách hàng thành công.");
+                AddLog("Lấy danh sách các botom được thực hiện trên from kết quả ACE thành công.");
                 return Json(new { Buttoms = bottoms, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Lấy danh sách các botom được thực hiện trên from khách hàng lỗi: " + ex.Message);
+                AddLog("Lấy danh sách các botom được thực hiện trên from kết quả ACE lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
@@ -91,7 +81,7 @@ namespace WebApp.Controllers
             _sysLogDA.Add(
                     new BVTL_QT_LOG
                     {
-                        ControllerName = "Customer",
+                        ControllerName = "KetQuaACE",
                         UserName = user.UserName,
                         DateLog = DateTime.Now,
                         Content = content
@@ -101,30 +91,17 @@ namespace WebApp.Controllers
 
 
         [HttpPost]
-        public object GetItemByID(int? Id)
+        public object GetItemByID(int Id)
         {
             try
             {
-                var data = db.BVTL_KHACH_HANG.Select(x => new
-                {
-                    x.khachhang_id,
-                    x.makh,
-                    x.hoten,
-                    x.gioitinh,
-                    x.namsinh,
-                    x.loai_doi_tuong_id,
-                    x.ngaytiepcan,
-                    x.ngayngungchamsoc,
-                    x.sodienthoai,
-                    x.diachi,
-                    x.city_code
-                }).FirstOrDefault(x => x.khachhang_id == Id);
-                AddLog("Lấy dữ liệu theo ID bảng khách hàng( ID: " + Id + ") thành công.");
+                var data = _KetQuaACEDA.GetItemById(Id);
+                AddLog("Lấy dữ liệu theo ID bảng kết quả ACE( ID: " + Id + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
             }
             catch (Exception ex)
             {
-                AddLog("Lấy dữ liệu theo ID bảng khách hàng( ID: " + Id + ") lỗi: " + ex.Message);
+                AddLog("Lấy dữ liệu theo ID bảng kết quả ACE( ID: " + Id + ") lỗi: " + ex.Message);
                 return Json(new { Error = true, Title = ex.Message });
             }
         }
