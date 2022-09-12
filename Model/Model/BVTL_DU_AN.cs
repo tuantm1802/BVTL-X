@@ -12,10 +12,10 @@ namespace Model.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class BVTL_NHOM_TBH
+    public partial class BVTL_DU_AN
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public BVTL_NHOM_TBH()
+        public BVTL_DU_AN()
         {
             this.BVTL_KQ_SL_ACE = new HashSet<BVTL_KQ_SL_ACE>();
             this.BVTL_KQ_SL_ASSIST = new HashSet<BVTL_KQ_SL_ASSIST>();
@@ -23,11 +23,9 @@ namespace Model.Model
             this.BVTL_KQ_XN_HIV = new HashSet<BVTL_KQ_XN_HIV>();
         }
     
-        public string manhom_tbh { get; set; }
-        public string tennhom_tbh { get; set; }
-        public string city_code { get; set; }
+        public string maduan { get; set; }
+        public string tenduan { get; set; }
     
-        public virtual BVTL_CITES BVTL_CITES { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

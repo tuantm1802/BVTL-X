@@ -66,6 +66,7 @@
     <Compile Include="ModelExtend\Base\PaginationModel.cs" />
     <Compile Include="ModelExtend\Base\UserLogin.cs" />
     <Compile Include="ModelExtend\ApiPageModel.cs" />
+    <Compile Include="ModelExtend\NhomTBHPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghien3THPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghienTX3THPageModel.cs" />
     <Compile Include="ModelExtend\CityPageModel.cs" />
@@ -99,6 +100,9 @@
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_DUONG_SU_DUNG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_DU_AN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_KHACH_HANG.cs">

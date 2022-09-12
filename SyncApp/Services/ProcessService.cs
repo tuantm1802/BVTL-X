@@ -35,7 +35,8 @@ namespace SyncBVTL.Push.Services
                         Active = true,
                         Url = api.HrefApi,
                         Token = api.TokenApi,
-                        ReportId = api.ReportId
+                        ReportId = api.ReportId,
+                        MaDuAn = api.maduan
                     };
 
                     if (!string.IsNullOrEmpty(api.TableNameSaveData))

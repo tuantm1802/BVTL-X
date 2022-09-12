@@ -18,6 +18,7 @@ namespace WebApp.Controllers
     public class TestGroupController : BaseController
     {
         IBVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
+        ICityDA _CityDA = new CityDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -46,7 +47,9 @@ namespace WebApp.Controllers
             try
             {
                 int totalItems = 0;
-                var data = _testGroupDA.GetAllByPage(modelSearch, ref totalItems);
+                var data = _testGroupDA.GetAllByPage(modelSearch);
+                if (data != null && data.Count > 0)
+                    totalItems = data.FirstOrDefault().TotalRow;
                 AddLog("Lấy dữ liệu theo trang bảng Nhóm thu thập DL( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
                 return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
@@ -105,23 +108,19 @@ namespace WebApp.Controllers
             {
                 Error = false
             };
-            //try
-            //{
-            //    List<TreeModel> lstTreeModel = new List<TreeModel>();
-            //    ConvertTreePageMenu(lstTreeModel, pageMenus, pageActions, null, new List<RolePage>());
-            //    lstTreeModel = lstTreeModel.OrderBy(e => e.name).ToList();
-            //    AddLog("Lấy dữ liệu danh mục thành công.");
-            //    return Json(new { TreeDatas = lstTreeModel, Error = false, Title = "Lấy dữ liệu thành công." }); ;
-            //}
-            //catch (Exception ex)
-            //{
-            //    obj.Error = true;
-            //    obj.Title = ex.Message.ToString();
-            //    AddLog("Lấy dữ liệu danh mục lỗi: " + ex.Message);
-            //    return Json(obj);
-            //}
-
-            return Json(obj);
+            try
+            {
+                var citys = _CityDA.GetAll();
+                AddLog("Lấy dữ liệu danh mục thành công.");
+                return Json(new { Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy dữ liệu danh mục lỗi: " + ex.Message);
+                return Json(obj);
+            }
         }
 
         [HttpPost]

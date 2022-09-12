@@ -14,7 +14,7 @@
         $scope.LoadPage(1);
     });
 
-    $scope.RoleBtnUpdate = false;
+    $scope.RoleBtnExportExcel = false;
     $scope.RoleBtnSearch = false;
 
     function GetBottomAction() {
@@ -25,8 +25,8 @@
             success: function (response) {
                 if (response.Buttoms != null) {
                     angular.forEach(response.Buttoms, function (item) {
-                        if (item == 'btnUpdate') {
-                            $scope.RoleBtnUpdate = true;
+                        if (item == 'btnExportExcel') {
+                            $scope.RoleBtnExportExcel = true;
                         }
                         if (item == 'btnSearch') {
                             $scope.RoleBtnSearch = true;
@@ -154,6 +154,9 @@
     $scope.Refesh = function () {
         $scope.LoadPage(0);
     };
-   
+
+    $scope.ExportExcel = function () {
+        window.location.href = '/KetQuaHIV/ExportData?keyword=' + $scope.modelSearch.KeyWord;
+    }
    
 });

@@ -22,6 +22,7 @@ namespace Model.Model
             this.BVTL_KQ_SL_ASSIST = new HashSet<BVTL_KQ_SL_ASSIST>();
             this.BVTL_KQ_SL_SKTT = new HashSet<BVTL_KQ_SL_SKTT>();
             this.BVTL_KQ_XN_HIV = new HashSet<BVTL_KQ_XN_HIV>();
+            this.BVTL_NHOM_TBH = new HashSet<BVTL_NHOM_TBH>();
         }
     
         public string Code { get; set; }
@@ -42,5 +43,7 @@ namespace Model.Model
         public virtual ICollection<BVTL_KQ_SL_SKTT> BVTL_KQ_SL_SKTT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_XN_HIV> BVTL_KQ_XN_HIV { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_NHOM_TBH> BVTL_NHOM_TBH { get; set; }
     }
 }

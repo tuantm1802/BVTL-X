@@ -20,7 +20,7 @@ namespace Data.API
         IGetDataFromAPI getDataFromAPI = new GetDataFromAPI();
         IConvertResultApiToEntity _convertResultApiToEntity = new ConvertResultApiToEntity();
 
-        public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, List<string> tableNames)
+        public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames)
         {
             var result = new BaseResult();
             // Call api để lấy dữ liệu
@@ -38,7 +38,7 @@ namespace Data.API
                     var assists = new List<BVTL_KQ_SL_ASSIST>();
 
                     // Chuyển đổi dữ liệu sang các bảng tương ứng
-                    _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi, ref sktts, ref assists);
+                    _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi, maDuAn, ref sktts, ref assists);
 
                     // Thêm dữ liệu bảng BVTL_KQ_SL_SKTT
                     if (sktts != null && sktts.Count > 0)
@@ -65,7 +65,7 @@ namespace Data.API
                     var hivs = new List<BVTL_KQ_XN_HIV>();
 
                     // Chuyển đổi dữ liệu sang các bảng tương ứng
-                    _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, ref hivs);
+                    _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, maDuAn, ref hivs);
 
                     // Thêm dữ liệu bảng BVTL_KQ_XN_HIV
                     if (hivs != null && hivs.Count > 0)

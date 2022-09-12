@@ -29,6 +29,7 @@ namespace Model.Model
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_3TH> BVTL_CHAT_GAY_NGHIEN_3TH { get; set; }
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_TX3TH> BVTL_CHAT_GAY_NGHIEN_TX3TH { get; set; }
         public virtual DbSet<BVTL_CITES> BVTL_CITES { get; set; }
+        public virtual DbSet<BVTL_DU_AN> BVTL_DU_AN { get; set; }
         public virtual DbSet<BVTL_DUONG_SU_DUNG> BVTL_DUONG_SU_DUNG { get; set; }
         public virtual DbSet<BVTL_KHACH_HANG> BVTL_KHACH_HANG { get; set; }
         public virtual DbSet<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }

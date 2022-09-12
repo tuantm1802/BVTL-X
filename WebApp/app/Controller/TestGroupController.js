@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "tennhom_tbh DESC";
+    $scope.modelSearch.SortColumn = "manhom_tbh";
     $scope.ListData = [];
 
     var dataTableNhomTTDL = null;
@@ -97,7 +97,8 @@
                                         Code: respone.data[i].manhom_tbh,
                                         Name: respone.data[i].tennhom_tbh,
                                         //IsActive: respone.data[i].IsActive == true ? 'Sử dụng' : 'Không sử dụng',
-                                       // Id: respone.data[i].Id
+                                        CityName: respone.data[i].CityName,
+                                        city_code: respone.data[i].city_code
                                     }
                                     dataUser.push(tmp);
                                 }
@@ -138,7 +139,7 @@
                     { "data": "STT", },
                     { "data": "Code" },
                     { "data": "Name" },
-                    //{ "data": "IsActive" },
+                    { "data": "CityName" },
                 ],
                 dom: "<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -261,9 +262,31 @@
 });
 
 app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast, hideLoading) {
+    $scope.ListCity = [];
     angular.element(document).ready(function () {
-
+        showToast();
+        GetDanhMuc();
     });
+
+    function GetDanhMuc() {
+        $scope.ListCity = [];
+        $.ajax({
+            type: 'post',
+            url: '/TestGroup/GetDanhMuc',
+            cache: false,
+            async: false,
+            data: {},
+            success: function (data) {
+
+                if (data.Citys != null && data.Citys.length > 0) {
+                    $scope.ListCity = data.Citys;
+                }
+
+                $scope.$apply();
+                hideLoading();
+            }
+        });
+    }
 
     $scope.model = {};
     $scope.submit = function () {
@@ -276,6 +299,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 Name: {
                     required: true,
                     maxlength: 250
+                },
+                city_code: {
+                    required: true
                 }
             },
             messages: {
@@ -286,6 +312,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 Name: {
                     required: "Vui lòng nhập tên nhóm",
                     maxlength: "Tên nhóm không được vượt quá 250 ký tự"
+                },
+                city_code: {
+                    required: "Vui lòng chọn tỉnh thành",
                 }
             }
         });
@@ -315,7 +344,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
 app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, showToast, hideLoading) {
     $scope.model = {};
+    $scope.ListCity = [];
     angular.element(document).ready(function () {
+        showToast();
+        GetDanhMuc();
+
         $.ajax({
             type: 'post',
             url: '/TestGroup/GetItemByID',
@@ -331,6 +364,26 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         });
     });
 
+    function GetDanhMuc() {
+        $scope.ListCity = [];
+        $.ajax({
+            type: 'post',
+            url: '/TestGroup/GetDanhMuc',
+            cache: false,
+            async: false,
+            data: {},
+            success: function (data) {
+
+                if (data.Citys != null && data.Citys.length > 0) {
+                    $scope.ListCity = data.Citys;
+                }
+
+                $scope.$apply();
+                hideLoading();
+            }
+        });
+    }
+
     $scope.submit = function () {
         $("#formSubmit").validate({
             rules: {
@@ -341,6 +394,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 Name: {
                     required: true,
                     maxlength: 250
+                },
+                city_code: {
+                    required: true
                 }
             },
             messages: {
@@ -351,6 +407,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 Name: {
                     required: "Vui lòng nhập tên nhóm",
                     maxlength: "Tên nhóm không được vượt quá 250 ký tự"
+                },
+                city_code: {
+                    required: "Vui lòng chọn tỉnh thành",
                 }
             }
         });

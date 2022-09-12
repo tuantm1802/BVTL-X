@@ -119,7 +119,7 @@ namespace WebApp.Controllers
                 var tableNames = new List<string>();
                 var infoApi = _insertDataDA.GetApiInfo(Id, ref tableNames);
 
-                var apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(infoApi.HrefApi, infoApi.TokenApi, infoApi.ReportId, tableNames);
+                var apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(infoApi.HrefApi, infoApi.TokenApi, infoApi.ReportId, infoApi.maduan, tableNames);
                 obj.Error = !apiResult.Success;
                 obj.Title = apiResult.Success ? "Đồng bộ thành công.": apiResult.Message;
 

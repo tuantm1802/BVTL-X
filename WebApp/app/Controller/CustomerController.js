@@ -185,4 +185,8 @@
 
     };
 
+    $scope.ExportExcel = function () {
+        window.location.href = '/Customer/ExportData?keyword=' + $scope.modelSearch.KeyWord;
+    }
+
 });

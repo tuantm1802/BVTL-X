@@ -16,6 +16,7 @@ namespace Model.ModelExtend.API
         public string Url { get; set; }
         public string Token { get; set; }
         public string ReportId { get; set; }
+        public string MaDuAn { get; set; }
         public List<string> TableNames { get; set; }
     }
 }

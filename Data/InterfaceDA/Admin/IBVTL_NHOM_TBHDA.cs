@@ -1,4 +1,5 @@
 ﻿using Model.Model;
+using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-         List<BVTL_NHOM_TBH> GetAllByPage(ModelSearch modelSearch, ref int totalRow);
+         List<NhomTBHPageModel> GetAllByPage(ModelSearch modelSearch);
 
         /// <summary>
         /// Lấy tất cả Nhóm thu thập dữ liệu

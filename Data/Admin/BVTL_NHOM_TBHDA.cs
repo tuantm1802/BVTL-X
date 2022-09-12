@@ -1,4 +1,6 @@
 ﻿using Common;
+using Common.Common;
+using Common.ICommon;
 using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
@@ -17,6 +19,7 @@ namespace Data.Admin
     public class BVTL_NHOM_TBHDA: IBVTL_NHOM_TBHDA
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        IDatabaseSql _DatabaseSql = new DatabaseSql();
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
         /// <summary>
@@ -24,31 +27,33 @@ namespace Data.Admin
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-        public List<BVTL_NHOM_TBH> GetAllByPage(ModelSearch modelSearch, ref int totalRow)
+        public List<NhomTBHPageModel> GetAllByPage(ModelSearch modelSearch)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            int skipRows = (modelSearch.currentPage - 1) * modelSearch.pageSize;
-            if (string.IsNullOrEmpty(modelSearch.KeyWord))
+            var result = new List<NhomTBHPageModel>();
+            try
             {
-                var queryResultPage = db.BVTL_NHOM_TBH.ToList();
-
-                totalRow = queryResultPage.Count();
-
-                queryResultPage = queryResultPage.Skip(skipRows)
-              .Take(modelSearch.pageSize).ToList();
-
-                return queryResultPage.ToList();
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
+                    new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<NhomTBHPageModel>(Constants.SP_NhomTBH_Get_By_Page, param).ToList();
             }
-            else
+            catch (Exception ex)
             {
-                var queryResultPage = db.BVTL_NHOM_TBH.Where(x => x.tennhom_tbh.Contains(modelSearch.KeyWord)).ToList();
-                totalRow = queryResultPage.Count();
-
-                queryResultPage = queryResultPage.Skip(skipRows)
-              .Take(modelSearch.pageSize).ToList();
-
-                return queryResultPage.ToList();
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "BVTL_NHOM_TBHDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy danh sách Nhóm tbh theo trang lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<NhomTBHPageModel>();
             }
+            return result;
 
         }
 
@@ -91,14 +96,14 @@ namespace Data.Admin
         /// <summary>
         /// Thêm mới
         /// </summary>
-        /// <param name="BVTL_NHOM_TBH"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public ObjectMessage Add(BVTL_NHOM_TBH BVTL_NHOM_TBH)
+        public ObjectMessage Add(BVTL_NHOM_TBH model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                db.BVTL_NHOM_TBH.Add(BVTL_NHOM_TBH);
+                db.BVTL_NHOM_TBH.Add(model);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Thêm mới thành công!";
@@ -116,16 +121,17 @@ namespace Data.Admin
         /// <summary>
         /// Chỉnh sửa
         /// </summary>
-        /// <param name="BVTL_NHOM_TBH"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public ObjectMessage Edit(BVTL_NHOM_TBH BVTL_NHOM_TBH)
+        public ObjectMessage Edit(BVTL_NHOM_TBH model)
         {
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == BVTL_NHOM_TBH.manhom_tbh);
-                data.manhom_tbh = BVTL_NHOM_TBH.manhom_tbh;
-                data.tennhom_tbh = BVTL_NHOM_TBH.tennhom_tbh;
+                var data = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == model.manhom_tbh);
+                data.manhom_tbh = model.manhom_tbh;
+                data.tennhom_tbh = model.tennhom_tbh;
+                data.city_code = model.city_code;
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Cập nhật thành công!";

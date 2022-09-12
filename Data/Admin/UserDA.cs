@@ -159,15 +159,34 @@ namespace Data.Admin
                         context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
 
+                        var cityCodes = "";
+
                         // Thêm người dùng vào nhóm
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
+                            var nhomTBH = new BVTL_NHOM_TBH();
                             for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
                                 context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
+
+                                // Lấy nhóm tbh
+                                nhomTBH = context.BVTL_NHOM_TBH.FirstOrDefault(x=>x.manhom_tbh == maNhomTBHs[i]);
+                                if(nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
+                                {
+                                    if (string.IsNullOrEmpty(cityCodes))
+                                        cityCodes = nhomTBH.city_code;
+                                    else
+                                    {
+                                        if(!cityCodes.Contains(nhomTBH.city_code))
+                                            cityCodes +=','+ nhomTBH.city_code;
+                                    }
+                                }
                             }
                             context.SaveChanges();
+
                         }
+                        // thêm danh sách tỉnh quản lý
+                        model.CityCodes = cityCodes;
                         dbContextTransaction.Commit();
                         obj.Error = false;
                         obj.Title = "Thêm mới thành công!";
@@ -194,23 +213,11 @@ namespace Data.Admin
                     try
                     {
                         var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == model.ID);
-                        data.UserName = model.UserName;
-                        data.Address = model.Address;
-                        data.Name = model.Name;
-                        data.Email = model.Email;
-                        data.Phone = model.Phone;
-                        data.Avartar = model.Avartar;
-                        data.Status = model.Status;
-                        data.DateOfBirth = model.DateOfBirth;
-                        data.Gender = model.Gender;
-                        data.IdNumber = model.IdNumber;
-                        data.Possition = model.Possition;
-                        data.GroupID = model.GroupID;
-                        data.CityCodes = model.CityCodes;
-                        context.SaveChanges();
-
+                        
+                        var cityCodes = "";
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
+                            var nhomTBH = new BVTL_NHOM_TBH();
                             var allTestGroup = context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == (int)model.ID).ToList();
                             if (allTestGroup != null && allTestGroup.Count > 0)
                             {
@@ -236,9 +243,39 @@ namespace Data.Admin
                                         checkTGs[j].IsActive = false;
                                     }
                                 }
+
+                                // Lấy nhóm tbh
+                                nhomTBH = context.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
+                                if (nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
+                                {
+                                    if (string.IsNullOrEmpty(cityCodes))
+                                        cityCodes = nhomTBH.city_code;
+                                    else
+                                    {
+                                        if (!cityCodes.Contains(nhomTBH.city_code))
+                                            cityCodes += ',' + nhomTBH.city_code;
+                                    }
+                                }
                             }
                             context.SaveChanges();
                         }
+
+                        // thêm danh sách tỉnh quản lý
+                        model.CityCodes = cityCodes;
+                        data.UserName = model.UserName;
+                        data.Address = model.Address;
+                        data.Name = model.Name;
+                        data.Email = model.Email;
+                        data.Phone = model.Phone;
+                        data.Avartar = model.Avartar;
+                        data.Status = model.Status;
+                        data.DateOfBirth = model.DateOfBirth;
+                        data.Gender = model.Gender;
+                        data.IdNumber = model.IdNumber;
+                        data.Possition = model.Possition;
+                        data.GroupID = model.GroupID;
+                        //data.CityCodes = model.CityCodes;
+                        context.SaveChanges();
 
                         obj.Error = false;
                         obj.Title = "Cập nhật thành công!";

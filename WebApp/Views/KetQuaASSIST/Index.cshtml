@@ -17,12 +17,15 @@
                     <div class="col-sm-1">
                         <label>Từ khóa</label>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-09">
                         <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
                             <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
                         </button>
                     </div>
                 </div>

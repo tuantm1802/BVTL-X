@@ -397,9 +397,7 @@
     <Content Include="App_Assets\images\h_ar2.svg" />
     <Content Include="App_Assets\images\h_ar3.svg" />
     <Content Include="App_Assets\images\h_ar4.svg" />
-    <Content Include="App_Assets\images\h_ic1.svg" />
     <Content Include="App_Assets\images\h_ic2.svg" />
-    <Content Include="App_Assets\images\h_ic3.svg" />
     <Content Include="App_Assets\images\h_ic4.svg" />
     <Content Include="App_Assets\images\h_ic5.svg" />
     <Content Include="App_Assets\images\h_ic6.svg" />
@@ -470,20 +468,15 @@
     <Content Include="App_Assets\images\l9_hover.svg" />
     <Content Include="App_Assets\images\line_li_fx.gif" />
     <Content Include="App_Assets\images\line_li_fx.svg" />
-    <Content Include="App_Assets\images\logo_login.svg" />
-    <Content Include="App_Assets\images\logo_system.png" />
-    <Content Include="App_Assets\images\logo_system.svg" />
     <Content Include="App_Assets\images\pass_lg.svg" />
     <Content Include="App_Assets\images\p_left.svg" />
     <Content Include="App_Assets\images\p_right.svg" />
-    <Content Include="App_Assets\images\quan so-01.png" />
     <Content Include="App_Assets\images\refresh.svg" />
     <Content Include="App_Assets\images\ring.svg" />
     <Content Include="App_Assets\images\r_f.svg" />
     <Content Include="App_Assets\images\r_f_sub.svg" />
     <Content Include="App_Assets\images\r_f_sub_2.svg" />
     <Content Include="App_Assets\images\search_icon.svg" />
-    <Content Include="App_Assets\images\Text_dang nhap.svg" />
     <Content Include="App_Assets\images\text_login.svg" />
     <Content Include="App_Assets\images\tree-goc.gif" />
     <Content Include="App_Assets\images\tree-gocSVG.svg" />
@@ -546,17 +539,6 @@
     <Content Include="Assest\dist\js\pages\dashboard.js" />
     <Content Include="Assest\dist\js\pages\dashboard2.js" />
     <Content Include="Assest\dist\js\pages\dashboard3.js" />
-    <Content Include="Assest\font-awesome\4.5.0\css\font-awesome.min.css" />
-    <Content Include="Assest\font-awesome\4.5.0\fonts\fontawesome-webfont.eot" />
-    <Content Include="Assest\font-awesome\4.5.0\fonts\fontawesome-webfont.svg" />
-    <Content Include="Assest\font-awesome\4.5.0\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Assest\font-awesome\4.5.0\fonts\fontawesome-webfont.woff" />
-    <Content Include="Assest\font-awesome\4.5.0\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Assest\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Assest\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Assest\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Assest\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Assest\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Assest\img\undraw_posting_photo.svg" />
     <Content Include="Assest\img\undraw_profile.svg" />
     <Content Include="Assest\img\undraw_profile_1.svg" />
@@ -2497,7 +2479,6 @@
     <Content Include="Assest\plugins\toastr\toastr.js.map" />
     <Content Include="Assest\plugins\toastr\toastr.min.css" />
     <Content Include="Assest\plugins\toastr\toastr.min.js" />
-    <Content Include="Assest\swf\flashExport.swf" />
     <Content Include="Content\Bao_cao_quan_so.xlsx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.css.map" />
@@ -4608,7 +4589,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Assest\font-awesome\4.5.0\css\" />
+    <Folder Include="Assest\font-awesome\4.5.0\fonts\" />
+    <Folder Include="Assest\fonts\" />
+    <Folder Include="Assest\swf\" />
     <Folder Include="Models\" />
+    <Folder Include="TemplateExcel\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Report\ReportFile\KeHoachChuyenTien.rdlc" />

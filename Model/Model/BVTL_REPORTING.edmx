@@ -19,6 +19,7 @@
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="ReportId" Type="varchar" MaxLength="50" />
           <Property Name="TimeReCall" Type="int" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
@@ -40,13 +41,20 @@
           <Key>
             <PropertyRef Name="Code" />
           </Key>
-          <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="LastUpdateDate" Type="datetime" />
           <Property Name="LastUpdateBy" Type="int" />
+        </EntityType>
+        <EntityType Name="BVTL_DU_AN">
+          <Key>
+            <PropertyRef Name="maduan" />
+          </Key>
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="tenduan" Type="nvarchar" MaxLength="500" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_DUONG_SU_DUNG">
           <Key>
@@ -69,7 +77,7 @@
           <Property Name="ngayngungchamsoc" Type="date" />
           <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
           <Property Name="diachi" Type="nvarchar" MaxLength="200" />
-          <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
@@ -84,8 +92,9 @@
           <Property Name="tongdiem_ace" Type="int" />
           <Property Name="ketqua_ace" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
-          <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ASSIST">
           <Key>
@@ -119,8 +128,9 @@
           <Property Name="chatkhac_nguyco" Type="nvarchar" MaxLength="50" />
           <Property Name="ghichu" Type="nvarchar" MaxLength="200" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
-          <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_SKTT">
           <Key>
@@ -135,8 +145,9 @@
           <Property Name="diem_QST" Type="int" />
           <Property Name="ketqua_QST" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
-          <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_HIV">
           <Key>
@@ -151,8 +162,9 @@
           <Property Name="ketqua" Type="int" Nullable="false" />
           <Property Name="dangdieutri_hiv" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
-          <Property Name="city_code" Type="varchar" MaxLength="50" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -177,6 +189,7 @@
           </Key>
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="tennhom_tbh" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -323,6 +336,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_DU_AN">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="0..1" />
+          <End Role="BVTL_KQ_SL_ACE" Type="Self.BVTL_KQ_SL_ACE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_ACE">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
           <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
           <End Role="BVTL_KQ_SL_ACE" Type="Self.BVTL_KQ_SL_ACE" Multiplicity="*" />
@@ -356,6 +381,18 @@
             </Principal>
             <Dependent Role="BVTL_KQ_SL_ASSIST">
               <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="BVTL_KQ_SL_ASSIST" Type="Self.BVTL_KQ_SL_ASSIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_ASSIST">
+              <PropertyRef Name="maduan" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -395,6 +432,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="BVTL_KQ_SL_SKTT" Type="Self.BVTL_KQ_SL_SKTT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_SKTT">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
           <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="0..1" />
           <End Role="BVTL_KQ_SL_SKTT" Type="Self.BVTL_KQ_SL_SKTT" Multiplicity="*" />
@@ -428,6 +477,18 @@
             </Principal>
             <Dependent Role="BVTL_KQ_XN_HIV">
               <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="BVTL_KQ_XN_HIV" Type="Self.BVTL_KQ_XN_HIV" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_XN_HIV">
+              <PropertyRef Name="maduan" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -467,11 +528,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BVTL_NHOM_TBH_BVTL_CITES">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="1" />
+          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="BVTL_REPORTINGModelStoreContainer">
           <EntitySet Name="BVTL_API" EntityType="Self.BVTL_API" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_TX3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_DU_AN" EntityType="Self.BVTL_DU_AN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="Self.BVTL_DUONG_SU_DUNG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KHACH_HANG" EntityType="Self.BVTL_KHACH_HANG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="Self.BVTL_KQ_SL_ACE" Schema="dbo" store:Type="Tables" />
@@ -502,6 +576,10 @@
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
           </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
+          </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
             <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
@@ -512,6 +590,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" Association="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG">
@@ -526,6 +608,10 @@
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
           </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
+          </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
             <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
             <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
@@ -536,6 +622,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_CITES" Association="Self.FK_BVTL_KQ_XN_HIV_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG">
@@ -550,6 +640,10 @@
             <End Role="BVTL_API" EntitySet="BVTL_API" />
             <End Role="BVTL_MASTER_TABLE" EntitySet="BVTL_MASTER_TABLE" />
           </AssociationSet>
+          <AssociationSet Name="FK_BVTL_NHOM_TBH_BVTL_CITES" Association="Self.FK_BVTL_NHOM_TBH_BVTL_CITES">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -560,6 +654,7 @@
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" />
           <EntitySet Name="BVTL_CITES" EntityType="BVTL_REPORTINGModel.BVTL_CITES" />
+          <EntitySet Name="BVTL_DU_AN" EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" />
           <EntitySet Name="BVTL_KHACH_HANG" EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" />
           <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" />
@@ -600,6 +695,26 @@
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_NHOM_TBH_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
@@ -653,6 +768,7 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TimeReCall" Type="Int32" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
         </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
@@ -675,7 +791,7 @@
           <Key>
             <PropertyRef Name="Code" />
           </Key>
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
@@ -687,6 +803,18 @@
           <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_ASSIST" />
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_SKTT" />
           <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_XN_HIV" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <EntityType Name="BVTL_DU_AN">
+          <Key>
+            <PropertyRef Name="maduan" />
+          </Key>
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="tenduan" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_SL_ACE" />
+          <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_SL_ASSIST" />
+          <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_SL_SKTT" />
+          <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_XN_HIV" />
         </EntityType>
         <EntityType Name="BVTL_DUONG_SU_DUNG">
           <Key>
@@ -709,7 +837,7 @@
           <Property Name="ngayngungchamsoc" Type="DateTime" Precision="0" />
           <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
           <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ACE" />
@@ -730,9 +858,11 @@
           <Property Name="tongdiem_ace" Type="Int32" />
           <Property Name="ketqua_ace" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
@@ -768,9 +898,11 @@
           <Property Name="chatkhac_nguyco" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ghichu" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
@@ -787,9 +919,11 @@
           <Property Name="diem_QST" Type="Int32" />
           <Property Name="ketqua_QST" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
@@ -806,9 +940,11 @@
           <Property Name="ketqua" Type="Int32" Nullable="false" />
           <Property Name="dangdieutri_hiv" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="city_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
@@ -837,6 +973,8 @@
           </Key>
           <Property Name="manhom_tbh" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="tennhom_tbh" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="city_code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_ACE" />
           <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_ASSIST" />
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_SKTT" />
@@ -1023,6 +1161,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BVTL_NHOM_TBH_BVTL_CITES">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_DU_AN">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_ACE">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Role="BVTL_KQ_SL_ASSIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_ASSIST">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Role="BVTL_KQ_SL_SKTT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_SL_SKTT">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Role="BVTL_KQ_XN_HIV" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="BVTL_KQ_XN_HIV">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
           <End Type="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Role="BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
@@ -1140,6 +1338,7 @@
           <EntitySetMapping Name="BVTL_API">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
               <MappingFragment StoreEntitySet="BVTL_API">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
                 <ScalarProperty Name="ReportId" ColumnName="ReportId" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
@@ -1184,6 +1383,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BVTL_DU_AN">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_DU_AN">
+              <MappingFragment StoreEntitySet="BVTL_DU_AN">
+                <ScalarProperty Name="tenduan" ColumnName="tenduan" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="BVTL_DUONG_SU_DUNG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG">
               <MappingFragment StoreEntitySet="BVTL_DUONG_SU_DUNG">
@@ -1212,6 +1419,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ACE">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ACE">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -1229,6 +1437,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ASSIST">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ASSIST">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -1265,6 +1474,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_SKTT">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_SKTT">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -1282,6 +1492,7 @@
           <EntitySetMapping Name="BVTL_KQ_XN_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
               <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -1318,6 +1529,7 @@
           <EntitySetMapping Name="BVTL_NHOM_TBH">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_NHOM_TBH">
               <MappingFragment StoreEntitySet="BVTL_NHOM_TBH">
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="tennhom_tbh" ColumnName="tennhom_tbh" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
               </MappingFragment>

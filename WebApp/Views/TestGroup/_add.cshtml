@@ -21,6 +21,13 @@
                             <input type="text" class="form-control" ng-model="model.tennhom_tbh" name="tennhom_tbh" required>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="requiredInput">Tỉnh thành</label>
+                            <select class="form-control" ui-select2 multiple ng-model="model.city_code" name="city_code" ng-options="item.Code as item.Name for item in ListCity" required>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -35,7 +35,7 @@ namespace Common.Common
         /// <param name="resultApi1344s"></param>
         /// <param name="sktts"></param>
         /// <param name="assists"></param>
-        public  void ConvertApi1344ToEntity(List<ResultApi1344Model> resultApi1344s, ref List<BVTL_KQ_SL_SKTT> sktts, ref List<BVTL_KQ_SL_ASSIST> assists)
+        public  void ConvertApi1344ToEntity(List<ResultApi1344Model> resultApi1344s, string maDuAn, ref List<BVTL_KQ_SL_SKTT> sktts, ref List<BVTL_KQ_SL_ASSIST> assists)
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
@@ -118,9 +118,21 @@ namespace Common.Common
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
                     if (nhomTBH == null)
                     {
-                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApi1344.tbh });
+                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApi1344.tbh, city_code = cityCode });
                         db.SaveChanges();
                     }
+                    //else
+                    //{
+                    //    // Cập nhật thêm tỉnh khai thác dữ liệu nếu chưa có
+                    //    if (!string.IsNullOrEmpty(nhomTBH.city_codes))
+                    //    {
+                    //        if(!nhomTBH.city_codes.Contains(cityCode))
+                    //            nhomTBH.city_codes += ','+ cityCode;
+                    //    }
+                    //    else
+                    //        nhomTBH.city_codes = cityCode;
+                    //    db.SaveChanges();
+                    //}
 
                     // Lấy ngay, tháng, năm nhập dữ liệu
                     if (!string.IsNullOrEmpty(resultApi1344.ngaynhap))
@@ -143,7 +155,8 @@ namespace Common.Common
                         ngaysl_month = month,
                         ngaysl_year = year,
                         manhom_tbh = group_code,
-                        city_code = cityCode
+                        city_code = cityCode,
+                        maduan = maDuAn
                     };
 
                     sktt.ketqua_QST = 0;
@@ -168,7 +181,8 @@ namespace Common.Common
                         ngaysl_year = year,
                         // ghichu = resultApi1344.,
                         manhom_tbh = group_code,
-                        city_code = cityCode
+                        city_code = cityCode,
+                        maduan = maDuAn
                     };
 
                     #region Tính điểm, nguy cơ của các loại chất kích thích
@@ -300,7 +314,7 @@ namespace Common.Common
         /// </summary>
         /// <param name="resultApiHIVs"></param>
         /// <param name="hivs"></param>
-        public  void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, ref List<BVTL_KQ_XN_HIV> hivs)
+        public  void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, string maDuAn, ref List<BVTL_KQ_XN_HIV> hivs)
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api hiv sang entity**************************************");
@@ -382,10 +396,21 @@ namespace Common.Common
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
                     if (nhomTBH == null)
                     {
-                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiHIV.tbh });
+                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiHIV.tbh, city_code = cityCode });
                         db.SaveChanges();
                     }
-
+                    //else
+                    //{
+                    //    // Cập nhật thêm tỉnh khai thác dữ liệu nếu chưa có
+                    //    if (!string.IsNullOrEmpty(nhomTBH.city_codes))
+                    //    {
+                    //        if (!nhomTBH.city_codes.Contains(cityCode))
+                    //            nhomTBH.city_codes += ',' + cityCode;
+                    //    }
+                    //    else
+                    //        nhomTBH.city_codes = cityCode;
+                    //    db.SaveChanges();
+                    //}
                     // Lấy ngay, tháng, năm nhập dữ liệu
                     if (!string.IsNullOrEmpty(resultApiHIV.ngayhoi))
                     {
@@ -398,7 +423,7 @@ namespace Common.Common
 
                     #endregion
 
-                    #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_SKTT
+                    #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_XN_HIV
                     hiv = new BVTL_KQ_XN_HIV()
                     {
                         khachhang_id = customer_id,
@@ -407,7 +432,8 @@ namespace Common.Common
                         ngayxn_month = month,
                         ngayxn_year = year,
                         manhom_tbh = group_code,
-                        city_code = cityCode
+                        city_code = cityCode,
+                        maduan = maDuAn
                     };
 
                     hiv.ketqua = 0;
