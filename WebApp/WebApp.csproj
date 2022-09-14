@@ -48,6 +48,9 @@
     <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.95.3\lib\net46\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="DataTables-Editor-Server">
+      <HintPath>..\Dll\lib\net45\DataTables-Editor-Server.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -115,12 +118,18 @@
       <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -187,6 +196,7 @@
     <Compile Include="Common\ActionLogger.cs" />
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoQuyController.cs" />
     <Compile Include="Controllers\BaoCaoThangController.cs" />
@@ -2552,16 +2562,38 @@
     <Content Include="Content\sb-theme\datatables\dataTables.bootstrap4.min.css" />
     <Content Include="Content\sb-theme\datatables\dataTables.bootstrap4.min.js" />
     <Content Include="Content\sb-theme\datatables\dataTables.buttons.min.js" />
+    <Content Include="Content\sb-theme\datatables\dataTables.dateTime.min.css" />
+    <Content Include="Content\sb-theme\datatables\dataTables.dateTime.min.js" />
+    <Content Include="Content\sb-theme\datatables\dataTables.editor.min.js" />
     <Content Include="Content\sb-theme\datatables\dataTables.responsive.min.js" />
     <Content Include="Content\sb-theme\datatables\dataTables.rowsGroup.js" />
+    <Content Include="Content\sb-theme\datatables\dataTables.searchBuilder.min.js" />
     <Content Include="Content\sb-theme\datatables\dataTables.select.min.js" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap4.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap4.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap5.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bootstrap5.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bulma.css" />
+    <Content Include="Content\sb-theme\datatables\editor.bulma.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.dataTables.css" />
+    <Content Include="Content\sb-theme\datatables\editor.dataTables.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.foundation.css" />
+    <Content Include="Content\sb-theme\datatables\editor.foundation.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.jqueryui.css" />
+    <Content Include="Content\sb-theme\datatables\editor.jqueryui.min.css" />
+    <Content Include="Content\sb-theme\datatables\editor.semanticui.css" />
+    <Content Include="Content\sb-theme\datatables\editor.semanticui.min.css" />
     <Content Include="Content\sb-theme\datatables\jquery-3.5.1.js" />
     <Content Include="Content\sb-theme\datatables\jquery.dataTables.js" />
+    <Content Include="Content\sb-theme\datatables\jquery.dataTables.min.css" />
     <Content Include="Content\sb-theme\datatables\jquery.dataTables.min.js" />
     <Content Include="Content\sb-theme\datatables\jszip.min.js" />
     <Content Include="Content\sb-theme\datatables\pdfmake.min.js" />
     <Content Include="Content\sb-theme\datatables\responsive.bootstrap4.min.css" />
     <Content Include="Content\sb-theme\datatables\responsive.bootstrap4.min.js" />
+    <Content Include="Content\sb-theme\datatables\searchBuilder.dataTables.min.css" />
     <Content Include="Content\sb-theme\datatables\vfs_fonts.js" />
     <Content Include="Content\sb-theme\fontawesome-free\attribution.js" />
     <Content Include="Content\sb-theme\fontawesome-free\css\all.css" />
@@ -4595,6 +4627,7 @@
     <Folder Include="Assest\swf\" />
     <Folder Include="Models\" />
     <Folder Include="TemplateExcel\" />
+    <Folder Include="Views\ApiKhachHang\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Report\ReportFile\KeHoachChuyenTien.rdlc" />

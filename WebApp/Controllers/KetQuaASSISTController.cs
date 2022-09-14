@@ -7,6 +7,7 @@ using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,7 +27,15 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "KetQuaASSIST")]
         public ActionResult Index()
         {
-            return View();
+            var modelSearch = new ModelSearch
+            {
+                KeyWord = string.Empty,
+                currentPage = 1,
+                pageSize = int.MaxValue,
+                SortColumn = "kqslassist_id"
+            };
+            var data = _KetQuaASSISTDA.GetAllByPage(modelSearch);
+            return View(data);
         }
 
         [HttpPost]
@@ -119,9 +128,10 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var modelSearch = new ModelSearch
                 {
-                    KeyWord = keyword,
+                    KeyWord = keyword == "undefined" ? string.Empty : keyword,
                     currentPage = 1,
-                    pageSize = int.MaxValue
+                    pageSize = int.MaxValue,
+                    SortColumn = "kqslassist_id"
                 };
                 var data = _KetQuaASSISTDA.GetAllByPage(modelSearch);
 
@@ -231,8 +241,14 @@ namespace WebApp.Controllers
                         worksheet = xlPackage.Workbook.Worksheets.Add(sheetName);
 
                     worksheet.Cells["A2"].Value = title;
-                    worksheet.Cells["A5"].LoadFromDataTable(datatable, false);
+                    worksheet.Cells["A5"].LoadFromDataTable(datatable, false, new OfficeOpenXml.Table.TableStyles { });
+                    var modelTable = worksheet.Cells["A5:Y"+ (datatable.Rows.Count +5)];
 
+                    // Assign borders
+                    modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     // Lưu file Excel
                     xlPackage.Save();
                 }
@@ -248,5 +264,4 @@ namespace WebApp.Controllers
 
     }
     #endregion
-}
 }

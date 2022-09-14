@@ -1,7 +1,12 @@
-﻿@{
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaASSISTPageModel>
+@{
     ViewBag.Title = "Kết quả ASSIST";
 }
-
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
 <div class="container-fluid" ng-controller="KetQuaASSISTController">
 
     <!-- Page Heading -->
@@ -13,11 +18,11 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="card-tools">
-                <div class="row">
+                @*<div class="row">
                     <div class="col-sm-1">
                         <label>Từ khóa</label>
                     </div>
-                    <div class="col-sm-09">
+                    <div class="col-sm-9">
                         <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
                     </div>
                     <div class="col-sm-2">
@@ -28,7 +33,7 @@
                             <i class="fas fa-pencil-alt"></i> Xuất Excel
                         </button>
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
         <div class="card-body">
@@ -76,6 +81,39 @@
                             <th>Nguy cơ</th>
                         </tr>
                     </thead>
+                    @foreach (var item in Model)
+                    {
+                        var stt = 1;
+                        <tr>
+                            <td class="text-left">@item.CityName</td>
+                            <td class="text-left">@item.manhom_tbh</td>
+                            <td class="text-left">@item.tennhom_tbh</td>
+                            <td class="text-left">@item.makh</td>
+                            <td class="text-left">@item.hoten</td>
+                            <td class="text-left">@item.ngaysltext</td>
+                            <td class="text-left">@item.thuocla_diem</td>
+                            <td class="text-left">@item.thuocla_nguyco</td>
+                            <td class="text-left">@item.conruou_diem</td>
+                            <td class="text-left">@item.conruou_nguyco</td>
+                            <td class="text-left">@item.cansa_diem</td>
+                            <td class="text-left">@item.cansa_nguyco</td>
+                            <td class="text-left">@item.cocaine_diem</td>
+                            <td class="text-left">@item.cocaine_nguyco</td>
+                            <td class="text-left">@item.matuyda_diem</td>
+                            <td class="text-left">@item.matuyda_nguyco</td>
+                            <td class="text-left">@item.khixonghit_diem</td>
+                            <td class="text-left">@item.khixonghit_nguyco</td>
+                            <td class="text-left">@item.thuocanthan_diem</td>
+                            <td class="text-left">@item.thuocanthan_nguyco</td>
+                            <td class="text-left">@item.chatgayaogiac_diem</td>
+                            <td class="text-left">@item.chatgayaogiac_nguyco</td>
+                            <td class="text-left">@item.thuocphien_diem</td>
+                            <td class="text-left">@item.thuocphien_nguyco</td>
+                            <td class="text-left">@item.chatkhac_diem</td>
+                            <td class="text-left">@item.chatkhac_nguyco</td>
+                        </tr>
+                        stt++;
+                    }
                 </table>
             </div>
         </div>

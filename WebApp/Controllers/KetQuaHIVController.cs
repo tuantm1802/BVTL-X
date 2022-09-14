@@ -25,7 +25,15 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "KetQuaHIV")]
         public ActionResult Index()
         {
-            return View();
+            var modelSearch = new ModelSearch
+            {
+                KeyWord = string.Empty,
+                currentPage = 1,
+                pageSize = int.MaxValue,
+                SortColumn = "kqxnhiv_id"
+            };
+            var data = _KetQuaHIVDA.GetAllByPage(modelSearch);
+            return View(data);
         }
 
        
@@ -119,9 +127,10 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var modelSearch = new ModelSearch
                 {
-                    KeyWord = keyword,
+                    KeyWord = keyword == "undefined" ? string.Empty : keyword,
                     currentPage = 1,
-                    pageSize = int.MaxValue
+                    pageSize = int.MaxValue,
+                    SortColumn = "kqxnhiv_id"
                 };
                 var data = _KetQuaHIVDA.GetAllByPage(modelSearch);
 

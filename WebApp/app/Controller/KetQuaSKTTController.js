@@ -51,74 +51,74 @@
                 dataTableKetQuaSKTT.destroy();
             dataTableKetQuaSKTT = $('#dataTableKetQuaSKTT').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
-                serverSide: true,
+                //serverSide: true,
                 ordering: false,
                 searching: true,
                 processing: true,
-                ajax: function (data, callback, settings) {
-                    var dataUser = [];
-                    var totalItems = 0;
-                    var page = ((data.start / data.length) + 1);
+                //ajax: function (data, callback, settings) {
+                //    var dataUser = [];
+                //    var totalItems = 0;
+                //    var page = ((data.start / data.length) + 1);
 
-                    $scope.modelSearch.currentPage = page;
-                    $scope.modelSearch.pageSize = data.length;
+                //    $scope.modelSearch.currentPage = page;
+                //    $scope.modelSearch.pageSize = data.length;
 
-                    $.ajax({
-                        type: 'post',
-                        url: '/KetQuaSKTT/GetAll',
-                        cache: false,
-                        async: false,
-                        data: $scope.modelSearch,
-                        success: function (respone) {
-                            totalItems = respone.totalItems;
-                            $scope.ListKetQuaSKTT = respone.data;
-                            if (respone.data != null && respone.data.length > 0) {
-                                for (var i = 0; i < respone.data.length; i++) {
-                                    var tmp = {
-                                        kqslsktt_id: respone.data[i].kqslsktt_id,
-                                        khachhang_id: respone.data[i].khachhang_id,
-                                        ngaysl: respone.data[i].ngaysl,
-                                        ngaysl_date: respone.data[i].ngaysl_date,
-                                        ngaysl_month: respone.data[i].ngaysl_month,
-                                        ngaysl_year: respone.data[i].ngaysl_year,
-                                        diem_QST: respone.data[i].diem_QST,
-                                        ketqua_QST: respone.data[i].ketqua_QST,
-                                        manhom_tbh: respone.data[i].manhom_tbh,
-                                        city_code: respone.data[i].city_code,
-                                        hoten: respone.data[i].hoten,
-                                        makh: respone.data[i].makh,
-                                        CityName: respone.data[i].CityName,
-                                        ngaysltext: respone.data[i].ngaysltext,
-                                        tennhom_tbh: respone.data[i].tennhom_tbh
-                                    }
-                                    dataUser.push(tmp);
-                                }
-                            }
-                        }
-                    });
+                //    $.ajax({
+                //        type: 'post',
+                //        url: '/KetQuaSKTT/GetAll',
+                //        cache: false,
+                //        async: false,
+                //        data: $scope.modelSearch,
+                //        success: function (respone) {
+                //            totalItems = respone.totalItems;
+                //            $scope.ListKetQuaSKTT = respone.data;
+                //            if (respone.data != null && respone.data.length > 0) {
+                //                for (var i = 0; i < respone.data.length; i++) {
+                //                    var tmp = {
+                //                        kqslsktt_id: respone.data[i].kqslsktt_id,
+                //                        khachhang_id: respone.data[i].khachhang_id,
+                //                        ngaysl: respone.data[i].ngaysl,
+                //                        ngaysl_date: respone.data[i].ngaysl_date,
+                //                        ngaysl_month: respone.data[i].ngaysl_month,
+                //                        ngaysl_year: respone.data[i].ngaysl_year,
+                //                        diem_QST: respone.data[i].diem_QST,
+                //                        ketqua_QST: respone.data[i].ketqua_QST,
+                //                        manhom_tbh: respone.data[i].manhom_tbh,
+                //                        city_code: respone.data[i].city_code,
+                //                        hoten: respone.data[i].hoten,
+                //                        makh: respone.data[i].makh,
+                //                        CityName: respone.data[i].CityName,
+                //                        ngaysltext: respone.data[i].ngaysltext,
+                //                        tennhom_tbh: respone.data[i].tennhom_tbh
+                //                    }
+                //                    dataUser.push(tmp);
+                //                }
+                //            }
+                //        }
+                //    });
 
-                    setTimeout(function () {
-                        callback({
-                            draw: data.draw,
-                            data: dataUser,
-                            recordsTotal: totalItems,
-                            recordsFiltered: totalItems
-                        });
-                    }, 50);
-                },
-                rowId: 'kqslsktt_id',
-                select: {
-                    info: false
-                },
+                //    setTimeout(function () {
+                //        callback({
+                //            draw: data.draw,
+                //            data: dataUser,
+                //            recordsTotal: totalItems,
+                //            recordsFiltered: totalItems
+                //        });
+                //    }, 50);
+                //},
+                //rowId: 'kqslsktt_id',
+                //select: {
+                //    info: false
+                //},
                 columns: [
-                    { "data": "CityName", },
-                    { "data": "manhom_tbh" },
-                    { "data": "tennhom_tbh" },
-                    { "data": "makh" },
-                    { "data": "hoten" },
-                    { "data": "ngaysltext" },
-                    { "data": "diem_QST" },
-                    { "data": "ketqua_QST" }
+                    { "data": "CityName", searchBuilderType: "string"  },
+                    { "data": "manhom_tbh", searchBuilderType: "string"  },
+                    { "data": "tennhom_tbh", searchBuilderType: "string"  },
+                    { "data": "makh", searchBuilderType: "string"  },
+                    { "data": "hoten", searchBuilderType: "string"  },
+                    { "data": "ngaysltext", searchBuilderType: "string"  },
+                    { "data": "diem_QST", searchBuilderType: "string"  },
+                    { "data": "ketqua_QST", searchBuilderType: "string"  }
                 ],
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
@@ -135,15 +135,91 @@
                         "next": ">",
                         "previous": "<"
                     },
+                    "searchBuilder": {
+                        "button": 'Tìm kiếm',
+                        "add": 'Thêm điều kiện',
+                        "clearAll": 'Xóa tất cả',
+                        "condition": 'Điều kiện',
+                        "conditions": {
+                            "date": {
+                                "before": 'Trước',
+                                "after": 'Sau',
+                                "equals": 'Bằng',
+                                "not": 'Khác',
+                                "between": 'Giữa',
+                                "notBetween": 'Không phải ở giữa',
+                                "empty": 'Trống',
+                                "notEmpty": 'Không trống'
+                            },
+                            "moment": {
+                                "before": 'Trước',
+                                "after": 'Sau',
+                                "equals": 'Bằng',
+                                "not": 'Khác',
+                                "between": 'Giữa',
+                                "notBetween": 'Không phải ở giữa',
+                                "empty": 'Trống',
+                                "notEmpty": 'Không trống'
+                            },
+                            "number": {
+                                "equals": 'Bằng',
+                                "not": 'Khác',
+                                "gt": 'Tốt hơn',
+                                "gte": 'Lớn hơn hoặc bằng',
+                                "lt": 'Ít hơn',
+                                "lte": 'Ít hơn hoặc bằng',
+                                "between": 'Giữa',
+                                "notBetween": 'Không phải ở giữa',
+                                "empty": 'Trống',
+                                "notEmpty": 'Không trống'
+                            },
+                            "string": {
+                                "contains": 'Chứa',
+                                "notContains": 'Không chứa',
+                                "empty": 'Trống',
+                                "notEmpty": 'Không trống',
+                                "equals": 'Bằng',
+                                "not": 'Khác',
+                                "endsWith": 'Kết thúc bằng',
+                                "startsWith": 'Bắt đầu bằng',
+                                "notEndsWith": 'Không kết thúc bằng',
+                                "notStartsWith": 'Không bắt đầu bằng'
+                            },
+                        },
+                        "data": 'Cột',
+                        "logicAnd": 'Hủy bỏ',
+                        "logicOr": 'OU',
+                        "title": {
+                            0: 'Các điều kiện tìm kiếm',
+                            _: 'Đã lọc (%d)'
+                        },
+                        "deleteTitle": 'Xóa',
+                        "leftTitle": 'Bên trái',
+                        "rightTitle": 'Đúng',
+                        "value": 'Giá trị',
+                    }
                 },
-                dom: "<'row'<'col-sm-12'tr>>" +
+                dom:
+                    "<'row'<'col-sm-8'Q>>" +
+                    "<'row'<'col-sm-8'B><'col-sm-4'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>",
                 scroller: {
                     loadingIndicator: true
                 },
                 buttons: [
-                    'colvis'
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Xuất excel'
+                    }
                 ]
+                ,
+                columnDefs: [{
+                    searchBuilder: {
+                        defaultCondition: "="
+                    },
+                    targets: [1]
+                }]
             });
         } else {
             dataTableKetQuaSKTT.ajax.reload();
