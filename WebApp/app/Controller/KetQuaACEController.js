@@ -186,8 +186,8 @@
                             },
                         },
                         "data": 'Cột',
-                        "logicAnd": 'Hủy bỏ',
-                        "logicOr": 'OU',
+                        "logicAnd": 'Và',
+                        "logicOr": 'Hoặc',
                         "title": {
                             0: 'Các điều kiện tìm kiếm',
                             _: 'Đã lọc (%d)'
