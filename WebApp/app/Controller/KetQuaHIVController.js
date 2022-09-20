@@ -116,7 +116,8 @@
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},
                     { "data": "hoten", searchBuilderType: "string"},
-                    { "data": "ngayxntext", searchBuilderType: "string"},
+                    //{ "data": "ngayxntext", searchBuilderType: "string" },
+                    { "data": "ngayxn", searchBuilderType: "date" },
                     { "data": "ketqua", searchBuilderType: "string" },
                     { "data": "dangdieutri_hiv", searchBuilderType: "string" }
                 ],

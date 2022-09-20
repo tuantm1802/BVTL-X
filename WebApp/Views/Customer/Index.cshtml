@@ -69,18 +69,19 @@
                     @foreach (var item in Model)
                     {
                         var stt = 1;
-                        <tr>
-                            <td class="text-center">@stt</td>
-                            <td class="text-left">@item.makh</td>
-                            <td class="text-left">@item.hoten</td>
-                            <td class="text-left">@item.GioiTinhText</td>
-                            <td class="text-left">@item.namsinh</td>
-                            <td class="text-left">@item.LoaiDoiTuong</td>
-                            <td class="text-center">@item.ngaytiepcantext</td>
-                            <td class="text-left">@item.sodienthoai</td>
-                            <td class="text-left">@item.CityName</td>
-                            <td class="text-left">@item.diachi</td>
-                        </tr>
+                <tr>
+                    <td class="text-center">@stt</td>
+                    <td class="text-left">@item.makh</td>
+                    <td class="text-left">@item.hoten</td>
+                    <td class="text-left">@item.GioiTinhText</td>
+                    <td class="text-left">@item.namsinh</td>
+                    <td class="text-left">@item.LoaiDoiTuong</td>
+                    <td class="text-center">@item.ngaytiepcan</td>
+                    @*<td class="text-center">@item.ngaytiepcantext</td>*@
+                    <td class="text-left">@item.sodienthoai</td>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.diachi</td>
+                </tr>
                         stt++;
                     }
                     @*<tbody>

@@ -202,7 +202,8 @@
                     { "data": "GioiTinhText", searchBuilderType: "string" },
                     { "data": "namsinh", searchBuilderType: "string" },
                     { "data": "LoaiDoiTuong", searchBuilderType: "string" },
-                    { "data": "ngaytiepcantext", searchBuilderType: "date" },
+                    //{ "data": "ngaytiepcantext", searchBuilderType: "string" },
+                    { "data": "ngaytiepcan", searchBuilderType: "date" },
                     { "data": "sodienthoai", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
                     { "data": "diachi", searchBuilderType: "string" }
