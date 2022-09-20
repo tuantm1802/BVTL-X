@@ -76,7 +76,7 @@
                     <td class="text-left">@item.GioiTinhText</td>
                     <td class="text-left">@item.namsinh</td>
                     <td class="text-left">@item.LoaiDoiTuong</td>
-                    <td class="text-center">@item.ngaytiepcan</td>
+                    <td class="text-center">@(item.ngaytiepcan != null ? item.ngaytiepcan.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-center">@item.ngaytiepcantext</td>*@
                     <td class="text-left">@item.sodienthoai</td>
                     <td class="text-left">@item.CityName</td>

@@ -90,7 +90,7 @@
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
                     <td class="text-left">@item.hoten</td>
-                    <td class="text-left">@item.ngaysl</td>
+                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-left">@item.ngaysltext</td>*@
                     <td class="text-left">@item.thuocla_diem</td>
                     <td class="text-left">@item.thuocla_nguyco</td>
