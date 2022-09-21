@@ -2507,7 +2507,7 @@
     <Content Include="Content\Images\collapse_expand.png" />
     <Content Include="Content\Images\img_loading.gif" />
     <Content Include="Content\Images\line_conn.gif" />
-    <Content Include="Content\Images\logo_bca.png" />
+    <Content Include="Content\Images\logo.jpg" />
     <Content Include="Content\Images\noimg.png" />
     <Content Include="Content\Images\select.svg" />
     <Content Include="Content\Images\throbber.gif" />

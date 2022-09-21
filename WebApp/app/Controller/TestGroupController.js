@@ -263,6 +263,7 @@
 
 app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast, hideLoading) {
     $scope.ListCity = [];
+    $scope.ListCityCode = [];
     angular.element(document).ready(function () {
         showToast();
         GetDanhMuc();
@@ -345,6 +346,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, showToast, hideLoading) {
     $scope.model = {};
     $scope.ListCity = [];
+    $scope.ListCityCode = [];
     angular.element(document).ready(function () {
         showToast();
         GetDanhMuc();

@@ -76,6 +76,7 @@ namespace Data.Admin
         /// <returns></returns>
         public BVTL_NHOM_TBH GetItemByMaNhom(string maNhom)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             return db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom);
         }
 
