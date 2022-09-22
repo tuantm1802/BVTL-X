@@ -32,5 +32,12 @@ namespace Common.ICommon
         /// <param name="resultApiHIVs"></param>
         /// <param name="hivs"></param>
         void ConvertApiHIVToEntity(List<ResultApiHIVModel> resultApiHIVs, string maDuAn, ref List<BVTL_KQ_XN_HIV> hivs);
+
+        /// <summary>
+        /// CHuyển đổi kết quả api ACE sang entity BVTL_KQ_SL_ACE
+        /// </summary>
+        /// <param name="resultApiACEs"></param>
+        /// <param name="aces"></param>
+        void ConvertApiACEToEntity(List<ResultApiACEModel> resultApiACEs, string maDuAn, ref List<BVTL_KQ_SL_ACE> aces);
     }
 }

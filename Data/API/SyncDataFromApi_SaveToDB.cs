@@ -76,6 +76,25 @@ namespace Data.API
                     }
                 }
 
+                // Đầu api ACE
+                if (tableNames.Contains("BVTL_KQ_SL_ACE"))
+                {
+                    var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiACEModel>>(resultApiString);
+
+                    var aces = new List<BVTL_KQ_SL_ACE>();
+
+                    // Chuyển đổi dữ liệu sang các bảng tương ứng
+                    _convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi, maDuAn, ref aces);
+
+                    // Thêm dữ liệu bảng BVTL_KQ_SL_ACE
+                    if (aces != null && aces.Count > 0)
+                    {
+                        var dattableInsert = insertDataDA.ConvertToDataTable(aces);
+
+                        result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ACE");
+                    }
+                }
+
                 #endregion
             }
             return result;
