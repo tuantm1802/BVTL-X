@@ -56,6 +56,7 @@
     <Compile Include="ModelExtend\API\ApiResult.cs" />
     <Compile Include="ModelExtend\API\ProcessModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiACEModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiTongHopModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiHIVModel.cs" />
     <Compile Include="ModelExtend\API\TableNameModel.cs" />
     <Compile Include="ModelExtend\BaseResult.cs" />
@@ -89,6 +90,9 @@
     <Compile Include="ModelExtend\User\MY_PROFILE_Model.cs" />
     <Compile Include="ModelExtend\User\ViewProfile.cs" />
     <Compile Include="Model\BVTL_API.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_BO_BIEU_MAU_KH_BAO_CAO.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_3TH.cs">

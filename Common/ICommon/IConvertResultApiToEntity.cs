@@ -39,5 +39,12 @@ namespace Common.ICommon
         /// <param name="resultApiACEs"></param>
         /// <param name="aces"></param>
         void ConvertApiACEToEntity(List<ResultApiACEModel> resultApiACEs, string maDuAn, ref List<BVTL_KQ_SL_ACE> aces);
+
+        /// <summary>
+        /// CHuyển đổi kết quả api tổng hợp sang entity BVTL_BO_BIEU_MAU_KH_BAO_CAO
+        /// </summary>
+        /// <param name="resultApiTHs"></param>
+        /// <param name="tongHops"></param>
+         void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops);
     }
 }

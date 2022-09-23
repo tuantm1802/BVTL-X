@@ -598,5 +598,140 @@ namespace Common.Common
             }
             log.Info("********************************Kết thúc chuyển đổi kết quả api ace sang entity**************************************");
         }
+
+        /// <summary>
+        /// CHuyển đổi kết quả api tổng hợp sang entity BVTL_BO_BIEU_MAU_KH_BAO_CAO
+        /// </summary>
+        /// <param name="resultApiTHs"></param>
+        /// <param name="tongHops"></param>
+        public void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api tổng hợp sang entity**************************************");
+            try
+            {
+                var tongHop = new BVTL_BO_BIEU_MAU_KH_BAO_CAO();
+                var resultApiTH = new ResultApiTongHopModel();
+                var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var customer_id = 0;
+                var group_code = "";
+                var cityCode = "";
+                var nhomTBH = new BVTL_NHOM_TBH();
+                var month = 0;
+                var day = 0;
+                var year = 0;
+                var ngaynhap = "";
+                var ngaynhapD = DateTime.Today;
+
+                for (int i = 0; i < resultApiTHs.Count; i++)
+                {
+                    customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+                    customer_id = 0;
+                    group_code = "";
+                    cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+                    month = 0;
+                    day = 0;
+                    year = 0;
+                    ngaynhap = "";
+                    ngaynhapD = DateTime.Today;
+
+                    resultApiTH = resultApiTHs[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+                    customer_code = resultApiTH.makh;
+                    group_code = customer_code.Substring(0, 5);
+                    // Lấy id tỉnh
+                    if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 3);
+                    }
+
+                    // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
+                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                    if (customer != null && customer.khachhang_id > 0)
+                    {
+                        customer_id = customer.khachhang_id;
+                    }
+                    else
+                    {
+                        customer = new BVTL_KHACH_HANG
+                        {
+                            makh = resultApiTH.makh,
+                            hoten = string.IsNullOrEmpty(resultApiTH.hoten) ? resultApiTH.makh : resultApiTH.hoten,
+                            gioitinh = resultApiTH.gioitinh == "Nam" ? "M" : (resultApiTH.gioitinh == "Nữ" ? "F" : "O"),
+                            sodienthoai = resultApiTH.dienthoai,
+                            diachi = resultApiTH.diachi
+                        };
+                        customer.city_code = cityCode;
+                        if (!string.IsNullOrEmpty(resultApiTH.namsinh))
+                            customer.namsinh = Convert.ToInt32(resultApiTH.namsinh);
+
+                        if (!string.IsNullOrEmpty(resultApiTH.doituong))
+                        {
+                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiTH.doituong).id;
+                        }
+
+                        if (!string.IsNullOrEmpty(resultApiTH.ngay))
+                            customer.ngaytiepcan = DateTime.ParseExact(resultApiTH.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+                        customer_id = CreateCustomer(customer);
+                    }
+
+                    // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
+                    nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
+                    if (nhomTBH == null)
+                    {
+                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiTH.tbh, city_code = cityCode });
+                        db.SaveChanges();
+                    }
+                    // Lấy ngay, tháng, năm nhập dữ liệu
+                    if (!string.IsNullOrEmpty(resultApiTH.ngay))
+                    {
+                        ngaynhap = resultApiTH.ngay;
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    day = ngaynhapD.Day;
+                    month = ngaynhapD.Month;
+                    year = ngaynhapD.Year;
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_ACE
+                    tongHop = new BVTL_BO_BIEU_MAU_KH_BAO_CAO()
+                    {
+                        khachhang_id = customer_id,
+                        ngaysl = ngaynhapD,
+                        ngaysl_date = day,
+                        ngaysl_month = month,
+                        ngaysl_year = year,
+                        manhom_tbh = group_code,
+                        city_code = cityCode,
+                        maduan = maDuAn
+                    };
+
+                    tongHop.ketqua_ace = 0;
+                    tongHop.tongdiem_ace = 0;
+                    if (!string.IsNullOrEmpty(resultApiTH.diem))
+                    {
+                        tongHop.tongdiem_ace = Convert.ToInt32(resultApiTH.diem);
+                        if (tongHop.tongdiem_ace >= 4)
+                            tongHop.ketqua_ace = 1;
+                    }
+                    tongHops.Add(tongHop);
+
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả api tổng hợp sang entity lỗi: " + ex.Message);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api tổng hợp sang entity**************************************");
+        }
     }
 }

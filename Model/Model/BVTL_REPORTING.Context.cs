@@ -26,6 +26,7 @@ namespace Model.Model
         }
     
         public virtual DbSet<BVTL_API> BVTL_API { get; set; }
+        public virtual DbSet<BVTL_BO_BIEU_MAU_KH_BAO_CAO> BVTL_BO_BIEU_MAU_KH_BAO_CAO { get; set; }
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_3TH> BVTL_CHAT_GAY_NGHIEN_3TH { get; set; }
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_TX3TH> BVTL_CHAT_GAY_NGHIEN_TX3TH { get; set; }
         public virtual DbSet<BVTL_CITES> BVTL_CITES { get; set; }
