@@ -140,7 +140,7 @@
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
-        window.location.href = '/BaoCaoQuy/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + $scope.modelSearch.CityCodes + '&quy=' + $scope.Quy;
+        window.location.href = '/BaoCaoQuy/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes) + '&quy=' + $scope.Quy;
     }
 
    

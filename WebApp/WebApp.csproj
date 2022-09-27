@@ -199,6 +199,7 @@
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoQuyController.cs" />
+    <Compile Include="Controllers\BaoCao6ThangController.cs" />
     <Compile Include="Controllers\BaoCaoThangController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseNoRoleController.cs" />
@@ -279,6 +280,7 @@
     <Content Include="app\Controller\ApiController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
     <Content Include="app\Controller\BaoCaoQuyController.js" />
+    <Content Include="app\Controller\BaoCao6ThangController.js" />
     <Content Include="app\Controller\BaoCaoThangController.js" />
     <Content Include="app\Controller\ChatGayNghien3THController.js" />
     <Content Include="app\Controller\ChatGayNghienTX3THController.js" />
@@ -4593,6 +4595,7 @@
     <Content Include="Views\KetQuaHIV\Index.cshtml" />
     <Content Include="Views\KetQuaSKTT\Index.cshtml" />
     <Content Include="Views\LoaiDoiTuong\Index.cshtml" />
+    <Content Include="Views\BaoCao6Thang\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

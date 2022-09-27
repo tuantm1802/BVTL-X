@@ -17,15 +17,15 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class BaoCaoNamController : BaseController
+    public class BaoCao6ThangController : BaseController
     {
-        ISysLogDA _sysLogDA = new SysLogDA();
         ICityDA _CityDA = new CityDA();
         IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
-        // GET: BaoCaoNam
-        [HasCredential(ControllerName = "BaoCaoNam")]
+        // GET: BaoCao6Thang
+        [HasCredential(ControllerName = "BaoCao6Thang")]
         public ActionResult Index()
         {
             return View();
@@ -41,17 +41,16 @@ namespace WebApp.Controllers
             };
             try
             {
-                modelSearch.TypeReport = 4;
+                modelSearch.TypeReport = 3;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
-
-                AddLog("Lấy dữ liệu báo cáo năm( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
-                return Json(new { data = data,  Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                AddLog("Lấy dữ liệu báo cáo tháng( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Lấy dữ liệu báo cáo năm(tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
+                AddLog("Lấy dữ liệu báo cáo tháng( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
 
                 return Json(obj);
             }
@@ -66,11 +65,14 @@ namespace WebApp.Controllers
             };
             try
             {
+                
                 var menu = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
+
                 var user = Session["USER_SESSION"] as UserLogin;
                 var citys = _CityDA.GetCityReport((int)user.UserID);
+
                 AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
                 return Json(new { Buttoms = bottoms, Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
@@ -89,7 +91,7 @@ namespace WebApp.Controllers
             _sysLogDA.Add(
                     new BVTL_QT_LOG
                     {
-                        ControllerName = "BaoCaoNam",
+                        ControllerName = "BaoCaoThang",
                         UserName = user.UserName,
                         DateLog = DateTime.Now,
                         Content = content
@@ -104,15 +106,15 @@ namespace WebApp.Controllers
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 4 };
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3};
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
-                var file_name = "BaoCaoNam_" + Year + ".xlsx";
+                var file_name = "BaoCaoThang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
-                    var ws = wb.Worksheets.Add("Báo cáo năm " + Year);
-                    var titleReport = "BÁO CÁO NĂM " + Year;
+                    var ws = wb.Worksheets.Add("Báo cáo tháng " + Months + " năm " + Year);
+                    var titleReport = "BÁO CÁO THÁNG " + Months + " NĂM " + Year;
                     CreateHeader(ws, titleReport, user);
 
                     var columnName = "";
@@ -123,7 +125,7 @@ namespace WebApp.Controllers
                        
                         foreach (var rowReport in data)
                         {
-                            if(rowReport.IsShow == "Y")
+                            if (rowReport.IsShow == "Y")
                             {
                                 // Thêm dữ liệu cột STT
                                 InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
@@ -146,7 +148,7 @@ namespace WebApp.Controllers
 
                                     if (rowReport.Rowpan > 1)
                                     {
-                                        ws.Range("B" + row + ":" + "B" + (row + rowReport.Rowpan -1)).Merge();
+                                        ws.Range("B" + row + ":" + "B" + (row + rowReport.Rowpan - 1)).Merge();
                                     }
                                 }
                                 else
@@ -154,7 +156,7 @@ namespace WebApp.Controllers
                                     // Thêm dữ liệu cột thông tin BC - thêm
                                     InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                                 }
-                               
+
 
                                 // Thêm dữ liệu cột Tổng
                                 InsertDataCell(ws, "D", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
@@ -177,10 +179,9 @@ namespace WebApp.Controllers
                                 // Thêm dữ liệu cột Chuyển giới
                                 InsertDataCell(ws, "J", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
 
-                                
+
                                 row++;
                             }
-                            
                         }
                     }
 
@@ -318,7 +319,7 @@ namespace WebApp.Controllers
             ws.Cell("D3").Style.Font.Bold = true;
             ws.Cell("D3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("D3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            
+
             ws.Cell("E3").Value = "MSM";
             ws.Cell("E3").Style.Font.Bold = true;
             ws.Cell("E3").Style.Alignment.WrapText = true;

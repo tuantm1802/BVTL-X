@@ -1,4 +1,4 @@
-﻿app.controller("BaoCaoNamController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("BaoCao6ThangController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -7,18 +7,34 @@
     $scope.modelSearch.SortColumn = "ParamCode DESC";
     $scope.ListYear = [];
     $scope.ListCity = [];
+    $scope.List6Thang = [];
+    $scope.SauThang = 1;
     $scope.ListCityCode = [];
-   
+    
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
+        $scope.SauThang = 1;
         var date = new Date();
         for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
             var tmpYear = {
                 Id: i,
-                Name: i + ''
+                Name : i+''
             };
             $scope.ListYear.push(tmpYear);
         }
+
+        var tmpMonth = {
+            Id: 1,
+            Name: '6 tháng đầu năm'
+        };
+        $scope.List6Thang.push(tmpMonth);
+
+        var tmpMonth2 = {
+            Id: 2,
+            Name: '6 tháng cuối năm'
+        };
+        $scope.List6Thang.push(tmpMonth2);
+
         $scope.modelSearch.Year = date.getFullYear();
         GetBottomAction();
         $scope.LoadPage(1);
@@ -31,7 +47,7 @@
         $scope.ListCity = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoNam/GetBottomAction',
+            url: '/BaoCao6Thang/GetBottomAction',
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -44,13 +60,11 @@
                         }
                     });
                 }
-
                 $scope.ListCity = response.Citys;
                 $scope.$apply();
             }
         });
     }
-
 
     $scope.LoadPage = function (genTable) {
         if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
@@ -58,22 +72,26 @@
             return;
         }
 
-        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
-            $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
-            //angular.forEach($scope.ListCityCode, function (value, key) {
-            //    if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
-
-            //    } else {
-
-            //    }
-            //}, log);
+        if ($scope.SauThang > 0) {
+            if ($scope.SauThang == 1) {
+                $scope.modelSearch.Months ='1,2,3,4,5,6';
+            } else {
+                $scope.modelSearch.Months = '7,8,9,10,11,12';
+            }
+            
+        } else {
+            toastr.error("Vui lòng chọn kỳ báo cáo!");
+            return;
         }
 
+        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+            $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
+        }
         showToast();
         $scope.ListData = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoNam/SearchData',
+            url: '/BaoCao6Thang/SearchData',
             cache: false,
             async: false,
             data: $scope.modelSearch,
@@ -90,14 +108,36 @@
     };
 
     $scope.ExportExcel = function () {
+        //var strData = '';
+        //angular.forEach($scope.modelSearch.City, function (val, key) {
+        //    if (val !== '') {
+        //        if (strData !== '')
+        //            strData += ',';
+        //        strData += parseInt(val);
+        //    }
+        //});
+
         if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
             toastr.error("Vui lòng chọn năm!");
+            return;
+        }
+        if ($scope.SauThang > 0) {
+            if ($scope.SauThang == 1) {
+                $scope.modelSearch.Months = '1,2,3,4,5,6';
+            } else {
+                $scope.modelSearch.Months = '7,8,9,10,11,12';
+            }
+
+        } else {
+            toastr.error("Vui lòng chọn kỳ báo cáo!");
             return;
         }
 
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
-        window.location.href = '/BaoCaoNam/ExportData?Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes);
+        window.location.href = '/BaoCao6Thang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes);
     }
+
+
 });

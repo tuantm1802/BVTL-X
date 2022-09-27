@@ -41,6 +41,7 @@ namespace WebApp.Controllers
             };
             try
             {
+                modelSearch.TypeReport = 1;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo tháng( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
                 return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." }); ;
@@ -105,7 +106,7 @@ namespace WebApp.Controllers
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes };
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 1 };
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
                 var file_name = "BaoCaoThang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
@@ -124,49 +125,63 @@ namespace WebApp.Controllers
                        
                         foreach (var rowReport in data)
                         {
-                            // Thêm dữ liệu cột STT
-                            InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
-
-                            // Thêm dữ liệu cột thông tin BC
-                            InsertDataCell(ws, "B", row, rowReport.ThongTinBC, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
-                            if(rowReport.Colpan > 0)
+                            if (rowReport.IsShow == "Y")
                             {
-                                columnNumber = ExcelColumnNameToNumber("B");
-                                columnName = GetExcelColumnName(columnNumber + (int)rowReport.Colpan);
-                                ws.Range("B" + row + ":" + columnName + row).Row(1).Merge();
+                                // Thêm dữ liệu cột STT
+                                InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+
+                                if (!string.IsNullOrEmpty(rowReport.ThongTinBC))
+                                {
+                                    // Thêm dữ liệu cột thông tin BC
+                                    InsertDataCell(ws, "B", row, rowReport.ThongTinBC, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                                    if (rowReport.Colpan > 1)
+                                    {
+                                        columnNumber = ExcelColumnNameToNumber("B");
+                                        columnName = GetExcelColumnName(columnNumber + (int)rowReport.Colpan);
+                                        ws.Range("B" + row + ":" + columnName + row).Column(1).Merge();
+                                    }
+                                    else
+                                    {
+                                        // Thêm dữ liệu cột thông tin BC - thêm
+                                        InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                                    }
+
+                                    if (rowReport.Rowpan > 1)
+                                    {
+                                        ws.Range("B" + row + ":" + "B" + (row + rowReport.Rowpan - 1)).Merge();
+                                    }
+                                }
+                                else
+                                {
+                                    // Thêm dữ liệu cột thông tin BC - thêm
+                                    InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                                }
+
+
+                                // Thêm dữ liệu cột Tổng
+                                InsertDataCell(ws, "D", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
+
+                                // Thêm dữ liệu cột MSM
+                                InsertDataCell(ws, "E", row, rowReport.MSM > 0 ? rowReport.MSM.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.MSM > 0 ? true : false);
+
+                                // Thêm dữ liệu cột PUD
+                                InsertDataCell(ws, "F", row, rowReport.PUD > 0 ? rowReport.PUD.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.PUD > 0 ? true : false);
+
+                                // Thêm dữ liệu cột SW
+                                InsertDataCell(ws, "G", row, rowReport.SW > 0 ? rowReport.SW.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SW > 0 ? true : false);
+
+                                // Thêm dữ liệu cột Nam
+                                InsertDataCell(ws, "H", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
+
+                                // Thêm dữ liệu cột Nữ
+                                InsertDataCell(ws, "I", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
+
+                                // Thêm dữ liệu cột Chuyển giới
+                                InsertDataCell(ws, "J", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+
+
+                                row++;
                             }
-                            else
-                            {
-                                // Thêm dữ liệu cột thông tin BC - thêm
-                                InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
-                            }
-
-                            if(rowReport.Rowpan > 0)
-                            {
-                                ws.Range("B" + row + ":" + "B" + (row+ rowReport.Rowpan)).Row(1).Merge();
-                            }
-
-                            // Thêm dữ liệu cột MSM
-                            InsertDataCell(ws, "D", row, rowReport.MSM  > 0 ? rowReport.MSM.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.MSM > 0 ? true : false);
-
-                            // Thêm dữ liệu cột PUD
-                            InsertDataCell(ws, "E", row, rowReport.PUD > 0 ? rowReport.PUD.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.PUD > 0 ? true : false);
-
-                            // Thêm dữ liệu cột SW
-                            InsertDataCell(ws, "F", row, rowReport.SW > 0 ? rowReport.SW.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SW > 0 ? true : false);
-
-                            // Thêm dữ liệu cột Nam
-                            InsertDataCell(ws, "G", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
-
-                            // Thêm dữ liệu cột Nữ
-                            InsertDataCell(ws, "H", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
-
-                            // Thêm dữ liệu cột Chuyển giới
-                            InsertDataCell(ws, "I", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
-
-                            // Thêm dữ liệu cột Tổng
-                            InsertDataCell(ws, "J", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
-                            row++;
                         }
                     }
 
@@ -300,42 +315,42 @@ namespace WebApp.Controllers
             ws.Cell("B3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("B3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("D3").Value = "MSM";
+            ws.Cell("D3").Value = "Tổng";
             ws.Cell("D3").Style.Font.Bold = true;
             ws.Cell("D3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("D3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            
-            ws.Cell("E3").Value = "PUD";
+
+            ws.Cell("E3").Value = "MSM";
             ws.Cell("E3").Style.Font.Bold = true;
             ws.Cell("E3").Style.Alignment.WrapText = true;
             ws.Cell("E3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("E3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("F3").Value = "SW";
+            ws.Cell("F3").Value = "PUD";
             ws.Cell("F3").Style.Font.Bold = true;
             ws.Cell("F3").Style.Alignment.WrapText = true;
             ws.Cell("F3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("F3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("G3").Value = "Nam";
+            ws.Cell("G3").Value = "SW";
             ws.Cell("G3").Style.Font.Bold = true;
             ws.Cell("G3").Style.Alignment.WrapText = true;
             ws.Cell("G3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("G3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("H3").Value = "Nữ";
+            ws.Cell("H3").Value = "Nam";
             ws.Cell("H3").Style.Font.Bold = true;
             ws.Cell("H3").Style.Alignment.WrapText = true;
             ws.Cell("H3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("H3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("I3").Value = "Chuyển giới";
+            ws.Cell("I3").Value = "Nữ";
             ws.Cell("I3").Style.Font.Bold = true;
             ws.Cell("I3").Style.Alignment.WrapText = true;
             ws.Cell("I3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("I3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("J3").Value = "Tổng";
+            ws.Cell("J3").Value = "Chuyển giới";
             ws.Cell("J3").Style.Font.Bold = true;
             ws.Cell("J3").Style.Alignment.WrapText = true;
             ws.Cell("J3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
