@@ -21,5 +21,6 @@ namespace Model.ModelExtend.Report
         public int? Rowpan { get; set; }
         public int? Colpan { get; set; }
         public string BoldText { get; set; }
+        public string IsShow { get; set; }
     }
 }

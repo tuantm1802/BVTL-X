@@ -95,6 +95,25 @@ namespace Data.API
                     }
                 }
 
+                // Đầu api tổng hợp
+                if (tableNames.Contains("BVTL_BO_BIEU_MAU_KH_BAO_CAO"))
+                {
+                    var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTongHopModel>>(resultApiString);
+
+                    var tongHops = new List<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
+
+                    // Chuyển đổi dữ liệu sang các bảng tương ứng
+                    _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi, maDuAn, ref tongHops);
+
+                    // Thêm dữ liệu bảng BVTL_BO_BIEU_MAU_KH_BAO_CAO
+                    if (tongHops != null && tongHops.Count > 0)
+                    {
+                        var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                        result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_BO_BIEU_MAU_KH_BAO_CAO");
+                    }
+                }
+
                 #endregion
             }
             return result;
