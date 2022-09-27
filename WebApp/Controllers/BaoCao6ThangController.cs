@@ -109,12 +109,12 @@ namespace WebApp.Controllers
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3};
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
-                var file_name = "BaoCaoThang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
+                var file_name = "BaoCao6Thang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
-                    var ws = wb.Worksheets.Add("Báo cáo tháng " + Months + " năm " + Year);
-                    var titleReport = "BÁO CÁO THÁNG " + Months + " NĂM " + Year;
+                    var ws = wb.Worksheets.Add("Báo cáo 6 tháng "+(Months.Contains("3") ? "đầu":"cuối") + " năm " + Year);
+                    var titleReport = "BÁO CÁO THÁNG " + (Months.Contains("3") ? "ĐẦU" : "CUỐI") + " NĂM " + Year;
                     CreateHeader(ws, titleReport, user);
 
                     var columnName = "";
