@@ -31,7 +31,8 @@ namespace Common.Common
         public const string SP_User_Get_By_Page = "User_Get_By_Page";
         public const string SP_Report_Get_All_Data = "Report_Get_All_Data"; 
         public const string SP_NhomTBH_Get_By_Page = "NhomTBH_Get_By_Page";
-
+        public const string SP_BaoCaoTongHop_Get_By_Page = "BaoCaoTongHop_Get_By_Page";
+        public const string SP_BaoCaoTongHop_Get_By_Id = "BaoCaoTongHop_Get_By_Id";
         #endregion
     }
 }

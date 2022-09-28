@@ -13,10 +13,10 @@
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" Width="1.5" PointX="6" PointY="15.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" Width="1.5" PointX="5.75" PointY="0.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Width="1.5" PointX="3" PointY="31.5" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="8.25" PointY="38.875" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="8.25" PointY="28.875" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Width="1.5" PointX="11.25" PointY="32" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Width="1.5" PointX="8.25" PointY="33.875" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="8.25" PointY="28.875" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="8.25" PointY="38.875" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Width="1.5" PointX="0.75" PointY="28.875" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" Width="1.5" PointX="3" PointY="1.625" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Width="1.5" PointX="3" PointY="37.625" />

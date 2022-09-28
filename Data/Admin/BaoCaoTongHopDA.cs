@@ -9,6 +9,7 @@ using Common.Common;
 using Common.ICommon;
 using System.Data.SqlClient;
 using Model.ModelExtend.Report;
+using Model.ModelExtend;
 
 namespace Data.Admin
 {
@@ -52,5 +53,64 @@ namespace Data.Admin
             }
             return result;
         }
+
+
+        /// <summary>
+        /// Lấy dữ liệu báo cáo tổng hợp theo trang
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public List<BaoCaoTongHopPageModel> GetBaoCaoTongHopByPage(ModelSearch modelSearch)
+        {
+            var result = new List<BaoCaoTongHopPageModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
+                    new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("Months", string.IsNullOrEmpty(modelSearch.Months) ? DBNull.Value : (object)modelSearch.Months),
+                    new SqlParameter("Year", modelSearch.Year == null ? 0 : (object)modelSearch.Year),
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("Page", modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<BaoCaoTongHopPageModel>(Constants.SP_BaoCaoTongHop_Get_By_Page, param).ToList();
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "BaoCaoTongHopDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy danh sách dữ liệu báo cáo tổng hợp theo trang lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<BaoCaoTongHopPageModel>();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy báo cáo tổng hợp theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public BaoCaoTongHopPageModel GetItemById(int id)
+        {
+            var result = new BaoCaoTongHopPageModel();
+
+            var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Id", id),
+                };
+            var resultPro = _DatabaseSql.ExecuteProcToList<BaoCaoTongHopPageModel>(Constants.SP_BaoCaoTongHop_Get_By_Id, param).ToList();
+            if (resultPro != null && resultPro.Count > 0)
+                result = resultPro.FirstOrDefault();
+            return result;
+        }
+
     }
 }

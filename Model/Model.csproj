@@ -68,6 +68,7 @@
     <Compile Include="ModelExtend\Base\PaginationModel.cs" />
     <Compile Include="ModelExtend\Base\UserLogin.cs" />
     <Compile Include="ModelExtend\ApiPageModel.cs" />
+    <Compile Include="ModelExtend\BaoCaoTongHopPageModel.cs" />
     <Compile Include="ModelExtend\NhomTBHPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghien3THPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghienTX3THPageModel.cs" />

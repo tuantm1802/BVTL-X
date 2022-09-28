@@ -212,6 +212,7 @@
     <Compile Include="Controllers\DuongSuDungController.cs" />
     <Compile Include="Controllers\ErrorPageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\BaoCaoTongHopController.cs" />
     <Compile Include="Controllers\KetQuaACEController.cs" />
     <Compile Include="Controllers\KetQuaASSISTController.cs" />
     <Compile Include="Controllers\KetQuaHIVController.cs" />
@@ -288,6 +289,7 @@
     <Content Include="app\Controller\CustomerController.js" />
     <Content Include="app\Controller\DemoReportController.js" />
     <Content Include="app\Controller\DuongSuDungController.js" />
+    <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\KetQuaACEController.js" />
     <Content Include="app\Controller\KetQuaASSISTController.js" />
     <Content Include="app\Controller\KetQuaHIVController.js" />
@@ -4596,6 +4598,7 @@
     <Content Include="Views\KetQuaSKTT\Index.cshtml" />
     <Content Include="Views\LoaiDoiTuong\Index.cshtml" />
     <Content Include="Views\BaoCao6Thang\Index.cshtml" />
+    <Content Include="Views\BaoCaoTongHop\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>
