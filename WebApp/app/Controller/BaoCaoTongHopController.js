@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "kqslace_id";
+    $scope.modelSearch.SortColumn = "record_id";
 
     var dataTableBaoCaoTongHop = null;
     $scope.ParamIdSeleted = 0;
