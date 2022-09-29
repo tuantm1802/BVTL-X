@@ -119,92 +119,92 @@ namespace WebApp.Controllers
 
 
         #region Xuất dữ liệu ra excel
-        [HttpGet]
-        public ActionResult ExportData(string keyword)
-        {
-            try
-            {
-                var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ModelSearch
-                {
-                    KeyWord = keyword == "undefined" ? string.Empty : keyword,
-                    currentPage = 1,
-                    pageSize = int.MaxValue,
-                    SortColumn = "record_id"
-                };
-                var data = _BaoCaoTongHopDA.GetBaoCaoTongHopByPage(modelSearch);
+        //[HttpGet]
+        //public ActionResult ExportData(string keyword)
+        //{
+        //    try
+        //    {
+        //        var user = Session["USER_SESSION"] as UserLogin;
+        //        var modelSearch = new ModelSearch
+        //        {
+        //            KeyWord = keyword == "undefined" ? string.Empty : keyword,
+        //            currentPage = 1,
+        //            pageSize = int.MaxValue,
+        //            SortColumn = "record_id"
+        //        };
+        //        var data = _BaoCaoTongHopDA.GetBaoCaoTongHopByPage(modelSearch);
 
-                string file_name = "BaoCaoTongHop_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToShortTimeString() + ".xlsx";
+        //        string file_name = "BaoCaoTongHop_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToShortTimeString() + ".xlsx";
 
-                DataTable dt = new DataTable();
-                dt.Columns.AddRange(new DataColumn[8] { new DataColumn("Tỉnh"),
-                        new DataColumn("Mã nhóm TBH"),
-                        new DataColumn("Tên nhóm TBH"),
-                        new DataColumn("Mã KH"),
-                         new DataColumn("Họ tên KH"),
-                         new DataColumn("Ngày số liệu"),
-                         new DataColumn("Tổng điểm"),
-                         new DataColumn("Kết quả")
+        //        DataTable dt = new DataTable();
+        //        dt.Columns.AddRange(new DataColumn[8] { new DataColumn("Tỉnh"),
+        //                new DataColumn("Mã nhóm TBH"),
+        //                new DataColumn("Tên nhóm TBH"),
+        //                new DataColumn("Mã KH"),
+        //                 new DataColumn("Họ tên KH"),
+        //                 new DataColumn("Ngày số liệu"),
+        //                 new DataColumn("Tổng điểm"),
+        //                 new DataColumn("Kết quả")
 
-                });
-                foreach (var item in data)
-                {
-                    dt.Rows.Add(
-                        item.CityName,
-                        item.manhom_tbh,
-                        item.tennhom_tbh,
-                        item.makh,
-                        item.hoten,
-                        item.ngaysltext,
-                        item.tongdiem_ace,
-                        item.ketqua_ace
-                        );
-                }
-                using (XLWorkbook wb = new XLWorkbook())
-                {
-                    var ws = wb.Worksheets.Add("báo cáo tổng hợp");
-                    ws.Cell("A2").Value = "báo cáo tổng hợp";
-                    ws.Range("A2:H2").Row(1).Merge();
-                    ws.Cell("A2").Style.Font.Bold = true;
-                    ws.Cell("A2").Style.Font.FontSize = 20;
-                    ws.Column("A").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("A").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("B").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("B").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("C").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("D").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("D").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("E").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("F").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    ws.Column("F").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("G").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    ws.Column("G").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Column("H").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    ws.Column("H").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //        });
+        //        foreach (var item in data)
+        //        {
+        //            dt.Rows.Add(
+        //                item.CityName,
+        //                item.manhom_tbh,
+        //                item.tennhom_tbh,
+        //                item.makh,
+        //                item.hoten,
+        //                item.ngaysltext,
+        //                item.tongdiem_ace,
+        //                item.ketqua_ace
+        //                );
+        //        }
+        //        using (XLWorkbook wb = new XLWorkbook())
+        //        {
+        //            var ws = wb.Worksheets.Add("báo cáo tổng hợp");
+        //            ws.Cell("A2").Value = "báo cáo tổng hợp";
+        //            ws.Range("A2:H2").Row(1).Merge();
+        //            ws.Cell("A2").Style.Font.Bold = true;
+        //            ws.Cell("A2").Style.Font.FontSize = 20;
+        //            ws.Column("A").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("A").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("B").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("B").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("C").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("D").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("D").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("E").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("F").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //            ws.Column("F").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("G").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+        //            ws.Column("G").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Column("H").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+        //            ws.Column("H").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-                    ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    ws.Row(3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    ws.Row(3).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        //            ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        //            ws.Row(3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        //            ws.Row(3).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-                    ws.Cell(3, 1).InsertTable(dt);
-                    AddLog("báo cáo tổng hợp");
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        ws.Columns(1, 10).AdjustToContents();
-                        wb.SaveAs(stream);
-                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                AddLog("Export báo cáo tổng hợp lỗi: " + ex.Message);
-                return Json(new { message = "Lỗi xử lý dữ liệu" }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        //            ws.Cell(3, 1).InsertTable(dt);
+        //            AddLog("báo cáo tổng hợp");
+        //            using (MemoryStream stream = new MemoryStream())
+        //            {
+        //                ws.Columns(1, 10).AdjustToContents();
+        //                wb.SaveAs(stream);
+        //                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AddLog("Export báo cáo tổng hợp lỗi: " + ex.Message);
+        //        return Json(new { message = "Lỗi xử lý dữ liệu" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         #endregion 
     }
