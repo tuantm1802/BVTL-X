@@ -56,6 +56,8 @@
     <Compile Include="ModelExtend\API\ApiResult.cs" />
     <Compile Include="ModelExtend\API\ProcessModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiACEModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiPhieuTuVanModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiChuyenGuiDVModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTongHopModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiHIVModel.cs" />
     <Compile Include="ModelExtend\API\TableNameModel.cs" />
