@@ -1,0 +1,157 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.PhieuTuVanPageModel>
+@{
+    ViewBag.Title = "Phiếu tư vấn";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="PhieuTuVanController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Phiếu tư vấn</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                    <div class="col-sm-1">
+                        <label>Từ khóa</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTablePhieuTuVan" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th  style="width: auto;">Tỉnh </th>
+                            <th  style="width:9%;">Mã nhóm TBH</th>
+                            <th  style="width:auto;">Tên nhóm TBH </th>
+                            <th  style="width:9%;">Mã KH</th>
+                            <th  style="width:auto;">Họ tên KH </th>
+                            <th >Ngày nhập số liệu</th>
+                            <th >Ngày tư vấn </th>
+                            <th >Đại điểm</th>
+                            <th >Mã TCV thực hiện tư vấn</th>
+                            <th >Tư vấn cho KH lần thứ </th>
+                            <th>Loại chất gây nghiện sử dụng trong 3 tháng gần đây</th>
+                            <th>Loại khác</th>
+                            <th>Tần suất sử dụng đá trong 3 tháng gần đây</th>
+                            <th>Đường dùng ma túy đá</th>
+                            <th>Cảm giác khi dùng ma túy đá </th>
+                            <th>Thói quen sử dụng ma túy đá (liều lượng, thời gian, với ai, ở đâu)</th>
+                            <th>Hành vi nguy cơ (mô tả cụ thể) </th>
+                            <th>Khác</th>
+                            <th>Mô tả cụ thể</th>
+                            <th>Sức khỏe thể chất (mô tả cụ thể)</th>
+                            <th>Khác </th>
+                            <th>Mô tả cụ thể</th>
+                            <th>Sức khỏe tâm thần (mô tả cụ thể) </th>
+                            <th>Khác </th>
+                            <th>Mô tả cụ thể</th>
+                            <th>Tư vấn giảm hại </th>
+                            <th>Khác </th>
+                            <th>Ghi rõ nội dung tư vấn</th>
+                            <th>Hỗ trợ về SKTT (ghi rõ nội dung tư vấn) </th>
+                            <th>Khác</th>
+                            <th>Ghi rõ nội dung tư vấn</th>
+                            <th>Phát tài liệu truyền thông </th>
+                            <th>Tên tài liệu đã phát</th>
+                            <th>Phát bao cao su</th>
+                            <th>Số lượng đã phát</th>
+                            <th>Phát gel bôi trơn</th>
+                            <th>Số lượng đã phát</th>
+                            <th>Hỗ trợ KH tiếp cận dịch vụ thành công - chuyển gửi (nhiều lựa chọn)</th>
+                            <th>Khác </th>
+                            <th>Mô tả cụ thể</th>
+                            <th>Hỗ trợ xã hội thành công (nhiều lựa chọn)</th>
+                            <th>Khác</th>
+                            <th>Mô tả cụ thể</th>
+                            <th>Hỗ trợ chi phí khám xét nghiệm/điều trị (nhiều lựa chọn)</th>
+                            <th>Khác (mô tả cụ thể)</th>
+                            <th>Nội dung chính trong buổi tư vấn</th>
+                            <th>Hẹn KH tư vấn buổi tiếp theo?</th>
+                            <th>Vấn đề/nội dung dự kiến sẽ tư vấn</th>
+                            <th>Thời gian dự kiến</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.manhom_tbh</td>
+                    <td class="text-left">@item.tennhom_tbh</td>
+                    <td class="text-left">@item.makh</td>
+                    <td class="text-left">@item.hoten</td>
+                    <td class="text-center">@(item.ngaynhap != null ? item.ngaynhap.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@(item.ngaytuvan != null ? item.ngaytuvan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-left">@item.diadiem</td>
+                    <td class="text-left">@item.matcv</td>
+                    <td class="text-left">@item.lantuvan</td>
+                    <td class="text-left">@item.cau1_1</td>
+                    <td class="text-left">@item.cau1_1k</td>
+                    <td class="text-left">@item.cau1_2</td>
+                    <td class="text-left">@item.cau1_3</td>
+                    <td class="text-left">@item.cau1_4</td>
+                    <td class="text-left">@item.cau1_5</td>
+                    <td class="text-left">@item.cau2</td>
+                    <td class="text-left">@item.cau2_1k</td>
+                    <td class="text-left">@item.cau2_2</td>
+                    <td class="text-left">@item.cau3</td>
+                    <td class="text-left">@item.cau3_1k</td>
+                    <td class="text-left">@item.cau3_1k_2</td>
+                    <td class="text-left">@item.cau4</td>
+                    <td class="text-left">@item.cau4_1k</td>
+                    <td class="text-left">@item.cau4_1k_2</td>
+                    <td class="text-left">@item.cau5_1</td>
+                    <td class="text-left">@item.cau5_1k</td>
+                    <td class="text-left">@item.cau5_1_2</td>
+                    <td class="text-left">@item.cau5_2</td>
+                    <td class="text-left">@item.cau5_2k</td>
+                    <td class="text-left">@item.cau5_2k_2</td>
+                    <td class="text-left">@item.cau5_3</td>
+                    <td class="text-left">@item.cau5_3_1</td>
+                    <td class="text-left">@item.cau5_4</td>
+                    <td class="text-left">@item.cau5_4_1</td>
+                    <td class="text-left">@item.cau5_5</td>
+                    <td class="text-left">@item.cau5_4_2</td>
+                    <td class="text-left">@item.cau5_6</td>
+                    <td class="text-left">@item.cau5_6k</td>
+                    <td class="text-left">@item.cau5_6k_2</td>
+                    <td class="text-left">@item.cau5_7</td>
+                    <td class="text-left">@item.cau5_7k</td>
+                    <td class="text-left">@item.cau5_7k_3</td>
+                    <td class="text-left">@item.cau5_8</td>
+                    <td class="text-left">@item.cau5_7k_2</td>
+                    <td class="text-left">@item.tongket</td>
+                    <td class="text-left">@item.tuvantiep</td>
+                    <td class="text-left">@item.vande</td>
+                    <td class="text-center">@(item.thoigian != null ? item.thoigian.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/PhieuTuVanController.js"></script>
+}

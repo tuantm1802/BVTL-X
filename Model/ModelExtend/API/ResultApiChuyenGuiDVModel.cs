@@ -10,6 +10,15 @@ namespace Model.ModelExtend.API
     {
         public string record_id { get; set; }
         public string makh { get; set; }
+        public string tbh { get; set; }
+        public string hoten { get; set; }
+        public string tengoi { get; set; }
+        public string doituong { get; set; }
+        public string gioitinh { get; set; }
+        public string namsinh { get; set; }
+        public string ngaytiepcan { get; set; }
+        public string dienthoai { get; set; }
+        public string diachi { get; set; }
         public string loaihinh { get; set; }
         public string ngay_xn { get; set; }
         public string diachi_xn { get; set; }
@@ -44,6 +53,7 @@ namespace Model.ModelExtend.API
         public string hotro_sti { get; set; }
         public string hotro_bhyt { get; set; }
         public string chuyn_gi_dch_v_complete { get; set; }
+        public string taiuong_bd_21 { get; set; }
 
     }
 }

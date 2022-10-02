@@ -116,7 +116,6 @@
                     { "data": "makh", searchBuilderType: "string"},
                     { "data": "hoten", searchBuilderType: "string"},
                     { "data": "ngaysl", searchBuilderType: "date" },
-                    { "data": "record_id", searchBuilderType: "number" },
                     { "data": "hanhvinguyco_timestamp", searchBuilderType: "date" },
                     { "data": "chatgaynghien", searchBuilderType: "string" },
                     { "data": "loaikhac", searchBuilderType: "string" },

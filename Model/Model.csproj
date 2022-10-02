@@ -71,6 +71,8 @@
     <Compile Include="ModelExtend\Base\UserLogin.cs" />
     <Compile Include="ModelExtend\ApiPageModel.cs" />
     <Compile Include="ModelExtend\BaoCaoTongHopPageModel.cs" />
+    <Compile Include="ModelExtend\PhieuTuVanPageModel.cs" />
+    <Compile Include="ModelExtend\ChuyenGuiDichVuPageModel.cs" />
     <Compile Include="ModelExtend\NhomTBHPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghien3THPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghienTX3THPageModel.cs" />
@@ -104,6 +106,9 @@
     <Compile Include="Model\BVTL_CHAT_GAY_NGHIEN_TX3TH.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\BVTL_CHUYEN_GUI_DICH_VU.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\BVTL_CITES.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
@@ -135,6 +140,9 @@
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_NHOM_TBH.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_PHIEU_TU_VAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_QT_LOG.cs">

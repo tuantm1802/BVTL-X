@@ -46,5 +46,19 @@ namespace Common.ICommon
         /// <param name="resultApiTHs"></param>
         /// <param name="tongHops"></param>
          void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops);
+
+        /// <summary>
+        /// CHuyển đổi kết quả api phiếu tư vấn sang entity BVTL_PHIEU_TU_VAN
+        /// </summary>
+        /// <param name="resultApiPTVs"></param>
+        /// <param name="phieuTuVans"></param>
+        void ConvertApiPhieuTuVanToEntity(List<ResultApiPhieuTuVanModel> resultApiPTVs, string maDuAn, ref List<BVTL_PHIEU_TU_VAN> phieuTuVans);
+
+        /// <summary>
+        /// CHuyển đổi kết quả api chuyển gửi dịch vụ sang entity BVTL_CHUYEN_GUI_DICH_VU
+        /// </summary>
+        /// <param name="resultApiCGDVs"></param>
+        /// <param name="chuyenGuiDVs"></param>
+        void ConvertApiChuyenGuiDichVuToEntity(List<ResultApiChuyenGuiDVModel> resultApiCGDVs, string maDuAn, ref List<BVTL_CHUYEN_GUI_DICH_VU> chuyenGuiDVs);
     }
 }
