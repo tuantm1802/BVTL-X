@@ -29,6 +29,7 @@ namespace Model.Model
         public virtual DbSet<BVTL_BO_BIEU_MAU_KH_BAO_CAO> BVTL_BO_BIEU_MAU_KH_BAO_CAO { get; set; }
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_3TH> BVTL_CHAT_GAY_NGHIEN_3TH { get; set; }
         public virtual DbSet<BVTL_CHAT_GAY_NGHIEN_TX3TH> BVTL_CHAT_GAY_NGHIEN_TX3TH { get; set; }
+        public virtual DbSet<BVTL_CHUYEN_GUI_DICH_VU> BVTL_CHUYEN_GUI_DICH_VU { get; set; }
         public virtual DbSet<BVTL_CITES> BVTL_CITES { get; set; }
         public virtual DbSet<BVTL_DU_AN> BVTL_DU_AN { get; set; }
         public virtual DbSet<BVTL_DUONG_SU_DUNG> BVTL_DUONG_SU_DUNG { get; set; }
@@ -40,6 +41,7 @@ namespace Model.Model
         public virtual DbSet<BVTL_LOAI_DOI_TUONG> BVTL_LOAI_DOI_TUONG { get; set; }
         public virtual DbSet<BVTL_MASTER_TABLE> BVTL_MASTER_TABLE { get; set; }
         public virtual DbSet<BVTL_NHOM_TBH> BVTL_NHOM_TBH { get; set; }
+        public virtual DbSet<BVTL_PHIEU_TU_VAN> BVTL_PHIEU_TU_VAN { get; set; }
         public virtual DbSet<BVTL_QT_LOG> BVTL_QT_LOG { get; set; }
         public virtual DbSet<BVTL_QT_NGUOI_DUNG> BVTL_QT_NGUOI_DUNG { get; set; }
         public virtual DbSet<BVTL_QT_NGUOI_DUNG_NHOM_TBH> BVTL_QT_NGUOI_DUNG_NHOM_TBH { get; set; }

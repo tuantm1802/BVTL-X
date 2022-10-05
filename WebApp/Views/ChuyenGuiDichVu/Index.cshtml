@@ -1,0 +1,130 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.ChuyenGuiDichVuPageModel>
+@{
+    ViewBag.Title = "Chuyển gửi dịch vụ";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="ChuyenGuiDichVuController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Chuyển gửi dịch vụ</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                        <div class="col-sm-1">
+                            <label>Từ khóa</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                                <i class="fas fa-pencil-alt"></i> Xuất Excel
+                            </button>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableChuyenGuiDichVu" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Tỉnh </th>
+                            <th style="width:9%;">Mã nhóm TBH</th>
+                            <th style="width:auto;">Tên nhóm TBH </th>
+                            <th style="width:9%;">Mã KH</th>
+                            <th style="width:auto;">Họ tên KH </th>
+                            <th>Loại hình chuyển gửi</th>
+                            <th>Ngày xét nghiệm khẳng định HIV</th>
+                            <th>Địa chỉ xét nghiệm khẳng định</th>
+                            <th>Kết quả xét nghiệm khẳng định</th>
+                            <th>KH có đồng ý điều trị ARV</th>
+                            <th>Địa chỉ chuyển gửi điều trị</th>
+                            <th>Ngày bắt đầu điều trị</th>
+                            <th>Tải lượng virus tại thời điểm bắt đầu điều trị </th>
+                            <th>Tải lượng virus tại thời điểm sau 6 tháng</th>
+                            <th>Tải lượng virus tại thời điểm sau 12 tháng</th>
+                            <th>3 tháng </th>
+                            <th>6 tháng</th>
+                            <th>9 tháng</th>
+                            <th>12 tháng </th>
+                            <th>Ngày khám</th>
+                            <th>Địa chỉ khám</th>
+                            <th>Lần khám </th>
+                            <th>Chẩn đoán của bác sỹ</th>
+                            <th>Khác (ghi rõ)</th>
+                            <th>Được bác sỹ kê đơn</th>
+                            <th>Dùng thuốc theo đơn của Bác sỹ kê</th>
+                            <th>Dự án hỗ trợ chi phí khám và điều trị</th>
+                            <th>Ngày xét nghiệm/khám </th>
+                            <th>Địa chỉ xét nghiệm/khám</th>
+                            <th>Lần xét nghiệm/khám</th>
+                            <th>Chẩn đoán của bác sỹ</th>
+                            <th>Khác (ghi rõ)</th>
+                            <th>Điều trị theo chẩn đoán của bác sỹ</th>
+                            <th>Dự án hỗ trợ chi phí khám/xét nghiệm và điều trị</th>
+                            <th>Dự án hỗ trợ chi phí mua BHYT</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-left">@item.CityName</td>
+                            <td class="text-left">@item.manhom_tbh</td>
+                            <td class="text-left">@item.tennhom_tbh</td>
+                            <td class="text-left">@item.makh</td>
+                            <td class="text-left">@item.hoten</td>
+                            <td class="text-right">@item.loaihinh </td>
+                            <td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                            <td class="text-left">@item.diachi_xn </td>
+                            <td class="text-left">@item.kq_xn </td>
+                            <td class="text-left">@item.dieutri </td>
+                            <td class="text-left">@item.diachi_cg </td>
+                            <td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                            <td class="text-left">@item.taiuong_bd </td>
+                            <td class="text-left">@item.taiuong_bd_2 </td>
+                            <td class="text-left">@item.taiuong_bd_21 </td>
+                            <td class="text-left">@item.s3t </td>
+                            <td class="text-left">@item.s6t </td>
+                            <td class="text-left">@item.s9t </td>
+                            <td class="text-left">@item.s12t </td>
+                            <td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                            <td class="text-left">@item.diachikham </td>
+                            <td class="text-left">@item.lankham </td>
+                            <td class="text-left">@item.chandoan </td>
+                            <td class="text-left">@item.khac </td>
+                            <td class="text-left">@item.kedon </td>
+                            <td class="text-left">@item.dungthuoc </td>
+                            <td class="text-left">@item.hotro </td>
+                            <td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                            <td class="text-left">@item.diachi_kxn </td>
+                            <td class="text-left">@item.lan_xnk </td>
+                            <td class="text-left">@item.chandoan1 </td>
+                            <td class="text-left">@item.khac_sti </td>
+                            <td class="text-left">@item.dieutri_sti </td>
+                            <td class="text-left">@item.hotro_sti </td>
+                            <td class="text-left">@item.hotro_bhyt </td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/ChuyenGuiDichVuController.js"></script>
+}

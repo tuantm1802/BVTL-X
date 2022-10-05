@@ -18,6 +18,8 @@ namespace Model.Model
         public BVTL_KHACH_HANG()
         {
             this.BVTL_BO_BIEU_MAU_KH_BAO_CAO = new HashSet<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
+            this.BVTL_CHUYEN_GUI_DICH_VU = new HashSet<BVTL_CHUYEN_GUI_DICH_VU>();
+            this.BVTL_PHIEU_TU_VAN = new HashSet<BVTL_PHIEU_TU_VAN>();
             this.BVTL_KQ_SL_ACE = new HashSet<BVTL_KQ_SL_ACE>();
             this.BVTL_KQ_SL_ASSIST = new HashSet<BVTL_KQ_SL_ASSIST>();
             this.BVTL_KQ_SL_SKTT = new HashSet<BVTL_KQ_SL_SKTT>();
@@ -26,6 +28,7 @@ namespace Model.Model
     
         public int khachhang_id { get; set; }
         public string makh { get; set; }
+        public string sottkh { get; set; }
         public string hoten { get; set; }
         public string gioitinh { get; set; }
         public Nullable<int> namsinh { get; set; }
@@ -38,7 +41,11 @@ namespace Model.Model
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_BO_BIEU_MAU_KH_BAO_CAO> BVTL_BO_BIEU_MAU_KH_BAO_CAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_CHUYEN_GUI_DICH_VU> BVTL_CHUYEN_GUI_DICH_VU { get; set; }
         public virtual BVTL_CITES BVTL_CITES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_PHIEU_TU_VAN> BVTL_PHIEU_TU_VAN { get; set; }
         public virtual BVTL_LOAI_DOI_TUONG BVTL_LOAI_DOI_TUONG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }

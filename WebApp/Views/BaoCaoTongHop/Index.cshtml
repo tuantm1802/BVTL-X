@@ -1,0 +1,381 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.BaoCaoTongHopPageModel>
+@{
+    ViewBag.Title = "Báo cáo tổng hợp";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="BaoCaoTongHopController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Báo cáo tổng hợp</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                        <div class="col-sm-1">
+                            <label>Từ khóa</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                                <i class="fas fa-pencil-alt"></i> Xuất Excel
+                            </button>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableBaoCaoTongHop" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Tỉnh </th>
+                            <th style="width:9%;">Mã nhóm TBH</th>
+                            <th style="width:auto;">Tên nhóm TBH </th>
+                            <th style="width:9%;">Mã KH</th>
+                            <th style="width:auto;">Họ tên KH </th>
+                            <th style="width:9%;">Ngày số liệu</th>
+                            <th> Ngày hành vi nguy cơ </th>
+                            <th> Chất gây nghiện </th>
+                            <th> Loại khác </th>
+                            <th> Đá </th>
+                            <th> loaikhac_2 </th>
+                            <th> Cách sử dụng </th>
+                            <th> Cách dùng heroin </th>
+                            <th> Trong 3 tháng qua, tần suất sử dụng ma túy đá của bạn như thế nào? </th>
+                            <th> Trong 3 tháng qua, tần suất sử dụng heroin của bạn như thế nào? </th>
+                            <th> Tuổi </th>
+                            <th> Loại ma túy đầu tiên sử dụng </th>
+                            <th> Bạn đã từng tiêm chích ma túy bao giờ chưa? </th>
+                            <th> Nếu có, bạn đã từng dùng chung bơm kim tiêm với người khác bao giờ chưa? </th>
+                            <th> Bạn đã từng quan hệ tình dục bao giờ chưa? </th>
+                            <th> Đã từng QHTD đồng giới </th>
+                            <th> Trong 3 tháng qua, bạn có sử dụng ma tuý khi QHTD không? </th>
+                            <th> Trong 3 tháng qua, bạn có QHTD tập thể không? </th>
+                            <th> Trong 3 tháng qua, bạn có QHTD để đổi lấy tiền b ... t chất không? (bán dâm) </th>
+                            <th> Bạn có đang mắc nhiễm trùng lây truyền qua đường tình dục nào không? </th>
+                            <th> Giang mai </th>
+                            <th> loaikhac_3 </th>
+                            <th> Trong quá khứ </th>
+                            <th> Hiện tại </th>
+                            <th> Nếu có (hiện tại) </th>
+                            <th> Trong quá khứ </th>
+                            <th> Hiện tại </th>
+                            <th> Nếu có (hiện tại) </th>
+                            <th> Trong quá khứ </th>
+                            <th> Hiện tại </th>
+                            <th> Nếu có (hiện tại) </th>
+                            <th> Bạn đã từng gặp triệu chứng nào dưới đây khi  ...  dạng thuốc phiện khác? </th>
+                            <th> Thở chậm hoặc ngưng thở </th>
+                            <th> Thời gian HIV </th>
+                            <th> HIV là các nhiễm trùng lây truyền qua đường tình dục </th>
+                            <th> HIV là vi rút gây suy giảm miễn dịch ở người </th>
+                            <th> HIV có thể lây nhiễm qua việc dùng chung các dụng cụ không sử dụng bao cao su </th>
+                            <th> HIV có thể lây nhiễm qua giao tiếp thông thường như ôm, hôn, bắt tay </th>
+                            <th> Xét nghiệm máu có thể phát hiện một người có bị nhiễm HIV hay không </th>
+                            <th> Khám bệnh thông thường hoặc nhìn bề ngoài (gầy g� ... ó bị nhiễm HIV hay không </th>
+                            <th> Nên đi xét nghiệm HIV sau ít nhất 14 ngày kể từ khi ...  toàn, tiêm chích chung...) </th>
+                            <th> Vi rút HIV tồn tại 5 - 10 năm trong cơ thể người nhi ... ây nhiễm cho người khác </th>
+                            <th> Hiện nay, HIV có thể được điều trị bằng thuốc  ... à điều trị suốt đời </th>
+                            <th> Người nhiễm HIV mà có tải lượng virut dưới người năng lây cho người khác </th>
+                            <th> Sử dụng ma túy đá một mình là an toàn nhất </th>
+                            <th> Sử dụng ma túy đá trong một thời gian dài có thể dẫn đến trầm cảm </th>
+                            <th> Người bị tăng thân nhiệt do sử dụng ma túy đá n ... uống nước điện giải) </th>
+                            <th> Ăn uống và nghỉ ngơi đầy đủ sau mỗi lần chơi  ... �ời sử dụng ma túy đá </th>
+                            <th> Sử dụng ma túy đá kèm với các loại ma túy khác l ... �� an toàn cho người chơi </th>
+                            <th> Cơn hoảng loạn, ảo giác và nôn mửa là các triệu ... ) khi sử dụng ma túy đá </th>
+                            <th> Sử dụng ma túy đá làm tăng nguy cơ lây nhiễm HIV d ... �� tình dục không an toàn </th>
+                            <th> Sử dụng ma túy đá có khả năng ảnh hưởng tới v ... trị ở người nhiễm HIV </th>
+                            <th> Sử dụng ma túy đá không có nguy cơ lây nhiễm HIV n ...  mà không tiêm chích chung </th>
+                            <th> Sức khỏe tâm thần là tình trạng khỏe mạnh về t ... g có rối loạn tâm thần </th>
+                            <th> Lo âu, mất ngủ, buồn chán, mất động lực trong m� ...  về sức khỏe tâm thần </th>
+                            <th> Nghe thấy tiếng kêu/ tiếng nói mà người khác khôn ...  về sức khỏe tâm thần </th>
+                            <th> Sử dụng ma túy có thể gây ra hoặc làm nặng thêm các rối loạn tâm thần </th>
+                            <th> Các vấn đề về sức khỏe tâm thần có thể dẫn tới việc sử dụng ma túy </th>
+                            <th> Để cải thiện sức khỏe tâm thần cần thực hiệ ... điều trị nghiện ma túy </th>
+                            <th> Các vấn đề sức khỏe tâm thần là các bệnh tâm  ...  không chữa khỏi được </th>
+                            <th> Dùng chung popper và ma túy đá khi quan hệ tình dục t ... có nguy cơ về sức khỏe </th>
+                            <th> Thời gian ASSIST </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Các chất khác (ghi rõ) </th>
+                            <th> Ngay cả lúc đi học cũng không sử dụng? </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Các sản phẩm thuốc lá (thuốc lá điếu, thuốc lá nhai, xì gà,vv.) </th>
+                            <th> Thức uống có cồn (bia, rượu vang, rượu mạnh, v.v.) </th>
+                            <th> Cần sa (bồ đà, chậu, cỏ, gai, v.v.) </th>
+                            <th> Côcaine (cô ca, đá vỡ, v.v.) </th>
+                            <th> Ma túy đá </th>
+                            <th> Khí xông hít (khí gây tê, keo, xăng, dầu pha sơn, v.v.) </th>
+                            <th> Thuốc an thần hay thuốc ngủ (Diazepam, Alprazolam, Flunitrazepam, Midazolam v.v.) </th>
+                            <th> Chất gây ảo giác (LSD, axit, nấm, lên mây, Ketamine, v.v.) </th>
+                            <th> Chất thuốc phiện (hêroin, morphine, methadone, Buprenorphine, codeine, v.v.) </th>
+                            <th> Các chất khác </th>
+                            <th> Câu 8: Bạn đã bao giờ tiêm chích bất cứ chất nào ch ... ì mục đích chữa bệnh) </th>
+                            <th> Điểm thuốc lá </th>
+                            <th> Điểm thức uống có cồn </th>
+                            <th> Điểm cần sa </th>
+                            <th> Điểm cocain </th>
+                            <th> Điểm ma túy đá </th>
+                            <th> Điểm khí xông </th>
+                            <th> Điểm chất an thần  </th>
+                            <th> Điểm chất gây ảo giác </th>
+                            <th> Điểm chất thuốc phiện </th>
+                            <th> Thời gian QST </th>
+                            <th> Điểm chất khác </th>
+                            <th> Cảm thấy lo lắng, căng thẳng </th>
+                            <th> Lo âu tới mức không kiểm soát được </th>
+                            <th> Cảm thấy buồn chán, mất hết hy vọng </th>
+                            <th> Ít quan tâm hoặc ít hứng thú đến mọi thứ </th>
+                            <th> Trong 2 tuần qua, bạn có ý nghĩ tự làm hại bản thân không? </th>
+                            <th> Từ trước tới nay, đã bao giờ bạn cố tự sát chưa? </th>
+                            <th> Tin rằng có ai đó đang theo dõi, rình rập hoặc làm hại bạn không? </th>
+                            <th> Tin rằng ai đó đọc được suy nghĩ hoặc có thể  ... nghĩ của người khác? </th>
+                            <th> Nghe thấy những thứ mà người khác không nghe thấ ... ư giọng nói chẳng hạn? </th>
+                            <th> Tổng điểm </th>
+
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-left">@item.CityName</td>
+                            <td class="text-left">@item.manhom_tbh</td>
+                            <td class="text-left">@item.tennhom_tbh</td>
+                            <td class="text-left">@item.makh</td>
+                            <td class="text-left">@item.hoten</td>
+                            <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
+                            <td class="text-center">@(item.hanhvinguyco_timestamp != null ? Convert.ToDateTime( item.hanhvinguyco_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
+                            <td class="text-left">@item.chatgaynghien </td>
+                            <td class="text-left">@item.loaikhac </td>
+                            <td class="text-left">@item.chatgaynghien_2 </td>
+                            <td class="text-left">@item.loaikhac_2 </td>
+                            <td class="text-left">@item.duongsd </td>
+                            <td class="text-left">@item.sdheroin </td>
+                            <td class="text-left">@item.tansuatda </td>
+                            <td class="text-left">@item.tansuat_heroin </td>
+                            <td class="text-right">@item.tuoi </td>
+                            <td class="text-left">@item.matuydautien </td>
+                            <td class="text-left">@item.tiemchich </td>
+                            <td class="text-left">@item.dungchung </td>
+                            <td class="text-left">@item.qhtd </td>
+                            <td class="text-left">@item.qhtd_2 </td>
+                            <td class="text-left">@item.sdmatuy </td>
+                            <td class="text-left">@item.qhtdtt </td>
+                            <td class="text-left">@item.bandam </td>
+                            <td class="text-left">@item.sti </td>
+                            <td class="text-left">@item.sti1 </td>
+                            <td class="text-left">@item.loaikhac_3 </td>
+                            <td class="text-left">@item.quakhu </td>
+                            <td class="text-left">@item.hientai </td>
+                            <td class="text-left">@item.hientai_2 </td>
+                            <td class="text-left">@item.quakhu2 </td>
+                            <td class="text-left">@item.hientai_4 </td>
+                            <td class="text-left">@item.hientai_3 </td>
+                            <td class="text-left">@item.quakhu_3 </td>
+                            <td class="text-left">@item.hientai_5 </td>
+                            <td class="text-left">@item.hientai_6 </td>
+                            <td class="text-left">@item.trieuchung </td>
+                            <td class="text-left">@item.trieuchung_2 </td>
+                            <td class="text-center">@(item.hiv_timestamp  != null ? Convert.ToDateTime(item.hiv_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
+                            <td class="text-left">@item.cau1 </td>
+                            <td class="text-left">@item.cau2 </td>
+                            <td class="text-left">@item.cau3 </td>
+                            <td class="text-left">@item.cau4 </td>
+                            <td class="text-left">@item.cau5 </td>
+                            <td class="text-left">@item.cau6 </td>
+                            <td class="text-left">@item.cau7 </td>
+                            <td class="text-left">@item.cau8 </td>
+                            <td class="text-left">@item.cau9 </td>
+                            <td class="text-left">@item.cau10 </td>
+                            <td class="text-left">@item.cau11 </td>
+                            <td class="text-left">@item.cau12 </td>
+                            <td class="text-left">@item.cau13 </td>
+                            <td class="text-left">@item.cau14 </td>
+                            <td class="text-left">@item.cau15 </td>
+                            <td class="text-left">@item.cau16 </td>
+                            <td class="text-left">@item.cau17 </td>
+                            <td class="text-left">@item.cau18 </td>
+                            <td class="text-left">@item.cau19 </td>
+                            <td class="text-left">@item.cau20 </td>
+                            <td class="text-left">@item.cau21 </td>
+                            <td class="text-left">@item.cau22 </td>
+                            <td class="text-left">@item.cau23 </td>
+                            <td class="text-left">@item.cau24 </td>
+                            <td class="text-left">@item.cau25 </td>
+                            <td class="text-left">@item.cau26 </td>
+                            <td class="text-left">@item.cau27 </td>
+                            <td class="text-center">@(item.assist_timestamp != null ? Convert.ToDateTime(item.assist_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
+                            <td class="text-left">@item.thuocla </td>
+                            <td class="text-left">@item.thucuong </td>
+                            <td class="text-left">@item.cansa </td>
+                            <td class="text-left">@item.cocain </td>
+                            <td class="text-left">@item.chatkichthich </td>
+                            <td class="text-left">@item.khixong </td>
+                            <td class="text-left">@item.thuocanthan </td>
+                            <td class="text-left">@item.chatgayaogiac </td>
+                            <td class="text-left">@item.thuocphien </td>
+                            <td class="text-left">@item.chatkhac </td>
+                            <td class="text-left">@item.cacchatkhac </td>
+                            <td class="text-left">@item.lucdihoc </td>
+                            <td class="text-left">@item.thuocla1 </td>
+                            <td class="text-left">@item.thucuong1 </td>
+                            <td class="text-left">@item.cansa1 </td>
+                            <td class="text-left">@item.coca1 </td>
+                            <td class="text-left">@item.chatkichthich1 </td>
+                            <td class="text-left">@item.khixong1 </td>
+                            <td class="text-left">@item.thuocanthan1 </td>
+                            <td class="text-left">@item.chatgayaogiac1 </td>
+                            <td class="text-left">@item.chatthuocphien1 </td>
+                            <td class="text-left">@item.chatkhac1 </td>
+                            <td class="text-left">@item.thuocla2 </td>
+                            <td class="text-left">@item.thucuong2 </td>
+                            <td class="text-left">@item.cansa2 </td>
+                            <td class="text-left">@item.coca2 </td>
+                            <td class="text-left">@item.chatkichthich2 </td>
+                            <td class="text-left">@item.khixong2 </td>
+                            <td class="text-left">@item.thuocanthan2 </td>
+                            <td class="text-left">@item.chatgayaogiac2 </td>
+                            <td class="text-left">@item.chatthuocphien2 </td>
+                            <td class="text-left">@item.chatkhac2 </td>
+                            <td class="text-left">@item.thuocla3 </td>
+                            <td class="text-left">@item.thucuong3 </td>
+                            <td class="text-left">@item.cansa3 </td>
+                            <td class="text-left">@item.coca3 </td>
+                            <td class="text-left">@item.chatkichthich3 </td>
+                            <td class="text-left">@item.khixong3 </td>
+                            <td class="text-left">@item.thuocanthan3 </td>
+                            <td class="text-left">@item.chatgayaogiac3 </td>
+                            <td class="text-left">@item.chatthuocphien3 </td>
+                            <td class="text-left">@item.chatkhac3 </td>
+                            <td class="text-left">@item.thucuong4 </td>
+                            <td class="text-left">@item.cansa4 </td>
+                            <td class="text-left">@item.coca4 </td>
+                            <td class="text-left">@item.chatkichthich4 </td>
+                            <td class="text-left">@item.khixong4 </td>
+                            <td class="text-left">@item.thuocanthan4 </td>
+                            <td class="text-left">@item.chatgayaogiac4 </td>
+                            <td class="text-left">@item.chatthuocphien4 </td>
+                            <td class="text-left">@item.chatkhac4 </td>
+                            <td class="text-left">@item.thuocla5 </td>
+                            <td class="text-left">@item.thucuong5 </td>
+                            <td class="text-left">@item.cansa5 </td>
+                            <td class="text-left">@item.coca5 </td>
+                            <td class="text-left">@item.chatkichthich5 </td>
+                            <td class="text-left">@item.khixong5 </td>
+                            <td class="text-left">@item.thuocanthan5 </td>
+                            <td class="text-left">@item.chatgayaogiac5 </td>
+                            <td class="text-left">@item.chatthuocphien5 </td>
+                            <td class="text-left">@item.chatkhac5 </td>
+                            <td class="text-left">@item.thuocla6 </td>
+                            <td class="text-left">@item.thucuong6 </td>
+                            <td class="text-left">@item.cansa6 </td>
+                            <td class="text-left">@item.coca6 </td>
+                            <td class="text-left">@item.chatkichthich6 </td>
+                            <td class="text-left">@item.khixong6 </td>
+                            <td class="text-left">@item.thuocanthan6 </td>
+                            <td class="text-left">@item.chatgayaogiac6 </td>
+                            <td class="text-left">@item.chatthuocphien6 </td>
+                            <td class="text-left">@item.chatkhac6 </td>
+                            <td class="text-left">@item.cau_8 </td>
+                            <td class="text-left">@item.diemthuocla </td>
+                            <td class="text-left">@item.diemthucuong </td>
+                            <td class="text-left">@item.diemcansa </td>
+                            <td class="text-left">@item.diemcoca </td>
+                            <td class="text-left">@item.diemchatkichthich </td>
+                            <td class="text-left">@item.diemkhixong </td>
+                            <td class="text-left">@item.diemchatanthan </td>
+                            <td class="text-left">@item.diemchatgayaogiac </td>
+                            <td class="text-left">@item.diemchatthuocphien </td>
+                            <td class="text-center">@(item.qst_timestamp  != null ? Convert.ToDateTime(item.qst_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
+                            <td class="text-left">@item.diemchatkhac </td>
+                            <td class="text-left">@item.c_1a </td>
+                            <td class="text-left">@item.c_1b </td>
+                            <td class="text-left">@item.c_1c </td>
+                            <td class="text-left">@item.c_1d </td>
+                            <td class="text-left">@item.c_2 </td>
+                            <td class="text-left">@item.c_3 </td>
+                            <td class="text-left">@item.c_4a </td>
+                            <td class="text-left">@item.c_4b </td>
+                            <td class="text-left">@item.c_4c </td>
+                            <td class="text-right">@item.tongdiem </td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/BaoCaoTongHopController.js"></script>
+}

@@ -114,6 +114,44 @@ namespace Data.API
                     }
                 }
 
+                // Đầu api phiếu tư vấn
+                if (tableNames.Contains("BVTL_PHIEU_TU_VAN"))
+                {
+                    var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiPhieuTuVanModel>>(resultApiString);
+
+                    var tongHops = new List<BVTL_PHIEU_TU_VAN>();
+
+                    // Chuyển đổi dữ liệu sang các bảng tương ứng
+                    _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi, maDuAn, ref tongHops);
+
+                    // Thêm dữ liệu bảng BVTL_PHIEU_TU_VAN
+                    if (tongHops != null && tongHops.Count > 0)
+                    {
+                        var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                        result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN");
+                    }
+                }
+
+                // Đầu api chuyển gửi dịch vụ
+                if (tableNames.Contains("BVTL_CHUYEN_GUI_DICH_VU"))
+                {
+                    var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiChuyenGuiDVModel>>(resultApiString);
+
+                    var tongHops = new List<BVTL_CHUYEN_GUI_DICH_VU>();
+
+                    // Chuyển đổi dữ liệu sang các bảng tương ứng
+                    _convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi, maDuAn, ref tongHops);
+
+                    // Thêm dữ liệu bảng BVTL_CHUYEN_GUI_DICH_VU
+                    if (tongHops != null && tongHops.Count > 0)
+                    {
+                        var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                        result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_CHUYEN_GUI_DICH_VU");
+                    }
+                }
+
                 #endregion
             }
             return result;

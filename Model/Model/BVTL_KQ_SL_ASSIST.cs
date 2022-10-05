@@ -45,6 +45,7 @@ namespace Model.Model
         public string city_code { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
+        public string sottkh { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

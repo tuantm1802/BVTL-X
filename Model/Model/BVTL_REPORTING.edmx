@@ -189,6 +189,7 @@
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
           <Property Name="ngaysl_year" Type="int" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
@@ -205,6 +206,55 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ten_cgn" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ghichu" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="BVTL_CHUYEN_GUI_DICH_VU">
+          <Key>
+            <PropertyRef Name="record_id" />
+            <PropertyRef Name="khachhang_id" />
+          </Key>
+          <Property Name="record_id" Type="bigint" Nullable="false" />
+          <Property Name="loaihinh" Type="varchar" MaxLength="20" />
+          <Property Name="ngay_xn" Type="date" />
+          <Property Name="diachi_xn" Type="nvarchar" MaxLength="200" />
+          <Property Name="kq_xn" Type="varchar" MaxLength="10" />
+          <Property Name="dieutri" Type="varchar" MaxLength="10" />
+          <Property Name="diachi_cg" Type="nvarchar" MaxLength="200" />
+          <Property Name="ngay_bddt" Type="date" />
+          <Property Name="taiuong_bd" Type="nvarchar" MaxLength="200" />
+          <Property Name="anh1" Type="varchar" MaxLength="200" />
+          <Property Name="taiuong_bd_2" Type="nvarchar" MaxLength="200" />
+          <Property Name="anh2" Type="varchar" MaxLength="200" />
+          <Property Name="taiuong_bd_21" Type="nvarchar" MaxLength="200" />
+          <Property Name="anh3" Type="varchar" MaxLength="200" />
+          <Property Name="s3t" Type="nvarchar" MaxLength="40" />
+          <Property Name="s6t" Type="nvarchar" MaxLength="40" />
+          <Property Name="s9t" Type="nvarchar" MaxLength="40" />
+          <Property Name="s12t" Type="nvarchar" MaxLength="40" />
+          <Property Name="ngaykham" Type="date" />
+          <Property Name="diachikham" Type="nvarchar" MaxLength="200" />
+          <Property Name="lankham" Type="varchar" MaxLength="10" />
+          <Property Name="chandoan" Type="nvarchar" MaxLength="40" />
+          <Property Name="khac" Type="nvarchar" MaxLength="200" />
+          <Property Name="kedon" Type="varchar" MaxLength="10" />
+          <Property Name="dungthuoc" Type="nvarchar" MaxLength="40" />
+          <Property Name="hotro" Type="nvarchar" MaxLength="40" />
+          <Property Name="ngaykxn" Type="date" />
+          <Property Name="diachi_kxn" Type="nvarchar" MaxLength="200" />
+          <Property Name="lan_xnk" Type="varchar" MaxLength="10" />
+          <Property Name="chandoan1" Type="nvarchar" MaxLength="40" />
+          <Property Name="khac_sti" Type="nvarchar" MaxLength="200" />
+          <Property Name="dieutri_sti" Type="nvarchar" MaxLength="200" />
+          <Property Name="hotro_sti" Type="nvarchar" MaxLength="40" />
+          <Property Name="hotro_bhyt" Type="nvarchar" MaxLength="40" />
+          <Property Name="khachhang_id" Type="int" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="ngay_xn_date" Type="int" Nullable="false" />
+          <Property Name="ngay_xn_month" Type="int" Nullable="false" />
+          <Property Name="ngay_xn_year" Type="int" Nullable="false" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_CITES">
           <Key>
@@ -238,6 +288,7 @@
           </Key>
           <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="hoten" Type="nvarchar" MaxLength="100" />
           <Property Name="gioitinh" Type="varchar" MaxLength="1" />
           <Property Name="namsinh" Type="int" />
@@ -264,6 +315,7 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ASSIST">
           <Key>
@@ -300,6 +352,7 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_SKTT">
           <Key>
@@ -317,6 +370,7 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_HIV">
           <Key>
@@ -334,6 +388,7 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -359,6 +414,65 @@
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="tennhom_tbh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="city_code" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BVTL_PHIEU_TU_VAN">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="bigint" Nullable="false" />
+          <Property Name="ngaynhap" Type="datetime" />
+          <Property Name="ngaytuvan" Type="date" />
+          <Property Name="diadiem" Type="nvarchar" MaxLength="200" />
+          <Property Name="matcv" Type="varchar" MaxLength="10" />
+          <Property Name="lantuvan" Type="varchar" MaxLength="10" />
+          <Property Name="cau1_1" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau1_1k" Type="nvarchar" MaxLength="40" />
+          <Property Name="cau1_2" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau1_3" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau1_4" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau1_5" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau2_1k" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau2_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau3" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau3_1k" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau3_1k_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau4" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau4_1k" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau4_1k_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_1" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_1k" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_1_2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="cau5_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_2k" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_2k_2" Type="nvarchar" MaxLength="1000" />
+          <Property Name="cau5_3" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_3_1" Type="nvarchar" MaxLength="40" />
+          <Property Name="cau5_4" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_4_1" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_5" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_4_2" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_6" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_6k" Type="nvarchar" MaxLength="50" />
+          <Property Name="cau5_6k_2" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_7" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_7k" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_7k_3" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_8" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_7k_2" Type="nvarchar" MaxLength="200" />
+          <Property Name="tongket" Type="nvarchar" MaxLength="200" />
+          <Property Name="tuvantiep" Type="nvarchar" MaxLength="40" />
+          <Property Name="vande" Type="nvarchar" MaxLength="500" />
+          <Property Name="thoigian" Type="datetime" />
+          <Property Name="khachhang_id" Type="int" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="ngaytuvan_date" Type="int" Nullable="false" />
+          <Property Name="ngaytuvan_month" Type="int" Nullable="false" />
+          <Property Name="ngaytuvan_year" Type="int" Nullable="false" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -501,6 +615,30 @@
               <PropertyRef Name="khachhang_id" />
             </Principal>
             <Dependent Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
+              <PropertyRef Name="khachhang_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
+          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
+          <End Role="BVTL_CHUYEN_GUI_DICH_VU" Type="Self.BVTL_CHUYEN_GUI_DICH_VU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="khachhang_id" />
+            </Principal>
+            <Dependent Role="BVTL_CHUYEN_GUI_DICH_VU">
+              <PropertyRef Name="khachhang_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
+          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="0..1" />
+          <End Role="BVTL_PHIEU_TU_VAN" Type="Self.BVTL_PHIEU_TU_VAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="khachhang_id" />
+            </Principal>
+            <Dependent Role="BVTL_PHIEU_TU_VAN">
               <PropertyRef Name="khachhang_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -762,6 +900,7 @@
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_TX3TH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_CHUYEN_GUI_DICH_VU" EntityType="Self.BVTL_CHUYEN_GUI_DICH_VU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DU_AN" EntityType="Self.BVTL_DU_AN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="Self.BVTL_DUONG_SU_DUNG" Schema="dbo" store:Type="Tables" />
@@ -773,6 +912,7 @@
           <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="Self.BVTL_LOAI_DOI_TUONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_MASTER_TABLE" EntityType="Self.BVTL_MASTER_TABLE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_NHOM_TBH" EntityType="Self.BVTL_NHOM_TBH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_PHIEU_TU_VAN" EntityType="Self.BVTL_PHIEU_TU_VAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_QT_LOG" EntityType="Self.BVTL_QT_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_QT_NGUOI_DUNG" EntityType="Self.BVTL_QT_NGUOI_DUNG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH" EntityType="Self.BVTL_QT_NGUOI_DUNG_NHOM_TBH" Schema="dbo" store:Type="Tables" />
@@ -793,6 +933,14 @@
           <AssociationSet Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
+          </AssociationSet>
+          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" Association="Self.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+            <End Role="BVTL_CHUYEN_GUI_DICH_VU" EntitySet="BVTL_CHUYEN_GUI_DICH_VU" />
+          </AssociationSet>
+          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" Association="Self.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+            <End Role="BVTL_PHIEU_TU_VAN" EntitySet="BVTL_PHIEU_TU_VAN" />
           </AssociationSet>
           <AssociationSet Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
@@ -888,6 +1036,7 @@
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" />
+          <EntitySet Name="BVTL_CHUYEN_GUI_DICH_VU" EntityType="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU" />
           <EntitySet Name="BVTL_CITES" EntityType="BVTL_REPORTINGModel.BVTL_CITES" />
           <EntitySet Name="BVTL_DU_AN" EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" />
@@ -899,6 +1048,7 @@
           <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" />
           <EntitySet Name="BVTL_MASTER_TABLE" EntityType="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" />
           <EntitySet Name="BVTL_NHOM_TBH" EntityType="BVTL_REPORTINGModel.BVTL_NHOM_TBH" />
+          <EntitySet Name="BVTL_PHIEU_TU_VAN" EntityType="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN" />
           <EntitySet Name="BVTL_QT_LOG" EntityType="BVTL_REPORTINGModel.BVTL_QT_LOG" />
           <EntitySet Name="BVTL_QT_NGUOI_DUNG" EntityType="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG" />
           <EntitySet Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH" EntityType="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG_NHOM_TBH" />
@@ -927,6 +1077,10 @@
           <AssociationSet Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="BVTL_REPORTINGModel.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
+          </AssociationSet>
+          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" Association="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+            <End Role="BVTL_CHUYEN_GUI_DICH_VU" EntitySet="BVTL_CHUYEN_GUI_DICH_VU" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -967,6 +1121,10 @@
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+          </AssociationSet>
+          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" Association="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+            <End Role="BVTL_PHIEU_TU_VAN" EntitySet="BVTL_PHIEU_TU_VAN" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
             <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
@@ -1190,6 +1348,7 @@
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_year" Type="Int32" Nullable="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.BVTL_DU_AN_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_KHACH_HANG" />
@@ -1210,6 +1369,56 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ten_cgn" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ghichu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="BVTL_CHUYEN_GUI_DICH_VU">
+          <Key>
+            <PropertyRef Name="record_id" />
+            <PropertyRef Name="khachhang_id" />
+          </Key>
+          <Property Name="record_id" Type="Int64" Nullable="false" />
+          <Property Name="loaihinh" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ngay_xn" Type="DateTime" Precision="0" />
+          <Property Name="diachi_xn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="kq_xn" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="dieutri" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="diachi_cg" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_bddt" Type="DateTime" Precision="0" />
+          <Property Name="taiuong_bd" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="anh1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="taiuong_bd_2" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="anh2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="taiuong_bd_21" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="anh3" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="s3t" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="s6t" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="s9t" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="s12t" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="ngaykham" Type="DateTime" Precision="0" />
+          <Property Name="diachikham" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="lankham" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="chandoan" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="khac" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="kedon" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="dungthuoc" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="hotro" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="ngaykxn" Type="DateTime" Precision="0" />
+          <Property Name="diachi_kxn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="lan_xnk" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="chandoan1" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="khac_sti" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="dieutri_sti" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_sti" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_bhyt" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ngay_xn_date" Type="Int32" Nullable="false" />
+          <Property Name="ngay_xn_month" Type="Int32" Nullable="false" />
+          <Property Name="ngay_xn_year" Type="Int32" Nullable="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" FromRole="BVTL_CHUYEN_GUI_DICH_VU" ToRole="BVTL_KHACH_HANG" />
         </EntityType>
         <EntityType Name="BVTL_CITES">
           <Key>
@@ -1255,6 +1464,7 @@
           </Key>
           <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="hoten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="gioitinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="namsinh" Type="Int32" />
@@ -1265,7 +1475,9 @@
           <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
+          <NavigationProperty Name="BVTL_CHUYEN_GUI_DICH_VU" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CHUYEN_GUI_DICH_VU" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_PHIEU_TU_VAN" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_PHIEU_TU_VAN" />
           <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
           <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ACE" />
           <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ASSIST" />
@@ -1288,6 +1500,7 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_KHACH_HANG" />
@@ -1328,6 +1541,7 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_KHACH_HANG" />
@@ -1349,6 +1563,7 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_KHACH_HANG" />
@@ -1370,6 +1585,7 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_KHACH_HANG" />
@@ -1407,6 +1623,66 @@
           <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_ASSIST" />
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_SKTT" />
           <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_XN_HIV" />
+        </EntityType>
+        <EntityType Name="BVTL_PHIEU_TU_VAN">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="Int64" Nullable="false" />
+          <Property Name="ngaynhap" Type="DateTime" Precision="3" />
+          <Property Name="ngaytuvan" Type="DateTime" Precision="0" />
+          <Property Name="diadiem" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="matcv" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="lantuvan" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="cau1_1" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_1k" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_2" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_3" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_4" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_5" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau2_1k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau2_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau3" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau3_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau3_1k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau4" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau4_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau4_1k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_1" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_1k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_1_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_2k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_2k_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3_1" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4_1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_5" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4_2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_6" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_6k" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_6k_2" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_7" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_7k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_7k_3" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_8" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_7k_2" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="tongket" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="tuvantiep" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="vande" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="thoigian" Type="DateTime" Precision="3" />
+          <Property Name="khachhang_id" Type="Int32" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ngaytuvan_date" Type="Int32" Nullable="false" />
+          <Property Name="ngaytuvan_month" Type="Int32" Nullable="false" />
+          <Property Name="ngaytuvan_year" Type="Int32" Nullable="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" FromRole="BVTL_PHIEU_TU_VAN" ToRole="BVTL_KHACH_HANG" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -1577,6 +1853,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
+          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU" Role="BVTL_CHUYEN_GUI_DICH_VU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="khachhang_id" />
+            </Principal>
+            <Dependent Role="BVTL_CHUYEN_GUI_DICH_VU">
+              <PropertyRef Name="khachhang_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BVTL_KHACH_HANG_BVTL_CITES">
           <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
@@ -1694,6 +1982,18 @@
             </Principal>
             <Dependent Role="BVTL_KQ_XN_HIV">
               <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
+          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN" Role="BVTL_PHIEU_TU_VAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="khachhang_id" />
+            </Principal>
+            <Dependent Role="BVTL_PHIEU_TU_VAN">
+              <PropertyRef Name="khachhang_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1831,6 +2131,7 @@
           <EntitySetMapping Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO">
               <MappingFragment StoreEntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="ngaysl_year" ColumnName="ngaysl_year" />
                 <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
                 <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
@@ -2016,6 +2317,55 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BVTL_CHUYEN_GUI_DICH_VU">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU">
+              <MappingFragment StoreEntitySet="BVTL_CHUYEN_GUI_DICH_VU">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="ngay_xn_year" ColumnName="ngay_xn_year" />
+                <ScalarProperty Name="ngay_xn_month" ColumnName="ngay_xn_month" />
+                <ScalarProperty Name="ngay_xn_date" ColumnName="ngay_xn_date" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="hotro_bhyt" ColumnName="hotro_bhyt" />
+                <ScalarProperty Name="hotro_sti" ColumnName="hotro_sti" />
+                <ScalarProperty Name="dieutri_sti" ColumnName="dieutri_sti" />
+                <ScalarProperty Name="khac_sti" ColumnName="khac_sti" />
+                <ScalarProperty Name="chandoan1" ColumnName="chandoan1" />
+                <ScalarProperty Name="lan_xnk" ColumnName="lan_xnk" />
+                <ScalarProperty Name="diachi_kxn" ColumnName="diachi_kxn" />
+                <ScalarProperty Name="ngaykxn" ColumnName="ngaykxn" />
+                <ScalarProperty Name="hotro" ColumnName="hotro" />
+                <ScalarProperty Name="dungthuoc" ColumnName="dungthuoc" />
+                <ScalarProperty Name="kedon" ColumnName="kedon" />
+                <ScalarProperty Name="khac" ColumnName="khac" />
+                <ScalarProperty Name="chandoan" ColumnName="chandoan" />
+                <ScalarProperty Name="lankham" ColumnName="lankham" />
+                <ScalarProperty Name="diachikham" ColumnName="diachikham" />
+                <ScalarProperty Name="ngaykham" ColumnName="ngaykham" />
+                <ScalarProperty Name="s12t" ColumnName="s12t" />
+                <ScalarProperty Name="s9t" ColumnName="s9t" />
+                <ScalarProperty Name="s6t" ColumnName="s6t" />
+                <ScalarProperty Name="s3t" ColumnName="s3t" />
+                <ScalarProperty Name="anh3" ColumnName="anh3" />
+                <ScalarProperty Name="taiuong_bd_21" ColumnName="taiuong_bd_21" />
+                <ScalarProperty Name="anh2" ColumnName="anh2" />
+                <ScalarProperty Name="taiuong_bd_2" ColumnName="taiuong_bd_2" />
+                <ScalarProperty Name="anh1" ColumnName="anh1" />
+                <ScalarProperty Name="taiuong_bd" ColumnName="taiuong_bd" />
+                <ScalarProperty Name="ngay_bddt" ColumnName="ngay_bddt" />
+                <ScalarProperty Name="diachi_cg" ColumnName="diachi_cg" />
+                <ScalarProperty Name="dieutri" ColumnName="dieutri" />
+                <ScalarProperty Name="kq_xn" ColumnName="kq_xn" />
+                <ScalarProperty Name="diachi_xn" ColumnName="diachi_xn" />
+                <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />
+                <ScalarProperty Name="loaihinh" ColumnName="loaihinh" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="BVTL_CITES">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CITES">
               <MappingFragment StoreEntitySet="BVTL_CITES">
@@ -2057,6 +2407,7 @@
                 <ScalarProperty Name="namsinh" ColumnName="namsinh" />
                 <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
                 <ScalarProperty Name="hoten" ColumnName="hoten" />
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
               </MappingFragment>
@@ -2065,6 +2416,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ACE">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ACE">
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
@@ -2083,6 +2435,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_ASSIST">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_ASSIST">
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
@@ -2120,6 +2473,7 @@
           <EntitySetMapping Name="BVTL_KQ_SL_SKTT">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT">
               <MappingFragment StoreEntitySet="BVTL_KQ_SL_SKTT">
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
@@ -2138,6 +2492,7 @@
           <EntitySetMapping Name="BVTL_KQ_XN_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
               <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
@@ -2178,6 +2533,66 @@
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="tennhom_tbh" ColumnName="tennhom_tbh" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BVTL_PHIEU_TU_VAN">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN">
+              <MappingFragment StoreEntitySet="BVTL_PHIEU_TU_VAN">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="ngaytuvan_year" ColumnName="ngaytuvan_year" />
+                <ScalarProperty Name="ngaytuvan_month" ColumnName="ngaytuvan_month" />
+                <ScalarProperty Name="ngaytuvan_date" ColumnName="ngaytuvan_date" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="thoigian" ColumnName="thoigian" />
+                <ScalarProperty Name="vande" ColumnName="vande" />
+                <ScalarProperty Name="tuvantiep" ColumnName="tuvantiep" />
+                <ScalarProperty Name="tongket" ColumnName="tongket" />
+                <ScalarProperty Name="cau5_7k_2" ColumnName="cau5_7k_2" />
+                <ScalarProperty Name="cau5_8" ColumnName="cau5_8" />
+                <ScalarProperty Name="cau5_7k_3" ColumnName="cau5_7k_3" />
+                <ScalarProperty Name="cau5_7k" ColumnName="cau5_7k" />
+                <ScalarProperty Name="cau5_7" ColumnName="cau5_7" />
+                <ScalarProperty Name="cau5_6k_2" ColumnName="cau5_6k_2" />
+                <ScalarProperty Name="cau5_6k" ColumnName="cau5_6k" />
+                <ScalarProperty Name="cau5_6" ColumnName="cau5_6" />
+                <ScalarProperty Name="cau5_4_2" ColumnName="cau5_4_2" />
+                <ScalarProperty Name="cau5_5" ColumnName="cau5_5" />
+                <ScalarProperty Name="cau5_4_1" ColumnName="cau5_4_1" />
+                <ScalarProperty Name="cau5_4" ColumnName="cau5_4" />
+                <ScalarProperty Name="cau5_3_1" ColumnName="cau5_3_1" />
+                <ScalarProperty Name="cau5_3" ColumnName="cau5_3" />
+                <ScalarProperty Name="cau5_2k_2" ColumnName="cau5_2k_2" />
+                <ScalarProperty Name="cau5_2k" ColumnName="cau5_2k" />
+                <ScalarProperty Name="cau5_2" ColumnName="cau5_2" />
+                <ScalarProperty Name="cau5_1_2" ColumnName="cau5_1_2" />
+                <ScalarProperty Name="cau5_1k" ColumnName="cau5_1k" />
+                <ScalarProperty Name="cau5_1" ColumnName="cau5_1" />
+                <ScalarProperty Name="cau4_1k_2" ColumnName="cau4_1k_2" />
+                <ScalarProperty Name="cau4_1k" ColumnName="cau4_1k" />
+                <ScalarProperty Name="cau4" ColumnName="cau4" />
+                <ScalarProperty Name="cau3_1k_2" ColumnName="cau3_1k_2" />
+                <ScalarProperty Name="cau3_1k" ColumnName="cau3_1k" />
+                <ScalarProperty Name="cau3" ColumnName="cau3" />
+                <ScalarProperty Name="cau2_2" ColumnName="cau2_2" />
+                <ScalarProperty Name="cau2_1k" ColumnName="cau2_1k" />
+                <ScalarProperty Name="cau2" ColumnName="cau2" />
+                <ScalarProperty Name="cau1_5" ColumnName="cau1_5" />
+                <ScalarProperty Name="cau1_4" ColumnName="cau1_4" />
+                <ScalarProperty Name="cau1_3" ColumnName="cau1_3" />
+                <ScalarProperty Name="cau1_2" ColumnName="cau1_2" />
+                <ScalarProperty Name="cau1_1k" ColumnName="cau1_1k" />
+                <ScalarProperty Name="cau1_1" ColumnName="cau1_1" />
+                <ScalarProperty Name="lantuvan" ColumnName="lantuvan" />
+                <ScalarProperty Name="matcv" ColumnName="matcv" />
+                <ScalarProperty Name="diadiem" ColumnName="diadiem" />
+                <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />
+                <ScalarProperty Name="ngaynhap" ColumnName="ngaynhap" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

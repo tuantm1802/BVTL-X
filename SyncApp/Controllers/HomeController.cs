@@ -68,7 +68,11 @@ namespace SyncBVTL.Push.Controllers
                 try
                 {
                     string filePath = Directory.GetCurrentDirectory() + "\\Log\\" + name + $"_{DateTime.Now:yyyyMMdd}" + ".log";
-                    return Json(new ApiResult() { message = StringUtils.ReadNLineOfFile(filePath, 200), code = "200" });
+                    if (!System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Create(filePath).Dispose();
+                    }
+                        return Json(new ApiResult() { message = StringUtils.ReadNLineOfFile(filePath, 200), code = "200" });
                 }
                 catch (Exception)
                 {
