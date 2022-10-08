@@ -1,0 +1,76 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaSangLocPageModel>
+@{
+    ViewBag.Title = "Kết quả sàng lọc";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="KetQuaSangLocController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">THÔNG TIN SÀNG LỌC KHÁCH HÀNG TUYỂN VÀO DỰ ÁN</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                    <div class="col-sm-1">
+                        <label>Từ khóa</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableKetQuaSangLoc" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Tỉnh </th>
+                            <th style="width:9%;">Mã nhóm TBH</th>
+                            <th style="width:auto;">Tên nhóm TBH </th>
+                            <th style="width:9%;">Mã KH</th>
+                            <th style="width:auto;">Họ tên KH </th>
+                            <th style="width:9%;">Ngày số liệu</th>
+                            <th style="width:9%;">Tổng điểm </th>
+                            <th style="width:9%;">Kết quả</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.manhom_tbh</td>
+                    <td class="text-left">@item.tennhom_tbh</td>
+                    <td class="text-left">@item.makh</td>
+                    <td class="text-left">@item.hoten</td>
+                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    @*<td class="text-left">@item.ngaysltext</td>*@
+                    <td class="text-right">@item.tongdiem_ace</td>
+                    <td class="text-right">@item.ketqua_ace</td>
+                </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/KetQuaSangLocController.js"></script>
+}

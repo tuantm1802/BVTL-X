@@ -12,5 +12,10 @@ namespace Model.ModelExtend.Report
         public int? Year { get; set; }
         public string CityCodes { get; set; }
         public int? TypeReport { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string MaNhomTBH { get; set; }
+        public int? TuSoMaKH { get; set; }
+        public int? DenSoMaKH { get; set; }
     }
 }
