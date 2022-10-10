@@ -18,7 +18,9 @@ namespace WebApp.Controllers
 {
     public class KetQuaSangLocController : BaseController
     {
-        IBaoCaoTongHopDA _KetQuaSangLocDA = new BaoCaoTongHopDA();
+        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
+        ICityDA _CityDA = new CityDA();
+        IBVTL_NHOM_TBHDA _NhomTBHDA = new BVTL_NHOM_TBHDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -38,6 +40,12 @@ namespace WebApp.Controllers
             };
             try
             {
+                if (modelSearch._FromDate != null)
+                    modelSearch.FromDate = Convert.ToDateTime(modelSearch._FromDate).ToString("yyyyMMdd");
+
+                if (modelSearch._ToDate != null)
+                    modelSearch.ToDate = Convert.ToDateTime(modelSearch._ToDate).ToString("yyyyMMdd");
+
                 List<KetQuaSangLocModel> DoiTuongKHs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> GioiTinhs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> Tuois = new List<KetQuaSangLocModel>();
@@ -68,7 +76,7 @@ namespace WebApp.Controllers
                 List<SuDungMTDKhiQHTDModel> TuLamHaiBanThans = new List<SuDungMTDKhiQHTDModel>();
                 List<SuDungMTDKhiQHTDModel> CoTuSats = new List<SuDungMTDKhiQHTDModel>();
                 List<LoanThanModel> LoanThans = new List<LoanThanModel>();
-                _KetQuaSangLocDA.KetQuaSangLoc(modelSearch, ref DoiTuongKHs, ref GioiTinhs, ref Tuois
+                _BaoCaoTongHopDA.KetQuaSangLoc(modelSearch, ref DoiTuongKHs, ref GioiTinhs, ref Tuois
              , ref KetQuaHIVs, ref ChatGayNghien3Thangs, ref SoChatGayNghiens, ref ChatGayNghienSDThuongXuyens
              , ref DuongSDMaTuyDas, ref TanSuatSDMaTuyDas, ref LanDauSDMaTuyDas, ref LoaiMaTuyDaSDDauTiens
              , ref NguyCoSDMaTuyDas, ref ChungBKTs, ref NguyCoTinhDucs, ref DungBCSs
@@ -108,8 +116,7 @@ namespace WebApp.Controllers
                     MucDoGapVanDeSKTTs = MucDoGapVanDeSKTTs,
                     TuLamHaiBanThans = TuLamHaiBanThans,
                     CoTuSats = CoTuSats,
-                    LoanThans = LoanThans
-,
+                    LoanThans = LoanThans,
                     Error = false,
                     Title = "Lấy dữ liệu thành công."
                 }); ;
@@ -137,7 +144,14 @@ namespace WebApp.Controllers
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
                 AddLog("Lấy danh sách các botom được thực hiện trên from kết quả ACE thành công.");
-                return Json(new { Buttoms = bottoms, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+
+                // Lấy danh sách tỉnh, tp phố
+                var citis = _CityDA.GetAll();
+
+                // Lấy danh sách nhóm tbh
+                var nhomTBHs = _NhomTBHDA.GetAll();
+
+                return Json(new { Buttoms = bottoms, Citis = citis, NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {
@@ -168,7 +182,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = _KetQuaSangLocDA.GetItemById(Id);
+                var data = _BaoCaoTongHopDA.GetItemById(Id);
                 AddLog("Lấy dữ liệu theo ID bảng kết quả ACE( ID: " + Id + ") thành công.");
                 return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
             }
