@@ -31,5 +31,19 @@ namespace Data.InterfaceDA.Admin
         /// <param name="id"></param>
         /// <returns></returns>
          BaoCaoTongHopPageModel GetItemById(int id);
+
+        /// <summary>
+        /// Lấy dữ liệu kết quả sáng lọc
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+         void KetQuaSangLoc(ReportSearchModel modelSearch, ref List<KetQuaSangLocModel> DoiTuongKHs, ref List<KetQuaSangLocModel> GioiTinhs, ref List<KetQuaSangLocModel> Tuois
+            , ref List<KetQuaSangLocModel> KetQuaHIVs, ref List<KetQuaSangLocModel> ChatGayNghien3Thangs, ref List<KetQuaSangLocModel> SoChatGayNghiens, ref List<KetQuaSangLocModel> ChatGayNghienSDThuongXuyens
+            , ref List<DuongSuDungMaTuyDaModel> DuongSDMaTuyDas, ref List<TanSuatSuDungMaTuyDaModel> TanSuatSDMaTuyDas, ref List<LanDauSuDungMaTuyDaModel> LanDauSDMaTuyDas, ref List<LoaiMaTuyDaSuDungDTModel> LoaiMaTuyDaSDDauTiens
+            , ref List<NguyCoKhiSDMTDModel> NguyCoSDMaTuyDas, ref List<ChungBKTModel> ChungBKTs, ref List<NguyCoTinhDucModel> NguyCoTinhDucs, ref List<DungBCSModel> DungBCSs
+            , ref List<SuDungMTDKhiQHTDModel> SDMaTuyDaKhiQHTDs, ref List<SuDungMTDKhiQHTDModel> QHTDTapThes, ref List<SuDungMTDKhiQHTDModel> BanDams, ref List<NhieuNguyCoTinhDucModel> NhieuNguycoTinhDucs
+            , ref List<BenhSTIModel> BenhSTIs, ref List<BenhLao_VGCModel> BenhLaos, ref List<BenhLao_VGCModel> BenhVGCs, ref List<KetQuaSangLocModel> SocHeroins
+            , ref List<KetQuaSangLocModel> SocMeths, ref List<CacChatGayNghienModel> CacLoaiChatGayNghiens, ref List<KetQuaSangLocModel> KetQuaQSTs, ref List<MucDoGapVanDeSKTTModel> MucDoGapVanDeSKTTs
+            , ref List<SuDungMTDKhiQHTDModel> TuLamHaiBanThans, ref List<SuDungMTDKhiQHTDModel> CoTuSats, ref List<LoanThanModel> LoanThans);
     }
 }
