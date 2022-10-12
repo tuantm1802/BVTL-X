@@ -143,128 +143,158 @@ namespace Data.Admin
                 {
                     ////////////////////Báo cáo theo đối tượng////
                     var bcDoiTuong = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[0]);
-                    ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcDoiTuong, ref DoiTuongKHs);
+                    if (bcDoiTuong != null && bcDoiTuong.Count > 0)
+                        ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcDoiTuong, ref DoiTuongKHs);
 
                     ////////////////////Báo cáo theo giới tính////
                     var bcGioiTinh = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[1]);
-                    ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcGioiTinh, ref GioiTinhs);
+                    if (bcGioiTinh != null && bcGioiTinh.Count > 0)
+                        ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcGioiTinh, ref GioiTinhs);
 
                     ////////////////////Báo cáo theo tuổi ////
                     var bcTuoi = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[2]);
-                    ChuyenDoi_BCTheoTuoi(bcTuoi, ref Tuois);
+                    if (bcTuoi != null && bcTuoi.Count > 0)
+                        ChuyenDoi_BCTheoTuoi(bcTuoi, ref Tuois);
 
 
                     ////////////////////Báo cáo theo kết quả HIV ////
                     var bcKetQuaHIV = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[3]);
-                    ChuyenDoi_BCTheoKetQuaHIV(bcKetQuaHIV, ref KetQuaHIVs);
+                    if (bcKetQuaHIV != null && bcKetQuaHIV.Count > 0)
+                        ChuyenDoi_BCTheoKetQuaHIV(bcKetQuaHIV, ref KetQuaHIVs);
 
                     ////////////////////Báo cáo theo Chất gây nghiện sử dụng trong 3 tháng gần đây////
                     var bcCGNSuDung3T = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[4]);
-                    ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcCGNSuDung3T, ref ChatGayNghien3Thangs);
+                    if (bcCGNSuDung3T != null && bcCGNSuDung3T.Count > 0)
+                        ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcCGNSuDung3T, ref ChatGayNghien3Thangs);
 
 
                     ////////////////////Báo cáo theo Số chất gây nghiện////
                     var bcSoCGN = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[5]);
-                    ChuyenDoi_BCTheoSoChatGayNghien(bcSoCGN, ref SoChatGayNghiens);
+                    if (bcSoCGN != null && bcSoCGN.Count > 0)
+                        ChuyenDoi_BCTheoSoChatGayNghien(bcSoCGN, ref SoChatGayNghiens);
 
                     ////////////////////Báo cáo theo Loại chất gây nghiện sử dụng thường xuyên nhất trong 3 tháng gần đây////
                     var bcChatGayNghienSDThuongXuyen = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[6]);
-                    ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcChatGayNghienSDThuongXuyen, ref ChatGayNghienSDThuongXuyens);
+                    if (bcChatGayNghienSDThuongXuyen != null && bcChatGayNghienSDThuongXuyen.Count > 0)
+                        ChuyenDoi_BCTheoDoiTuong_GioiTinh(bcChatGayNghienSDThuongXuyen, ref ChatGayNghienSDThuongXuyens);
 
                     ////////////////////Báo cáo theo Đường sử dụng ma túy đá////
                     var bcDuongSDMaTuyDas = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[7]);
-                    ChuyenDoi_BCTheoDuongSDMaTuyDa(bcDuongSDMaTuyDas, ref DuongSDMaTuyDas);
+                    if (bcDuongSDMaTuyDas != null && bcDuongSDMaTuyDas.Count > 0)
+                        ChuyenDoi_BCTheoDuongSDMaTuyDa(bcDuongSDMaTuyDas, ref DuongSDMaTuyDas);
 
                     ////////////////////Báo cáo theo Tần suất sử dụng ma túy đá trong 3 tháng gần đây////
                     var bcTanSuatSDMaTuyDa = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[8]);
-                    ChuyenDoi_BCTheoTanSuatSDMaTuyDa(bcTanSuatSDMaTuyDa, ref TanSuatSDMaTuyDas);
+                    if (bcTanSuatSDMaTuyDa != null && bcTanSuatSDMaTuyDa.Count > 0)
+                        ChuyenDoi_BCTheoTanSuatSDMaTuyDa(bcTanSuatSDMaTuyDa, ref TanSuatSDMaTuyDas);
 
                     ////////////////////Báo cáo theo Lần đầu SD ma tuý ////
                     var bcLanDauSDMaTuyDa = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[9]);
-                    ChuyenDoi_BCTheoLanDauSDMaTuyDa(bcLanDauSDMaTuyDa, ref LanDauSDMaTuyDas);
+                    if (bcLanDauSDMaTuyDa != null && bcLanDauSDMaTuyDa.Count > 0)
+                        ChuyenDoi_BCTheoLanDauSDMaTuyDa(bcLanDauSDMaTuyDa, ref LanDauSDMaTuyDas);
 
                     ////////////////////Báo cáo theo Loại ma túy SD đầu tiên////
                     var bcLoaiMaTuyDaSDDauTien = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[10]);
-                    ChuyenDoi_BCTheoLoaiMaTuyDaSDDauTien(bcLoaiMaTuyDaSDDauTien, ref LoaiMaTuyDaSDDauTiens);
+                    if (bcLoaiMaTuyDaSDDauTien != null && bcLoaiMaTuyDaSDDauTien.Count > 0)
+                        ChuyenDoi_BCTheoLoaiMaTuyDaSDDauTien(bcLoaiMaTuyDaSDDauTien, ref LoaiMaTuyDaSDDauTiens);
 
                     ////////////////////Báo cáo theo Nguy cơ khi SD ma túy////
                     var bcNguyCoKhiSDMTD = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[11]);
-                    ChuyenDoi_BCTheoNguyCoKhiSDMTD(bcNguyCoKhiSDMTD, ref NguyCoSDMaTuyDas);
+                    if (bcNguyCoKhiSDMTD != null && bcNguyCoKhiSDMTD.Count > 0)
+                        ChuyenDoi_BCTheoNguyCoKhiSDMTD(bcNguyCoKhiSDMTD, ref NguyCoSDMaTuyDas);
 
                     ////////////////////Báo cáo theo Chung BKT////
                     var bcChungBKT = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[12]);
-                    ChuyenDoi_BCTheoChungBKT(bcChungBKT, ref ChungBKTs);
+                    if (bcChungBKT != null && bcChungBKT.Count > 0)
+                        ChuyenDoi_BCTheoChungBKT(bcChungBKT, ref ChungBKTs);
 
                     ////////////////////Báo cáo theo Nguy cơ tình dục////
                     var bcNguyCoTinhDuc = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[13]);
-                    ChuyenDoi_BCTheoNguyCoTinhDuc(bcNguyCoTinhDuc, ref NguyCoTinhDucs);
+                    if (bcNguyCoTinhDuc != null && bcNguyCoTinhDuc.Count > 0)
+                        ChuyenDoi_BCTheoNguyCoTinhDuc(bcNguyCoTinhDuc, ref NguyCoTinhDucs);
 
                     ////////////////////Báo cáo theo dùng BCS////
                     var bcDungBCS = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[14]);
-                    ChuyenDoi_BCTheoDungBCS(bcDungBCS, ref DungBCSs);
+                    if (bcDungBCS != null && bcDungBCS.Count > 0)
+                        ChuyenDoi_BCTheoDungBCS(bcDungBCS, ref DungBCSs);
 
                     ////////////////////Báo cáo theo SD ma túy khi QHTD ////
                     var bcSDMaTuyDaKhiQHTD = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[15]);
-                    ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcSDMaTuyDaKhiQHTD, ref SDMaTuyDaKhiQHTDs);
+                    if (bcSDMaTuyDaKhiQHTD != null && bcSDMaTuyDaKhiQHTD.Count > 0)
+                        ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcSDMaTuyDaKhiQHTD, ref SDMaTuyDaKhiQHTDs);
 
                     ////////////////////Báo cáo theo QHTD tập thể ////
                     var bcQHTDTapThes = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[16]);
-                    ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcQHTDTapThes, ref QHTDTapThes);
+                    if (bcQHTDTapThes != null && bcQHTDTapThes.Count > 0)
+                        ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcQHTDTapThes, ref QHTDTapThes);
 
                     ////////////////////Báo cáo theo Bán dâm////
                     var bcBanDams = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[17]);
-                    ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcBanDams, ref BanDams);
+                    if (bcBanDams != null && bcBanDams.Count > 0)
+                        ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcBanDams, ref BanDams);
 
                     ////////////////////Báo cáo theo Nhiều nguy cơ tình dục(Qhđồng giới, ko thường xuyên sử dụng BCS, QH tập thể, QH khi sd ma túy, bán dâm) ////
                     var bcNhieuNguycoTinhDuc = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[18]);
-                    ChuyenDoi_BCTheoNhieuNguycoTinhDuc(bcNhieuNguycoTinhDuc, ref NhieuNguycoTinhDucs);
+                    if (bcNhieuNguycoTinhDuc != null && bcNhieuNguycoTinhDuc.Count > 0)
+                        ChuyenDoi_BCTheoNhieuNguycoTinhDuc(bcNhieuNguycoTinhDuc, ref NhieuNguycoTinhDucs);
 
                     ////////////////////Báo cáo theo Bệnh tật STI////
                     var bcBenhSTI = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[19]);
-                    ChuyenDoi_BCTheoBenhSTI(bcBenhSTI, ref BenhSTIs);
+                    if (bcBenhSTI != null && bcBenhSTI.Count > 0)
+                        ChuyenDoi_BCTheoBenhSTI(bcBenhSTI, ref BenhSTIs);
 
                     ////////////////////Báo cáo theo Lao ////
                     var bcBenhLao = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[20]);
-                    ChuyenDoi_BCTheoBenhLao_VGC(bcBenhLao, ref BenhLaos);
+                    if (bcBenhLao != null && bcBenhLao.Count > 0)
+                        ChuyenDoi_BCTheoBenhLao_VGC(bcBenhLao, ref BenhLaos);
 
                     ////////////////////Báo cáo theo VGC ////
                     var bcBenhVGC = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[21]);
-                    ChuyenDoi_BCTheoBenhLao_VGC(bcBenhVGC, ref BenhVGCs);
+                    if (bcBenhVGC != null && bcBenhVGC.Count > 0)
+                        ChuyenDoi_BCTheoBenhLao_VGC(bcBenhVGC, ref BenhVGCs);
 
 
                     ////////////////////Báo cáo theo Sốc thuốc Heroin ////
                     var bcSocHeroin = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[22]);
-                    ChuyenDoi_BCTheoSocHeroins(bcSocHeroin, ref SocHeroins);
+                    if (bcSocHeroin != null && bcSocHeroin.Count > 0)
+                        ChuyenDoi_BCTheoSocHeroins(bcSocHeroin, ref SocHeroins);
 
 
                     ////////////////////Báo cáo theo Sốc thuốc Meth ////
                     var bcSocMeth = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[23]);
-                    ChuyenDoi_BCTheoSocMeth(bcSocMeth, ref SocMeths);
+                    if (bcSocMeth != null && bcSocMeth.Count > 0)
+                        ChuyenDoi_BCTheoSocMeth(bcSocMeth, ref SocMeths);
 
 
                     ////////////////////Báo cáo theo CÁC LOẠI CHẤT GÂY NGHIỆN\KẾT QUẢ ASSIST////
                     var bcCacLoaiChatGayNghien = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[24]);
-                    ChuyenDoi_BCTheoCacLoaiChatGayNghien(bcCacLoaiChatGayNghien, ref CacLoaiChatGayNghiens);
+                    if (bcCacLoaiChatGayNghien != null && bcCacLoaiChatGayNghien.Count > 0)
+                        ChuyenDoi_BCTheoCacLoaiChatGayNghien(bcCacLoaiChatGayNghien, ref CacLoaiChatGayNghiens);
 
                     ////////////////////Báo cáo theo KẾT QUẢ QST(SỨC KHỎE TÂM THẦN) ////
                     var bcKetQuaQST = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[25]);
-                    ChuyenDoi_BCTheoKetQuaQST(bcKetQuaQST, ref KetQuaQSTs);
+                    if (bcKetQuaQST != null && bcKetQuaQST.Count > 0)
+                        ChuyenDoi_BCTheoKetQuaQST(bcKetQuaQST, ref KetQuaQSTs);
 
                     ////////////////////Báo cáo theo Sàng lọc SKTT Mức độ gặp các vấn đề SKTT trong 2 tuần qua(câu 1)////
                     var bcMucDoGapVanDeSKTT = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[26]);
-                    ChuyenDoi_BCTheoMucDoGapVanDeSKTT(bcMucDoGapVanDeSKTT, ref MucDoGapVanDeSKTTs);
+                    if (bcMucDoGapVanDeSKTT != null && bcMucDoGapVanDeSKTT.Count > 0)
+                        ChuyenDoi_BCTheoMucDoGapVanDeSKTT(bcMucDoGapVanDeSKTT, ref MucDoGapVanDeSKTTs);
 
                     ////////////////////Báo cáo theo Sàng lọc SKTT Ý nghĩ tự làm hại bản thân trong 2 tuần qua(câu 2) ////
                     var bcTuLamHaiBanThan = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[27]);
-                    ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcTuLamHaiBanThan, ref TuLamHaiBanThans);
+                    if (bcTuLamHaiBanThan != null && bcTuLamHaiBanThan.Count > 0)
+                        ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcTuLamHaiBanThan, ref TuLamHaiBanThans);
 
                     ////////////////////Báo cáo theo Sàng lọc SKTT Cố tự sát từ trước đến nay(câu 3)////
                     var bcCoTuSat = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[28]);
-                    ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcCoTuSat, ref CoTuSats);
+                    if (bcCoTuSat != null && bcCoTuSat.Count > 0)
+                        ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(bcCoTuSat, ref CoTuSats);
 
                     ////////////////////Báo cáo theo Loạn thần////
                     var bcLoanThan = _DatabaseSql.ConvertDataTableToList<KetQuaSangLocProModel>(ds.Tables[29]);
-                    ChuyenDoi_BCTheoLoanThan(bcLoanThan, ref LoanThans);
+                    if (bcLoanThan != null && bcLoanThan.Count > 0)
+                        ChuyenDoi_BCTheoLoanThan(bcLoanThan, ref LoanThans);
                 }
             }
             catch (Exception ex)
@@ -491,7 +521,7 @@ namespace Data.Admin
                 phanTram = item.SoLuong / tongSo;
                 outDatas.Add(new KetQuaSangLocModel
                 {
-                    NoiDung = item.tongdiem+ " điểm",
+                    NoiDung = item.tongdiem + " điểm",
                     SoNguoi = item.SoLuong,
                     PhanTram = Math.Round(phanTram, 2)
                 });
