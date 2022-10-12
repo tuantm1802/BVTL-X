@@ -72,6 +72,11 @@
     var dataTableLoanThans = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
+
+        var date = new Date();
+        $scope.modelSearch.FromDate = date;
+        $scope.modelSearch.ToDate = date;
+
         $scope.ListCity = [];
         $scope.ListNhomTBH = [];
         GetBottomAction();
@@ -85,6 +90,8 @@
         $.ajax({
             type: 'post',
             url: '/KetQuaSangLoc/GetBottomAction',
+            cache: false,
+            async: false,
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -98,9 +105,11 @@
                     });
 
                     $scope.ListCity = response.Citis;
+                    $scope.modelSearch.CityCodes = $scope.ListCity[0].Code;
                     $scope.ListNhomTBH = response.NhomTBHs;
+                    $scope.modelSearch.MaNhomTBH = $scope.ListNhomTBH[0].manhom_tbh;
                 }
-                $scope.$apply();
+                //$scope.$apply();
             }
         });
     }
@@ -137,7 +146,12 @@
     $('#dataTableLoanThans').on('click', 'tr', function () { $(this).toggleClass('selected'); });
 
     $scope.LoadPage = function (genTable) {
-        showToast();
+
+        //if (genTable == 1) {
+        //    $scope.modelSearch.CityCodes = $scope.ListCity[0].Code;
+        //    $scope.modelSearch.MaNhomTBH = $scope.ListNhomTBH[0].manhom_tbh;
+        //}
+
         $scope.DoiTuongKHs = [];
         $scope.GioiTinhs = [];
         $scope.Tuois = [];
@@ -169,18 +183,45 @@
         $scope.CoTuSats = [];
         $scope.LoanThans = [];
 
+        // Check điều kiện tìm kiếm
+        if ($scope.modelSearch.FromDate == null || $scope.modelSearch.FromDate == '' || $scope.modelSearch.FromDate == undefined) {
+            toastr.error("Vui lòng chọn Từ ngày!");
+            return;
+        }
+
+        if ($scope.modelSearch.ToDate == null || $scope.modelSearch.ToDate == '' || $scope.modelSearch.ToDate == undefined) {
+            toastr.error("Vui lòng chọn Đến ngày!");
+            return;
+        }
+
+        if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
+            toastr.error("Vui lòng chọn Tỉnh!");
+            return;
+        }
+
+        if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '' || $scope.modelSearch.MaNhomTBH == undefined) {
+            toastr.error("Vui lòng chọn Nhóm TBH!");
+            return;
+        }
+        showToast();
         var inputSearch = {
-            _FromDate: $scope.modelSearch.FromDate,
-            _ToDate: $scope.modelSearch.ToDate,
+            //_FromDate: $scope.modelSearch.FromDate,
+            //_ToDate: $scope.modelSearch.ToDate,
+            FromDate: $scope.modelSearch.FromDate.toISOString().slice(0, 10).replace(/-/g, ""),
+            ToDate: $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, ""),
             CityCodes: $scope.modelSearch.CityCodes,
             MaNhomTBH: $scope.modelSearch.MaNhomTBH,
             TuSoMaKH: null,
             DenSoMaKH: null
         };
 
+        //var res = $scope.modelSearch.FromDate.toISOString().slice(0, 10).replace(/-/g, "");
+
+        //var res1 = $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, "");
+
         if ($scope.modelSearch.TuSoMaKH != null && $scope.modelSearch.TuSoMaKH != '') {
             inputSearch.TuSoMaKH = parseInt($scope.modelSearch.TuSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
-        }
+        } 
 
         if ($scope.modelSearch.DenSoMaKH != null && $scope.modelSearch.DenSoMaKH != '') {
             inputSearch.DenSoMaKH = parseInt($scope.modelSearch.DenSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
@@ -673,6 +714,7 @@
     }
 
     function GenTableDuongSDMaTuyDas() {
+        
         dataTableDuongSDMaTuyDas = $('#dataTableDuongSDMaTuyDas').DataTable({
             lengthMenu: [10, 20, 30, 50, 60, 100],
             //serverSide: true,
@@ -686,7 +728,6 @@
                 { "data": "DangBot", searchBuilderType: "number" },
                 { "data": "UongNuot", searchBuilderType: "number" },
                 { "data": "TiemChich", searchBuilderType: "number" },
-                { "data": "ngaysl", searchBuilderType: "number" },
                 { "data": "KBKTL", searchBuilderType: "number" }
             ],
             "language": {
@@ -703,7 +744,7 @@
                     "last": ">>",
                     "next": ">",
                     "previous": "<"
-                },
+                }
             },
             dom:
                 //"<'row'<'col-sm-8'Q>>" +

@@ -17,35 +17,39 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="card-tools">
-                <div class="row">
+                <div class="row" style="margin-bottom:5px;">
                     <div class="col-sm-1">
                         <label>Từ ngày</label>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="input-group date" id="reFromDate" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.FromDate" data-target="#reFromDate">
-                            <div class="input-group-append" data-target="#reFromDate" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" ng-model="modelSearch.FromDate" />
+                        @*<div class="input-group date" id="reFromDate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.FromDate" data-target="#reFromDate">
+                <div class="input-group-append" data-target="#reFromDate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>*@
                     </div>
                     <div class="col-sm-1">
                         <label>Đến ngày</label>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="input-group date" id="reToDate" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.ToDate" data-target="#reToDate">
-                            <div class="input-group-append" data-target="#reToDate" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" ng-model="modelSearch.ToDate" />
+                        @*<div class="input-group date" id="reToDate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.ToDate" data-target="#reToDate">
+                <div class="input-group-append" data-target="#reToDate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>*@
                     </div>
                     <div class="col-sm-1">
                         <label>Tỉnh</label>
                     </div>
                     <div class="col-sm-3">
-                        <select class="form-control" ui-select2 ng-model="modelSearch.CityCodes" name="CityCodes" ng-options="item.Code as item.Name for item in ListCity">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.CityCodes" style="height:24px;" name="CityCodes" ng-options="item.Code as item.Name for item in ListCity">
                         </select>
+                    </div>
+                    <div class="col-sm-1">
                     </div>
                 </div>
                 <div class="row">
@@ -65,7 +69,7 @@
                         <label>Nhóm TBH</label>
                     </div>
                     <div class="col-sm-3">
-                        <select class="form-control" ui-select2 ng-model="modelSearch.MaNhomTBH" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.MaNhomTBH"  style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                         </select>
                     </div>
                     <div class="col-sm-1">

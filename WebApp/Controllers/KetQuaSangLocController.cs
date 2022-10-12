@@ -40,11 +40,11 @@ namespace WebApp.Controllers
             };
             try
             {
-                if (modelSearch._FromDate != null)
-                    modelSearch.FromDate = Convert.ToDateTime(modelSearch._FromDate).ToString("yyyyMMdd");
+                //if (modelSearch._FromDate != null)
+                //    modelSearch.FromDate = Convert.ToDateTime(modelSearch._FromDate).ToString("yyyyMMdd");
 
-                if (modelSearch._ToDate != null)
-                    modelSearch.ToDate = Convert.ToDateTime(modelSearch._ToDate).ToString("yyyyMMdd");
+                //if (modelSearch._ToDate != null)
+                //    modelSearch.ToDate = Convert.ToDateTime(modelSearch._ToDate).ToString("yyyyMMdd");
 
                 List<KetQuaSangLocModel> DoiTuongKHs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> GioiTinhs = new List<KetQuaSangLocModel>();
