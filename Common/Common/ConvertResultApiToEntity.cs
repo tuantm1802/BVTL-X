@@ -23,9 +23,20 @@ namespace Common.Common
         public int CreateCustomer(BVTL_KHACH_HANG customer)
         {
             var result = 0;
-            db.BVTL_KHACH_HANG.Add(customer);
-            db.SaveChanges();
-            result = customer.khachhang_id;
+            try
+            {
+                db.BVTL_KHACH_HANG.Add(customer);
+                db.SaveChanges();
+                result = customer.khachhang_id;
+            }catch(Exception ex)
+            {
+                log.Error("Lỗi thêm khách hàng: "+ ex.Message);
+                // Lấy thông tin khách hàng
+                var customers = db.BVTL_KHACH_HANG.FirstOrDefault(x=>x.makh == customer.makh);
+                if (customers != null && customers.khachhang_id > 0)
+                    result = customers.khachhang_id;
+            }
+            
             return result;
         }
 
