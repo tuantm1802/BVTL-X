@@ -21,32 +21,32 @@ namespace SyncBVTL.Push.ScheduleTasks
 
             foreach (var job in currentlyExecuting)
             {
-                if (string.Equals(job.JobDetail.JobType.Name, item.TableNames + "Job"))
+                if (string.Equals(job.JobDetail.JobType.Name, item.ReportId + "_Job"))
                 {
                     await scheduler.UnscheduleJob(job.Trigger.Key);
                     await scheduler.DeleteJob(job.JobDetail.Key);
 
-                    IJobDetail jobDetail = CreateJob(item.Code);
+                    IJobDetail jobDetail = CreateJob(item.Code, item.ReportId);
                     ITrigger trigger = TriggerBuilder.Create()
-                        .WithIdentity("trigger_" + item.TableNames + "Job")
+                        .WithIdentity("trigger_" + item.ReportId + "Job")
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(item.TimeLoop)
                             .RepeatForever())
                         .Build();
-                    await scheduler.ScheduleJob(jobDetail, trigger);
+                    await scheduler.ScheduleJob(jobDetail, trigger).ConfigureAwait(true);
                     break;
                 }
             }
 
         }
 
-        public static IJobDetail CreateJob(string code)
+        public static IJobDetail CreateJob(string code, string reportId)
         {
             switch (code)
             {
                 case Constants.GetDataFromAPI:
-                    return JobBuilder.Create<GetDataAPIJob>().Build();
+                    return JobBuilder.Create<GetDataAPIJob>().WithIdentity(reportId + "_Job").Build();
 
                 default:
                     return null;
