@@ -86,6 +86,7 @@
     <Compile Include="ModelExtend\MenuModel.cs" />
     <Compile Include="ModelExtend\PageMenuModel.cs" />
     <Compile Include="ModelExtend\Report\BaoCaoModel.cs" />
+    <Compile Include="ModelExtend\Report\KetQuaSangLocModel.cs" />
     <Compile Include="ModelExtend\Report\ReportSearchModel.cs" />
     <Compile Include="ModelExtend\RolePageModel.cs" />
     <Compile Include="ModelExtend\CustomerPageModel.cs" />
