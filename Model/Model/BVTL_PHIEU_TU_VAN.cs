@@ -59,7 +59,7 @@ namespace Model.Model
         public string tuvantiep { get; set; }
         public string vande { get; set; }
         public Nullable<System.DateTime> thoigian { get; set; }
-        public Nullable<int> khachhang_id { get; set; }
+        public string makh { get; set; }
         public string sottkh { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public int ngaytuvan_date { get; set; }
@@ -68,7 +68,5 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public string maduan { get; set; }
-    
-        public virtual BVTL_KHACH_HANG BVTL_KHACH_HANG { get; set; }
     }
 }
