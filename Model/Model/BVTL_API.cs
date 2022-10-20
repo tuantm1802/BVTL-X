@@ -31,6 +31,8 @@ namespace Model.Model
         public string ReportId { get; set; }
         public Nullable<int> TimeReCall { get; set; }
         public string maduan { get; set; }
+        public Nullable<System.DateTime> Start_Time_Sync { get; set; }
+        public Nullable<System.DateTime> End_Time_Syc { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_MASTER_TABLE> BVTL_MASTER_TABLE { get; set; }

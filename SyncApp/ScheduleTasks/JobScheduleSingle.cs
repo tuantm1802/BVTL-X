@@ -10,10 +10,11 @@ namespace SyncBVTL.Push.ScheduleTasks
 {
     public class JobScheduleSingle
     {
-        public static void StartSingle(ProcessModel item)
+        public static async Task StartSingle(ProcessModel item)
         {
+
+            
             IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
-            scheduler.Start();
 
             var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
             if (item.Active)
@@ -30,14 +31,17 @@ namespace SyncBVTL.Push.ScheduleTasks
             }
             else
             {
-                foreach (var job in currentlyExecuting)
-                {
-                    if (string.Equals(job.JobDetail.JobType.Name, item.ReportId + "_Job"))
-                    {
-                        scheduler.DeleteJob(job.JobDetail.Key);
-                        break;
-                    }
-                }
+                await scheduler.DeleteJob(new JobKey( item.ReportId + "_Job" ));
+
+                //foreach (var job in currentlyExecuting)
+                //{
+                //    if (string.Equals(job.JobDetail.JobType.Name, item.ReportId + "_Job"))
+                //    {
+                //        await scheduler.UnscheduleJob(job.Trigger.Key);
+                //        await scheduler.DeleteJob(job.JobDetail.Key);
+                //        break;
+                //    }
+                //}
 
             }
         }

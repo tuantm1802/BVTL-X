@@ -1,5 +1,7 @@
 ﻿using Model.ModelExtend.API;
 using Newtonsoft.Json;
+using Quartz;
+using Quartz.Impl;
 using SyncBVTL.Push.ScheduleTasks;
 using SyncBVTL.Push.Services;
 using SyncBVTL.Push.Utils;
@@ -17,9 +19,21 @@ namespace SyncBVTL.Push.Controllers
     public class HomeController : Controller
     {
         readonly ProcessService processSrv = new ProcessService();
-        readonly string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Start/ProcessConfig.json");
-        public ActionResult Index()
+        //readonly string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Start/ProcessConfig.json");
+        public async Task<ActionResult> Index()
         {
+            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
+
+            var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
+            if(currentlyExecuting.Count > 0)
+            {
+                foreach (var job in currentlyExecuting)
+                {
+                    await scheduler.UnscheduleJob(job.Trigger.Key);
+                    await scheduler.DeleteJob(job.JobDetail.Key);
+                }
+            }
+
             return View();
         }
 
@@ -41,7 +55,7 @@ namespace SyncBVTL.Push.Controllers
 
                 if (model.TimeLoop != process.TimeLoop)
                 {
-                    _ = JobScheduleChangeTimeloop.ChangeTimeloopAsync(model);
+                    _ = JobScheduleChangeTimeloop.ChangeTimeloop(model);
                 }
 
                 if (model.Active != process.Active)
@@ -50,8 +64,12 @@ namespace SyncBVTL.Push.Controllers
                 }
                 listProcess[listProcess.IndexOf(process)] = model;
 
-                System.IO.File.WriteAllText(configPath, JsonConvert.SerializeObject(listProcess));
-                return Json(new ResponseList<ProcessModel> { code = ((int)HttpStatusCode.OK).ToString(), data = listProcess }, JsonRequestBehavior.AllowGet);
+                processSrv.EditJobSync(new Model.Model.BVTL_API { Api_Code = model.Code, IsActive = model.Active, TimeReCall = model.TimeLoop});
+
+                var listProcessNew = processSrv.GetListProcess();
+
+                //System.IO.File.WriteAllText(configPath, JsonConvert.SerializeObject(listProcess));
+                return Json(new ResponseList<ProcessModel> { code = ((int)HttpStatusCode.OK).ToString(), data = listProcessNew }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -72,7 +90,7 @@ namespace SyncBVTL.Push.Controllers
                     {
                         System.IO.File.Create(filePath).Dispose();
                     }
-                        return Json(new ApiResult() { message = StringUtils.ReadNLineOfFile(filePath, 200), code = "200" });
+                    return Json(new ApiResult() { message = StringUtils.ReadNLineOfFile(filePath, 200), code = "200" });
                 }
                 catch (Exception)
                 {
@@ -83,6 +101,6 @@ namespace SyncBVTL.Push.Controllers
         }
 
 
-        
+
     }
 }

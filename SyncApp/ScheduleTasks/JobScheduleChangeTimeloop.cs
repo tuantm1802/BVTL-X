@@ -12,7 +12,7 @@ namespace SyncBVTL.Push.ScheduleTasks
 {
     public static class JobScheduleChangeTimeloop
     {
-        public static async Task ChangeTimeloopAsync(ProcessModel item)
+        public static async Task ChangeTimeloop(ProcessModel item)
         {
             IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
             await scheduler.Start();

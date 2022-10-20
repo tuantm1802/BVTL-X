@@ -6,6 +6,7 @@ using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.API;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -116,7 +117,7 @@ namespace Data.API
             var result = new List<BVTL_API>();
             try
             {
-                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API where IsActive = 1;").ToList();
+                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API;").ToList();// where IsActive = 1
             }
             catch (Exception ex)
             {
@@ -189,7 +190,7 @@ namespace Data.API
         }
 
 
-        
+
         /// <summary>
         /// Lấy thông tin của 1 api theo id
         /// </summary>
@@ -201,7 +202,7 @@ namespace Data.API
             var result = new BVTL_API();
             try
             {
-                result = db.BVTL_API.FirstOrDefault(x=>x.Api_Id == id);
+                result = db.BVTL_API.FirstOrDefault(x => x.Api_Id == id);
                 if (!string.IsNullOrEmpty(result.TableNameSaveData))
                     tableNames.Add(result.TableNameSaveData);
                 else
@@ -227,5 +228,33 @@ namespace Data.API
             return result;
         }
 
+        /// <summary>
+        /// Cập nhật job đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ObjectMessage EditJobSync(BVTL_API model)
+        {
+            ObjectMessage obj = new ObjectMessage();
+            try
+            {
+                var data = db.BVTL_API.FirstOrDefault(x => x.Api_Code == model.Api_Code);
+                data.IsActive = model.IsActive;
+                data.TimeReCall = model.TimeReCall;
+
+                db.SaveChanges();
+                obj.Error = false;
+                obj.Title = "Cập nhật thành công!";
+
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message;
+                return obj;
+            }
+
+        }
     }
 }

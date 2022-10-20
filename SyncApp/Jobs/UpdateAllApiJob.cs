@@ -34,7 +34,7 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                 var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
                 foreach (var job in currentlyExecuting)
                 {
-                    if (!string.Equals(job.JobDetail.JobType.Name, data.TableNames + "Job"))
+                    if (!string.Equals(job.JobDetail.JobType.Name, data.ReportId + "Job"))
                     {
                         await scheduler.UnscheduleJob(job.Trigger.Key);
                         await scheduler.DeleteJob(job.JobDetail.Key);

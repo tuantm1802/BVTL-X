@@ -32,7 +32,10 @@ namespace SyncBVTL.Push.Controllers.PA
         public async Task<BaseResult> GetDataFromAPI(ProcessModel model)
         {
             BaseResult apiResult = new BaseResult();
-            apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(model.Url, model.Token, model.ReportId, model.MaDuAn, model.TableNames);
+            if (model.Active)
+            {
+                apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(model.Url, model.Token, model.ReportId, model.MaDuAn, model.TableNames);
+            }
             return apiResult;
         }
 

@@ -20,6 +20,8 @@
           <Property Name="ReportId" Type="varchar" MaxLength="50" />
           <Property Name="TimeReCall" Type="int" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Start_Time_Sync" Type="datetime" />
+          <Property Name="End_Time_Syc" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <Key>
@@ -298,6 +300,7 @@
           <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
           <Property Name="diachi" Type="nvarchar" MaxLength="200" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
@@ -1059,6 +1062,8 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TimeReCall" Type="Int32" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Start_Time_Sync" Type="DateTime" Precision="3" />
+          <Property Name="End_Time_Syc" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
         </EntityType>
         <EntityType Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
@@ -1353,6 +1358,7 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
         </EntityType>
@@ -1897,6 +1903,8 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <EntitySetMapping Name="BVTL_API">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
               <MappingFragment StoreEntitySet="BVTL_API">
+                <ScalarProperty Name="End_Time_Syc" ColumnName="End_Time_Syc" />
+                <ScalarProperty Name="Start_Time_Sync" ColumnName="Start_Time_Sync" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
                 <ScalarProperty Name="ReportId" ColumnName="ReportId" />
@@ -2181,6 +2189,7 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <EntitySetMapping Name="BVTL_KHACH_HANG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
               <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="diachi" ColumnName="diachi" />
                 <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
