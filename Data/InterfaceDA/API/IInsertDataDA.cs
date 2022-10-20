@@ -59,5 +59,12 @@ namespace Data.InterfaceDA.API
         /// <param name="model"></param>
         /// <returns></returns>
         ObjectMessage EditJobSync(BVTL_API model);
+
+        /// <summary>
+        /// Cập nhật thời gian bát đầu, kết thúc đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime);
     }
 }

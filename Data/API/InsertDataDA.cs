@@ -256,5 +256,37 @@ namespace Data.API
             }
 
         }
+
+        /// <summary>
+        /// Cập nhật thời gian bát đầu, kết thúc đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime)
+        {
+            ObjectMessage obj = new ObjectMessage();
+            try
+            {
+                var data = db.BVTL_API.FirstOrDefault(x => x.Api_Code == apiCode);
+                if (isStartTime)
+                    data.Start_Time_Sync = DateTime.Now;
+                else
+                    data.End_Time_Syc = DateTime.Now;
+
+                db.SaveChanges();
+                obj.Error = false;
+                obj.Title = "Cập nhật thành công!";
+
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message;
+                return obj;
+            }
+
+        }
+
     }
 }
