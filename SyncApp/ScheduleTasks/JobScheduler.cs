@@ -45,34 +45,34 @@ namespace SyncBVTL.Push.ScheduleTasks
             //scheduler.ScheduleJob(job_CheckConnectionStatus, trigger_CheckConnectionStatus);
 
             //Job tự động cập nhật các đầu api
-            IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().Build();
+            IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
             job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
             ITrigger trigger_UpdateJob = TriggerBuilder.Create()
                 .WithIdentity("trigger_UpdateApiJob")
                 .StartNow()
                 .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
                 .Build();
-            scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob);
+            scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
 
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
             foreach (ProcessModel item in processModels)
             {
                 if (item.Active)
                 {
-                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().Build();
+                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId+"_Job").Build();
                     //job_GetDataAPIJob.JobDataMap["Token"] = item.Token;
                     //job_GetDataAPIJob.JobDataMap["Url"] = item.Url;
                     //job_GetDataAPIJob.JobDataMap["TableName"] = item.TableName;
                     //job_GetDataAPIJob.JobDataMap["ReportId"] = item.ReportId;
                     job_GetDataAPIJob.JobDataMap["Data"] = item;
                     ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
-                        .WithIdentity("trigger_"+ item.TableNames + "Job")
+                        .WithIdentity("trigger_"+ item.ReportId + "Job")
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(item.TimeLoop)
                             .RepeatForever())
                         .Build();
-                    scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
+                    scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
                 }
 
                 //switch (item.Code)
