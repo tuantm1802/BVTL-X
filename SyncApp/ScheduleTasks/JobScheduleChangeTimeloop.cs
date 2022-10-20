@@ -17,27 +17,39 @@ namespace SyncBVTL.Push.ScheduleTasks
             IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
             await scheduler.Start();
 
-            var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
+            await scheduler.DeleteJob(new JobKey(item.ReportId + "_Job"));
+            IJobDetail jobDetail = CreateJob(item.Code, item.ReportId);
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity("trigger_" + item.ReportId + "Job")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(item.TimeLoop)
+                    .RepeatForever())
+                .Build();
+            await scheduler.ScheduleJob(jobDetail, trigger).ConfigureAwait(true);
 
-            foreach (var job in currentlyExecuting)
-            {
-                if (string.Equals(job.JobDetail.JobType.Name, item.ReportId + "_Job"))
-                {
-                    await scheduler.UnscheduleJob(job.Trigger.Key);
-                    await scheduler.DeleteJob(job.JobDetail.Key);
+            //var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
 
-                    IJobDetail jobDetail = CreateJob(item.Code, item.ReportId);
-                    ITrigger trigger = TriggerBuilder.Create()
-                        .WithIdentity("trigger_" + item.ReportId + "Job")
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(item.TimeLoop)
-                            .RepeatForever())
-                        .Build();
-                    await scheduler.ScheduleJob(jobDetail, trigger).ConfigureAwait(true);
-                    break;
-                }
-            }
+
+            //foreach (var job in currentlyExecuting)
+            //{
+            //    if (string.Equals(job.JobDetail.JobType.Name, item.ReportId + "_Job"))
+            //    {
+            //        await scheduler.UnscheduleJob(job.Trigger.Key);
+            //        await scheduler.DeleteJob(job.JobDetail.Key);
+
+            //        IJobDetail jobDetail = CreateJob(item.Code, item.ReportId);
+            //        ITrigger trigger = TriggerBuilder.Create()
+            //            .WithIdentity("trigger_" + item.ReportId + "Job")
+            //            .StartNow()
+            //            .WithSimpleSchedule(x => x
+            //                .WithIntervalInSeconds(item.TimeLoop)
+            //                .RepeatForever())
+            //            .Build();
+            //        await scheduler.ScheduleJob(jobDetail, trigger).ConfigureAwait(true);
+            //        break;
+            //    }
+            //}
 
         }
 
