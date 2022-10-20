@@ -120,8 +120,8 @@ namespace Common.Common
                             customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApi1344.doituong).id;
                         }
 
-                        if (!string.IsNullOrEmpty(resultApi1344.ngaytiepcan))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngaytiepcan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        if (!string.IsNullOrEmpty(resultApi1344.ngay))
+                            customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
                         customer_id = CreateCustomer(customer);
                     }
