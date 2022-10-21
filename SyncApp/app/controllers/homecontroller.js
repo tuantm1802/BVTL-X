@@ -91,6 +91,8 @@
             });
         }
 
+       
+
         $scope.onchangeDataType = function (value) {
             $scope.taskName = value;
         }

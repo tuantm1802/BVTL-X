@@ -31,16 +31,17 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                 IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
                 await scheduler.Start();
 
-                var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
-                foreach (var job in currentlyExecuting)
-                {
-                    if (!string.Equals(job.JobDetail.JobType.Name, data.TableNames + "Job"))
-                    {
-                        await scheduler.UnscheduleJob(job.Trigger.Key);
-                        await scheduler.DeleteJob(job.JobDetail.Key);
-                        break;
-                    }
-                }
+                await scheduler.DeleteJob(new JobKey(data.ReportId + "_Job"));
+                //var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
+                //foreach (var job in currentlyExecuting)
+                //{
+                //    if (!string.Equals(job.JobDetail.JobType.Name, data.ReportId + "Job"))
+                //    {
+                //        await scheduler.UnscheduleJob(job.Trigger.Key);
+                //        await scheduler.DeleteJob(job.JobDetail.Key);
+                //        break;
+                //    }
+                //}
 
                 log.Info("************************Kết thúc xóa tất cả job************************");
 

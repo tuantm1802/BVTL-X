@@ -20,6 +20,8 @@
           <Property Name="ReportId" Type="varchar" MaxLength="50" />
           <Property Name="TimeReCall" Type="int" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Start_Time_Sync" Type="datetime" />
+          <Property Name="End_Time_Syc" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <Key>
@@ -183,7 +185,7 @@
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
-          <Property Name="khachhang_id" Type="int" />
+          <Property Name="makh" Type="varchar" MaxLength="11" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
@@ -210,10 +212,10 @@
         <EntityType Name="BVTL_CHUYEN_GUI_DICH_VU">
           <Key>
             <PropertyRef Name="record_id" />
-            <PropertyRef Name="khachhang_id" />
+            <PropertyRef Name="makh" />
           </Key>
           <Property Name="record_id" Type="bigint" Nullable="false" />
-          <Property Name="loaihinh" Type="varchar" MaxLength="20" />
+          <Property Name="loaihinh" Type="nvarchar" MaxLength="200" />
           <Property Name="ngay_xn" Type="date" />
           <Property Name="diachi_xn" Type="nvarchar" MaxLength="200" />
           <Property Name="kq_xn" Type="varchar" MaxLength="10" />
@@ -246,7 +248,7 @@
           <Property Name="dieutri_sti" Type="nvarchar" MaxLength="200" />
           <Property Name="hotro_sti" Type="nvarchar" MaxLength="40" />
           <Property Name="hotro_bhyt" Type="nvarchar" MaxLength="40" />
-          <Property Name="khachhang_id" Type="int" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="ngay_xn_date" Type="int" Nullable="false" />
@@ -298,13 +300,14 @@
           <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
           <Property Name="diachi" Type="nvarchar" MaxLength="200" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
             <PropertyRef Name="kqslace_id" />
           </Key>
           <Property Name="kqslace_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="khachhang_id" Type="int" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -322,7 +325,7 @@
             <PropertyRef Name="kqslassist_id" />
           </Key>
           <Property Name="kqslassist_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="khachhang_id" Type="int" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -359,7 +362,7 @@
             <PropertyRef Name="kqslsktt_id" />
           </Key>
           <Property Name="kqslsktt_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="khachhang_id" Type="int" />
+          <Property Name="makh" Type="varchar" MaxLength="11" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -377,7 +380,7 @@
             <PropertyRef Name="kqxnhiv_id" />
           </Key>
           <Property Name="kqxnhiv_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="khachhang_id" Type="int" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
           <Property Name="ngayxn" Type="date" Nullable="false" />
           <Property Name="ngayxn_date" Type="int" Nullable="false" />
           <Property Name="ngayxn_month" Type="int" Nullable="false" />
@@ -464,7 +467,7 @@
           <Property Name="tuvantiep" Type="nvarchar" MaxLength="40" />
           <Property Name="vande" Type="nvarchar" MaxLength="500" />
           <Property Name="thoigian" Type="datetime" />
-          <Property Name="khachhang_id" Type="int" />
+          <Property Name="makh" Type="varchar" MaxLength="11" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="ngaytuvan_date" Type="int" Nullable="false" />
@@ -607,42 +610,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Type="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Role="BVTL_CHUYEN_GUI_DICH_VU" Type="Self.BVTL_CHUYEN_GUI_DICH_VU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_CHUYEN_GUI_DICH_VU">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Role="BVTL_PHIEU_TU_VAN" Type="Self.BVTL_PHIEU_TU_VAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_PHIEU_TU_VAN">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" />-->
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" />-->
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" />-->
         <Association Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Type="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
@@ -703,18 +679,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Role="BVTL_KQ_SL_ACE" Type="Self.BVTL_KQ_SL_ACE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_ACE">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" />-->
         <Association Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_KQ_SL_ACE" Type="Self.BVTL_KQ_SL_ACE" Multiplicity="*" />
@@ -751,18 +718,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Role="BVTL_KQ_SL_ASSIST" Type="Self.BVTL_KQ_SL_ASSIST" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_ASSIST">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" />-->
         <Association Name="fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_KQ_SL_ASSIST" Type="Self.BVTL_KQ_SL_ASSIST" Multiplicity="*" />
@@ -799,18 +757,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Role="BVTL_KQ_SL_SKTT" Type="Self.BVTL_KQ_SL_SKTT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_SKTT">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" />-->
         <Association Name="fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_KQ_SL_SKTT" Type="Self.BVTL_KQ_SL_SKTT" Multiplicity="*" />
@@ -847,18 +796,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG">
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Role="BVTL_KQ_XN_HIV" Type="Self.BVTL_KQ_XN_HIV" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_XN_HIV">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" />-->
         <Association Name="fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_KQ_XN_HIV" Type="Self.BVTL_KQ_XN_HIV" Multiplicity="*" />
@@ -930,18 +870,6 @@
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" Association="Self.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_CHUYEN_GUI_DICH_VU" EntitySet="BVTL_CHUYEN_GUI_DICH_VU" />
-          </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" Association="Self.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_PHIEU_TU_VAN" EntitySet="BVTL_PHIEU_TU_VAN" />
-          </AssociationSet>
           <AssociationSet Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
@@ -962,10 +890,6 @@
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
           </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
-          </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" Association="Self.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
@@ -976,10 +900,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN">
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
-            <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
             <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
           </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" Association="Self.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1">
@@ -994,10 +914,6 @@
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
           </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
-          </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" Association="Self.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
@@ -1008,10 +924,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" Association="Self.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN">
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
-            <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" Association="Self.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" Association="Self.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1">
@@ -1070,17 +982,9 @@
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          </AssociationSet>
           <AssociationSet Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="BVTL_REPORTINGModel.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" Association="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_CHUYEN_GUI_DICH_VU" EntitySet="BVTL_CHUYEN_GUI_DICH_VU" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -1122,29 +1026,9 @@
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
-          <AssociationSet Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" Association="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_PHIEU_TU_VAN" EntitySet="BVTL_PHIEU_TU_VAN" />
-          </AssociationSet>
           <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
             <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
             <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_SL_ASSIST" EntitySet="BVTL_KQ_SL_ASSIST" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_SL_SKTT" EntitySet="BVTL_KQ_SL_SKTT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG">
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-            <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
@@ -1178,6 +1062,8 @@
           <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TimeReCall" Type="Int32" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Start_Time_Sync" Type="DateTime" Precision="3" />
+          <Property Name="End_Time_Syc" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
         </EntityType>
         <EntityType Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
@@ -1342,7 +1228,7 @@
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="khachhang_id" Type="Int32" />
+          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
@@ -1351,7 +1237,6 @@
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.BVTL_DU_AN_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_DU_AN" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
@@ -1373,10 +1258,10 @@
         <EntityType Name="BVTL_CHUYEN_GUI_DICH_VU">
           <Key>
             <PropertyRef Name="record_id" />
-            <PropertyRef Name="khachhang_id" />
+            <PropertyRef Name="makh" />
           </Key>
           <Property Name="record_id" Type="Int64" Nullable="false" />
-          <Property Name="loaihinh" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ngay_xn" Type="DateTime" Precision="0" />
           <Property Name="diachi_xn" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="kq_xn" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
@@ -1409,7 +1294,7 @@
           <Property Name="dieutri_sti" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="hotro_sti" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="hotro_bhyt" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-          <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="ngay_xn_date" Type="Int32" Nullable="false" />
@@ -1418,7 +1303,6 @@
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" FromRole="BVTL_CHUYEN_GUI_DICH_VU" ToRole="BVTL_KHACH_HANG" />
         </EntityType>
         <EntityType Name="BVTL_CITES">
           <Key>
@@ -1474,22 +1358,16 @@
           <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          <NavigationProperty Name="BVTL_CHUYEN_GUI_DICH_VU" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CHUYEN_GUI_DICH_VU" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
-          <NavigationProperty Name="BVTL_PHIEU_TU_VAN" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_PHIEU_TU_VAN" />
           <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
-          <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ACE" />
-          <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_ASSIST" />
-          <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_SL_SKTT" />
-          <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_KQ_XN_HIV" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
             <PropertyRef Name="kqslace_id" />
           </Key>
           <Property Name="kqslace_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1503,7 +1381,6 @@
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_DU_AN" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ACE" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ASSIST">
@@ -1511,7 +1388,7 @@
             <PropertyRef Name="kqslassist_id" />
           </Key>
           <Property Name="kqslassist_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1544,7 +1421,6 @@
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_DU_AN" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_ASSIST" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_SKTT">
@@ -1552,7 +1428,7 @@
             <PropertyRef Name="kqslsktt_id" />
           </Key>
           <Property Name="kqslsktt_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="khachhang_id" Type="Int32" />
+          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1566,7 +1442,6 @@
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_DU_AN" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_SL_SKTT" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_HIV">
@@ -1574,7 +1449,7 @@
             <PropertyRef Name="kqxnhiv_id" />
           </Key>
           <Property Name="kqxnhiv_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="khachhang_id" Type="Int32" Nullable="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="ngayxn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngayxn_date" Type="Int32" Nullable="false" />
           <Property Name="ngayxn_month" Type="Int32" Nullable="false" />
@@ -1588,7 +1463,6 @@
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_DU_AN" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_KHACH_HANG" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
@@ -1673,7 +1547,7 @@
           <Property Name="tuvantiep" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="vande" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="DateTime" Precision="3" />
-          <Property Name="khachhang_id" Type="Int32" />
+          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="ngaytuvan_date" Type="Int32" Nullable="false" />
@@ -1682,7 +1556,6 @@
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN" FromRole="BVTL_PHIEU_TU_VAN" ToRole="BVTL_KHACH_HANG" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -1829,18 +1702,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
@@ -1850,18 +1711,6 @@
             </Principal>
             <Dependent Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
               <PropertyRef Name="manhom_tbh" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_CHUYEN_GUI_DICH_VU">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU" Role="BVTL_CHUYEN_GUI_DICH_VU" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_CHUYEN_GUI_DICH_VU">
-              <PropertyRef Name="khachhang_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1985,18 +1834,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN" Role="BVTL_PHIEU_TU_VAN" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_PHIEU_TU_VAN">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
           <End Type="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Role="BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
@@ -2006,54 +1843,6 @@
             </Principal>
             <Dependent Role="BVTL_KHACH_HANG">
               <PropertyRef Name="loai_doi_tuong_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_KHACH_HANG">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_ACE">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BVTL_KQ_SL_ASSIST_BVTL_KHACH_HANG">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Role="BVTL_KQ_SL_ASSIST" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_ASSIST">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BVTL_KQ_SL_SKTT_BVTL_KHACH_HANG">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Role="BVTL_KQ_SL_SKTT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_SL_SKTT">
-              <PropertyRef Name="khachhang_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG">
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Role="BVTL_KQ_XN_HIV" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="khachhang_id" />
-            </Principal>
-            <Dependent Role="BVTL_KQ_XN_HIV">
-              <PropertyRef Name="khachhang_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2114,6 +1903,8 @@
           <EntitySetMapping Name="BVTL_API">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
               <MappingFragment StoreEntitySet="BVTL_API">
+                <ScalarProperty Name="End_Time_Syc" ColumnName="End_Time_Syc" />
+                <ScalarProperty Name="Start_Time_Sync" ColumnName="Start_Time_Sync" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
                 <ScalarProperty Name="ReportId" ColumnName="ReportId" />
@@ -2137,7 +1928,7 @@
                 <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
                 <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
@@ -2328,7 +2119,7 @@
                 <ScalarProperty Name="ngay_xn_date" ColumnName="ngay_xn_date" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="sottkh" ColumnName="sottkh" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="hotro_bhyt" ColumnName="hotro_bhyt" />
                 <ScalarProperty Name="hotro_sti" ColumnName="hotro_sti" />
                 <ScalarProperty Name="dieutri_sti" ColumnName="dieutri_sti" />
@@ -2398,6 +2189,7 @@
           <EntitySetMapping Name="BVTL_KHACH_HANG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
               <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="diachi" ColumnName="diachi" />
                 <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
@@ -2427,7 +2219,7 @@
                 <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
                 <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
                 <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="kqslace_id" ColumnName="kqslace_id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2465,7 +2257,7 @@
                 <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
                 <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
                 <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="kqslassist_id" ColumnName="kqslassist_id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2484,7 +2276,7 @@
                 <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
                 <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
                 <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="kqslsktt_id" ColumnName="kqslsktt_id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2503,7 +2295,7 @@
                 <ScalarProperty Name="ngayxn_month" ColumnName="ngayxn_month" />
                 <ScalarProperty Name="ngayxn_date" ColumnName="ngayxn_date" />
                 <ScalarProperty Name="ngayxn" ColumnName="ngayxn" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="kqxnhiv_id" ColumnName="kqxnhiv_id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2547,7 +2339,7 @@
                 <ScalarProperty Name="ngaytuvan_date" ColumnName="ngaytuvan_date" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="sottkh" ColumnName="sottkh" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="thoigian" ColumnName="thoigian" />
                 <ScalarProperty Name="vande" ColumnName="vande" />
                 <ScalarProperty Name="tuvantiep" ColumnName="tuvantiep" />

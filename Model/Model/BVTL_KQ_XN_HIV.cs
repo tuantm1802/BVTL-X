@@ -15,7 +15,7 @@ namespace Model.Model
     public partial class BVTL_KQ_XN_HIV
     {
         public int kqxnhiv_id { get; set; }
-        public int khachhang_id { get; set; }
+        public string makh { get; set; }
         public System.DateTime ngayxn { get; set; }
         public int ngayxn_date { get; set; }
         public int ngayxn_month { get; set; }
@@ -30,7 +30,6 @@ namespace Model.Model
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }
-        public virtual BVTL_KHACH_HANG BVTL_KHACH_HANG { get; set; }
         public virtual BVTL_NHOM_TBH BVTL_NHOM_TBH { get; set; }
     }
 }

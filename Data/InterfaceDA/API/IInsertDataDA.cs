@@ -1,5 +1,6 @@
 ﻿using Model.Model;
 using Model.ModelExtend;
+using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -51,5 +52,19 @@ namespace Data.InterfaceDA.API
         /// <param name="tableNames"></param>
         /// <returns></returns>
         BVTL_API GetApiInfo(int id, ref List<string> tableNames);
+
+        /// <summary>
+        /// Cập nhật job đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ObjectMessage EditJobSync(BVTL_API model);
+
+        /// <summary>
+        /// Cập nhật thời gian bát đầu, kết thúc đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime);
     }
 }
