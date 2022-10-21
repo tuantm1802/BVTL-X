@@ -72,7 +72,7 @@
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
-
+        $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
                 if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
