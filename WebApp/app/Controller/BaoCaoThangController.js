@@ -65,8 +65,15 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
-
+        $scope.modelSearch.Months = '';
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+            //        $scope.modelSearch.CityCodes = $scope.Thangs[i].Id;
+            //    } else {
+            //        $scope.modelSearch.CityCodes += ',' + $scope.Thangs[i];
+            //    }
+            //}
             $scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
