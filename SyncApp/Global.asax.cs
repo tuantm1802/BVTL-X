@@ -24,7 +24,7 @@ namespace SyncBVTL.Push
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             log4net.Config.XmlConfigurator.Configure();
-            JobScheduler.StartAllAsync();
+            JobScheduler.StartAll();
             //XmlConfigurator.ConfigureAndWatch(new FileInfo(Server.MapPath("~/") + "App_Start/logging.config"));
         }
     }
