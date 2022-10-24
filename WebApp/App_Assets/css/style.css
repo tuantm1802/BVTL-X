@@ -1337,7 +1337,7 @@ body.hc-nav-open {
   transition: .3s ease-out;
   padding: 10px 0px;
   text-align: center;
-  border-bottom: 2px solid #943B2B;
+  border-bottom: 2px solid #FDBD41;
   -webkit-box-shadow: 0px 1px 8px 0px rgba(111, 160, 125, 0.71);
   box-shadow: 0px 1px 8px 0px rgba(111, 160, 125, 0.71);
 }
