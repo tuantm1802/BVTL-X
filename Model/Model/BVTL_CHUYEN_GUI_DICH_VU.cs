@@ -48,7 +48,7 @@ namespace Model.Model
         public string dieutri_sti { get; set; }
         public string hotro_sti { get; set; }
         public string hotro_bhyt { get; set; }
-        public int khachhang_id { get; set; }
+        public string makh { get; set; }
         public string sottkh { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public int ngay_xn_date { get; set; }
@@ -57,7 +57,5 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public string maduan { get; set; }
-    
-        public virtual BVTL_KHACH_HANG BVTL_KHACH_HANG { get; set; }
     }
 }

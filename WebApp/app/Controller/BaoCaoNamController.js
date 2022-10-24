@@ -57,16 +57,16 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
-
+        $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
-            $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
-            //angular.forEach($scope.ListCityCode, function (value, key) {
-            //    if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
-
-            //    } else {
-
-            //    }
-            //}, log);
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+                    $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
+                } else {
+                    $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
+                }
+            }
+            //$scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code }).join(',');
         }
 
         showToast();

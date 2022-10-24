@@ -1,0 +1,970 @@
+﻿@{
+    ViewBag.Title = "Kết quả sàng lọc";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="KetQuaSangLocController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">THÔNG TIN SÀNG LỌC KHÁCH HÀNG TUYỂN VÀO DỰ ÁN</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                <div class="row" style="margin-bottom:5px;">
+                    <div class="col-sm-1">
+                        <label>Từ ngày</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" ng-model="modelSearch.FromDate" />
+                        @*<div class="input-group date" id="reFromDate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.FromDate" data-target="#reFromDate">
+                <div class="input-group-append" data-target="#reFromDate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>*@
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Đến ngày</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" ng-model="modelSearch.ToDate" />
+                        @*<div class="input-group date" id="reToDate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" ng-model="modelSearch.ToDate" data-target="#reToDate">
+                <div class="input-group-append" data-target="#reToDate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>*@
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Tỉnh</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.CityCodes" style="height:24px;" name="CityCodes" ng-options="item.Code as item.Name for item in ListCity">
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>KH từ số</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" ng-model="modelSearch.TuSoMaKH" />
+                    </div>
+                    <div class="col-sm-1">
+                        <label>KH đến số</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" ng-model="modelSearch.DenSoMaKH" />
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Nhóm TBH</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.MaNhomTBH"  style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        @*<button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                                <i class="fas fa-pencil-alt"></i> Xuất Excel
+                            </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @*////////////////////Báo cáo theo đối tượng////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Đối tượng KH</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableDoiTuongKHs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Đối tượng KH </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in DoiTuongKHs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @*////////////////////Báo cáo theo giới tính////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Giới tính</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableGioiTinhs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Giới tính </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in GioiTinhs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo tuổi ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tuổi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableTuois"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tuổi </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in Tuois">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @*////////////////////Báo cáo theo kết quả HIV ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kết quả sàng lọc HIV</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableKetQuaHIVs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tuổi </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in KetQuaHIVs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Chất gây nghiện sử dụng trong 3 tháng gần đây////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Chất gây nghiện sử dụng trong 3 tháng gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableChatGayNghien3Thangs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Chất gây nghiện sử dụng trong 3 tháng gần đây  </th>
+                                    <th>Số người</th>
+                                    <th>Tỉ lệ % người dùng từng loại </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in ChatGayNghien3Thangs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @*////////////////////Báo cáo theo Số chất gây nghiện////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Số Chất gây nghiện sử dụng trong 3 tháng gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableSoChatGayNghiens"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>  </th>
+                                    <th>Số người</th>
+                                    <th>Tỉ lệ % người dùng từng loại </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in SoChatGayNghiens">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Loại chất gây nghiện sử dụng thường xuyên nhất trong 3 tháng gần đây////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Loại chất gây nghiện sử dụng thường xuyên nhất trong 3 tháng gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableChatGayNghienSDThuongXuyens"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Loại chất gây nghiện sử dụng thường xuyên nhất trong 3 tháng gần đây</th>
+                                    <th>Số người</th>
+                                    <th>Tỉ lệ % người dùng từng loại </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in ChatGayNghienSDThuongXuyens">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Đường sử dụng ma túy đá////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Đường sử dụng ma túy đá</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableDuongSDMaTuyDas"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>1, Hút, hít (khói, mùi) bằng mũi/miệng </th>
+                                    <th>2, Hít ở dạng bột bằng mũi</th>
+                                    <th>3, Uống, nuốt </th>
+                                    <th>4, Tiêm chích</th>
+                                    <th>5, KB/KTL </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in DuongSDMaTuyDas">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.HutHit | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DangBot | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.UongNuot | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.TiemChich | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Tần suất sử dụng ma túy đá trong 3 tháng gần đây////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tần suất sử dụng ma túy đá trong 3 tháng gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableTanSuatSDMaTuyDas"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tần suất </th>
+                                    <th>1, Vài lần 1 ngày</th>
+                                    <th>2, Hàng ngày </th>
+                                    <th>3, Vài lần 1 tuần</th>
+                                    <th>4, Theo đợt vài ngày liên tục rồi tạm nghỉ </th>
+                                    <th>5, Chỉ dùng cuối tuần/ dịp đặc biệt</th>
+                                    <th>6, Vài lần trong 1 tháng </th>
+                                    <th>7, Ít hơn 1 lần/tháng</th>
+                                    <th>8, KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in TanSuatSDMaTuyDas">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.VaiLan1Ngay | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.HangNgay | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiLan1Tuan | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiNgayRoiTamNghi | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DungCuoiTuan | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiLan1Thang | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ItHon1Lan1Thang | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Lần đầu SD ma tuý ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Lần đầu SD ma tuý</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableLanDauSDMaTuyDas"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tuổi </th>
+                                    <th>13</th>
+                                    <th>14 </th>
+                                    <th>15</th>
+                                    <th>16 </th>
+                                    <th>17</th>
+                                    <th>18 </th>
+                                    <th>19</th>
+                                    <th>20</th>
+                                    <th>21</th>
+                                    <th>22</th>
+                                    <th>23 </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in LanDauSDMaTuyDas">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item._13 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._14 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._15 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._16 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._17 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._18 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._19 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._20 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._21 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._22 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._23 | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Loại ma túy SD đầu tiên////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Loại ma túy SD đầu tiên</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableLoaiMaTuyDaSDDauTiens"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Loại ma túy SD đầu tiên </th>
+                                    <th>Đá</th>
+                                    <th>Keo</th>
+                                    <th>Cần, cỏ</th>
+                                    <th>Ketamin</th>
+                                    <th>Bóng cười</th>
+                                    <th>Heroin</th>
+                                    <th>Các chất hít</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in LoaiMaTuyDaSDDauTiens">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Da | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Keo | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CanCo | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Ketamin | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.BongCuoi | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Heroin | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CacChatHit | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Nguy cơ khi SD ma túy////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Nguy cơ khi SD ma túy</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableNguyCoSDMaTuyDas"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tiêm chích</th>
+                                    <th>Chưa bao giờ</th>
+                                    <th>Đã từng tiêm chích</th>
+                                    <th>Vẫn đang tiêm chích</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in NguyCoSDMaTuyDas">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DaTungTiemChich | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VanDangTiemChich | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Chung BKT////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Chung BKT</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableChungBKTs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Chung BKT </th>
+                                    <th>Đã từng dùng chung</th>
+                                    <th>Chưa bao giờ </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in ChungBKTs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.DaTungDungChung | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Nguy cơ tình dục////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Nguy cơ tình dục</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableNguyCoTinhDucs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>QHTD </th>
+                                    <th>Chưa bao giờ</th>
+                                    <th>Đồng giới </th>
+                                    <th>Khác giới</th>
+                                    <th>Cả hai </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in NguyCoTinhDucs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DongGioi | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhacGioi | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CaHai | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo dùng BCS////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Dùng BCS</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableDungBCSs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Dùng BCS </th>
+                                    <th>Luôn luôn</th>
+                                    <th>Thường xuyên </th>
+                                    <th>Thỉnh thoảng</th>
+                                    <th>Hiếm khi</th>
+                                    <th>Không bao giờ</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in DungBCSs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.LuonLuon | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ThuongXuyen | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ThiThoang | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.HiemKhi | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhongBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo SD ma túy khi QHTD ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">SD ma túy khi QHTD</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableSDMaTuyDaKhiQHTDs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>SD ma túy khi QHTD </th>
+                                    <th>Có</th>
+                                    <th>Không </th>
+                                    <th>KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in SDMaTuyDaKhiQHTDs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo QHTD tập thể ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">QHTD tập thể</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableQHTDTapThes"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>QHTD tập thể </th>
+                                    <th>Có</th>
+                                    <th>Không </th>
+                                    <th>KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in QHTDTapThes">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Bán dâm////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bán dâm</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableBanDams"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Bán dâm </th>
+                                    <th>Có</th>
+                                    <th>Không </th>
+                                    <th>KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in BanDams">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Nhiều nguy cơ tình dục(Qhđồng giới, ko thường xuyên sử dụng BCS, QH tập thể, QH khi sd ma túy, bán dâm) ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Nhiều nguy cơ tình dục (Qhđồng giới, ko thường xuyên sử dụng BCS, QH tập thể, QH khi sd ma túy, bán dâm)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableNhieuNguycoTinhDucs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Nhiều nguy cơ tình dục </th>
+                                    <th>1 nguy cơ</th>
+                                    <th>2 nguy cơ </th>
+                                    <th>3 nguy cơ</th>
+                                    <th>4-5 nguy cơ </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in NhieuNguycoTinhDucs">
+                                <td class="text-left">{{item.}}</td>
+                                <td class="text-right">{{item.Mot | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Hai | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Ba | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.BonNam | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Bệnh tật STI////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bệnh tật STI</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableBenhSTIs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>STI </th>
+                                    <th>Lậu</th>
+                                    <th>Sùi mào gà </th>
+                                    <th>Không mắc</th>
+                                    <th>Khác </th>
+                                    <th>KB/KTL</th>
+                                    <th>Giang mai </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in BenhSTIs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Lau | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.SuiMaoGa | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhongMac | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khac | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.GiangMai | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @*////////////////////Báo cáo theo Lao ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bệnh tật Lao</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableBenhLaos"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Lao </th>
+                                    <th colspan="2">Hiện tại</th>
+                                    <th colspan="2">Qúa khứ </th>
+                                </tr>
+                                <tr>
+                                    <th>Số lượng</th>
+                                    <th>% </th>
+                                    <th>Số lượng</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in BenhLaos">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.HienTai_SoLuong | number}}</td>
+                                <td class="text-right">{{item.HienTai_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.QuaKhu_SoLuong | number}}</td>
+                                <td class="text-right">{{item.QuaKhu_PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo VGC ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bệnh tật VGC</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableBenhVGCs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">VGC </th>
+                                    <th colspan="2">Hiện tại</th>
+                                    <th colspan="2">Qúa khứ </th>
+                                </tr>
+                                <tr>
+                                    <th>Số lượng</th>
+                                    <th>% </th>
+                                    <th>Số lượng</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in BenhVGCs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.HienTai_SoLuong | number}}</td>
+                                <td class="text-right">{{item.HienTai_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.QuaKhu_SoLuong | number}}</td>
+                                <td class="text-right">{{item.QuaKhu_PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+
+            @*////////////////////Báo cáo theo Sốc thuốc Heroin ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sốc thuốc Heroin</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableSocHeroins"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Heroin </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in SocHeroins">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo Sốc thuốc Meth ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sốc thuốc Meth</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableSocMeths"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Meth </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in SocMeths">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo CÁC LOẠI CHẤT GÂY NGHIỆN\KẾT QUẢ ASSIST////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Các loại chất gân nghiện/kết quả ASSIST</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableCacLoaiChatGayNghiens"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2"> </th>
+                                    <th colspan="2">Nguy cơ thấp (0-3)</th>
+                                    <th colspan="2">Nguy cơ trung bình (4-27)</th>
+                                    <th colspan="2">Nguy cơ cao (27+)</th>
+                                    <th rowspan="2">Tổng</th>
+                                </tr>
+                                <tr>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in CacLoaiChatGayNghiens">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.NguyCoThap_SoLuong | number}}</td>
+                                <td class="text-right">{{item.NguyCoThap_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.NguyCoTrungBinh_SoLuong | number}}</td>
+                                <td class="text-right">{{item.NguyCoTrungBinh_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.NguyCoCao_SoLuong | number}}</td>
+                                <td class="text-right">{{item.NguyCoCao_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.Tong_SoLuong | number}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo KẾT QUẢ QST(SỨC KHỎE TÂM THẦN) ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kết quả QST (sức khỏe tâm thần)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableKetQuaQSTs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Kết quả QST </th>
+                                    <th>Số người</th>
+                                    <th>% </th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in KetQuaQSTs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.SoNguoi | number}}</td>
+                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo Sàng lọc SKTT Mức độ gặp các vấn đề SKTT trong 2 tuần qua(câu 1)////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sàng lọc SKTT Mức độ gặp các vấn đề SKTT trong 2 tuần qua (câu 1)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableMucDoGapVanDeSKTTs"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2"> </th>
+                                    <th colspan="2">Không chút nào</th>
+                                    <th colspan="2">Từ 1 - 7 ngày</th>
+                                    <th colspan="2">Từ 8 ngày trở lên</th>
+                                    <th colspan="2">Gần như hàng ngày</th>
+                                </tr>
+                                <tr>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                    <th>Số lượng </th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in MucDoGapVanDeSKTTs">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.KhongChutNao_SoLuong | number}}</td>
+                                <td class="text-right">{{item.KhongChutNao_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.Tu1Den7Ngay_SoLuong | number}}</td>
+                                <td class="text-right">{{item.Tu1Den7Ngay_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.Tu8NgayTroLen_SoLuong | number}}</td>
+                                <td class="text-right">{{item.Tu8NgayTroLen_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.GanNhuHangNgay_SoLuong | number}}</td>
+                                <td class="text-right">{{item.GanNhuHangNgay_PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+            @*////////////////////Báo cáo theo Sàng lọc SKTT Ý nghĩ tự làm hại bản thân trong 2 tuần qua(câu 2) ////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sàng lọc SKTT Ý nghĩ tự làm hại bản thân trong 2 tuần qua (câu 2)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableTuLamHaiBanThans"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Ý nghĩ tự làm hại bản thân trong 2 tuần qua (câu 2) </th>
+                                    <th>Có</th>
+                                    <th>Không </th>
+                                    <th>KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in TuLamHaiBanThans">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            @*////////////////////Báo cáo theo Sàng lọc SKTT Cố tự sát từ trước đến nay(câu 3)////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sàng lọc SKTT Cố tự sát từ trước đến nay(câu 3)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableCoTuSats"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Cố tự sát từ trước đến nay (câu 3) </th>
+                                    <th>Có</th>
+                                    <th>Không </th>
+                                    <th>KB/KTL</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in CoTuSats">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            @*////////////////////Báo cáo theo Loạn thần////*@
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Loạn thần</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" @*id="dataTableLoanThans"*@ width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2"> </th>
+                                    <th colspan="2">Tin rằng có ai đó đang theo dõi, rình rập hoặc làm hại  mình (từ trc đến nay)</th>
+                                    <th colspan="2">Tin rằng có ai đó đọc được suy nghĩ hoặc nghe thấy ý nghĩ hoặc có thể đọc hoặc nghe được ý nghĩ của người khác (từ trc đến nay) </th>
+                                    <th colspan="2">Nghe thấy những thứ mà người khác không nghe thấy (từ trc đến nay)</th>
+                                </tr>
+                                <tr>
+                                    <th>Số người</th>
+                                    <th>%</th>
+                                    <th>Số người</th>
+                                    <th>%</th>
+                                    <th>Số người</th>
+                                    <th>%</th>
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="item in LoanThans">
+                                <td class="text-left">{{item.NoiDung}}</td>
+                                <td class="text-right">{{item.TheoDoiRinhRap_SoLuong | number}}</td>
+                                <td class="text-right">{{item.TheoDoiRinhRap_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.YNghi_SoLuong | number}}</td>
+                                <td class="text-right">{{item.YNghi_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.NgheThuMaNKKNT_SoLuong | number}}</td>
+                                <td class="text-right">{{item.NgheThuMaNKKNT_PhanTram | number}}%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/KetQuaSangLocController.js"></script>
+}

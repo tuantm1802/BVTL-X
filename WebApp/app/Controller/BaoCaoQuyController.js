@@ -81,9 +81,16 @@
                 $scope.modelSearch.Months = '10,11,12';
             }
         }
-
+        $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
-            $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+                    $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
+                } else {
+                    $scope.modelSearch.CityCodes +=','+ $scope.ListCityCode[i];
+                }
+            }
+            //$scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code }).join(',');
         }
 
         showToast();

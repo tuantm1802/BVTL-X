@@ -23,9 +23,20 @@ namespace Common.Common
         public int CreateCustomer(BVTL_KHACH_HANG customer)
         {
             var result = 0;
-            db.BVTL_KHACH_HANG.Add(customer);
-            db.SaveChanges();
-            result = customer.khachhang_id;
+            try
+            {
+                db.BVTL_KHACH_HANG.Add(customer);
+                db.SaveChanges();
+                result = customer.khachhang_id;
+            }catch(Exception ex)
+            {
+                log.Error("Lỗi thêm khách hàng: "+ ex.Message);
+                // Lấy thông tin khách hàng
+                var customers = db.BVTL_KHACH_HANG.FirstOrDefault(x=>x.makh == customer.makh);
+                if (customers != null && customers.khachhang_id > 0)
+                    result = customers.khachhang_id;
+            }
+            
             return result;
         }
 
@@ -109,8 +120,8 @@ namespace Common.Common
                             customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApi1344.doituong).id;
                         }
 
-                        if (!string.IsNullOrEmpty(resultApi1344.ngaytiepcan))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngaytiepcan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        if (!string.IsNullOrEmpty(resultApi1344.ngay))
+                            customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
                         customer_id = CreateCustomer(customer);
                     }
@@ -150,7 +161,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_SKTT
                     sktt = new BVTL_KQ_SL_SKTT()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         ngaysl = ngaynhapD,
                         ngaysl_date = day,
                         ngaysl_month = month,
@@ -176,7 +187,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_ASSIST
                     assist = new BVTL_KQ_SL_ASSIST()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         ngaysl = ngaynhapD,
                         ngaysl_date = day,
                         ngaysl_month = month,
@@ -371,28 +382,34 @@ namespace Common.Common
                     }
                     else
                     {
-                        customer = new BVTL_KHACH_HANG
-                        {
-                            makh = resultApiHIV.makh,
-                            hoten = string.IsNullOrEmpty(resultApiHIV.hoten) ? resultApiHIV.makh : resultApiHIV.hoten,
-                            gioitinh = resultApiHIV.gioitinh == "Nam" ? "M" : (resultApiHIV.gioitinh == "Nữ" ? "F" : "O"),
-                            sodienthoai = resultApiHIV.dienthoai,
-                            diachi = resultApiHIV.diachi,
-                            sottkh = customer_code.Substring(5)
-                        };
-                        customer.city_code = cityCode;
-                        if (!string.IsNullOrEmpty(resultApiHIV.namsinh))
-                            customer.namsinh = Convert.ToInt32(resultApiHIV.namsinh);
+                        //customer = new BVTL_KHACH_HANG
+                        //{
+                        //    makh = resultApiHIV.makh,
+                        //    hoten = string.IsNullOrEmpty(resultApiHIV.hoten) ? resultApiHIV.makh : resultApiHIV.hoten,
+                        //    gioitinh = resultApiHIV.gioitinh == "Nam" ? "M" : (resultApiHIV.gioitinh == "Nữ" ? "F" : "O"),
+                        //    sodienthoai = resultApiHIV.dienthoai,
+                        //    diachi = resultApiHIV.diachi,
+                        //    sottkh = customer_code.Substring(5)
+                        //};
+                        //customer.city_code = cityCode;
+                        //if (!string.IsNullOrEmpty(resultApiHIV.namsinh))
+                        //    customer.namsinh = Convert.ToInt32(resultApiHIV.namsinh);
 
-                        if (!string.IsNullOrEmpty(resultApiHIV.doituong))
-                        {
-                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiHIV.doituong).id;
-                        }
+                        //if (!string.IsNullOrEmpty(resultApiHIV.doituong))
+                        //{
+                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiHIV.doituong).id;
+                        //}
 
-                        if (!string.IsNullOrEmpty(resultApiHIV.ngaytiepcan))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApiHIV.ngaytiepcan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        //if (!string.IsNullOrEmpty(resultApiHIV.ngaytiepcan))
+                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiHIV.ngaytiepcan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
+                        //customer_id = CreateCustomer(customer);
+
+
+                        // Lấy thông tin khách hàng
+                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                        if (customerCK != null && customerCK.khachhang_id > 0)
+                            customer_id = customerCK.khachhang_id;
                     }
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
@@ -429,7 +446,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_XN_HIV
                     hiv = new BVTL_KQ_XN_HIV()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         ngayxn = ngaynhapD,
                         ngayxn_date = day,
                         ngayxn_month = month,
@@ -528,28 +545,33 @@ namespace Common.Common
                     }
                     else
                     {
-                        customer = new BVTL_KHACH_HANG
-                        {
-                            makh = resultApiACE.makh,
-                            hoten = string.IsNullOrEmpty(resultApiACE.hoten) ? resultApiACE.makh : resultApiACE.hoten,
-                            gioitinh = resultApiACE.gioitinh == "Nam" ? "M" : (resultApiACE.gioitinh == "Nữ" ? "F" : "O"),
-                            sodienthoai = resultApiACE.dienthoai,
-                            diachi = resultApiACE.diachi,
-                            sottkh = customer_code.Substring(5)
-                        };
-                        customer.city_code = cityCode;
-                        if (!string.IsNullOrEmpty(resultApiACE.namsinh))
-                            customer.namsinh = Convert.ToInt32(resultApiACE.namsinh);
+                        //customer = new BVTL_KHACH_HANG
+                        //{
+                        //    makh = resultApiACE.makh,
+                        //    hoten = string.IsNullOrEmpty(resultApiACE.hoten) ? resultApiACE.makh : resultApiACE.hoten,
+                        //    gioitinh = resultApiACE.gioitinh == "Nam" ? "M" : (resultApiACE.gioitinh == "Nữ" ? "F" : "O"),
+                        //    sodienthoai = resultApiACE.dienthoai,
+                        //    diachi = resultApiACE.diachi,
+                        //    sottkh = customer_code.Substring(5)
+                        //};
+                        //customer.city_code = cityCode;
+                        //if (!string.IsNullOrEmpty(resultApiACE.namsinh))
+                        //    customer.namsinh = Convert.ToInt32(resultApiACE.namsinh);
 
-                        if (!string.IsNullOrEmpty(resultApiACE.doituong))
-                        {
-                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiACE.doituong).id;
-                        }
+                        //if (!string.IsNullOrEmpty(resultApiACE.doituong))
+                        //{
+                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiACE.doituong).id;
+                        //}
 
-                        if (!string.IsNullOrEmpty(resultApiACE.ngay))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApiACE.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        //if (!string.IsNullOrEmpty(resultApiACE.ngay))
+                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiACE.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
+                        //customer_id = CreateCustomer(customer);
+
+                        // Lấy thông tin khách hàng
+                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                        if (customerCK != null && customerCK.khachhang_id > 0)
+                            customer_id = customerCK.khachhang_id;
                     }
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
@@ -574,7 +596,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_ACE
                     ace = new BVTL_KQ_SL_ACE()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         ngaysl = ngaynhapD,
                         ngaysl_date = day,
                         ngaysl_month = month,
@@ -711,7 +733,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_KQ_SL_ACE
                     tongHop = new BVTL_BO_BIEU_MAU_KH_BAO_CAO()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         ngaysl = ngaynhapD,
                         ngaysl_date = day,
                         ngaysl_month = month,
@@ -950,28 +972,33 @@ namespace Common.Common
                     }
                     else
                     {
-                        customer = new BVTL_KHACH_HANG
-                        {
-                            makh = resultApiPTV.makh,
-                            hoten = string.IsNullOrEmpty(resultApiPTV.hoten) ? resultApiPTV.makh : resultApiPTV.hoten,
-                            gioitinh = resultApiPTV.gioitinh == "Nam" ? "M" : (resultApiPTV.gioitinh == "Nữ" ? "F" : "O"),
-                            sodienthoai = resultApiPTV.dienthoai,
-                            diachi = resultApiPTV.diachi,
-                            sottkh = customer_code.Substring(5)
-                        };
-                        customer.city_code = cityCode;
-                        if (!string.IsNullOrEmpty(resultApiPTV.namsinh))
-                            customer.namsinh = Convert.ToInt32(resultApiPTV.namsinh);
+                        //customer = new BVTL_KHACH_HANG
+                        //{
+                        //    makh = resultApiPTV.makh,
+                        //    hoten = string.IsNullOrEmpty(resultApiPTV.hoten) ? resultApiPTV.makh : resultApiPTV.hoten,
+                        //    gioitinh = resultApiPTV.gioitinh == "Nam" ? "M" : (resultApiPTV.gioitinh == "Nữ" ? "F" : "O"),
+                        //    sodienthoai = resultApiPTV.dienthoai,
+                        //    diachi = resultApiPTV.diachi,
+                        //    sottkh = customer_code.Substring(5)
+                        //};
+                        //customer.city_code = cityCode;
+                        //if (!string.IsNullOrEmpty(resultApiPTV.namsinh))
+                        //    customer.namsinh = Convert.ToInt32(resultApiPTV.namsinh);
 
-                        if (!string.IsNullOrEmpty(resultApiPTV.doituong))
-                        {
-                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiPTV.doituong).id;
-                        }
+                        //if (!string.IsNullOrEmpty(resultApiPTV.doituong))
+                        //{
+                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiPTV.doituong).id;
+                        //}
 
-                        if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        //if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
+                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
+                        //customer_id = CreateCustomer(customer);
+
+                        // Lấy thông tin khách hàng
+                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                        if (customerCK != null && customerCK.khachhang_id > 0)
+                            customer_id = customerCK.khachhang_id;
                     }
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
@@ -996,7 +1023,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_PHIEU_TU_VAN
                     phieuTuVan = new BVTL_PHIEU_TU_VAN()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         sottkh = customer_code.Substring(5),
                         ngaytuvan = ngaynhapD,
                         ngaytuvan_date = day,
@@ -1129,28 +1156,33 @@ namespace Common.Common
                     }
                     else
                     {
-                        customer = new BVTL_KHACH_HANG
-                        {
-                            makh = resultApiCGDV.makh,
-                            hoten = string.IsNullOrEmpty(resultApiCGDV.hoten) ? resultApiCGDV.makh : resultApiCGDV.hoten,
-                            gioitinh = resultApiCGDV.gioitinh == "Nam" ? "M" : (resultApiCGDV.gioitinh == "Nữ" ? "F" : "O"),
-                            sodienthoai = resultApiCGDV.dienthoai,
-                            diachi = resultApiCGDV.diachi,
-                            sottkh = customer_code.Substring(5)
-                        };
-                        customer.city_code = cityCode;
-                        if (!string.IsNullOrEmpty(resultApiCGDV.namsinh))
-                            customer.namsinh = Convert.ToInt32(resultApiCGDV.namsinh);
+                        //customer = new BVTL_KHACH_HANG
+                        //{
+                        //    makh = resultApiCGDV.makh,
+                        //    hoten = string.IsNullOrEmpty(resultApiCGDV.hoten) ? resultApiCGDV.makh : resultApiCGDV.hoten,
+                        //    gioitinh = resultApiCGDV.gioitinh == "Nam" ? "M" : (resultApiCGDV.gioitinh == "Nữ" ? "F" : "O"),
+                        //    sodienthoai = resultApiCGDV.dienthoai,
+                        //    diachi = resultApiCGDV.diachi,
+                        //    sottkh = customer_code.Substring(5)
+                        //};
+                        //customer.city_code = cityCode;
+                        //if (!string.IsNullOrEmpty(resultApiCGDV.namsinh))
+                        //    customer.namsinh = Convert.ToInt32(resultApiCGDV.namsinh);
 
-                        if (!string.IsNullOrEmpty(resultApiCGDV.doituong))
-                        {
-                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiCGDV.doituong).id;
-                        }
+                        //if (!string.IsNullOrEmpty(resultApiCGDV.doituong))
+                        //{
+                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiCGDV.doituong).id;
+                        //}
 
-                        if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApiCGDV.ngay_xn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        //if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
+                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiCGDV.ngay_xn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
+                        //customer_id = CreateCustomer(customer);
+
+                        // Lấy thông tin khách hàng
+                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                        if (customerCK != null && customerCK.khachhang_id > 0)
+                            customer_id = customerCK.khachhang_id;
                     }
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
@@ -1175,7 +1207,7 @@ namespace Common.Common
                     #region Chuyển đổi dữ liệu sang bảng BVTL_CHUYEN_GUI_DICH_VU
                     chuyenGuiDV = new BVTL_CHUYEN_GUI_DICH_VU()
                     {
-                        khachhang_id = customer_id,
+                        makh = customer_code,
                         sottkh = customer_code.Substring(5),
                         ngay_xn = ngaynhapD,
                         ngay_xn_date = day,

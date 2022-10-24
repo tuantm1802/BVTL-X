@@ -20,9 +20,13 @@ namespace Data.API
         IGetDataFromAPI getDataFromAPI = new GetDataFromAPI();
         IConvertResultApiToEntity _convertResultApiToEntity = new ConvertResultApiToEntity();
 
-        public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames)
+        public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames, string apiCode)
         {
             var result = new BaseResult();
+
+            // Cập nhật thời gian bắt đầu đồng bộ
+            insertDataDA.UpdateTimeSync(apiCode, true);
+
             // Call api để lấy dữ liệu
             var resultApiString = await getDataFromAPI.PostDataFromApiReturnString(urlApi, token, reportId);
             if (!string.IsNullOrEmpty(resultApiString))
@@ -154,6 +158,9 @@ namespace Data.API
 
                 #endregion
             }
+
+            // Cập nhật thời gian kết thúc đồng bộ
+            insertDataDA.UpdateTimeSync(apiCode, false);
             return result;
         }
     }

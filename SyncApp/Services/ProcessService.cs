@@ -8,6 +8,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using Data.InterfaceDA.API;
+using Model.ModelExtend.Base;
 
 namespace SyncBVTL.Push.Services
 {
@@ -29,10 +30,10 @@ namespace SyncBVTL.Push.Services
                 {
                     process = new ProcessModel
                     {
-                        Code = api.TokenApi,
+                        Code = api.Api_Code,
                         Name = api.NameSyncdata,
                         TimeLoop = api.TimeReCall > 0 ? (int)api.TimeReCall : 60,
-                        Active = true,
+                        Active = api.IsActive,
                         Url = api.HrefApi,
                         Token = api.TokenApi,
                         ReportId = api.ReportId,
@@ -57,6 +58,16 @@ namespace SyncBVTL.Push.Services
             //return listProcess.ToList();
 
             return result;
+        }
+
+        /// <summary>
+        /// Cập nhật job đồng bộ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ObjectMessage EditJobSync(BVTL_API model)
+        {
+            return da.EditJobSync(model);
         }
     }
 }

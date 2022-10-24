@@ -17,28 +17,26 @@ namespace SyncBVTL.Push.Jobs.PAJobs
             JobDataMap dataMap = context.JobDetail.JobDataMap;
             var controller = DependencyResolver.Current.GetService<SyncDataController>();
 
-            //var Token = (string)dataMap["Token"] ;
-            // var Url = (string)dataMap["Url"] = ;
-            // var TableName = (string)dataMap["TableName";
-            // var ReportId = (string)dataMap["ReportId"];
             var data = (ProcessModel)dataMap["Data"];
-            var result = await controller.GetDataFromAPI(data);
-
-            
-            string logPath = "Log\\" + data.TableNames + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-            if (!Directory.Exists("Log"))
+            if (data.Active)
             {
-                Directory.CreateDirectory("Log");
-            }
+                var result = await controller.GetDataFromAPI(data);
 
-            if (!File.Exists(logPath))
-            {
-                File.Create(logPath);
-            }
+                string logPath = "Log\\" + data.TableNames + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                if (!Directory.Exists("Log"))
+                {
+                    Directory.CreateDirectory("Log");
+                }
 
-            using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
-            {
-                file.Prepend(result.Message + "\n");
+                if (!File.Exists(logPath))
+                {
+                    File.Create(logPath);
+                }
+
+                using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    file.Prepend(result.Message + "\n");
+                }
             }
         }
     }
