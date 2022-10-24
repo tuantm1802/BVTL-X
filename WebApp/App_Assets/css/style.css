@@ -1250,15 +1250,16 @@ body.hc-nav-open {
 }
 
 .main-login {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url("../images/bg_login.svg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*background-image: url("../images/bg_login.svg");*/
+    background-image: url('../images/financial-controls.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .login-box {
@@ -1331,7 +1332,7 @@ body.hc-nav-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #015E2F;
+  background: #46A843;
   border-radius: 5px;
   transition: .3s ease-out;
   padding: 10px 0px;
