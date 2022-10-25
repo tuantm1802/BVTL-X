@@ -7,11 +7,11 @@
 /WebApp/bin
 /WebApp/obj
 /Common/bin
-/Common/obj
+/Common/obj/Debug
 /Data/bin
-/Data/obj
+/Data/obj/Debug
 /Model/bin
-/Model/obj
+/Model/obj/Debug
 /SyncApp/bin
-/SyncApp/obj
+/SyncApp/obj/Debug
 /.vs
