@@ -975,7 +975,7 @@ namespace Data.Admin
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
 
-            var soLuongKhongGap = modelInputs.Where(x => x.trieuchung.Contains("không gặp")).Sum(x => x.SoLuong);
+            var soLuongKhongGap = modelInputs.Where(x => x.trieuchung.ToLower().Contains("không gặp")).Sum(x => x.SoLuong);
             // Từng có một trong các triệu chứng
 
 
