@@ -5,8 +5,8 @@
 /.vs
 /Data/bin
 /Data/obj
-/WebApp/bin
-/WebApp/obj
+WebApp/bin
+WebApp/obj
 /Common/bin
 /Common/obj
 /SyncApp/bin
@@ -17,3 +17,4 @@
 *.ide
 *.pdb
 *.cache
+*.dll
