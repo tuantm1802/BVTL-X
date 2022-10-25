@@ -4,6 +4,9 @@
     <EntitySetMapping Name="BVTL_API">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
         <MappingFragment StoreEntitySet="BVTL_API">
+          <ScalarProperty Name="End_Time_Syc" ColumnName="End_Time_Syc" />
+          <ScalarProperty Name="Start_Time_Sync" ColumnName="Start_Time_Sync" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
           <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
           <ScalarProperty Name="ReportId" ColumnName="ReportId" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
@@ -14,6 +17,177 @@
           <ScalarProperty Name="NameSyncdata" ColumnName="NameSyncdata" />
           <ScalarProperty Name="Api_Code" ColumnName="Api_Code" />
           <ScalarProperty Name="Api_Id" ColumnName="Api_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO">
+        <MappingFragment StoreEntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="ngaysl_year" ColumnName="ngaysl_year" />
+          <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
+          <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
+          <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+          <ScalarProperty Name="tongdiem" ColumnName="tongdiem" />
+          <ScalarProperty Name="c_4c" ColumnName="c_4c" />
+          <ScalarProperty Name="c_4b" ColumnName="c_4b" />
+          <ScalarProperty Name="c_4a" ColumnName="c_4a" />
+          <ScalarProperty Name="c_3" ColumnName="c_3" />
+          <ScalarProperty Name="c_2" ColumnName="c_2" />
+          <ScalarProperty Name="c_1d" ColumnName="c_1d" />
+          <ScalarProperty Name="c_1c" ColumnName="c_1c" />
+          <ScalarProperty Name="c_1b" ColumnName="c_1b" />
+          <ScalarProperty Name="c_1a" ColumnName="c_1a" />
+          <ScalarProperty Name="diemchatkhac" ColumnName="diemchatkhac" />
+          <ScalarProperty Name="qst_timestamp" ColumnName="qst_timestamp" />
+          <ScalarProperty Name="diemchatthuocphien" ColumnName="diemchatthuocphien" />
+          <ScalarProperty Name="diemchatgayaogiac" ColumnName="diemchatgayaogiac" />
+          <ScalarProperty Name="diemchatanthan" ColumnName="diemchatanthan" />
+          <ScalarProperty Name="diemkhixong" ColumnName="diemkhixong" />
+          <ScalarProperty Name="diemchatkichthich" ColumnName="diemchatkichthich" />
+          <ScalarProperty Name="diemcoca" ColumnName="diemcoca" />
+          <ScalarProperty Name="diemcansa" ColumnName="diemcansa" />
+          <ScalarProperty Name="diemthucuong" ColumnName="diemthucuong" />
+          <ScalarProperty Name="diemthuocla" ColumnName="diemthuocla" />
+          <ScalarProperty Name="cau_8" ColumnName="cau_8" />
+          <ScalarProperty Name="chatkhac6" ColumnName="chatkhac6" />
+          <ScalarProperty Name="chatthuocphien6" ColumnName="chatthuocphien6" />
+          <ScalarProperty Name="chatgayaogiac6" ColumnName="chatgayaogiac6" />
+          <ScalarProperty Name="thuocanthan6" ColumnName="thuocanthan6" />
+          <ScalarProperty Name="khixong6" ColumnName="khixong6" />
+          <ScalarProperty Name="chatkichthich6" ColumnName="chatkichthich6" />
+          <ScalarProperty Name="coca6" ColumnName="coca6" />
+          <ScalarProperty Name="cansa6" ColumnName="cansa6" />
+          <ScalarProperty Name="thucuong6" ColumnName="thucuong6" />
+          <ScalarProperty Name="thuocla6" ColumnName="thuocla6" />
+          <ScalarProperty Name="chatkhac5" ColumnName="chatkhac5" />
+          <ScalarProperty Name="chatthuocphien5" ColumnName="chatthuocphien5" />
+          <ScalarProperty Name="chatgayaogiac5" ColumnName="chatgayaogiac5" />
+          <ScalarProperty Name="thuocanthan5" ColumnName="thuocanthan5" />
+          <ScalarProperty Name="khixong5" ColumnName="khixong5" />
+          <ScalarProperty Name="chatkichthich5" ColumnName="chatkichthich5" />
+          <ScalarProperty Name="coca5" ColumnName="coca5" />
+          <ScalarProperty Name="cansa5" ColumnName="cansa5" />
+          <ScalarProperty Name="thucuong5" ColumnName="thucuong5" />
+          <ScalarProperty Name="thuocla5" ColumnName="thuocla5" />
+          <ScalarProperty Name="chatkhac4" ColumnName="chatkhac4" />
+          <ScalarProperty Name="chatthuocphien4" ColumnName="chatthuocphien4" />
+          <ScalarProperty Name="chatgayaogiac4" ColumnName="chatgayaogiac4" />
+          <ScalarProperty Name="thuocanthan4" ColumnName="thuocanthan4" />
+          <ScalarProperty Name="khixong4" ColumnName="khixong4" />
+          <ScalarProperty Name="chatkichthich4" ColumnName="chatkichthich4" />
+          <ScalarProperty Name="coca4" ColumnName="coca4" />
+          <ScalarProperty Name="cansa4" ColumnName="cansa4" />
+          <ScalarProperty Name="thucuong4" ColumnName="thucuong4" />
+          <ScalarProperty Name="chatkhac3" ColumnName="chatkhac3" />
+          <ScalarProperty Name="chatthuocphien3" ColumnName="chatthuocphien3" />
+          <ScalarProperty Name="chatgayaogiac3" ColumnName="chatgayaogiac3" />
+          <ScalarProperty Name="thuocanthan3" ColumnName="thuocanthan3" />
+          <ScalarProperty Name="khixong3" ColumnName="khixong3" />
+          <ScalarProperty Name="chatkichthich3" ColumnName="chatkichthich3" />
+          <ScalarProperty Name="coca3" ColumnName="coca3" />
+          <ScalarProperty Name="cansa3" ColumnName="cansa3" />
+          <ScalarProperty Name="thucuong3" ColumnName="thucuong3" />
+          <ScalarProperty Name="thuocla3" ColumnName="thuocla3" />
+          <ScalarProperty Name="chatkhac2" ColumnName="chatkhac2" />
+          <ScalarProperty Name="chatthuocphien2" ColumnName="chatthuocphien2" />
+          <ScalarProperty Name="chatgayaogiac2" ColumnName="chatgayaogiac2" />
+          <ScalarProperty Name="thuocanthan2" ColumnName="thuocanthan2" />
+          <ScalarProperty Name="khixong2" ColumnName="khixong2" />
+          <ScalarProperty Name="chatkichthich2" ColumnName="chatkichthich2" />
+          <ScalarProperty Name="coca2" ColumnName="coca2" />
+          <ScalarProperty Name="cansa2" ColumnName="cansa2" />
+          <ScalarProperty Name="thucuong2" ColumnName="thucuong2" />
+          <ScalarProperty Name="thuocla2" ColumnName="thuocla2" />
+          <ScalarProperty Name="chatkhac1" ColumnName="chatkhac1" />
+          <ScalarProperty Name="chatthuocphien1" ColumnName="chatthuocphien1" />
+          <ScalarProperty Name="chatgayaogiac1" ColumnName="chatgayaogiac1" />
+          <ScalarProperty Name="thuocanthan1" ColumnName="thuocanthan1" />
+          <ScalarProperty Name="khixong1" ColumnName="khixong1" />
+          <ScalarProperty Name="chatkichthich1" ColumnName="chatkichthich1" />
+          <ScalarProperty Name="coca1" ColumnName="coca1" />
+          <ScalarProperty Name="cansa1" ColumnName="cansa1" />
+          <ScalarProperty Name="thucuong1" ColumnName="thucuong1" />
+          <ScalarProperty Name="thuocla1" ColumnName="thuocla1" />
+          <ScalarProperty Name="lucdihoc" ColumnName="lucdihoc" />
+          <ScalarProperty Name="cacchatkhac" ColumnName="cacchatkhac" />
+          <ScalarProperty Name="chatkhac" ColumnName="chatkhac" />
+          <ScalarProperty Name="thuocphien" ColumnName="thuocphien" />
+          <ScalarProperty Name="chatgayaogiac" ColumnName="chatgayaogiac" />
+          <ScalarProperty Name="thuocanthan" ColumnName="thuocanthan" />
+          <ScalarProperty Name="khixong" ColumnName="khixong" />
+          <ScalarProperty Name="chatkichthich" ColumnName="chatkichthich" />
+          <ScalarProperty Name="cocain" ColumnName="cocain" />
+          <ScalarProperty Name="cansa" ColumnName="cansa" />
+          <ScalarProperty Name="thucuong" ColumnName="thucuong" />
+          <ScalarProperty Name="thuocla" ColumnName="thuocla" />
+          <ScalarProperty Name="assist_timestamp" ColumnName="assist_timestamp" />
+          <ScalarProperty Name="cau27" ColumnName="cau27" />
+          <ScalarProperty Name="cau26" ColumnName="cau26" />
+          <ScalarProperty Name="cau25" ColumnName="cau25" />
+          <ScalarProperty Name="cau24" ColumnName="cau24" />
+          <ScalarProperty Name="cau23" ColumnName="cau23" />
+          <ScalarProperty Name="cau22" ColumnName="cau22" />
+          <ScalarProperty Name="cau21" ColumnName="cau21" />
+          <ScalarProperty Name="cau20" ColumnName="cau20" />
+          <ScalarProperty Name="cau19" ColumnName="cau19" />
+          <ScalarProperty Name="cau18" ColumnName="cau18" />
+          <ScalarProperty Name="cau17" ColumnName="cau17" />
+          <ScalarProperty Name="cau16" ColumnName="cau16" />
+          <ScalarProperty Name="cau15" ColumnName="cau15" />
+          <ScalarProperty Name="cau14" ColumnName="cau14" />
+          <ScalarProperty Name="cau13" ColumnName="cau13" />
+          <ScalarProperty Name="cau12" ColumnName="cau12" />
+          <ScalarProperty Name="cau11" ColumnName="cau11" />
+          <ScalarProperty Name="cau10" ColumnName="cau10" />
+          <ScalarProperty Name="cau9" ColumnName="cau9" />
+          <ScalarProperty Name="cau8" ColumnName="cau8" />
+          <ScalarProperty Name="cau7" ColumnName="cau7" />
+          <ScalarProperty Name="cau6" ColumnName="cau6" />
+          <ScalarProperty Name="cau5" ColumnName="cau5" />
+          <ScalarProperty Name="cau4" ColumnName="cau4" />
+          <ScalarProperty Name="cau3" ColumnName="cau3" />
+          <ScalarProperty Name="cau2" ColumnName="cau2" />
+          <ScalarProperty Name="cau1" ColumnName="cau1" />
+          <ScalarProperty Name="hiv_timestamp" ColumnName="hiv_timestamp" />
+          <ScalarProperty Name="trieuchung_2" ColumnName="trieuchung_2" />
+          <ScalarProperty Name="trieuchung" ColumnName="trieuchung" />
+          <ScalarProperty Name="hientai_6" ColumnName="hientai_6" />
+          <ScalarProperty Name="hientai_5" ColumnName="hientai_5" />
+          <ScalarProperty Name="quakhu_3" ColumnName="quakhu_3" />
+          <ScalarProperty Name="hientai_3" ColumnName="hientai_3" />
+          <ScalarProperty Name="hientai_4" ColumnName="hientai_4" />
+          <ScalarProperty Name="quakhu2" ColumnName="quakhu2" />
+          <ScalarProperty Name="hientai_2" ColumnName="hientai_2" />
+          <ScalarProperty Name="hientai" ColumnName="hientai" />
+          <ScalarProperty Name="quakhu" ColumnName="quakhu" />
+          <ScalarProperty Name="loaikhac_3" ColumnName="loaikhac_3" />
+          <ScalarProperty Name="sti1" ColumnName="sti1" />
+          <ScalarProperty Name="sti" ColumnName="sti" />
+          <ScalarProperty Name="bandam" ColumnName="bandam" />
+          <ScalarProperty Name="qhtdtt" ColumnName="qhtdtt" />
+          <ScalarProperty Name="sdmatuy" ColumnName="sdmatuy" />
+          <ScalarProperty Name="qhtd_2" ColumnName="qhtd_2" />
+          <ScalarProperty Name="qhtd" ColumnName="qhtd" />
+          <ScalarProperty Name="dungchung" ColumnName="dungchung" />
+          <ScalarProperty Name="tiemchich" ColumnName="tiemchich" />
+          <ScalarProperty Name="matuydautien" ColumnName="matuydautien" />
+          <ScalarProperty Name="tuoi" ColumnName="tuoi" />
+          <ScalarProperty Name="tansuat_heroin" ColumnName="tansuat_heroin" />
+          <ScalarProperty Name="tansuatda" ColumnName="tansuatda" />
+          <ScalarProperty Name="sdheroin" ColumnName="sdheroin" />
+          <ScalarProperty Name="duongsd" ColumnName="duongsd" />
+          <ScalarProperty Name="loaikhac_2" ColumnName="loaikhac_2" />
+          <ScalarProperty Name="chatgaynghien_2" ColumnName="chatgaynghien_2" />
+          <ScalarProperty Name="loaikhac" ColumnName="loaikhac" />
+          <ScalarProperty Name="chatgaynghien" ColumnName="chatgaynghien" />
+          <ScalarProperty Name="hanhvinguyco_timestamp" ColumnName="hanhvinguyco_timestamp" />
+          <ScalarProperty Name="record_id" ColumnName="record_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -35,6 +209,55 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_CHUYEN_GUI_DICH_VU">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU">
+        <MappingFragment StoreEntitySet="BVTL_CHUYEN_GUI_DICH_VU">
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="ngay_xn_year" ColumnName="ngay_xn_year" />
+          <ScalarProperty Name="ngay_xn_month" ColumnName="ngay_xn_month" />
+          <ScalarProperty Name="ngay_xn_date" ColumnName="ngay_xn_date" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
+          <ScalarProperty Name="hotro_bhyt" ColumnName="hotro_bhyt" />
+          <ScalarProperty Name="hotro_sti" ColumnName="hotro_sti" />
+          <ScalarProperty Name="dieutri_sti" ColumnName="dieutri_sti" />
+          <ScalarProperty Name="khac_sti" ColumnName="khac_sti" />
+          <ScalarProperty Name="chandoan1" ColumnName="chandoan1" />
+          <ScalarProperty Name="lan_xnk" ColumnName="lan_xnk" />
+          <ScalarProperty Name="diachi_kxn" ColumnName="diachi_kxn" />
+          <ScalarProperty Name="ngaykxn" ColumnName="ngaykxn" />
+          <ScalarProperty Name="hotro" ColumnName="hotro" />
+          <ScalarProperty Name="dungthuoc" ColumnName="dungthuoc" />
+          <ScalarProperty Name="kedon" ColumnName="kedon" />
+          <ScalarProperty Name="khac" ColumnName="khac" />
+          <ScalarProperty Name="chandoan" ColumnName="chandoan" />
+          <ScalarProperty Name="lankham" ColumnName="lankham" />
+          <ScalarProperty Name="diachikham" ColumnName="diachikham" />
+          <ScalarProperty Name="ngaykham" ColumnName="ngaykham" />
+          <ScalarProperty Name="s12t" ColumnName="s12t" />
+          <ScalarProperty Name="s9t" ColumnName="s9t" />
+          <ScalarProperty Name="s6t" ColumnName="s6t" />
+          <ScalarProperty Name="s3t" ColumnName="s3t" />
+          <ScalarProperty Name="anh3" ColumnName="anh3" />
+          <ScalarProperty Name="taiuong_bd_21" ColumnName="taiuong_bd_21" />
+          <ScalarProperty Name="anh2" ColumnName="anh2" />
+          <ScalarProperty Name="taiuong_bd_2" ColumnName="taiuong_bd_2" />
+          <ScalarProperty Name="anh1" ColumnName="anh1" />
+          <ScalarProperty Name="taiuong_bd" ColumnName="taiuong_bd" />
+          <ScalarProperty Name="ngay_bddt" ColumnName="ngay_bddt" />
+          <ScalarProperty Name="diachi_cg" ColumnName="diachi_cg" />
+          <ScalarProperty Name="dieutri" ColumnName="dieutri" />
+          <ScalarProperty Name="kq_xn" ColumnName="kq_xn" />
+          <ScalarProperty Name="diachi_xn" ColumnName="diachi_xn" />
+          <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />
+          <ScalarProperty Name="loaihinh" ColumnName="loaihinh" />
+          <ScalarProperty Name="record_id" ColumnName="record_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="BVTL_CITES">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CITES">
         <MappingFragment StoreEntitySet="BVTL_CITES">
@@ -45,6 +268,14 @@
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Code" ColumnName="Code" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_DU_AN">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_DU_AN">
+        <MappingFragment StoreEntitySet="BVTL_DU_AN">
+          <ScalarProperty Name="tenduan" ColumnName="tenduan" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -59,6 +290,7 @@
     <EntitySetMapping Name="BVTL_KHACH_HANG">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
         <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
           <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="diachi" ColumnName="diachi" />
           <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
@@ -68,6 +300,7 @@
           <ScalarProperty Name="namsinh" ColumnName="namsinh" />
           <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
           <ScalarProperty Name="hoten" ColumnName="hoten" />
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
           <ScalarProperty Name="makh" ColumnName="makh" />
           <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
         </MappingFragment>
@@ -76,6 +309,9 @@
     <EntitySetMapping Name="BVTL_KQ_SL_ACE">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE">
         <MappingFragment StoreEntitySet="BVTL_KQ_SL_ACE">
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
           <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
           <ScalarProperty Name="ketqua_ace" ColumnName="ketqua_ace" />
@@ -84,7 +320,7 @@
           <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
           <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
           <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
           <ScalarProperty Name="kqslace_id" ColumnName="kqslace_id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -92,6 +328,9 @@
     <EntitySetMapping Name="BVTL_KQ_SL_ASSIST">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST">
         <MappingFragment StoreEntitySet="BVTL_KQ_SL_ASSIST">
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
           <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
           <ScalarProperty Name="ghichu" ColumnName="ghichu" />
@@ -119,7 +358,7 @@
           <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
           <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
           <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
           <ScalarProperty Name="kqslassist_id" ColumnName="kqslassist_id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -127,6 +366,9 @@
     <EntitySetMapping Name="BVTL_KQ_SL_SKTT">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT">
         <MappingFragment StoreEntitySet="BVTL_KQ_SL_SKTT">
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
           <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
           <ScalarProperty Name="ketqua_QST" ColumnName="ketqua_QST" />
@@ -135,7 +377,7 @@
           <ScalarProperty Name="ngaysl_month" ColumnName="ngaysl_month" />
           <ScalarProperty Name="ngaysl_date" ColumnName="ngaysl_date" />
           <ScalarProperty Name="ngaysl" ColumnName="ngaysl" />
-          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
           <ScalarProperty Name="kqslsktt_id" ColumnName="kqslsktt_id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -143,6 +385,9 @@
     <EntitySetMapping Name="BVTL_KQ_XN_HIV">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
         <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
           <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
           <ScalarProperty Name="dangdieutri_hiv" ColumnName="dangdieutri_hiv" />
@@ -151,7 +396,7 @@
           <ScalarProperty Name="ngayxn_month" ColumnName="ngayxn_month" />
           <ScalarProperty Name="ngayxn_date" ColumnName="ngayxn_date" />
           <ScalarProperty Name="ngayxn" ColumnName="ngayxn" />
-          <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
           <ScalarProperty Name="kqxnhiv_id" ColumnName="kqxnhiv_id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -178,8 +423,69 @@
     <EntitySetMapping Name="BVTL_NHOM_TBH">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_NHOM_TBH">
         <MappingFragment StoreEntitySet="BVTL_NHOM_TBH">
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
           <ScalarProperty Name="tennhom_tbh" ColumnName="tennhom_tbh" />
           <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BVTL_PHIEU_TU_VAN">
+      <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN">
+        <MappingFragment StoreEntitySet="BVTL_PHIEU_TU_VAN">
+          <ScalarProperty Name="maduan" ColumnName="maduan" />
+          <ScalarProperty Name="city_code" ColumnName="city_code" />
+          <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+          <ScalarProperty Name="ngaytuvan_year" ColumnName="ngaytuvan_year" />
+          <ScalarProperty Name="ngaytuvan_month" ColumnName="ngaytuvan_month" />
+          <ScalarProperty Name="ngaytuvan_date" ColumnName="ngaytuvan_date" />
+          <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+          <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+          <ScalarProperty Name="makh" ColumnName="makh" />
+          <ScalarProperty Name="thoigian" ColumnName="thoigian" />
+          <ScalarProperty Name="vande" ColumnName="vande" />
+          <ScalarProperty Name="tuvantiep" ColumnName="tuvantiep" />
+          <ScalarProperty Name="tongket" ColumnName="tongket" />
+          <ScalarProperty Name="cau5_7k_2" ColumnName="cau5_7k_2" />
+          <ScalarProperty Name="cau5_8" ColumnName="cau5_8" />
+          <ScalarProperty Name="cau5_7k_3" ColumnName="cau5_7k_3" />
+          <ScalarProperty Name="cau5_7k" ColumnName="cau5_7k" />
+          <ScalarProperty Name="cau5_7" ColumnName="cau5_7" />
+          <ScalarProperty Name="cau5_6k_2" ColumnName="cau5_6k_2" />
+          <ScalarProperty Name="cau5_6k" ColumnName="cau5_6k" />
+          <ScalarProperty Name="cau5_6" ColumnName="cau5_6" />
+          <ScalarProperty Name="cau5_4_2" ColumnName="cau5_4_2" />
+          <ScalarProperty Name="cau5_5" ColumnName="cau5_5" />
+          <ScalarProperty Name="cau5_4_1" ColumnName="cau5_4_1" />
+          <ScalarProperty Name="cau5_4" ColumnName="cau5_4" />
+          <ScalarProperty Name="cau5_3_1" ColumnName="cau5_3_1" />
+          <ScalarProperty Name="cau5_3" ColumnName="cau5_3" />
+          <ScalarProperty Name="cau5_2k_2" ColumnName="cau5_2k_2" />
+          <ScalarProperty Name="cau5_2k" ColumnName="cau5_2k" />
+          <ScalarProperty Name="cau5_2" ColumnName="cau5_2" />
+          <ScalarProperty Name="cau5_1_2" ColumnName="cau5_1_2" />
+          <ScalarProperty Name="cau5_1k" ColumnName="cau5_1k" />
+          <ScalarProperty Name="cau5_1" ColumnName="cau5_1" />
+          <ScalarProperty Name="cau4_1k_2" ColumnName="cau4_1k_2" />
+          <ScalarProperty Name="cau4_1k" ColumnName="cau4_1k" />
+          <ScalarProperty Name="cau4" ColumnName="cau4" />
+          <ScalarProperty Name="cau3_1k_2" ColumnName="cau3_1k_2" />
+          <ScalarProperty Name="cau3_1k" ColumnName="cau3_1k" />
+          <ScalarProperty Name="cau3" ColumnName="cau3" />
+          <ScalarProperty Name="cau2_2" ColumnName="cau2_2" />
+          <ScalarProperty Name="cau2_1k" ColumnName="cau2_1k" />
+          <ScalarProperty Name="cau2" ColumnName="cau2" />
+          <ScalarProperty Name="cau1_5" ColumnName="cau1_5" />
+          <ScalarProperty Name="cau1_4" ColumnName="cau1_4" />
+          <ScalarProperty Name="cau1_3" ColumnName="cau1_3" />
+          <ScalarProperty Name="cau1_2" ColumnName="cau1_2" />
+          <ScalarProperty Name="cau1_1k" ColumnName="cau1_1k" />
+          <ScalarProperty Name="cau1_1" ColumnName="cau1_1" />
+          <ScalarProperty Name="lantuvan" ColumnName="lantuvan" />
+          <ScalarProperty Name="matcv" ColumnName="matcv" />
+          <ScalarProperty Name="diadiem" ColumnName="diadiem" />
+          <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />
+          <ScalarProperty Name="ngaynhap" ColumnName="ngaynhap" />
+          <ScalarProperty Name="record_id" ColumnName="record_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -197,6 +503,7 @@
     <EntitySetMapping Name="BVTL_QT_NGUOI_DUNG">
       <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG">
         <MappingFragment StoreEntitySet="BVTL_QT_NGUOI_DUNG">
+          <ScalarProperty Name="CityCodes" ColumnName="CityCodes" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="OriginId" ColumnName="OriginId" />
           <ScalarProperty Name="OperativeLevel" ColumnName="OperativeLevel" />

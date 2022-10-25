@@ -66,3 +66,15 @@ D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Model\obj\Debug\Model.csproj.CopyComp
 D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Model\obj\Debug\Model.dll
 D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Model\obj\Debug\Model.pdb
 D:\VuVanLai\Code\BVTL\Code\BVTL_Report_Web\Model\obj\Debug\Model.csproj.AssemblyReference.cache
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\Model.dll.config
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\Model.dll
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\Model.pdb
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\EntityFramework.dll
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\EntityFramework.SqlServer.dll
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\EntityFramework.xml
+D:\Projects\BVTL\Source_V1.0\Model\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\BVTL\Source_V1.0\Model\obj\Debug\Model.csprojAssemblyReference.cache
+D:\Projects\BVTL\Source_V1.0\Model\obj\Debug\Model.csproj.CoreCompileInputs.cache
+D:\Projects\BVTL\Source_V1.0\Model\obj\Debug\Model.csproj.CopyComplete
+D:\Projects\BVTL\Source_V1.0\Model\obj\Debug\Model.dll
+D:\Projects\BVTL\Source_V1.0\Model\obj\Debug\Model.pdb
