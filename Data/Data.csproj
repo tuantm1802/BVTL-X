@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Admin\ApiDA.cs" />
-    <Compile Include="Admin\ApiDA.cs" />
     <Compile Include="Admin\BaoCaoTongHopDA.cs" />
     <Compile Include="Admin\BVTL_NHOM_TBHDA.cs" />
     <Compile Include="Admin\ChatGayNghien3THDA.cs" />
