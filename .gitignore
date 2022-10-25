@@ -3,8 +3,8 @@
 ################################################################################
 
 .vs
-/Data/bin
-/Data/obj
+Data/bin
+Data/obj
 
 /WebApp/bin
 /WebApp/obj
