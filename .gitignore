@@ -75,3 +75,9 @@ _[Ss]cripts
 *.dot[Cc]over
 bin
 obj
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+#/.vs/WebApp/v16/Server/sqlite3
+/.vs
