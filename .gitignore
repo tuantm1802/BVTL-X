@@ -3,16 +3,16 @@
 ################################################################################
 
 /.vs
-#/Data/bin
-#/Data/obj
-#/WebApp/bin
-#/WebApp/obj
-#/Common/bin
-#/Common/obj
-#/SyncApp/bin
-#/SyncApp/obj
-#/Model/bin
-#/Model/obj
+/Data/bin
+/Data/obj
+/WebApp/bin
+/WebApp/obj
+/Common/bin
+/Common/obj
+/SyncApp/bin
+/SyncApp/obj
+/Model/bin
+/Model/obj
 *.suo
 *.ide
 *.pdb
