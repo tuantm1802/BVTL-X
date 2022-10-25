@@ -1800,16 +1800,18 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoDoiTuong_GioiTinh(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+            //decimal phanTram = 0;
             foreach (var item in modelInputs)
             {
-                phanTram = item.SoLuong / tongSo;
+                //phanTram = (decimal)(item.SoLuong  / tongSo);
                 outDatas.Add(new KetQuaSangLocModel
                 {
                     NoiDung = item.NoiDung,
                     SoNguoi = item.SoLuong,
-                    PhanTram = Math.Round(phanTram, 2)
-                });
+                    //PhanTram = Math.Round(phanTram, 2) * 100
+                    PhanTram = Math.Round(((100 * ((Convert.ToDecimal(item.SoLuong * 100) / tongSo))) / 100),2)
+
+            });
             }
             // Thêm dòng tổng số
             outDatas.Add(new KetQuaSangLocModel
