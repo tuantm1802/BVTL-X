@@ -4,3 +4,18 @@
 
 #/.vs/WebApp/v16/Server/sqlite3
 /.vs
+/Data/bin
+/Data/obj
+/WebApp/bin
+/WebApp/obj
+/Common/bin
+/Common/obj
+/SyncApp/bin
+/SyncApp/obj
+/Model/bin
+/Model/obj
+*.suo
+*.ide
+*.pdb
+*.cache
+*.dll
