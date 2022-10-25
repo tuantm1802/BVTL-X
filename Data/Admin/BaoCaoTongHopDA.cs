@@ -320,7 +320,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoLoanThan(List<KetQuaSangLocProModel> modelInputs, ref List<LoanThanModel> outDatas)
         {
             var tongSo = 0;
-            decimal phanTram = 0;
+
             var soLuongTheoDoiRinhRap = 0;
             var soLuongYNghi = 0;
             var soLuongNgheThuMaNKKNT = 0;
@@ -340,38 +340,44 @@ namespace Data.Admin
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a)).Sum(x => x.SoLuong);
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a) && x.c_4a.Contains("Có")).Sum(x => x.SoLuong);
             co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            co.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a) && x.c_4a.Contains("Không")).Sum(x => x.SoLuong);
             khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            khong.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
 
             // Cau c_4b
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b)).Sum(x => x.SoLuong);
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Có")).Sum(x => x.SoLuong);
             co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            co.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Không")).Sum(x => x.SoLuong);
             khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            khong.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
             // Cau c_4c
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c)).Sum(x => x.SoLuong);
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Có")).Sum(x => x.SoLuong);
             co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            co.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Không")).Sum(x => x.SoLuong);
             khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-            phanTram = soLuongTheoDoiRinhRap / tongSo;
-            khong.TheoDoiRinhRap_PhanTram = Math.Round(phanTram, 2);
+
+
+            khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
 
             outDatas.Add(co);
             outDatas.Add(khong);
@@ -387,7 +393,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoMucDoGapVanDeSKTT(List<KetQuaSangLocProModel> modelInputs, ref List<MucDoGapVanDeSKTTModel> outDatas)
         {
             var tongSo = 0;
-            decimal phanTram = 0;
+
             var soLuongKhongChutNao = 0;
             var soLuong1_7Ngay = 0;
             var soLuong8NgayTroLen = 0;
@@ -402,23 +408,27 @@ namespace Data.Admin
 
             soLuongKhongChutNao = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1a) && x.c_1a.Contains("Không")).Sum(x => x.SoLuong);
             loLangCangThang.KhongChutNao_SoLuong = soLuongKhongChutNao;
-            phanTram = soLuongKhongChutNao / tongSo;
-            loLangCangThang.KhongChutNao_PhanTram = Math.Round(phanTram, 2);
+
+
+            loLangCangThang.KhongChutNao_PhanTram = TinhPhanTram(soLuongKhongChutNao, tongSo);
 
             soLuong1_7Ngay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1a) && x.c_1a.Contains("Từ 1")).Sum(x => x.SoLuong);
             loLangCangThang.Tu1Den7Ngay_SoLuong = soLuong1_7Ngay;
-            phanTram = soLuong1_7Ngay / tongSo;
-            loLangCangThang.Tu1Den7Ngay_PhanTram = Math.Round(phanTram, 2);
+
+
+            loLangCangThang.Tu1Den7Ngay_PhanTram = TinhPhanTram(soLuong1_7Ngay, tongSo);
 
             soLuong8NgayTroLen = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1a) && x.c_1a.Contains("Từ 8")).Sum(x => x.SoLuong);
             loLangCangThang.Tu8NgayTroLen_SoLuong = soLuong8NgayTroLen;
-            phanTram = soLuong8NgayTroLen / tongSo;
-            loLangCangThang.Tu8NgayTroLen_PhanTram = Math.Round(phanTram, 2);
+
+
+            loLangCangThang.Tu8NgayTroLen_PhanTram = TinhPhanTram(soLuong8NgayTroLen, tongSo);
 
             soLuongGanNhuHangNgay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1a) && x.c_1a.Contains("gần")).Sum(x => x.SoLuong);
             loLangCangThang.GanNhuHangNgay_SoLuong = soLuongGanNhuHangNgay;
-            phanTram = soLuongGanNhuHangNgay / tongSo;
-            loLangCangThang.GanNhuHangNgay_PhanTram = Math.Round(phanTram, 2);
+
+
+            loLangCangThang.GanNhuHangNgay_PhanTram = TinhPhanTram(soLuongGanNhuHangNgay, tongSo);
 
             outDatas.Add(loLangCangThang);
 
@@ -430,23 +440,27 @@ namespace Data.Admin
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1b)).Sum(x => x.SoLuong);
             soLuongKhongChutNao = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1b) && x.c_1b.Contains("Không")).Sum(x => x.SoLuong);
             loAu.KhongChutNao_SoLuong = soLuongKhongChutNao;
-            phanTram = soLuongKhongChutNao / tongSo;
-            loAu.KhongChutNao_PhanTram = Math.Round(phanTram, 2);
+
+
+            loAu.KhongChutNao_PhanTram = TinhPhanTram(soLuongKhongChutNao, tongSo);
 
             soLuong1_7Ngay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1b) && x.c_1b.Contains("Từ 1")).Sum(x => x.SoLuong);
             loAu.Tu1Den7Ngay_SoLuong = soLuong1_7Ngay;
-            phanTram = soLuong1_7Ngay / tongSo;
-            loAu.Tu1Den7Ngay_PhanTram = Math.Round(phanTram, 2);
+
+
+            loAu.Tu1Den7Ngay_PhanTram = TinhPhanTram(soLuong1_7Ngay, tongSo);
 
             soLuong8NgayTroLen = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1b) && x.c_1b.Contains("Từ 8")).Sum(x => x.SoLuong);
             loAu.Tu8NgayTroLen_SoLuong = soLuong8NgayTroLen;
-            phanTram = soLuong8NgayTroLen / tongSo;
-            loAu.Tu8NgayTroLen_PhanTram = Math.Round(phanTram, 2);
+
+
+            loAu.Tu8NgayTroLen_PhanTram = TinhPhanTram(soLuong8NgayTroLen, tongSo);
 
             soLuongGanNhuHangNgay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1b) && x.c_1b.Contains("gần")).Sum(x => x.SoLuong);
             loAu.GanNhuHangNgay_SoLuong = soLuongGanNhuHangNgay;
-            phanTram = soLuongGanNhuHangNgay / tongSo;
-            loAu.GanNhuHangNgay_PhanTram = Math.Round(phanTram, 2);
+
+
+            loAu.GanNhuHangNgay_PhanTram = TinhPhanTram(soLuongGanNhuHangNgay, tongSo);
             outDatas.Add(loAu);
             // Cảm thấy buồn chán, mất hết hy vọng
             var buonChan = new MucDoGapVanDeSKTTModel
@@ -456,23 +470,27 @@ namespace Data.Admin
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1c)).Sum(x => x.SoLuong);
             soLuongKhongChutNao = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1c) && x.c_1c.Contains("Không")).Sum(x => x.SoLuong);
             buonChan.KhongChutNao_SoLuong = soLuongKhongChutNao;
-            phanTram = soLuongKhongChutNao / tongSo;
-            buonChan.KhongChutNao_PhanTram = Math.Round(phanTram, 2);
+
+
+            buonChan.KhongChutNao_PhanTram = TinhPhanTram(soLuongKhongChutNao, tongSo);
 
             soLuong1_7Ngay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1c) && x.c_1c.Contains("Từ 1")).Sum(x => x.SoLuong);
             buonChan.Tu1Den7Ngay_SoLuong = soLuong1_7Ngay;
-            phanTram = soLuong1_7Ngay / tongSo;
-            buonChan.Tu1Den7Ngay_PhanTram = Math.Round(phanTram, 2);
+
+
+            buonChan.Tu1Den7Ngay_PhanTram = TinhPhanTram(soLuong1_7Ngay, tongSo);
 
             soLuong8NgayTroLen = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1c) && x.c_1c.Contains("Từ 8")).Sum(x => x.SoLuong);
             buonChan.Tu8NgayTroLen_SoLuong = soLuong8NgayTroLen;
-            phanTram = soLuong8NgayTroLen / tongSo;
-            buonChan.Tu8NgayTroLen_PhanTram = Math.Round(phanTram, 2);
+
+
+            buonChan.Tu8NgayTroLen_PhanTram = TinhPhanTram(soLuong8NgayTroLen, tongSo);
 
             soLuongGanNhuHangNgay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1c) && x.c_1c.Contains("gần")).Sum(x => x.SoLuong);
             buonChan.GanNhuHangNgay_SoLuong = soLuongGanNhuHangNgay;
-            phanTram = soLuongGanNhuHangNgay / tongSo;
-            buonChan.GanNhuHangNgay_PhanTram = Math.Round(phanTram, 2);
+
+
+            buonChan.GanNhuHangNgay_PhanTram = TinhPhanTram(soLuongGanNhuHangNgay, tongSo);
             outDatas.Add(buonChan);
 
             // Ít quan tâm hoặc ít hứng thú với mọi thứ
@@ -483,23 +501,27 @@ namespace Data.Admin
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1d)).Sum(x => x.SoLuong);
             soLuongKhongChutNao = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1d) && x.c_1d.Contains("Không")).Sum(x => x.SoLuong);
             itQuanTam.KhongChutNao_SoLuong = soLuongKhongChutNao;
-            phanTram = soLuongKhongChutNao / tongSo;
-            itQuanTam.KhongChutNao_PhanTram = Math.Round(phanTram, 2);
+
+
+            itQuanTam.KhongChutNao_PhanTram = TinhPhanTram(soLuongKhongChutNao, tongSo);
 
             soLuong1_7Ngay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1d) && x.c_1d.Contains("Từ 1")).Sum(x => x.SoLuong);
             itQuanTam.Tu1Den7Ngay_SoLuong = soLuong1_7Ngay;
-            phanTram = soLuong1_7Ngay / tongSo;
-            itQuanTam.Tu1Den7Ngay_PhanTram = Math.Round(phanTram, 2);
+
+
+            itQuanTam.Tu1Den7Ngay_PhanTram = TinhPhanTram(soLuong1_7Ngay, tongSo);
 
             soLuong8NgayTroLen = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1d) && x.c_1d.Contains("Từ 8")).Sum(x => x.SoLuong);
             itQuanTam.Tu8NgayTroLen_SoLuong = soLuong8NgayTroLen;
-            phanTram = soLuong8NgayTroLen / tongSo;
-            itQuanTam.Tu8NgayTroLen_PhanTram = Math.Round(phanTram, 2);
+
+
+            itQuanTam.Tu8NgayTroLen_PhanTram = TinhPhanTram(soLuong8NgayTroLen, tongSo);
 
             soLuongGanNhuHangNgay = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_1d) && x.c_1d.Contains("gần")).Sum(x => x.SoLuong);
             itQuanTam.GanNhuHangNgay_SoLuong = soLuongGanNhuHangNgay;
-            phanTram = soLuongGanNhuHangNgay / tongSo;
-            itQuanTam.GanNhuHangNgay_PhanTram = Math.Round(phanTram, 2);
+
+
+            itQuanTam.GanNhuHangNgay_PhanTram = TinhPhanTram(soLuongGanNhuHangNgay, tongSo);
             outDatas.Add(itQuanTam);
         }
 
@@ -514,16 +536,17 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoKetQuaQST(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             foreach (var item in modelInputs)
             {
-                phanTram = item.SoLuong / tongSo;
+
+
                 outDatas.Add(new KetQuaSangLocModel
                 {
                     NoiDung = item.tongdiem + " điểm",
                     SoNguoi = item.SoLuong,
-                    PhanTram = Math.Round(phanTram, 2)
+                    PhanTram = TinhPhanTram(item.SoLuong, tongSo)
                 });
             }
         }
@@ -538,7 +561,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoCacLoaiChatGayNghien(List<KetQuaSangLocProModel> modelInputs, ref List<CacChatGayNghienModel> outDatas)
         {
             var tongSo = 0;
-            decimal phanTram = 0;
+
             var soLuongNguyCoThap = 0;
             var soLuongNguyCoTrungBinh = 0;
             var soLuongNguyCoCao = 0;
@@ -552,18 +575,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthuocla) && Convert.ToInt32(x.diemthuocla) >= 0 && Convert.ToInt32(x.diemthuocla) <= 3).Sum(x => x.SoLuong);
             thuocLa.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            thuocLa.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocLa.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthuocla) && Convert.ToInt32(x.diemthuocla) >= 4 && Convert.ToInt32(x.diemthuocla) <= 27).Sum(x => x.SoLuong);
             thuocLa.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            thuocLa.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocLa.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthuocla) && Convert.ToInt32(x.diemthuocla) > 27).Sum(x => x.SoLuong);
             thuocLa.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            thuocLa.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocLa.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             thuocLa.Tong_SoLuong = tongSo;
             outDatas.Add(thuocLa);
@@ -576,18 +602,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthucuong) && Convert.ToInt32(x.diemthucuong) >= 0 && Convert.ToInt32(x.diemthucuong) <= 3).Sum(x => x.SoLuong);
             conRuou.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            conRuou.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            conRuou.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthucuong) && Convert.ToInt32(x.diemthucuong) >= 4 && Convert.ToInt32(x.diemthucuong) <= 27).Sum(x => x.SoLuong);
             conRuou.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            conRuou.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            conRuou.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemthucuong) && Convert.ToInt32(x.diemthucuong) > 27).Sum(x => x.SoLuong);
             conRuou.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            conRuou.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            conRuou.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             conRuou.Tong_SoLuong = tongSo;
             outDatas.Add(conRuou);
@@ -601,18 +630,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcansa) && Convert.ToInt32(x.diemcansa) >= 0 && Convert.ToInt32(x.diemcansa) <= 3).Sum(x => x.SoLuong);
             canSa.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            canSa.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            canSa.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcansa) && Convert.ToInt32(x.diemcansa) >= 4 && Convert.ToInt32(x.diemcansa) <= 27).Sum(x => x.SoLuong);
             canSa.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            canSa.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            canSa.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcansa) && Convert.ToInt32(x.diemcansa) > 27).Sum(x => x.SoLuong);
             canSa.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            canSa.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            canSa.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             canSa.Tong_SoLuong = tongSo;
             outDatas.Add(canSa);
@@ -626,18 +658,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcoca) && Convert.ToInt32(x.diemcoca) >= 0 && Convert.ToInt32(x.diemcoca) <= 3).Sum(x => x.SoLuong);
             cocaine.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            cocaine.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            cocaine.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcoca) && Convert.ToInt32(x.diemcoca) >= 4 && Convert.ToInt32(x.diemcoca) <= 27).Sum(x => x.SoLuong);
             cocaine.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            cocaine.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            cocaine.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemcoca) && Convert.ToInt32(x.diemcoca) > 27).Sum(x => x.SoLuong);
             cocaine.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            cocaine.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            cocaine.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             cocaine.Tong_SoLuong = tongSo;
             outDatas.Add(cocaine);
@@ -651,18 +686,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkichthich) && Convert.ToInt32(x.diemchatkichthich) >= 0 && Convert.ToInt32(x.diemchatkichthich) <= 3).Sum(x => x.SoLuong);
             maTuyDa.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            maTuyDa.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            maTuyDa.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkichthich) && Convert.ToInt32(x.diemchatkichthich) >= 4 && Convert.ToInt32(x.diemchatkichthich) <= 27).Sum(x => x.SoLuong);
             maTuyDa.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            maTuyDa.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            maTuyDa.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkichthich) && Convert.ToInt32(x.diemchatkichthich) > 27).Sum(x => x.SoLuong);
             maTuyDa.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            maTuyDa.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            maTuyDa.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             maTuyDa.Tong_SoLuong = tongSo;
             outDatas.Add(maTuyDa);
@@ -676,18 +714,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemkhixong) && Convert.ToInt32(x.diemkhixong) >= 0 && Convert.ToInt32(x.diemkhixong) <= 3).Sum(x => x.SoLuong);
             khiXongHit.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            khiXongHit.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            khiXongHit.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemkhixong) && Convert.ToInt32(x.diemkhixong) >= 4 && Convert.ToInt32(x.diemkhixong) <= 27).Sum(x => x.SoLuong);
             khiXongHit.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            khiXongHit.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            khiXongHit.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemkhixong) && Convert.ToInt32(x.diemkhixong) > 27).Sum(x => x.SoLuong);
             khiXongHit.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            khiXongHit.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            khiXongHit.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             khiXongHit.Tong_SoLuong = tongSo;
             outDatas.Add(khiXongHit);
@@ -701,18 +742,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatanthan) && Convert.ToInt32(x.diemchatanthan) >= 0 && Convert.ToInt32(x.diemchatanthan) <= 3).Sum(x => x.SoLuong);
             thuocAnThan.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            thuocAnThan.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocAnThan.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatanthan) && Convert.ToInt32(x.diemchatanthan) >= 4 && Convert.ToInt32(x.diemchatanthan) <= 27).Sum(x => x.SoLuong);
             thuocAnThan.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            thuocAnThan.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocAnThan.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatanthan) && Convert.ToInt32(x.diemchatanthan) > 27).Sum(x => x.SoLuong);
             thuocAnThan.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            thuocAnThan.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            thuocAnThan.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             thuocAnThan.Tong_SoLuong = tongSo;
             outDatas.Add(thuocAnThan);
@@ -726,18 +770,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatgayaogiac) && Convert.ToInt32(x.diemchatgayaogiac) >= 0 && Convert.ToInt32(x.diemchatgayaogiac) <= 3).Sum(x => x.SoLuong);
             chatGayAoGiac.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            chatGayAoGiac.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatGayAoGiac.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatgayaogiac) && Convert.ToInt32(x.diemchatgayaogiac) >= 4 && Convert.ToInt32(x.diemchatgayaogiac) <= 27).Sum(x => x.SoLuong);
             chatGayAoGiac.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            chatGayAoGiac.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatGayAoGiac.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatgayaogiac) && Convert.ToInt32(x.diemchatgayaogiac) > 27).Sum(x => x.SoLuong);
             chatGayAoGiac.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            chatGayAoGiac.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatGayAoGiac.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             chatGayAoGiac.Tong_SoLuong = tongSo;
             outDatas.Add(chatGayAoGiac);
@@ -750,18 +797,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatthuocphien) && Convert.ToInt32(x.diemchatthuocphien) >= 0 && Convert.ToInt32(x.diemchatthuocphien) <= 3).Sum(x => x.SoLuong);
             chatThuocPhien.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            chatThuocPhien.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatThuocPhien.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatthuocphien) && Convert.ToInt32(x.diemchatthuocphien) >= 4 && Convert.ToInt32(x.diemchatthuocphien) <= 27).Sum(x => x.SoLuong);
             chatThuocPhien.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            chatThuocPhien.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatThuocPhien.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatthuocphien) && Convert.ToInt32(x.diemchatthuocphien) > 27).Sum(x => x.SoLuong);
             chatThuocPhien.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            chatThuocPhien.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            chatThuocPhien.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             chatThuocPhien.Tong_SoLuong = tongSo;
             outDatas.Add(chatThuocPhien);
@@ -774,18 +824,21 @@ namespace Data.Admin
 
             soLuongNguyCoThap = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkhac) && Convert.ToInt32(x.diemchatkhac) >= 0 && Convert.ToInt32(x.diemchatkhac) <= 3).Sum(x => x.SoLuong);
             cacThuocKhac.NguyCoThap_SoLuong = soLuongNguyCoThap;
-            phanTram = soLuongNguyCoThap / tongSo;
-            cacThuocKhac.NguyCoThap_PhanTram = Math.Round(phanTram, 2);
+
+
+            cacThuocKhac.NguyCoThap_PhanTram = TinhPhanTram(soLuongNguyCoThap, tongSo);
 
             soLuongNguyCoTrungBinh = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkhac) && Convert.ToInt32(x.diemchatkhac) >= 4 && Convert.ToInt32(x.diemchatkhac) <= 27).Sum(x => x.SoLuong);
             cacThuocKhac.NguyCoTrungBinh_SoLuong = soLuongNguyCoTrungBinh;
-            phanTram = soLuongNguyCoTrungBinh / tongSo;
-            cacThuocKhac.NguyCoTrungBinh_PhanTram = Math.Round(phanTram, 2);
+
+
+            cacThuocKhac.NguyCoTrungBinh_PhanTram = TinhPhanTram(soLuongNguyCoTrungBinh, tongSo);
 
             soLuongNguyCoCao = modelInputs.Where(x => !string.IsNullOrEmpty(x.diemchatkhac) && Convert.ToInt32(x.diemchatkhac) > 27).Sum(x => x.SoLuong);
             cacThuocKhac.NguyCoCao_SoLuong = soLuongNguyCoCao;
-            phanTram = soLuongNguyCoCao / tongSo;
-            cacThuocKhac.NguyCoCao_PhanTram = Math.Round(phanTram, 2);
+
+
+            cacThuocKhac.NguyCoCao_PhanTram = TinhPhanTram(soLuongNguyCoCao, tongSo);
 
             cacThuocKhac.Tong_SoLuong = tongSo;
             outDatas.Add(cacThuocKhac);
@@ -801,96 +854,105 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoSocMeth(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // Hoang tưởng/ ảo giác
             var soLuongHoangTuong = modelInputs.Where(x => x.trieuchung_2.Contains("Hoang")).Sum(x => x.SoLuong);
-            phanTram = soLuongHoangTuong / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Hoang tưởng/ ảo giác",
                 SoNguoi = soLuongHoangTuong,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongHoangTuong, tongSo)
             });
 
             // Buồn nôn/ nôn mửa      
             var soLuongBuonNon = modelInputs.Where(x => x.trieuchung_2.Contains("Buồn")).Sum(x => x.SoLuong);
-            phanTram = soLuongBuonNon / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Buồn nôn/ nôn mửa",
                 SoNguoi = soLuongBuonNon,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongBuonNon, tongSo)
             });
 
             // Run rẩy/ co giật
             var soLuongRunRay = modelInputs.Where(x => x.trieuchung_2.Contains("Run")).Sum(x => x.SoLuong);
-            phanTram = soLuongRunRay / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Run rẩy/ co giật",
                 SoNguoi = soLuongRunRay,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongRunRay, tongSo)
             });
 
             // Cảm thấy tê liệt nhưng vẫn tỉnh
             var soLuongCam = modelInputs.Where(x => x.trieuchung_2.Contains("Cảm")).Sum(x => x.SoLuong);
-            phanTram = soLuongCam / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Cảm thấy tê liệt nhưng vẫn tỉnh",
                 SoNguoi = soLuongCam,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongCam, tongSo)
             });
 
             // Lo âu/ cơn hoảng loạn
             var soLuongLoAu = modelInputs.Where(x => x.trieuchung_2.Contains("Lo")).Sum(x => x.SoLuong);
-            phanTram = soLuongLoAu / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Lo âu/ cơn hoảng loạn",
                 SoNguoi = soLuongLoAu,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongLoAu, tongSo)
             });
 
             // Đau ngực hoặc căng tức ngực
             var soLuongDau = modelInputs.Where(x => x.trieuchung_2.Contains("Đau")).Sum(x => x.SoLuong);
-            phanTram = soLuongDau / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Đau ngực hoặc căng tức ngực",
                 SoNguoi = soLuongDau,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongDau, tongSo)
             });
 
             //Đột quỵ 
-            var soLuongDột = modelInputs.Where(x => x.trieuchung_2.Contains("Đột")).Sum(x => x.SoLuong);
-            phanTram = soLuongDột / tongSo;
+            var soLuongDot = modelInputs.Where(x => x.trieuchung_2.Contains("Đột")).Sum(x => x.SoLuong);
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Đột quỵ",
-                SoNguoi = soLuongDột,
-                PhanTram = Math.Round(phanTram, 2)
+                SoNguoi = soLuongDot,
+                PhanTram = TinhPhanTram(soLuongDot, tongSo)
             });
 
             // Tim đập rất nhanh
             var soLuongTim = modelInputs.Where(x => x.trieuchung_2.Contains("Tim")).Sum(x => x.SoLuong);
-            phanTram = soLuongTim / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Tim đập rất nhanh",
                 SoNguoi = soLuongTim,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongTim, tongSo)
             });
 
             // Chưa từng gặp triệu chứng nào
             var soLuongChua = modelInputs.Where(x => x.trieuchung_2.Contains("Chưa từng")).Sum(x => x.SoLuong);
-            phanTram = soLuongChua / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Chưa từng gặp triệu chứng nào",
                 SoNguoi = soLuongChua,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongChua, tongSo)
             });
 
             // Thêm dòng tổng số
@@ -912,25 +974,27 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoSocHeroins(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
             var soLuongKhongGap = modelInputs.Where(x => x.trieuchung.Contains("không gặp")).Sum(x => x.SoLuong);
             // Từng có một trong các triệu chứng
 
-            phanTram = (tongSo - soLuongKhongGap) / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Từng có một trong các triệu chứng",
                 SoNguoi = (tongSo - soLuongKhongGap),
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram((tongSo - soLuongKhongGap), tongSo)
             });
 
             // Chưa từng gặp triệu chứng nào
-            phanTram = soLuongKhongGap / tongSo;
+
+
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Chưa từng gặp triệu chứng nào",
                 SoNguoi = soLuongKhongGap,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongKhongGap, tongSo)
             });
 
             // Thêm dòng tổng số
@@ -953,7 +1017,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoBenhLao_VGC(List<KetQuaSangLocProModel> modelInputs, ref List<BenhLao_VGCModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // có
             var co = new BenhLao_VGCModel
@@ -975,30 +1039,35 @@ namespace Data.Admin
             var soLuongHTCo = modelInputs.Where(x => x.NoiDung_HT.Contains("Có")).Sum(x => x.SoLuong);
             var soLuongQKCo = modelInputs.Where(x => x.NoiDung_QK.Contains("Có")).Sum(x => x.SoLuong);
 
-            phanTram = soLuongHTCo / tongSo;
+
+
             co.HienTai_SoLuong = soLuongHTCo;
-            co.HienTai_PhanTram = Math.Round(phanTram, 2);
+            co.HienTai_PhanTram = TinhPhanTram(soLuongHTCo, tongSo);
             co.QuaKhu_SoLuong = soLuongQKCo;
-            phanTram = soLuongQKCo / tongSo;
-            co.QuaKhu_PhanTram = Math.Round(phanTram, 2);
+
+
+            co.QuaKhu_PhanTram = TinhPhanTram(soLuongQKCo, tongSo);
 
             var soLuongHTKhong = modelInputs.Where(x => x.NoiDung_HT.Contains("Không")).Sum(x => x.SoLuong);
             var soLuongQKKhong = modelInputs.Where(x => x.NoiDung_QK.Contains("Không")).Sum(x => x.SoLuong);
-            phanTram = soLuongHTKhong / tongSo;
+
             khong.HienTai_SoLuong = soLuongHTKhong;
-            khong.HienTai_PhanTram = Math.Round(phanTram, 2);
+            khong.HienTai_PhanTram = TinhPhanTram(soLuongHTKhong, tongSo);
             khong.QuaKhu_SoLuong = soLuongQKKhong;
-            phanTram = soLuongQKKhong / tongSo;
-            khong.QuaKhu_PhanTram = Math.Round(phanTram, 2);
+
+
+            khong.QuaKhu_PhanTram = TinhPhanTram(soLuongQKKhong, tongSo);
 
             var soLuongHTKB = modelInputs.Where(x => x.NoiDung_HT.Contains("KB")).Sum(x => x.SoLuong);
             var soLuongQKKB = modelInputs.Where(x => x.NoiDung_QK.Contains("KB")).Sum(x => x.SoLuong);
-            phanTram = soLuongHTKB / tongSo;
+
+
             kbktl.HienTai_SoLuong = soLuongHTKB;
-            kbktl.HienTai_PhanTram = Math.Round(phanTram, 2);
+            kbktl.HienTai_PhanTram = TinhPhanTram(soLuongHTKB, tongSo);
             kbktl.QuaKhu_SoLuong = soLuongQKKB;
-            phanTram = soLuongQKKB / tongSo;
-            kbktl.QuaKhu_PhanTram = Math.Round(phanTram, 2);
+
+
+            kbktl.QuaKhu_PhanTram = TinhPhanTram(soLuongQKKB, tongSo);
 
             outDatas.Add(co);
             outDatas.Add(khong);
@@ -1015,7 +1084,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoBenhSTI(List<KetQuaSangLocProModel> modelInputs, ref List<BenhSTIModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new BenhSTIModel
@@ -1029,34 +1098,40 @@ namespace Data.Admin
             };
 
             var soLuongLau = modelInputs.Where(x => x.sti1.Contains("LẬU")).Sum(x => x.SoLuong);
-            phanTram = soLuongLau / tongSo;
+
+
             soNguoi.Lau = soLuongLau;
-            tyLe.Lau = Math.Round(phanTram, 2);
+            tyLe.Lau = TinhPhanTram(soLuongLau, tongSo);
 
             var soLuongSuiMaoGa = modelInputs.Where(x => x.sti1.Contains("SÙI")).Sum(x => x.SoLuong);
-            phanTram = soLuongSuiMaoGa / tongSo;
+
+
             soNguoi.SuiMaoGa = soLuongSuiMaoGa;
-            tyLe.SuiMaoGa = Math.Round(phanTram, 2);
+            tyLe.SuiMaoGa = TinhPhanTram(soLuongSuiMaoGa, tongSo);
 
             var soLuongKhongMac = modelInputs.Where(x => x.sti1.Contains("KHÔNG")).Sum(x => x.SoLuong);
-            phanTram = soLuongKhongMac / tongSo;
+
+
             soNguoi.KhongMac = soLuongKhongMac;
-            tyLe.KhongMac = Math.Round(phanTram, 2);
+            tyLe.KhongMac = TinhPhanTram(soLuongKhongMac, tongSo);
 
             var soLuongKhac = modelInputs.Where(x => x.sti1.Contains("KHÁC")).Sum(x => x.SoLuong);
-            phanTram = soLuongKhac / tongSo;
+
+
             soNguoi.Khac = soLuongKhac;
-            tyLe.Khac = Math.Round(phanTram, 2);
+            tyLe.Khac = TinhPhanTram(soLuongKhac, tongSo);
 
             var soLuongGiangMai = modelInputs.Where(x => x.sti1.Contains("GIANG")).Sum(x => x.SoLuong);
-            phanTram = soLuongGiangMai / tongSo;
+
+
             soNguoi.GiangMai = soLuongGiangMai;
-            tyLe.GiangMai = Math.Round(phanTram, 2);
+            tyLe.GiangMai = TinhPhanTram(soLuongGiangMai, tongSo);
 
             var soLuongKBKTL = modelInputs.Where(x => x.sti1.Contains("KB")).Sum(x => x.SoLuong);
-            phanTram = soLuongKBKTL / tongSo;
+
+
             soNguoi.KBKTL = soLuongKBKTL;
-            tyLe.KBKTL = Math.Round(phanTram, 2);
+            tyLe.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1073,7 +1148,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoNhieuNguycoTinhDuc(List<KetQuaSangLocProModel> modelInputs, ref List<NhieuNguyCoTinhDucModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new NhieuNguyCoTinhDucModel
@@ -1087,24 +1162,28 @@ namespace Data.Admin
             };
 
             var soLuong1NC = modelInputs.Where(x => x.NoiDung.Contains("1")).Sum(x => x.SoLuong);
-            phanTram = soLuong1NC / tongSo;
+
+
             soNguoi.Mot = soLuong1NC;
-            tyLe.Mot = Math.Round(phanTram, 2);
+            tyLe.Mot = TinhPhanTram(soLuong1NC, tongSo);
 
             var soLuongHai = modelInputs.Where(x => x.NoiDung.Contains("2")).Sum(x => x.SoLuong);
-            phanTram = soLuongHai / tongSo;
+
+
             soNguoi.Hai = soLuongHai;
-            tyLe.Hai = Math.Round(phanTram, 2);
+            tyLe.Hai = TinhPhanTram(soLuongHai, tongSo);
 
             var soLuongBa = modelInputs.Where(x => x.NoiDung.Contains("3")).Sum(x => x.SoLuong);
-            phanTram = soLuongBa / tongSo;
+
+
             soNguoi.Ba = soLuongBa;
-            tyLe.Ba = Math.Round(phanTram, 2);
+            tyLe.Ba = TinhPhanTram(soLuongBa, tongSo);
 
             var soLuongBonNam = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) > 3).Sum(x => x.SoLuong);
-            phanTram = soLuongBonNam / tongSo;
+
+
             soNguoi.BonNam = soLuongBonNam;
-            tyLe.BonNam = Math.Round(phanTram, 2);
+            tyLe.BonNam = TinhPhanTram(soLuongBonNam, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1121,7 +1200,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoSDMaTuyDaKhiQHTD(List<KetQuaSangLocProModel> modelInputs, ref List<SuDungMTDKhiQHTDModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new SuDungMTDKhiQHTDModel
@@ -1135,19 +1214,22 @@ namespace Data.Admin
             };
 
             var soLuongCo = modelInputs.Where(x => x.NoiDung.Contains("có") || x.NoiDung.Contains("Có")).Sum(x => x.SoLuong);
-            phanTram = soLuongCo / tongSo;
+
+
             soNguoi.Co = soLuongCo;
-            tyLe.Co = Math.Round(phanTram, 2);
+            tyLe.Co = TinhPhanTram(soLuongCo, tongSo);
 
             var soLuongKhong = modelInputs.Where(x => x.NoiDung.Contains("không") || x.NoiDung.Contains("Không")).Sum(x => x.SoLuong);
-            phanTram = soLuongKhong / tongSo;
+
+
             soNguoi.Khong = soLuongKhong;
-            tyLe.Khong = Math.Round(phanTram, 2);
+            tyLe.Khong = TinhPhanTram(soLuongKhong, tongSo);
 
             var soLuongKBKTL = modelInputs.Where(x => x.NoiDung.Contains("kB") || x.NoiDung.Contains("KB")).Sum(x => x.SoLuong);
-            phanTram = soLuongKBKTL / tongSo;
+
+
             soNguoi.KBKTL = soLuongKBKTL;
-            tyLe.KBKTL = Math.Round(phanTram, 2);
+            tyLe.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1164,7 +1246,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoDungBCS(List<KetQuaSangLocProModel> modelInputs, ref List<DungBCSModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new DungBCSModel
@@ -1178,29 +1260,34 @@ namespace Data.Admin
             };
 
             var soLuongLuonLuon = modelInputs.Where(x => x.qhtd_2.Contains("luôn")).Sum(x => x.SoLuong);
-            phanTram = soLuongLuonLuon / tongSo;
+
+
             soNguoi.LuonLuon = soLuongLuonLuon;
-            tyLe.LuonLuon = Math.Round(phanTram, 2);
+            tyLe.LuonLuon = TinhPhanTram(soLuongLuonLuon, tongSo);
 
             var soLuongThuongXuyen = modelInputs.Where(x => x.qhtd_2.Contains("thường") || x.qhtd_2.Contains("Thường")).Sum(x => x.SoLuong);
-            phanTram = soLuongThuongXuyen / tongSo;
+
+
             soNguoi.ThuongXuyen = soLuongThuongXuyen;
-            tyLe.ThuongXuyen = Math.Round(phanTram, 2);
+            tyLe.ThuongXuyen = TinhPhanTram(soLuongThuongXuyen, tongSo);
 
             var soLuongThiThoang = modelInputs.Where(x => x.qhtd_2.Contains("thỉnh") || x.qhtd_2.Contains("Thỉnh")).Sum(x => x.SoLuong);
-            phanTram = soLuongThiThoang / tongSo;
+
+
             soNguoi.ThiThoang = soLuongThiThoang;
-            tyLe.ThiThoang = Math.Round(phanTram, 2);
+            tyLe.ThiThoang = TinhPhanTram(soLuongThiThoang, tongSo);
 
             var soLuongHiemKhi = modelInputs.Where(x => x.qhtd_2.Contains("hiếm") || x.qhtd_2.Contains("Hiếm")).Sum(x => x.SoLuong);
-            phanTram = soLuongHiemKhi / tongSo;
+
+
             soNguoi.HiemKhi = soLuongHiemKhi;
-            tyLe.HiemKhi = Math.Round(phanTram, 2);
+            tyLe.HiemKhi = TinhPhanTram(soLuongHiemKhi, tongSo);
 
             var soLuongKhongBaoGio = modelInputs.Where(x => x.qhtd_2.Contains("không bao") || x.qhtd_2.Contains("Không bao")).Sum(x => x.SoLuong);
-            phanTram = soLuongKhongBaoGio / tongSo;
+
+
             soNguoi.KhongBaoGio = soLuongKhongBaoGio;
-            tyLe.KhongBaoGio = Math.Round(phanTram, 2);
+            tyLe.KhongBaoGio = TinhPhanTram(soLuongKhongBaoGio, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1217,7 +1304,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoNguyCoTinhDuc(List<KetQuaSangLocProModel> modelInputs, ref List<NguyCoTinhDucModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new NguyCoTinhDucModel
@@ -1231,24 +1318,28 @@ namespace Data.Admin
             };
 
             var soLuongChuaBaoGio = modelInputs.Where(x => x.qhtd.Contains("chưa") || x.qhtd.Contains("Chưa")).Sum(x => x.SoLuong);
-            phanTram = soLuongChuaBaoGio / tongSo;
+
+
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
-            tyLe.ChuaBaoGio = Math.Round(phanTram, 2);
+            tyLe.ChuaBaoGio = TinhPhanTram(soLuongChuaBaoGio, tongSo);
 
             var soLuongDongGioi = modelInputs.Where(x => x.qhtd.Contains("đồng") || x.qhtd.Contains("Đồng")).Sum(x => x.SoLuong);
-            phanTram = soLuongDongGioi / tongSo;
+
+
             soNguoi.DongGioi = soLuongDongGioi;
-            tyLe.DongGioi = Math.Round(phanTram, 2);
+            tyLe.DongGioi = TinhPhanTram(soLuongDongGioi, tongSo);
 
             var soLuongKhacGioi = modelInputs.Where(x => x.qhtd.Contains("khác") || x.qhtd.Contains("Khác")).Sum(x => x.SoLuong);
-            phanTram = soLuongKhacGioi / tongSo;
+
+
             soNguoi.KhacGioi = soLuongKhacGioi;
-            tyLe.KhacGioi = Math.Round(phanTram, 2);
+            tyLe.KhacGioi = TinhPhanTram(soLuongKhacGioi, tongSo);
 
             var soLuongCaHai = modelInputs.Where(x => x.qhtd.Contains(",")).Sum(x => x.SoLuong);
-            phanTram = soLuongCaHai / tongSo;
+
+
             soNguoi.CaHai = soLuongCaHai;
-            tyLe.CaHai = Math.Round(phanTram, 2);
+            tyLe.CaHai = TinhPhanTram(soLuongCaHai, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1265,7 +1356,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoChungBKT(List<KetQuaSangLocProModel> modelInputs, ref List<ChungBKTModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new ChungBKTModel
@@ -1279,15 +1370,17 @@ namespace Data.Admin
             };
 
             var soLuongDaTungDungChung = modelInputs.Where(x => x.dungchung.Contains("đã") || x.dungchung.Contains("Đã")).Sum(x => x.SoLuong);
-            phanTram = soLuongDaTungDungChung / tongSo;
+
+
             soNguoi.DaTungDungChung = soLuongDaTungDungChung;
-            tyLe.DaTungDungChung = Math.Round(phanTram, 2);
+            tyLe.DaTungDungChung = TinhPhanTram(soLuongDaTungDungChung, tongSo);
 
 
             var soLuongChuaBaoGio = modelInputs.Where(x => x.dungchung.Contains("chưa bao") || x.dungchung.Contains("Chưa bao")).Sum(x => x.SoLuong);
-            phanTram = soLuongChuaBaoGio / tongSo;
+
+
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
-            tyLe.ChuaBaoGio = Math.Round(phanTram, 2);
+            tyLe.ChuaBaoGio = TinhPhanTram(soLuongChuaBaoGio, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1304,7 +1397,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoNguyCoKhiSDMTD(List<KetQuaSangLocProModel> modelInputs, ref List<NguyCoKhiSDMTDModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new NguyCoKhiSDMTDModel
@@ -1318,19 +1411,22 @@ namespace Data.Admin
             };
 
             var soLuongChuaBaoGio = modelInputs.Where(x => x.tiemchich.Contains("chưa") || x.tiemchich.Contains("Chưa")).Sum(x => x.SoLuong);
-            phanTram = soLuongChuaBaoGio / tongSo;
+
+
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
-            tyLe.ChuaBaoGio = Math.Round(phanTram, 2);
+            tyLe.ChuaBaoGio = TinhPhanTram(soLuongChuaBaoGio, tongSo);
 
             var soLuongDaTungTiemChich = modelInputs.Where(x => x.tiemchich.Contains("đã") || x.tiemchich.Contains("Đã")).Sum(x => x.SoLuong);
-            phanTram = soLuongDaTungTiemChich / tongSo;
+
+
             soNguoi.DaTungTiemChich = soLuongDaTungTiemChich;
-            tyLe.DaTungTiemChich = Math.Round(phanTram, 2);
+            tyLe.DaTungTiemChich = TinhPhanTram(soLuongDaTungTiemChich, tongSo);
 
             var soLuongVanDangTiemChich = modelInputs.Where(x => x.tiemchich.Contains("vẫn") || x.tiemchich.Contains("Vẫn")).Sum(x => x.SoLuong);
-            phanTram = soLuongVanDangTiemChich / tongSo;
+
+
             soNguoi.VanDangTiemChich = soLuongVanDangTiemChich;
-            tyLe.VanDangTiemChich = Math.Round(phanTram, 2);
+            tyLe.VanDangTiemChich = TinhPhanTram(soLuongVanDangTiemChich, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1347,7 +1443,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoLoaiMaTuyDaSDDauTien(List<KetQuaSangLocProModel> modelInputs, ref List<LoaiMaTuyDaSuDungDTModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new LoaiMaTuyDaSuDungDTModel
@@ -1361,39 +1457,39 @@ namespace Data.Admin
             };
 
             var soLuongDa = modelInputs.Where(x => x.matuydautien.Contains("đá") || x.matuydautien.Contains("Đá")).Sum(x => x.SoLuong);
-            phanTram = soLuongDa / tongSo;
+
             soNguoi.Da = soLuongDa;
-            tyLe.Da = Math.Round(phanTram, 2);
+            tyLe.Da = TinhPhanTram(soLuongDa, tongSo);
 
             var soLuongKeo = modelInputs.Where(x => x.matuydautien.Contains("keo") || x.matuydautien.Contains("Keo")).Sum(x => x.SoLuong);
-            phanTram = soLuongKeo / tongSo;
+
             soNguoi.Keo = soLuongKeo;
-            tyLe.Keo = Math.Round(phanTram, 2);
+            tyLe.Keo = TinhPhanTram(soLuongKeo, tongSo);
 
             var soLuongCanCo = modelInputs.Where(x => x.matuydautien.Contains("cần") || x.matuydautien.Contains("Cần") || x.matuydautien.Contains("cỏ") || x.matuydautien.Contains("Cỏ")).Sum(x => x.SoLuong);
-            phanTram = soLuongCanCo / tongSo;
+
             soNguoi.CanCo = soLuongCanCo;
-            tyLe.CanCo = Math.Round(phanTram, 2);
+            tyLe.CanCo = TinhPhanTram(soLuongCanCo, tongSo);
 
             var soLuongKetamin = modelInputs.Where(x => x.matuydautien.Contains("ketamin") || x.matuydautien.Contains("Ketamin")).Sum(x => x.SoLuong);
-            phanTram = soLuongKetamin / tongSo;
+
             soNguoi.Ketamin = soLuongKetamin;
-            tyLe.Ketamin = Math.Round(phanTram, 2);
+            tyLe.Ketamin = TinhPhanTram(soLuongKetamin, tongSo);
 
             var soLuongBongCuoi = modelInputs.Where(x => x.matuydautien.Contains("bóng") || x.matuydautien.Contains("Bóng")).Sum(x => x.SoLuong);
-            phanTram = soLuongBongCuoi / tongSo;
+
             soNguoi.BongCuoi = soLuongBongCuoi;
-            tyLe.BongCuoi = Math.Round(phanTram, 2);
+            tyLe.BongCuoi = TinhPhanTram(soLuongBongCuoi, tongSo);
 
             var soLuongHeroin = modelInputs.Where(x => x.matuydautien.Contains("heroin") || x.matuydautien.Contains("Heroin")).Sum(x => x.SoLuong);
-            phanTram = soLuongHeroin / tongSo;
+
             soNguoi.Heroin = soLuongHeroin;
-            tyLe.Heroin = Math.Round(phanTram, 2);
+            tyLe.Heroin = TinhPhanTram(soLuongHeroin, tongSo);
 
             var soLuongCacChatHit = modelInputs.Where(x => x.matuydautien.Contains("hít") || x.matuydautien.Contains("Hít")).Sum(x => x.SoLuong);
-            phanTram = soLuongCacChatHit / tongSo;
+
             soNguoi.CacChatHit = soLuongCacChatHit;
-            tyLe.CacChatHit = Math.Round(phanTram, 2);
+            tyLe.CacChatHit = TinhPhanTram(soLuongCacChatHit, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1410,7 +1506,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoLanDauSDMaTuyDa(List<KetQuaSangLocProModel> modelInputs, ref List<LanDauSuDungMaTuyDaModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
             var soNguoi = new LanDauSuDungMaTuyDaModel
@@ -1424,59 +1520,48 @@ namespace Data.Admin
             };
 
             var soLuong13Tuoi = modelInputs.Where(x => x.tuoi == 13).Sum(x => x.SoLuong);
-            phanTram = soLuong13Tuoi / tongSo;
             soNguoi._13 = soLuong13Tuoi;
-            tyLe._13 = Math.Round(phanTram, 2);
+            tyLe._13 = TinhPhanTram(soLuong13Tuoi, tongSo);
 
             var soLuong14Tuoi = modelInputs.Where(x => x.tuoi == 14).Sum(x => x.SoLuong);
-            phanTram = soLuong14Tuoi / tongSo;
             soNguoi._14 = soLuong14Tuoi;
-            tyLe._14 = Math.Round(phanTram, 2);
+            tyLe._14 = TinhPhanTram(soLuong14Tuoi, tongSo);
 
             var soLuong15Tuoi = modelInputs.Where(x => x.tuoi == 15).Sum(x => x.SoLuong);
-            phanTram = soLuong15Tuoi / tongSo;
             soNguoi._15 = soLuong15Tuoi;
-            tyLe._15 = Math.Round(phanTram, 2);
+            tyLe._15 = TinhPhanTram(soLuong15Tuoi, tongSo);
 
             var soLuong16Tuoi = modelInputs.Where(x => x.tuoi == 16).Sum(x => x.SoLuong);
-            phanTram = soLuong16Tuoi / tongSo;
             soNguoi._16 = soLuong16Tuoi;
-            tyLe._16 = Math.Round(phanTram, 2);
+            tyLe._16 = TinhPhanTram(soLuong16Tuoi, tongSo);
 
             var soLuong17Tuoi = modelInputs.Where(x => x.tuoi == 17).Sum(x => x.SoLuong);
-            phanTram = soLuong17Tuoi / tongSo;
             soNguoi._17 = soLuong17Tuoi;
-            tyLe._17 = Math.Round(phanTram, 2);
+            tyLe._17 = TinhPhanTram(soLuong17Tuoi, tongSo);
 
             var soLuong18Tuoi = modelInputs.Where(x => x.tuoi == 18).Sum(x => x.SoLuong);
-            phanTram = soLuong18Tuoi / tongSo;
             soNguoi._18 = soLuong18Tuoi;
-            tyLe._18 = Math.Round(phanTram, 2);
+            tyLe._18 = TinhPhanTram(soLuong18Tuoi, tongSo);
 
             var soLuong19Tuoi = modelInputs.Where(x => x.tuoi == 19).Sum(x => x.SoLuong);
-            phanTram = soLuong19Tuoi / tongSo;
             soNguoi._19 = soLuong19Tuoi;
-            tyLe._19 = Math.Round(phanTram, 2);
+            tyLe._19 = TinhPhanTram(soLuong19Tuoi, tongSo);
 
             var soLuong20Tuoi = modelInputs.Where(x => x.tuoi == 20).Sum(x => x.SoLuong);
-            phanTram = soLuong20Tuoi / tongSo;
             soNguoi._20 = soLuong20Tuoi;
-            tyLe._20 = Math.Round(phanTram, 2);
+            tyLe._20 = TinhPhanTram(soLuong20Tuoi, tongSo);
 
             var soLuong21Tuoi = modelInputs.Where(x => x.tuoi == 21).Sum(x => x.SoLuong);
-            phanTram = soLuong21Tuoi / tongSo;
             soNguoi._21 = soLuong21Tuoi;
-            tyLe._21 = Math.Round(phanTram, 2);
+            tyLe._21 = TinhPhanTram(soLuong21Tuoi, tongSo);
 
             var soLuong22Tuoi = modelInputs.Where(x => x.tuoi == 22).Sum(x => x.SoLuong);
-            phanTram = soLuong22Tuoi / tongSo;
             soNguoi._22 = soLuong22Tuoi;
-            tyLe._22 = Math.Round(phanTram, 2);
+            tyLe._22 = TinhPhanTram(soLuong22Tuoi, tongSo);
 
             var soLuong23Tuoi = modelInputs.Where(x => x.tuoi == 23).Sum(x => x.SoLuong);
-            phanTram = soLuong23Tuoi / tongSo;
             soNguoi._23 = soLuong23Tuoi;
-            tyLe._23 = Math.Round(phanTram, 2);
+            tyLe._23 = TinhPhanTram(soLuong23Tuoi, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1493,7 +1578,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoTanSuatSDMaTuyDa(List<KetQuaSangLocProModel> modelInputs, ref List<TanSuatSuDungMaTuyDaModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
 
@@ -1508,44 +1593,36 @@ namespace Data.Admin
             };
 
             var soLuong1Ngay = modelInputs.Where(x => x.tansuatda.Contains("1 ngày")).Sum(x => x.SoLuong);
-            phanTram = soLuong1Ngay / tongSo;
             soNguoi.VaiLan1Ngay = soLuong1Ngay;
-            tyLe.VaiLan1Ngay = Math.Round(phanTram, 2);
+            tyLe.VaiLan1Ngay = TinhPhanTram(soLuong1Ngay, tongSo);
 
             var soLuongHangNgay = modelInputs.Where(x => x.tansuatda.Contains("Hàng")).Sum(x => x.SoLuong);
-            phanTram = soLuongHangNgay / tongSo;
             soNguoi.HangNgay = soLuongHangNgay;
-            tyLe.HangNgay = Math.Round(phanTram, 2);
+            tyLe.HangNgay = TinhPhanTram(soLuongHangNgay, tongSo);
 
             var soLuongVaiLan1Tuan = modelInputs.Where(x => x.tansuatda.Contains("1 tuần")).Sum(x => x.SoLuong);
-            phanTram = soLuongVaiLan1Tuan / tongSo;
             soNguoi.VaiLan1Tuan = soLuongVaiLan1Tuan;
-            tyLe.VaiLan1Tuan = Math.Round(phanTram, 2);
+            tyLe.VaiLan1Tuan = TinhPhanTram(soLuongVaiLan1Tuan, tongSo);
 
             var soLuongVaiNgayRoiTamNghi = modelInputs.Where(x => x.tansuatda.Contains("nghỉ")).Sum(x => x.SoLuong);
-            phanTram = soLuongVaiNgayRoiTamNghi / tongSo;
             soNguoi.VaiNgayRoiTamNghi = soLuongVaiNgayRoiTamNghi;
-            tyLe.VaiNgayRoiTamNghi = Math.Round(phanTram, 2);
+            tyLe.VaiNgayRoiTamNghi = TinhPhanTram(soLuongVaiNgayRoiTamNghi, tongSo);
 
             var soLuongDungCuoiTuan = modelInputs.Where(x => x.tansuatda.Contains("cuối")).Sum(x => x.SoLuong);
-            phanTram = soLuongDungCuoiTuan / tongSo;
             soNguoi.DungCuoiTuan = soLuongDungCuoiTuan;
-            tyLe.DungCuoiTuan = Math.Round(phanTram, 2);
+            tyLe.DungCuoiTuan = TinhPhanTram(soLuongDungCuoiTuan, tongSo);
 
             var soLuongVaiLan1Thang = modelInputs.Where(x => x.tansuatda.Contains("1 tháng")).Sum(x => x.SoLuong);
-            phanTram = soLuongVaiLan1Thang / tongSo;
             soNguoi.VaiLan1Thang = soLuongVaiLan1Thang;
-            tyLe.VaiLan1Thang = Math.Round(phanTram, 2);
+            tyLe.VaiLan1Thang = TinhPhanTram(soLuongVaiLan1Thang, tongSo);
 
             var soLuongItHon1Lan1Thang = modelInputs.Where(x => x.tansuatda.Contains("1 lần")).Sum(x => x.SoLuong);
-            phanTram = soLuongItHon1Lan1Thang / tongSo;
             soNguoi.ItHon1Lan1Thang = soLuongItHon1Lan1Thang;
-            tyLe.ItHon1Lan1Thang = Math.Round(phanTram, 2);
+            tyLe.ItHon1Lan1Thang = TinhPhanTram(soLuongItHon1Lan1Thang, tongSo);
 
             var soLuongKBKTL = modelInputs.Where(x => x.tansuatda.Contains("KB")).Sum(x => x.SoLuong);
-            phanTram = soLuongKBKTL / tongSo;
             soNguoi.KBKTL = soLuongKBKTL;
-            tyLe.KBKTL = Math.Round(phanTram, 2);
+            tyLe.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
             outDatas.Add(soNguoi);
 
@@ -1562,7 +1639,7 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoDuongSDMaTuyDa(List<KetQuaSangLocProModel> modelInputs, ref List<DuongSuDungMaTuyDaModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // số người dùng từng loại 
 
@@ -1577,29 +1654,24 @@ namespace Data.Admin
             };
 
             var soLuongHutHit = modelInputs.Where(x => x.NoiDung.Contains("Hút")).Sum(x => x.SoLuong);
-            phanTram = soLuongHutHit / tongSo;
             soNguoiTungLoai.HutHit = soLuongHutHit;
-            tyLeNguoiTungLoai.HutHit = Math.Round(phanTram, 2);
+            tyLeNguoiTungLoai.HutHit = TinhPhanTram(soLuongHutHit, tongSo);
 
             var soLuongDangBot = modelInputs.Where(x => x.NoiDung.Contains("bột")).Sum(x => x.SoLuong);
-            phanTram = soLuongDangBot / tongSo;
             soNguoiTungLoai.DangBot = soLuongDangBot;
-            tyLeNguoiTungLoai.DangBot = Math.Round(phanTram, 2);
+            tyLeNguoiTungLoai.DangBot = TinhPhanTram(soLuongDangBot, tongSo);
 
             var soLuongUongNuot = modelInputs.Where(x => x.NoiDung.Contains("nuốt")).Sum(x => x.SoLuong);
-            phanTram = soLuongUongNuot / tongSo;
             soNguoiTungLoai.UongNuot = soLuongUongNuot;
-            tyLeNguoiTungLoai.UongNuot = Math.Round(phanTram, 2);
+            tyLeNguoiTungLoai.UongNuot = TinhPhanTram(soLuongUongNuot, tongSo);
 
             var soLuongTiemChich = modelInputs.Where(x => x.NoiDung.Contains("Tiêm")).Sum(x => x.SoLuong);
-            phanTram = soLuongTiemChich / tongSo;
             soNguoiTungLoai.TiemChich = soLuongTiemChich;
-            tyLeNguoiTungLoai.TiemChich = Math.Round(phanTram, 2);
+            tyLeNguoiTungLoai.TiemChich = TinhPhanTram(soLuongTiemChich, tongSo);
 
             var soLuongKBKTL = modelInputs.Where(x => x.NoiDung.Contains("KB")).Sum(x => x.SoLuong);
-            phanTram = soLuongKBKTL / tongSo;
             soNguoiTungLoai.KBKTL = soLuongKBKTL;
-            tyLeNguoiTungLoai.KBKTL = Math.Round(phanTram, 2);
+            tyLeNguoiTungLoai.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
             outDatas.Add(soNguoiTungLoai);
 
@@ -1616,46 +1688,42 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoSoChatGayNghien(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
+
 
             // Chỉ 1 chất
             var soLuong1Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 1).Sum(x => x.SoLuong);
-            phanTram = soLuong1Chat / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Chỉ 1 chất",
                 SoNguoi = soLuong1Chat,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong1Chat, tongSo)
             });
 
             // 2 chất
             var soLuong2Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 2).Sum(x => x.SoLuong);
-            phanTram = soLuong2Chat / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "2 chất",
                 SoNguoi = soLuong2Chat,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong2Chat, tongSo)
             });
 
             // 3 chất
             var soLuong3Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 3).Sum(x => x.SoLuong);
-            phanTram = soLuong3Chat / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "3 chất",
                 SoNguoi = soLuong3Chat,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong3Chat, tongSo)
             });
 
             // 4 chất trở lên
             var soLuong4Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) >= 4).Sum(x => x.SoLuong);
-            phanTram = soLuong4Chat / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "4 chất trở lên",
                 SoNguoi = soLuong4Chat,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong4Chat, tongSo)
             });
 
 
@@ -1678,56 +1746,50 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoKetQuaHIV(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            decimal phanTram = 0;
 
             // Âm tính
             var soLuongAmTinh = modelInputs.Where(x => x.ketqua == -1).Sum(x => x.SoLuong);
-            phanTram = soLuongAmTinh / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Âm tính",
                 SoNguoi = soLuongAmTinh,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongAmTinh, tongSo)
             });
 
             // Dương tính mới
             var soLuongDuongTinhMoi = modelInputs.Where(x => x.ketqua == 1).Sum(x => x.SoLuong);
-            phanTram = soLuongDuongTinhMoi / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Dương tính mới",
                 SoNguoi = soLuongDuongTinhMoi,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongDuongTinhMoi, tongSo)
             });
 
             // Dương tính - bỏ trị/chưa điều trị
             var soLuongDTBoChuaDT = 0;
-            phanTram = soLuongDTBoChuaDT / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Dương tính - bỏ trị/chưa điều trị",
                 SoNguoi = soLuongDTBoChuaDT,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongDTBoChuaDT, tongSo)
             });
 
             // Dương tính - đang điều trị
             var soLuongDTDangDT = 0;
-            phanTram = soLuongDTDangDT / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Dương tính - đang điều trị",
                 SoNguoi = soLuongDTDangDT,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongDTDangDT, tongSo)
             });
 
             // Không xác định
             var soLuongKXD = modelInputs.Where(x => x.ketqua == 0).Sum(x => x.SoLuong);
-            phanTram = soLuongKXD / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Không xác định",
                 SoNguoi = soLuongKXD,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuongKXD, tongSo)
             });
 
             // Thêm dòng tổng số
@@ -1749,36 +1811,32 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoTuoi(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Where(x => x.tuoi >= 16 && x.tuoi <= 24).Sum(x => x.SoLuong);
-            decimal phanTram = 0;
 
             // Nhóm tuổi tù 16-18
             var soLuong1618 = modelInputs.Where(x => x.tuoi >= 16 && x.tuoi <= 18).Sum(x => x.SoLuong);
-            phanTram = soLuong1618 / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "16-18",
                 SoNguoi = soLuong1618,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong1618, tongSo)
             });
 
             // Nhóm tuổi tù 19-22
             var soLuong1922 = modelInputs.Where(x => x.tuoi >= 19 && x.tuoi <= 22).Sum(x => x.SoLuong);
-            phanTram = soLuong1922 / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "19-22",
                 SoNguoi = soLuong1922,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong1922, tongSo)
             });
 
             // Nhóm tuổi tù 23-24
             var soLuong2324 = modelInputs.Where(x => x.tuoi >= 23 && x.tuoi <= 24).Sum(x => x.SoLuong);
-            phanTram = soLuong2324 / tongSo;
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "23-24",
                 SoNguoi = soLuong2324,
-                PhanTram = Math.Round(phanTram, 2)
+                PhanTram = TinhPhanTram(soLuong2324, tongSo)
             });
 
             // Thêm dòng tổng số
@@ -1800,18 +1858,15 @@ namespace Data.Admin
         public void ChuyenDoi_BCTheoDoiTuong_GioiTinh(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
-            //decimal phanTram = 0;
             foreach (var item in modelInputs)
             {
-                //phanTram = (decimal)(item.SoLuong  / tongSo);
                 outDatas.Add(new KetQuaSangLocModel
                 {
                     NoiDung = item.NoiDung,
                     SoNguoi = item.SoLuong,
-                    //PhanTram = Math.Round(phanTram, 2) * 100
-                    PhanTram = Math.Round(((100 * ((Convert.ToDecimal(item.SoLuong * 100) / tongSo))) / 100),2)
-
-            });
+                    PhanTram = TinhPhanTram(item.SoLuong, tongSo)
+                });
+                ;
             }
             // Thêm dòng tổng số
             outDatas.Add(new KetQuaSangLocModel
@@ -1820,6 +1875,25 @@ namespace Data.Admin
                 SoNguoi = tongSo,
                 PhanTram = 100
             });
+        }
+
+        /// <summary>
+        /// Tính phần trăm
+        /// </summary>
+        /// <param name="soLuong"></param>
+        /// <param name="tongSo"></param>
+        /// <returns></returns>
+
+        public decimal TinhPhanTram(int soLuong, int tongSo)
+        {
+            try
+            {
+                return Math.Round(((100 * ((Convert.ToDecimal(soLuong * 100) / tongSo))) / 100), 2);
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
     }
