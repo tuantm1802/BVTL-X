@@ -2,4 +2,15 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-#/.vs
+.vs
+/Data/bin
+/Data/obj
+
+/WebApp/bin
+/WebApp/obj
+/Common/bin
+/Common/obj
+/SyncApp/bin
+/SyncApp/obj
+/Model/bin
+/Model/obj
