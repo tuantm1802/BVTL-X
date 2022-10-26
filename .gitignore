@@ -13,7 +13,7 @@
 /SyncApp/obj
 /Model/bin
 /Model/obj
-
+*.suo
 *.ide
 *.pdb
 *.cache

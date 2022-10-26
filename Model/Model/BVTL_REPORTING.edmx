@@ -193,6 +193,18 @@
           <Property Name="ngaysl_year" Type="int" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="BVTL_CITES">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="LastUpdateDate" Type="datetime" />
+          <Property Name="LastUpdateBy" Type="int" />
+        </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
             <PropertyRef Name="id" />
@@ -258,18 +270,6 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <EntityType Name="BVTL_CITES">
-          <Key>
-            <PropertyRef Name="Code" />
-          </Key>
-          <Property Name="Code" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="LastUpdateDate" Type="datetime" />
-          <Property Name="LastUpdateBy" Type="int" />
-        </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
             <PropertyRef Name="maduan" />
@@ -283,24 +283,6 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="mota" Type="nvarchar" MaxLength="200" />
-        </EntityType>
-        <EntityType Name="BVTL_KHACH_HANG">
-          <Key>
-            <PropertyRef Name="khachhang_id" />
-          </Key>
-          <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
-          <Property Name="sottkh" Type="varchar" MaxLength="10" />
-          <Property Name="hoten" Type="nvarchar" MaxLength="100" />
-          <Property Name="gioitinh" Type="varchar" MaxLength="1" />
-          <Property Name="namsinh" Type="int" />
-          <Property Name="loai_doi_tuong_id" Type="int" />
-          <Property Name="ngaytiepcan" Type="date" />
-          <Property Name="ngayngungchamsoc" Type="date" />
-          <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
-          <Property Name="diachi" Type="nvarchar" MaxLength="200" />
-          <Property Name="city_code" Type="varchar" MaxLength="10" />
-          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
@@ -392,6 +374,24 @@
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="BVTL_KHACH_HANG">
+          <Key>
+            <PropertyRef Name="khachhang_id" />
+          </Key>
+          <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
+          <Property Name="hoten" Type="nvarchar" MaxLength="100" />
+          <Property Name="gioitinh" Type="varchar" MaxLength="1" />
+          <Property Name="namsinh" Type="int" />
+          <Property Name="loai_doi_tuong_id" Type="int" />
+          <Property Name="ngaytiepcan" Type="date" />
+          <Property Name="ngayngungchamsoc" Type="date" />
+          <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
+          <Property Name="diachi" Type="nvarchar" MaxLength="200" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -641,30 +641,6 @@ warning 6035: The relationship 'BVTL_KHACH_HANG_BVTL_PHIEU_TU_VAN' has columns t
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KHACH_HANG_BVTL_CITES">
-          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_CITES">
-              <PropertyRef Name="Code" />
-            </Principal>
-            <Dependent Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="city_code" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
-          <End Role="BVTL_LOAI_DOI_TUONG" Type="Self.BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
-          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_LOAI_DOI_TUONG">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="loai_doi_tuong_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_CITES">
           <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
           <End Role="BVTL_KQ_SL_ACE" Type="Self.BVTL_KQ_SL_ACE" Multiplicity="*" />
@@ -821,6 +797,30 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BVTL_KHACH_HANG_BVTL_CITES">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
+          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
+          <End Role="BVTL_LOAI_DOI_TUONG" Type="Self.BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
+          <End Role="BVTL_KHACH_HANG" Type="Self.BVTL_KHACH_HANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_LOAI_DOI_TUONG">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="loai_doi_tuong_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_BVTL_MASTER_TABLE_BVTL_API_1">
           <End Role="BVTL_API" Type="Self.BVTL_API" Multiplicity="0..1" />
           <End Role="BVTL_MASTER_TABLE" Type="Self.BVTL_MASTER_TABLE" Multiplicity="*" />
@@ -848,17 +848,17 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
         <EntityContainer Name="BVTL_REPORTINGModelStoreContainer">
           <EntitySet Name="BVTL_API" EntityType="Self.BVTL_API" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_TX3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHUYEN_GUI_DICH_VU" EntityType="Self.BVTL_CHUYEN_GUI_DICH_VU" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DU_AN" EntityType="Self.BVTL_DU_AN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="Self.BVTL_DUONG_SU_DUNG" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BVTL_KHACH_HANG" EntityType="Self.BVTL_KHACH_HANG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="Self.BVTL_KQ_SL_ACE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_ASSIST" EntityType="Self.BVTL_KQ_SL_ASSIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_SKTT" EntityType="Self.BVTL_KQ_SL_SKTT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_XN_HIV" EntityType="Self.BVTL_KQ_XN_HIV" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_KHACH_HANG" EntityType="Self.BVTL_KHACH_HANG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="Self.BVTL_LOAI_DOI_TUONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_MASTER_TABLE" EntityType="Self.BVTL_MASTER_TABLE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_NHOM_TBH" EntityType="Self.BVTL_NHOM_TBH" Schema="dbo" store:Type="Tables" />
@@ -884,14 +884,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <AssociationSet Name="BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="Self.FK_BVTL_KHACH_HANG_BVTL_CITES">
-            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="Self.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
-            <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_CITES" Association="Self.FK_BVTL_KQ_SL_ACE_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -941,6 +933,14 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="Self.FK_BVTL_KHACH_HANG_BVTL_CITES">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="Self.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
+            <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
+          </AssociationSet>
           <AssociationSet Name="fk_BVTL_MASTER_TABLE_BVTL_API_1" Association="Self.fk_BVTL_MASTER_TABLE_BVTL_API_1">
             <End Role="BVTL_API" EntitySet="BVTL_API" />
             <End Role="BVTL_MASTER_TABLE" EntitySet="BVTL_MASTER_TABLE" />
@@ -957,17 +957,17 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
         <EntityContainer Name="BVTL_REPORTINGEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BVTL_API" EntityType="BVTL_REPORTINGModel.BVTL_API" />
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
+          <EntitySet Name="BVTL_CITES" EntityType="BVTL_REPORTINGModel.BVTL_CITES" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" />
           <EntitySet Name="BVTL_CHUYEN_GUI_DICH_VU" EntityType="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU" />
-          <EntitySet Name="BVTL_CITES" EntityType="BVTL_REPORTINGModel.BVTL_CITES" />
           <EntitySet Name="BVTL_DU_AN" EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" />
-          <EntitySet Name="BVTL_KHACH_HANG" EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" />
           <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" />
           <EntitySet Name="BVTL_KQ_SL_ASSIST" EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" />
           <EntitySet Name="BVTL_KQ_SL_SKTT" EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" />
           <EntitySet Name="BVTL_KQ_XN_HIV" EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" />
+          <EntitySet Name="BVTL_KHACH_HANG" EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" />
           <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" />
           <EntitySet Name="BVTL_MASTER_TABLE" EntityType="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" />
           <EntitySet Name="BVTL_NHOM_TBH" EntityType="BVTL_REPORTINGModel.BVTL_NHOM_TBH" />
@@ -998,10 +998,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES">
-            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-          </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
@@ -1017,6 +1013,10 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <AssociationSet Name="FK_BVTL_KQ_XN_HIV_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_NHOM_TBH_BVTL_CITES" Association="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -1038,10 +1038,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
-          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
-            <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
-            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
-          </AssociationSet>
           <AssociationSet Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_SL_ACE" EntitySet="BVTL_KQ_SL_ACE" />
@@ -1057,6 +1053,10 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <AssociationSet Name="fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" Association="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" Association="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
+            <End Role="BVTL_LOAI_DOI_TUONG" EntitySet="BVTL_LOAI_DOI_TUONG" />
+            <End Role="BVTL_KHACH_HANG" EntitySet="BVTL_KHACH_HANG" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="BVTL_API">
@@ -1251,6 +1251,25 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.BVTL_DU_AN_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.BVTL_NHOM_TBH_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" ToRole="BVTL_NHOM_TBH" />
         </EntityType>
+        <EntityType Name="BVTL_CITES">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdateBy" Type="Int32" />
+          <NavigationProperty Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Relationship="BVTL_REPORTINGModel.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_CITES" ToRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
+          <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_ACE" />
+          <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_ASSIST" />
+          <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_SKTT" />
+          <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_XN_HIV" />
+          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KHACH_HANG" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
             <PropertyRef Name="id" />
@@ -1316,25 +1335,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="BVTL_CITES">
-          <Key>
-            <PropertyRef Name="Code" />
-          </Key>
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
-          <Property Name="LastUpdateBy" Type="Int32" />
-          <NavigationProperty Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Relationship="BVTL_REPORTINGModel.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" FromRole="BVTL_CITES" ToRole="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
-          <NavigationProperty Name="BVTL_KHACH_HANG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KHACH_HANG" />
-          <NavigationProperty Name="BVTL_KQ_SL_ACE" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_ACE" />
-          <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_ASSIST" />
-          <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_SKTT" />
-          <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_XN_HIV" />
-          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_NHOM_TBH" />
-        </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
             <PropertyRef Name="maduan" />
@@ -1353,26 +1353,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="mota" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="BVTL_KHACH_HANG">
-          <Key>
-            <PropertyRef Name="khachhang_id" />
-          </Key>
-          <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
-          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="hoten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="gioitinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="namsinh" Type="Int32" />
-          <Property Name="loai_doi_tuong_id" Type="Int32" />
-          <Property Name="ngaytiepcan" Type="DateTime" Precision="0" />
-          <Property Name="ngayngungchamsoc" Type="DateTime" Precision="0" />
-          <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
-          <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="sync_date" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
-          <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
@@ -1476,6 +1456,26 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <EntityType Name="BVTL_KHACH_HANG">
+          <Key>
+            <PropertyRef Name="khachhang_id" />
+          </Key>
+          <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="hoten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="gioitinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="namsinh" Type="Int32" />
+          <Property Name="loai_doi_tuong_id" Type="Int32" />
+          <Property Name="ngaytiepcan" Type="DateTime" Precision="0" />
+          <Property Name="ngayngungchamsoc" Type="DateTime" Precision="0" />
+          <Property Name="sodienthoai" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="diachi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_CITES" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_LOAI_DOI_TUONG" Relationship="BVTL_REPORTINGModel.FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG" FromRole="BVTL_KHACH_HANG" ToRole="BVTL_LOAI_DOI_TUONG" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -1736,18 +1736,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KHACH_HANG_BVTL_CITES">
-          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_CITES">
-              <PropertyRef Name="Code" />
-            </Principal>
-            <Dependent Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="city_code" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_BVTL_KQ_SL_ACE_BVTL_CITES">
           <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
@@ -1792,6 +1780,18 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
               <PropertyRef Name="Code" />
             </Principal>
             <Dependent Role="BVTL_KQ_XN_HIV">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KHACH_HANG_BVTL_CITES">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="BVTL_KHACH_HANG">
               <PropertyRef Name="city_code" />
             </Dependent>
           </ReferentialConstraint>
@@ -1856,18 +1856,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
-          <End Type="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Role="BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_LOAI_DOI_TUONG">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="BVTL_KHACH_HANG">
-              <PropertyRef Name="loai_doi_tuong_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1">
           <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Role="BVTL_KQ_SL_ACE" Multiplicity="*" />
@@ -1913,6 +1901,18 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
             </Principal>
             <Dependent Role="BVTL_KQ_XN_HIV">
               <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BVTL_KHACH_HANG_BVTL_LOAI_DOI_TUONG">
+          <End Type="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Role="BVTL_LOAI_DOI_TUONG" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Role="BVTL_KHACH_HANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_LOAI_DOI_TUONG">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="BVTL_KHACH_HANG">
+              <PropertyRef Name="loai_doi_tuong_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2112,6 +2112,19 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BVTL_CITES">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CITES">
+              <MappingFragment StoreEntitySet="BVTL_CITES">
+                <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="BVTL_CHAT_GAY_NGHIEN_3TH">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH">
               <MappingFragment StoreEntitySet="BVTL_CHAT_GAY_NGHIEN_3TH">
@@ -2179,19 +2192,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BVTL_CITES">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CITES">
-              <MappingFragment StoreEntitySet="BVTL_CITES">
-                <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
-                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="BVTL_DU_AN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_DU_AN">
               <MappingFragment StoreEntitySet="BVTL_DU_AN">
@@ -2205,25 +2205,6 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
               <MappingFragment StoreEntitySet="BVTL_DUONG_SU_DUNG">
                 <ScalarProperty Name="mota" ColumnName="mota" />
                 <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="BVTL_KHACH_HANG">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
-              <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
-                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
-                <ScalarProperty Name="city_code" ColumnName="city_code" />
-                <ScalarProperty Name="diachi" ColumnName="diachi" />
-                <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
-                <ScalarProperty Name="ngayngungchamsoc" ColumnName="ngayngungchamsoc" />
-                <ScalarProperty Name="ngaytiepcan" ColumnName="ngaytiepcan" />
-                <ScalarProperty Name="loai_doi_tuong_id" ColumnName="loai_doi_tuong_id" />
-                <ScalarProperty Name="namsinh" ColumnName="namsinh" />
-                <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
-                <ScalarProperty Name="hoten" ColumnName="hoten" />
-                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
-                <ScalarProperty Name="makh" ColumnName="makh" />
-                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2319,6 +2300,25 @@ warning 6035: The relationship 'FK_BVTL_KQ_XN_HIV_BVTL_KHACH_HANG' has columns t
                 <ScalarProperty Name="ngayxn" ColumnName="ngayxn" />
                 <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="kqxnhiv_id" ColumnName="kqxnhiv_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BVTL_KHACH_HANG">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
+              <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="diachi" ColumnName="diachi" />
+                <ScalarProperty Name="sodienthoai" ColumnName="sodienthoai" />
+                <ScalarProperty Name="ngayngungchamsoc" ColumnName="ngayngungchamsoc" />
+                <ScalarProperty Name="ngaytiepcan" ColumnName="ngaytiepcan" />
+                <ScalarProperty Name="loai_doi_tuong_id" ColumnName="loai_doi_tuong_id" />
+                <ScalarProperty Name="namsinh" ColumnName="namsinh" />
+                <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
+                <ScalarProperty Name="hoten" ColumnName="hoten" />
+                <ScalarProperty Name="sottkh" ColumnName="sottkh" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
+                <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
