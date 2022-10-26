@@ -11,6 +11,11 @@
     <div class="content-item-title">
         <div class="oplog-title__txt" style="color: #4A6277; padding: 15px;">QUẢN LÝ TIẾN TRÌNH ĐỒNG BỘ DỮ LIỆU</div>
     </div>
+    <div class="row" style="margin-bottom:10px;">
+        <div class="col-sm-12">
+            <button type="button" style="margin-left:15px;" class="btn btn-success" ng-click="reloadProcess()">Lấy lại DS tiến trình</button>
+        </div>
+    </div>
     <div class="row col-sm-12">
         <div class="col-sm-6">
             <table class="table table-hover table-bordered">
@@ -20,6 +25,8 @@
                         <th class="text-center font-bold">Tiến trình</th>
                         <th class="text-center font-bold">Trạng thái</th>
                         <th class="text-center font-bold">Chu kỳ lặp (s)</th>
+                        <th class="text-center font-bold">Bắt đầu</th>
+                        <th class="text-center font-bold">Kết thúc</th>
                     </tr>
                 </thead>
                 <tbody ng-repeat="item in listProcess track by $index">
@@ -28,6 +35,8 @@
                         <td>{{item.Name}}</td>
                         <td class="text-center">{{item.Active? "Đang hđ":"Dừng"}}</td>
                         <td class="text-right">{{item.TimeLoop}}</td>
+                        <td class="text-center">{{item.Start_Time_Sync}}</td>
+                        <td class="text-center">{{item.End_Time_Syc}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -40,7 +49,7 @@
                 </div>
                 <div class="col-sm-2 form-group">
                     <label>Trạng thái</label>
-                    <input type="checkbox" style="margin: 3px 0px 0px 10px;"  ng-model="process.Active" />
+                    <input type="checkbox" style="margin: 3px 0px 0px 10px;" ng-model="process.Active" />
                 </div>
                 <div class="col-sm-3 form-group">
                     <label>Chu kỳ lặp (s)</label>
