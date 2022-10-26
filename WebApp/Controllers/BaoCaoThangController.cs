@@ -24,7 +24,7 @@ namespace WebApp.Controllers
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
-        // GET: BaoCaoThang
+        // GET: BaoCaoThang 
         [HasCredential(ControllerName = "BaoCaoThang")]
         public ActionResult Index()
         {
