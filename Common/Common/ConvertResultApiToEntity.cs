@@ -1193,9 +1193,15 @@ namespace Common.Common
                         db.SaveChanges();
                     }
                     // Lấy ngay, tháng, năm nhập dữ liệu
+                    // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
                     if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
                     {
                         ngaynhap = resultApiCGDV.ngay_xn;
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        ngaynhap = resultApiCGDV.ngaykham;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                     }
                     day = ngaynhapD.Day;
