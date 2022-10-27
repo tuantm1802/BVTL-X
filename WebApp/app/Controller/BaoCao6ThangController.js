@@ -141,7 +141,13 @@
         }
 
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
-            $scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+                    $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
+                } else {
+                    $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
+                }
+            }
         }
         window.location.href = '/BaoCao6Thang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes);
     }
