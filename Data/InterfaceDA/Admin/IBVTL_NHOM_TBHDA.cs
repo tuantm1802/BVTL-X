@@ -17,14 +17,14 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-         List<NhomTBHPageModel> GetAllByPage(ModelSearch modelSearch);
+        List<NhomTBHPageModel> GetAllByPage(ModelSearch modelSearch);
 
         /// <summary>
         /// Lấy tất cả Nhóm thu thập dữ liệu
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-         List<BVTL_NHOM_TBH> GetAll();
+        List<BVTL_NHOM_TBH> GetAll();
 
         /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo id
@@ -34,32 +34,39 @@ namespace Data.InterfaceDA.Admin
         BVTL_NHOM_TBH GetItemByMaNhom(string maNhom);
 
         /// <summary>
+        /// Lấy Nhóm thu thập dữ liệu theo tỉnh
+        /// </summary>
+        /// <param name="maNhom"></param>
+        /// <returns></returns>
+        List<NhomTBHPageModel> GetItemByCityCodes(string cityCodes);
+
+        /// <summary>
         /// Lấy danh sách người dùng thep Nhóm thu thập dữ liệu theo id
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-         List<BVTL_QT_NGUOI_DUNG> GetAllUserByMaNhom(string maNhom);
+        List<BVTL_QT_NGUOI_DUNG> GetAllUserByMaNhom(string maNhom);
 
         /// <summary>
         /// Thêm mới
         /// </summary>
         /// <param name="BVTL_NHOM_TBH"></param>
         /// <returns></returns>
-         ObjectMessage Add(BVTL_NHOM_TBH BVTL_NHOM_TBH);
+        ObjectMessage Add(BVTL_NHOM_TBH BVTL_NHOM_TBH);
 
         /// <summary>
         /// Chỉnh sửa
         /// </summary>
         /// <param name="BVTL_NHOM_TBH"></param>
         /// <returns></returns>
-         ObjectMessage Edit(BVTL_NHOM_TBH BVTL_NHOM_TBH);
+        ObjectMessage Edit(BVTL_NHOM_TBH BVTL_NHOM_TBH);
 
         /// <summary>
         /// Xóa
         /// </summary>
         /// <param name="maNhom"></param>
         /// <returns></returns>
-         ObjectMessage Delete(string maNhom, int userId);
+        ObjectMessage Delete(string maNhom, int userId);
 
     }
 }
