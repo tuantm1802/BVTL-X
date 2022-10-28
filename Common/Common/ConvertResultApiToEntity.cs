@@ -1009,11 +1009,18 @@ namespace Common.Common
                         db.SaveChanges();
                     }
                     // Lấy ngay, tháng, năm nhập dữ liệu
-                    if (!string.IsNullOrEmpty(resultApiPTV.ngaynhap))
+                    // EDIT: LẤY NGÀY TƯ VẤN, NẾU NGÀY TƯ VẤN KHÔNG CÓ THÌ LẤY NGÀY NHẬP
+                    if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
+                    {
+                        ngaynhap = resultApiPTV.ngaytuvan.Split(' ')[0];
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    else
                     {
                         ngaynhap = resultApiPTV.ngaynhap.Split(' ')[0];
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                     }
+
                     day = ngaynhapD.Day;
                     month = ngaynhapD.Month;
                     year = ngaynhapD.Year;
@@ -1194,14 +1201,15 @@ namespace Common.Common
                     }
                     // Lấy ngay, tháng, năm nhập dữ liệu
                     // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
+                    if (!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
                     {
-                        ngaynhap = resultApiCGDV.ngay_xn;
+                        ngaynhap = resultApiCGDV.ngaykham;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                       
                     }
                     else
                     {
-                        ngaynhap = resultApiCGDV.ngaykham;
+                        ngaynhap = resultApiCGDV.ngay_xn;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                     }
                     day = ngaynhapD.Day;
