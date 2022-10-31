@@ -66,19 +66,26 @@
             return;
         }
         $scope.modelSearch.Months = '';
+
+        console.log($scope.Thangs);
+        console.log($scope.Thangs.join(','));
+
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i].Id;
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
-                }
-            }
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i].Id;
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
+            //    }
+            //}
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
+            $scope.modelSearch.Months = $scope.Thangs.join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
+        console.log($scope.modelSearch.Months);
+
         $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
@@ -125,14 +132,15 @@
             return;
         }
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i].Id;
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
-                }
-            }
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i].Id;
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
+            //    }
+            //}
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
+            $scope.modelSearch.Months = $scope.Thangs.join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
             return;
