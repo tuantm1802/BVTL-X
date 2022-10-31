@@ -81,6 +81,29 @@ namespace Data.Admin
         }
 
         /// <summary>
+        /// Lấy Nhóm thu thập dữ liệu theo tỉnh
+        /// </summary>
+        /// <param name="maNhom"></param>
+        /// <returns></returns>
+        public List<NhomTBHPageModel> GetItemByCityCodes(string cityCodes)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+
+            var result =  ( from ntbh in db.BVTL_NHOM_TBH  
+                           join c in db.BVTL_CITES  on ntbh.city_code equals c.Code
+                           where cityCodes.Contains(c.Code)
+                            select new NhomTBHPageModel
+            {
+                manhom_tbh = ntbh.manhom_tbh,
+                tennhom_tbh = ntbh.tennhom_tbh,
+                city_code = ntbh.city_code,
+                CityName = c.Name
+            }).ToList();
+
+            return result;
+        }
+
+        /// <summary>
         /// Lấy danh sách người dùng thep Nhóm thu thập dữ liệu theo id
         /// </summary>
         /// <param name="maNhom"></param>

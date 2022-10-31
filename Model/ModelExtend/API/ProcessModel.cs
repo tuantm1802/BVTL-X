@@ -18,5 +18,7 @@ namespace Model.ModelExtend.API
         public string ReportId { get; set; }
         public string MaDuAn { get; set; }
         public List<string> TableNames { get; set; }
+        public string Start_Time_Sync { get; set; }
+        public string End_Time_Syc { get; set; }
     }
 }

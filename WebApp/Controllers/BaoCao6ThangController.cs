@@ -21,6 +21,7 @@ namespace WebApp.Controllers
     {
         ICityDA _CityDA = new CityDA();
         IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
+        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
 
@@ -108,18 +109,25 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3};
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
+                // Lấy danh sách nhóm TBH theo tỉnh
+                var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                var tenNhomTBHs = "";
+                if (nhomTBHs != null && nhomTBHs.Count > 0)
+                {
+                    tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                }
 
                 var file_name = "BaoCao6Thang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
                     var ws = wb.Worksheets.Add("Báo cáo 6 tháng "+(Months.Contains("3") ? "đầu":"cuối") + " năm " + Year);
-                    var titleReport = "BÁO CÁO THÁNG " + (Months.Contains("3") ? "ĐẦU" : "CUỐI") + " NĂM " + Year;
-                    CreateHeader(ws, titleReport, user);
+                    var titleReport = "Kỳ báo cáo: Báo cáo 6 tháng " + (Months.Contains("3") ? "đầu" : "cuối") + " - " + Year;
+                    CreateHeader(ws, titleReport, user, tenNhomTBHs);
 
                     var columnName = "";
                     var columnNumber = 0;
-                    var row = 4;
+                    var row = 6;
                     if (data.Any())
                     {
                        
@@ -185,12 +193,12 @@ namespace WebApp.Controllers
                         }
                     }
 
-                    ws.Range("A3:J" + row).Style.Font.FontName = "Times New Roman";
-                    ws.Range("A3:J" + row).Style.Font.FontSize = 13;
-                    ws.Range("A3:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A3:J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A3:J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A3:J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:J" + row).Style.Font.FontName = "Times New Roman";
+                    ws.Range("A5:J" + row).Style.Font.FontSize = 13;
+                    ws.Range("A5:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -292,69 +300,90 @@ namespace WebApp.Controllers
         /// Gán dữ liệu cho cell có gộp cell
         /// </summary>
         /// <param name="ws"></param>
-        private void CreateHeader(IXLWorksheet ws, string tileReport, UserLogin user)
+        private void CreateHeader(IXLWorksheet ws, string tileReport, UserLogin user, string tenNhomTBHs)
         {
             #region header
             // 
-            ws.Cell("A1").Value = tileReport;//"BÁO CÁO 6 THÁNG (THÁNG 4,5,6,7,8,9/2021)";
+            ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG";//"BÁO CÁO 6 THÁNG (THÁNG 4,5,6,7,8,9/2021)";
             ws.Range("A1:J1").Row(1).Merge();
             ws.Cell("A1").Style.Font.Bold = true;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             ws.Cell("A1").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A1").Style.Font.FontSize = 13;
 
-            //header table
-            ws.Cell("A3").Value = "#";
+            // 
+            ws.Cell("A2").Value = tileReport;//"BÁO CÁO 6 THÁNG (THÁNG 4,5,6,7,8,9/2021)";
+            ws.Range("A2:J2").Row(1).Merge();
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A2").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A2").Style.Font.FontSize = 13;
+
+            // 
+            ws.Cell("A3").Value = tenNhomTBHs;
+            ws.Range("A3:J3").Row(1).Merge();
             ws.Cell("A3").Style.Font.Bold = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("A3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A3").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A3").Style.Font.FontSize = 13;
 
-            ws.Cell("B3").Value = "Thông tin báo cáo";
-            ws.Range("B3:C3").Merge();
-            ws.Cell("B3").Style.Font.Bold = true;
-            ws.Cell("B3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("B3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            var row = 5;
 
-            ws.Cell("D3").Value = "Tổng";
-            ws.Cell("D3").Style.Font.Bold = true;
-            ws.Cell("D3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("D3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            //header table
+            ws.Cell("A" + row).Value = "#";
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("E3").Value = "MSM";
-            ws.Cell("E3").Style.Font.Bold = true;
-            ws.Cell("E3").Style.Alignment.WrapText = true;
-            ws.Cell("E3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("E3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("B" + row).Value = "Thông tin báo cáo";
+            ws.Range("B" + row + ":C" + row).Merge();
+            ws.Cell("B" + row).Style.Font.Bold = true;
+            ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("F3").Value = "PUD";
-            ws.Cell("F3").Style.Font.Bold = true;
-            ws.Cell("F3").Style.Alignment.WrapText = true;
-            ws.Cell("F3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("F3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("D" + row).Value = "Tổng";
+            ws.Cell("D" + row).Style.Font.Bold = true;
+            ws.Cell("D" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("D" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("G3").Value = "SW";
-            ws.Cell("G3").Style.Font.Bold = true;
-            ws.Cell("G3").Style.Alignment.WrapText = true;
-            ws.Cell("G3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("G3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("E" + row).Value = "MSM";
+            ws.Cell("E" + row).Style.Font.Bold = true;
+            ws.Cell("E" + row).Style.Alignment.WrapText = true;
+            ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("H3").Value = "Nam";
-            ws.Cell("H3").Style.Font.Bold = true;
-            ws.Cell("H3").Style.Alignment.WrapText = true;
-            ws.Cell("H3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("H3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("F" + row).Value = "PUD";
+            ws.Cell("F" + row).Style.Font.Bold = true;
+            ws.Cell("F" + row).Style.Alignment.WrapText = true;
+            ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("I3").Value = "Nữ";
-            ws.Cell("I3").Style.Font.Bold = true;
-            ws.Cell("I3").Style.Alignment.WrapText = true;
-            ws.Cell("I3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("I3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("G" + row).Value = "SW";
+            ws.Cell("G" + row).Style.Font.Bold = true;
+            ws.Cell("G" + row).Style.Alignment.WrapText = true;
+            ws.Cell("G" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("G" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("J3").Value = "Chuyển giới";
-            ws.Cell("J3").Style.Font.Bold = true;
-            ws.Cell("J3").Style.Alignment.WrapText = true;
-            ws.Cell("J3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("J3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("H" + row).Value = "Nam";
+            ws.Cell("H" + row).Style.Font.Bold = true;
+            ws.Cell("H" + row).Style.Alignment.WrapText = true;
+            ws.Cell("H" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("H" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("I" + row).Value = "Nữ";
+            ws.Cell("I" + row).Style.Font.Bold = true;
+            ws.Cell("I" + row).Style.Alignment.WrapText = true;
+            ws.Cell("I" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("I" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("J" + row).Value = "Chuyển giới";
+            ws.Cell("J" + row).Style.Font.Bold = true;
+            ws.Cell("J" + row).Style.Alignment.WrapText = true;
+            ws.Cell("J" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("J" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             #endregion
         }
 
