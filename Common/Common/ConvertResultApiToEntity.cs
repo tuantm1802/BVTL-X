@@ -643,10 +643,10 @@ namespace Common.Common
                 var customerDeletes = db.BVTL_KHACH_HANG.ToList();
                 if(customerDeletes != null && customerDeletes.Count > 0)
                 {
-                    for (int i = 0; i < customerDeletes.Count; i++)
-                    {
-                        db.BVTL_KHACH_HANG.Remove(customerDeletes[i]);
-                    }
+                    //for (int i = 0; i < customerDeletes.Count; i++)
+                    //{
+                        db.BVTL_KHACH_HANG.RemoveRange(customerDeletes);
+                    //}
                     db.SaveChanges();
                 }
 
