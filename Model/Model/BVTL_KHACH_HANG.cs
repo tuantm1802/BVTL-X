@@ -27,8 +27,5 @@ namespace Model.Model
         public string diachi { get; set; }
         public string city_code { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
-    
-        public virtual BVTL_CITES BVTL_CITES { get; set; }
-        public virtual BVTL_LOAI_DOI_TUONG BVTL_LOAI_DOI_TUONG { get; set; }
     }
 }
