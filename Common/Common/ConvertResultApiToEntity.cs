@@ -33,9 +33,9 @@ namespace Common.Common
             {
                 log.Error("Lỗi thêm khách hàng: "+ ex.Message);
                 // Lấy thông tin khách hàng
-                var customers = db.BVTL_KHACH_HANG.FirstOrDefault(x=>x.makh == customer.makh);
-                if (customers != null && customers.khachhang_id > 0)
-                    result = customers.khachhang_id;
+                //var customers = db.BVTL_KHACH_HANG.FirstOrDefault(x=>x.makh == customer.makh);
+                //if (customers != null && customers.khachhang_id > 0)
+                //    result = customers.khachhang_id;
             }
             
             return result;
@@ -633,31 +633,20 @@ namespace Common.Common
         /// </summary>
         /// <param name="resultApiTHs"></param>
         /// <param name="tongHops"></param>
-        public void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops)
+        public void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops, ref List<BVTL_KHACH_HANG> khachHangs)
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api tổng hợp sang entity**************************************");
             try
             {
-                // Xóa tất cả khách hàng cũ
-                var customerDeletes = db.BVTL_KHACH_HANG.ToList();
-                if(customerDeletes != null && customerDeletes.Count > 0)
-                {
-                    //for (int i = 0; i < customerDeletes.Count; i++)
-                    //{
-                        db.BVTL_KHACH_HANG.RemoveRange(customerDeletes);
-                    //}
-                    db.SaveChanges();
-                }
 
                 var tongHop = new BVTL_BO_BIEU_MAU_KH_BAO_CAO();
                 var resultApiTH = new ResultApiTongHopModel();
-                var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -671,7 +660,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -692,12 +681,8 @@ namespace Common.Common
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
-                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
-                    if (customer != null && customer.khachhang_id > 0)
-                    {
-                        customer_id = customer.khachhang_id;
-                    }
-                    else
+                    customer = khachHangs.FirstOrDefault(x => x.makh == customer_code);
+                    if (!(customer != null && customer.khachhang_id > 0))
                     {
                         customer = new BVTL_KHACH_HANG
                         {
@@ -720,7 +705,8 @@ namespace Common.Common
                         if (!string.IsNullOrEmpty(resultApiTH.ngay))
                             customer.ngaytiepcan = DateTime.ParseExact(resultApiTH.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
+                        khachHangs.Add(customer);
+                        //CreateCustomer(customer);
                     }
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm

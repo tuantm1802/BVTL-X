@@ -108,9 +108,18 @@ namespace Data.API
                         var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTongHopModel>>(resultApiString);
 
                         var tongHops = new List<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
+                        var khachHangs = new List<BVTL_KHACH_HANG>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi, maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi, maDuAn, ref tongHops, ref khachHangs);
+
+                        // Thêm dữ liệu bảng BVTL_KHACH_HANG
+                        if (khachHangs != null && khachHangs.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(khachHangs);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KHACH_HANG");
+                        }
 
                         // Thêm dữ liệu bảng BVTL_BO_BIEU_MAU_KH_BAO_CAO
                         if (tongHops != null && tongHops.Count > 0)
