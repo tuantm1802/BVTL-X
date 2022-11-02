@@ -25,6 +25,7 @@ namespace Common.Common
             var result = 0;
             try
             {
+                customer.sync_date = DateTime.Now;
                 db.BVTL_KHACH_HANG.Add(customer);
                 db.SaveChanges();
                 result = customer.khachhang_id;
@@ -638,6 +639,17 @@ namespace Common.Common
             log.Info("********************************Bắt đầu chuyển đổi kết quả api tổng hợp sang entity**************************************");
             try
             {
+                // Xóa tất cả khách hàng cũ
+                var customerDeletes = db.BVTL_KHACH_HANG.ToList();
+                if(customerDeletes != null && customerDeletes.Count > 0)
+                {
+                    for (int i = 0; i < customerDeletes.Count; i++)
+                    {
+                        db.BVTL_KHACH_HANG.Remove(customerDeletes[i]);
+                    }
+                    db.SaveChanges();
+                }
+
                 var tongHop = new BVTL_BO_BIEU_MAU_KH_BAO_CAO();
                 var resultApiTH = new ResultApiTongHopModel();
                 var customers = db.BVTL_KHACH_HANG.ToList();

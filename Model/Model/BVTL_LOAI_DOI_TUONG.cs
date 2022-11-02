@@ -14,17 +14,8 @@ namespace Model.Model
     
     public partial class BVTL_LOAI_DOI_TUONG
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public BVTL_LOAI_DOI_TUONG()
-        {
-            this.BVTL_KHACH_HANG = new HashSet<BVTL_KHACH_HANG>();
-        }
-    
         public int id { get; set; }
         public string code { get; set; }
         public string name { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BVTL_KHACH_HANG> BVTL_KHACH_HANG { get; set; }
     }
 }
