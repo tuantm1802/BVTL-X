@@ -47,15 +47,16 @@ namespace SyncBVTL.Push.Services
                         process.End_Time_Syc = Convert.ToDateTime(api.End_Time_Syc).ToString("dd/MM/yyyy HH:mm");
 
                     if (!string.IsNullOrEmpty(api.TableNameSaveData))
-                        process.TableNames = new List<string> { api.TableNameSaveData};
+                        process.TableNames = new List<string> { api.TableNameSaveData };
                     else
                     {
-                        tableByApi = tableAlls.Where(x=>x.Api_Id == api.Api_Id).ToList();
+                        tableByApi = tableAlls.Where(x => x.Api_Id == api.Api_Id).ToList();
                         if (tableByApi != null && tableByApi.Count > 0)
-                            process.TableNames = tableByApi.Select(x=>x.table_name).ToList();
+                            process.TableNames = tableByApi.Select(x => x.table_name).ToList();
                     }
 
-                    result.Add(process);
+                    if (process.TableNames != null && process.TableNames.Count > 0)
+                        result.Add(process);
                 }
             }
 
