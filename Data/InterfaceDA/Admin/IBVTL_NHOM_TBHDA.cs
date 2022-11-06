@@ -34,6 +34,13 @@ namespace Data.InterfaceDA.Admin
         BVTL_NHOM_TBH GetItemByMaNhom(string maNhom);
 
         /// <summary>
+        /// Lấy Nhóm thu thập dữ liệu theo nhiều mã
+        /// </summary>
+        /// <param name="maNhoms"></param>
+        /// <returns></returns>
+         List<NhomTBHPageModel> GetItemByMaNhoms(string maNhoms);
+
+        /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo tỉnh
         /// </summary>
         /// <param name="maNhom"></param>

@@ -35,7 +35,8 @@ namespace Data.Admin
                     new SqlParameter("Months", string.IsNullOrEmpty(modelSearch.Months) ? DBNull.Value : (object)modelSearch.Months),
                     new SqlParameter("Year", modelSearch.Year == null ? 0 : (object)modelSearch.Year),
                     new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
-                    new SqlParameter("TypeReport", modelSearch.TypeReport)
+                    new SqlParameter("TypeReport", modelSearch.TypeReport),
+                    new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH)
                 };
                 result = _DatabaseSql.ExecuteProcToList<BaoCaoModel>(Constants.SP_Report_Get_All_Data, param).ToList();
             }

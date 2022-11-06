@@ -66,7 +66,7 @@ namespace WebApp.Controllers
             };
             try
             {
-                
+
                 var menu = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
@@ -75,7 +75,7 @@ namespace WebApp.Controllers
                 var citys = _CityDA.GetCityReport((int)user.UserID);
 
                 AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
-                return Json(new { Buttoms = bottoms, Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { Buttoms = bottoms, Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); 
             }
             catch (Exception ex)
             {
@@ -100,28 +100,41 @@ namespace WebApp.Controllers
                     );
         }
 
+        [HttpPost]
+        public ActionResult GetNhomTBHByCityCodes(string CityCodes)
+        {
+            // Lấy danh sách nhóm TBH theo tỉnh
+            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+            return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+        }
+
+
         #region Xuất dữ liệu ra excel
         [HttpGet]
-        public ActionResult ExportData(int Year, string Months, string CityCodes)
+        public ActionResult ExportData(int Year, string Months, string CityCodes, string maNhomTBHs)
         {
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3};
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3, MaNhomTBH = maNhomTBHs };
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 // Lấy danh sách nhóm TBH theo tỉnh
-                var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                var nhomTBHs = new List<NhomTBHPageModel>();
+                if (string.IsNullOrEmpty(maNhomTBHs))
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                else
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhoms(maNhomTBHs);
                 var tenNhomTBHs = "";
                 if (nhomTBHs != null && nhomTBHs.Count > 0)
                 {
                     tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
                 }
 
-                var file_name = "BaoCao6Thang_" + Months.Replace(",","_") + "_nam_" + Year + ".xlsx";
+                var file_name = "BaoCao6Thang_" + Months.Replace(",", "_") + "_nam_" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
-                    var ws = wb.Worksheets.Add("Báo cáo 6 tháng "+(Months.Contains("3") ? "đầu":"cuối") + " năm " + Year);
+                    var ws = wb.Worksheets.Add("Báo cáo 6 tháng " + (Months.Contains("3") ? "đầu" : "cuối") + " năm " + Year);
                     var titleReport = "Kỳ báo cáo: Báo cáo 6 tháng " + (Months.Contains("3") ? "đầu" : "cuối") + " - " + Year;
                     CreateHeader(ws, titleReport, user, tenNhomTBHs);
 
@@ -130,7 +143,7 @@ namespace WebApp.Controllers
                     var row = 6;
                     if (data.Any())
                     {
-                       
+
                         foreach (var rowReport in data)
                         {
                             if (rowReport.IsShow == "Y")
