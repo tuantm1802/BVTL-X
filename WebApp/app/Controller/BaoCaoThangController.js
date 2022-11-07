@@ -75,9 +75,9 @@
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
             for (var i = 0; i < $scope.Thangs.length; i++) {
                 if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i].Id;
+                    $scope.modelSearch.Months = $scope.Thangs[i];
                 } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
+                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
                 }
             }
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
@@ -144,9 +144,9 @@
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
             for (var i = 0; i < $scope.Thangs.length; i++) {
                 if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i].Id;
+                    $scope.modelSearch.Months = $scope.Thangs[i];
                 } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i].Id;
+                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
                 }
             }
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
