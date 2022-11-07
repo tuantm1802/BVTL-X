@@ -8,9 +8,13 @@
     $scope.ListYear = [];
     $scope.ListCity = [];
     $scope.ListCityCode = [];
+    $scope.ListMaNhomTBH = [];
+    $scope.ListNhomTBH = [];
    
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
+        $scope.ListMaNhomTBH = [];
+    $scope.ListNhomTBH = [];
         var date = new Date();
         for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
             var tmpYear = {
@@ -20,7 +24,8 @@
             $scope.ListYear.push(tmpYear);
         }
         $scope.modelSearch.Year = date.getFullYear();
-        GetBottomAction();
+    GetBottomAction();
+    $scope.Changecity();
         $scope.LoadPage(1);
     });
 
@@ -69,6 +74,18 @@
             //$scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code }).join(',');
         }
 
+        $scope.modelSearch.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
+
+
         showToast();
         $scope.ListData = [];
         $.ajax({
@@ -94,7 +111,7 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
-
+        $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
                 if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
@@ -104,6 +121,50 @@
                 }
             }
         }
-        window.location.href = '/BaoCaoNam/ExportData?Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes);
+
+        $scope.modelSearch.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
+
+        window.location.href = '/BaoCaoNam/ExportData?Year=' + $scope.modelSearch.Year
+            + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
+            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);
+}
+
+// Lấy danh sách Nhóm TBH theo tỉnh
+$scope.Changecity = function () {
+
+    var CityCodes = '';
+    if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+        for (var i = 0; i < $scope.ListCityCode.length; i++) {
+            if (CityCodes == null || CityCodes == '') {
+                CityCodes = $scope.ListCityCode[i];
+            } else {
+                CityCodes += ',' + $scope.ListCityCode[i];
+            }
+        }
     }
+    $scope.ListNhomTBH = [];
+    $scope.ListMaNhomTBH = [];
+    $.ajax({
+        type: 'post',
+        url: '/BaoCaoNam/GetNhomTBHByCityCodes',
+        cache: false,
+        async: false,
+        data: {
+            CityCodes: CityCodes
+        },
+        success: function (respone) {
+            $scope.ListNhomTBH = respone.NhomTBHs;
+        }
+    });
+
+};
 });

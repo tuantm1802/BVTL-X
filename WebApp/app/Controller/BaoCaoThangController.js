@@ -10,9 +10,13 @@
     $scope.ListThang = [];
     $scope.Thangs = [];
     $scope.ListCityCode = [];
+    $scope.ListMaNhomTBH = [];
+    $scope.ListNhomTBH = [];
     
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
+        $scope.ListMaNhomTBH = [];
+        $scope.ListNhomTBH = [];
         $scope.Thangs = [];
         var date = new Date();
         for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
@@ -31,6 +35,7 @@
         }
         $scope.modelSearch.Year = date.getFullYear();
         GetBottomAction();
+        $scope.Changecity();
         $scope.LoadPage(1);
     });
 
@@ -66,6 +71,7 @@
             return;
         }
         $scope.modelSearch.Months = '';
+
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
             for (var i = 0; i < $scope.Thangs.length; i++) {
                 if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
@@ -88,8 +94,19 @@
                     $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
                 }
             }
-            //$scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code }).join(',');
         }
+
+        $scope.modelSearch.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
+
         showToast();
         $scope.ListData = [];
         $.ajax({
@@ -137,7 +154,7 @@
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
-
+        $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
                 if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
@@ -146,10 +163,50 @@
                     $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
                 }
             }
-            //$scope.modelSearch.CityCodes = $scope.ListCityCode.map(function (obj) { return obj.Code; }).join(',');
         }
-        window.location.href = '/BaoCaoThang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes);
+        $scope.modelSearch.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
+        window.location.href = '/BaoCaoThang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
+            + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
+            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);
     }
 
+    // Lấy danh sách Nhóm TBH theo tỉnh
+    $scope.Changecity = function () {
+       
+        var CityCodes = '';
+        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if (CityCodes == null || CityCodes == '') {
+                    CityCodes = $scope.ListCityCode[i];
+                } else {
+                    CityCodes += ',' + $scope.ListCityCode[i];
+                }
+            }
+        }
+        $scope.ListNhomTBH = [];
+        $scope.ListMaNhomTBH = [];
+        $.ajax({
+            type: 'post',
+            url: '/BaoCaoThang/GetNhomTBHByCityCodes',
+            cache: false,
+            async: false,
+            data: {
+                CityCodes: CityCodes
+            },
+            success: function (respone) {
+                $scope.ListNhomTBH = respone.NhomTBHs;
+            }
+        });
+
+    };
 
 });

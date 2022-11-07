@@ -17,7 +17,7 @@
                         <div class="col-sm-1">
                             <label>Quý</label>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-1">
                             <select class="form-control" ng-model="Quy" name="Quy">
                                 <option value="I">I</option>
                                 <option value="II">II</option>
@@ -28,15 +28,23 @@
                         <div class="col-sm-1">
                             <label>Năm</label>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-1">
                             <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
                             </select>
                         </div>
+
                         <div class="col-sm-1">
                             <label>Tỉnh</label>
                         </div>
-                        <div class="col-sm-3">
-                            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-options="item.Code as item.Name for item in ListCity">
+                        <div class="col-sm-2">
+                            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <label>Nhóm TBH</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                             </select>
                         </div>
                         <div class="col-sm-2">

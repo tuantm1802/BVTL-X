@@ -100,18 +100,30 @@ namespace WebApp.Controllers
                     );
         }
 
+        [HttpPost]
+        public ActionResult GetNhomTBHByCityCodes(string CityCodes)
+        {
+            // Lấy danh sách nhóm TBH theo tỉnh
+            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+            return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+        }
+
         #region Xuất dữ liệu ra excel
         [HttpGet]
-        public ActionResult ExportData(int Year, string Months, string CityCodes)
+        public ActionResult ExportData(int Year, string Months, string CityCodes, string maNhomTBHs)
         {
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 1 };
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 1, MaNhomTBH = maNhomTBHs };
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh
-                var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                var nhomTBHs = new List<NhomTBHPageModel>();
+                if(string.IsNullOrEmpty(maNhomTBHs))
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                else
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhoms(maNhomTBHs);
 
                 var tenNhomTBHs = "";
                 if(nhomTBHs != null && nhomTBHs.Count > 0)

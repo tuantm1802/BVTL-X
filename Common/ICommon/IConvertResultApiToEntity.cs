@@ -45,7 +45,7 @@ namespace Common.ICommon
         /// </summary>
         /// <param name="resultApiTHs"></param>
         /// <param name="tongHops"></param>
-         void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops);
+         void ConvertApiTongHopToEntity(List<ResultApiTongHopModel> resultApiTHs, string maDuAn, ref List<BVTL_BO_BIEU_MAU_KH_BAO_CAO> tongHops, ref List<BVTL_KHACH_HANG> khachHangs);
 
         /// <summary>
         /// CHuyển đổi kết quả api phiếu tư vấn sang entity BVTL_PHIEU_TU_VAN

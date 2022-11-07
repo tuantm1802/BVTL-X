@@ -45,7 +45,7 @@ namespace Data.API
                         var assists = new List<BVTL_KQ_SL_ASSIST>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi, maDuAn, ref sktts, ref assists);
+                        _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi.Where(x=>!string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref sktts, ref assists);
 
                         // Thêm dữ liệu bảng BVTL_KQ_SL_SKTT
                         if (sktts != null && sktts.Count > 0)
@@ -72,7 +72,7 @@ namespace Data.API
                         var hivs = new List<BVTL_KQ_XN_HIV>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi, maDuAn, ref hivs);
+                        _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref hivs);
 
                         // Thêm dữ liệu bảng BVTL_KQ_XN_HIV
                         if (hivs != null && hivs.Count > 0)
@@ -91,7 +91,7 @@ namespace Data.API
                         var aces = new List<BVTL_KQ_SL_ACE>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi, maDuAn, ref aces);
+                        _convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref aces);
 
                         // Thêm dữ liệu bảng BVTL_KQ_SL_ACE
                         if (aces != null && aces.Count > 0)
@@ -108,9 +108,18 @@ namespace Data.API
                         var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTongHopModel>>(resultApiString);
 
                         var tongHops = new List<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
+                        var khachHangs = new List<BVTL_KHACH_HANG>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi, maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops, ref khachHangs);
+
+                        // Thêm dữ liệu bảng BVTL_KHACH_HANG
+                        if (khachHangs != null && khachHangs.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(khachHangs);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KHACH_HANG");
+                        }
 
                         // Thêm dữ liệu bảng BVTL_BO_BIEU_MAU_KH_BAO_CAO
                         if (tongHops != null && tongHops.Count > 0)
@@ -129,7 +138,7 @@ namespace Data.API
                         var tongHops = new List<BVTL_PHIEU_TU_VAN>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi, maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
 
                         // Thêm dữ liệu bảng BVTL_PHIEU_TU_VAN
                         if (tongHops != null && tongHops.Count > 0)
@@ -148,7 +157,7 @@ namespace Data.API
                         var tongHops = new List<BVTL_CHUYEN_GUI_DICH_VU>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi, maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
 
                         // Thêm dữ liệu bảng BVTL_CHUYEN_GUI_DICH_VU
                         if (tongHops != null && tongHops.Count > 0)
