@@ -44,10 +44,11 @@ namespace Data.API
 
             try
             {
-                log.Info("*******************Bắt đầu xóa dữ liệu bảng: " + tableName + "*********************");
+                log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + "!!!!!!!!!!!!!!!!!!!!!!");
                 // Xóa dữ liệu bảng
                 var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName + " where  = city_code" + cityCode, conn, transaction);
-                log.Info("*******************Kết thúc xóa dữ liệu bảng: " + tableName + "*********************");
+                log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
+
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
                 //Bulk insert into table SKTTTest
@@ -62,7 +63,7 @@ namespace Data.API
 
                 obj.Success = true;
                 log.Info("Tổng số bản ghi thêm: " + dattableInsert.Rows.Count);
-                log.Info("*******************Kết thúc insert dữ liệu bảng: " + tableName + "*********************");
+                log.Info("############*********Kết thúc insert dữ liệu bảng: " + tableName + "############**********");
             }
             catch (Exception ex)
             {
