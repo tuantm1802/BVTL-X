@@ -954,15 +954,21 @@ namespace Common.Common
 
                     resultApiPTV = resultApiPTVs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
-                    customer_code = resultApiPTV.makh;
-                    group_code = customer_code.Substring(0, 5);
+
+                    // Updated 07/11/2022: API Phiếu tư vấn thêm các trường makh_2,makh_3... và các trường matcv_2, matcv_3... tương ứng
+                    // makh trong bảng dữ liệu giữ nguyên, makh = makh_2 -> makh_10 nếu 1 trong 10 makh đó có giá trị (trong 10 trường sẽ tồn tại 1 trường có dữ liệu)
+                    //customer_code = resultApiPTV.makh;
+                    customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10);
+
                     // Lấy id tỉnh
                     if (!string.IsNullOrEmpty(customer_code))
                     {
+                        group_code = customer_code.Substring(0, 5);
                         cityCode = customer_code.Substring(0, 3);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
+                    /*
                     customer = customers.FirstOrDefault(x => x.makh == customer_code);
                     if (customer != null && customer.khachhang_id > 0)
                     {
@@ -998,6 +1004,7 @@ namespace Common.Common
                         if (customerCK != null && customerCK.khachhang_id > 0)
                             customer_id = customerCK.khachhang_id;
                     }
+                    */
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
@@ -1045,7 +1052,7 @@ namespace Common.Common
                         phieuTuVan.ngaytuvan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                    
                     phieuTuVan.diadiem = resultApiPTV.diadiem;
-                    phieuTuVan.matcv = resultApiPTV.matcv;
+                    phieuTuVan.matcv = String.Concat(resultApiPTV.matcv, resultApiPTV.matcv_2, resultApiPTV.matcv_3, resultApiPTV.matcv_4, resultApiPTV.matcv_5, resultApiPTV.matcv_6, resultApiPTV.matcv_7, resultApiPTV.matcv_8, resultApiPTV.matcv_9, resultApiPTV.matcv_10);
                     phieuTuVan.lantuvan = resultApiPTV.lantuvan;
                     phieuTuVan.cau1_1 = resultApiPTV.cau1_1;
                     phieuTuVan.cau1_1k = resultApiPTV.cau1_1k;

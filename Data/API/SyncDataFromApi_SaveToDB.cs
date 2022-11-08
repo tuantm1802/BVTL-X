@@ -144,8 +144,13 @@ namespace Data.API
                         if (tongHops != null && tongHops.Count > 0)
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+<<<<<<< HEAD
 
                             result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN", tongHops.FirstOrDefault().city_code);
+=======
+                            
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN");
+>>>>>>> origin/TUANTM_BVTL_V1.0
                         }
                     }
 
