@@ -918,7 +918,8 @@ namespace Common.Common
         public void ConvertApiPhieuTuVanToEntity(List<ResultApiPhieuTuVanModel> resultApiPTVs, string maDuAn, ref List<BVTL_PHIEU_TU_VAN> phieuTuVans)
         {
 
-            log.Info("********************************Bắt đầu chuyển đổi kết quả api phiếu tư vấn sang entity**************************************");
+            log.Info("*********Bắt đầu chuyển đổi kết quả api phiếu tư vấn sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API:" + resultApiPTVs.Count);
             try
             {
                 var phieuTuVan = new BVTL_PHIEU_TU_VAN();
@@ -926,6 +927,8 @@ namespace Common.Common
                 var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
+
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
                 var customer_id = 0;
@@ -1046,7 +1049,8 @@ namespace Common.Common
                         maduan = maDuAn
                     };
 
-                    phieuTuVan.record_id = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
+                    //phieuTuVan.record_id = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
+                    //phieuTuVan.record_id = record_id_max + i + 1;
                     phieuTuVan.ngaynhap = ngaynhapD;
                     if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
                         phieuTuVan.ngaytuvan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
@@ -1100,6 +1104,9 @@ namespace Common.Common
 
                     #endregion
                 }
+
+                log.Info("*********-----CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
+
             }
             catch (Exception ex)
             {

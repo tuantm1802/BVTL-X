@@ -138,7 +138,8 @@ namespace Data.API
                         var tongHops = new List<BVTL_PHIEU_TU_VAN>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
+                        //_convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.ToList(), maDuAn, ref tongHops);
 
                         // Thêm dữ liệu bảng BVTL_PHIEU_TU_VAN
                         if (tongHops != null && tongHops.Count > 0)

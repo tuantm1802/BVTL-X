@@ -46,11 +46,13 @@ namespace Data.API
             {
                 log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + "!!!!!!!!!!!!!!!!!!!!!!");
                 // Xóa dữ liệu bảng
-                var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName + " where city_code = " + cityCode, conn, transaction);
+                var data = _databaseSql.ExecuteNonQueryTran("DELETE FROM " + tableName + " WHERE CITY_CODE = '" + cityCode + "'", conn, transaction);
                 log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
 
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
+                long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
+
                 //Bulk insert into table SKTTTest
                 using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
                 {
@@ -62,7 +64,7 @@ namespace Data.API
                 conn.Close();
 
                 obj.Success = true;
-                log.Info("Tổng số bản ghi thêm: " + dattableInsert.Rows.Count);
+                log.Info("**********-----Tổng số bản ghi đã thêm: " + dattableInsert.Rows.Count + "|TABLE: " + tableName + "|CITY_CODE: " + cityCode);
                 log.Info("############*********Kết thúc insert dữ liệu bảng: " + tableName + "############**********");
             }
             catch (Exception ex)
@@ -269,8 +271,10 @@ namespace Data.API
             try
             {
                 var data = db.BVTL_API.FirstOrDefault(x => x.Api_Code == apiCode);
-                if (isStartTime)
+                if (isStartTime) { 
                     data.Start_Time_Sync = DateTime.Now;
+                    data.End_Time_Syc = null;
+                }
                 else
                     data.End_Time_Syc = DateTime.Now;
 
