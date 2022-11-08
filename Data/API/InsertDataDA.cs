@@ -46,13 +46,9 @@ namespace Data.API
             {
                 log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + "!!!!!!!!!!!!!!!!!!!!!!");
                 // Xóa dữ liệu bảng
-<<<<<<< HEAD
                 var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName + " where  = city_code" + cityCode, conn, transaction);
-                log.Info("*******************Kết thúc xóa dữ liệu bảng: " + tableName + "*********************");
-=======
-                var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName, conn, transaction);
                 log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
->>>>>>> origin/TUANTM_BVTL_V1.0
+
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
                 //Bulk insert into table SKTTTest
