@@ -144,7 +144,7 @@ namespace Data.API
                         if (tongHops != null && tongHops.Count > 0)
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
-
+                            
                             result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN");
                         }
                     }
