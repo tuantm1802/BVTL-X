@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Code\BC_YTe\Code_full\Web-25-10-2022\Model\Model\BVTL_REPORTING.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\Projects\BVTL\SOURCE_BVTL\BVTL_MAIN\BVTL_Report_Web\Model\Model\BVTL_REPORTING.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
