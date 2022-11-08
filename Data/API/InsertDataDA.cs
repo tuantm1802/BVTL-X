@@ -30,7 +30,7 @@ namespace Data.API
         /// </summary>
         /// <param name="dataInsert"></param>
         /// <returns></returns>
-        public BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName)
+        public BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode)
         {
 
             BaseResult obj = new BaseResult();
@@ -46,7 +46,7 @@ namespace Data.API
             {
                 log.Info("*******************Bắt đầu xóa dữ liệu bảng: " + tableName + "*********************");
                 // Xóa dữ liệu bảng
-                var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName, conn, transaction);
+                var data = _databaseSql.ExecuteNonQueryTran("Delete from " + tableName + " where  = city_code" + cityCode, conn, transaction);
                 log.Info("*******************Kết thúc xóa dữ liệu bảng: " + tableName + "*********************");
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
