@@ -51,7 +51,7 @@ namespace Data.API
 
 
                 log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
-                long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
+                //long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
 
                 //Bulk insert into table SKTTTest
                 using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
