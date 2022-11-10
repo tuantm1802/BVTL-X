@@ -72,7 +72,7 @@ namespace Data.API
                         var hivs = new List<BVTL_KQ_XN_HIV>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref hivs);
+                        _convertResultApiToEntity.ConvertApiHIVToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.makh.Length > 10).ToList(), maDuAn, ref hivs);
 
                         // Thêm dữ liệu bảng BVTL_KQ_XN_HIV
                         if (hivs != null && hivs.Count > 0)

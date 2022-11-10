@@ -50,7 +50,9 @@ namespace Common.Common
         public void ConvertApi1344ToEntity(List<ResultApi1344Model> resultApi1344s, string maDuAn, ref List<BVTL_KQ_SL_SKTT> sktts, ref List<BVTL_KQ_SL_ASSIST> assists)
         {
 
-            log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 ASSIST/SKTT sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API ASSIST/SKTT:" + resultApi1344s.Count);
+
             try
             {
                 var sktt = new BVTL_KQ_SL_SKTT();
@@ -148,9 +150,9 @@ namespace Common.Common
                     //}
 
                     // Lấy ngay, tháng, năm nhập dữ liệu
-                    if (!string.IsNullOrEmpty(resultApi1344.ngaynhap))
+                    if (!string.IsNullOrEmpty(resultApi1344.ngay))
                     {
-                        ngaynhap = resultApi1344.ngaynhap.Split(' ')[0];
+                        ngaynhap = resultApi1344.ngay.Split(' ')[0];
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                     }
                     day = ngaynhapD.Day;
@@ -315,6 +317,9 @@ namespace Common.Common
                     assists.Add(assist);
                     #endregion
                 }
+
+                log.Info("*********-----SỐ BẢN GHI ASSIST/SKTT ĐÃ CONVERT:" + assists.Count() + "/" + sktts.Count() + "|CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
+
             }
             catch (Exception ex)
             {
@@ -332,6 +337,7 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api hiv sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API HIV:" + resultApiHIVs.Count);
             try
             {
                 var hiv = new BVTL_KQ_XN_HIV();
@@ -376,6 +382,7 @@ namespace Common.Common
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
+                    /*
                     customer = customers.FirstOrDefault(x => x.makh == customer_code);
                     if (customer != null && customer.khachhang_id > 0)
                     {
@@ -412,6 +419,7 @@ namespace Common.Common
                         if (customerCK != null && customerCK.khachhang_id > 0)
                             customer_id = customerCK.khachhang_id;
                     }
+                    */
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
@@ -478,12 +486,15 @@ namespace Common.Common
 
                     #endregion
                 }
+
+                log.Info("*********-----SỐ BẢN GHI HIV ĐÃ CONVERT:" + hivs.Count() + "|CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
+
             }
             catch (Exception ex)
             {
                 log.Error("Chuyển đổi kết quả api hiv sang entity lỗi: " + ex.Message);
             }
-            log.Info("********************************Kết thúc chuyển đổi kết quả api hiv sang entity**************************************");
+            log.Info("********************************Kết thúc chuyển đổi kết quả api HIV sang entity**************************************");
         }
 
         /// <summary>
