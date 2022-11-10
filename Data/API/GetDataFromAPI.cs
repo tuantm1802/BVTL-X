@@ -34,6 +34,7 @@ namespace Data.API
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
                 HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
+                log.Info("****************************###GetDataFromAPI:::PostDataFromApiReturnList:::response.StatusCode= " + response.StatusCode + "###***************************");
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return new List<T>();
@@ -73,6 +74,8 @@ namespace Data.API
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
                 HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
+
+                log.Info("****************************###GetDataFromAPI:::PostDataFromApiReturnString:::response.StatusCode= " + response.StatusCode + "|report id= " + reportId + "###***************************");
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return "";

@@ -930,7 +930,7 @@ namespace Common.Common
         {
 
             log.Info("*********Bắt đầu chuyển đổi kết quả api phiếu tư vấn sang entity**************************************");
-            log.Info("*********-----TỔNG SỐ RECORD API:" + resultApiPTVs.Count);
+            log.Info("*********-----TỔNG SỐ RECORD API PHIEUTUVAN:" + resultApiPTVs.Count);
             try
             {
                 var phieuTuVan = new BVTL_PHIEU_TU_VAN();
