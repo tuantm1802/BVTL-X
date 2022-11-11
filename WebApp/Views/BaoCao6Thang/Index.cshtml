@@ -86,13 +86,13 @@
                                 <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
                             </td>
                             <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.MSM | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.PUD | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.SW | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.MSM | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.PUD | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.SW | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
 
                         </tr>
                     </tbody>
