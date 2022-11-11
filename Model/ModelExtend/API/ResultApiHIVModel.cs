@@ -26,6 +26,7 @@ namespace Model.ModelExtend.API
         public string kqxn { get; set; }
         public string anh_2 { get; set; }
         public string lydo { get; set; }
+        public string dieutri { get; set; }
         public string sng_lc_hiv_complete { get; set; }
     }
 }

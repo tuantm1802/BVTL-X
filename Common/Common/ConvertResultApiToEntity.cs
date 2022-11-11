@@ -51,7 +51,7 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 ASSIST/SKTT sang entity**************************************");
-            log.Info("*********-----TỔNG SỐ RECORD API ASSIST/SKTT:" + resultApi1344s.Count);
+            log.Info("*********-----TỔNG SỐ RECORD API ASSIST/SKTT:" + resultApi1344s.Count + " | MADUAN:" + maDuAn);
 
             try
             {
@@ -90,13 +90,18 @@ namespace Common.Common
                     resultApi1344 = resultApi1344s[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
                     customer_code = resultApi1344.makh;
-                    group_code = customer_code.Substring(0, 5);
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+
+                    if(!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
-
+                    
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
                     //customer = customers.FirstOrDefault(x => x.makh == customer_code);
                     //if (customer != null && customer.khachhang_id > 0)
@@ -318,7 +323,7 @@ namespace Common.Common
                     #endregion
                 }
 
-                log.Info("*********-----SỐ BẢN GHI ASSIST/SKTT ĐÃ CONVERT:" + assists.Count() + "/" + sktts.Count() + "|CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
+                log.Info("*********-----SỐ BẢN GHI ASSIST/SKTT ĐÃ CONVERT:" + assists.Count() + "/" + sktts.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
 
             }
             catch (Exception ex)
@@ -337,7 +342,8 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api hiv sang entity**************************************");
-            log.Info("*********-----TỔNG SỐ RECORD API HIV:" + resultApiHIVs.Count);
+            log.Info("*********-----TỔNG SỐ RECORD API HIV:" + resultApiHIVs.Count + " | MADUAN:" + maDuAn);
+
             try
             {
                 var hiv = new BVTL_KQ_XN_HIV();
@@ -374,11 +380,15 @@ namespace Common.Common
                     resultApiHIV = resultApiHIVs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
                     customer_code = resultApiHIV.makh;
-                    group_code = customer_code.Substring(0, 5);
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -506,6 +516,7 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api ace sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API ACE:" + resultApiACEs.Count + " | MADUAN:" + maDuAn);
             try
             {
                 var ace = new BVTL_KQ_SL_ACE();
@@ -541,12 +552,17 @@ namespace Common.Common
 
                     resultApiACE = resultApiACEs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
                     customer_code = resultApiACE.makh;
-                    group_code = customer_code.Substring(0, 5);
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -630,7 +646,11 @@ namespace Common.Common
                     aces.Add(ace);
 
                     #endregion
+
                 }
+
+                log.Info("*********-----SỐ BẢN GHI ACE ĐÃ CONVERT:" + aces.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
             }
             catch (Exception ex)
             {
@@ -648,6 +668,8 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api tổng hợp sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API TONG HOP BIEU_MAU_KH_BAO_CAO:" + resultApiTHs.Count + " | MADUAN:" + maDuAn);
+
             try
             {
 
@@ -684,11 +706,15 @@ namespace Common.Common
                     resultApiTH = resultApiTHs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
                     customer_code = resultApiTH.makh;
-                    group_code = customer_code.Substring(0, 5);
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -913,7 +939,10 @@ namespace Common.Common
                     tongHops.Add(tongHop);
 
                     #endregion
+
                 }
+                log.Info("*********-----SỐ BẢN GHI TONG HOP BIEU_MAU_KH_BAO_CAO ĐÃ CONVERT:" + tongHops.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
             }
             catch (Exception ex)
             {
@@ -931,7 +960,7 @@ namespace Common.Common
         {
 
             log.Info("*********Bắt đầu chuyển đổi kết quả api phiếu tư vấn sang entity**************************************");
-            log.Info("*********-----TỔNG SỐ RECORD API PHIEUTUVAN:" + resultApiPTVs.Count);
+            log.Info("*********-----TỔNG SỐ RECORD API PHIEUTUVAN:" + resultApiPTVs.Count + " | MADUAN:" + maDuAn);
             try
             {
                 var phieuTuVan = new BVTL_PHIEU_TU_VAN();
@@ -975,11 +1004,15 @@ namespace Common.Common
                     //customer_code = resultApiPTV.makh;
                     customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10);
 
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -1115,10 +1148,11 @@ namespace Common.Common
                     phieuTuVans.Add(phieuTuVan);
 
                     #endregion
+
                 }
 
-                log.Info("*********-----CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
-
+                log.Info("*********-----SỐ BẢN GHI PHIEUTUVAN ĐÃ CONVERT:" + phieuTuVans.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                
             }
             catch (Exception ex)
             {
@@ -1136,6 +1170,8 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api chuyển gửi dịch vụ sang entity**************************************");
+            log.Info("*********-----TỔNG SỐ RECORD API CHUYEN_GUI_DICH_VU:" + resultApiCGDVs.Count + " | MADUAN:" + maDuAn);
+
             try
             {
                 var chuyenGuiDV = new BVTL_CHUYEN_GUI_DICH_VU();
@@ -1171,12 +1207,17 @@ namespace Common.Common
 
                     resultApiCGDV = resultApiCGDVs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
                     customer_code = resultApiCGDV.makh;
-                    group_code = customer_code.Substring(0, 5);
-                    // Lấy id tỉnh
-                    if (!string.IsNullOrEmpty(customer_code))
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -1300,6 +1341,8 @@ namespace Common.Common
 
                     #endregion
                 }
+                log.Info("*********-----SỐ BẢN GHI CHUYEN_GUI_DICH_VU ĐÃ CONVERT:" + chuyenGuiDVs.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
             }
             catch (Exception ex)
             {

@@ -52,7 +52,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(sktts);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_SKTT", sktts.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_SKTT", sktts.FirstOrDefault().city_code, maDuAn);
                         }
 
                         // Thêm dữ liệu bảng BVTL_KQ_SL_SKTT
@@ -60,7 +60,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(assists);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ASSIST", assists.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ASSIST", assists.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 
@@ -79,7 +79,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(hivs);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_XN_HIV", hivs.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_XN_HIV", hivs.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 
@@ -98,7 +98,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(aces);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ACE", aces.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_SL_ACE", aces.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 
@@ -118,7 +118,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(khachHangs);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KHACH_HANG", khachHangs.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KHACH_HANG", khachHangs.FirstOrDefault().city_code, maDuAn);
                         }
 
                         // Thêm dữ liệu bảng BVTL_BO_BIEU_MAU_KH_BAO_CAO
@@ -126,7 +126,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_BO_BIEU_MAU_KH_BAO_CAO", tongHops.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_BO_BIEU_MAU_KH_BAO_CAO", tongHops.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 
@@ -146,7 +146,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN", tongHops.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_PHIEU_TU_VAN", tongHops.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 
@@ -165,7 +165,7 @@ namespace Data.API
                         {
                             var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
 
-                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_CHUYEN_GUI_DICH_VU", tongHops.FirstOrDefault().city_code);
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_CHUYEN_GUI_DICH_VU", tongHops.FirstOrDefault().city_code, maDuAn);
                         }
                     }
 

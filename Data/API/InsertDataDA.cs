@@ -30,7 +30,7 @@ namespace Data.API
         /// </summary>
         /// <param name="dataInsert"></param>
         /// <returns></returns>
-        public BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode)
+        public BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode, string maDuAn)
         {
 
             BaseResult obj = new BaseResult();
@@ -44,9 +44,9 @@ namespace Data.API
 
             try
             {
-                log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + "!!!!!!!!!!!!!!!!!!!!!!");
+                log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + " | CITY_CODE:" + cityCode + " | MADUAN:" + maDuAn);
                 // Xóa dữ liệu bảng
-                var data = _databaseSql.ExecuteNonQueryTran("DELETE FROM " + tableName + " WHERE CITY_CODE = '" + cityCode + "'", conn, transaction);
+                var data = _databaseSql.ExecuteNonQueryTran("DELETE FROM " + tableName + " WHERE CITY_CODE = '" + cityCode + "' AND MADUAN = '"  + maDuAn + "'", conn, transaction);
                 log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
 
 
@@ -64,14 +64,13 @@ namespace Data.API
                 conn.Close();
 
                 obj.Success = true;
-                log.Info("**********-----Tổng số bản ghi đã thêm: " + dattableInsert.Rows.Count + "|TABLE: " + tableName + "|CITY_CODE: " + cityCode);
-                log.Info("############*********Kết thúc insert dữ liệu bảng: " + tableName + "############**********");
+                log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
                 conn.Close();
-                log.Error("Thêm dữ liệu bảng " + tableName + " lỗi: " + ex.Message);
+                log.Error("Thêm dữ liệu bảng:" + tableName + " | CITY_CODE:"+ cityCode + " | MADUAN:" + maDuAn + " | Chi tiết lỗi: " + ex.Message);
                 obj.Success = false;
                 obj.Message = ex.Message;
             }

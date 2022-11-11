@@ -17,7 +17,7 @@ namespace Data.InterfaceDA.API
         /// </summary>
         /// <param name="dataInsert"></param>
         /// <returns></returns>
-        BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode);
+        BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode, string maDuAn);
 
         /// <summary>
         /// Chuyển đổi list model to datatable
