@@ -300,7 +300,7 @@ namespace WebApp.Controllers
             ws.Cell(cellName + row).Style.Alignment.Vertical = vertical;
             ws.Cell(cellName + row).Style.Alignment.WrapText = true;
             if (isNumber)
-                ws.Cell(cellName + row).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(cellName + row).Style.NumberFormat.Format = "#,##0";//#,##0.00
         }
         /// Gán dữ liệu cho cell có gộp cell
         /// </summary>
