@@ -40,6 +40,7 @@ namespace Common.Common
         public const string SP_PhieuTuVan_Get_By_Page = "PhieuTuVan_Get_By_Page";
         public const string SP_PhieuTuVan_Get_By_Id = "PhieuTuVan_Get_By_Id";
         public const string SP_Report_Ket_Qua_Sang_Loc = "Report_Ket_Qua_Sang_Loc";
+        public const string SP_DuAn_Get_By_Page = "DuAn_Get_By_Page";
         #endregion
     }
 }

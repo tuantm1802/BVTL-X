@@ -20,6 +20,7 @@ namespace WebApp.Controllers
     public class BaoCao6ThangController : BaseController
     {
         ICityDA _CityDA = new CityDA();
+        IDuAnDA _DuAnDA = new DuAnDA();
         IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
         IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
         ISysLogDA _sysLogDA = new SysLogDA();
@@ -73,9 +74,10 @@ namespace WebApp.Controllers
 
                 var user = Session["USER_SESSION"] as UserLogin;
                 var citys = _CityDA.GetCityReport((int)user.UserID);
+                var duAns = _DuAnDA.GetAll();
 
                 AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
-                return Json(new { Buttoms = bottoms, Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); 
+                return Json(new { Buttoms = bottoms, Citys = citys, DuAns = duAns, Error = false, Title = "Lấy dữ liệu thành công." }); 
             }
             catch (Exception ex)
             {
@@ -111,12 +113,12 @@ namespace WebApp.Controllers
 
         #region Xuất dữ liệu ra excel
         [HttpGet]
-        public ActionResult ExportData(int Year, string Months, string CityCodes, string maNhomTBHs)
+        public ActionResult ExportData(int Year, string Months, string CityCodes, string maNhomTBHs, string maDuAn)
         {
             try
             {
                 var user = Session["USER_SESSION"] as UserLogin;
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3, MaNhomTBH = maNhomTBHs };
+                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();
@@ -124,13 +126,16 @@ namespace WebApp.Controllers
                     nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
                 else
                     nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhoms(maNhomTBHs);
+                var tenDuAn = "";
+                if (!string.IsNullOrEmpty(maDuAn))
+                    tenDuAn = "Dự án: " + _DuAnDA.GetItemByCode(maDuAn);
                 var tenNhomTBHs = "";
                 if (nhomTBHs != null && nhomTBHs.Count > 0)
                 {
                     tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
                 }
 
-                var file_name = "BaoCao6Thang_" + Months.Replace(",", "_") + "_nam_" + Year + ".xlsx";
+                var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_SAU_THANG_" + Months.Replace(",", "-") + "-" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 

@@ -10,6 +10,7 @@
     $scope.ListCityCode = [];
     $scope.ListMaNhomTBH = [];
     $scope.ListNhomTBH = [];
+    $scope.ListDuAn = [];
    
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
@@ -50,7 +51,9 @@
                     });
                 }
 
+                $scope.ListDuAn = response.DuAns;
                 $scope.ListCity = response.Citys;
+                $scope.modelSearch.MaDuAn = $scope.ListDuAn[0].maduan;
                 $scope.$apply();
             }
         });
@@ -60,6 +63,11 @@
     $scope.LoadPage = function (genTable) {
         if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
             toastr.error("Vui lòng chọn năm!");
+            return;
+        }
+
+        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+            toastr.error("Vui lòng chọn dự án!");
             return;
         }
         $scope.modelSearch.CityCodes = '';
@@ -111,6 +119,11 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
+
+        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+            toastr.error("Vui lòng chọn dự án!");
+            return;
+        }
         $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
@@ -135,7 +148,8 @@
 
         window.location.href = '/BaoCaoNam/ExportData?Year=' + $scope.modelSearch.Year
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
-            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);
+            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)
+            + '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn);
 }
 
 // Lấy danh sách Nhóm TBH theo tỉnh

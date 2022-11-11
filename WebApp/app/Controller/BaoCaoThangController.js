@@ -12,6 +12,7 @@
     $scope.ListCityCode = [];
     $scope.ListMaNhomTBH = [];
     $scope.ListNhomTBH = [];
+    $scope.ListDuAn = [];
     
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
@@ -60,6 +61,8 @@
                     });
                 }
                 $scope.ListCity = response.Citys;
+                $scope.ListDuAn = response.DuAns;
+                $scope.modelSearch.MaDuAn = $scope.ListDuAn[0].maduan;
                 $scope.$apply();
             }
         });
@@ -68,6 +71,11 @@
     $scope.LoadPage = function (genTable) {
         if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
             toastr.error("Vui lòng chọn năm!");
+            return;
+        }
+
+        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+            toastr.error("Vui lòng chọn dự án!");
             return;
         }
         $scope.modelSearch.Months = '';
@@ -141,6 +149,12 @@
             toastr.error("Vui lòng chọn năm!");
             return;
         }
+
+        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+            toastr.error("Vui lòng chọn dự án!");
+            return;
+        }
+
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
             for (var i = 0; i < $scope.Thangs.length; i++) {
                 if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
@@ -176,7 +190,8 @@
         }
         window.location.href = '/BaoCaoThang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
-            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);
+            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)
+            + '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn);
     }
 
     // Lấy danh sách Nhóm TBH theo tỉnh

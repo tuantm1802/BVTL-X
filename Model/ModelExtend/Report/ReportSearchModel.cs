@@ -15,6 +15,7 @@ namespace Model.ModelExtend.Report
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string MaNhomTBH { get; set; }
+        public string MaDuAn { get; set; }
         public int? TuSoMaKH { get; set; }
         public int? DenSoMaKH { get; set; }
         public Nullable<System.DateTime> _FromDate { get; set; }

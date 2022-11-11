@@ -14,32 +14,39 @@
         <div class="card-header py-3">
                 <div class="card-tools">
                     <div class="row">
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <label>Kỳ báo cáo</label>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <select class="form-control" ng-model="SauThang" name="SauThang" ng-options="item.Id as item.Name for item in List6Thang">
                             </select>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <label>Năm</label>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
                             </select>
                         </div>
 
-                        <div class="col-sm-1">
-                            <label>Tỉnh</label>
+                        <div class="col-sm-2">
+                            <label>Dự án</label>
                         </div>
                         <div class="col-sm-2">
+                            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn">
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Tỉnh</label>
+                        </div>
+                        <div class="col-sm-3">
                             <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
                             </select>
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-2">
                             <label>Nhóm TBH</label>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                             </select>
                         </div>
