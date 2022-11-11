@@ -101,8 +101,8 @@
                             </thead>
                             <tr ng-repeat="item in DoiTuongKHs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -126,8 +126,8 @@
                             </thead>
                             <tr ng-repeat="item in GioiTinhs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -150,8 +150,8 @@
                             </thead>
                             <tr ng-repeat="item in Tuois">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -175,8 +175,8 @@
                             </thead>
                             <tr ng-repeat="item in KetQuaHIVs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -199,8 +199,8 @@
                             </thead>
                             <tr ng-repeat="item in ChatGayNghien3Thangs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -224,8 +224,8 @@
                             </thead>
                             <tr ng-repeat="item in SoChatGayNghiens">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -248,8 +248,8 @@
                             </thead>
                             <tr ng-repeat="item in ChatGayNghienSDThuongXuyens">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -275,11 +275,11 @@
                             </thead>
                             <tr ng-repeat="item in DuongSDMaTuyDas">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.HutHit | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.DangBot | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.UongNuot | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.TiemChich | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.HutHit | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DangBot | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.UongNuot | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.TiemChich | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -308,14 +308,14 @@
                             </thead>
                             <tr ng-repeat="item in TanSuatSDMaTuyDas">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.VaiLan1Ngay | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.HangNgay | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.VaiLan1Tuan | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.VaiNgayRoiTamNghi | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.DungCuoiTuan | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.VaiLan1Thang | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.ItHon1Lan1Thang | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiLan1Ngay | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.HangNgay | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiLan1Tuan | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiNgayRoiTamNghi | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DungCuoiTuan | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VaiLan1Thang | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ItHon1Lan1Thang | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -347,17 +347,17 @@
                             </thead>
                             <tr ng-repeat="item in LanDauSDMaTuyDas">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item._13 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._14 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._15 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._16 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._17 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._18 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._19 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._20 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._21 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._22 | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item._23 | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._13 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._14 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._15 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._16 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._17 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._18 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._19 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._20 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._21 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._22 | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item._23 | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -385,13 +385,13 @@
                             </thead>
                             <tr ng-repeat="item in LoaiMaTuyDaSDDauTiens">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Da | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Keo | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.CanCo | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Ketamin | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.BongCuoi | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Heroin | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.CacChatHit | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Da | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Keo | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CanCo | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Ketamin | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.BongCuoi | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Heroin | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CacChatHit | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -415,9 +415,9 @@
                             </thead>
                             <tr ng-repeat="item in NguyCoSDMaTuyDas">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.DaTungTiemChich | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.VanDangTiemChich | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ChuaBaoGio | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DaTungTiemChich | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.VanDangTiemChich | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -440,8 +440,8 @@
                             </thead>
                             <tr ng-repeat="item in ChungBKTs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.DaTungDungChung | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DaTungDungChung | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ChuaBaoGio | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -466,10 +466,10 @@
                             </thead>
                             <tr ng-repeat="item in NguyCoTinhDucs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.ChuaBaoGio | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.DongGioi | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KhacGioi | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.CaHai | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ChuaBaoGio | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.DongGioi | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhacGioi | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.CaHai | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -495,11 +495,11 @@
                             </thead>
                             <tr ng-repeat="item in DungBCSs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.LuonLuon | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.ThuongXuyen | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.ThiThoang | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.HiemKhi | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KhongBaoGio | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.LuonLuon | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ThuongXuyen | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.ThiThoang | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.HiemKhi | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhongBaoGio | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -523,9 +523,9 @@
                             </thead>
                             <tr ng-repeat="item in SDMaTuyDaKhiQHTDs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Co | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -549,9 +549,9 @@
                             </thead>
                             <tr ng-repeat="item in QHTDTapThes">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Co | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -575,9 +575,9 @@
                             </thead>
                             <tr ng-repeat="item in BanDams">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Co | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -602,10 +602,10 @@
                             </thead>
                             <tr ng-repeat="item in NhieuNguycoTinhDucs">
                                 <td class="text-left">{{item.}}</td>
-                                <td class="text-right">{{item.Mot | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Hai | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Ba | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.BonNam | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Mot | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Hai | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Ba | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.BonNam | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -632,12 +632,12 @@
                             </thead>
                             <tr ng-repeat="item in BenhSTIs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Lau | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.SuiMaoGa | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KhongMac | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khac | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.GiangMai | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Lau | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.SuiMaoGa | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KhongMac | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khac | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.GiangMai | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -666,10 +666,10 @@
                             </thead>
                             <tr ng-repeat="item in BenhLaos">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.HienTai_SoLuong | number}}</td>
-                                <td class="text-right">{{item.HienTai_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.QuaKhu_SoLuong | number}}</td>
-                                <td class="text-right">{{item.QuaKhu_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.HienTai_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.HienTai_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.QuaKhu_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.QuaKhu_PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -699,10 +699,10 @@
                             </thead>
                             <tr ng-repeat="item in BenhVGCs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.HienTai_SoLuong | number}}</td>
-                                <td class="text-right">{{item.HienTai_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.QuaKhu_SoLuong | number}}</td>
-                                <td class="text-right">{{item.QuaKhu_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.HienTai_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.HienTai_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.QuaKhu_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.QuaKhu_PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -727,8 +727,8 @@
                             </thead>
                             <tr ng-repeat="item in SocHeroins">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -752,8 +752,8 @@
                             </thead>
                             <tr ng-repeat="item in SocMeths">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -787,13 +787,13 @@
                             </thead>
                             <tr ng-repeat="item in CacLoaiChatGayNghiens">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.NguyCoThap_SoLuong | number}}</td>
-                                <td class="text-right">{{item.NguyCoThap_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.NguyCoTrungBinh_SoLuong | number}}</td>
-                                <td class="text-right">{{item.NguyCoTrungBinh_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.NguyCoCao_SoLuong | number}}</td>
-                                <td class="text-right">{{item.NguyCoCao_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.Tong_SoLuong | number}}</td>
+                                <td class="text-right">{{item.NguyCoThap_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.NguyCoThap_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.NguyCoTrungBinh_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.NguyCoTrungBinh_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.NguyCoCao_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.NguyCoCao_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.Tong_SoLuong | number:0}}</td>
                             </tr>
                         </table>
                     </div>
@@ -817,8 +817,8 @@
                             </thead>
                             <tr ng-repeat="item in KetQuaQSTs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.SoNguoi | number}}</td>
-                                <td class="text-right">{{item.PhanTram | number}}%</td>
+                                <td class="text-right">{{item.SoNguoi | number:0}}</td>
+                                <td class="text-right">{{item.PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -854,14 +854,14 @@
                             </thead>
                             <tr ng-repeat="item in MucDoGapVanDeSKTTs">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.KhongChutNao_SoLuong | number}}</td>
-                                <td class="text-right">{{item.KhongChutNao_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.Tu1Den7Ngay_SoLuong | number}}</td>
-                                <td class="text-right">{{item.Tu1Den7Ngay_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.Tu8NgayTroLen_SoLuong | number}}</td>
-                                <td class="text-right">{{item.Tu8NgayTroLen_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.GanNhuHangNgay_SoLuong | number}}</td>
-                                <td class="text-right">{{item.GanNhuHangNgay_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.KhongChutNao_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.KhongChutNao_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.Tu1Den7Ngay_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.Tu1Den7Ngay_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.Tu8NgayTroLen_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.Tu8NgayTroLen_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.GanNhuHangNgay_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.GanNhuHangNgay_PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
@@ -886,9 +886,9 @@
                             </thead>
                             <tr ng-repeat="item in TuLamHaiBanThans">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Co | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
 
                         </table>
@@ -914,9 +914,9 @@
                             </thead>
                             <tr ng-repeat="item in CoTuSats">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.Co | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.Khong | number}}<span ng-show="$index == 1">%</span></td>
-                                <td class="text-right">{{item.KBKTL | number}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Co | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.Khong | number:0}}<span ng-show="$index == 1">%</span></td>
+                                <td class="text-right">{{item.KBKTL | number:0}}<span ng-show="$index == 1">%</span></td>
                             </tr>
                         </table>
                     </div>
@@ -949,12 +949,12 @@
                             </thead>
                             <tr ng-repeat="item in LoanThans">
                                 <td class="text-left">{{item.NoiDung}}</td>
-                                <td class="text-right">{{item.TheoDoiRinhRap_SoLuong | number}}</td>
-                                <td class="text-right">{{item.TheoDoiRinhRap_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.YNghi_SoLuong | number}}</td>
-                                <td class="text-right">{{item.YNghi_PhanTram | number}}%</td>
-                                <td class="text-right">{{item.NgheThuMaNKKNT_SoLuong | number}}</td>
-                                <td class="text-right">{{item.NgheThuMaNKKNT_PhanTram | number}}%</td>
+                                <td class="text-right">{{item.TheoDoiRinhRap_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.TheoDoiRinhRap_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.YNghi_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.YNghi_PhanTram | number:0}}%</td>
+                                <td class="text-right">{{item.NgheThuMaNKKNT_SoLuong | number:0}}</td>
+                                <td class="text-right">{{item.NgheThuMaNKKNT_PhanTram | number:0}}%</td>
                             </tr>
                         </table>
                     </div>
