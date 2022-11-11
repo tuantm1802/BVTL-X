@@ -27,5 +27,6 @@ namespace Model.Model
         public string diachi { get; set; }
         public string city_code { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public string maduan { get; set; }
     }
 }

@@ -8091,25 +8091,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/25/2020 17:43:52</publishTime>
     </File>
     <File Include="bin/Common.dll">
-      <publishTime>11/11/2022 08:47:30</publishTime>
+      <publishTime>11/11/2022 13:42:53</publishTime>
     </File>
     <File Include="bin/Common.dll.config">
       <publishTime>10/26/2022 22:11:51</publishTime>
     </File>
     <File Include="bin/Common.pdb">
-      <publishTime>11/11/2022 08:47:30</publishTime>
+      <publishTime>11/11/2022 13:42:53</publishTime>
     </File>
     <File Include="bin/contact.cshtml.a8d08dba.compiled">
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/Data.dll">
-      <publishTime>11/11/2022 08:47:31</publishTime>
+      <publishTime>11/11/2022 13:42:54</publishTime>
     </File>
     <File Include="bin/Data.dll.config">
       <publishTime>10/25/2022 18:54:00</publishTime>
     </File>
     <File Include="bin/Data.pdb">
-      <publishTime>11/11/2022 08:47:31</publishTime>
+      <publishTime>11/11/2022 13:42:54</publishTime>
     </File>
     <File Include="bin/DataTables-Editor-Server.dll">
       <publishTime>09/12/2022 12:27:00</publishTime>
@@ -8586,13 +8586,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:55:08</publishTime>
     </File>
     <File Include="bin/Model.dll">
-      <publishTime>11/11/2022 08:47:30</publishTime>
+      <publishTime>11/11/2022 13:42:53</publishTime>
     </File>
     <File Include="bin/Model.dll.config">
       <publishTime>10/26/2022 22:11:51</publishTime>
     </File>
     <File Include="bin/Model.pdb">
-      <publishTime>11/11/2022 08:47:30</publishTime>
+      <publishTime>11/11/2022 13:42:53</publishTime>
     </File>
     <File Include="bin/myprofile.cshtml.65793277.compiled">
       <publishTime>11/01/2021 14:47:41</publishTime>
@@ -8898,10 +8898,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/WebApp.dll">
-      <publishTime>11/11/2022 08:47:35</publishTime>
+      <publishTime>11/11/2022 13:43:01</publishTime>
     </File>
     <File Include="bin/WebApp.pdb">
-      <publishTime>11/11/2022 08:47:35</publishTime>
+      <publishTime>11/11/2022 13:43:01</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>06/04/2021 10:55:29</publishTime>
@@ -15561,16 +15561,16 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/25/2022 18:22:14</publishTime>
     </File>
     <File Include="Views/BaoCao6Thang/Index.cshtml">
-      <publishTime>11/11/2022 08:25:30</publishTime>
+      <publishTime>11/11/2022 13:37:25</publishTime>
     </File>
     <File Include="Views/BaoCaoNam/Index.cshtml">
-      <publishTime>11/11/2022 08:24:47</publishTime>
+      <publishTime>11/11/2022 13:37:25</publishTime>
     </File>
     <File Include="Views/BaoCaoQuy/Index.cshtml">
-      <publishTime>11/11/2022 08:25:47</publishTime>
+      <publishTime>11/11/2022 13:37:25</publishTime>
     </File>
     <File Include="Views/BaoCaoThang/Index.cshtml">
-      <publishTime>11/11/2022 08:26:11</publishTime>
+      <publishTime>11/11/2022 13:37:25</publishTime>
     </File>
     <File Include="Views/BaoCaoTongHop/Index.cshtml">
       <publishTime>10/25/2022 18:22:14</publishTime>
@@ -16083,7 +16083,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/25/2022 18:22:14</publishTime>
     </File>
     <File Include="Views/KetQuaSangLoc/Index.cshtml">
-      <publishTime>10/25/2022 18:22:14</publishTime>
+      <publishTime>11/11/2022 13:37:40</publishTime>
     </File>
     <File Include="Views/KetQuaSKTT/Index.cshtml">
       <publishTime>10/25/2022 18:22:14</publishTime>
@@ -16683,7 +16683,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/25/2022 18:22:14</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/11/2022 08:47:48</publishTime>
+      <publishTime>11/11/2022 13:43:16</publishTime>
     </File>
     <File Include="WebAppDataSet.xsc">
       <publishTime>10/25/2022 18:22:14</publishTime>

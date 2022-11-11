@@ -41,6 +41,7 @@ namespace Model.Model
         public virtual DbSet<BVTL_LOAI_DOI_TUONG> BVTL_LOAI_DOI_TUONG { get; set; }
         public virtual DbSet<BVTL_MASTER_TABLE> BVTL_MASTER_TABLE { get; set; }
         public virtual DbSet<BVTL_NHOM_TBH> BVTL_NHOM_TBH { get; set; }
+        public virtual DbSet<BVTL_PHIEU_TU_VAN> BVTL_PHIEU_TU_VAN { get; set; }
         public virtual DbSet<BVTL_QT_LOG> BVTL_QT_LOG { get; set; }
         public virtual DbSet<BVTL_QT_NGUOI_DUNG> BVTL_QT_NGUOI_DUNG { get; set; }
         public virtual DbSet<BVTL_QT_NGUOI_DUNG_NHOM_TBH> BVTL_QT_NGUOI_DUNG_NHOM_TBH { get; set; }
@@ -51,6 +52,5 @@ namespace Model.Model
         public virtual DbSet<BVTL_QT_THAM_SO> BVTL_QT_THAM_SO { get; set; }
         public virtual DbSet<BVTL_TAN_SUAT_SU_DUNG> BVTL_TAN_SUAT_SU_DUNG { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<BVTL_PHIEU_TU_VAN> BVTL_PHIEU_TU_VAN { get; set; }
     }
 }

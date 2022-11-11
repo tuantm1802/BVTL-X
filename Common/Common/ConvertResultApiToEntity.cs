@@ -58,12 +58,12 @@ namespace Common.Common
                 var sktt = new BVTL_KQ_SL_SKTT();
                 var assist = new BVTL_KQ_SL_ASSIST();
                 var resultApi1344 = new ResultApi1344Model();
-                var customers = db.BVTL_KHACH_HANG.ToList();
+                //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -77,7 +77,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -98,36 +98,36 @@ namespace Common.Common
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
-                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
-                    if (customer != null && customer.khachhang_id > 0)
-                    {
-                        customer_id = customer.khachhang_id;
-                    }
-                    else
-                    {
-                        customer = new BVTL_KHACH_HANG
-                        {
-                            makh = resultApi1344.makh,
-                            hoten = resultApi1344.hoten,
-                            gioitinh = resultApi1344.gioitinh == "Nam" ? "M" : (resultApi1344.gioitinh == "Nữ" ? "F" : "O"),
-                            sodienthoai = resultApi1344.dienthoai,
-                            diachi = resultApi1344.diachi,
-                            sottkh = customer_code.Substring(5)
-                        };
-                        customer.city_code = cityCode;
-                        if (!string.IsNullOrEmpty(resultApi1344.namsinh))
-                            customer.namsinh = Convert.ToInt32(resultApi1344.namsinh);
+                    //customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                    //if (customer != null && customer.khachhang_id > 0)
+                    //{
+                    //    customer_id = customer.khachhang_id;
+                    //}
+                    //else
+                    //{
+                    //    customer = new BVTL_KHACH_HANG
+                    //    {
+                    //        makh = resultApi1344.makh,
+                    //        hoten = resultApi1344.hoten,
+                    //        gioitinh = resultApi1344.gioitinh == "Nam" ? "M" : (resultApi1344.gioitinh == "Nữ" ? "F" : "O"),
+                    //        sodienthoai = resultApi1344.dienthoai,
+                    //        diachi = resultApi1344.diachi,
+                    //        sottkh = customer_code.Substring(5)
+                    //    };
+                    //    customer.city_code = cityCode;
+                    //    if (!string.IsNullOrEmpty(resultApi1344.namsinh))
+                    //        customer.namsinh = Convert.ToInt32(resultApi1344.namsinh);
 
-                        if (!string.IsNullOrEmpty(resultApi1344.doituong))
-                        {
-                            customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApi1344.doituong).id;
-                        }
+                    //    if (!string.IsNullOrEmpty(resultApi1344.doituong))
+                    //    {
+                    //        customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApi1344.doituong).id;
+                    //    }
 
-                        if (!string.IsNullOrEmpty(resultApi1344.ngay))
-                            customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    //    if (!string.IsNullOrEmpty(resultApi1344.ngay))
+                    //        customer.ngaytiepcan = DateTime.ParseExact(resultApi1344.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        customer_id = CreateCustomer(customer);
-                    }
+                    //    customer_id = CreateCustomer(customer);
+                    //}
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
@@ -342,12 +342,12 @@ namespace Common.Common
             {
                 var hiv = new BVTL_KQ_XN_HIV();
                 var resultApiHIV = new ResultApiHIVModel();
-                var customers = db.BVTL_KHACH_HANG.ToList();
+                //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -361,7 +361,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -510,12 +510,12 @@ namespace Common.Common
             {
                 var ace = new BVTL_KQ_SL_ACE();
                 var resultApiACE = new ResultApiACEModel();
-                var customers = db.BVTL_KHACH_HANG.ToList();
+                //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -529,7 +529,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -550,41 +550,41 @@ namespace Common.Common
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
-                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
-                    if (customer != null && customer.khachhang_id > 0)
-                    {
-                        customer_id = customer.khachhang_id;
-                    }
-                    else
-                    {
-                        //customer = new BVTL_KHACH_HANG
-                        //{
-                        //    makh = resultApiACE.makh,
-                        //    hoten = string.IsNullOrEmpty(resultApiACE.hoten) ? resultApiACE.makh : resultApiACE.hoten,
-                        //    gioitinh = resultApiACE.gioitinh == "Nam" ? "M" : (resultApiACE.gioitinh == "Nữ" ? "F" : "O"),
-                        //    sodienthoai = resultApiACE.dienthoai,
-                        //    diachi = resultApiACE.diachi,
-                        //    sottkh = customer_code.Substring(5)
-                        //};
-                        //customer.city_code = cityCode;
-                        //if (!string.IsNullOrEmpty(resultApiACE.namsinh))
-                        //    customer.namsinh = Convert.ToInt32(resultApiACE.namsinh);
+                    //customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                    //if (customer != null && customer.khachhang_id > 0)
+                    //{
+                    //    customer_id = customer.khachhang_id;
+                    //}
+                    //else
+                    //{
+                    //    //customer = new BVTL_KHACH_HANG
+                    //    //{
+                    //    //    makh = resultApiACE.makh,
+                    //    //    hoten = string.IsNullOrEmpty(resultApiACE.hoten) ? resultApiACE.makh : resultApiACE.hoten,
+                    //    //    gioitinh = resultApiACE.gioitinh == "Nam" ? "M" : (resultApiACE.gioitinh == "Nữ" ? "F" : "O"),
+                    //    //    sodienthoai = resultApiACE.dienthoai,
+                    //    //    diachi = resultApiACE.diachi,
+                    //    //    sottkh = customer_code.Substring(5)
+                    //    //};
+                    //    //customer.city_code = cityCode;
+                    //    //if (!string.IsNullOrEmpty(resultApiACE.namsinh))
+                    //    //    customer.namsinh = Convert.ToInt32(resultApiACE.namsinh);
 
-                        //if (!string.IsNullOrEmpty(resultApiACE.doituong))
-                        //{
-                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiACE.doituong).id;
-                        //}
+                    //    //if (!string.IsNullOrEmpty(resultApiACE.doituong))
+                    //    //{
+                    //    //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiACE.doituong).id;
+                    //    //}
 
-                        //if (!string.IsNullOrEmpty(resultApiACE.ngay))
-                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiACE.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    //    //if (!string.IsNullOrEmpty(resultApiACE.ngay))
+                    //    //    customer.ngaytiepcan = DateTime.ParseExact(resultApiACE.ngay, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        //customer_id = CreateCustomer(customer);
+                    //    //customer_id = CreateCustomer(customer);
 
-                        // Lấy thông tin khách hàng
-                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
-                        if (customerCK != null && customerCK.khachhang_id > 0)
-                            customer_id = customerCK.khachhang_id;
-                    }
+                    //    // Lấy thông tin khách hàng
+                    //    var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                    //    if (customerCK != null && customerCK.khachhang_id > 0)
+                    //        customer_id = customerCK.khachhang_id;
+                    //}
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
@@ -702,7 +702,8 @@ namespace Common.Common
                             gioitinh = resultApiTH.gioitinh == "Nam" ? "M" : (resultApiTH.gioitinh == "Nữ" ? "F" : "O"),
                             sodienthoai = resultApiTH.dienthoai,
                             diachi = resultApiTH.diachi,
-                            sottkh = customer_code.Substring(5)
+                            sottkh = customer_code.Substring(5),
+                            maduan = maDuAn
                         };
                         customer.city_code = cityCode;
                         if (!string.IsNullOrEmpty(resultApiTH.namsinh))
@@ -935,14 +936,14 @@ namespace Common.Common
             {
                 var phieuTuVan = new BVTL_PHIEU_TU_VAN();
                 var resultApiPTV = new ResultApiPhieuTuVanModel();
-                var customers = db.BVTL_KHACH_HANG.ToList();
+                //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
 
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -956,7 +957,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -1139,12 +1140,12 @@ namespace Common.Common
             {
                 var chuyenGuiDV = new BVTL_CHUYEN_GUI_DICH_VU();
                 var resultApiCGDV = new ResultApiChuyenGuiDVModel();
-                var customers = db.BVTL_KHACH_HANG.ToList();
+                //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
-                var customer_id = 0;
+                //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
                 var nhomTBH = new BVTL_NHOM_TBH();
@@ -1158,7 +1159,7 @@ namespace Common.Common
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
-                    customer_id = 0;
+                    //customer_id = 0;
                     group_code = "";
                     cityCode = "";
                     nhomTBH = new BVTL_NHOM_TBH();
@@ -1179,41 +1180,41 @@ namespace Common.Common
                     }
 
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
-                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
-                    if (customer != null && customer.khachhang_id > 0)
-                    {
-                        customer_id = customer.khachhang_id;
-                    }
-                    else
-                    {
-                        //customer = new BVTL_KHACH_HANG
-                        //{
-                        //    makh = resultApiCGDV.makh,
-                        //    hoten = string.IsNullOrEmpty(resultApiCGDV.hoten) ? resultApiCGDV.makh : resultApiCGDV.hoten,
-                        //    gioitinh = resultApiCGDV.gioitinh == "Nam" ? "M" : (resultApiCGDV.gioitinh == "Nữ" ? "F" : "O"),
-                        //    sodienthoai = resultApiCGDV.dienthoai,
-                        //    diachi = resultApiCGDV.diachi,
-                        //    sottkh = customer_code.Substring(5)
-                        //};
-                        //customer.city_code = cityCode;
-                        //if (!string.IsNullOrEmpty(resultApiCGDV.namsinh))
-                        //    customer.namsinh = Convert.ToInt32(resultApiCGDV.namsinh);
+                    //customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                    //if (customer != null && customer.khachhang_id > 0)
+                    //{
+                    //    customer_id = customer.khachhang_id;
+                    //}
+                    //else
+                    //{
+                    //    //customer = new BVTL_KHACH_HANG
+                    //    //{
+                    //    //    makh = resultApiCGDV.makh,
+                    //    //    hoten = string.IsNullOrEmpty(resultApiCGDV.hoten) ? resultApiCGDV.makh : resultApiCGDV.hoten,
+                    //    //    gioitinh = resultApiCGDV.gioitinh == "Nam" ? "M" : (resultApiCGDV.gioitinh == "Nữ" ? "F" : "O"),
+                    //    //    sodienthoai = resultApiCGDV.dienthoai,
+                    //    //    diachi = resultApiCGDV.diachi,
+                    //    //    sottkh = customer_code.Substring(5)
+                    //    //};
+                    //    //customer.city_code = cityCode;
+                    //    //if (!string.IsNullOrEmpty(resultApiCGDV.namsinh))
+                    //    //    customer.namsinh = Convert.ToInt32(resultApiCGDV.namsinh);
 
-                        //if (!string.IsNullOrEmpty(resultApiCGDV.doituong))
-                        //{
-                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiCGDV.doituong).id;
-                        //}
+                    //    //if (!string.IsNullOrEmpty(resultApiCGDV.doituong))
+                    //    //{
+                    //    //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiCGDV.doituong).id;
+                    //    //}
 
-                        //if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
-                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiCGDV.ngay_xn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    //    //if (!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
+                    //    //    customer.ngaytiepcan = DateTime.ParseExact(resultApiCGDV.ngay_xn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-                        //customer_id = CreateCustomer(customer);
+                    //    //customer_id = CreateCustomer(customer);
 
-                        // Lấy thông tin khách hàng
-                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
-                        if (customerCK != null && customerCK.khachhang_id > 0)
-                            customer_id = customerCK.khachhang_id;
-                    }
+                    //    // Lấy thông tin khách hàng
+                    //    var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                    //    if (customerCK != null && customerCK.khachhang_id > 0)
+                    //        customer_id = customerCK.khachhang_id;
+                    //}
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
