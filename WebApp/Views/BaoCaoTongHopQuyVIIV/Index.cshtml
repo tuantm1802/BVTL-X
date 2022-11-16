@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "VIIVHEALTH - TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU CỦA NHÓM";
+}
+
+<div class="container-fluid" ng-controller="BaoCaoTongHopQuyVIIVController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">VIIVHEALTH - TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU CỦA NHÓM</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+                <div class="card-tools">
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <label>Từ quý</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ng-model="TuQuy" name="TuQuy">
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <label>Từ năm</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ui-select2 ng-model="modelSearch.TuNam" name="TuNam" ng-options="item.Id as item.Name for item in ListYear">
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <label>Đến quý</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ng-model="DenQuy" name="DenQuy">
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <label>Đến năm</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ui-select2 ng-model="modelSearch.DenThang" name="DenThang" ng-options="item.Id as item.Name for item in ListYear">
+                            </select>
+                        </div>
+
+                        @*<div class="col-sm-2">
+                            <label>Dự án</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn">
+                            </select>
+                        </div>*@
+                        <div class="col-sm-2">
+                            <label>Tỉnh</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Nhóm TBH</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                            <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
+                                <i class="fas fa-pencil-alt"></i> Xuất Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered"  width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;">STT </th>
+                            <th style="width: 39%;">Hoạt động </th>
+                            <th style="width: 8%; ">Chỉ tiêu</th>
+                            <th style="width: 8%;">Đơn vị </th>
+                            <th ng-repeat="item in ListQuy">{{item}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in ListData">
+                            <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
+                            <td class="text-left">
+                                <span>{{item.HoatDong}}</span>
+                            </td>
+                            <td class="text-left">
+                                <span>{{item.ChiTieu}}</span>
+                            </td>
+                            <td class="text-left">
+                                <span>{{item.DonVi}}</span>
+                            </td>
+                            <td ng-repeat="itemQ in item.ListQuy" class="text-right">{{itemQ.SoLuong | number:0}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/BaoCaoTongHopQuyVIIVController.js"></script>
+}

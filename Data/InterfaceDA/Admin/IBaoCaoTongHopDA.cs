@@ -45,5 +45,14 @@ namespace Data.InterfaceDA.Admin
             , ref List<BenhSTIModel> BenhSTIs, ref List<BenhLao_VGCModel> BenhLaos, ref List<BenhLao_VGCModel> BenhVGCs, ref List<KetQuaSangLocModel> SocHeroins
             , ref List<KetQuaSangLocModel> SocMeths, ref List<CacChatGayNghienModel> CacLoaiChatGayNghiens, ref List<KetQuaSangLocModel> KetQuaQSTs, ref List<MucDoGapVanDeSKTTModel> MucDoGapVanDeSKTTs
             , ref List<SuDungMTDKhiQHTDModel> TuLamHaiBanThans, ref List<SuDungMTDKhiQHTDModel> CoTuSats, ref List<LoanThanModel> LoanThans);
+
+
+        /// <summary>
+        /// Lấy dữ liệu báo cáo tổng hợp quý VIIV
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+         List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoTongHopQuyVIIV(ReportSearchModel modelSearch);
     }
 }

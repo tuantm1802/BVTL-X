@@ -20,5 +20,10 @@ namespace Model.ModelExtend.Report
         public int? DenSoMaKH { get; set; }
         public Nullable<System.DateTime> _FromDate { get; set; }
         public Nullable<System.DateTime> _ToDate { get; set; }
+
+        public int? TuThang { get; set; }
+        public int? TuNam { get; set; }
+        public int? DenThang { get; set; }
+        public int? DenNam { get; set; }
     }
 }

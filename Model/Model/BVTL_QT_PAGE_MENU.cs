@@ -23,5 +23,6 @@ namespace Model.Model
         public string HREF_URL { get; set; }
         public Nullable<int> PARENT_PAGE_ID { get; set; }
         public bool IS_SYSTEM_ROLE { get; set; }
+        public string TEN_DU_AN { get; set; }
     }
 }

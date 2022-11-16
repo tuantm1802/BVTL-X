@@ -248,7 +248,7 @@
           <Property Name="dieutri_sti" Type="nvarchar" MaxLength="200" />
           <Property Name="hotro_sti" Type="nvarchar" MaxLength="40" />
           <Property Name="hotro_bhyt" Type="nvarchar" MaxLength="40" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="ngay_xn_date" Type="int" Nullable="false" />
@@ -289,7 +289,7 @@
             <PropertyRef Name="khachhang_id" />
           </Key>
           <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="hoten" Type="nvarchar" MaxLength="100" />
           <Property Name="gioitinh" Type="varchar" MaxLength="1" />
@@ -308,7 +308,7 @@
             <PropertyRef Name="kqslace_id" />
           </Key>
           <Property Name="kqslace_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -326,7 +326,7 @@
             <PropertyRef Name="kqslassist_id" />
           </Key>
           <Property Name="kqslassist_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -363,7 +363,7 @@
             <PropertyRef Name="kqslsktt_id" />
           </Key>
           <Property Name="kqslsktt_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" />
+          <Property Name="makh" Type="varchar" MaxLength="12" />
           <Property Name="ngaysl" Type="date" Nullable="false" />
           <Property Name="ngaysl_date" Type="int" Nullable="false" />
           <Property Name="ngaysl_month" Type="int" Nullable="false" />
@@ -381,7 +381,7 @@
             <PropertyRef Name="kqxnhiv_id" />
           </Key>
           <Property Name="kqxnhiv_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
           <Property Name="ngayxn" Type="date" Nullable="false" />
           <Property Name="ngayxn_date" Type="int" Nullable="false" />
           <Property Name="ngayxn_month" Type="int" Nullable="false" />
@@ -468,7 +468,7 @@
           <Property Name="tuvantiep" Type="nvarchar" MaxLength="40" />
           <Property Name="vande" Type="nvarchar" MaxLength="500" />
           <Property Name="thoigian" Type="datetime" />
-          <Property Name="makh" Type="varchar" MaxLength="11" />
+          <Property Name="makh" Type="varchar" MaxLength="12" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="ngaytuvan_date" Type="int" Nullable="false" />
@@ -549,6 +549,7 @@
           <Property Name="HREF_URL" Type="nvarchar" MaxLength="500" />
           <Property Name="PARENT_PAGE_ID" Type="int" />
           <Property Name="IS_SYSTEM_ROLE" Type="bit" Nullable="false" />
+          <Property Name="TEN_DU_AN" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="BVTL_QT_QUYEN">
           <Key>
@@ -1246,7 +1247,7 @@
           <Property Name="dieutri_sti" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="hotro_sti" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="hotro_bhyt" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="ngay_xn_date" Type="Int32" Nullable="false" />
@@ -1298,7 +1299,7 @@
             <PropertyRef Name="khachhang_id" />
           </Key>
           <Property Name="khachhang_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="hoten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="gioitinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
@@ -1317,7 +1318,7 @@
             <PropertyRef Name="kqslace_id" />
           </Key>
           <Property Name="kqslace_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1338,7 +1339,7 @@
             <PropertyRef Name="kqslassist_id" />
           </Key>
           <Property Name="kqslassist_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1378,7 +1379,7 @@
             <PropertyRef Name="kqslsktt_id" />
           </Key>
           <Property Name="kqslsktt_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="ngaysl" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngaysl_date" Type="Int32" Nullable="false" />
           <Property Name="ngaysl_month" Type="Int32" Nullable="false" />
@@ -1399,7 +1400,7 @@
             <PropertyRef Name="kqxnhiv_id" />
           </Key>
           <Property Name="kqxnhiv_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="makh" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="ngayxn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ngayxn_date" Type="Int32" Nullable="false" />
           <Property Name="ngayxn_month" Type="Int32" Nullable="false" />
@@ -1496,7 +1497,7 @@
           <Property Name="tuvantiep" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="vande" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="DateTime" Precision="3" />
-          <Property Name="makh" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="makh" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="ngaytuvan_date" Type="Int32" Nullable="false" />
@@ -1577,6 +1578,7 @@
           <Property Name="HREF_URL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PARENT_PAGE_ID" Type="Int32" />
           <Property Name="IS_SYSTEM_ROLE" Type="Boolean" Nullable="false" />
+          <Property Name="TEN_DU_AN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_QT_QUYEN">
           <Key>
@@ -2389,6 +2391,7 @@
           <EntitySetMapping Name="BVTL_QT_PAGE_MENU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_PAGE_MENU">
               <MappingFragment StoreEntitySet="BVTL_QT_PAGE_MENU">
+                <ScalarProperty Name="TEN_DU_AN" ColumnName="TEN_DU_AN" />
                 <ScalarProperty Name="IS_SYSTEM_ROLE" ColumnName="IS_SYSTEM_ROLE" />
                 <ScalarProperty Name="PARENT_PAGE_ID" ColumnName="PARENT_PAGE_ID" />
                 <ScalarProperty Name="HREF_URL" ColumnName="HREF_URL" />

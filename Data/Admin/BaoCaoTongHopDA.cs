@@ -1898,5 +1898,43 @@ namespace Data.Admin
             }
         }
 
+
+        /// <summary>
+        /// Lấy dữ liệu báo cáo tổng hợp quý VIIV
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoTongHopQuyVIIV(ReportSearchModel modelSearch)
+        {
+            var result = new List<BaoCaoTongHopQuyVIIVModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("TuThang", modelSearch.TuThang == null ? 0 : (object)modelSearch.TuThang),
+                    new SqlParameter("TuNam", modelSearch.TuNam == null ? 0 : (object)modelSearch.TuNam),
+                    new SqlParameter("DenThang", modelSearch.DenThang == null ? 0 : (object)modelSearch.DenThang),
+                    new SqlParameter("DenNam", modelSearch.DenNam == null ? 0 : (object)modelSearch.DenNam),
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    //new SqlParameter("TypeReport", modelSearch.TypeReport),
+                    new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH)
+                };
+                result = _DatabaseSql.ExecuteProcToList<BaoCaoTongHopQuyVIIVModel>(Constants.SP_Report_Get_All_Data, param).ToList();
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "BaoCaoTongHopDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy dữ liệu báo cáo tổng hợp quý VIIV lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<BaoCaoTongHopQuyVIIVModel>();
+            }
+            return result;
+        }
     }
 }
