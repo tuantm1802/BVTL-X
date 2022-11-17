@@ -78,11 +78,7 @@
             return;
         }
 
-        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
-            toastr.error("Vui lòng chọn dự án!");
-            return;
-        }
-
+        
         if ($scope.Quy == null || $scope.Quy == '') {
             toastr.error("Vui lòng chọn quý!");
             return;

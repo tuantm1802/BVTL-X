@@ -14,10 +14,10 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <label>Quý</label>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <select class="form-control" ng-model="Quy" name="Quy">
                             <option value="I">I</option>
                             <option value="II">II</option>
@@ -25,10 +25,10 @@
                             <option value="IV">IV</option>
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <label>Năm</label>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
                         </select>
                     </div>
@@ -40,17 +40,17 @@
                         <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn">
                         </select>
                     </div>*@
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <label>Tỉnh</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <label>Nhóm TBH</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                         </select>
                     </div>
@@ -84,7 +84,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="item in ListData">
-                            <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
+                            <td class="text-center" ng-show="item.IsShow == 'Y'" >{{item.STT}}</td>
                             <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
                                 <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
                                 <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>

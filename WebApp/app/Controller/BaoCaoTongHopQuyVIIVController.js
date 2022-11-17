@@ -42,7 +42,8 @@
             $scope.TuQuy = "IV";
             $scope.DenQuy = "IV";
         }
-        $scope.modelSearch.Year = date.getFullYear();
+        $scope.modelSearch.TuNam = date.getFullYear();
+        $scope.modelSearch.DenNam = date.getFullYear();
         GetBottomAction();
         $scope.Changecity();
         $scope.LoadPage(1);
@@ -229,8 +230,8 @@
             + '&DenThang=' + $scope.modelSearch.DenThang + '&DenNam=' + $scope.modelSearch.DenNam
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes) 
             + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)
-            //+ '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn
-            );
+            //+ '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn)
+            ;
     }
 
     // Lấy danh sách Nhóm TBH theo tỉnh
