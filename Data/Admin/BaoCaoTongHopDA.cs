@@ -1917,10 +1917,112 @@ namespace Data.Admin
                     new SqlParameter("DenThang", modelSearch.DenThang == null ? 0 : (object)modelSearch.DenThang),
                     new SqlParameter("DenNam", modelSearch.DenNam == null ? 0 : (object)modelSearch.DenNam),
                     new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
-                    //new SqlParameter("TypeReport", modelSearch.TypeReport),
                     new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH)
                 };
-                result = _DatabaseSql.ExecuteProcToList<BaoCaoTongHopQuyVIIVModel>(Constants.SP_Report_Get_All_Data, param).ToList();
+                var resultPro = _DatabaseSql.ExecuteProcToList<BaoCaoTongHopQuyVIIVProModel>(Constants.SP_Report_BC_Tong_Hop_Quy_VIIV, param).ToList();
+                if (resultPro != null && resultPro.Count > 0)
+                {
+                    var listQuys = new List<ListQuyModel>();
+                    // Tính toán các quý
+                    var _thang = modelSearch.TuThang;
+                    int _nam = (int)modelSearch.TuNam;
+                    var orderby = 1;
+                    var quy = "";
+                    var IntQuy = 0;
+                    var check = 0;
+                    while ((_thang <= modelSearch.DenNam && _nam == modelSearch.DenNam) || (_nam <= modelSearch.DenNam))
+                    {
+                        // Lấy quý
+                        quy = "";
+                        IntQuy = 0;
+                        check = 0;
+                        if (_thang < 4)
+                        {
+                            IntQuy = 1;
+                            quy = "Quý I/"+_nam;
+                        }
+                        else if (_thang > 3 && _thang < 7)
+                        {
+                            IntQuy = 2;
+                            quy = "Quý II/" + _nam;
+                        }
+                        else if (_thang > 6 && _thang < 10)
+                        {
+                            IntQuy = 3;
+                            quy = "Quý III/" + _nam;
+                        }
+                        else
+                        {
+                            IntQuy = 4;
+                            quy = "Quý IV/" + _nam;
+                        }
+
+                        // Kiểm tra xem quý đã tồn tại trong list quý chưa
+                        check = listQuys.Count(x => x.Quy == quy && x.Nam == _nam);
+                        if (check == 0)
+                        {
+                            listQuys.Add(
+                                   new ListQuyModel
+                                   {
+                                       Nam = _nam,
+                                       Quy = quy,
+                                       Orderby = orderby,
+                                       SoLuong = 0,
+                                       IntQuy = IntQuy
+                                   }
+                                   );
+
+                            orderby++;
+                        }
+
+                        if (_thang == 12)
+                            _nam++;
+
+                        _thang++;
+                    }
+
+                    if (listQuys != null && listQuys.Count > 0)
+                    {
+                        listQuys = listQuys.OrderBy(x => x.Orderby).ToList();
+                    }
+
+                    // Tổng hợp báo cáo
+                    var bcByRow = new List<BaoCaoTongHopQuyVIIVProModel>();
+                    var bcByRow1 = new List<BaoCaoTongHopQuyVIIVProModel>();
+                    var dataBC = new BaoCaoTongHopQuyVIIVModel();
+                    var _quyBC = new ListQuyModel();
+                    for (int rowBC = 1; rowBC < 41; rowBC++)
+                    {
+                        dataBC = new BaoCaoTongHopQuyVIIVModel() { ListQuy = new List<ListQuyModel>() };
+                        // Lấy dữ liệu theo hàng
+                        bcByRow = resultPro.Where(x => x.OrderBy == rowBC).ToList();
+                        dataBC.STT = bcByRow.FirstOrDefault().STT;
+                        dataBC.HoatDong = bcByRow.FirstOrDefault().HoatDong;
+                        dataBC.ChiTieu = bcByRow.FirstOrDefault().ChiTieu;
+                        dataBC.DonVi = bcByRow.FirstOrDefault().DonVi;
+                        dataBC.BoldText = bcByRow.FirstOrDefault().BoldText;
+                        dataBC.TyLe = bcByRow.FirstOrDefault().TyLe;
+
+                        // Tính dữ liệu quý
+                        foreach (var quyBC in listQuys)
+                        {
+                            _quyBC = new ListQuyModel() {
+                                Quy = quyBC.Quy,
+                                Nam = quyBC.Nam,
+                                Orderby = quyBC.Orderby,
+                                IntQuy = quyBC.IntQuy,
+                                SoLuong = 0
+                            };
+                            bcByRow1 = bcByRow.Where(x => x.Quy == quyBC.IntQuy && x.Nam == quyBC.Nam && x.SoLuong != null).ToList();
+                            if (bcByRow1 != null && bcByRow1.Count > 0)
+                                _quyBC.SoLuong = bcByRow1.Sum(x => (int)x.SoLuong);
+                            dataBC.ListQuy.Add(_quyBC);
+                        }
+
+                        result.Add(dataBC);
+                    }
+
+                }
             }
             catch (Exception ex)
             {

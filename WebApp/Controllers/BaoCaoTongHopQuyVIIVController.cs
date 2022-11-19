@@ -196,19 +196,21 @@ namespace WebApp.Controllers
                     if (data.Any())
                     {
                         var startColumn = ExcelColumnNameToNumber("E");
+                        var boldText = false;
                         foreach (var rowReport in data)
                         {
+                            boldText = rowReport.BoldText;
                             // Thêm dữ liệu cột STT
-                            InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                            InsertDataCell(ws, "A", row, rowReport.STT, boldText, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                             // Thêm dữ liệu cột Hoạt động
-                            InsertDataCell(ws, "B", row, rowReport.HoatDong, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                            InsertDataCell(ws, "B", row, rowReport.HoatDong, boldText, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                             // Thêm dữ liệu cột chỉ tiêu
-                            InsertDataCell(ws, "C", row, rowReport.ChiTieu, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                            InsertDataCell(ws, "C", row, rowReport.ChiTieu, boldText, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                             
                             // Thêm dữ liệu cột đơn vị
-                            InsertDataCell(ws, "D", row, rowReport.DonVi, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                            InsertDataCell(ws, "D", row, rowReport.DonVi, boldText, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                             // Thêm dữ liệu cột quý
                             if (rowReport.ListQuy != null && rowReport.ListQuy.Count > 0)
@@ -216,27 +218,26 @@ namespace WebApp.Controllers
                                  startColumn = ExcelColumnNameToNumber("E");
                                 foreach (var quy in rowReport.ListQuy)
                                 {
-                                    InsertDataCell(ws, GetExcelColumnName(startColumn), row, quy.SoLuong > 0 ? quy.SoLuong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, quy.SoLuong > 0 ? true : false);
+                                    InsertDataCell(ws, GetExcelColumnName(startColumn), row, quy.SoLuong > 0 ? quy.SoLuong.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, quy.SoLuong > 0 ? true : false);
                                     startColumn++;
                                 }
-                                startColumn++;
-                                InsertDataCell(ws, "E", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
+                                InsertDataCell(ws, GetExcelColumnName(startColumn), row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
                             }
                             else
                             {
-                                InsertDataCell(ws, "E", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
+                                InsertDataCell(ws, "E", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
                             }
 
                             row++;
                         }
                     }
 
-                    ws.Range("A5:J" + row).Style.Font.FontName = "Times New Roman";
-                    ws.Range("A5:J" + row).Style.Font.FontSize = 13;
-                    ws.Range("A5:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:"+ GetExcelColumnName(listQuy.Count +5) + row).Style.Font.FontName = "Times New Roman";
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Font.FontSize = 13;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -377,7 +378,6 @@ namespace WebApp.Controllers
             ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
             ws.Cell("B" + row).Value = "Hoạt động";
-            ws.Range("B" + row + ":C" + row).Merge();
             ws.Cell("B" + row).Style.Font.Bold = true;
             ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -397,14 +397,13 @@ namespace WebApp.Controllers
                 var startColumn = ExcelColumnNameToNumber("E");
                 foreach (var quy in listQuy)
                 {
-                    ws.Cell(GetExcelColumnName(startColumn) + row).Value = "Quý " + quy.Quy + "/" + quy.Nam;
+                    ws.Cell(GetExcelColumnName(startColumn) + row).Value = quy.Quy;//"Quý " + quy.Quy + "/" + quy.Nam;
                     ws.Cell(GetExcelColumnName(startColumn) + row).Style.Font.Bold = true;
                     ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.WrapText = true;
                     ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                     startColumn++;
                 }
-                startColumn++;
                 ws.Cell(GetExcelColumnName(startColumn) + row).Value = "Tỷ lệ";
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Font.Bold = true;
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.WrapText = true;

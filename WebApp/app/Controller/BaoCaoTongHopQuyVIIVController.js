@@ -109,13 +109,13 @@
             return;
         } else {
             if ($scope.DenQuy == 'I') {
-                $scope.modelSearch.DenThang = 1;
+                $scope.modelSearch.DenThang = 3;
             } else if ($scope.DenQuy == 'II') {
-                $scope.modelSearch.DenThang = 4;
+                $scope.modelSearch.DenThang = 6;
             } else if ($scope.DenQuy == 'III') {
-                $scope.modelSearch.DenThang = 7;
+                $scope.modelSearch.DenThang = 9;
             } else if ($scope.DenQuy == 'IV') {
-                $scope.modelSearch.DenThang = 10;
+                $scope.modelSearch.DenThang = 12;
             }
         }
 
@@ -153,6 +153,10 @@
             data: $scope.modelSearch,
             success: function (respone) {
                 $scope.ListData = respone.data;
+                if (respone.data != null && respone.data.length > 0) {
+                    $scope.ListQuy = respone.data[0].ListQuy;
+                }
+                
             }
         });
 
@@ -195,13 +199,13 @@
             return;
         } else {
             if ($scope.DenQuy == 'I') {
-                $scope.modelSearch.DenThang = 1;
+                $scope.modelSearch.DenThang = 3;
             } else if ($scope.DenQuy == 'II') {
-                $scope.modelSearch.DenThang = 4;
+                $scope.modelSearch.DenThang = 6;
             } else if ($scope.DenQuy == 'III') {
-                $scope.modelSearch.DenThang = 7;
+                $scope.modelSearch.DenThang = 9;
             } else if ($scope.DenQuy == 'IV') {
-                $scope.modelSearch.DenThang = 10;
+                $scope.modelSearch.DenThang = 12;
             }
         }
         $scope.modelSearch.CityCodes = '';
