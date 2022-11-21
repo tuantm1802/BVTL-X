@@ -195,6 +195,8 @@
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
+    <Compile Include="Controllers\BaoCaoTongHopQuyVIIVController.cs" />
+    <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoQuyController.cs" />
     <Compile Include="Controllers\BaoCao6ThangController.cs" />
     <Compile Include="Controllers\BaoCaoThangController.cs" />
@@ -280,6 +282,8 @@
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
+    <Content Include="app\Controller\BaoCaoTongHopQuyVIIVController.js" />
+    <Content Include="app\Controller\BaoCaoQuyVIIVController.js" />
     <Content Include="app\Controller\BaoCaoQuyController.js" />
     <Content Include="app\Controller\BaoCao6ThangController.js" />
     <Content Include="app\Controller\BaoCaoThangController.js" />
@@ -4605,6 +4609,8 @@
     <Content Include="Views\ChuyenGuiDichVu\Index.cshtml" />
     <Content Include="Views\PhieuTuVan\Index.cshtml" />
     <Content Include="Views\KetQuaSangLoc\Index.cshtml" />
+    <Content Include="Views\BaoCaoQuyVIIV\Index.cshtml" />
+    <Content Include="Views\BaoCaoTongHopQuyVIIV\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>
