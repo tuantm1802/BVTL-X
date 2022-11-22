@@ -66,6 +66,7 @@ namespace Data.API
                 obj.Success = true;
                 log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
             }
+
             catch (Exception ex)
             {
                 transaction.Rollback();

@@ -84,6 +84,7 @@
     <Compile Include="ModelExtend\NhomTBHPageModel.cs" />
     <Compile Include="ModelExtend\PageMenuModel.cs" />
     <Compile Include="ModelExtend\PhieuTuVanPageModel.cs" />
+    <Compile Include="ModelExtend\Report\BaoCaoTongHopQuyVIIVModel.cs" />
     <Compile Include="ModelExtend\Report\BaoCaoModel.cs" />
     <Compile Include="ModelExtend\Report\KetQuaSangLocModel.cs" />
     <Compile Include="ModelExtend\Report\ReportSearchModel.cs" />

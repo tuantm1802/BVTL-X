@@ -1170,7 +1170,7 @@ namespace Common.Common
         {
 
             log.Info("********************************Bắt đầu chuyển đổi kết quả api chuyển gửi dịch vụ sang entity**************************************");
-            log.Info("*********-----TỔNG SỐ RECORD API CHUYEN_GUI_DICH_VU:" + resultApiCGDVs.Count + " | MADUAN:" + maDuAn);
+            
 
             try
             {
@@ -1190,6 +1190,8 @@ namespace Common.Common
                 var year = 0;
                 var ngaynhap = "";
                 var ngaynhapD = DateTime.Today;
+
+                log.Info("*********-----TỔNG SỐ RECORD API CHUYEN_GUI_DICH_VU:" + resultApiCGDVs.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
 
                 for (int i = 0; i < resultApiCGDVs.Count; i++)
                 {
@@ -1274,7 +1276,7 @@ namespace Common.Common
                     }
                     else
                     {
-                        ngaynhap = resultApiCGDV.ngay_xn;
+                        ngaynhap = resultApiCGDV?.ngay_xn;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                     }
                     day = ngaynhapD.Day;
@@ -1346,7 +1348,7 @@ namespace Common.Common
             }
             catch (Exception ex)
             {
-                log.Error("Chuyển đổi kết quả api chuyển gửi dịch vụ sang entity lỗi: " + ex.Message);
+                log.Error("Chuyển đổi kết quả API CHUYEN_GUI_DICH_VU sang Entity lỗi: " + ex.Message  + " | MADUAN:" + maDuAn);
             }
             log.Info("********************************Kết thúc chuyển đổi kết quả api chuyển gửi dịch vụ sang entity**************************************");
         }

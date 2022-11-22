@@ -109,7 +109,7 @@ namespace Data.API
 
                         var tongHops = new List<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
                         var khachHangs = new List<BVTL_KHACH_HANG>();
-
+                        dataResultApi = dataResultApi.GroupBy(x => x.makh).Select(y => y.FirstOrDefault()).ToList();
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
                         _convertResultApiToEntity.ConvertApiTongHopToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops, ref khachHangs);
 
