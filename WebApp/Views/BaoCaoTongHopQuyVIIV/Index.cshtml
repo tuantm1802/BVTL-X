@@ -13,7 +13,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="card-tools">
-                <div class="row" style="margin-bottom:5px;">
+                <div class="form-group row" style="margin-bottom:5px;">
                     <div class="col-sm-1">
                         <label>Từ quý</label>
                     </div>
@@ -51,22 +51,23 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-2">
+                <div class="form-group row">
+                    <div class="col-sm-1">
                         <label>Tỉnh</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
                         </select>
                     </div>
-                    <div class="col-sm-2">
-                        <label>Nhóm TBH</label>
+                    <div class="col-sm-1">
+                        <label>Nhóm</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-5">
                         <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
                             <i class="fas fa-search"></i> Tìm kiếm
                         </button>
