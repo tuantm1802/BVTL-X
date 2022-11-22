@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="6b54862210d2499f9b249f1b2cd9ea82" Name="Diagram1" ZoomLevel="60">
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_API" Width="1.5" PointX="0.75" PointY="1" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Width="1.5" PointX="11.25" PointY="45.5" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Width="1.5" PointX="8.25" PointY="45.5" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" Width="1.5" PointX="4.75" PointY="4.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU" Width="1.5" PointX="6.75" PointY="0.75" />
@@ -14,9 +14,9 @@
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" Width="1.5" PointX="3" PointY="55.875" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" Width="1.5" PointX="0.75" PointY="7.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Width="1.5" PointX="2.75" PointY="7.75" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="5.25" PointY="60.125" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Width="1.5" PointX="8.25" PointY="58.25" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Width="1.5" PointX="5.25" PointY="55.125" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="5.25" PointY="55.125" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Width="1.5" PointX="11.25" PointY="58.25" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Width="1.5" PointX="5.25" PointY="60.125" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="5.25" PointY="65.125" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Width="1.5" PointX="8.75" PointY="0.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" Width="1.5" PointX="3" PointY="1.875" />

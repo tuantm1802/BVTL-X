@@ -328,6 +328,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.ListTestGroupId = [];
     $scope.ListCity = [];
     $scope.ListCityCode = [];
+    $scope.ListDuAn = [];
 
     $scope.FileName = "";
     angular.element(document).ready(function () {
@@ -340,6 +341,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
         $scope.ListUserGroup = [];
         $scope.ListTestGroup = [];
         $scope.ListCity = [];
+        $scope.ListDuAn = [];
         $.ajax({
             type: 'post',
             url: '/User/GetDanhMuc',
@@ -358,6 +360,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
                 if (data.Citys != null && data.Citys.length > 0) {
                     $scope.ListCity = data.Citys;
+                }
+                if (data.DuAns != null && data.DuAns.length > 0) {
+                    $scope.ListDuAn = data.DuAns;
                 }
 
                 $scope.ListStatus = [{ ID: true, Name: 'Sử dụng' }, { ID: false, Name: 'Không sử dụng' }];
@@ -388,6 +393,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 Name: {
                     required: true,
                     maxlength: 250
+                },
+                MaDuAn: {
+                    required: true
                 }
             },
             messages: {
@@ -405,6 +413,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
+                },
+                MaDuAn: {
+                    required: "Vui lòng chọn Dự án quản lý"
                 }
             }
         });
@@ -461,6 +472,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.ListTestGroupId = [];
     $scope.ListCity = [];
     $scope.ListCityCode = [];
+    $scope.ListDuAn = [];
     $scope.FileName = "";
     $scope.model = {};
     angular.element(document).ready(function () {
@@ -494,6 +506,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         $scope.ListTestGroup = [];
         $scope.ListUserGroup = [];
         $scope.ListCity = [];
+        $scope.ListDuAn = [];
         $.ajax({
             type: 'post',
             url: '/User/GetDanhMuc',
@@ -509,6 +522,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }
                 if (data.Citys != null && data.Citys.length > 0) {
                     $scope.ListCity = data.Citys;
+                }
+                if (data.DuAns != null && data.DuAns.length > 0) {
+                    $scope.ListDuAn = data.DuAns;
                 }
                 $scope.$apply();
             }
@@ -530,6 +546,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 Name: {
                     required: true,
                     maxlength: 250
+                },
+                MaDuAn: {
+                    required: true
                 }
             },
             messages: {
@@ -547,6 +566,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
+                },
+                MaDuAn: {
+                    required: "Vui lòng chọn Dự án quản lý"
                 }
             }
         });
