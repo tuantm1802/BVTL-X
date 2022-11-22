@@ -13,10 +13,8 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
                 <div class="card-tools">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <label>Quý</label>
-                        </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Quý</label>
                         <div class="col-sm-2">
                             <select class="form-control" ng-model="Quy" name="Quy">
                                 <option value="I">I</option>
@@ -25,36 +23,32 @@
                                 <option value="IV">IV</option>
                             </select>
                         </div>
-                        <div class="col-sm-2">
-                            <label>Năm</label>
-                        </div>
-                        <div class="col-sm-2">
-                            <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
-                            </select>
-                        </div>
+
+                        <label class="col-sm-2 col-form-label">Năm</label>
 
                         <div class="col-sm-2">
-                            <label>Dự án</label>
+                            <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear"></select>
                         </div>
+
+                        <label class="col-sm-2 col-form-label">Dự án</label>
+
                         <div class="col-sm-2">
-                            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn">
-                            </select>
+                            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn"></select>
                         </div>
+                        
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Tỉnh</label>
+
                         <div class="col-sm-2">
-                            <label>Tỉnh</label>
+                            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity"></select>
                         </div>
-                        <div class="col-sm-3">
-                            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
-                            </select>
-                        </div>
+                        <label class="col-sm-2 col-form-label">Nhóm</label>
+
                         <div class="col-sm-2">
-                            <label>Nhóm TBH</label>
+                            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
                         </div>
-                        <div class="col-sm-3">
-                            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
                                 <i class="fas fa-search"></i> Tìm kiếm
                             </button>
