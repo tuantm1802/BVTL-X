@@ -1991,6 +1991,7 @@ namespace Data.Admin
                     var bcByRow1 = new List<BaoCaoTongHopQuyVIIVProModel>();
                     var dataBC = new BaoCaoTongHopQuyVIIVModel();
                     var _quyBC = new ListQuyModel();
+                    
                     for (int rowBC = 1; rowBC < 41; rowBC++)
                     {
                         dataBC = new BaoCaoTongHopQuyVIIVModel() { ListQuy = new List<ListQuyModel>() };
@@ -2003,6 +2004,7 @@ namespace Data.Admin
                         dataBC.BoldText = bcByRow.FirstOrDefault().BoldText;
                         dataBC.TyLe = bcByRow.FirstOrDefault().TyLe;
 
+                        int tongSoLuong = 0;
                         // Tính dữ liệu quý
                         foreach (var quyBC in listQuys)
                         {
@@ -2014,9 +2016,17 @@ namespace Data.Admin
                                 SoLuong = 0
                             };
                             bcByRow1 = bcByRow.Where(x => x.Quy == quyBC.IntQuy && x.Nam == quyBC.Nam && x.SoLuong != null).ToList();
-                            if (bcByRow1 != null && bcByRow1.Count > 0)
+                            if (bcByRow1 != null && bcByRow1.Count > 0) { 
                                 _quyBC.SoLuong = bcByRow1.Sum(x => (int)x.SoLuong);
+                                tongSoLuong += _quyBC.SoLuong;
+                            }
                             dataBC.ListQuy.Add(_quyBC);
+                        }
+
+                        // Tyle = Tổng số lượng các Quý/Chỉ tiêu
+                        if ( !String.IsNullOrEmpty( dataBC.ChiTieu ) && Int32.Parse(dataBC.ChiTieu) > 0)
+                        {
+                            dataBC.TyLe = (int)TinhPhanTram(tongSoLuong, Int32.Parse(dataBC.ChiTieu));
                         }
 
                         result.Add(dataBC);
