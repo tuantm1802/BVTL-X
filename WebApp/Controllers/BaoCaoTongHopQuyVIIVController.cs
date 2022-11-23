@@ -57,7 +57,7 @@ namespace WebApp.Controllers
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Lấy dữ liệu báo cáo tổng hợp quý VIIV(từ tháng: " + modelSearch.TuThang +
+                AddLog("ERROR - BaoCaoTongHopQuyVIIVController::SearchData: Lấy dữ liệu báo cáo tổng hợp quý VIIV(từ tháng: " + modelSearch.TuThang +
                                                                ", từ năm: " + modelSearch.TuNam +
                                                                 ", đến tháng: " + modelSearch.DenThang +
                                                                  ", đến năm: " + modelSearch.DenNam +
@@ -89,7 +89,7 @@ namespace WebApp.Controllers
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng lỗi: " + ex.Message);
+                AddLog("ERROR - BaoCaoTongHopQuyVIIVController::GetBottomAction: Lấy danh sách các botom được thực hiện trên from Người dùng lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
