@@ -15,5 +15,6 @@ namespace Model.ModelExtend
         public string CityName { get; set; }
         public string ngaysltext { get; set; }
         public string tennhom_tbh { get; set; }
+        public string tenduan { get; set; }
     }
 }

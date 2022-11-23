@@ -19,21 +19,28 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 @*<div class="row">
-                        <div class="col-sm-1">
-                            <label>Từ khóa</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Tìm kiếm
-                            </button>
-                            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                                <i class="fas fa-pencil-alt"></i> Xuất Excel
-                            </button>
-                        </div>
-                    </div>*@
+                    <div class="col-sm-1">
+            <label>Từ khóa</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        </div>
+        <div class="col-sm-1">
+            <label>Dự án</label>s
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
+        </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>*@
             </div>
         </div>
         <div class="card-body">
@@ -41,6 +48,7 @@
                 <table class="table table-bordered" id="dataTableBaoCaoTongHop" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th style="width: auto;">Dự án </th>
                             <th style="width: auto;">Tỉnh </th>
                             <th style="width:9%;">Mã nhóm</th>
                             <th style="width:auto;">Tên nhóm</th>
@@ -206,169 +214,170 @@
                     </thead>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td class="text-left">@item.CityName</td>
-                            <td class="text-left">@item.manhom_tbh</td>
-                            <td class="text-left">@item.tennhom_tbh</td>
-                            <td class="text-left">@item.makh</td>
-                            <td class="text-left">@item.hoten</td>
-                            <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
-                            <td class="text-center">@(item.hanhvinguyco_timestamp != null ? Convert.ToDateTime( item.hanhvinguyco_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
-                            <td class="text-left">@item.chatgaynghien </td>
-                            <td class="text-left">@item.loaikhac </td>
-                            <td class="text-left">@item.chatgaynghien_2 </td>
-                            <td class="text-left">@item.loaikhac_2 </td>
-                            <td class="text-left">@item.duongsd </td>
-                            <td class="text-left">@item.sdheroin </td>
-                            <td class="text-left">@item.tansuatda </td>
-                            <td class="text-left">@item.tansuat_heroin </td>
-                            <td class="text-right">@item.tuoi </td>
-                            <td class="text-left">@item.matuydautien </td>
-                            <td class="text-left">@item.tiemchich </td>
-                            <td class="text-left">@item.dungchung </td>
-                            <td class="text-left">@item.qhtd </td>
-                            <td class="text-left">@item.qhtd_2 </td>
-                            <td class="text-left">@item.sdmatuy </td>
-                            <td class="text-left">@item.qhtdtt </td>
-                            <td class="text-left">@item.bandam </td>
-                            <td class="text-left">@item.sti </td>
-                            <td class="text-left">@item.sti1 </td>
-                            <td class="text-left">@item.loaikhac_3 </td>
-                            <td class="text-left">@item.quakhu </td>
-                            <td class="text-left">@item.hientai </td>
-                            <td class="text-left">@item.hientai_2 </td>
-                            <td class="text-left">@item.quakhu2 </td>
-                            <td class="text-left">@item.hientai_4 </td>
-                            <td class="text-left">@item.hientai_3 </td>
-                            <td class="text-left">@item.quakhu_3 </td>
-                            <td class="text-left">@item.hientai_5 </td>
-                            <td class="text-left">@item.hientai_6 </td>
-                            <td class="text-left">@item.trieuchung </td>
-                            <td class="text-left">@item.trieuchung_2 </td>
-                            <td class="text-center">@(item.hiv_timestamp  != null ? Convert.ToDateTime(item.hiv_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
-                            <td class="text-left">@item.cau1 </td>
-                            <td class="text-left">@item.cau2 </td>
-                            <td class="text-left">@item.cau3 </td>
-                            <td class="text-left">@item.cau4 </td>
-                            <td class="text-left">@item.cau5 </td>
-                            <td class="text-left">@item.cau6 </td>
-                            <td class="text-left">@item.cau7 </td>
-                            <td class="text-left">@item.cau8 </td>
-                            <td class="text-left">@item.cau9 </td>
-                            <td class="text-left">@item.cau10 </td>
-                            <td class="text-left">@item.cau11 </td>
-                            <td class="text-left">@item.cau12 </td>
-                            <td class="text-left">@item.cau13 </td>
-                            <td class="text-left">@item.cau14 </td>
-                            <td class="text-left">@item.cau15 </td>
-                            <td class="text-left">@item.cau16 </td>
-                            <td class="text-left">@item.cau17 </td>
-                            <td class="text-left">@item.cau18 </td>
-                            <td class="text-left">@item.cau19 </td>
-                            <td class="text-left">@item.cau20 </td>
-                            <td class="text-left">@item.cau21 </td>
-                            <td class="text-left">@item.cau22 </td>
-                            <td class="text-left">@item.cau23 </td>
-                            <td class="text-left">@item.cau24 </td>
-                            <td class="text-left">@item.cau25 </td>
-                            <td class="text-left">@item.cau26 </td>
-                            <td class="text-left">@item.cau27 </td>
-                            <td class="text-center">@(item.assist_timestamp != null ? Convert.ToDateTime(item.assist_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
-                            <td class="text-left">@item.thuocla </td>
-                            <td class="text-left">@item.thucuong </td>
-                            <td class="text-left">@item.cansa </td>
-                            <td class="text-left">@item.cocain </td>
-                            <td class="text-left">@item.chatkichthich </td>
-                            <td class="text-left">@item.khixong </td>
-                            <td class="text-left">@item.thuocanthan </td>
-                            <td class="text-left">@item.chatgayaogiac </td>
-                            <td class="text-left">@item.thuocphien </td>
-                            <td class="text-left">@item.chatkhac </td>
-                            <td class="text-left">@item.cacchatkhac </td>
-                            <td class="text-left">@item.lucdihoc </td>
-                            <td class="text-left">@item.thuocla1 </td>
-                            <td class="text-left">@item.thucuong1 </td>
-                            <td class="text-left">@item.cansa1 </td>
-                            <td class="text-left">@item.coca1 </td>
-                            <td class="text-left">@item.chatkichthich1 </td>
-                            <td class="text-left">@item.khixong1 </td>
-                            <td class="text-left">@item.thuocanthan1 </td>
-                            <td class="text-left">@item.chatgayaogiac1 </td>
-                            <td class="text-left">@item.chatthuocphien1 </td>
-                            <td class="text-left">@item.chatkhac1 </td>
-                            <td class="text-left">@item.thuocla2 </td>
-                            <td class="text-left">@item.thucuong2 </td>
-                            <td class="text-left">@item.cansa2 </td>
-                            <td class="text-left">@item.coca2 </td>
-                            <td class="text-left">@item.chatkichthich2 </td>
-                            <td class="text-left">@item.khixong2 </td>
-                            <td class="text-left">@item.thuocanthan2 </td>
-                            <td class="text-left">@item.chatgayaogiac2 </td>
-                            <td class="text-left">@item.chatthuocphien2 </td>
-                            <td class="text-left">@item.chatkhac2 </td>
-                            <td class="text-left">@item.thuocla3 </td>
-                            <td class="text-left">@item.thucuong3 </td>
-                            <td class="text-left">@item.cansa3 </td>
-                            <td class="text-left">@item.coca3 </td>
-                            <td class="text-left">@item.chatkichthich3 </td>
-                            <td class="text-left">@item.khixong3 </td>
-                            <td class="text-left">@item.thuocanthan3 </td>
-                            <td class="text-left">@item.chatgayaogiac3 </td>
-                            <td class="text-left">@item.chatthuocphien3 </td>
-                            <td class="text-left">@item.chatkhac3 </td>
-                            <td class="text-left">@item.thucuong4 </td>
-                            <td class="text-left">@item.cansa4 </td>
-                            <td class="text-left">@item.coca4 </td>
-                            <td class="text-left">@item.chatkichthich4 </td>
-                            <td class="text-left">@item.khixong4 </td>
-                            <td class="text-left">@item.thuocanthan4 </td>
-                            <td class="text-left">@item.chatgayaogiac4 </td>
-                            <td class="text-left">@item.chatthuocphien4 </td>
-                            <td class="text-left">@item.chatkhac4 </td>
-                            <td class="text-left">@item.thuocla5 </td>
-                            <td class="text-left">@item.thucuong5 </td>
-                            <td class="text-left">@item.cansa5 </td>
-                            <td class="text-left">@item.coca5 </td>
-                            <td class="text-left">@item.chatkichthich5 </td>
-                            <td class="text-left">@item.khixong5 </td>
-                            <td class="text-left">@item.thuocanthan5 </td>
-                            <td class="text-left">@item.chatgayaogiac5 </td>
-                            <td class="text-left">@item.chatthuocphien5 </td>
-                            <td class="text-left">@item.chatkhac5 </td>
-                            <td class="text-left">@item.thuocla6 </td>
-                            <td class="text-left">@item.thucuong6 </td>
-                            <td class="text-left">@item.cansa6 </td>
-                            <td class="text-left">@item.coca6 </td>
-                            <td class="text-left">@item.chatkichthich6 </td>
-                            <td class="text-left">@item.khixong6 </td>
-                            <td class="text-left">@item.thuocanthan6 </td>
-                            <td class="text-left">@item.chatgayaogiac6 </td>
-                            <td class="text-left">@item.chatthuocphien6 </td>
-                            <td class="text-left">@item.chatkhac6 </td>
-                            <td class="text-left">@item.cau_8 </td>
-                            <td class="text-left">@item.diemthuocla </td>
-                            <td class="text-left">@item.diemthucuong </td>
-                            <td class="text-left">@item.diemcansa </td>
-                            <td class="text-left">@item.diemcoca </td>
-                            <td class="text-left">@item.diemchatkichthich </td>
-                            <td class="text-left">@item.diemkhixong </td>
-                            <td class="text-left">@item.diemchatanthan </td>
-                            <td class="text-left">@item.diemchatgayaogiac </td>
-                            <td class="text-left">@item.diemchatthuocphien </td>
-                            <td class="text-center">@(item.qst_timestamp  != null ? Convert.ToDateTime(item.qst_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
-                            <td class="text-left">@item.diemchatkhac </td>
-                            <td class="text-left">@item.c_1a </td>
-                            <td class="text-left">@item.c_1b </td>
-                            <td class="text-left">@item.c_1c </td>
-                            <td class="text-left">@item.c_1d </td>
-                            <td class="text-left">@item.c_2 </td>
-                            <td class="text-left">@item.c_3 </td>
-                            <td class="text-left">@item.c_4a </td>
-                            <td class="text-left">@item.c_4b </td>
-                            <td class="text-left">@item.c_4c </td>
-                            <td class="text-right">@item.tongdiem </td>
+                <tr>
+                    <td class="text-left">@item.maduan</td>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.manhom_tbh</td>
+                    <td class="text-left">@item.tennhom_tbh</td>
+                    <td class="text-left">@item.makh</td>
+                    <td class="text-left">@item.hoten</td>
+                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@(item.hanhvinguyco_timestamp != null ? Convert.ToDateTime( item.hanhvinguyco_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-left">@item.chatgaynghien </td>
+                    <td class="text-left">@item.loaikhac </td>
+                    <td class="text-left">@item.chatgaynghien_2 </td>
+                    <td class="text-left">@item.loaikhac_2 </td>
+                    <td class="text-left">@item.duongsd </td>
+                    <td class="text-left">@item.sdheroin </td>
+                    <td class="text-left">@item.tansuatda </td>
+                    <td class="text-left">@item.tansuat_heroin </td>
+                    <td class="text-right">@item.tuoi </td>
+                    <td class="text-left">@item.matuydautien </td>
+                    <td class="text-left">@item.tiemchich </td>
+                    <td class="text-left">@item.dungchung </td>
+                    <td class="text-left">@item.qhtd </td>
+                    <td class="text-left">@item.qhtd_2 </td>
+                    <td class="text-left">@item.sdmatuy </td>
+                    <td class="text-left">@item.qhtdtt </td>
+                    <td class="text-left">@item.bandam </td>
+                    <td class="text-left">@item.sti </td>
+                    <td class="text-left">@item.sti1 </td>
+                    <td class="text-left">@item.loaikhac_3 </td>
+                    <td class="text-left">@item.quakhu </td>
+                    <td class="text-left">@item.hientai </td>
+                    <td class="text-left">@item.hientai_2 </td>
+                    <td class="text-left">@item.quakhu2 </td>
+                    <td class="text-left">@item.hientai_4 </td>
+                    <td class="text-left">@item.hientai_3 </td>
+                    <td class="text-left">@item.quakhu_3 </td>
+                    <td class="text-left">@item.hientai_5 </td>
+                    <td class="text-left">@item.hientai_6 </td>
+                    <td class="text-left">@item.trieuchung </td>
+                    <td class="text-left">@item.trieuchung_2 </td>
+                    <td class="text-center">@(item.hiv_timestamp  != null ? Convert.ToDateTime(item.hiv_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-left">@item.cau1 </td>
+                    <td class="text-left">@item.cau2 </td>
+                    <td class="text-left">@item.cau3 </td>
+                    <td class="text-left">@item.cau4 </td>
+                    <td class="text-left">@item.cau5 </td>
+                    <td class="text-left">@item.cau6 </td>
+                    <td class="text-left">@item.cau7 </td>
+                    <td class="text-left">@item.cau8 </td>
+                    <td class="text-left">@item.cau9 </td>
+                    <td class="text-left">@item.cau10 </td>
+                    <td class="text-left">@item.cau11 </td>
+                    <td class="text-left">@item.cau12 </td>
+                    <td class="text-left">@item.cau13 </td>
+                    <td class="text-left">@item.cau14 </td>
+                    <td class="text-left">@item.cau15 </td>
+                    <td class="text-left">@item.cau16 </td>
+                    <td class="text-left">@item.cau17 </td>
+                    <td class="text-left">@item.cau18 </td>
+                    <td class="text-left">@item.cau19 </td>
+                    <td class="text-left">@item.cau20 </td>
+                    <td class="text-left">@item.cau21 </td>
+                    <td class="text-left">@item.cau22 </td>
+                    <td class="text-left">@item.cau23 </td>
+                    <td class="text-left">@item.cau24 </td>
+                    <td class="text-left">@item.cau25 </td>
+                    <td class="text-left">@item.cau26 </td>
+                    <td class="text-left">@item.cau27 </td>
+                    <td class="text-center">@(item.assist_timestamp != null ? Convert.ToDateTime(item.assist_timestamp).ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-left">@item.thuocla </td>
+                    <td class="text-left">@item.thucuong </td>
+                    <td class="text-left">@item.cansa </td>
+                    <td class="text-left">@item.cocain </td>
+                    <td class="text-left">@item.chatkichthich </td>
+                    <td class="text-left">@item.khixong </td>
+                    <td class="text-left">@item.thuocanthan </td>
+                    <td class="text-left">@item.chatgayaogiac </td>
+                    <td class="text-left">@item.thuocphien </td>
+                    <td class="text-left">@item.chatkhac </td>
+                    <td class="text-left">@item.cacchatkhac </td>
+                    <td class="text-left">@item.lucdihoc </td>
+                    <td class="text-left">@item.thuocla1 </td>
+                    <td class="text-left">@item.thucuong1 </td>
+                    <td class="text-left">@item.cansa1 </td>
+                    <td class="text-left">@item.coca1 </td>
+                    <td class="text-left">@item.chatkichthich1 </td>
+                    <td class="text-left">@item.khixong1 </td>
+                    <td class="text-left">@item.thuocanthan1 </td>
+                    <td class="text-left">@item.chatgayaogiac1 </td>
+                    <td class="text-left">@item.chatthuocphien1 </td>
+                    <td class="text-left">@item.chatkhac1 </td>
+                    <td class="text-left">@item.thuocla2 </td>
+                    <td class="text-left">@item.thucuong2 </td>
+                    <td class="text-left">@item.cansa2 </td>
+                    <td class="text-left">@item.coca2 </td>
+                    <td class="text-left">@item.chatkichthich2 </td>
+                    <td class="text-left">@item.khixong2 </td>
+                    <td class="text-left">@item.thuocanthan2 </td>
+                    <td class="text-left">@item.chatgayaogiac2 </td>
+                    <td class="text-left">@item.chatthuocphien2 </td>
+                    <td class="text-left">@item.chatkhac2 </td>
+                    <td class="text-left">@item.thuocla3 </td>
+                    <td class="text-left">@item.thucuong3 </td>
+                    <td class="text-left">@item.cansa3 </td>
+                    <td class="text-left">@item.coca3 </td>
+                    <td class="text-left">@item.chatkichthich3 </td>
+                    <td class="text-left">@item.khixong3 </td>
+                    <td class="text-left">@item.thuocanthan3 </td>
+                    <td class="text-left">@item.chatgayaogiac3 </td>
+                    <td class="text-left">@item.chatthuocphien3 </td>
+                    <td class="text-left">@item.chatkhac3 </td>
+                    <td class="text-left">@item.thucuong4 </td>
+                    <td class="text-left">@item.cansa4 </td>
+                    <td class="text-left">@item.coca4 </td>
+                    <td class="text-left">@item.chatkichthich4 </td>
+                    <td class="text-left">@item.khixong4 </td>
+                    <td class="text-left">@item.thuocanthan4 </td>
+                    <td class="text-left">@item.chatgayaogiac4 </td>
+                    <td class="text-left">@item.chatthuocphien4 </td>
+                    <td class="text-left">@item.chatkhac4 </td>
+                    <td class="text-left">@item.thuocla5 </td>
+                    <td class="text-left">@item.thucuong5 </td>
+                    <td class="text-left">@item.cansa5 </td>
+                    <td class="text-left">@item.coca5 </td>
+                    <td class="text-left">@item.chatkichthich5 </td>
+                    <td class="text-left">@item.khixong5 </td>
+                    <td class="text-left">@item.thuocanthan5 </td>
+                    <td class="text-left">@item.chatgayaogiac5 </td>
+                    <td class="text-left">@item.chatthuocphien5 </td>
+                    <td class="text-left">@item.chatkhac5 </td>
+                    <td class="text-left">@item.thuocla6 </td>
+                    <td class="text-left">@item.thucuong6 </td>
+                    <td class="text-left">@item.cansa6 </td>
+                    <td class="text-left">@item.coca6 </td>
+                    <td class="text-left">@item.chatkichthich6 </td>
+                    <td class="text-left">@item.khixong6 </td>
+                    <td class="text-left">@item.thuocanthan6 </td>
+                    <td class="text-left">@item.chatgayaogiac6 </td>
+                    <td class="text-left">@item.chatthuocphien6 </td>
+                    <td class="text-left">@item.chatkhac6 </td>
+                    <td class="text-left">@item.cau_8 </td>
+                    <td class="text-left">@item.diemthuocla </td>
+                    <td class="text-left">@item.diemthucuong </td>
+                    <td class="text-left">@item.diemcansa </td>
+                    <td class="text-left">@item.diemcoca </td>
+                    <td class="text-left">@item.diemchatkichthich </td>
+                    <td class="text-left">@item.diemkhixong </td>
+                    <td class="text-left">@item.diemchatanthan </td>
+                    <td class="text-left">@item.diemchatgayaogiac </td>
+                    <td class="text-left">@item.diemchatthuocphien </td>
+                    <td class="text-center">@(item.qst_timestamp  != null ? Convert.ToDateTime(item.qst_timestamp).ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-left">@item.diemchatkhac </td>
+                    <td class="text-left">@item.c_1a </td>
+                    <td class="text-left">@item.c_1b </td>
+                    <td class="text-left">@item.c_1c </td>
+                    <td class="text-left">@item.c_1d </td>
+                    <td class="text-left">@item.c_2 </td>
+                    <td class="text-left">@item.c_3 </td>
+                    <td class="text-left">@item.c_4a </td>
+                    <td class="text-left">@item.c_4b </td>
+                    <td class="text-left">@item.c_4c </td>
+                    <td class="text-right">@item.tongdiem </td>
 
-                        </tr>
+                </tr>
                     }
                 </table>
             </div>

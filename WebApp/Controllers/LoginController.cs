@@ -42,7 +42,8 @@ namespace WebApp.Controllers
                     userSession.IsAdmin = user.IsAdmin;
                     userSession.Avartar = user.Avartar;
                     userSession.GroupId = user.GroupID;
-
+                    userSession.CityCodes = user.CityCodes;
+                    userSession.MaDuAn = user.MaDuAn;
 
                     var listPermission = _userDA.GetListCredentials(model.UserName);
 

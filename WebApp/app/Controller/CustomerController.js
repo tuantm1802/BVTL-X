@@ -6,10 +6,12 @@
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "hoten";
     var editor;
+    $scope.ListDuAn = [];
     var dataTableCustomer = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
 
+        $scope.ListDuAn = [];
         //editor = new $.fn.dataTable.Editor({
         //    "ajax": "http://localhost:54888/api/staff",
         //    "table": "#example",
@@ -88,6 +90,9 @@
                             $scope.RoleBtnSearch = true;
                         }
                     });
+                }
+                if (data.DuAns != null && data.DuAns.length > 0) {
+                    $scope.ListDuAn = data.DuAns;
                 }
                 $scope.$apply();
             }
@@ -205,6 +210,8 @@
                     //{ "data": "ngaytiepcantext", searchBuilderType: "string" },
                     { "data": "ngaytiepcan", searchBuilderType: "date" },
                     { "data": "sodienthoai", searchBuilderType: "string" },
+                    { "data": "maduan", searchBuilderType: "string" },
+                    //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
                     { "data": "diachi", searchBuilderType: "string" }
                 ],

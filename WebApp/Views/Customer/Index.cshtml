@@ -32,21 +32,28 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 @*<div class="row">
-                        <div class="col-sm-1">
-                            <label>Từ khóa</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Tìm kiếm
-                            </button>
-                            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                                <i class="fas fa-pencil-alt"></i> Xuất Excel
-                            </button>
-                        </div>
-                    </div>*@
+                    <div class="col-sm-1">
+            <label>Từ khóa</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        </div>
+        <div class="col-sm-1">
+            <label>Dự án</label>s
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
+        </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>*@
             </div>
         </div>
         <div class="card-body">
@@ -62,6 +69,7 @@
                             <th style="width:9%;">Đối tượng</th>
                             <th style="width:9%;">Ngày tiếp cận</th>
                             <th style="width:9%;">Số điện thoại</th>
+                            <th style="width: auto;">Dự án </th>
                             <th style="width:9%;">Tỉnh</th>
                             <th style="width:9%;">Địa chỉ</th>
                         </tr>
@@ -79,6 +87,7 @@
                     <td class="text-center">@(item.ngaytiepcan != null ? item.ngaytiepcan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-center">@item.ngaytiepcantext</td>*@
                     <td class="text-left">@item.sodienthoai</td>
+                    <td class="text-left">@item.maduan</td>
                     <td class="text-left">@item.CityName</td>
                     <td class="text-left">@item.diachi</td>
                 </tr>

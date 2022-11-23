@@ -19,21 +19,28 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 @*<div class="row">
-                        <div class="col-sm-1">
-                            <label>Từ khóa</label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Tìm kiếm
-                            </button>
-                            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                                <i class="fas fa-pencil-alt"></i> Xuất Excel
-                            </button>
-                        </div>
-                    </div>*@
+                   <div class="col-sm-1">
+            <label>Từ khóa</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        </div>
+        <div class="col-sm-1">
+            <label>Dự án</label>s
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
+        </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>*@
             </div>
         </div>
         <div class="card-body">
@@ -41,6 +48,7 @@
                 <table class="table table-bordered" id="dataTableChuyenGuiDichVu" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th style="width: auto;">Dự án </th>
                             <th style="width: auto;">Tỉnh </th>
                             <th style="width:9%;">Mã nhóm TBH</th>
                             <th style="width:auto;">Tên nhóm TBH </th>
@@ -80,44 +88,45 @@
                     </thead>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td class="text-left">@item.CityName</td>
-                            <td class="text-left">@item.manhom_tbh</td>
-                            <td class="text-left">@item.tennhom_tbh</td>
-                            <td class="text-left">@item.makh</td>
-                            <td class="text-left">@item.hoten</td>
-                            <td class="text-right">@item.loaihinh </td>
-                            <td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
-                            <td class="text-left">@item.diachi_xn </td>
-                            <td class="text-left">@item.kq_xn </td>
-                            <td class="text-left">@item.dieutri </td>
-                            <td class="text-left">@item.diachi_cg </td>
-                            <td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
-                            <td class="text-left">@item.taiuong_bd </td>
-                            <td class="text-left">@item.taiuong_bd_2 </td>
-                            <td class="text-left">@item.taiuong_bd_21 </td>
-                            <td class="text-left">@item.s3t </td>
-                            <td class="text-left">@item.s6t </td>
-                            <td class="text-left">@item.s9t </td>
-                            <td class="text-left">@item.s12t </td>
-                            <td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
-                            <td class="text-left">@item.diachikham </td>
-                            <td class="text-left">@item.lankham </td>
-                            <td class="text-left">@item.chandoan </td>
-                            <td class="text-left">@item.khac </td>
-                            <td class="text-left">@item.kedon </td>
-                            <td class="text-left">@item.dungthuoc </td>
-                            <td class="text-left">@item.hotro </td>
-                            <td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
-                            <td class="text-left">@item.diachi_kxn </td>
-                            <td class="text-left">@item.lan_xnk </td>
-                            <td class="text-left">@item.chandoan1 </td>
-                            <td class="text-left">@item.khac_sti </td>
-                            <td class="text-left">@item.dieutri_sti </td>
-                            <td class="text-left">@item.hotro_sti </td>
-                            <td class="text-left">@item.hotro_bhyt </td>
+                <tr>
+                    <td class="text-left">@item.maduan</td>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.manhom_tbh</td>
+                    <td class="text-left">@item.tennhom_tbh</td>
+                    <td class="text-left">@item.makh</td>
+                    <td class="text-left">@item.hoten</td>
+                    <td class="text-right">@item.loaihinh </td>
+                    <td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-left">@item.diachi_xn </td>
+                    <td class="text-left">@item.kq_xn </td>
+                    <td class="text-left">@item.dieutri </td>
+                    <td class="text-left">@item.diachi_cg </td>
+                    <td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-left">@item.taiuong_bd </td>
+                    <td class="text-left">@item.taiuong_bd_2 </td>
+                    <td class="text-left">@item.taiuong_bd_21 </td>
+                    <td class="text-left">@item.s3t </td>
+                    <td class="text-left">@item.s6t </td>
+                    <td class="text-left">@item.s9t </td>
+                    <td class="text-left">@item.s12t </td>
+                    <td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-left">@item.diachikham </td>
+                    <td class="text-left">@item.lankham </td>
+                    <td class="text-left">@item.chandoan </td>
+                    <td class="text-left">@item.khac </td>
+                    <td class="text-left">@item.kedon </td>
+                    <td class="text-left">@item.dungthuoc </td>
+                    <td class="text-left">@item.hotro </td>
+                    <td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-left">@item.diachi_kxn </td>
+                    <td class="text-left">@item.lan_xnk </td>
+                    <td class="text-left">@item.chandoan1 </td>
+                    <td class="text-left">@item.khac_sti </td>
+                    <td class="text-left">@item.dieutri_sti </td>
+                    <td class="text-left">@item.hotro_sti </td>
+                    <td class="text-left">@item.hotro_bhyt </td>
 
-                        </tr>
+                </tr>
                     }
                 </table>
             </div>
