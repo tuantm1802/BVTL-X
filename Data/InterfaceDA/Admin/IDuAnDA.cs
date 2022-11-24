@@ -32,5 +32,11 @@ namespace Data.InterfaceDA.Admin
         /// <returns></returns>
         List<BVTL_DU_AN> GetAll();
 
+        /// <summary>
+        /// Lấy danh sách dự án theo người dùng
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+         List<BVTL_DU_AN> GetDuAnReport(int userId);
     }
 }

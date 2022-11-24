@@ -87,15 +87,15 @@ namespace Data.Admin
             try
             {
                 var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x=>x.ID == userId);
-                if (!string.IsNullOrEmpty(user.CityCodes))
+                if (string.IsNullOrEmpty(user.CityCodes) || user.IsAdmin)
                 {
-                    var cityCodes = user.CityCodes.Split(',').ToList();
-                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList() ;
-                    return citys != null ? citys : new List<BVTL_CITES>();
+                    return db.BVTL_CITES.ToList();
                 }
                 else
                 {
-                    return db.BVTL_CITES.ToList();
+                    var cityCodes = user.CityCodes.Split(',').ToList();
+                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
+                    return citys != null ? citys : new List<BVTL_CITES>();
                 }
             }
             catch (Exception)
