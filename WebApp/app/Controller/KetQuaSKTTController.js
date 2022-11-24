@@ -6,10 +6,12 @@
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "kqslsktt_id";
 
+    $scope.ListDuAn = [];
     var dataTableKetQuaSKTT = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
-        
+
+        $scope.ListDuAn = [];
         GetBottomAction();
         $scope.LoadPage(1);
     });
@@ -32,6 +34,9 @@
                             $scope.RoleBtnSearch = true;
                         }
                     });
+                }
+                if (data.DuAns != null && data.DuAns.length > 0) {
+                    $scope.ListDuAn = data.DuAns;
                 }
                 $scope.$apply();
             }
@@ -111,6 +116,8 @@
                 //    info: false
                 //},
                 columns: [
+                    { "data": "maduan", searchBuilderType: "string" },
+                    //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string"  },
                     { "data": "manhom_tbh", searchBuilderType: "string"  },
                     { "data": "tennhom_tbh", searchBuilderType: "string"  },

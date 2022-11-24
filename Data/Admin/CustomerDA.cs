@@ -35,6 +35,8 @@ namespace Data.Admin
                 {
                     new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
                     new SqlParameter("OrderByName", modelSearch.SortColumn),
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn),
                     new SqlParameter("Page", modelSearch.currentPage),
                     new SqlParameter("PageSize", modelSearch.pageSize)
                 };

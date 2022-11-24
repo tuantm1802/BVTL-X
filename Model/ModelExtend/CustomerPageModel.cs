@@ -14,5 +14,6 @@ namespace Model.ModelExtend
         public string GioiTinhText { get; set; }
         public string LoaiDoiTuong { get; set; }
         public string ngaytiepcantext { get; set; }
+        public string tenduan { get; set; }
     }
 }

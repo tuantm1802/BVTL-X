@@ -58,6 +58,7 @@ namespace Data.Admin
                     new SqlParameter("Months", string.IsNullOrEmpty(modelSearch.Months) ? DBNull.Value : (object)modelSearch.Months),
                     new SqlParameter("Year", modelSearch.Year == null ? 0 : (object)modelSearch.Year),
                     new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn),
                     new SqlParameter("Page", modelSearch.currentPage),
                     new SqlParameter("PageSize", modelSearch.pageSize)
                 };
