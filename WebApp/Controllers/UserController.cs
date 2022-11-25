@@ -19,6 +19,7 @@ namespace WebApp.Controllers
     {
         IUserDA _userDA = new UserDA();
         ICityDA _CityDA = new CityDA();
+        IDuAnDA _DuAnDA = new DuAnDA();
         IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
         IRoleDA _RoleDA = new RoleDA();
         ISysLogDA _sysLogDA = new SysLogDA();
@@ -115,7 +116,15 @@ namespace WebApp.Controllers
                 // Lấy danh sách tỉnh
                 var citys = _CityDA.GetAll().Select(x=>new {  Code = x.Code, Name = x.Name}).ToList();
 
-                return Json(new { DataRoles = dataRole, DataTestGroup = dataTestGroup, Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                // Lấy danh sách du an
+                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+
+                return Json(new { 
+                    DataRoles = dataRole, 
+                    DataTestGroup = dataTestGroup, 
+                    Citys = citys, 
+                    DuAns = duAns, 
+                    Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {

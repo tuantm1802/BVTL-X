@@ -274,6 +274,7 @@ namespace Data.Admin
                         data.IdNumber = model.IdNumber;
                         data.Possition = model.Possition;
                         data.GroupID = model.GroupID;
+                        data.MaDuAn = model.MaDuAn;
                         //data.CityCodes = model.CityCodes;
                         context.SaveChanges();
 

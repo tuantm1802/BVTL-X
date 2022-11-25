@@ -450,8 +450,8 @@
           <Property Name="cau5_2" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_2k" Type="nvarchar" MaxLength="200" />
           <Property Name="cau5_2k_2" Type="nvarchar" MaxLength="1000" />
-          <Property Name="cau5_3" Type="nvarchar" MaxLength="10" />
-          <Property Name="cau5_3_1" Type="nvarchar" MaxLength="40" />
+          <Property Name="cau5_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="cau5_3_1" Type="nvarchar" MaxLength="100" />
           <Property Name="cau5_4" Type="nvarchar" MaxLength="10" />
           <Property Name="cau5_4_1" Type="nvarchar" MaxLength="10" />
           <Property Name="cau5_5" Type="nvarchar" MaxLength="10" />
@@ -517,6 +517,7 @@
           <Property Name="OriginId" Type="int" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CityCodes" Type="varchar" MaxLength="250" />
+          <Property Name="MaDuAn" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
           <Key>
@@ -1479,8 +1480,8 @@
           <Property Name="cau5_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2k_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_3" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_3_1" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3_1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="cau5_4" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="cau5_4_1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="cau5_5" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -1546,6 +1547,7 @@
           <Property Name="OriginId" Type="Int32" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="CityCodes" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="MaDuAn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_NGUOI_DUNG_NHOM_TBH">
           <Key>
@@ -2340,6 +2342,7 @@
           <EntitySetMapping Name="BVTL_QT_NGUOI_DUNG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG">
               <MappingFragment StoreEntitySet="BVTL_QT_NGUOI_DUNG">
+                <ScalarProperty Name="MaDuAn" ColumnName="MaDuAn" />
                 <ScalarProperty Name="CityCodes" ColumnName="CityCodes" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="OriginId" ColumnName="OriginId" />

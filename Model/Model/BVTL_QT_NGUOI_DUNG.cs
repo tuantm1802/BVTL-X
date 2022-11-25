@@ -39,5 +39,6 @@ namespace Model.Model
         public Nullable<int> OriginId { get; set; }
         public bool IsActive { get; set; }
         public string CityCodes { get; set; }
+        public string MaDuAn { get; set; }
     }
 }
