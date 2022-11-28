@@ -64,6 +64,7 @@ namespace Data.API
                 conn.Close();
 
                 obj.Success = true;
+                obj.Message = "Tổng record đã thêm: " + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn;
                 log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
             }
 
@@ -265,7 +266,7 @@ namespace Data.API
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime)
+        public ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime, string message)
         {
             ObjectMessage obj = new ObjectMessage();
             try
@@ -273,11 +274,14 @@ namespace Data.API
                 var data = db.BVTL_API.FirstOrDefault(x => x.Api_Code == apiCode);
                 if (isStartTime) { 
                     data.Start_Time_Sync = DateTime.Now;
-                    data.End_Time_Syc = null;
+                    data.End_Time_Sync = null;
+                    data.Message = message;
                 }
                 else
-                    data.End_Time_Syc = DateTime.Now;
-
+                {
+                    data.End_Time_Sync = DateTime.Now;
+                    data.Message = message;
+                }
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Cập nhật thành công!";

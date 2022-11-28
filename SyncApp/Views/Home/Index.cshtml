@@ -27,6 +27,7 @@
                         <th class="text-center font-bold">Chu kỳ lặp (s)</th>
                         <th class="text-center font-bold">Bắt đầu</th>
                         <th class="text-center font-bold">Kết thúc</th>
+                        <th class="text-center font-bold">Thông tin</th>
                     </tr>
                 </thead>
                 <tbody ng-repeat="item in listProcess track by $index">
@@ -37,6 +38,7 @@
                         <td class="text-right">{{item.TimeLoop}}</td>
                         <td class="text-center">{{item.Start_Time_Sync}}</td>
                         <td class="text-center">{{item.End_Time_Syc}}</td>
+                        <td class="text-center">{{item.Message}}</td>
                     </tr>
                 </tbody>
             </table>

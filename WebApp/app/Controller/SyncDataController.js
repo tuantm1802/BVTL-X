@@ -75,10 +75,13 @@
                                         Api_Code: respone.data[i].Api_Code,
                                         NameSyncdata: respone.data[i].NameSyncdata,
                                         HrefApi: respone.data[i].HrefApi,
-                                        TableNameSaveData: respone.data[i].TableNameSaveData,
-                                        IsActive: respone.data[i].IsActive == true ? 'Sử dụng' : 'Không sử dụng',
+                                        ReportId: respone.data[i].ReportId,
+                                        IsActive: respone.data[i].IsActive == true ? 'Ative' : 'InActive',
                                         TimeReCall: respone.data[i].TimeReCall,
-                                        Api_Id: respone.data[i].Api_Id
+                                        Api_Id: respone.data[i].Api_Id,
+                                        Start_Time_Sync: respone.data[i].Start_Time_Sync != null ? moment(respone.data[i].Start_Time_Sync).format("YYYY-MM-DD HH:mm:ss") : "",
+                                        End_Time_Sync: respone.data[i].End_Time_Sync != null ? moment(respone.data[i].End_Time_Sync).format("YYYY-MM-DD HH:mm:ss") : "",
+                                        Message: respone.data[i].Message
                                     }
                                     dataUser.push(tmp);
                                 }
@@ -120,9 +123,12 @@
                     { "data": "Api_Code" },
                     { "data": "NameSyncdata" },
                     { "data": "HrefApi" },
-                    { "data": "TableNameSaveData" },
+                    { "data": "ReportId" },
                     { "data": "TimeReCall" },
                     { "data": "IsActive" },
+                    { "data": "Start_Time_Sync" },
+                    { "data": "End_Time_Sync" },
+                    { "data": "Message" }
                 ],
                 dom: "<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +

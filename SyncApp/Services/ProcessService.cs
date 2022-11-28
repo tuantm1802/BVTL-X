@@ -37,14 +37,15 @@ namespace SyncBVTL.Push.Services
                         Url = api.HrefApi,
                         Token = api.TokenApi,
                         ReportId = api.ReportId,
-                        MaDuAn = api.maduan
+                        MaDuAn = api.maduan,
+                        Message = api.Message
                     };
 
                     if (api.Start_Time_Sync != null)
                         process.Start_Time_Sync = Convert.ToDateTime(api.Start_Time_Sync).ToString("dd/MM/yyyy HH:mm");
 
-                    if (api.End_Time_Syc != null)
-                        process.End_Time_Syc = Convert.ToDateTime(api.End_Time_Syc).ToString("dd/MM/yyyy HH:mm");
+                    if (api.End_Time_Sync != null)
+                        process.End_Time_Syc = Convert.ToDateTime(api.End_Time_Sync).ToString("dd/MM/yyyy HH:mm");
 
                     if (!string.IsNullOrEmpty(api.TableNameSaveData))
                         process.TableNames = new List<string> { api.TableNameSaveData };

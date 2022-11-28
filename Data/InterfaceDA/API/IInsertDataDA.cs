@@ -65,6 +65,6 @@ namespace Data.InterfaceDA.API
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime);
+        ObjectMessage UpdateTimeSync(string apiCode, bool isStartTime, string message);
     }
 }

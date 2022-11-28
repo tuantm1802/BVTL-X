@@ -27,7 +27,7 @@ namespace Data.API
             var result = new BaseResult();
 
             // Cập nhật thời gian bắt đầu đồng bộ
-            insertDataDA.UpdateTimeSync(apiCode, true);
+            insertDataDA.UpdateTimeSync(apiCode, true, "");
             try
             {
                 // Call api để lấy dữ liệu
@@ -179,7 +179,7 @@ namespace Data.API
             }
             
             // Cập nhật thời gian kết thúc đồng bộ
-            insertDataDA.UpdateTimeSync(apiCode, false);
+            insertDataDA.UpdateTimeSync(apiCode, false, result.Message);
             return result;
         }
     }
