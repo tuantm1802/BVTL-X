@@ -19,6 +19,7 @@ namespace WebApp.Controllers
     {
         IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
         ISysLogDA _sysLogDA = new SysLogDA();
+        IDuAnDA _DuAnDA = new DuAnDA();
         BaseController _helperController = new BaseController();
 
         // GET: BaoCaoTongHop
@@ -74,8 +75,11 @@ namespace WebApp.Controllers
                 var menu = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
+                // Lấy danh sách du an
+                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+
                 AddLog("Lấy danh sách các botom được thực hiện trên from báo cáo tổng hợp thành công.");
-                return Json(new { Buttoms = bottoms, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { Buttoms = bottoms, Error = false, DuAns = duAns, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {

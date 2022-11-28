@@ -74,7 +74,7 @@ namespace WebApp.Controllers
 
                 var user = Session["USER_SESSION"] as UserLogin;
                 var citys = _CityDA.GetCityReport((int)user.UserID);
-                var duAns = _DuAnDA.GetAll();
+                var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
 
                 AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
                 return Json(new { Buttoms = bottoms, Citys = citys, DuAns = duAns, Error = false, Title = "Lấy dữ liệu thành công." }); ;

@@ -19,6 +19,7 @@ namespace WebApp.Controllers
     {
         IChuyenGuiDichVuDA _ChuyenGuiDichVuDA = new ChuyenGuiDichVuDA();
         ISysLogDA _sysLogDA = new SysLogDA();
+        IDuAnDA _DuAnDA = new DuAnDA();
         BaseController _helperController = new BaseController();
 
         // GET: ChuyenGuiDichVu
@@ -74,8 +75,12 @@ namespace WebApp.Controllers
                 var menu = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
+
+                // Lấy danh sách du an
+                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+
                 AddLog("Lấy danh sách các botom được thực hiện trên from Chuyển gửi dịch vụ thành công.");
-                return Json(new { Buttoms = bottoms, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { Buttoms = bottoms, Error = false, DuAns = duAns, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {

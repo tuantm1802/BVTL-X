@@ -6,9 +6,11 @@
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "Code";
 
+    $scope.ListDuAn = [];
     var dataTableCity = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
+        $scope.ListDuAn = [];
         GetBottomAction();
         $scope.LoadPage(1);
     });

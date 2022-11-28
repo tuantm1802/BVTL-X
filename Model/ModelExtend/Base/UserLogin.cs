@@ -24,5 +24,7 @@ namespace Model.ModelExtend.Base
 
         public string UserGroup { get; set; }
         public int? CapPhat_UnitId { get; set; }
+        public string CityCodes { get; set; }
+        public string MaDuAn { get; set; }
     }
 }

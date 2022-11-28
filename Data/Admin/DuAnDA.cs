@@ -75,5 +75,34 @@ namespace Data.Admin
             return db.BVTL_DU_AN.ToList();
         }
 
+        /// <summary>
+        /// Lấy danh sách dự án theo người dùng
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<BVTL_DU_AN> GetDuAnReport(int userId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var result = new List<BVTL_DU_AN>();
+            try
+            {
+                var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == userId);
+                if (string.IsNullOrEmpty(user.MaDuAn) || user.IsAdmin)
+                {
+                    
+                    return db.BVTL_DU_AN.ToList();
+                }
+                else
+                {
+                    var duAns = db.BVTL_DU_AN.Where(x => x.maduan == user.MaDuAn).ToList();
+                    return duAns != null ? duAns : new List<BVTL_DU_AN>();
+                }
+            }
+            catch (Exception)
+            {
+                result = new List<BVTL_DU_AN>();
+            }
+            return result;
+        }
     }
 }
