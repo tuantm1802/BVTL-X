@@ -137,9 +137,9 @@ namespace Data.Admin
                     new SqlParameter("FromDate", string.IsNullOrEmpty(modelSearch.FromDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.FromDate)),
                     new SqlParameter("ToDate",string.IsNullOrEmpty(modelSearch.ToDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.ToDate)),
                     new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
-                    new SqlParameter("MaNhomTBH",  string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
-                     new SqlParameter("FromSttKhachHang", modelSearch.TuSoMaKH == null ? 0 : modelSearch.TuSoMaKH),
-                    new SqlParameter("ToSttKhachHang", modelSearch.DenSoMaKH == null ? 0 : modelSearch.DenSoMaKH)
+                    new SqlParameter("MaNhomTBH",  string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH)
+                    //new SqlParameter("FromSttKhachHang", modelSearch.TuSoMaKH == null ? 0 : modelSearch.TuSoMaKH),
+                    //new SqlParameter("ToSttKhachHang", modelSearch.DenSoMaKH == null ? 0 : modelSearch.DenSoMaKH)
                 };
                 var ds = _DatabaseSql.ExecuteProcDataSet(Constants.SP_Report_Ket_Qua_Sang_Loc, param);
                 if (ds != null && ds.Tables.Count > 0)

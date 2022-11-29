@@ -107,7 +107,7 @@
                     $scope.ListCity = response.Citis;
                     $scope.modelSearch.CityCodes = $scope.ListCity[0].Code;
                     $scope.ListNhomTBH = response.NhomTBHs;
-                    $scope.modelSearch.MaNhomTBH = $scope.ListNhomTBH[0].manhom_tbh;
+                    //$scope.modelSearch.MaNhomTBH = $scope.ListNhomTBH[0].manhom_tbh;
                 }
                 //$scope.$apply();
             }
@@ -199,10 +199,10 @@
             return;
         }
 
-        if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '' || $scope.modelSearch.MaNhomTBH == undefined) {
-            toastr.error("Vui lòng chọn Nhóm TBH!");
-            return;
-        }
+        //if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '' || $scope.modelSearch.MaNhomTBH == undefined) {
+        //    toastr.error("Vui lòng chọn Nhóm TBH!");
+        //    return;
+        //}
         showToast();
         var inputSearch = {
             //_FromDate: $scope.modelSearch.FromDate,
@@ -219,13 +219,13 @@
 
         //var res1 = $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, "");
 
-        if ($scope.modelSearch.TuSoMaKH != null && $scope.modelSearch.TuSoMaKH != '') {
-            inputSearch.TuSoMaKH = parseInt($scope.modelSearch.TuSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
-        } 
+        //if ($scope.modelSearch.TuSoMaKH != null && $scope.modelSearch.TuSoMaKH != '') {
+        //    inputSearch.TuSoMaKH = parseInt($scope.modelSearch.TuSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
+        //} 
 
-        if ($scope.modelSearch.DenSoMaKH != null && $scope.modelSearch.DenSoMaKH != '') {
-            inputSearch.DenSoMaKH = parseInt($scope.modelSearch.DenSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
-        }
+        //if ($scope.modelSearch.DenSoMaKH != null && $scope.modelSearch.DenSoMaKH != '') {
+        //    inputSearch.DenSoMaKH = parseInt($scope.modelSearch.DenSoMaKH.replace($scope.modelSearch.MaNhomTBH, ''));
+        //}
 
         // Lấy dữ liệu báo cáo
         $.ajax({
@@ -254,6 +254,7 @@
                 $scope.QHTDTapThes = respone.QHTDTapThes;
                 $scope.BanDams = respone.BanDams;
                 $scope.NhieuNguycoTinhDucs = respone.NhieuNguycoTinhDucs;
+                console.log(respone.NhieuNguycoTinhDucs);
                 $scope.BenhSTIs = respone.BenhSTIs;
                 $scope.BenhLaos = respone.BenhLaos;
                 $scope.BenhVGCs = respone.BenhVGCs;
