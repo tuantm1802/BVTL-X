@@ -72,13 +72,13 @@
 
                         <select class="form-control" ui-select2 multiple ng-model="modelSearch.MaNhomTBH" style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
                             <i class="fas fa-search"></i> Tìm kiếm
                         </button>
-                        @*<button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
                 <i class="fas fa-pencil-alt"></i> Xuất Excel
-            </button>*@
+            </button>
                     </div>
                 </div>
             </div>
