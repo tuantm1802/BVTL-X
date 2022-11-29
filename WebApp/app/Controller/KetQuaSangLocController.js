@@ -254,6 +254,7 @@
                 $scope.QHTDTapThes = respone.QHTDTapThes;
                 $scope.BanDams = respone.BanDams;
                 $scope.NhieuNguycoTinhDucs = respone.NhieuNguycoTinhDucs;
+                console.log(respone.NhieuNguycoTinhDucs);
                 $scope.BenhSTIs = respone.BenhSTIs;
                 $scope.BenhLaos = respone.BenhLaos;
                 $scope.BenhVGCs = respone.BenhVGCs;
