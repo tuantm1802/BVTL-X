@@ -76,7 +76,7 @@
                                         NameSyncdata: respone.data[i].NameSyncdata,
                                         HrefApi: respone.data[i].HrefApi,
                                         ReportId: respone.data[i].ReportId,
-                                        IsActive: respone.data[i].IsActive == true ? 'Ative' : 'InActive',
+                                        IsActive: respone.data[i].IsActive == true ? 'Active' : 'InActive',
                                         TimeReCall: respone.data[i].TimeReCall,
                                         Api_Id: respone.data[i].Api_Id,
                                         Start_Time_Sync: respone.data[i].Start_Time_Sync != null ? moment(respone.data[i].Start_Time_Sync).format("YYYY-MM-DD HH:mm:ss") : "",
