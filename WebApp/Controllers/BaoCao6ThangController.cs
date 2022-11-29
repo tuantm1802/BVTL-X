@@ -43,6 +43,8 @@ namespace WebApp.Controllers
             };
             try
             {
+                var user = Session["USER_SESSION"] as UserLogin;
+                modelSearch.MaDuAn = user.MaDuAn;
                 modelSearch.TypeReport = 3;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo tháng( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
@@ -119,6 +121,8 @@ namespace WebApp.Controllers
             {
                 var user = Session["USER_SESSION"] as UserLogin;
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
+                
+                modelSearch.MaDuAn = user.MaDuAn;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();

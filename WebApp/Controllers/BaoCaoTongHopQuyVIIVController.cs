@@ -44,6 +44,8 @@ namespace WebApp.Controllers
             try
             {
                 modelSearch.TypeReport = 2;
+                var user = Session["USER_SESSION"] as UserLogin;
+                modelSearch.MaDuAn = "VIIV";
                 var data = _BaoCaoTongHopDA.LayDuLieuBaoCaoTongHopQuyVIIV(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo tổng hợp quý VIIV( từ tháng: " + modelSearch.TuThang +
                                                                ", từ năm: " + modelSearch.TuNam +
@@ -125,6 +127,8 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
 
                 var modelSearch = new ReportSearchModel() { TuThang = TuThang, TuNam = TuNam, DenThang = DenThang, DenNam = DenNam, CityCodes = CityCodes, TypeReport = 2, MaNhomTBH = maNhomTBHs };
+
+                modelSearch.MaDuAn = "VIIV";
                 var data = _BaoCaoTongHopDA.LayDuLieuBaoCaoTongHopQuyVIIV(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh

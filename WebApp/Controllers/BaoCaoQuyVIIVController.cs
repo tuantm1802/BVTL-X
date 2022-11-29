@@ -43,6 +43,8 @@ namespace WebApp.Controllers
             };
             try
             {
+                var user = Session["USER_SESSION"] as UserLogin;
+                modelSearch.MaDuAn = user.MaDuAn;
                 modelSearch.TypeReport = 2;
                 modelSearch.MaDuAn = "VIIV";
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
@@ -125,6 +127,7 @@ namespace WebApp.Controllers
                     MaDuAn = maDuAn 
                 };
                 modelSearch.MaDuAn = "VIIV";
+
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh

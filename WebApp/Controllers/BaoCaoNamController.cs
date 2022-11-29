@@ -43,6 +43,8 @@ namespace WebApp.Controllers
             };
             try
             {
+                var user = Session["USER_SESSION"] as UserLogin;
+                modelSearch.MaDuAn = user.MaDuAn;
                 modelSearch.TypeReport = 4;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
@@ -116,6 +118,9 @@ namespace WebApp.Controllers
             {
                 var user = Session["USER_SESSION"] as UserLogin;
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 4, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
+
+               
+                modelSearch.MaDuAn = user.MaDuAn;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();

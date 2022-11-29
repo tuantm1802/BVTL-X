@@ -22,24 +22,24 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-1">
+                    @*<div class="col-sm-1">
                         <label>Dự án</label>
                     </div>
                     <div class="col-sm-1">
                         <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn">
                         </select>
-                    </div>
+                    </div>*@
                     <div class="col-sm-1">
                         <label>Tỉnh</label>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
                         </select>
                     </div>
                     <div class="col-sm-1">
                         <label>Nhóm</label>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH">
                         </select>
                     </div>
