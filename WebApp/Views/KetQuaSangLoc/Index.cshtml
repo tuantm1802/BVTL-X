@@ -18,7 +18,7 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 <div class="row" style="margin-bottom:5px;">
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <label>Từ ngày</label>
                     </div>
                     <div class="col-sm-2">
@@ -30,7 +30,7 @@
                 </div>
             </div>*@
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <label>Đến ngày</label>
                     </div>
                     <div class="col-sm-2">
@@ -42,9 +42,7 @@
                 </div>
             </div>*@
                     </div>
-                    
-                    <div class="col-sm-1">
-                    </div>
+                   
                 </div>
                 <div class="row">
                     @*<div class="col-sm-1">
@@ -59,17 +57,16 @@
         <div class="col-sm-2">
             <input type="text" class="form-control" ng-model="modelSearch.DenSoMaKH" />
         </div>*@
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <label>Tỉnh</label>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 ng-model="modelSearch.CityCodes" style="height:24px;" name="CityCodes" ng-options="item.Code as item.Name for item in ListCity"></select>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <label>Nhóm</label>
                     </div>
-                    <div class="col-sm-3">
-
+                    <div class="col-sm-2">
                         <select class="form-control" ui-select2 multiple ng-model="modelSearch.MaNhomTBH" style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
                     </div>
                     <div class="col-sm-2">
