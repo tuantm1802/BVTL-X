@@ -68,5 +68,6 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public string maduan { get; set; }
+        public string cau5_3_2 { get; set; }
     }
 }

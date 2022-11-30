@@ -194,18 +194,6 @@
           <Property Name="ngaysl_year" Type="int" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
-        <EntityType Name="BVTL_CITES">
-          <Key>
-            <PropertyRef Name="Code" />
-          </Key>
-          <Property Name="Code" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
-          <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="LastUpdateDate" Type="datetime" />
-          <Property Name="LastUpdateBy" Type="int" />
-        </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
             <PropertyRef Name="id" />
@@ -271,6 +259,18 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="BVTL_CITES">
+          <Key>
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Code" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="LastUpdateDate" Type="datetime" />
+          <Property Name="LastUpdateBy" Type="int" />
+        </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
             <PropertyRef Name="maduan" />
@@ -284,6 +284,25 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="mota" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="BVTL_KHACH_HANG">
+          <Key>
+            <PropertyRef Name="khachhang_id" />
+          </Key>
+          <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="sottkh" Type="varchar" MaxLength="10" />
+          <Property Name="hoten" Type="nvarchar" MaxLength="100" />
+          <Property Name="gioitinh" Type="varchar" MaxLength="1" />
+          <Property Name="namsinh" Type="int" />
+          <Property Name="loai_doi_tuong_id" Type="int" />
+          <Property Name="ngaytiepcan" Type="date" />
+          <Property Name="ngayngungchamsoc" Type="date" />
+          <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
+          <Property Name="diachi" Type="nvarchar" MaxLength="200" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_KQ_SL_ACE">
           <Key>
@@ -376,25 +395,6 @@
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
         </EntityType>
-        <EntityType Name="BVTL_KHACH_HANG">
-          <Key>
-            <PropertyRef Name="khachhang_id" />
-          </Key>
-          <Property Name="khachhang_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
-          <Property Name="sottkh" Type="varchar" MaxLength="10" />
-          <Property Name="hoten" Type="nvarchar" MaxLength="100" />
-          <Property Name="gioitinh" Type="varchar" MaxLength="1" />
-          <Property Name="namsinh" Type="int" />
-          <Property Name="loai_doi_tuong_id" Type="int" />
-          <Property Name="ngaytiepcan" Type="date" />
-          <Property Name="ngayngungchamsoc" Type="date" />
-          <Property Name="sodienthoai" Type="varchar" MaxLength="13" />
-          <Property Name="diachi" Type="nvarchar" MaxLength="200" />
-          <Property Name="city_code" Type="varchar" MaxLength="10" />
-          <Property Name="sync_date" Type="datetime" />
-          <Property Name="maduan" Type="varchar" MaxLength="50" />
-        </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
             <PropertyRef Name="id" />
@@ -426,7 +426,7 @@
           </Key>
           <Property Name="record_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ngaynhap" Type="datetime" />
-          <Property Name="ngaytuvan" Type="date" />
+          <Property Name="ngaytuvan" Type="datetime" />
           <Property Name="diadiem" Type="nvarchar" MaxLength="200" />
           <Property Name="matcv" Type="varchar" MaxLength="10" />
           <Property Name="lantuvan" Type="varchar" MaxLength="10" />
@@ -449,7 +449,7 @@
           <Property Name="cau5_1k" Type="nvarchar" MaxLength="200" />
           <Property Name="cau5_1_2" Type="nvarchar" MaxLength="1000" />
           <Property Name="cau5_2" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau5_2k" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau5_2k" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_2k_2" Type="nvarchar" MaxLength="1000" />
           <Property Name="cau5_3" Type="nvarchar" MaxLength="50" />
           <Property Name="cau5_3_1" Type="nvarchar" MaxLength="100" />
@@ -478,6 +478,7 @@
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="cau5_3_2" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -818,17 +819,17 @@
         <EntityContainer Name="BVTL_REPORTINGModelStoreContainer">
           <EntitySet Name="BVTL_API" EntityType="Self.BVTL_API" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="Self.BVTL_CHAT_GAY_NGHIEN_TX3TH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_CHUYEN_GUI_DICH_VU" EntityType="Self.BVTL_CHUYEN_GUI_DICH_VU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DU_AN" EntityType="Self.BVTL_DU_AN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_DUONG_SU_DUNG" EntityType="Self.BVTL_DUONG_SU_DUNG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BVTL_KHACH_HANG" EntityType="Self.BVTL_KHACH_HANG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_ACE" EntityType="Self.BVTL_KQ_SL_ACE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_ASSIST" EntityType="Self.BVTL_KQ_SL_ASSIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_SL_SKTT" EntityType="Self.BVTL_KQ_SL_SKTT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_KQ_XN_HIV" EntityType="Self.BVTL_KQ_XN_HIV" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BVTL_KHACH_HANG" EntityType="Self.BVTL_KHACH_HANG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_LOAI_DOI_TUONG" EntityType="Self.BVTL_LOAI_DOI_TUONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_MASTER_TABLE" EntityType="Self.BVTL_MASTER_TABLE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_NHOM_TBH" EntityType="Self.BVTL_NHOM_TBH" Schema="dbo" store:Type="Tables" />
@@ -918,6 +919,7 @@
     <edmx:ConceptualModels>
       <Schema Namespace="BVTL_REPORTINGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="BVTL_REPORTINGEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BVTL_API" EntityType="BVTL_REPORTINGModel.BVTL_API" />
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" />
           <EntitySet Name="BVTL_CHAT_GAY_NGHIEN_TX3TH" EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_TX3TH" />
@@ -943,7 +945,12 @@
           <EntitySet Name="BVTL_QT_QUYEN_PAGE" EntityType="BVTL_REPORTINGModel.BVTL_QT_QUYEN_PAGE" />
           <EntitySet Name="BVTL_QT_THAM_SO" EntityType="BVTL_REPORTINGModel.BVTL_QT_THAM_SO" />
           <EntitySet Name="BVTL_TAN_SUAT_SU_DUNG" EntityType="BVTL_REPORTINGModel.BVTL_TAN_SUAT_SU_DUNG" />
+          <EntitySet Name="CHITIEU_DUAN" EntityType="BVTL_REPORTINGModel.CHITIEU_DUAN" />
           <EntitySet Name="sysdiagrams" EntityType="BVTL_REPORTINGModel.sysdiagram" />
+          <AssociationSet Name="fk_BVTL_MASTER_TABLE_BVTL_API_1" Association="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1">
+            <End Role="BVTL_API" EntitySet="BVTL_API" />
+            <End Role="BVTL_MASTER_TABLE" EntitySet="BVTL_MASTER_TABLE" />
+          </AssociationSet>
           <AssociationSet Name="BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="BVTL_REPORTINGModel.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
@@ -1008,13 +1015,27 @@
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_XN_HIV" EntitySet="BVTL_KQ_XN_HIV" />
           </AssociationSet>
-          <EntitySet Name="CHITIEU_DUAN" EntityType="BVTL_REPORTINGModel.CHITIEU_DUAN" />
-          <EntitySet Name="BVTL_API" EntityType="BVTL_REPORTINGModel.BVTL_API" />
-          <AssociationSet Name="fk_BVTL_MASTER_TABLE_BVTL_API_1" Association="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1">
-            <End Role="BVTL_API" EntitySet="BVTL_API" />
-            <End Role="BVTL_MASTER_TABLE" EntitySet="BVTL_MASTER_TABLE" />
-          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="BVTL_API">
+          <Key>
+            <PropertyRef Name="Api_Id" />
+          </Key>
+          <Property Name="Api_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Api_Code" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="NameSyncdata" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="HrefApi" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="TypeApi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TokenApi" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TableNameSaveData" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TimeReCall" Type="Int32" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Start_Time_Sync" Type="DateTime" Precision="3" />
+          <Property Name="End_Time_Sync" Type="DateTime" Precision="3" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
+        </EntityType>
         <EntityType Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <Key>
             <PropertyRef Name="record_id" />
@@ -1450,7 +1471,7 @@
           </Key>
           <Property Name="record_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ngaynhap" Type="DateTime" Precision="3" />
-          <Property Name="ngaytuvan" Type="DateTime" Precision="0" />
+          <Property Name="ngaytuvan" Type="DateTime" Precision="3" />
           <Property Name="diadiem" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="matcv" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="lantuvan" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
@@ -1473,7 +1494,7 @@
           <Property Name="cau5_1k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="cau5_1_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_2k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_2k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2k_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="cau5_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="cau5_3_1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -1502,6 +1523,7 @@
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cau5_3_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -1614,6 +1636,17 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="mota" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CHITIEU_DUAN">
+          <Key>
+            <PropertyRef Name="ID_CHITIEU" />
+          </Key>
+          <Property Name="ID_CHITIEU" Type="Int32" Nullable="false" />
+          <Property Name="STT" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MOTA" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CHITIEU" Type="Int32" Nullable="false" />
+          <Property Name="DONVI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MADUAN" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -1624,6 +1657,18 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
+        <Association Name="fk_BVTL_MASTER_TABLE_BVTL_API_1">
+          <End Type="BVTL_REPORTINGModel.BVTL_API" Role="BVTL_API" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" Role="BVTL_MASTER_TABLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_API">
+              <PropertyRef Name="Api_Id" />
+            </Principal>
+            <Dependent Role="BVTL_MASTER_TABLE">
+              <PropertyRef Name="Api_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
           <End Type="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
@@ -1816,55 +1861,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CHITIEU_DUAN">
-          <Key>
-            <PropertyRef Name="ID_CHITIEU" />
-          </Key>
-          <Property Name="ID_CHITIEU" Type="Int32" Nullable="false" />
-          <Property Name="STT" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="MOTA" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CHITIEU" Type="Int32" Nullable="false" />
-          <Property Name="DONVI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MADUAN" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="BVTL_API">
-          <Key>
-            <PropertyRef Name="Api_Id" />
-          </Key>
-          <Property Name="Api_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Api_Code" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
-          <Property Name="NameSyncdata" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="HrefApi" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="TypeApi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TokenApi" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="TableNameSaveData" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="ReportId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TimeReCall" Type="Int32" />
-          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Start_Time_Sync" Type="DateTime" Precision="3" />
-          <Property Name="End_Time_Sync" Type="DateTime" Precision="3" />
-          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="BVTL_MASTER_TABLE" Relationship="BVTL_REPORTINGModel.fk_BVTL_MASTER_TABLE_BVTL_API_1" FromRole="BVTL_API" ToRole="BVTL_MASTER_TABLE" />
-        </EntityType>
-        <Association Name="fk_BVTL_MASTER_TABLE_BVTL_API_1">
-          <End Type="BVTL_REPORTINGModel.BVTL_API" Role="BVTL_API" Multiplicity="0..1" />
-          <End Type="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" Role="BVTL_MASTER_TABLE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_API">
-              <PropertyRef Name="Api_Id" />
-            </Principal>
-            <Dependent Role="BVTL_MASTER_TABLE">
-              <PropertyRef Name="Api_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="BVTL_REPORTINGModelStoreContainer" CdmEntityContainer="BVTL_REPORTINGEntities">
+          <EntitySetMapping Name="BVTL_API">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
+              <MappingFragment StoreEntitySet="BVTL_API">
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="End_Time_Sync" ColumnName="End_Time_Sync" />
+                <ScalarProperty Name="Start_Time_Sync" ColumnName="Start_Time_Sync" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="TableNameSaveData" ColumnName="TableNameSaveData" />
+                <ScalarProperty Name="TokenApi" ColumnName="TokenApi" />
+                <ScalarProperty Name="TypeApi" ColumnName="TypeApi" />
+                <ScalarProperty Name="HrefApi" ColumnName="HrefApi" />
+                <ScalarProperty Name="NameSyncdata" ColumnName="NameSyncdata" />
+                <ScalarProperty Name="Api_Code" ColumnName="Api_Code" />
+                <ScalarProperty Name="Api_Id" ColumnName="Api_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO">
               <MappingFragment StoreEntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO">
@@ -2278,6 +2300,7 @@
           <EntitySetMapping Name="BVTL_PHIEU_TU_VAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN">
               <MappingFragment StoreEntitySet="BVTL_PHIEU_TU_VAN">
+                <ScalarProperty Name="cau5_3_2" ColumnName="cau5_3_2" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -2455,17 +2478,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="definition" ColumnName="definition" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CHITIEU_DUAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CHITIEU_DUAN">
               <MappingFragment StoreEntitySet="CHITIEU_DUAN">
@@ -2478,23 +2490,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BVTL_API">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
-              <MappingFragment StoreEntitySet="BVTL_API">
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="End_Time_Sync" ColumnName="End_Time_Sync" />
-                <ScalarProperty Name="Start_Time_Sync" ColumnName="Start_Time_Sync" />
-                <ScalarProperty Name="maduan" ColumnName="maduan" />
-                <ScalarProperty Name="TimeReCall" ColumnName="TimeReCall" />
-                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="TableNameSaveData" ColumnName="TableNameSaveData" />
-                <ScalarProperty Name="TokenApi" ColumnName="TokenApi" />
-                <ScalarProperty Name="TypeApi" ColumnName="TypeApi" />
-                <ScalarProperty Name="HrefApi" ColumnName="HrefApi" />
-                <ScalarProperty Name="NameSyncdata" ColumnName="NameSyncdata" />
-                <ScalarProperty Name="Api_Code" ColumnName="Api_Code" />
-                <ScalarProperty Name="Api_Id" ColumnName="Api_Id" />
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
