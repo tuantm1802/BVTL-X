@@ -588,7 +588,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -660,7 +660,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -732,7 +732,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -804,7 +804,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -876,7 +876,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -947,7 +947,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -1018,7 +1018,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -1104,19 +1104,19 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.HutHit.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.HutHit/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.DangBot.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.DangBot/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.UongNuot.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.UongNuot/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport.TiemChich.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.TiemChich/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "F", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -1240,28 +1240,28 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.VaiLan1Ngay.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.VaiLan1Ngay/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.HangNgay.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.HangNgay/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.VaiLan1Tuan.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.VaiLan1Tuan/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport.VaiNgayRoiTamNghi.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.VaiNgayRoiTamNghi/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "F", row, rowReport.DungCuoiTuan.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport.DungCuoiTuan/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "G", row, rowReport.VaiLan1Thang.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "G", row, (rowReport.VaiLan1Thang/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "H", row, rowReport.ItHon1Lan1Thang.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "H", row, (rowReport.ItHon1Lan1Thang/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "I", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "I", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -1412,37 +1412,37 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport._13.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport._13/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport._14.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport._14/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport._15.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport._15/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport._16.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport._16/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "F", row, rowReport._17.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport._17/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "G", row, rowReport._18.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "G", row, (rowReport._18/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "H", row, rowReport._19.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "H", row, (rowReport._19/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "I", row, rowReport._20.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "I", row, (rowReport._20/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "J", row, rowReport._21.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "J", row, (rowReport._21/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "K", row, rowReport._22.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "K", row, (rowReport._22/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "L", row, rowReport._23.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "L", row, (rowReport._23/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -1578,25 +1578,25 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Da.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Da/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Keo.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Keo/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.CanCo.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.CanCo/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport.Ketamin.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.Ketamin/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "F", row, rowReport.BongCuoi.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport.BongCuoi/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "G", row, rowReport.Heroin.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "G", row, (rowReport.Heroin/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "H", row, rowReport.CacChatHit.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "H", row, (rowReport.CacChatHit/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     }
                     else
@@ -1698,13 +1698,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.ChuaBaoGio.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.ChuaBaoGio/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.DaTungTiemChich.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.DaTungTiemChich/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.VanDangTiemChich.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.VanDangTiemChich/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
 
                     }
@@ -1791,10 +1791,10 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.DaTungDungChung.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.DaTungDungChung/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.ChuaBaoGio.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.ChuaBaoGio/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     }
                     else
@@ -1885,16 +1885,16 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.ChuaBaoGio.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.ChuaBaoGio/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.DongGioi.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.DongGioi/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KhacGioi.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KhacGioi/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport.CaHai.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.CaHai/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
 
                     }
@@ -1999,19 +1999,19 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.LuonLuon.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.LuonLuon/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.ThuongXuyen.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.ThuongXuyen/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.ThiThoang.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.ThiThoang/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "E", row, rowReport.HiemKhi.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.HiemKhi/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "F", row, rowReport.KhongBaoGio.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport.KhongBaoGio/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     }
                     else
@@ -2107,13 +2107,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Co.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Co/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Khong.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Khong/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -2202,13 +2202,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Co.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Co/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Khong.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Khong/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -2297,13 +2297,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Co.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Co/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Khong.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Khong/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -2396,15 +2396,15 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Mot.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Mot/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Hai.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Hai/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.Ba.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.Ba/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
-                        InsertDataCell(ws, "E", row, rowReport.BonNam.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.BonNam/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -2510,19 +2510,19 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Lau.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Lau/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.SuiMaoGa.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.SuiMaoGa/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KhongMac.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KhongMac/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
-                        InsertDataCell(ws, "E", row, rowReport.Khac.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "E", row, (rowReport.Khac/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
-                        InsertDataCell(ws, "F", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
-                        InsertDataCell(ws, "G", row, rowReport.GiangMai.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "G", row, (rowReport.GiangMai/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -2637,12 +2637,12 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.HienTai_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.HienTai_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.HienTai_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     // Thêm dữ liệu cột Đối tượng KH
                     InsertDataCell(ws, "D", row, rowReport.QuaKhu_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "E", row, rowReport.QuaKhu_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "E", row, (rowReport.QuaKhu_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -2736,12 +2736,12 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.HienTai_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.HienTai_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.HienTai_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     // Thêm dữ liệu cột Đối tượng KH
                     InsertDataCell(ws, "D", row, rowReport.QuaKhu_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "E", row, rowReport.QuaKhu_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "E", row, (rowReport.QuaKhu_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -2812,7 +2812,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -2883,7 +2883,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -3002,16 +3002,16 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.NguyCoThap_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.NguyCoThap_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.NguyCoThap_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     // Thêm dữ liệu cột Đối tượng KH
                     InsertDataCell(ws, "D", row, rowReport.NguyCoTrungBinh_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "E", row, rowReport.NguyCoTrungBinh_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "E", row, (rowReport.NguyCoTrungBinh_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     InsertDataCell(ws, "F", row, rowReport.NguyCoCao_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "G", row, rowReport.NguyCoCao_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "G", row, (rowReport.NguyCoCao_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     InsertDataCell(ws, "H", row, rowReport.Tong_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
@@ -3085,7 +3085,7 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.SoNguoi.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
@@ -3212,20 +3212,20 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.KhongChutNao_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.KhongChutNao_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.KhongChutNao_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     // Thêm dữ liệu cột Đối tượng KH
                     InsertDataCell(ws, "D", row, rowReport.Tu1Den7Ngay_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "E", row, rowReport.Tu1Den7Ngay_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "E", row, (rowReport.Tu1Den7Ngay_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     InsertDataCell(ws, "F", row, rowReport.Tu8NgayTroLen_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "G", row, rowReport.Tu8NgayTroLen_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "G", row, (rowReport.Tu8NgayTroLen_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     InsertDataCell(ws, "H", row, rowReport.GanNhuHangNgay_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "I", row, rowReport.GanNhuHangNgay_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "I", row, (rowReport.GanNhuHangNgay_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     row++;
                 }
             }
@@ -3299,13 +3299,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Co.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Co/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Khong.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Khong/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -3394,13 +3394,13 @@ namespace WebApp.Controllers
                     if (count == 1)
                     {
                         // Thêm dữ liệu cột Số người
-                        InsertDataCell(ws, "B", row, rowReport.Co.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "B", row, (rowReport.Co/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột %
-                        InsertDataCell(ws, "C", row, rowReport.Khong.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "C", row, (rowReport.Khong/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Đối tượng KH
-                        InsertDataCell(ws, "D", row, rowReport.KBKTL.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "D", row, (rowReport.KBKTL/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
                     }
                     else
                     {
@@ -3528,16 +3528,16 @@ namespace WebApp.Controllers
                     InsertDataCell(ws, "B", row, rowReport.TheoDoiRinhRap_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, true);
 
                     // Thêm dữ liệu cột %
-                    InsertDataCell(ws, "C", row, rowReport.TheoDoiRinhRap_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "C", row, (rowReport.TheoDoiRinhRap_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
 
                     // Thêm dữ liệu cột Đối tượng KH
                     InsertDataCell(ws, "D", row, rowReport.YNghi_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "E", row, rowReport.YNghi_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "E", row, (rowReport.YNghi_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     InsertDataCell(ws, "F", row, rowReport.NgheThuMaNKKNT_SoLuong.ToString(), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, true);
 
-                    InsertDataCell(ws, "G", row, rowReport.NgheThuMaNKKNT_PhanTram.ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "G", row, (rowReport.NgheThuMaNKKNT_PhanTram/100).ToString("P", CultureInfo.InvariantCulture), false, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
 
                     row++;
                 }
