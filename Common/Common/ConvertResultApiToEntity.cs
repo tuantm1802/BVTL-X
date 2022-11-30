@@ -1003,149 +1003,152 @@ namespace Common.Common
                     // makh trong bảng dữ liệu giữ nguyên, makh = makh_2 -> makh_10 nếu 1 trong 10 makh đó có giá trị (trong 10 trường sẽ tồn tại 1 trường có dữ liệu)
                     //customer_code = resultApiPTV.makh;
                     customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10);
-
-                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    if (!string.IsNullOrEmpty(customer_code))
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                        if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                        {
+                            group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                            cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                        }
+                        else if (!string.IsNullOrEmpty(customer_code))
+                        {
+                            cityCode = customer_code.Substring(0, 3);
+                            group_code = customer_code.Substring(0, 5);
+                        }
+
+                        // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
+                        /*
+                        customer = customers.FirstOrDefault(x => x.makh == customer_code);
+                        if (customer != null && customer.khachhang_id > 0)
+                        {
+                            customer_id = customer.khachhang_id;
+                        }
+                        else
+                        {
+                            //customer = new BVTL_KHACH_HANG
+                            //{
+                            //    makh = resultApiPTV.makh,
+                            //    hoten = string.IsNullOrEmpty(resultApiPTV.hoten) ? resultApiPTV.makh : resultApiPTV.hoten,
+                            //    gioitinh = resultApiPTV.gioitinh == "Nam" ? "M" : (resultApiPTV.gioitinh == "Nữ" ? "F" : "O"),
+                            //    sodienthoai = resultApiPTV.dienthoai,
+                            //    diachi = resultApiPTV.diachi,
+                            //    sottkh = customer_code.Substring(5)
+                            //};
+                            //customer.city_code = cityCode;
+                            //if (!string.IsNullOrEmpty(resultApiPTV.namsinh))
+                            //    customer.namsinh = Convert.ToInt32(resultApiPTV.namsinh);
+
+                            //if (!string.IsNullOrEmpty(resultApiPTV.doituong))
+                            //{
+                            //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiPTV.doituong).id;
+                            //}
+
+                            //if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
+                            //    customer.ngaytiepcan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+                            //customer_id = CreateCustomer(customer);
+
+                            // Lấy thông tin khách hàng
+                            var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
+                            if (customerCK != null && customerCK.khachhang_id > 0)
+                                customer_id = customerCK.khachhang_id;
+                        }
+                        */
+
+                        // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
+                        nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
+                        if (nhomTBH == null)
+                        {
+                            db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiPTV.tbh, city_code = cityCode });
+                            db.SaveChanges();
+                        }
+                        // Lấy ngay, tháng, năm nhập dữ liệu
+                        // EDIT: LẤY NGÀY TƯ VẤN, NẾU NGÀY TƯ VẤN KHÔNG CÓ THÌ LẤY NGÀY NHẬP
+                        if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
+                        {
+                            ngaynhap = resultApiPTV.ngaytuvan.Split(' ')[0];
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            ngaynhap = resultApiPTV.ngaynhap.Split(' ')[0];
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+
+                        day = ngaynhapD.Day;
+                        month = ngaynhapD.Month;
+                        year = ngaynhapD.Year;
+
+                        #endregion
+
+                        #region Chuyển đổi dữ liệu sang bảng BVTL_PHIEU_TU_VAN
+                        phieuTuVan = new BVTL_PHIEU_TU_VAN()
+                        {
+                            makh = customer_code,
+                            sottkh = customer_code.Substring(5),
+                            ngaytuvan = ngaynhapD,
+                            ngaytuvan_date = day,
+                            ngaytuvan_month = month,
+                            ngaytuvan_year = year,
+                            manhom_tbh = group_code,
+                            city_code = cityCode,
+                            maduan = maDuAn
+                        };
+
+                        //phieuTuVan.record_id = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
+                        //phieuTuVan.record_id = record_id_max + i + 1;
+                        phieuTuVan.ngaynhap = ngaynhapD;
+                        if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
+                            phieuTuVan.ngaytuvan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+                        phieuTuVan.diadiem = resultApiPTV.diadiem;
+                        phieuTuVan.matcv = String.Concat(resultApiPTV.matcv, resultApiPTV.matcv_2, resultApiPTV.matcv_3, resultApiPTV.matcv_4, resultApiPTV.matcv_5, resultApiPTV.matcv_6, resultApiPTV.matcv_7, resultApiPTV.matcv_8, resultApiPTV.matcv_9, resultApiPTV.matcv_10);
+                        phieuTuVan.lantuvan = resultApiPTV.lantuvan;
+                        phieuTuVan.cau1_1 = resultApiPTV.cau1_1;
+                        phieuTuVan.cau1_1k = resultApiPTV.cau1_1k;
+                        phieuTuVan.cau1_2 = resultApiPTV.cau1_2;
+                        phieuTuVan.cau1_3 = resultApiPTV.cau1_3;
+                        phieuTuVan.cau1_4 = resultApiPTV.cau1_4;
+                        phieuTuVan.cau1_5 = resultApiPTV.cau1_5;
+                        phieuTuVan.cau2 = resultApiPTV.cau2;
+                        phieuTuVan.cau2_1k = resultApiPTV.cau2_1k;
+                        phieuTuVan.cau2_2 = resultApiPTV.cau2_2;
+                        phieuTuVan.cau3 = resultApiPTV.cau3;
+                        phieuTuVan.cau3_1k = resultApiPTV.cau3_1k;
+                        phieuTuVan.cau3_1k_2 = resultApiPTV.cau3_1k_2;
+                        phieuTuVan.cau4 = resultApiPTV.cau4;
+                        phieuTuVan.cau4_1k = resultApiPTV.cau4_1k;
+                        phieuTuVan.cau4_1k_2 = resultApiPTV.cau4_1k_2;
+                        phieuTuVan.cau5_1 = resultApiPTV.cau5_1;
+                        phieuTuVan.cau5_1k = resultApiPTV.cau5_1k;
+                        phieuTuVan.cau5_1_2 = resultApiPTV.cau5_1_2;
+                        phieuTuVan.cau5_2 = resultApiPTV.cau5_2;
+                        phieuTuVan.cau5_2k = resultApiPTV.cau5_2k;
+                        phieuTuVan.cau5_2k_2 = resultApiPTV.cau5_2k_2;
+                        phieuTuVan.cau5_3 = resultApiPTV.cau5_3;
+                        phieuTuVan.cau5_3_1 = resultApiPTV.cau5_3_1;
+                        phieuTuVan.cau5_4 = resultApiPTV.cau5_4;
+                        phieuTuVan.cau5_4_1 = resultApiPTV.cau5_4_1;
+                        phieuTuVan.cau5_5 = resultApiPTV.cau5_5;
+                        phieuTuVan.cau5_4_2 = resultApiPTV.cau5_4_2;
+                        phieuTuVan.cau5_6 = resultApiPTV.cau5_6;
+                        phieuTuVan.cau5_6k = resultApiPTV.cau5_6k;
+                        phieuTuVan.cau5_6k_2 = resultApiPTV.cau5_6k_2;
+                        phieuTuVan.cau5_7 = resultApiPTV.cau5_7;
+                        phieuTuVan.cau5_7k = resultApiPTV.cau5_7k;
+                        phieuTuVan.cau5_7k_3 = resultApiPTV.cau5_7k_3;
+                        phieuTuVan.cau5_8 = resultApiPTV.cau5_8;
+                        phieuTuVan.cau5_7k_2 = resultApiPTV.cau5_7k_2;
+                        phieuTuVan.tongket = resultApiPTV.tongket;
+                        phieuTuVan.tuvantiep = resultApiPTV.tuvantiep;
+                        phieuTuVan.vande = resultApiPTV.vande;
+                        if (!string.IsNullOrEmpty(resultApiPTV.thoigian))
+                            phieuTuVan.thoigian = DateTime.ParseExact(resultApiPTV.thoigian, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+
+                        phieuTuVans.Add(phieuTuVan);
+
                     }
-                    else if (!string.IsNullOrEmpty(customer_code))
-                    {
-                        cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
-                    }
-
-                    // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
-                    /*
-                    customer = customers.FirstOrDefault(x => x.makh == customer_code);
-                    if (customer != null && customer.khachhang_id > 0)
-                    {
-                        customer_id = customer.khachhang_id;
-                    }
-                    else
-                    {
-                        //customer = new BVTL_KHACH_HANG
-                        //{
-                        //    makh = resultApiPTV.makh,
-                        //    hoten = string.IsNullOrEmpty(resultApiPTV.hoten) ? resultApiPTV.makh : resultApiPTV.hoten,
-                        //    gioitinh = resultApiPTV.gioitinh == "Nam" ? "M" : (resultApiPTV.gioitinh == "Nữ" ? "F" : "O"),
-                        //    sodienthoai = resultApiPTV.dienthoai,
-                        //    diachi = resultApiPTV.diachi,
-                        //    sottkh = customer_code.Substring(5)
-                        //};
-                        //customer.city_code = cityCode;
-                        //if (!string.IsNullOrEmpty(resultApiPTV.namsinh))
-                        //    customer.namsinh = Convert.ToInt32(resultApiPTV.namsinh);
-
-                        //if (!string.IsNullOrEmpty(resultApiPTV.doituong))
-                        //{
-                        //    customer.loai_doi_tuong_id = loaiDoiTuongs.FirstOrDefault(x => x.code == resultApiPTV.doituong).id;
-                        //}
-
-                        //if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
-                        //    customer.ngaytiepcan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-
-                        //customer_id = CreateCustomer(customer);
-
-                        // Lấy thông tin khách hàng
-                        var customerCK = db.BVTL_KHACH_HANG.FirstOrDefault(x => x.makh == customer_code);
-                        if (customerCK != null && customerCK.khachhang_id > 0)
-                            customer_id = customerCK.khachhang_id;
-                    }
-                    */
-
-                    // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
-                    nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null)
-                    {
-                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiPTV.tbh, city_code = cityCode });
-                        db.SaveChanges();
-                    }
-                    // Lấy ngay, tháng, năm nhập dữ liệu
-                    // EDIT: LẤY NGÀY TƯ VẤN, NẾU NGÀY TƯ VẤN KHÔNG CÓ THÌ LẤY NGÀY NHẬP
-                    if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
-                    {
-                        ngaynhap = resultApiPTV.ngaytuvan.Split(' ')[0];
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        ngaynhap = resultApiPTV.ngaynhap.Split(' ')[0];
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    }
-
-                    day = ngaynhapD.Day;
-                    month = ngaynhapD.Month;
-                    year = ngaynhapD.Year;
-
-                    #endregion
-
-                    #region Chuyển đổi dữ liệu sang bảng BVTL_PHIEU_TU_VAN
-                    phieuTuVan = new BVTL_PHIEU_TU_VAN()
-                    {
-                        makh = customer_code,
-                        sottkh = customer_code.Substring(5),
-                        ngaytuvan = ngaynhapD,
-                        ngaytuvan_date = day,
-                        ngaytuvan_month = month,
-                        ngaytuvan_year = year,
-                        manhom_tbh = group_code,
-                        city_code = cityCode,
-                        maduan = maDuAn
-                    };
-
-                    //phieuTuVan.record_id = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
-                    //phieuTuVan.record_id = record_id_max + i + 1;
-                    phieuTuVan.ngaynhap = ngaynhapD;
-                    if (!string.IsNullOrEmpty(resultApiPTV.ngaytuvan))
-                        phieuTuVan.ngaytuvan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                   
-                    phieuTuVan.diadiem = resultApiPTV.diadiem;
-                    phieuTuVan.matcv = String.Concat(resultApiPTV.matcv, resultApiPTV.matcv_2, resultApiPTV.matcv_3, resultApiPTV.matcv_4, resultApiPTV.matcv_5, resultApiPTV.matcv_6, resultApiPTV.matcv_7, resultApiPTV.matcv_8, resultApiPTV.matcv_9, resultApiPTV.matcv_10);
-                    phieuTuVan.lantuvan = resultApiPTV.lantuvan;
-                    phieuTuVan.cau1_1 = resultApiPTV.cau1_1;
-                    phieuTuVan.cau1_1k = resultApiPTV.cau1_1k;
-                    phieuTuVan.cau1_2 = resultApiPTV.cau1_2;
-                    phieuTuVan.cau1_3 = resultApiPTV.cau1_3;
-                    phieuTuVan.cau1_4 = resultApiPTV.cau1_4;
-                    phieuTuVan.cau1_5 = resultApiPTV.cau1_5;
-                    phieuTuVan.cau2 = resultApiPTV.cau2;
-                    phieuTuVan.cau2_1k = resultApiPTV.cau2_1k;
-                    phieuTuVan.cau2_2 = resultApiPTV.cau2_2;
-                    phieuTuVan.cau3 = resultApiPTV.cau3;
-                    phieuTuVan.cau3_1k = resultApiPTV.cau3_1k;
-                    phieuTuVan.cau3_1k_2 = resultApiPTV.cau3_1k_2;
-                    phieuTuVan.cau4 = resultApiPTV.cau4;
-                    phieuTuVan.cau4_1k = resultApiPTV.cau4_1k;
-                    phieuTuVan.cau4_1k_2 = resultApiPTV.cau4_1k_2;
-                    phieuTuVan.cau5_1 = resultApiPTV.cau5_1;
-                    phieuTuVan.cau5_1k = resultApiPTV.cau5_1k;
-                    phieuTuVan.cau5_1_2 = resultApiPTV.cau5_1_2;
-                    phieuTuVan.cau5_2 = resultApiPTV.cau5_2;
-                    phieuTuVan.cau5_2k = resultApiPTV.cau5_2k;
-                    phieuTuVan.cau5_2k_2 = resultApiPTV.cau5_2k_2;
-                    phieuTuVan.cau5_3 = resultApiPTV.cau5_3;
-                    phieuTuVan.cau5_3_1 = resultApiPTV.cau5_3_1;
-                    phieuTuVan.cau5_4 = resultApiPTV.cau5_4;
-                    phieuTuVan.cau5_4_1 = resultApiPTV.cau5_4_1;
-                    phieuTuVan.cau5_5 = resultApiPTV.cau5_5;
-                    phieuTuVan.cau5_4_2 = resultApiPTV.cau5_4_2;
-                    phieuTuVan.cau5_6 = resultApiPTV.cau5_6;
-                    phieuTuVan.cau5_6k = resultApiPTV.cau5_6k;
-                    phieuTuVan.cau5_6k_2 = resultApiPTV.cau5_6k_2;
-                    phieuTuVan.cau5_7 = resultApiPTV.cau5_7;
-                    phieuTuVan.cau5_7k = resultApiPTV.cau5_7k;
-                    phieuTuVan.cau5_7k_3 = resultApiPTV.cau5_7k_3;
-                    phieuTuVan.cau5_8 = resultApiPTV.cau5_8;
-                    phieuTuVan.cau5_7k_2 = resultApiPTV.cau5_7k_2;
-                    phieuTuVan.tongket = resultApiPTV.tongket;
-                    phieuTuVan.tuvantiep = resultApiPTV.tuvantiep;
-                    phieuTuVan.vande = resultApiPTV.vande;
-                    if (!string.IsNullOrEmpty(resultApiPTV.thoigian))
-                        phieuTuVan.thoigian = DateTime.ParseExact(resultApiPTV.thoigian, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-
-
-                    phieuTuVans.Add(phieuTuVan);
 
                     #endregion
 

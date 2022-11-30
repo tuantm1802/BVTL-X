@@ -51,6 +51,7 @@ namespace Model.Model
         public virtual DbSet<BVTL_QT_QUYEN_PAGE> BVTL_QT_QUYEN_PAGE { get; set; }
         public virtual DbSet<BVTL_QT_THAM_SO> BVTL_QT_THAM_SO { get; set; }
         public virtual DbSet<BVTL_TAN_SUAT_SU_DUNG> BVTL_TAN_SUAT_SU_DUNG { get; set; }
+        public virtual DbSet<CHITIEU_DUAN> CHITIEU_DUAN { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }
