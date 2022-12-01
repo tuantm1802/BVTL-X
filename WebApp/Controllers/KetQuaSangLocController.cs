@@ -32,7 +32,26 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "KetQuaSangLoc")]
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && duAn.maduan == user.MaDuAn))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
         }
 
         [HttpPost]
@@ -80,6 +99,16 @@ namespace WebApp.Controllers
                 List<SuDungMTDKhiQHTDModel> TuLamHaiBanThans = new List<SuDungMTDKhiQHTDModel>();
                 List<SuDungMTDKhiQHTDModel> CoTuSats = new List<SuDungMTDKhiQHTDModel>();
                 List<LoanThanModel> LoanThans = new List<LoanThanModel>();
+
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
                 _BaoCaoTongHopDA.KetQuaSangLoc(modelSearch, ref DoiTuongKHs, ref GioiTinhs, ref Tuois
              , ref KetQuaHIVs, ref ChatGayNghien3Thangs, ref SoChatGayNghiens, ref ChatGayNghienSDThuongXuyens
              , ref DuongSDMaTuyDas, ref TanSuatSDMaTuyDas, ref LanDauSDMaTuyDas, ref LoaiMaTuyDaSDDauTiens
@@ -203,10 +232,18 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = Session["USER_SESSION"] as UserLogin;
+                
                 var modelSearch = new ReportSearchModel() { FromDate = FromDate, ToDate = ToDate, CityCodes = CityCodes, MaNhomTBH = maNhomTBHs };
 
-                modelSearch.MaDuAn = user.MaDuAn;
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
                 List<KetQuaSangLocModel> DoiTuongKHs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> GioiTinhs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> Tuois = new List<KetQuaSangLocModel>();

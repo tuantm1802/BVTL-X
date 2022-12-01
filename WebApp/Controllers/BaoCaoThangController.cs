@@ -30,7 +30,26 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "BaoCaoThang")]
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && duAn.maduan == user.MaDuAn))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
         }
 
 
@@ -43,8 +62,14 @@ namespace WebApp.Controllers
             };
             try
             {
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
                 var user = Session["USER_SESSION"] as UserLogin;
-                modelSearch.MaDuAn = user.MaDuAn;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
                 modelSearch.TypeReport = 1;
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo tháng( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
@@ -118,10 +143,18 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = Session["USER_SESSION"] as UserLogin;
+               
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 1, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
-                
-                modelSearch.MaDuAn = user.MaDuAn;
+
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh
