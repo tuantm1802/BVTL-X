@@ -30,7 +30,26 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "BaoCaoTongHopQuyVIIV")]
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && duAn.maduan == user.MaDuAn))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
         }
 
 
@@ -44,8 +63,14 @@ namespace WebApp.Controllers
             try
             {
                 modelSearch.TypeReport = 2;
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
                 var user = Session["USER_SESSION"] as UserLogin;
-                modelSearch.MaDuAn = "VIIV";
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
                 var data = _BaoCaoTongHopDA.LayDuLieuBaoCaoTongHopQuyVIIV(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo tổng hợp quý VIIV( từ tháng: " + modelSearch.TuThang +
                                                                ", từ năm: " + modelSearch.TuNam +
@@ -124,11 +149,19 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = Session["USER_SESSION"] as UserLogin;
-
+                
                 var modelSearch = new ReportSearchModel() { TuThang = TuThang, TuNam = TuNam, DenThang = DenThang, DenNam = DenNam, CityCodes = CityCodes, TypeReport = 2, MaNhomTBH = maNhomTBHs };
 
-                modelSearch.MaDuAn = "VIIV";
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+
                 var data = _BaoCaoTongHopDA.LayDuLieuBaoCaoTongHopQuyVIIV(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh

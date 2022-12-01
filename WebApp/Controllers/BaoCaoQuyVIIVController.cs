@@ -30,7 +30,26 @@ namespace WebApp.Controllers
         [HasCredential(ControllerName = "BaoCaoQuyVIIV")]
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && duAn.maduan == user.MaDuAn))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
         }
 
 
@@ -43,10 +62,16 @@ namespace WebApp.Controllers
             };
             try
             {
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
                 var user = Session["USER_SESSION"] as UserLogin;
-                modelSearch.MaDuAn = user.MaDuAn;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
                 modelSearch.TypeReport = 2;
-                modelSearch.MaDuAn = "VIIV";
+               
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo quý( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
                 return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." }); ;
@@ -116,7 +141,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                var user = Session["USER_SESSION"] as UserLogin;
+                
 
                 var modelSearch = new ReportSearchModel() { 
                     Year = Year, 
@@ -126,7 +151,14 @@ namespace WebApp.Controllers
                     MaNhomTBH = maNhomTBHs,
                     MaDuAn = maDuAn 
                 };
-                modelSearch.MaDuAn = "VIIV";
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
 
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
 
