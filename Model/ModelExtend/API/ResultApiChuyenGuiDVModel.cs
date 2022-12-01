@@ -10,6 +10,16 @@ namespace Model.ModelExtend.API
     {
         public string record_id { get; set; }
         public string makh { get; set; }
+        public string makh_2 { get; set; }
+        public string makh_3 { get; set; }
+        public string makh_4 { get; set; }
+        public string makh_5 { get; set; }
+        public string makh_6 { get; set; }
+        public string makh_7 { get; set; }
+        public string makh_8 { get; set; }
+        public string makh_9 { get; set; }
+        public string makh_10 { get; set; }
+
         public string tbh { get; set; }
         public string hoten { get; set; }
         public string tengoi { get; set; }

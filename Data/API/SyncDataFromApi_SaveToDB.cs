@@ -139,7 +139,8 @@ namespace Data.API
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
                         //_convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
-                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.ToList(), maDuAn, ref tongHops);
+                        //_convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiPhieuTuVanToEntity(dataResultApi.Where(x => x.phiu_t_vn_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
 
                         // Thêm dữ liệu bảng BVTL_PHIEU_TU_VAN
                         if (tongHops != null && tongHops.Count > 0)
@@ -158,7 +159,8 @@ namespace Data.API
                         var tongHops = new List<BVTL_CHUYEN_GUI_DICH_VU>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref tongHops);
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
 
                         // Thêm dữ liệu bảng BVTL_CHUYEN_GUI_DICH_VU
                         if (tongHops != null && tongHops.Count > 0)
