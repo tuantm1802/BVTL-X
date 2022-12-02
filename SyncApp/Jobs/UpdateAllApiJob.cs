@@ -69,7 +69,7 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                 }
                 #endregion
                 log.Info("************************Kết thúc tạo lại tất cả job************************");
-                string logPath = "Log\\" + data.TableNames + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
                 if (!Directory.Exists("Log"))
                 {
                     Directory.CreateDirectory("Log");
