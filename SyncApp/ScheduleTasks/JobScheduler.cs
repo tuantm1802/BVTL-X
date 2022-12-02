@@ -5,6 +5,7 @@ using SyncBVTL.Push.Jobs;
 using SyncBVTL.Push.Jobs.PAJobs;
 using SyncBVTL.Push.Services;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
@@ -33,9 +34,14 @@ namespace SyncBVTL.Push.ScheduleTasks
 
             ProcessService processService = new ProcessService();
             List<ProcessModel> processModels = processService.GetListProcess();
-
-            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
            
+            NameValueCollection properties = new NameValueCollection();
+            properties["quartz.threadPool.threadCount"] = "100";
+
+            ISchedulerFactory sf = new StdSchedulerFactory(properties);
+            IScheduler scheduler = sf.GetScheduler().Result;
+
+            //IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
 
             // Xóa hết các job cũ
             var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
