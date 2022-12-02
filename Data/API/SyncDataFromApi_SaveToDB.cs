@@ -45,7 +45,12 @@ namespace Data.API
                         var assists = new List<BVTL_KQ_SL_ASSIST>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi.Where(x=>!string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref sktts, ref assists);
+                        //_convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi.Where(x=>!string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref sktts, ref assists);
+                        _convertResultApiToEntity.ConvertApi1344ToEntity(dataResultApi.Where(x=>x.sng_lc_assist_complete.Equals("Complete") 
+                                                                                            || x.sng_lc_qst_complete.Equals("Complete")
+                                                                                            || x.thng_tin_c_bn_v_hnh_vi_nguy_c_complete.Equals("Complete")
+                                                                                            || x.bng_hi_nh_gi_kin_thc_complete.Equals("Complete")                                                                                            
+                                                                                            ).ToList(), maDuAn, ref sktts, ref assists);
 
                         // Thêm dữ liệu bảng BVTL_KQ_SL_SKTT
                         if (sktts != null && sktts.Count > 0)
@@ -91,7 +96,8 @@ namespace Data.API
                         var aces = new List<BVTL_KQ_SL_ACE>();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref aces);
+                        //_convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh)).ToList(), maDuAn, ref aces);
+                        _convertResultApiToEntity.ConvertApiACEToEntity(dataResultApi.Where(x => x.bng_hi_ace_complete.Equals("Complete")).ToList(), maDuAn, ref aces);
 
                         // Thêm dữ liệu bảng BVTL_KQ_SL_ACE
                         if (aces != null && aces.Count > 0)

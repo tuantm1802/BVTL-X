@@ -38,6 +38,16 @@ namespace Model.ModelExtend.API
         {
             get; set;
         }
+        public string makh_2 { get; set; }
+        public string makh_3 { get; set; }
+        public string makh_4 { get; set; }
+        public string makh_5 { get; set; }
+        public string makh_6 { get; set; }
+        public string makh_7 { get; set; }
+        public string makh_8 { get; set; }
+        public string makh_9 { get; set; }
+        public string makh_10 { get; set; }
+
 
         public string anh
         {

@@ -11,8 +11,29 @@ namespace Model.ModelExtend.API
         public string record_id { get; set; }
         public string ngay { get; set; }
         public string matcv { get; set; }
+        public string matcv_2 { get; set; }
+        public string matcv_3 { get; set; }
+        public string matcv_4 { get; set; }
+        public string matcv_5 { get; set; }
+        public string matcv_6 { get; set; }
+        public string matcv_7 { get; set; }
+        public string matcv_8 { get; set; }
+        public string matcv_9 { get; set; }
+        public string matcv_10 { get; set; }
+
+        
         public string tbh { get; set; }
         public string makh { get; set; }
+        public string makh_2 { get; set; }
+        public string makh_3 { get; set; }
+        public string makh_4 { get; set; }
+        public string makh_5 { get; set; }
+        public string makh_6 { get; set; }
+        public string makh_7 { get; set; }
+        public string makh_8 { get; set; }
+        public string makh_9 { get; set; }
+        public string makh_10 { get; set; }
+
         public string hoten { get; set; }
         public string gioitinh { get; set; }
         public string dienthoai { get; set; }

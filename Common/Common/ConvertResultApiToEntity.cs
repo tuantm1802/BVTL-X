@@ -51,16 +51,18 @@ namespace Common.Common
             log.Info("********************************Bắt đầu chuyển đổi kết quả api report_id = 1344 ASSIST/SKTT sang entity**************************************");
             log.Info("*********-----TỔNG SỐ RECORD API ASSIST/SKTT:" + resultApi1344s.Count + " | MADUAN:" + maDuAn);
 
+            var sktt = new BVTL_KQ_SL_SKTT();
+            var assist = new BVTL_KQ_SL_ASSIST();
+            var resultApi1344 = new ResultApi1344Model();
+            var customer_code = "";
             try
             {
-                var sktt = new BVTL_KQ_SL_SKTT();
-                var assist = new BVTL_KQ_SL_ASSIST();
-                var resultApi1344 = new ResultApi1344Model();
+                
                 //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
                 var customer = new BVTL_KHACH_HANG();
-                var customer_code = "";
+                
                 //var customer_id = 0;
                 var group_code = "";
                 var cityCode = "";
@@ -69,9 +71,11 @@ namespace Common.Common
                 var day = 0;
                 var year = 0;
                 var ngaynhap = "";
-                var ngaynhapD = DateTime.Today;
+                var ngaynhapD = new DateTime();
+                var sottkh = "";
 
-                for (int i = 0; i < resultApi1344s.Where(x=> !string.IsNullOrEmpty( x.makh)).ToList().Count; i++)
+                //for (int i = 0; i < resultApi1344s.Where(x=> !string.IsNullOrEmpty( x.makh)).ToList().Count; i++)
+                for (int i = 0; i < resultApi1344s.Count; i++)
                 {
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
@@ -83,21 +87,24 @@ namespace Common.Common
                     day = 0;
                     year = 0;
                     ngaynhap = "";
-                    ngaynhapD = DateTime.Today;
+                    ngaynhapD = new DateTime();
 
                     resultApi1344 = resultApi1344s[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
-                    customer_code = resultApi1344.makh;
+                    //customer_code = resultApi1344.makh;
+                    customer_code = String.Concat(resultApi1344.makh, resultApi1344.makh_2, resultApi1344.makh_3, resultApi1344.makh_4, resultApi1344.makh_5, resultApi1344.makh_6, resultApi1344.makh_7, resultApi1344.makh_8, resultApi1344.makh_9, resultApi1344.makh_10);
 
-                    if(!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                        sottkh = customer_code.Substring(5);
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
+                        sottkh = customer_code.Substring(5);
                     }
                     
                     // Kiểm tra xem đã tồn tại khách hàng chưa, nếu chưa thì thêm mới
@@ -134,7 +141,7 @@ namespace Common.Common
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null)
+                    if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
                     {
                         db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApi1344.tbh, city_code = cityCode });
                         db.SaveChanges();
@@ -157,10 +164,11 @@ namespace Common.Common
                     {
                         ngaynhap = resultApi1344.ngay.Split(' ')[0];
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        day = ngaynhapD.Day;
+                        month = ngaynhapD.Month;
+                        year = ngaynhapD.Year;
                     }
-                    day = ngaynhapD.Day;
-                    month = ngaynhapD.Month;
-                    year = ngaynhapD.Year;
+                    
 
                     #endregion
 
@@ -175,7 +183,7 @@ namespace Common.Common
                         manhom_tbh = group_code,
                         city_code = cityCode,
                         maduan = maDuAn,
-                        sottkh = customer_code.Substring(5)
+                        
                     };
 
                     sktt.ketqua_QST = 0;
@@ -320,13 +328,13 @@ namespace Common.Common
                     assists.Add(assist);
                     #endregion
                 }
-
+                
                 log.Info("*********-----SỐ BẢN GHI ASSIST/SKTT ĐÃ CONVERT:" + assists.Count() + "/" + sktts.Count() + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
 
             }
             catch (Exception ex)
             {
-                log.Error("Chuyển đổi kết quả api report_id = 1344 sang entity lỗi: " + ex.Message);
+                log.Error("Chuyển đổi kết quả api report_id = 1344 sang entity lỗi: " + ex.Message + " | MADUAN:" + maDuAn + " | MAKH:" + customer_code);
             }
             log.Info("********************************Kết thúc chuyển đổi kết quả api report_id = 1344 sang entity**************************************");
         }
@@ -379,7 +387,9 @@ namespace Common.Common
 
                     resultApiHIV = resultApiHIVs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
-                    customer_code = resultApiHIV.makh;
+                    //customer_code = resultApiHIV.makh;
+                    customer_code = String.Concat(resultApiHIV.makh, resultApiHIV.makh_2, resultApiHIV.makh_3, resultApiHIV.makh_4, resultApiHIV.makh_5, resultApiHIV.makh_6, resultApiHIV.makh_7, resultApiHIV.makh_8, resultApiHIV.makh_9, resultApiHIV.makh_10);
+
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
@@ -433,7 +443,7 @@ namespace Common.Common
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null)
+                    if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
                     {
                         db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiHIV.tbh, city_code = cityCode });
                         db.SaveChanges();
@@ -555,7 +565,9 @@ namespace Common.Common
                     resultApiACE = resultApiACEs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
 
-                    customer_code = resultApiACE.makh;
+                    //customer_code = resultApiACE.makh;
+                    customer_code = String.Concat(resultApiACE.makh, resultApiACE.makh_2, resultApiACE.makh_3, resultApiACE.makh_4, resultApiACE.makh_5, resultApiACE.makh_6, resultApiACE.makh_7, resultApiACE.makh_8, resultApiACE.makh_9, resultApiACE.makh_10);
+
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
@@ -606,7 +618,7 @@ namespace Common.Common
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null)
+                    if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
                     {
                         db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiACE.tbh, city_code = cityCode });
                         db.SaveChanges();
@@ -689,7 +701,8 @@ namespace Common.Common
                 var day = 0;
                 var year = 0;
                 var ngaynhap = "";
-                var ngaynhapD = DateTime.Today;
+                //var ngaynhapD = DateTime.Today;
+                var ngaynhapD = new DateTime();
 
                 int errNo = 0;
                 for (int i = 0; i < resultApiTHs.Count; i++)
@@ -704,11 +717,13 @@ namespace Common.Common
                     day = 0;
                     year = 0;
                     ngaynhap = "";
-                    ngaynhapD = DateTime.Today;
+                    ngaynhapD = new DateTime();
 
                     resultApiTH = resultApiTHs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
-                    customer_code = resultApiTH.makh;
+                    //customer_code = resultApiTH.makh;
+                    customer_code = String.Concat(resultApiTH.makh, resultApiTH.makh_2, resultApiTH.makh_3, resultApiTH.makh_4, resultApiTH.makh_5, resultApiTH.makh_6, resultApiTH.makh_7, resultApiTH.makh_8, resultApiTH.makh_9, resultApiTH.makh_10);
+
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
@@ -752,7 +767,7 @@ namespace Common.Common
 
                     // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                     nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null)
+                    if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
                     {
                         db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiTH.tbh, city_code = cityCode });
                         db.SaveChanges();
@@ -1070,7 +1085,7 @@ namespace Common.Common
 
                         // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
                         nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                        if (nhomTBH == null)
+                        if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
                         {
                             db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiPTV.tbh, city_code = cityCode });
                             db.SaveChanges();
