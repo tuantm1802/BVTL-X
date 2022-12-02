@@ -46,7 +46,7 @@ namespace SyncBVTL.Push.ScheduleTasks
                 await scheduler.DeleteJob(job.JobDetail.Key);
             }
 
-            scheduler.Start();
+            _ = scheduler.Start();
             //Job tự động cập nhật các đầu api
             IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
             job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
@@ -55,7 +55,7 @@ namespace SyncBVTL.Push.ScheduleTasks
                 .StartNow()
                 .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
                 .Build();
-            scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
+            _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
 
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
             foreach (ProcessModel item in processModels)
@@ -71,7 +71,7 @@ namespace SyncBVTL.Push.ScheduleTasks
                             .WithIntervalInSeconds(item.TimeLoop)
                             .RepeatForever())
                         .Build();
-                    scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
+                    _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
                 }
 
             }

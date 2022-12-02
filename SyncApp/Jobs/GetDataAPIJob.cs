@@ -22,16 +22,16 @@ namespace SyncBVTL.Push.Jobs.PAJobs
             {
                 var result = await controller.GetDataFromAPI(data);
 
-                //string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-                //if (!Directory.Exists("Log"))
-                //{
-                //    Directory.CreateDirectory("Log");
-                //}
+                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                if (!Directory.Exists("Log"))
+                {
+                    Directory.CreateDirectory("Log");
+                }
 
-                //if (!File.Exists(logPath))
-                //{
-                //    File.Create(logPath);
-                //}
+                if (!File.Exists(logPath))
+                {
+                    File.Create(logPath);
+                }
 
                 //using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
                 //{

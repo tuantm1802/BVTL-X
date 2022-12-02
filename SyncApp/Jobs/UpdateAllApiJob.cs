@@ -45,15 +45,18 @@ namespace SyncBVTL.Push.Jobs.PAJobs
 
                 log.Info("************************Kết thúc xóa tất cả job************************");
 
-                log.Info("************************Bắt đầu tạo lại tất cả job************************");
                 // Tạo lại các job
                 ProcessService processService = new ProcessService();
                 List<ProcessModel> processModels = processService.GetListProcess();
                 #region Các job thực thi các tiến trình đồng bộ dữ liệu
+
+                log.Info("************************Bắt đầu tạo lại tất cả job: "+ processModels.Count + "************************");
+                int apiActiveCount = 0;
                 foreach (ProcessModel item in processModels)
                 {
                     if (item.Active)
                     {
+                        ++ apiActiveCount;
                         IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().Build();
                         job_GetDataAPIJob.JobDataMap["Data"] = item;
                         ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
@@ -63,22 +66,22 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                                 .WithIntervalInSeconds(item.TimeLoop)
                                 .RepeatForever())
                             .Build();
-                        scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
+                        _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
                     }
 
                 }
                 #endregion
-                log.Info("************************Kết thúc tạo lại tất cả job************************");
-                //string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-                //if (!Directory.Exists("Log"))
-                //{
-                //    Directory.CreateDirectory("Log");
-                //}
+                log.Info("************************Kết thúc tạo lại tất cả job, API Active:"+ apiActiveCount + "************************");
+                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                if (!Directory.Exists("Log"))
+                {
+                    Directory.CreateDirectory("Log");
+                }
 
-                //if (!File.Exists(logPath))
-                //{
-                //    File.Create(logPath);
-                //}
+                if (!File.Exists(logPath))
+                {
+                    File.Create(logPath);
+                }
                 log.Info("************************Kết thúc cập nhật lại các job theo DB************************");
             }
 

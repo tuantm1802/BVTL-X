@@ -60,7 +60,7 @@ namespace SyncBVTL.Push.Controllers
 
                 if (model.Active != process.Active)
                 {
-                    JobScheduleSingle.StartSingle(model);
+                    _ = JobScheduleSingle.StartSingle(model);
                 }
                 listProcess[listProcess.IndexOf(process)] = model;
 
