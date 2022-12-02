@@ -69,16 +69,16 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                 }
                 #endregion
                 log.Info("************************Kết thúc tạo lại tất cả job************************");
-                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-                if (!Directory.Exists("Log"))
-                {
-                    Directory.CreateDirectory("Log");
-                }
+                //string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                //if (!Directory.Exists("Log"))
+                //{
+                //    Directory.CreateDirectory("Log");
+                //}
 
-                if (!File.Exists(logPath))
-                {
-                    File.Create(logPath);
-                }
+                //if (!File.Exists(logPath))
+                //{
+                //    File.Create(logPath);
+                //}
                 log.Info("************************Kết thúc cập nhật lại các job theo DB************************");
             }
 
