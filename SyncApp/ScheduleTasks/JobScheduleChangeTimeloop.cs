@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Common;
 using Model.ModelExtend.API;
 using Common.Common;
+using System.Collections.Specialized;
 
 namespace SyncBVTL.Push.ScheduleTasks
 {
@@ -14,7 +15,13 @@ namespace SyncBVTL.Push.ScheduleTasks
     {
         public static async Task ChangeTimeloop(ProcessModel item)
         {
-            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
+            NameValueCollection properties = new NameValueCollection();
+            properties["quartz.threadPool.threadCount"] = "100";
+
+            ISchedulerFactory sf = new StdSchedulerFactory(properties);
+            IScheduler scheduler = sf.GetScheduler().Result;
+
+            //IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
             await scheduler.Start();
 
             await scheduler.DeleteJob(new JobKey(item.ReportId + "_Job"));

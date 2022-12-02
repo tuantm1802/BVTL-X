@@ -4,6 +4,7 @@ using Quartz.Impl;
 using SyncBVTL.Push.Jobs.PAJobs;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 namespace SyncBVTL.Push.ScheduleTasks
@@ -12,9 +13,13 @@ namespace SyncBVTL.Push.ScheduleTasks
     {
         public static async Task StartSingle(ProcessModel item)
         {
+            NameValueCollection properties = new NameValueCollection();
+            properties["quartz.threadPool.threadCount"] = "100";
 
-            
-            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
+            ISchedulerFactory sf = new StdSchedulerFactory(properties);
+            IScheduler scheduler = sf.GetScheduler().Result;
+
+            //IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
 
             var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
             if (item.Active)
