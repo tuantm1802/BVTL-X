@@ -25,21 +25,21 @@ namespace SyncBVTL.Push.Jobs
                 trangThaiKetNoi = "Kết nối không thành công";
             }
 
-            string logPath = "Log\\TrangThaiKetNoi" + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-            if (!Directory.Exists("Log"))
-            {
-                Directory.CreateDirectory("Log");
-            }
+            //string logPath = "Log\\TrangThaiKetNoi" + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+            //if (!Directory.Exists("Log"))
+            //{
+            //    Directory.CreateDirectory("Log");
+            //}
 
-            if (!File.Exists(logPath))
-            {
-                File.Create(logPath);
-            }
+            //if (!File.Exists(logPath))
+            //{
+            //    File.Create(logPath);
+            //}
 
-            using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
-            {
-                file.Prepend($"{DateTime.Now:yy.MM.dd HH:mm:ss} - {trangThaiKetNoi}" + "\n");
-            }
+            //using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
+            //{
+            //    file.Prepend($"{DateTime.Now:yy.MM.dd HH:mm:ss} - {trangThaiKetNoi}" + "\n");
+            //}
         }
     }
 }
