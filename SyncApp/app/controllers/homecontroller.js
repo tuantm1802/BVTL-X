@@ -52,7 +52,7 @@
                 type: "Post",
                 url: "/Home/ShowConfig",
                 data: {
-                    name: $scope.process.Code
+                    name: $scope.process.ReportId
                 },
                 success: function (rs) {
                     $scope.logFile = rs.message;
