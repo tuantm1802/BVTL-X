@@ -1,4 +1,4 @@
-﻿app.controller("SyncDataController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("SyncDataController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading, $compile) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -99,9 +99,9 @@
                     }, 50);
                 },
                 rowId: 'Api_Id',
-                select: {
-                    info: false
-                },
+                //select: {
+                //    info: false
+                //},
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
                     "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
@@ -128,8 +128,18 @@
                     { "data": "IsActive" },
                     { "data": "Start_Time_Sync" },
                     { "data": "End_Time_Sync" },
-                    { "data": "Message" }
-                ],
+                    { "data": "Message" },
+                    {
+                        "title": "Thao tác",
+                        "render": function (data, type, full) { return '<button type="button" ng-click="SyncDataRow(' + full.Api_Id+')" class="btn btn-primary">Đồng bộ</button>' }
+                    }],
+                
+                rowCallback: function (row) {
+                    if (!row.compiled) {
+                        $compile(angular.element(row))($scope);
+                        row.compiled = true;
+                    }
+                },
                 dom: "<'row'<'col-sm-12'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-3'i><'col-sm-3'l><'col-sm-6'p>>",
@@ -159,6 +169,52 @@
             $scope.SyncDataIdSeleted = 0;
         }
 
+        if ($scope.SyncDataIdSeleted > 0 && $scope.SyncDataIdSeleted != undefined) {
+
+            var name = $scope.ListData.filter(function (item) {
+                return item.Api_Id === $scope.SyncDataIdSeleted;
+            })[0].NameSyncdata;
+
+            $ngConfirm({
+                title: 'Thông báo',
+                content: 'Bạn có chắc chắn muốn đồng bộ lại dữ liệu của tiến trình ' + name + ' không?',
+                scope: $scope,
+                buttons: {
+                    delete: {
+                        text: 'Đồng ý',
+                        btnClass: 'btn-blue',
+                        action: function (scope, button) {
+                            $.ajax({
+                                type: 'post',
+                                url: '/SyncData/SyncDataFromApi',
+                                data: { Id: $scope.SyncDataIdSeleted },
+                                success: function (data) {
+                                    if (data.Error) {
+                                        toastr.error(data.Title);
+                                    } else {
+                                        toastr.success(data.Title);
+                                        $scope.LoadPage(0);
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    close: {
+                        text: 'Hủy',
+                        action: function (scope, button) {
+
+                        }
+                    }
+                }
+            });
+        } else {
+            toastr.error("Bạn chưa chọn bản ghi nào.");
+        }
+    };
+
+    
+    $scope.SyncDataRow = function (apiId) {
+        $scope.SyncDataIdSeleted = apiId;
         if ($scope.SyncDataIdSeleted > 0 && $scope.SyncDataIdSeleted != undefined) {
 
             var name = $scope.ListData.filter(function (item) {
