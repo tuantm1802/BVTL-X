@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="6b54862210d2499f9b249f1b2cd9ea82" Name="Diagram1" ZoomLevel="117">
+      <Diagram DiagramId="6b54862210d2499f9b249f1b2cd9ea82" Name="Diagram1" ZoomLevel="101" DisplayType="false">
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_API" Width="1.5" PointX="0.75" PointY="1" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Width="1.5" PointX="5.25" PointY="45.5" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_CHAT_GAY_NGHIEN_3TH" Width="1.5" PointX="2.75" PointY="4.75" />
@@ -14,14 +14,13 @@
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DU_AN" Width="1.5" PointX="6" PointY="41.875" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_DUONG_SU_DUNG" Width="1.5" PointX="0.75" PointY="7.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KHACH_HANG" Width="1.5" PointX="2.75" PointY="7.75" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="1.5" PointX="8.25" PointY="60.125" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Width="1.5" PointX="11.25" PointY="58.25" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Width="1.5" PointX="8.25" PointY="65.125" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="8.25" PointY="55.125" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ACE" Width="2.5" PointX="8.25" PointY="60.125" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_ASSIST" Width="2.625" PointX="11.25" PointY="58.25" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_SL_SKTT" Width="2" PointX="8.25" PointY="65.125" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_LOAI_DOI_TUONG" Width="1.5" PointX="8.75" PointY="0.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_MASTER_TABLE" Width="1.5" PointX="3" PointY="2" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Width="1.5" PointX="3" PointY="89.5" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN" Width="1.5" PointX="8.75" PointY="3.75" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN" Width="1.875" PointX="8.75" PointY="3.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_QT_LOG" Width="1.5" PointX="10.75" PointY="0.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG" Width="1.5" PointX="10.75" PointY="3.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_QT_NGUOI_DUNG_NHOM_TBH" Width="1.5" PointX="10.75" PointY="10.75" />
@@ -40,15 +39,16 @@
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_CITES" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_CITES" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" />
-        <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_NHOM_TBH_BVTL_CITES" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ACE_BVTL_DU_AN" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" />
-        <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" />
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ACE_BVTL_NHOM_TBH_1" />
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_ASSIST_BVTL_NHOM_TBH_1" />
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV" Width="1.5" PointX="8.25" PointY="55" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_CITES" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" />
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" />
       </Diagram>
     </edmx:Diagrams>

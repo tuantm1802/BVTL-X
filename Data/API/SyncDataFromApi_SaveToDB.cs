@@ -164,7 +164,7 @@ namespace Data.API
 
                         var tongHops = new List<BVTL_CHUYEN_GUI_DICH_VU>();
 
-                        dataResultApi = dataResultApi.GroupBy(x => x.makh).Select(y => y.FirstOrDefault()).ToList();
+                        //dataResultApi = dataResultApi.GroupBy(x => x.makh).Select(y => y.FirstOrDefault()).ToList();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
                         //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);

@@ -494,7 +494,7 @@ namespace Common.Common
                         if (resultApiHIV.kqxn == "Dương tính")
                             hiv.ketqua = 1;
                     }
-
+                    hiv.lydo = resultApiHIV.lydo;
                     hiv.dangdieutri_hiv = 0;
                     //if (!string.IsNullOrEmpty(resultApiHIV.hiv))
                     //{
@@ -508,7 +508,7 @@ namespace Common.Common
                     
                 }
 
-                log.Info("*********-----SỐ BẢN GHI HIV ĐÃ CONVERT:" + hivs.Count() + " | SỐ Record LỖI:" + errNo + "|CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
+                log.Info("*********-----SỐ BẢN GHI HIV ĐÃ CONVERT:" + hivs.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code);
 
             }
             catch (Exception ex)
@@ -1312,9 +1312,9 @@ namespace Common.Common
                     }
                     // Lấy ngay, tháng, năm nhập dữ liệu
                     // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
+                    if (!string.IsNullOrEmpty(resultApiCGDV.ngay_bddt))
                     {
-                        ngaynhap = resultApiCGDV.ngaykham;
+                        ngaynhap = resultApiCGDV.ngay_bddt;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                         day = ngaynhapD.Day;
                         month = ngaynhapD.Month;
@@ -1330,6 +1330,13 @@ namespace Common.Common
                     }else if(!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
                     {
                         ngaynhap = resultApiCGDV.ngay_xn;
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        day = ngaynhapD.Day;
+                        month = ngaynhapD.Month;
+                        year = ngaynhapD.Year;
+                    }else if(!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
+                    {
+                        ngaynhap = resultApiCGDV.ngaykham;
                         ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                         day = ngaynhapD.Day;
                         month = ngaynhapD.Month;

@@ -33,10 +33,10 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                     File.Create(logPath);
                 }
 
-                //using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
-                //{
-                //    file.Prepend(result.Message + "\n");
-                //}
+                using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    file.Prepend(result.Message + "\n");
+                }
             }
         }
     }
