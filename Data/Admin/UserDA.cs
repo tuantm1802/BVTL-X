@@ -6,6 +6,7 @@ using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
+using Model.ModelExtend.Report;
 using Model.ModelExtend.User;
 using System;
 using System.Collections.Generic;
@@ -366,6 +367,41 @@ namespace Data.Admin
                     result = false;
             }
 
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu thông báo
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<NotificationModel> GetNotification(ReportSearchModel modelSearch)
+        {
+            var result = new List<NotificationModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
+                    new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn),
+                    //new SqlParameter("Page", modelSearch.currentPage),
+                    //new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<NotificationModel>(Constants.SP_Notification_Search_Data, param).ToList();
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "UserDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy danh sách thông báo lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<NotificationModel>();
+            }
             return result;
         }
     }

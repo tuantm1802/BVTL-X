@@ -5,6 +5,7 @@ using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend.Base;
+using Model.ModelExtend.Report;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,6 +19,7 @@ namespace WebApp.Controllers
     public class LoginController : Controller
     {
         ISysLogDA _sysLogDA = new SysLogDA();
+        IUserDA _userDA = new UserDA();
         ISysParameterDA _sysParameterDA = new SysParameterDA();
         IPageMenuDA _pageMenuDA = new PageMenuDA();
         IEncryptor _encryptor = new Encryptor();
@@ -30,7 +32,6 @@ namespace WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var _userDA = new UserDA();
                 var result = _userDA.Login(model.UserName, _encryptor.MD5Hash(model.Password));
                 if (result == 1)
                 {
@@ -48,9 +49,19 @@ namespace WebApp.Controllers
                     var listPermission = _userDA.GetListCredentials(model.UserName);
 
                     var menus = _pageMenuDA.GetMenuByUser((int)user.ID);
+
+                    // Lấy thông báo
+                    var notificationSearch = new ReportSearchModel
+                    {
+                        MaDuAn = user.MaDuAn,
+                        CityCodes = user.CityCodes
+                    };
+                    var notifications = _userDA.GetNotification(notificationSearch);
+
                     Session.Add("CEDENTIALS_SESSION", listPermission);
                     Session.Add("Menus", menus);
                     Session.Add("USER_SESSION", userSession);
+                    Session.Add("Notifications", notifications);
                     AddLog("Đăng nhập( UserName: " + user.UserName + ") thành công.");
                     return RedirectToAction("Index", "Home");
 
@@ -131,6 +142,8 @@ namespace WebApp.Controllers
             var user = Session["USER_SESSION"] as UserLogin;
             AddLog("Đăng xuất( UserName: " + user.UserName + ") thành công.");
             Session["USER_SESSION"] = null;
+            Session["Menus"] = null;
+            Session["Notifications"] = null;
             return Redirect("/Login/Index");
         }
     }
