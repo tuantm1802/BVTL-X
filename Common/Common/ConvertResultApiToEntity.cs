@@ -469,6 +469,14 @@ namespace Common.Common
                         month = ngaynhapD.Month;
                         year = ngaynhapD.Year;
                     }
+                    else if(!string.IsNullOrEmpty(resultApiHIV.sng_lc_hiv_timestamp))
+                    {
+                        ngaynhap = resultApiHIV.sng_lc_hiv_timestamp.Split(' ')[0];
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        day = ngaynhapD.Day;
+                        month = ngaynhapD.Month;
+                        year = ngaynhapD.Year;
+                    }
 
                     #endregion
 
@@ -496,11 +504,11 @@ namespace Common.Common
                     }
                     hiv.lydo = resultApiHIV.lydo;
                     hiv.dangdieutri_hiv = 0;
-                    //if (!string.IsNullOrEmpty(resultApiHIV.hiv))
-                    //{
-                    //    if (resultApiHIV.hiv == "Có")
-                    //        hiv.dangdieutri_hiv = 1;
-                    //}
+                    if (!string.IsNullOrEmpty(resultApiHIV.hiv))
+                    {
+                        if (resultApiHIV.hiv == "Có")
+                            hiv.dangdieutri_hiv = 1;
+                    }
 
                     hivs.Add(hiv);
 

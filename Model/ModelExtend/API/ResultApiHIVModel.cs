@@ -17,6 +17,7 @@ namespace Model.ModelExtend.API
         public string namsinh { get; set; }
         public string doituong { get; set; }
         public string ngaytiepcan { get; set; }
+        public string sng_lc_hiv_timestamp { get; set; }
         public string tttcv { get; set; }
         public string ttkh { get; set; }
 
