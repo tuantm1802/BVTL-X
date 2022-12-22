@@ -59,6 +59,13 @@ namespace Common.ICommon
         /// </summary>
         /// <param name="resultApiCGDVs"></param>
         /// <param name="chuyenGuiDVs"></param>
-        void ConvertApiChuyenGuiDichVuToEntity(List<ResultApiChuyenGuiDVModel> resultApiCGDVs, string maDuAn, ref List<BVTL_CHUYEN_GUI_DICH_VU> chuyenGuiDVs);
+        void ConvertApiChuyenGuiDichVuToEntity(List<ResultApiChuyenGuiDVModel> resultApiCGDVs, string maDuAn, ref List<BVTL_CHUYEN_GUI_DICH_VU> chuyenGuiDVs); 
+
+        /// <summary>
+        /// CHuyển đổi kết quả api chuyển gửi dịch vụ sang entity BVTL_CHUYEN_GUI_DICH_VU
+        /// </summary>
+        /// <param name="resultApiXnNuocTieu"></param>
+        /// <param name="xnNuocTieu"></param>
+        void ConvertApiXNNuocTieuToEntity(List<ResultApiXnNuocTieuModel> resultApiXnNuocTieu, string maDuAn, ref List<BVTL_KQ_XN_NUOC_TIEU> xnNuocTieu);
     }
 }

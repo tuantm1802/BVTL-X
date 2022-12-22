@@ -18,6 +18,7 @@ namespace Model.Model
         public BVTL_CITES()
         {
             this.BVTL_BO_BIEU_MAU_KH_BAO_CAO = new HashSet<BVTL_BO_BIEU_MAU_KH_BAO_CAO>();
+            this.BVTL_KQ_XN_NUOC_TIEU = new HashSet<BVTL_KQ_XN_NUOC_TIEU>();
             this.BVTL_KQ_SL_ACE = new HashSet<BVTL_KQ_SL_ACE>();
             this.BVTL_KQ_SL_ASSIST = new HashSet<BVTL_KQ_SL_ASSIST>();
             this.BVTL_KQ_SL_SKTT = new HashSet<BVTL_KQ_SL_SKTT>();
@@ -35,6 +36,8 @@ namespace Model.Model
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_BO_BIEU_MAU_KH_BAO_CAO> BVTL_BO_BIEU_MAU_KH_BAO_CAO { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_KQ_XN_NUOC_TIEU> BVTL_KQ_XN_NUOC_TIEU { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_SL_ACE> BVTL_KQ_SL_ACE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

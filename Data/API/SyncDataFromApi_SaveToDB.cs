@@ -178,6 +178,27 @@ namespace Data.API
                             result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_CHUYEN_GUI_DICH_VU", tongHops.FirstOrDefault().city_code, maDuAn);
                         }
                     }
+                    
+                    // Đầu api Xét nghiệm Nước tiểu
+                    if (tableNames.Contains("BVTL_KQ_XN_NUOC_TIEU"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiXnNuocTieuModel>>(resultApiString);
+
+                        var tongHops = new List<BVTL_KQ_XN_NUOC_TIEU>();
+                        
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiXNNuocTieuToEntity(dataResultApi.Where(x => x.sng_lc_nc_tiu_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+
+                        // Thêm dữ liệu bảng BVTL_KQ_XN_NUOC_TIEU
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_KQ_XN_NUOC_TIEU", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
 
                     #endregion
                 }
