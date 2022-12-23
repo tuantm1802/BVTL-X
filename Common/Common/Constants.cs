@@ -22,11 +22,13 @@ namespace Common.Common
         public const string SP_KetQuaACE_Get_By_Page = "KetQuaACE_Get_By_Page";
         public const string SP_KetQuaASSIST_Get_By_Page = "KetQuaASSIST_Get_By_Page";
         public const string SP_KetQuaHIV_Get_By_Page = "KetQuaHIV_Get_By_Page";
+        public const string SP_KetQuaBHDG_Get_By_Page = "KetQuaBHDG_Get_By_Page";
         public const string SP_KetQuaXNNT_Get_By_Page = "KetQuaXNNT_Get_By_Page";
         public const string SP_KetQuaSKTT_Get_By_Page = "KetQuaSKTT_Get_By_Page";
         public const string SP_LoaiDoiTuong_Get_By_Page = "LoaiDoiTuong_Get_By_Page";
         public const string SP_KetQuaSKTT_Get_By_Id = "KetQuaSKTT_Get_By_Id";
         public const string SP_KetQuaHIV_Get_By_Id = "KetQuaHIV_Get_By_Id";
+        public const string SP_KetQuaBHDG_Get_By_Id = "KetQuaBHDG_Get_By_Id";
         public const string SP_KetQuaXNNT_Get_By_Id = "KetQuaXNNT_Get_By_Id";
         public const string SP_KetQuaASSIST_Get_By_Id = "KetQuaASSIST_Get_By_Id";
         public const string SP_KetQuaACE_Get_By_Id = "KetQuaACE_Get_By_Id";

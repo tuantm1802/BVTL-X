@@ -174,7 +174,8 @@ namespace WebApp.Controllers
                     tenNhomTBHs = "Nhóm: "+ string.Join("; ", nhomTBHs.Select(x=>x.tennhom_tbh +"-"+x.CityName));
                 }
 
-                var file_name = maDuAn +"_" +string.Join("-", nhomTBHs.Select(x=>x.manhom_tbh))+ "_BAO_CAO_THANG_" + Months.Replace(",","-") + "-" + Year + ".xlsx";
+                //var file_name = maDuAn +"_" +string.Join("-", nhomTBHs.Select(x=>x.manhom_tbh))+ "_BAO_CAO_THANG_" + Months.Replace(",","-") + "-" + Year + ".xlsx";
+                var file_name = maDuAn + "_"+ CityCodes + "_BAO_CAO_THANG_" + Months.Replace(",","-") + "-" + Year + ".xlsx";
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
@@ -250,6 +251,7 @@ namespace WebApp.Controllers
                         }
                     }
 
+                    CreateFooter(ws, titleReport, user, tenNhomTBHs);
                     ws.Range("A5:J" + row).Style.Font.FontName = "Times New Roman";
                     ws.Range("A5:J" + row).Style.Font.FontSize = 13;
                     ws.Range("A5:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -444,8 +446,32 @@ namespace WebApp.Controllers
             #endregion
         }
 
+        private void CreateFooter(IXLWorksheet ws, string tileReport, UserLogin user, string tenNhomTBHs) {
+            ws.Cell("B42").Value = "Trưởng nhóm";
+            ws.Cell("B42").Style.Font.Bold = true;
+            ws.Cell("B42").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B42").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("B42").Style.Font.FontName = "Times New Roman";
+            ws.Cell("B42").Style.Font.FontSize = 13;
 
-        #endregion 
+            ws.Cell("C42").Value = "Cán bộ dự án";
+            ws.Range("C42:D42").Row(1).Merge();
+            ws.Cell("C42").Style.Font.Bold = true;
+            ws.Cell("C42").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C42").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("C42").Style.Font.FontName = "Times New Roman";
+            ws.Cell("C42").Style.Font.FontSize = 13;
+
+            ws.Cell("F42").Value = "Quản lý chương trình";
+            ws.Range("F42:I42").Row(1).Merge();
+            ws.Cell("F42").Style.Font.Bold = true;
+            ws.Cell("F42").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("F42").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("F42").Style.Font.FontName = "Times New Roman";
+            ws.Cell("F42").Style.Font.FontSize = 13;
+
+        }
+        #endregion
 
     }
 }

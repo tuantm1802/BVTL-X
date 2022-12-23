@@ -194,7 +194,7 @@
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
-    <Compile Include="Controllers\BangHoiDanhGiaController.cs" />
+    <Compile Include="Controllers\KetQuaBHDGController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoTongHopQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
@@ -297,6 +297,7 @@
     <Content Include="app\Controller\DuongSuDungController.js" />
     <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
+    <Content Include="app\Controller\KetQuaBHDGController.js" />
     <Content Include="app\Controller\KetQuaSangLocController.js" />
     <Content Include="app\Controller\KetQuaXNNTController.js" />
     <Content Include="app\Controller\PhieuTuVanController.js" />
@@ -4615,6 +4616,7 @@
     <Content Include="Views\BaoCaoQuyVIIV\Index.cshtml" />
     <Content Include="Views\BaoCaoTongHopQuyVIIV\Index.cshtml" />
     <Content Include="Views\KetQuaXNNT\Index.cshtml" />
+    <Content Include="Views\KetQuaBHDG\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>
@@ -4650,7 +4652,6 @@
     <Folder Include="Models\" />
     <Folder Include="TemplateExcel\" />
     <Folder Include="Views\ApiKhachHang\" />
-    <Folder Include="Views\BangHoiDanhGia\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Report\ReportFile\KeHoachChuyenTien.rdlc" />
