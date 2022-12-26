@@ -78,7 +78,7 @@
             return;
         }
 
-        
+        $scope.modelSearch.Months = '';
         if ($scope.Quy == null || $scope.Quy == '') {
             toastr.error("Vui lòng chọn quý!");
             return;
@@ -158,6 +158,7 @@
             return;
         }
 
+        $scope.modelSearch.Months = '';
         if ($scope.Quy == null || $scope.Quy == '') {
             toastr.error("Vui lòng chọn quý!");
             return;

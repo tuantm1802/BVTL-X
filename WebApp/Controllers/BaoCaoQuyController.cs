@@ -142,6 +142,7 @@ namespace WebApp.Controllers
             {
                
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 2, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
+                var file_name = maDuAn;
 
                 var menus = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
@@ -168,8 +169,20 @@ namespace WebApp.Controllers
                 {
                     tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
                 }
+
+                string sNhomFilename = "";
+                if (nhomTBHs != null && nhomTBHs.Count == 1)
+                {
+                    sNhomFilename = string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                    file_name += "_" + sNhomFilename;
+                }
+                else
+                {
+                    file_name += "_" + nhomTBHs.Select(x => x.CityName).FirstOrDefault();
+                }
                 //var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
-                var file_name = maDuAn + "_" + CityCodes + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
+                file_name += "_BC_QUY_" + quy + "-" + Year + ".xlsx";
+
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
