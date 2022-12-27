@@ -20,13 +20,15 @@ namespace Model.Model
         public int ngayhoi_date { get; set; }
         public int ngayhoi_month { get; set; }
         public int ngayhoi_year { get; set; }
-        public int kqxnda { get; set; }
+        public Nullable<int> kqxnda { get; set; }
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
         public string sottkh { get; set; }
-        public int kqxnheroin { get; set; }
+        public Nullable<int> kqxnheroin { get; set; }
+        public Nullable<int> kqxnthc { get; set; }
+        public Nullable<int> kqxnmdma { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

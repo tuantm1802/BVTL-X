@@ -1511,8 +1511,8 @@ namespace Common.Common
                             xnNuocTieu.kqxnda = 1;
                         else
                             xnNuocTieu.kqxnda = 3;
-
                     }
+
                     if (!string.IsNullOrEmpty(resultApi.kqxnheroin))
                     {
                         if (resultApi.kqxnheroin?.Trim() == "Âm tính")
@@ -1521,7 +1521,26 @@ namespace Common.Common
                             xnNuocTieu.kqxnheroin = 1;
                         else
                             xnNuocTieu.kqxnheroin = 3;
+                    }
 
+                    if (!string.IsNullOrEmpty(resultApi.kqxnthc))
+                    {
+                        if (resultApi.kqxnthc?.Trim() == "Âm tính")
+                            xnNuocTieu.kqxnthc = 2;
+                        else if (resultApi.kqxnthc?.Trim() == "Dương tính")
+                            xnNuocTieu.kqxnthc = 1;
+                        else
+                            xnNuocTieu.kqxnthc = 3;
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.kqxnmdma))
+                    {
+                        if (resultApi.kqxnmdma?.Trim() == "Âm tính")
+                            xnNuocTieu.kqxnmdma = 2;
+                        else if (resultApi.kqxnmdma?.Trim() == "Dương tính")
+                            xnNuocTieu.kqxnmdma = 1;
+                        else
+                            xnNuocTieu.kqxnmdma = 3;
                     }
                     
                     xnNuocTieus.Add(xnNuocTieu);

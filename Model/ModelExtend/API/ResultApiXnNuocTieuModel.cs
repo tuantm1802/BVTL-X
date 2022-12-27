@@ -28,6 +28,8 @@ namespace Model.ModelExtend.API
         public string kqxnda { get; set; }
         public string anh_2 { get; set; }
         public string kqxnheroin { get; set; }
+        public string kqxnthc { get; set; } // Xet nghiem can sa
+        public string kqxnmdma { get; set; } // xet nghiem thuoc lac
         public string anh_3 { get; set; }
         public string sng_lc_nc_tiu_complete { get; set; }
 

@@ -387,13 +387,15 @@
           <Property Name="ngayhoi_date" Type="int" Nullable="false" />
           <Property Name="ngayhoi_month" Type="int" Nullable="false" />
           <Property Name="ngayhoi_year" Type="int" Nullable="false" />
-          <Property Name="kqxnda" Type="int" Nullable="false" />
+          <Property Name="kqxnda" Type="int" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
-          <Property Name="kqxnheroin" Type="int" Nullable="false" />
+          <Property Name="kqxnheroin" Type="int" />
+          <Property Name="kqxnthc" Type="int" />
+          <Property Name="kqxnmdma" Type="int" />
         </EntityType>
         <EntityType Name="BVTL_KHACH_HANG">
           <Key>
@@ -1387,13 +1389,15 @@
           <Property Name="ngayhoi_date" Type="Int32" Nullable="false" />
           <Property Name="ngayhoi_month" Type="Int32" Nullable="false" />
           <Property Name="ngayhoi_year" Type="Int32" Nullable="false" />
-          <Property Name="kqxnda" Type="Int32" Nullable="false" />
+          <Property Name="kqxnda" Type="Int32" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="sottkh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="kqxnheroin" Type="Int32" Nullable="false" />
+          <Property Name="kqxnheroin" Type="Int32" />
+          <Property Name="kqxnthc" Type="Int32" />
+          <Property Name="kqxnmdma" Type="Int32" />
           <NavigationProperty Name="BVTL_CITES" Relationship="Self.FK__BVTL_KQ_X__city___02B25B50" FromRole="BVTL_KQ_XN_NUOC_TIEU" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="Self.FK__BVTL_KQ_X__madua__01BE3717" FromRole="BVTL_KQ_XN_NUOC_TIEU" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="Self.FK__BVTL_KQ_X__manho__03A67F89" FromRole="BVTL_KQ_XN_NUOC_TIEU" ToRole="BVTL_NHOM_TBH" />
@@ -2387,6 +2391,8 @@
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sottkh" ColumnName="sottkh" />
                 <ScalarProperty Name="kqxnheroin" ColumnName="kqxnheroin" />
+                <ScalarProperty Name="kqxnthc" ColumnName="kqxnthc" />
+                <ScalarProperty Name="kqxnmdma" ColumnName="kqxnmdma" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

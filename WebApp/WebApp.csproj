@@ -194,6 +194,7 @@
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
+    <Compile Include="Controllers\BaoCaoChiSoController.cs" />
     <Compile Include="Controllers\KetQuaBHDGController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoTongHopQuyVIIVController.cs" />
@@ -283,6 +284,7 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\BaoCaoChiSoController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
     <Content Include="app\Controller\BaoCaoTongHopQuyVIIVController.js" />
     <Content Include="app\Controller\BaoCaoQuyVIIVController.js" />
@@ -4617,6 +4619,7 @@
     <Content Include="Views\BaoCaoTongHopQuyVIIV\Index.cshtml" />
     <Content Include="Views\KetQuaXNNT\Index.cshtml" />
     <Content Include="Views\KetQuaBHDG\Index.cshtml" />
+    <Content Include="Views\BaoCaoChiSo\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

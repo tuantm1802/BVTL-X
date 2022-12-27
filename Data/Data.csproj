@@ -75,6 +75,7 @@
     <Compile Include="Admin\CityDA.cs" />
     <Compile Include="Admin\CustomerDA.cs" />
     <Compile Include="Admin\DuongSuDungDA.cs" />
+    <Compile Include="Admin\KetQuaBHDGDA.cs" />
     <Compile Include="Admin\KetQuaXNNTDA.cs" />
     <Compile Include="Admin\PhieuTuVanDA.cs" />
     <Compile Include="Admin\ChuyenGuiDichVuDA.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="InterfaceDA\Admin\ICityDA.cs" />
     <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />
     <Compile Include="InterfaceDA\Admin\IDuongSuDungDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKetQuaBHDGDA.cs" />
     <Compile Include="InterfaceDA\Admin\IKetQuaXNNTDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPhieuTuVanDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChuyenGuiDichVuEDA.cs" />
