@@ -2,10 +2,10 @@
     ViewBag.Title = "Báo cáo Chỉ số";
 }
 
-<div class="container-fluid" ng-controller="BaoCaoChiSoController">
+<div class="container-fluid" ng-controller="BaoCaoChiSo6ThangController">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Báo cáo Chỉ số Dự án</h1>
+    <h1 class="h3 mb-2 text-gray-800">Báo cáo Chỉ số 6 Tháng</h1>
     <p class="mb-4">
     </p>
 
@@ -14,9 +14,9 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 <div class="form-group row">
-                    <label class="col-sm-1 col-form-label">Tháng</label>
-                    <div class="col-sm-1">
-                        <select class="form-control" ui-select2 @*multiple*@ ng-model="Thangs" name="ListThang" ng-options="item.Id as item.Name for item in ListThang"></select>
+                    <label class="col-sm-1 col-form-label">Kỳ báo cáo</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" ng-model="SauThang" name="SauThang" ng-options="item.Id as item.Name for item in List6Thang"></select>
                     </div>
 
                     <label class="col-sm-1 col-form-label">Năm</label>
@@ -25,15 +25,15 @@
                     </div>
 
                     @*<label class="col-sm-2 col-form-label">Dự án</label>
-        <div class="col-sm-2">
-            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn"></select>
-        </div>*@
-
-                    @*</div>
-        <div class="form-group row">*@
+                    <div class="col-sm-2">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn"></select>
+                    </div>*@
+                    
+                @*</div>
+                <div class="form-group row">*@
                     <label class="col-sm-1 col-form-label">Tỉnh</label>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity"></select>
                     </div>
                     <label class="col-sm-1 col-form-label">Nhóm</label>
@@ -62,7 +62,7 @@
                             <th style="width: 8%; ">Number (cumulative since project start-up)</th>
                             <th style="width: 8%; ">Disaggregated data 1 (Women)</th>
                             <th style="width: 8%; ">Disaggregated data 2 (men)</th>
-                            <th style="width: 8%; ">Disaggregated data 3 (TG: Transgender)</th>
+                            <th style="width: 8%; ">Disaggregated data 3(TG: Transgender)</th>
 
                         </tr>
                     </thead>
@@ -73,7 +73,7 @@
                                 <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
                                 <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
                             </td>
-                            @*<td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>*@
+                            <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
@@ -90,5 +90,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/BaoCaoChiSoController.js"></script>
+    <script src="~/app/Controller/BaoCaoChiSo6ThangController.js"></script>
 }

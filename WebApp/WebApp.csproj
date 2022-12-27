@@ -284,6 +284,7 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
     <Content Include="app\Controller\BaoCaoChiSoController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
     <Content Include="app\Controller\BaoCaoTongHopQuyVIIVController.js" />
@@ -4620,6 +4621,7 @@
     <Content Include="Views\KetQuaXNNT\Index.cshtml" />
     <Content Include="Views\KetQuaBHDG\Index.cshtml" />
     <Content Include="Views\BaoCaoChiSo\Index.cshtml" />
+    <Content Include="Views\BaoCaoChiSo\ChiSo6Thang.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>
