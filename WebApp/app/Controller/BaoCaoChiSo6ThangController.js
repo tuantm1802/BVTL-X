@@ -196,7 +196,7 @@
             }
         }
 
-        window.location.href = '/BaoCaoChiSo/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
+        window.location.href = '/BaoCaoChiSo/ExportDataChiSo6Thang?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
             + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)
             + '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn);
@@ -219,7 +219,7 @@
         $scope.ListMaNhomTBH = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCao6Thang/GetNhomTBHByCityCodes',
+            url: '/BaoCaoThang/GetNhomTBHByCityCodes',
             cache: false,
             async: false,
             data: {

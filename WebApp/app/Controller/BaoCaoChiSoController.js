@@ -80,20 +80,23 @@
         //    return;
         //}
         $scope.modelSearch.Months = '';
-
-        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i];
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
-                }
-            }
+        console.log($scope.Thangs);
+        console.log($scope.Thangs.length);
+        if ($scope.Thangs != null && $scope.Thangs != '') {
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i];
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i];
+            //    }
+            //}
+            $scope.modelSearch.Months = $scope.Thangs;
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
+
         $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
@@ -157,14 +160,15 @@
         //}
 
         $scope.modelSearch.Months = '';
-        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i];
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
-                }
-            }
+        if ($scope.Thangs != null && $scope.Thangs != '') {
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i];
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i];
+            //    }
+            //}
+            $scope.modelSearch.Months = $scope.Thangs;
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
@@ -213,7 +217,7 @@
         $scope.ListMaNhomTBH = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoChiSo/GetNhomTBHByCityCodes',
+            url: '/BaoCaoThang/GetNhomTBHByCityCodes',
             cache: false,
             async: false,
             data: {
