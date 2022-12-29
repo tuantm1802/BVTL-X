@@ -149,7 +149,9 @@ namespace WebApp.Controllers
         {
             try
             {
-                
+                var maDuAn = "VIIV";
+                var file_name = maDuAn;
+
                 var modelSearch = new ReportSearchModel() { TuThang = TuThang, TuNam = TuNam, DenThang = DenThang, DenNam = DenNam, CityCodes = CityCodes, TypeReport = 2, MaNhomTBH = maNhomTBHs };
 
                 var menus = Session["Menus"] as List<MenuModel>;
@@ -166,12 +168,11 @@ namespace WebApp.Controllers
 
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();
-                if (string.IsNullOrEmpty(maNhomTBHs))
-                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                if (string.IsNullOrEmpty(maNhomTBHs)) {
+                    //nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+                }                    
                 else
                     nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhoms(maNhomTBHs);
-
-                var maDuAn = "VIIV";
 
                 var tenDuAn = "";
                 if (!string.IsNullOrEmpty(maDuAn))
@@ -180,9 +181,10 @@ namespace WebApp.Controllers
                 if (nhomTBHs != null && nhomTBHs.Count > 0)
                 {
                     tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                    file_name += "_"+string.Join("-", nhomTBHs.Select(x => x.manhom_tbh));
                 }
 
-                var tuQuy = "I";
+                  var tuQuy = "I";
                 switch (TuThang)
                 {
                     case 1:
@@ -201,21 +203,23 @@ namespace WebApp.Controllers
                 var denQuy = "I";
                 switch (DenThang)
                 {
-                    case 1:
+                    case 3:
                         denQuy = "I";
                         break;
-                    case 4:
+                    case 6:
                         denQuy = "II";
                         break;
-                    case 7:
+                    case 9:
                         denQuy = "III";
                         break;
-                    case 10:
+                    case 12:
                         denQuy = "IV";
                         break;
                 }
 
-                var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_TONG_HOP_QUY_TU-" + tuQuy + "-" + TuNam + "_DEN-" + denQuy + "-" + DenNam + ".xlsx";
+
+                file_name += "_BC_TH_QUY_TU-" + tuQuy + "-" + TuNam + "_DEN-" + denQuy + "-" + DenNam + ".xlsx";
+
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 

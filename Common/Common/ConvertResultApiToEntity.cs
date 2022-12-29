@@ -1523,21 +1523,31 @@ namespace Common.Common
                             xnNuocTieu.kqxnheroin = 3;
                     }
 
-                    if (!string.IsNullOrEmpty(resultApi.kqxnthc))
+                    if (!string.IsNullOrEmpty(resultApi.mop))
                     {
-                        if (resultApi.kqxnthc?.Trim() == "Âm tính")
+                        if (resultApi.mop?.Trim() == "Âm tính")
+                            xnNuocTieu.kqxnheroin = 2;
+                        else if (resultApi.mop?.Trim() == "Dương tính")
+                            xnNuocTieu.kqxnheroin = 1;
+                        else
+                            xnNuocTieu.kqxnheroin = 3;
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.thc))
+                    {
+                        if (resultApi.thc?.Trim() == "Âm tính")
                             xnNuocTieu.kqxnthc = 2;
-                        else if (resultApi.kqxnthc?.Trim() == "Dương tính")
+                        else if (resultApi.thc?.Trim() == "Dương tính")
                             xnNuocTieu.kqxnthc = 1;
                         else
                             xnNuocTieu.kqxnthc = 3;
                     }
 
-                    if (!string.IsNullOrEmpty(resultApi.kqxnmdma))
+                    if (!string.IsNullOrEmpty(resultApi.mdma))
                     {
-                        if (resultApi.kqxnmdma?.Trim() == "Âm tính")
+                        if (resultApi.mdma?.Trim() == "Âm tính")
                             xnNuocTieu.kqxnmdma = 2;
-                        else if (resultApi.kqxnmdma?.Trim() == "Dương tính")
+                        else if (resultApi.mdma?.Trim() == "Dương tính")
                             xnNuocTieu.kqxnmdma = 1;
                         else
                             xnNuocTieu.kqxnmdma = 3;
