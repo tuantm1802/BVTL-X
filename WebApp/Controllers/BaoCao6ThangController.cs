@@ -146,6 +146,7 @@ namespace WebApp.Controllers
             {
                
                 var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 3, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
+                var file_name = maDuAn;
 
                 var menus = Session["Menus"] as List<MenuModel>;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
@@ -171,7 +172,26 @@ namespace WebApp.Controllers
                     tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
                 }
 
-                var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_SAU_THANG_" + Months.Replace(",", "-") + "-" + Year + ".xlsx";
+                string sNhomFilename = "";
+                if (nhomTBHs != null && nhomTBHs.Count == 1)
+                {
+                    sNhomFilename = string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                    file_name += "_" + sNhomFilename;
+                }
+                else
+                {
+                    file_name += "_" + nhomTBHs.Select(x => x.CityName).FirstOrDefault();
+                }
+
+                var lsM = Months.Split(',');
+                string sMFilenam = lsM[0];
+                if (lsM.Count() > 1)
+                {
+                    sMFilenam = lsM.First() + "-" + lsM.Last();
+                }
+                //var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_SAU_THANG_" + Months.Replace(",", "-") + "-" + Year + ".xlsx";                
+                file_name += "_BC_6THANG_" + sMFilenam + "-" + Year + ".xlsx";
+
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 
@@ -247,6 +267,7 @@ namespace WebApp.Controllers
                         }
                     }
 
+                    CreateFooter(ws, titleReport, user, tenNhomTBHs);
                     ws.Range("A5:J" + row).Style.Font.FontName = "Times New Roman";
                     ws.Range("A5:J" + row).Style.Font.FontSize = 13;
                     ws.Range("A5:J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -441,7 +462,32 @@ namespace WebApp.Controllers
             #endregion
         }
 
+        private void CreateFooter(IXLWorksheet ws, string tileReport, UserLogin user, string tenNhomTBHs)
+        {
+            ws.Cell("B71").Value = "Trưởng nhóm";
+            ws.Cell("B71").Style.Font.Bold = true;
+            ws.Cell("B71").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B71").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("B71").Style.Font.FontName = "Times New Roman";
+            ws.Cell("B71").Style.Font.FontSize = 13;
 
+            ws.Cell("C71").Value = "Cán bộ dự án";
+            ws.Range("C71:D71").Row(1).Merge();
+            ws.Cell("C71").Style.Font.Bold = true;
+            ws.Cell("C71").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C71").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("C71").Style.Font.FontName = "Times New Roman";
+            ws.Cell("C71").Style.Font.FontSize = 13;
+
+            ws.Cell("F71").Value = "Quản lý chương trình";
+            ws.Range("F71:I71").Row(1).Merge();
+            ws.Cell("F71").Style.Font.Bold = true;
+            ws.Cell("F71").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("F71").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("F71").Style.Font.FontName = "Times New Roman";
+            ws.Cell("F71").Style.Font.FontSize = 13;
+
+        }
         #endregion 
 
     }

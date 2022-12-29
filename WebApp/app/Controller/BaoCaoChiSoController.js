@@ -1,10 +1,11 @@
-﻿app.controller("BaoCaoThangController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("BaoCaoChiSoController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "ParamCode DESC";
+    $scope.modelSearch.TypeReport = 5;
     $scope.ListYear = [];
     $scope.ListCity = [];
     $scope.ListThang = [];
@@ -13,7 +14,7 @@
     $scope.ListMaNhomTBH = [];
     $scope.ListNhomTBH = [];
     $scope.ListDuAn = [];
-    
+
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
         $scope.ListMaNhomTBH = [];
@@ -23,7 +24,7 @@
         for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
             var tmpYear = {
                 Id: i,
-                Name : i+''
+                Name: i + ''
             };
             $scope.ListYear.push(tmpYear);
         }
@@ -47,7 +48,7 @@
         $scope.ListCity = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoThang/GetBottomAction',
+            url: '/BaoCaoChiSo/GetBottomAction',
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -74,25 +75,28 @@
             return;
         }
 
-        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
-            toastr.error("Vui lòng chọn dự án!");
-            return;
-        }
+        //if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+        //    toastr.error("Vui lòng chọn dự án!");
+        //    return;
+        //}
         $scope.modelSearch.Months = '';
-
-        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i];
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
-                }
-            }
+        console.log($scope.Thangs);
+        console.log($scope.Thangs.length);
+        if ($scope.Thangs != null && $scope.Thangs != '') {
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i];
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i];
+            //    }
+            //}
+            $scope.modelSearch.Months = $scope.Thangs;
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
+
         $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
@@ -119,7 +123,7 @@
         $scope.ListData = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoThang/SearchData',
+            url: '/BaoCaoChiSo/SearchData',
             cache: false,
             async: false,
             data: $scope.modelSearch,
@@ -127,7 +131,7 @@
                 $scope.ListData = respone.data;
             }
         });
-        
+
         hideLoading();
     };
 
@@ -150,20 +154,21 @@
             return;
         }
 
-        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
-            toastr.error("Vui lòng chọn dự án!");
-            return;
-        }
+        //if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+        //    toastr.error("Vui lòng chọn dự án!");
+        //    return;
+        //}
 
         $scope.modelSearch.Months = '';
-        if ($scope.Thangs != null && $scope.Thangs.length > 0) {
-            for (var i = 0; i < $scope.Thangs.length; i++) {
-                if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
-                    $scope.modelSearch.Months = $scope.Thangs[i];
-                } else {
-                    $scope.modelSearch.Months += ',' + $scope.Thangs[i];
-                }
-            }
+        if ($scope.Thangs != null && $scope.Thangs != '') {
+            //for (var i = 0; i < $scope.Thangs.length; i++) {
+            //    if ($scope.modelSearch.Months == null || $scope.modelSearch.Months == '') {
+            //        $scope.modelSearch.Months = $scope.Thangs[i];
+            //    } else {
+            //        $scope.modelSearch.Months += ',' + $scope.Thangs[i];
+            //    }
+            //}
+            $scope.modelSearch.Months = $scope.Thangs;
             //$scope.modelSearch.Months = $scope.Thangs.map(function (obj) { return obj.Id; }).join(',');
         } else {
             toastr.error("Vui lòng chọn tháng!");
@@ -189,7 +194,7 @@
                 }
             }
         }
-        window.location.href = '/BaoCaoThang/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
+        window.location.href = '/BaoCaoChiSo/ExportData?Months=' + $scope.modelSearch.Months + '&Year=' + $scope.modelSearch.Year
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
             + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)
             + '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn);
@@ -197,7 +202,7 @@
 
     // Lấy danh sách Nhóm TBH theo tỉnh
     $scope.Changecity = function () {
-       
+
         var CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {

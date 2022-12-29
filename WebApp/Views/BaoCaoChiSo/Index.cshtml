@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "Báo cáo Chỉ số";
+}
+
+<div class="container-fluid" ng-controller="BaoCaoChiSoController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Báo cáo Chỉ số Dự án</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label">Tháng</label>
+                    <div class="col-sm-1">
+                        <select class="form-control" ui-select2 @*multiple*@ ng-model="Thangs" name="ListThang" ng-options="item.Id as item.Name for item in ListThang"></select>
+                    </div>
+
+                    <label class="col-sm-1 col-form-label">Năm</label>
+                    <div class="col-sm-1">
+                        <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear"></select>
+                    </div>
+
+                    @*<label class="col-sm-2 col-form-label">Dự án</label>
+        <div class="col-sm-2">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn"></select>
+        </div>*@
+
+                    @*</div>
+        <div class="form-group row">*@
+                    <label class="col-sm-1 col-form-label">Tỉnh</label>
+
+                    <div class="col-sm-2">
+                        <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity"></select>
+                    </div>
+                    <label class="col-sm-1 col-form-label">Nhóm</label>
+
+                    <div class="col-sm-2">
+                        <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;"># </th>
+                            <th style="width: 39%;" colspan="2">People / organizations that directly benefited from the project</th>
+                            <th style="width: 8%; ">Number (cumulative since project start-up)</th>
+                            <th style="width: 8%; ">Disaggregated data 1 (Men)</th>
+                            <th style="width: 8%; ">Disaggregated data 2 (Women)</th>
+                            <th style="width: 8%; ">Disaggregated data 3 (TG: Transgender)</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in ListData">
+                            <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
+                            <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
+                                <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
+                                <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
+                            </td>
+                            @*<td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>*@
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/BaoCaoChiSoController.js"></script>
+}

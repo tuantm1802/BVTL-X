@@ -1899,6 +1899,42 @@ namespace Data.Admin
             }
         }
 
+        public List<BaoCaoModel> GetDataReportChiSo(ReportSearchModel modelSearch)
+        {
+            var result = new List<BaoCaoModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Months", string.IsNullOrEmpty(modelSearch.Months) ? DBNull.Value : (object)modelSearch.Months),
+                    new SqlParameter("Year", modelSearch.Year == null ? 0 : (object)modelSearch.Year),
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    //new SqlParameter("TypeReport", modelSearch.TypeReport), //-- 1: BC tháng, 2: BC quý, 3: BC 6 tháng, 4: BC năm, 5: Full theo DA
+                    new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
+                    new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn)
+                };
+                if(modelSearch.TypeReport == 5) { 
+                    result = _DatabaseSql.ExecuteProcToList<BaoCaoModel>(Constants.SP_Report_Get_Data_Chi_So, param).ToList();
+                }
+                else if (modelSearch.TypeReport == 3)
+                {
+                    result = _DatabaseSql.ExecuteProcToList<BaoCaoModel>(Constants.SP_Report_Get_Data_Chi_So_6Thang, param).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "BaoCaoChiSoDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy tổng hợp báo cáo theo trang lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<BaoCaoModel>();
+            }
+            return result;
+        }
 
         /// <summary>
         /// Lấy dữ liệu báo cáo tổng hợp quý VIIV

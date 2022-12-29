@@ -1,0 +1,216 @@
+﻿using Data.InterfaceDA.Admin;
+using Data.Admin;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Common.Common;
+using Model.ModelExtend.Base;
+using Model.Model;
+using System.Data;
+using ClosedXML.Excel;
+using System.IO;
+using Model.ModelExtend;
+
+namespace WebApp.Controllers
+{
+    public class KetQuaXNNTController : Controller
+    {
+        IKetQuaXNNTDA _KetQuaXNNTDA = new KetQuaXNNTDA();
+        ISysLogDA _sysLogDA = new SysLogDA();
+        IDuAnDA _DuAnDA = new DuAnDA();
+        BaseController _helperController = new BaseController();
+
+        // GET: KetQuaXNNT
+        [HasCredential(ControllerName = "KetQuaXNNT")]
+        public ActionResult Index()
+        {
+            var modelSearch = new ModelSearch
+            {
+                KeyWord = string.Empty,
+                currentPage = 1,
+                pageSize = int.MaxValue,
+                SortColumn = "kqxnnt_id"
+            };
+            var data = _KetQuaXNNTDA.GetAllByPage(modelSearch);
+            return View(data);
+        }
+
+        [HttpPost]
+        public ActionResult GetAll(ModelSearch modelSearch)
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                int totalItems = 0;
+                var data = _KetQuaXNNTDA.GetAllByPage(modelSearch);
+                if (data != null && data.Count > 0)
+                    totalItems = data.FirstOrDefault().TotalRow;
+                AddLog("Lấy dữ liệu theo trang bảng kết quả XNNT( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
+                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy dữ liệu theo trang bảng kết quả XNNT( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") lỗi: " + ex.Message);
+
+                return Json(obj);
+            }
+        }
+        [HttpPost]
+        public object GetItemByID(int Id)
+        {
+            try
+            {
+                var data = _KetQuaXNNTDA.GetItemById(Id);
+                AddLog("Lấy dữ liệu theo ID bảng kết quả XNNT( ID: " + Id + ") thành công.");
+                return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data });
+            }
+            catch (Exception ex)
+            {
+                AddLog("Lấy dữ liệu theo ID bảng kết quả XNNT( ID: " + Id + ") lỗi: " + ex.Message);
+                return Json(new { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetBottomAction()
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                var menu = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+                var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
+                // Lấy danh sách du an
+                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+
+                AddLog("Lấy danh sách các botom được thực hiện trên from kết quả XNNT thành công.");
+                return Json(new { Buttoms = bottoms, Error = false, DuAns = duAns, Title = "Lấy dữ liệu thành công." }); ;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy danh sách các botom được thực hiện trên from kết quả XNNT lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+
+
+        #region Xuất dữ liệu ra excel
+        [HttpGet]
+        public ActionResult ExportData(string keyword)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                var modelSearch = new ModelSearch
+                {
+                    KeyWord = keyword == "undefined" ? string.Empty : keyword,
+                    currentPage = 1,
+                    pageSize = int.MaxValue,
+                    SortColumn = "kqxnnt_id"
+                };
+                var data = _KetQuaXNNTDA.GetAllByPage(modelSearch);
+
+                string file_name = "KetQuaXNNT_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToShortTimeString() + ".xlsx";
+
+                DataTable dt = new DataTable();
+                dt.Columns.AddRange(new DataColumn[8] { new DataColumn("Tỉnh"),
+                        new DataColumn("Mã nhóm TBH"),
+                        new DataColumn("Tên nhóm TBH"),
+                        new DataColumn("Mã KH"),
+                         new DataColumn("Họ tên KH"),
+                         new DataColumn("Ngày xét nghiệm"),
+                         new DataColumn("Kết quả XN Ma túy đá"),
+                         new DataColumn("Kết quả XN Heroin")
+
+                });
+                foreach (var item in data)
+                {
+                    dt.Rows.Add(
+                        item.CityName,
+                        item.manhom_tbh,
+                        item.tennhom_tbh,
+                        item.makh,
+                        item.hoten,
+                        item.ngayhoitext,
+                        item.kqxnda,
+                        item.kqxnheroin
+                        );
+                }
+
+                //Tên nhóm:,Mã KH,Ngày xét nghiệm:,Kết quả xét nghiệm ma túy đá,Kết quả xét nghiệm heroin
+
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    var ws = wb.Worksheets.Add("Kết quả XNNT");
+                    ws.Cell("A2").Value = "KẾT QUẢ XNNT";
+                    ws.Range("A2:H2").Row(1).Merge();
+                    ws.Cell("A2").Style.Font.Bold = true;
+                    ws.Cell("A2").Style.Font.FontSize = 20;
+                    ws.Column("A").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("A").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("B").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("B").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("C").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("D").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("D").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("E").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("F").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                    ws.Column("F").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("G").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                    ws.Column("G").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Column("H").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                    ws.Column("H").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+                    ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    ws.Row(3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Row(3).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+                    ws.Cell(3, 1).InsertTable(dt);
+                    AddLog("KẾT QUẢ XNNT");
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        ws.Columns(1, 10).AdjustToContents();
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AddLog("Export KẾT QUẢ XNNT lỗi: " + ex.Message);
+                return Json(new { message = "Lỗi xử lý dữ liệu" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion 
+        private void AddLog(string content)
+        {
+            var user = Session["USER_SESSION"] as UserLogin;
+            _sysLogDA.Add(
+                    new BVTL_QT_LOG
+                    {
+                        ControllerName = "KetQuaXNNT",
+                        UserName = user.UserName,
+                        DateLog = DateTime.Now,
+                        Content = content
+                    }
+                    );
+        }
+
+    }
+}

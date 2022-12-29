@@ -85,6 +85,7 @@
             return;
         }
 
+        $scope.modelSearch.Months = '';
         if ($scope.SauThang > 0) {
             if ($scope.SauThang == 1) {
                 $scope.modelSearch.Months ='1,2,3,4,5,6';
@@ -159,6 +160,7 @@
             toastr.error("Vui lòng chọn dự án!");
             return;
         }
+        $scope.modelSearch.Months = '';
         if ($scope.SauThang > 0) {
             if ($scope.SauThang == 1) {
                 $scope.modelSearch.Months = '1,2,3,4,5,6';

@@ -194,6 +194,8 @@
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
+    <Compile Include="Controllers\BaoCaoChiSoController.cs" />
+    <Compile Include="Controllers\KetQuaBHDGController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoTongHopQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
@@ -214,6 +216,7 @@
     <Compile Include="Controllers\BaoCaoTongHopController.cs" />
     <Compile Include="Controllers\ChuyenGuiDichVuController.cs" />
     <Compile Include="Controllers\KetQuaSangLocController.cs" />
+    <Compile Include="Controllers\KetQuaXNNTController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\PhieuTuVanController.cs" />
     <Compile Include="Controllers\KetQuaACEController.cs" />
@@ -282,6 +285,8 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
+    <Content Include="app\Controller\BaoCaoChiSoController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
     <Content Include="app\Controller\BaoCaoTongHopQuyVIIVController.js" />
     <Content Include="app\Controller\BaoCaoQuyVIIVController.js" />
@@ -296,7 +301,9 @@
     <Content Include="app\Controller\DuongSuDungController.js" />
     <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
+    <Content Include="app\Controller\KetQuaBHDGController.js" />
     <Content Include="app\Controller\KetQuaSangLocController.js" />
+    <Content Include="app\Controller\KetQuaXNNTController.js" />
     <Content Include="app\Controller\PhieuTuVanController.js" />
     <Content Include="app\Controller\KetQuaACEController.js" />
     <Content Include="app\Controller\KetQuaASSISTController.js" />
@@ -4613,7 +4620,6 @@
     <Content Include="Views\KetQuaSangLoc\Index.cshtml" />
     <Content Include="Views\BaoCaoQuyVIIV\Index.cshtml" />
     <Content Include="Views\BaoCaoTongHopQuyVIIV\Index.cshtml" />
-    <Content Include="Views\Notification\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

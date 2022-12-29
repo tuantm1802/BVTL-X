@@ -16,6 +16,7 @@ namespace Data.InterfaceDA.Admin
         /// <param name="pageSize"></param>
         /// <returns></returns>
         List<BaoCaoModel> GetDataReport(ReportSearchModel modelSearch);
+        List<BaoCaoModel> GetDataReportChiSo(ReportSearchModel modelSearch);
 
         /// <summary>
         /// Lấy dữ liệu báo cáo tổng hợp theo trang
