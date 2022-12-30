@@ -53,6 +53,22 @@
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" ManuallyRouted="false" />
         <AssociationConnector Association="BVTL_REPORTINGModel.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" ManuallyRouted="false" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F89" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG" Width="1.5" PointX="8.25" PointY="59.75" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU" Width="1.5" PointX="8.25" PointY="71.375" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG" Width="1.5" PointX="11.25" PointY="57.625" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION" Width="1.5" PointX="11.25" PointY="73.25" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B14" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B60" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25H14" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02C25B50" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01AE3717" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3712" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3727" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BH3712" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F16" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F99" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67H16" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03B67F89" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

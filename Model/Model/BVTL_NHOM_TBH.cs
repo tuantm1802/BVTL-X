@@ -23,6 +23,10 @@ namespace Model.Model
             this.BVTL_KQ_SL_SKTT = new HashSet<BVTL_KQ_SL_SKTT>();
             this.BVTL_KQ_XN_HIV = new HashSet<BVTL_KQ_XN_HIV>();
             this.BVTL_KQ_XN_NUOC_TIEU = new HashSet<BVTL_KQ_XN_NUOC_TIEU>();
+            this.VIIV_DANH_GIA_HAI_LONG = new HashSet<VIIV_DANH_GIA_HAI_LONG>();
+            this.VIIV_TRAINING_DATA_COLLECTION = new HashSet<VIIV_TRAINING_DATA_COLLECTION>();
+            this.VIIV_TT_KH_MAT_DAU = new HashSet<VIIV_TT_KH_MAT_DAU>();
+            this.VIIV_THONG_TIN_TRUYEN_THONG = new HashSet<VIIV_THONG_TIN_TRUYEN_THONG>();
         }
     
         public string manhom_tbh { get; set; }
@@ -42,5 +46,13 @@ namespace Model.Model
         public virtual ICollection<BVTL_KQ_XN_HIV> BVTL_KQ_XN_HIV { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_KQ_XN_NUOC_TIEU> BVTL_KQ_XN_NUOC_TIEU { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VIIV_DANH_GIA_HAI_LONG> VIIV_DANH_GIA_HAI_LONG { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VIIV_TRAINING_DATA_COLLECTION> VIIV_TRAINING_DATA_COLLECTION { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VIIV_TT_KH_MAT_DAU> VIIV_TT_KH_MAT_DAU { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VIIV_THONG_TIN_TRUYEN_THONG> VIIV_THONG_TIN_TRUYEN_THONG { get; set; }
     }
 }

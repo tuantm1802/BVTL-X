@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -55,6 +56,10 @@
     <Compile Include="ModelExtend\API\ProcessModel.cs" />
     <Compile Include="ModelExtend\API\ResultApi1344Model.cs" />
     <Compile Include="ModelExtend\API\ResultApiACEModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiTTKHMaDaModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiTrainingDataCollModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiDGHLModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiTTTTModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiXnNuocTieuModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiChuyenGuiDVModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiHIVModel.cs" />
@@ -194,6 +199,18 @@
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\CHITIEU_DUAN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIIV_DANH_GIA_HAI_LONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIIV_THONG_TIN_TRUYEN_THONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIIV_TRAINING_DATA_COLLECTION.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\VIIV_TT_KH_MAT_DAU.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
