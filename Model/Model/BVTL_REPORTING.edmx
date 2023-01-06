@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BVTL_REPORTINGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="BVTL_REPORTINGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BVTL_API">
           <Key>
             <PropertyRef Name="Api_Id" />
@@ -270,6 +270,15 @@
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="hotro_gttt" Type="nvarchar" MaxLength="100" />
+          <Property Name="ngayhotro_2" Type="date" />
+          <Property Name="hotro_pep" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_c" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_c_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_lao" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_lao_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_mtd" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_prep" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -623,6 +632,110 @@
           <Property Name="DONVI" Type="nvarchar" MaxLength="50" />
           <Property Name="MADUAN" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="ngay" Type="date" Nullable="false" />
+          <Property Name="ngayth_date" Type="int" Nullable="false" />
+          <Property Name="ngayth_month" Type="int" Nullable="false" />
+          <Property Name="ngayth_year" Type="int" Nullable="false" />
+          <Property Name="lantuvan" Type="int" />
+          <Property Name="cau1" Type="int" />
+          <Property Name="cau2" Type="int" />
+          <Property Name="cau3" Type="int" />
+          <Property Name="cau4" Type="int" />
+          <Property Name="cau5" Type="int" />
+          <Property Name="cau6" Type="nvarchar" MaxLength="200" />
+          <Property Name="nh_gi_mc_hi_lng_complete" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VIIV_TT_KH_MAT_DAU">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="ngaynl" Type="date" Nullable="false" />
+          <Property Name="ngayth_date" Type="int" Nullable="false" />
+          <Property Name="ngayth_month" Type="int" Nullable="false" />
+          <Property Name="ngayth_year" Type="int" Nullable="false" />
+          <Property Name="ngay_md" Type="date" Nullable="false" />
+          <Property Name="kh_mt_du_complete" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VIIV_THONG_TIN_TRUYEN_THONG">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" />
+          <Property Name="day" Type="date" Nullable="false" />
+          <Property Name="ngayth_date" Type="int" Nullable="false" />
+          <Property Name="ngayth_month" Type="int" Nullable="false" />
+          <Property Name="ngayth_year" Type="int" Nullable="false" />
+          <Property Name="diadiem" Type="nvarchar" MaxLength="200" />
+          <Property Name="noidung" Type="nvarchar" MaxLength="500" />
+          <Property Name="sokh" Type="int" />
+          <Property Name="bcs" Type="int" />
+          <Property Name="gel" Type="int" />
+          <Property Name="bomkt" Type="int" />
+          <Property Name="nuoccat" Type="int" />
+          <Property Name="hopchiathuoc" Type="int" />
+          <Property Name="ghichu" Type="nvarchar" MaxLength="500" />
+          <Property Name="viiv_thng_tin_truyn_thng_complete" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VIIV_TRAINING_DATA_COLLECTION">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="makh" Type="varchar" MaxLength="12" />
+          <Property Name="thoigian" Type="date" Nullable="false" />
+          <Property Name="ngayth_date" Type="int" Nullable="false" />
+          <Property Name="ngayth_month" Type="int" Nullable="false" />
+          <Property Name="ngayth_year" Type="int" Nullable="false" />
+          <Property Name="doituong" Type="nvarchar" MaxLength="200" />
+          <Property Name="taphuan" Type="nvarchar" MaxLength="200" />
+          <Property Name="khac" Type="nvarchar" MaxLength="100" />
+          <Property Name="noidung" Type="nvarchar" MaxLength="500" />
+          <Property Name="nhataitro" Type="int" />
+          <Property Name="nvngo" Type="int" />
+          <Property Name="nvtccd" Type="int" />
+          <Property Name="cbcqnn" Type="int" />
+          <Property Name="nvtv" Type="int" />
+          <Property Name="cbyt" Type="int" />
+          <Property Name="scdi" Type="int" />
+          <Property Name="khac1" Type="int" />
+          <Property Name="nhataitro_2" Type="int" />
+          <Property Name="ngo" Type="int" />
+          <Property Name="tochuc1" Type="int" />
+          <Property Name="qlnn" Type="int" />
+          <Property Name="ccdv" Type="int" />
+          <Property Name="ttcn" Type="int" />
+          <Property Name="bc" Type="int" />
+          <Property Name="scdi1" Type="int" />
+          <Property Name="scdi2" Type="int" />
+          <Property Name="tinh" Type="nvarchar" MaxLength="500" />
+          <Property Name="tinh_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="training_complete" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <Association Name="BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
           <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
           <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" Type="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Multiplicity="*" />
@@ -659,6 +772,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02B25B14">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
+          <End Role="VIIV_DANH_GIA_HAI_LONG" Type="Self.VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__BVTL_KQ_X__city___02B25B50">
           <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
           <End Role="BVTL_KQ_XN_NUOC_TIEU" Type="Self.BVTL_KQ_XN_NUOC_TIEU" Multiplicity="*" />
@@ -668,6 +793,66 @@
             </Principal>
             <Dependent Role="BVTL_KQ_XN_NUOC_TIEU">
               <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02B25B60">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
+          <End Role="VIIV_TRAINING_DATA_COLLECTION" Type="Self.VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02B25H14">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
+          <End Role="VIIV_TT_KH_MAT_DAU" Type="Self.VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02C25B50">
+          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
+          <End Role="VIIV_THONG_TIN_TRUYEN_THONG" Type="Self.VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01AE3717">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="VIIV_THONG_TIN_TRUYEN_THONG" Type="Self.VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BE3712">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="VIIV_DANH_GIA_HAI_LONG" Type="Self.VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="maduan" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -683,6 +868,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BE3727">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="VIIV_TRAINING_DATA_COLLECTION" Type="Self.VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BH3712">
+          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
+          <End Role="VIIV_TT_KH_MAT_DAU" Type="Self.VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67F16">
+          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Role="VIIV_DANH_GIA_HAI_LONG" Type="Self.VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__BVTL_KQ_X__manho__03A67F89">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_KQ_XN_NUOC_TIEU" Type="Self.BVTL_KQ_XN_NUOC_TIEU" Multiplicity="*" />
@@ -691,6 +912,42 @@
               <PropertyRef Name="manhom_tbh" />
             </Principal>
             <Dependent Role="BVTL_KQ_XN_NUOC_TIEU">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67F99">
+          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Role="VIIV_TRAINING_DATA_COLLECTION" Type="Self.VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67H16">
+          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Role="VIIV_TT_KH_MAT_DAU" Type="Self.VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03B67F89">
+          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Role="VIIV_THONG_TIN_TRUYEN_THONG" Type="Self.VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
               <PropertyRef Name="manhom_tbh" />
             </Dependent>
           </ReferentialConstraint>
@@ -892,6 +1149,10 @@
           <EntitySet Name="BVTL_QT_THAM_SO" EntityType="Self.BVTL_QT_THAM_SO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BVTL_TAN_SUAT_SU_DUNG" EntityType="Self.BVTL_TAN_SUAT_SU_DUNG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHITIEU_DUAN" EntityType="Self.CHITIEU_DUAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIIV_DANH_GIA_HAI_LONG" EntityType="Self.VIIV_DANH_GIA_HAI_LONG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIIV_TT_KH_MAT_DAU" EntityType="Self.VIIV_TT_KH_MAT_DAU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIIV_THONG_TIN_TRUYEN_THONG" EntityType="Self.VIIV_THONG_TIN_TRUYEN_THONG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIIV_TRAINING_DATA_COLLECTION" EntityType="Self.VIIV_TRAINING_DATA_COLLECTION" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
@@ -904,17 +1165,65 @@
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntitySet="BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25B14" Association="Self.FK__BVTL_KQ_X__city___02B25B14">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
+          </AssociationSet>
           <AssociationSet Name="FK__BVTL_KQ_X__city___02B25B50" Association="Self.FK__BVTL_KQ_X__city___02B25B50">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_KQ_XN_NUOC_TIEU" EntitySet="BVTL_KQ_XN_NUOC_TIEU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25B60" Association="Self.FK__BVTL_KQ_X__city___02B25B60">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25H14" Association="Self.FK__BVTL_KQ_X__city___02B25H14">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02C25B50" Association="Self.FK__BVTL_KQ_X__city___02C25B50">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01AE3717" Association="Self.FK__BVTL_KQ_X__madua__01AE3717">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BE3712" Association="Self.FK__BVTL_KQ_X__madua__01BE3712">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
           </AssociationSet>
           <AssociationSet Name="FK__BVTL_KQ_X__madua__01BE3717" Association="Self.FK__BVTL_KQ_X__madua__01BE3717">
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_KQ_XN_NUOC_TIEU" EntitySet="BVTL_KQ_XN_NUOC_TIEU" />
           </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BE3727" Association="Self.FK__BVTL_KQ_X__madua__01BE3727">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BH3712" Association="Self.FK__BVTL_KQ_X__madua__01BH3712">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67F16" Association="Self.FK__BVTL_KQ_X__manho__03A67F16">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
+          </AssociationSet>
           <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67F89" Association="Self.FK__BVTL_KQ_X__manho__03A67F89">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_XN_NUOC_TIEU" EntitySet="BVTL_KQ_XN_NUOC_TIEU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67F99" Association="Self.FK__BVTL_KQ_X__manho__03A67F99">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67H16" Association="Self.FK__BVTL_KQ_X__manho__03A67H16">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03B67F89" Association="Self.FK__BVTL_KQ_X__manho__03B67F89">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
           </AssociationSet>
           <AssociationSet Name="FK_BVTL_KQ_SL_ACE_BVTL_CITES" Association="Self.FK_BVTL_KQ_SL_ACE_BVTL_CITES">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -973,8 +1282,7 @@
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BVTL_REPORTINGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1189,6 +1497,10 @@
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="Self.FK_BVTL_KQ_SL_SKTT_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_SL_SKTT" />
           <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="Self.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_KQ_XN_HIV" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="Self.FK_BVTL_NHOM_TBH_BVTL_CITES" FromRole="BVTL_CITES" ToRole="BVTL_NHOM_TBH" />
+          <NavigationProperty Name="VIIV_DANH_GIA_HAI_LONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B14" FromRole="BVTL_CITES" ToRole="VIIV_DANH_GIA_HAI_LONG" />
+          <NavigationProperty Name="VIIV_TRAINING_DATA_COLLECTION" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B60" FromRole="BVTL_CITES" ToRole="VIIV_TRAINING_DATA_COLLECTION" />
+          <NavigationProperty Name="VIIV_TT_KH_MAT_DAU" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25H14" FromRole="BVTL_CITES" ToRole="VIIV_TT_KH_MAT_DAU" />
+          <NavigationProperty Name="VIIV_THONG_TIN_TRUYEN_THONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02C25B50" FromRole="BVTL_CITES" ToRole="VIIV_THONG_TIN_TRUYEN_THONG" />
         </EntityType>
         <EntityType Name="BVTL_CHAT_GAY_NGHIEN_3TH">
           <Key>
@@ -1254,6 +1566,15 @@
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hotro_gttt" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ngayhotro_2" Type="DateTime" Precision="0" />
+          <Property Name="hotro_pep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_c" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_c_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_lao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_lao_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_mtd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_prep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -1267,6 +1588,10 @@
           <NavigationProperty Name="BVTL_KQ_SL_ASSIST" Relationship="Self.FK_BVTL_KQ_SL_ASSIST_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_SL_ASSIST" />
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="Self.FK_BVTL_KQ_SL_SKTT_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_SL_SKTT" />
           <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="Self.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_DU_AN" ToRole="BVTL_KQ_XN_HIV" />
+          <NavigationProperty Name="VIIV_THONG_TIN_TRUYEN_THONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01AE3717" FromRole="BVTL_DU_AN" ToRole="VIIV_THONG_TIN_TRUYEN_THONG" />
+          <NavigationProperty Name="VIIV_DANH_GIA_HAI_LONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3712" FromRole="BVTL_DU_AN" ToRole="VIIV_DANH_GIA_HAI_LONG" />
+          <NavigationProperty Name="VIIV_TRAINING_DATA_COLLECTION" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3727" FromRole="BVTL_DU_AN" ToRole="VIIV_TRAINING_DATA_COLLECTION" />
+          <NavigationProperty Name="VIIV_TT_KH_MAT_DAU" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BH3712" FromRole="BVTL_DU_AN" ToRole="VIIV_TT_KH_MAT_DAU" />
         </EntityType>
         <EntityType Name="BVTL_DUONG_SU_DUNG">
           <Key>
@@ -1453,6 +1778,10 @@
           <NavigationProperty Name="BVTL_KQ_SL_SKTT" Relationship="Self.fk_BVTL_KQ_SL_SKTT_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_SL_SKTT" />
           <NavigationProperty Name="BVTL_KQ_XN_HIV" Relationship="Self.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_XN_HIV" />
           <NavigationProperty Name="BVTL_KQ_XN_NUOC_TIEU" Relationship="Self.FK__BVTL_KQ_X__manho__03A67F89" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_KQ_XN_NUOC_TIEU" />
+          <NavigationProperty Name="VIIV_DANH_GIA_HAI_LONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F16" FromRole="BVTL_NHOM_TBH" ToRole="VIIV_DANH_GIA_HAI_LONG" />
+          <NavigationProperty Name="VIIV_TRAINING_DATA_COLLECTION" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F99" FromRole="BVTL_NHOM_TBH" ToRole="VIIV_TRAINING_DATA_COLLECTION" />
+          <NavigationProperty Name="VIIV_TT_KH_MAT_DAU" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67H16" FromRole="BVTL_NHOM_TBH" ToRole="VIIV_TT_KH_MAT_DAU" />
+          <NavigationProperty Name="VIIV_THONG_TIN_TRUYEN_THONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03B67F89" FromRole="BVTL_NHOM_TBH" ToRole="VIIV_THONG_TIN_TRUYEN_THONG" />
         </EntityType>
         <EntityType Name="BVTL_PHIEU_TU_VAN">
           <Key>
@@ -1876,7 +2205,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="BVTL_REPORTINGEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="BVTL_REPORTINGEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BVTL_API" EntityType="Self.BVTL_API" />
           <EntitySet Name="BVTL_BO_BIEU_MAU_KH_BAO_CAO" EntityType="Self.BVTL_BO_BIEU_MAU_KH_BAO_CAO" />
           <EntitySet Name="BVTL_CITES" EntityType="Self.BVTL_CITES" />
@@ -1985,13 +2314,325 @@
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_KQ_XN_NUOC_TIEU" EntitySet="BVTL_KQ_XN_NUOC_TIEU" />
           </AssociationSet>
+          <EntitySet Name="VIIV_DANH_GIA_HAI_LONG" EntityType="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG" />
+          <EntitySet Name="VIIV_TT_KH_MAT_DAU" EntityType="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU" />
+          <EntitySet Name="VIIV_THONG_TIN_TRUYEN_THONG" EntityType="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG" />
+          <EntitySet Name="VIIV_TRAINING_DATA_COLLECTION" EntityType="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION" />
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25B14" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B14">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25B60" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B60">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02B25H14" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25H14">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__city___02C25B50" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02C25B50">
+            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01AE3717" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01AE3717">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BE3712" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3712">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BE3727" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3727">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__madua__01BH3712" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BH3712">
+            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67F16" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F16">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_DANH_GIA_HAI_LONG" EntitySet="VIIV_DANH_GIA_HAI_LONG" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67F99" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F99">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_TRAINING_DATA_COLLECTION" EntitySet="VIIV_TRAINING_DATA_COLLECTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03A67H16" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67H16">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_TT_KH_MAT_DAU" EntitySet="VIIV_TT_KH_MAT_DAU" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BVTL_KQ_X__manho__03B67F89" Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03B67F89">
+            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
+            <End Role="VIIV_THONG_TIN_TRUYEN_THONG" EntitySet="VIIV_THONG_TIN_TRUYEN_THONG" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="ngay" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ngayth_date" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_month" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_year" Type="Int32" Nullable="false" />
+          <Property Name="lantuvan" Type="Int32" />
+          <Property Name="cau1" Type="Int32" />
+          <Property Name="cau2" Type="Int32" />
+          <Property Name="cau3" Type="Int32" />
+          <Property Name="cau4" Type="Int32" />
+          <Property Name="cau5" Type="Int32" />
+          <Property Name="cau6" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="nh_gi_mc_hi_lng_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B14" FromRole="VIIV_DANH_GIA_HAI_LONG" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3712" FromRole="VIIV_DANH_GIA_HAI_LONG" ToRole="BVTL_DU_AN" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F16" FromRole="VIIV_DANH_GIA_HAI_LONG" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <EntityType Name="VIIV_TT_KH_MAT_DAU">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="makh" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="ngaynl" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ngayth_date" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_month" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_year" Type="Int32" Nullable="false" />
+          <Property Name="ngay_md" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="kh_mt_du_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25H14" FromRole="VIIV_TT_KH_MAT_DAU" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BH3712" FromRole="VIIV_TT_KH_MAT_DAU" ToRole="BVTL_DU_AN" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67H16" FromRole="VIIV_TT_KH_MAT_DAU" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <EntityType Name="VIIV_THONG_TIN_TRUYEN_THONG">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="makh" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="day" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ngayth_date" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_month" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_year" Type="Int32" Nullable="false" />
+          <Property Name="diadiem" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="noidung" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sokh" Type="Int32" />
+          <Property Name="bcs" Type="Int32" />
+          <Property Name="gel" Type="Int32" />
+          <Property Name="bomkt" Type="Int32" />
+          <Property Name="nuoccat" Type="Int32" />
+          <Property Name="hopchiathuoc" Type="Int32" />
+          <Property Name="ghichu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="viiv_thng_tin_truyn_thng_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02C25B50" FromRole="VIIV_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01AE3717" FromRole="VIIV_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_DU_AN" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03B67F89" FromRole="VIIV_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <EntityType Name="VIIV_TRAINING_DATA_COLLECTION">
+          <Key>
+            <PropertyRef Name="record_id" />
+          </Key>
+          <Property Name="record_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="makh" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="thoigian" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ngayth_date" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_month" Type="Int32" Nullable="false" />
+          <Property Name="ngayth_year" Type="Int32" Nullable="false" />
+          <Property Name="doituong" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="taphuan" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="khac" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="noidung" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="nhataitro" Type="Int32" />
+          <Property Name="nvngo" Type="Int32" />
+          <Property Name="nvtccd" Type="Int32" />
+          <Property Name="cbcqnn" Type="Int32" />
+          <Property Name="nvtv" Type="Int32" />
+          <Property Name="cbyt" Type="Int32" />
+          <Property Name="scdi" Type="Int32" />
+          <Property Name="khac1" Type="Int32" />
+          <Property Name="nhataitro_2" Type="Int32" />
+          <Property Name="ngo" Type="Int32" />
+          <Property Name="tochuc1" Type="Int32" />
+          <Property Name="qlnn" Type="Int32" />
+          <Property Name="ccdv" Type="Int32" />
+          <Property Name="ttcn" Type="Int32" />
+          <Property Name="bc" Type="Int32" />
+          <Property Name="scdi1" Type="Int32" />
+          <Property Name="scdi2" Type="Int32" />
+          <Property Name="tinh" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="tinh_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="training_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__city___02B25B60" FromRole="VIIV_TRAINING_DATA_COLLECTION" ToRole="BVTL_CITES" />
+          <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__madua__01BE3727" FromRole="VIIV_TRAINING_DATA_COLLECTION" ToRole="BVTL_DU_AN" />
+          <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F99" FromRole="VIIV_TRAINING_DATA_COLLECTION" ToRole="BVTL_NHOM_TBH" />
+        </EntityType>
+        <Association Name="FK__BVTL_KQ_X__city___02B25B14">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG" Role="VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02B25B60">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION" Role="VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02B25H14">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU" Role="VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__city___02C25B50">
+          <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG" Role="VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_CITES">
+              <PropertyRef Name="Code" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
+              <PropertyRef Name="city_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01AE3717">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG" Role="VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BE3712">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG" Role="VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BE3727">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION" Role="VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__madua__01BH3712">
+          <End Type="BVTL_REPORTINGModel.BVTL_DU_AN" Role="BVTL_DU_AN" Multiplicity="1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU" Role="VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_DU_AN">
+              <PropertyRef Name="maduan" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="maduan" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67F16">
+          <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG" Role="VIIV_DANH_GIA_HAI_LONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_DANH_GIA_HAI_LONG">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67F99">
+          <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION" Role="VIIV_TRAINING_DATA_COLLECTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_TRAINING_DATA_COLLECTION">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03A67H16">
+          <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU" Role="VIIV_TT_KH_MAT_DAU" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_TT_KH_MAT_DAU">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BVTL_KQ_X__manho__03B67F89">
+          <End Type="BVTL_REPORTINGModel.BVTL_NHOM_TBH" Role="BVTL_NHOM_TBH" Multiplicity="0..1" />
+          <End Type="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG" Role="VIIV_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BVTL_NHOM_TBH">
+              <PropertyRef Name="manhom_tbh" />
+            </Principal>
+            <Dependent Role="VIIV_THONG_TIN_TRUYEN_THONG">
+              <PropertyRef Name="manhom_tbh" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="BVTL_REPORTINGModelStoreContainer" CdmEntityContainer="BVTL_REPORTINGEntities1">
+        <EntityContainerMapping StorageEntityContainer="BVTL_REPORTINGModelStoreContainer" CdmEntityContainer="BVTL_REPORTINGEntities">
           <EntitySetMapping Name="BVTL_API">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_API">
               <MappingFragment StoreEntitySet="BVTL_API">
@@ -2217,6 +2858,15 @@
           <EntitySetMapping Name="BVTL_CHUYEN_GUI_DICH_VU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU">
               <MappingFragment StoreEntitySet="BVTL_CHUYEN_GUI_DICH_VU">
+                <ScalarProperty Name="hotro_prep" ColumnName="hotro_prep" />
+                <ScalarProperty Name="hotro_mtd" ColumnName="hotro_mtd" />
+                <ScalarProperty Name="hotro_lao_2" ColumnName="hotro_lao_2" />
+                <ScalarProperty Name="hotro_lao" ColumnName="hotro_lao" />
+                <ScalarProperty Name="hotro_c_2" ColumnName="hotro_c_2" />
+                <ScalarProperty Name="hotro_c" ColumnName="hotro_c" />
+                <ScalarProperty Name="hotro_pep" ColumnName="hotro_pep" />
+                <ScalarProperty Name="ngayhotro_2" ColumnName="ngayhotro_2" />
+                <ScalarProperty Name="hotro_gttt" ColumnName="hotro_gttt" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="loaihinh" ColumnName="loaihinh" />
                 <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />
@@ -2634,6 +3284,114 @@
                 <ScalarProperty Name="CHITIEU" ColumnName="CHITIEU" />
                 <ScalarProperty Name="DONVI" ColumnName="DONVI" />
                 <ScalarProperty Name="MADUAN" ColumnName="MADUAN" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIIV_DANH_GIA_HAI_LONG">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.VIIV_DANH_GIA_HAI_LONG">
+              <MappingFragment StoreEntitySet="VIIV_DANH_GIA_HAI_LONG">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="nh_gi_mc_hi_lng_complete" ColumnName="nh_gi_mc_hi_lng_complete" />
+                <ScalarProperty Name="cau6" ColumnName="cau6" />
+                <ScalarProperty Name="cau5" ColumnName="cau5" />
+                <ScalarProperty Name="cau4" ColumnName="cau4" />
+                <ScalarProperty Name="cau3" ColumnName="cau3" />
+                <ScalarProperty Name="cau2" ColumnName="cau2" />
+                <ScalarProperty Name="cau1" ColumnName="cau1" />
+                <ScalarProperty Name="lantuvan" ColumnName="lantuvan" />
+                <ScalarProperty Name="ngayth_year" ColumnName="ngayth_year" />
+                <ScalarProperty Name="ngayth_month" ColumnName="ngayth_month" />
+                <ScalarProperty Name="ngayth_date" ColumnName="ngayth_date" />
+                <ScalarProperty Name="ngay" ColumnName="ngay" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIIV_TT_KH_MAT_DAU">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.VIIV_TT_KH_MAT_DAU">
+              <MappingFragment StoreEntitySet="VIIV_TT_KH_MAT_DAU">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="kh_mt_du_complete" ColumnName="kh_mt_du_complete" />
+                <ScalarProperty Name="ngay_md" ColumnName="ngay_md" />
+                <ScalarProperty Name="ngayth_year" ColumnName="ngayth_year" />
+                <ScalarProperty Name="ngayth_month" ColumnName="ngayth_month" />
+                <ScalarProperty Name="ngayth_date" ColumnName="ngayth_date" />
+                <ScalarProperty Name="ngaynl" ColumnName="ngaynl" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIIV_THONG_TIN_TRUYEN_THONG">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.VIIV_THONG_TIN_TRUYEN_THONG">
+              <MappingFragment StoreEntitySet="VIIV_THONG_TIN_TRUYEN_THONG">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="viiv_thng_tin_truyn_thng_complete" ColumnName="viiv_thng_tin_truyn_thng_complete" />
+                <ScalarProperty Name="ghichu" ColumnName="ghichu" />
+                <ScalarProperty Name="hopchiathuoc" ColumnName="hopchiathuoc" />
+                <ScalarProperty Name="nuoccat" ColumnName="nuoccat" />
+                <ScalarProperty Name="bomkt" ColumnName="bomkt" />
+                <ScalarProperty Name="gel" ColumnName="gel" />
+                <ScalarProperty Name="bcs" ColumnName="bcs" />
+                <ScalarProperty Name="sokh" ColumnName="sokh" />
+                <ScalarProperty Name="noidung" ColumnName="noidung" />
+                <ScalarProperty Name="diadiem" ColumnName="diadiem" />
+                <ScalarProperty Name="ngayth_year" ColumnName="ngayth_year" />
+                <ScalarProperty Name="ngayth_month" ColumnName="ngayth_month" />
+                <ScalarProperty Name="ngayth_date" ColumnName="ngayth_date" />
+                <ScalarProperty Name="day" ColumnName="day" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIIV_TRAINING_DATA_COLLECTION">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.VIIV_TRAINING_DATA_COLLECTION">
+              <MappingFragment StoreEntitySet="VIIV_TRAINING_DATA_COLLECTION">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="training_complete" ColumnName="training_complete" />
+                <ScalarProperty Name="tinh_2" ColumnName="tinh_2" />
+                <ScalarProperty Name="tinh" ColumnName="tinh" />
+                <ScalarProperty Name="scdi2" ColumnName="scdi2" />
+                <ScalarProperty Name="scdi1" ColumnName="scdi1" />
+                <ScalarProperty Name="bc" ColumnName="bc" />
+                <ScalarProperty Name="ttcn" ColumnName="ttcn" />
+                <ScalarProperty Name="ccdv" ColumnName="ccdv" />
+                <ScalarProperty Name="qlnn" ColumnName="qlnn" />
+                <ScalarProperty Name="tochuc1" ColumnName="tochuc1" />
+                <ScalarProperty Name="ngo" ColumnName="ngo" />
+                <ScalarProperty Name="nhataitro_2" ColumnName="nhataitro_2" />
+                <ScalarProperty Name="khac1" ColumnName="khac1" />
+                <ScalarProperty Name="scdi" ColumnName="scdi" />
+                <ScalarProperty Name="cbyt" ColumnName="cbyt" />
+                <ScalarProperty Name="nvtv" ColumnName="nvtv" />
+                <ScalarProperty Name="cbcqnn" ColumnName="cbcqnn" />
+                <ScalarProperty Name="nvtccd" ColumnName="nvtccd" />
+                <ScalarProperty Name="nvngo" ColumnName="nvngo" />
+                <ScalarProperty Name="nhataitro" ColumnName="nhataitro" />
+                <ScalarProperty Name="noidung" ColumnName="noidung" />
+                <ScalarProperty Name="khac" ColumnName="khac" />
+                <ScalarProperty Name="taphuan" ColumnName="taphuan" />
+                <ScalarProperty Name="doituong" ColumnName="doituong" />
+                <ScalarProperty Name="ngayth_year" ColumnName="ngayth_year" />
+                <ScalarProperty Name="ngayth_month" ColumnName="ngayth_month" />
+                <ScalarProperty Name="ngayth_date" ColumnName="ngayth_date" />
+                <ScalarProperty Name="thoigian" ColumnName="thoigian" />
+                <ScalarProperty Name="makh" ColumnName="makh" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

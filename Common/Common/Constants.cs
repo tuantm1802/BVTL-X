@@ -42,6 +42,18 @@ namespace Common.Common
 
         public const string SP_ChuyenGuiDichVu_Get_By_Page = "ChuyenGuiDichVu_Get_By_Page";
         public const string SP_ChuyenGuiDichVu_Get_By_Id = "ChuyenGuiDichVu_Get_By_Id";
+        
+        public const string SP_TTTruyenThongVIIV_Get_By_Page = "TTTruyenThongVIIV_Get_By_Page";
+        public const string SP_TTTruyenThongVIIV_Get_By_Id = "TTTruyenThongVIIV_Get_By_Id";
+        
+        public const string SP_TrainingDataCollVIIV_Get_By_Page = "TrainingDataCollVIIV_Get_By_Page";
+        public const string SP_TrainingDataCollVIIV_Get_By_Id = "TrainingDataCollVIIV_Get_By_Id";
+        
+        public const string SP_TTKHMaDaVIIV_Get_By_Page = "TTKHMaDaVIIV_Get_By_Page";
+        public const string SP_TTKHMaDaVIIV_Get_By_Id = "TTKHMaDaVIIV_Get_By_Id";
+        
+        public const string SP_DGHLVIIV_Get_By_Page = "DGHLVIIV_Get_By_Page";
+        public const string SP_DGHLVIIV_Get_By_Id = "DGHLVIIV_Get_By_Id";
 
         public const string SP_PhieuTuVan_Get_By_Page = "PhieuTuVan_Get_By_Page";
         public const string SP_PhieuTuVan_Get_By_Id = "PhieuTuVan_Get_By_Id";

@@ -200,6 +200,89 @@ namespace Data.API
                         }
                     }
 
+                    // Đầu api VIIV_THONG_TIN_TRUYEN_THONG
+                    if (tableNames.Contains("VIIV_THONG_TIN_TRUYEN_THONG"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTTTTModel>>(resultApiString);
+
+                        var tongHops = new List<VIIV_THONG_TIN_TRUYEN_THONG>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiTTTTToEntity(dataResultApi.Where(x => x.viiv_thng_tin_truyn_thng_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_THONG_TIN_TRUYEN_THONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "VIIV_THONG_TIN_TRUYEN_THONG", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+
+                    // Đầu api VIIV_TRAINING_DATA_COLLECTION
+                    if (tableNames.Contains("VIIV_TRAINING_DATA_COLLECTION"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTrainingDataCollModel>>(resultApiString);
+
+                        var tongHops = new List<VIIV_TRAINING_DATA_COLLECTION>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiTrainingDataCollToEntity(dataResultApi.Where(x => x.training_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_TRAINING_DATA_COLLECTION
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "VIIV_TRAINING_DATA_COLLECTION", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+
+                    // Đầu api VIIV_DANH_GIA_HAI_LONG
+                    if (tableNames.Contains("VIIV_DANH_GIA_HAI_LONG"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiDGHLModel>>(resultApiString);
+
+                        var tongHops = new List<VIIV_DANH_GIA_HAI_LONG>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiDGHLToEntity(dataResultApi.Where(x => x.nh_gi_mc_hi_lng_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_DANH_GIA_HAI_LONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "VIIV_DANH_GIA_HAI_LONG", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+                    // Đầu api VIIV_TT_KH_MAT_DAU
+                    if (tableNames.Contains("VIIV_TT_KH_MAT_DAU"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTTKHMaDaModel>>(resultApiString);
+
+                        var tongHops = new List<VIIV_TT_KH_MAT_DAU>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiTTKHMaDaToEntity(dataResultApi.Where(x => x.kh_mt_du_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_TT_KH_MAT_DAU
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "VIIV_TT_KH_MAT_DAU", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+
                     #endregion
                 }
 

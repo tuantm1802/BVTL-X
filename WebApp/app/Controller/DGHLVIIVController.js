@@ -1,13 +1,13 @@
-﻿app.controller("KetQuaXNNTController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("DGHLVIIVController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "kqxnnt_id";
+    $scope.modelSearch.SortColumn = "record_id";
 
     $scope.ListDuAn = [];
-    var dataTableKetQuaXNNT = null;
+    var dataTableDGHLVIIV = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
 
@@ -24,7 +24,7 @@
     function GetBottomAction() {
         $.ajax({
             type: 'post',
-            url: '/KetQuaXNNT/GetBottomAction',
+            url: '/DGHLVIIV/GetBottomAction',
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -45,19 +45,19 @@
         });
     }
 
-    $('#dataTableKetQuaXNNT').on('click', 'tr', function () {
+    $('#dataTableDGHLVIIV').on('click', 'tr', function () {
         $(this).toggleClass('selected');
     });
 
     $scope.LoadPage = function (genTable) {
         showToast();
         
-        $scope.ListKetQuaXNNT = [];
+        $scope.ListDGHLVIIV = [];
         if (genTable == 1 || genTable == 2) {
             if (genTable == 2)
-                dataTableKetQuaXNNT.destroy();
+                dataTableDGHLVIIV.destroy();
 
-            dataTableKetQuaXNNT = $('#dataTableKetQuaXNNT').DataTable({
+            dataTableDGHLVIIV = $('#dataTableDGHLVIIV').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 //serverSide: true,
                 ordering: false,
@@ -73,12 +73,17 @@
                     { "data": "makh", searchBuilderType: "string"},
                     { "data": "hoten", searchBuilderType: "string"},
                     //{ "data": "ngayxntext", searchBuilderType: "string" },
-                    { "data": "ngayhoi", searchBuilderType: "date" },
-                    { "data": "kqxnda", searchBuilderType: "string" },
-                    { "data": "kqxnheroin", searchBuilderType: "string" }
+                    { "data": "ngay", searchBuilderType: "date" },
+                    { "data": "lantuvan", searchBuilderType: "string" },
+                    { "data": "cau1", searchBuilderType: "string" },
+                    { "data": "cau2", searchBuilderType: "string" },
+                    { "data": "cau3", searchBuilderType: "string" },
+                    { "data": "cau4", searchBuilderType: "string" },
+                    { "data": "cau5", searchBuilderType: "string" },
+                    { "data": "cau6", searchBuilderType: "string" }
                 ],
                 "language": {
-                    "emptyTable": "Không có dữ liệu trong bản",
+                    "emptyTable": "Không có dữ liệu",
                     "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
                     "infoEmpty": "Hiển thị 0 đến 0 của 0 bản ghi",
                     "infoFiltered": "(lọc từ _MAX_ tổng bản ghi)",
@@ -167,7 +172,7 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'KetQuaXNNuocTieu_' + curr_datetime
+                        title: 'DanhGiaHaiLongKH_' + curr_datetime
                     }
                 ]
                 ,
@@ -179,7 +184,7 @@
                 }]
             });
         } else {
-            dataTableKetQuaXNNT.ajax.reload();
+            dataTableDGHLVIIV.ajax.reload();
         }
         hideLoading();
     };
@@ -189,7 +194,7 @@
     };
 
     $scope.ExportExcel = function () {
-        window.location.href = '/KetQuaXNNT/ExportData?keyword=' + $scope.modelSearch.KeyWord;
+        window.location.href = '/DGHLVIIV/ExportData?keyword=' + $scope.modelSearch.KeyWord;
     }
    
 });

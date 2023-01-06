@@ -53,5 +53,9 @@ namespace Model.Model
         public virtual DbSet<BVTL_QT_THAM_SO> BVTL_QT_THAM_SO { get; set; }
         public virtual DbSet<BVTL_TAN_SUAT_SU_DUNG> BVTL_TAN_SUAT_SU_DUNG { get; set; }
         public virtual DbSet<CHITIEU_DUAN> CHITIEU_DUAN { get; set; }
+        public virtual DbSet<VIIV_DANH_GIA_HAI_LONG> VIIV_DANH_GIA_HAI_LONG { get; set; }
+        public virtual DbSet<VIIV_TT_KH_MAT_DAU> VIIV_TT_KH_MAT_DAU { get; set; }
+        public virtual DbSet<VIIV_THONG_TIN_TRUYEN_THONG> VIIV_THONG_TIN_TRUYEN_THONG { get; set; }
+        public virtual DbSet<VIIV_TRAINING_DATA_COLLECTION> VIIV_TRAINING_DATA_COLLECTION { get; set; }
     }
 }

@@ -62,6 +62,15 @@ namespace Model.ModelExtend.API
         public string dieutri_sti { get; set; }
         public string hotro_sti { get; set; }
         public string hotro_bhyt { get; set; }
+        public string hotro_gttt { get; set; }
+        public string ngayhotro_2 { get; set; }
+        public string hotro_prep { get; set; }
+        public string hotro_pep { get; set; }
+        public string hotro_c { get; set; }
+        public string hotro_c_2 { get; set; }
+        public string hotro_lao { get; set; }
+        public string hotro_lao_2 { get; set; }
+        public string hotro_mtd { get; set; }
         public string chuyn_gi_dch_v_complete { get; set; }
         public string taiuong_bd_21 { get; set; }
 
