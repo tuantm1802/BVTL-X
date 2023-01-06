@@ -1,0 +1,91 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.TTTruyenThongVIIVPageModel>
+@{
+    ViewBag.Title = "Thông tin truyền thông";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="TTTruyenThongVIIVController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Viiv - Thông tin truyền thông</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                <div class="col-sm-1">
+            <label>Từ khóa</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        </div>
+        <div class="col-sm-1">
+            <label>Dự án</label>s
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
+        </div>
+                <div class="col-sm-2">
+                    <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                        <i class="fas fa-pencil-alt"></i> Xuất Excel
+                    </button>
+                </div>
+            </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableTTTruyenThongVIIV" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Dự án </th>
+                            <th style="width: auto;">Tỉnh </th>
+                            <th style="width:9%;">Ngày xét nghiệm</th>
+                            <th style="width:auto;">Địa điểm</th>
+                            <th style="width:auto;">Nội dung</th>
+                            <th style="width:9%;">Số KH tham dự</th>
+                            <th style="width:9%;">BCS</th>
+                            <th style="width:9%;">Gen bôi trơn</th>
+                            <th style="width:9%;">Bơm kim tiêm</th>
+                            <th style="width:9%;">Nước cất</th>
+                            <th style="width:9%;">Hộp chia thuốc</th>
+                            <th style="width:auto;">Ghi chú</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td class="text-left">@item.maduan</td>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.ngaythtext</td>
+                    <td class="text-left">@item.diadiem</td>
+                    <td class="text-left">@item.noidung</td>
+                    @*<td class="text-center">@(item.ngayhoi != null ? item.ngayhoi.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                    <td class="text-right">@item.sokh</td>
+                    <td class="text-right">@item.bcs</td>
+                    <td class="text-right">@item.gel</td>
+                    <td class="text-right">@item.bomkt</td>
+                    <td class="text-right">@item.nuoccat</td>
+                    <td class="text-right">@item.hopchiathuoc</td>
+                    <td class="text-right">@item.ghichu</td>
+                </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/TTTruyenThongVIIVController.js"></script>
+}

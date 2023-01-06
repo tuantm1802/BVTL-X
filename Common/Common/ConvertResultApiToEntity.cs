@@ -1350,6 +1350,14 @@ namespace Common.Common
                         month = ngaynhapD.Month;
                         year = ngaynhapD.Year;
                     }
+                    else if(!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
+                    {
+                        ngaynhap = resultApiCGDV.ngayhotro_2;
+                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        day = ngaynhapD.Day;
+                        month = ngaynhapD.Month;
+                        year = ngaynhapD.Year;
+                    }
 
 
                     chuyenGuiDV.ngay_xn = ngaynhapD;
@@ -1395,6 +1403,25 @@ namespace Common.Common
                     chuyenGuiDV.dieutri_sti = resultApiCGDV.dieutri_sti;
                     chuyenGuiDV.hotro_sti = resultApiCGDV.hotro_sti;
                     chuyenGuiDV.hotro_bhyt = resultApiCGDV.hotro_bhyt;
+
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_gttt))
+                        chuyenGuiDV.hotro_gttt = resultApiCGDV.hotro_gttt;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
+                        chuyenGuiDV.ngayhotro_2 = DateTime.ParseExact(resultApiCGDV.ngayhotro_2, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_prep))
+                        chuyenGuiDV.hotro_prep = resultApiCGDV.hotro_prep;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_pep))
+                        chuyenGuiDV.hotro_pep = resultApiCGDV.hotro_pep;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c))
+                        chuyenGuiDV.hotro_c = resultApiCGDV.hotro_c;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c_2))
+                        chuyenGuiDV.hotro_c_2 = resultApiCGDV.hotro_c_2;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao))
+                        chuyenGuiDV.hotro_lao = resultApiCGDV.hotro_lao;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao_2))
+                        chuyenGuiDV.hotro_lao_2 = resultApiCGDV.hotro_lao_2;
+                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_mtd))
+                        chuyenGuiDV.hotro_mtd = resultApiCGDV.hotro_mtd;
 
                     chuyenGuiDVs.Add(chuyenGuiDV);
 

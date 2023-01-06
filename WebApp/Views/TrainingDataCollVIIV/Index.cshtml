@@ -1,0 +1,121 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.TrainingDataCollVIIVPageModel>
+@{
+    ViewBag.Title = "Training Data Collection";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="TrainingDataCollVIIVController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Viiv-Training Data Collection</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+                @*<div class="row">
+                <div class="col-sm-1">
+            <label>Từ khóa</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        </div>
+        <div class="col-sm-1">
+            <label>Dự án</label>s
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
+        </div>
+                <div class="col-sm-2">
+                    <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
+                        <i class="fas fa-pencil-alt"></i> Xuất Excel
+                    </button>
+                </div>
+            </div>*@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableTrainingDataCollVIIV" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Dự án </th>
+                            <th style="width: auto;">Tỉnh </th>
+                            <th style="width:9%;">Thời gian tổ chức</th>
+                            <th style="width:9%;">Đối tượng tập huấn</th>
+                            <th style="width:9%;">Loại tập huấn</th>
+                            <th style="width:9%;">Khác</th>
+                            <th style="width:25%;">Nội dung tập huấn</th>
+                            <th style="width:9%;">Nhà tài trợ</th>
+                            <th style="width:auto;">Nhân viên NGOs/ Tổ chức làm về giảm hại</th>
+                            <th style="width:auto;">Nhân viên tiếp cận cộng đồng</th>
+                            <th style="width:auto;">Cán bộ Cơ quan quản lý nhà nước</th>
+                            <th style="width:auto;">Nhân viên tư vấn</th>
+                            <th style="width:auto;">Cán bộ y tế</th>
+                            <th style="width:auto;">Cán bộ kỹ thuật SCDI - Trainers</th>
+                            <th style="width:auto;">Khác (Nêu rõ)</th>
+                            <th style="width:auto;">Số lượng tổ chức tham gia tập huấn</th>
+                            <th style="width:auto;">Nhà tài trợ</th>
+                            <th style="width:auto;">NGOs/ Tổ chức làm về giảm hại</th>
+                            <th style="width:auto;">Tổ chức/ Mạng lưới Cộng đồng</th>
+                            <th style="width:auto;">Cơ quan quản lý nhà nước</th>
+                            <th style="width:auto;">Cơ sở cung cấp dịch vụ: (Phòng methadone, HIV...)</th>
+                            <th style="width:auto;">Trung tâm cai nghiện</th>
+                            <th style="width:auto;">Bệnh viện</th>
+                            <th style="width:auto;">SCDI</th>
+                            <th style="width:auto;">Khác (nêu rõ tên và số lượng)</th>
+                            <th style="width:auto;">Các tỉnh tham gia tập huấn</th>
+                            <th style="width:auto;">Các nước tham gia tập huấn</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td class="text-left">@item.maduan</td>
+                    <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.ngaythtext</td>
+                    <td class="text-left">@item.doituong</td>
+                    <td class="text-left">@item.taphuan</td>
+                    <td class="text-left">@item.khac</td>
+                    <td class="text-left">@item.noidung</td>
+                    <td class="text-right">@item.nhataitro</td>
+                    <td class="text-right">@item.nvngo</td>
+                    <td class="text-right">@item.nvtccd</td>
+                    <td class="text-right">@item.cbcqnn</td>
+                    <td class="text-right">@item.nvtv</td>
+                    <td class="text-right">@item.cbyt</td>
+                    <td class="text-right">@item.scdi</td>
+                    <td class="text-right">@item.khac1</td>
+                    <td class="text-right">@item.tochuc1</td>
+                    <td class="text-right">@item.nhataitro_2</td>
+                    <td class="text-right">@item.ngo</td>
+                    <td class="text-right">@item.tochuc1</td>
+                    <td class="text-right">@item.qlnn</td>
+                    <td class="text-right">@item.ccdv</td>
+                    <td class="text-right">@item.ttcn</td>
+                    <td class="text-right">@item.bc</td>
+                    <td class="text-right">@item.scdi1</td>
+                    <td class="text-right">@item.scdi2</td>
+                    <td class="text-right">@item.tinh</td>
+                    <td class="text-right">@item.tinh_2</td>
+
+                </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/TrainingDataCollVIIVController.js"></script>
+}

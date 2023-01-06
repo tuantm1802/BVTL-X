@@ -1,13 +1,13 @@
-﻿app.controller("KetQuaXNNTController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("TTTruyenThongVIIVController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "kqxnnt_id";
+    $scope.modelSearch.SortColumn = "record_id";
 
     $scope.ListDuAn = [];
-    var dataTableKetQuaXNNT = null;
+    var dataTableTTTruyenThongVIIV = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
 
@@ -24,7 +24,7 @@
     function GetBottomAction() {
         $.ajax({
             type: 'post',
-            url: '/KetQuaXNNT/GetBottomAction',
+            url: '/TTTruyenThongVIIV/GetBottomAction',
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -37,27 +37,27 @@
                         }
                     });
                 }
-                if (data.DuAns != null && data.DuAns.length > 0) {
-                    $scope.ListDuAn = data.DuAns;
+                if (response?.DuAns != null && response?.DuAns.length > 0) {
+                    $scope.ListDuAn = response.DuAns;
                 }
                 $scope.$apply();
             }
         });
     }
 
-    $('#dataTableKetQuaXNNT').on('click', 'tr', function () {
+    $('#dataTableTTTruyenThongVIIV').on('click', 'tr', function () {
         $(this).toggleClass('selected');
     });
 
     $scope.LoadPage = function (genTable) {
         showToast();
         
-        $scope.ListKetQuaXNNT = [];
+        $scope.ListTTTruyenThongVIIV = [];
         if (genTable == 1 || genTable == 2) {
             if (genTable == 2)
-                dataTableKetQuaXNNT.destroy();
+                dataTableTTTruyenThongVIIV.destroy();
 
-            dataTableKetQuaXNNT = $('#dataTableKetQuaXNNT').DataTable({
+            dataTableTTTruyenThongVIIV = $('#dataTableTTTruyenThongVIIV').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 //serverSide: true,
                 ordering: false,
@@ -68,14 +68,20 @@
                     { "data": "maduan", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
-                    { "data": "manhom_tbh", searchBuilderType: "string"},
-                    { "data": "tennhom_tbh", searchBuilderType: "string"},
-                    { "data": "makh", searchBuilderType: "string"},
-                    { "data": "hoten", searchBuilderType: "string"},
+                    //{ "data": "manhom_tbh", searchBuilderType: "string"},
+                    //{ "data": "tennhom_tbh", searchBuilderType: "string"},
+                    //{ "data": "makh", searchBuilderType: "string"},
+                    { "data": "diadiem", searchBuilderType: "string"},
                     //{ "data": "ngayxntext", searchBuilderType: "string" },
-                    { "data": "ngayhoi", searchBuilderType: "date" },
-                    { "data": "kqxnda", searchBuilderType: "string" },
-                    { "data": "kqxnheroin", searchBuilderType: "string" }
+                    { "data": "ngaythtext", searchBuilderType: "date" },
+                    { "data": "noidung", searchBuilderType: "string" },
+                    { "data": "sokh", searchBuilderType: "string" },
+                    { "data": "bcs", searchBuilderType: "string" },
+                    { "data": "gel", searchBuilderType: "string" },
+                    { "data": "bomkt", searchBuilderType: "string" },
+                    { "data": "nuoccat", searchBuilderType: "string" },
+                    { "data": "hopchiathuoc", searchBuilderType: "string" },
+                    { "data": "ghichu", searchBuilderType: "string" }
                 ],
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
@@ -167,7 +173,7 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'KetQuaXNNuocTieu_' + curr_datetime
+                        title: 'TTTruyenThongVIIV_' + curr_datetime
                     }
                 ]
                 ,
@@ -179,7 +185,7 @@
                 }]
             });
         } else {
-            dataTableKetQuaXNNT.ajax.reload();
+            dataTableTTTruyenThongVIIV.ajax.reload();
         }
         hideLoading();
     };
@@ -189,7 +195,7 @@
     };
 
     $scope.ExportExcel = function () {
-        window.location.href = '/KetQuaXNNT/ExportData?keyword=' + $scope.modelSearch.KeyWord;
+        window.location.href = '/TTTruyenThongVIIV/ExportData?keyword=' + $scope.modelSearch.KeyWord;
     }
    
 });

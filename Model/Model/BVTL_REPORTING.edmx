@@ -270,6 +270,15 @@
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="hotro_gttt" Type="nvarchar" MaxLength="100" />
+          <Property Name="ngayhotro_2" Type="date" />
+          <Property Name="hotro_pep" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_c" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_c_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_lao" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_lao_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_mtd" Type="nvarchar" MaxLength="50" />
+          <Property Name="hotro_prep" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -1557,6 +1566,15 @@
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hotro_gttt" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ngayhotro_2" Type="DateTime" Precision="0" />
+          <Property Name="hotro_pep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_c" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_c_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_lao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_lao_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_mtd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="hotro_prep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -2365,7 +2383,7 @@
           <Property Name="cau3" Type="Int32" />
           <Property Name="cau4" Type="Int32" />
           <Property Name="cau5" Type="Int32" />
-          <Property Name="cau6" Type="String" />
+          <Property Name="cau6" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
           <Property Name="nh_gi_mc_hi_lng_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
@@ -2840,6 +2858,15 @@
           <EntitySetMapping Name="BVTL_CHUYEN_GUI_DICH_VU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU">
               <MappingFragment StoreEntitySet="BVTL_CHUYEN_GUI_DICH_VU">
+                <ScalarProperty Name="hotro_prep" ColumnName="hotro_prep" />
+                <ScalarProperty Name="hotro_mtd" ColumnName="hotro_mtd" />
+                <ScalarProperty Name="hotro_lao_2" ColumnName="hotro_lao_2" />
+                <ScalarProperty Name="hotro_lao" ColumnName="hotro_lao" />
+                <ScalarProperty Name="hotro_c_2" ColumnName="hotro_c_2" />
+                <ScalarProperty Name="hotro_c" ColumnName="hotro_c" />
+                <ScalarProperty Name="hotro_pep" ColumnName="hotro_pep" />
+                <ScalarProperty Name="ngayhotro_2" ColumnName="ngayhotro_2" />
+                <ScalarProperty Name="hotro_gttt" ColumnName="hotro_gttt" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="loaihinh" ColumnName="loaihinh" />
                 <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />

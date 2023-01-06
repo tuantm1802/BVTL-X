@@ -195,6 +195,7 @@
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
     <Compile Include="Controllers\BaoCaoChiSoController.cs" />
+    <Compile Include="Controllers\DGHLVIIVController.cs" />
     <Compile Include="Controllers\KetQuaBHDGController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
     <Compile Include="Controllers\BaoCaoTongHopQuyVIIVController.cs" />
@@ -228,6 +229,9 @@
     <Compile Include="Controllers\SyncDataController.cs" />
     <Compile Include="Controllers\SysParameterController.cs" />
     <Compile Include="Controllers\TestGroupController.cs" />
+    <Compile Include="Controllers\TrainingDataCollVIIVController.cs" />
+    <Compile Include="Controllers\TTKHMaDaVIIVController.cs" />
+    <Compile Include="Controllers\TTTruyenThongVIIVController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -302,6 +306,10 @@
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
     <Content Include="app\Controller\KetQuaBHDGController.js" />
     <Content Include="app\Controller\KetQuaSangLocController.js" />
+    <Content Include="app\Controller\DGHLVIIVController.js" />
+    <Content Include="app\Controller\TTKHMaDaVIIVController.js" />
+    <Content Include="app\Controller\TrainingDataCollVIIVController.js" />
+    <Content Include="app\Controller\TTTruyenThongVIIVController.js" />
     <Content Include="app\Controller\KetQuaXNNTController.js" />
     <Content Include="app\Controller\PhieuTuVanController.js" />
     <Content Include="app\Controller\KetQuaACEController.js" />
@@ -4622,6 +4630,10 @@
     <Content Include="Views\KetQuaBHDG\Index.cshtml" />
     <Content Include="Views\BaoCaoChiSo\Index.cshtml" />
     <Content Include="Views\BaoCaoChiSo\ChiSo6Thang.cshtml" />
+    <Content Include="Views\TTTruyenThongVIIV\Index.cshtml" />
+    <Content Include="Views\TTKHMaDaVIIV\Index.cshtml" />
+    <Content Include="Views\TrainingDataCollVIIV\Index.cshtml" />
+    <Content Include="Views\DGHLVIIV\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

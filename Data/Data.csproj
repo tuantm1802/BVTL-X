@@ -76,6 +76,10 @@
     <Compile Include="Admin\CustomerDA.cs" />
     <Compile Include="Admin\DuongSuDungDA.cs" />
     <Compile Include="Admin\KetQuaBHDGDA.cs" />
+    <Compile Include="Admin\TrainingDataCollVIIVDA.cs" />
+    <Compile Include="Admin\DGHLVIIVDA.cs" />
+    <Compile Include="Admin\TTKHMaDaVIIVDA.cs" />
+    <Compile Include="Admin\TTTruyenThongVIIVDA.cs" />
     <Compile Include="Admin\KetQuaXNNTDA.cs" />
     <Compile Include="Admin\PhieuTuVanDA.cs" />
     <Compile Include="Admin\ChuyenGuiDichVuDA.cs" />
@@ -105,6 +109,10 @@
     <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />
     <Compile Include="InterfaceDA\Admin\IDuongSuDungDA.cs" />
     <Compile Include="InterfaceDA\Admin\IKetQuaBHDGDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ITTKHMaDaVIIVDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IDGHLVIIVDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ITrainingDataCollVIIVDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ITTTruyenThongVIIVDA.cs" />
     <Compile Include="InterfaceDA\Admin\IKetQuaXNNTDA.cs" />
     <Compile Include="InterfaceDA\Admin\IPhieuTuVanDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChuyenGuiDichVuEDA.cs" />

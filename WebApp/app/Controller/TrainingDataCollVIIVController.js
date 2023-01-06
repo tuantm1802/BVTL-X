@@ -1,13 +1,13 @@
-﻿app.controller("KetQuaXNNTController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+﻿app.controller("TrainingDataCollVIIVController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "kqxnnt_id";
+    $scope.modelSearch.SortColumn = "record_id";
 
     $scope.ListDuAn = [];
-    var dataTableKetQuaXNNT = null;
+    var dataTableTrainingDataCollVIIV = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
 
@@ -24,7 +24,7 @@
     function GetBottomAction() {
         $.ajax({
             type: 'post',
-            url: '/KetQuaXNNT/GetBottomAction',
+            url: '/TrainingDataCollVIIV/GetBottomAction',
             data: {},
             success: function (response) {
                 if (response.Buttoms != null) {
@@ -37,27 +37,27 @@
                         }
                     });
                 }
-                if (data.DuAns != null && data.DuAns.length > 0) {
-                    $scope.ListDuAn = data.DuAns;
+                if (response?.DuAns != null && response?.DuAns.length > 0) {
+                    $scope.ListDuAn = response?.DuAns;
                 }
                 $scope.$apply();
             }
         });
     }
 
-    $('#dataTableKetQuaXNNT').on('click', 'tr', function () {
+    $('#dataTableTrainingDataCollVIIV').on('click', 'tr', function () {
         $(this).toggleClass('selected');
     });
 
     $scope.LoadPage = function (genTable) {
         showToast();
         
-        $scope.ListKetQuaXNNT = [];
+        $scope.ListTrainingDataCollVIIV = [];
         if (genTable == 1 || genTable == 2) {
             if (genTable == 2)
-                dataTableKetQuaXNNT.destroy();
+                dataTableTrainingDataCollVIIV.destroy();
 
-            dataTableKetQuaXNNT = $('#dataTableKetQuaXNNT').DataTable({
+            dataTableTrainingDataCollVIIV = $('#dataTableTrainingDataCollVIIV').DataTable({
                 lengthMenu: [10, 20, 30, 50, 60, 100],
                 //serverSide: true,
                 ordering: false,
@@ -68,17 +68,39 @@
                     { "data": "maduan", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
-                    { "data": "manhom_tbh", searchBuilderType: "string"},
-                    { "data": "tennhom_tbh", searchBuilderType: "string"},
-                    { "data": "makh", searchBuilderType: "string"},
-                    { "data": "hoten", searchBuilderType: "string"},
+                    //{ "data": "manhom_tbh", searchBuilderType: "string"},
+                    //{ "data": "tennhom_tbh", searchBuilderType: "string"},
+                    //{ "data": "makh", searchBuilderType: "string"},
+                    //{ "data": "hoten", searchBuilderType: "string"},
                     //{ "data": "ngayxntext", searchBuilderType: "string" },
-                    { "data": "ngayhoi", searchBuilderType: "date" },
-                    { "data": "kqxnda", searchBuilderType: "string" },
-                    { "data": "kqxnheroin", searchBuilderType: "string" }
+                    { "data": "ngaythtext", searchBuilderType: "date" },
+                    { "data": "doituong", searchBuilderType: "string" },
+                    { "data": "taphuan", searchBuilderType: "string" },                    
+                    { "data": "khac", searchBuilderType: "string" },
+                    { "data": "noidung", searchBuilderType: "string" },
+                    { "data": "nhataitro", searchBuilderType: "string" },
+                    { "data": "nvngo", searchBuilderType: "string" },
+                    { "data": "nvtccd", searchBuilderType: "string" },
+                    { "data": "cbcqnn", searchBuilderType: "string" },
+                    { "data": "nvtv", searchBuilderType: "string" },
+                    { "data": "cbyt", searchBuilderType: "string" },
+                    { "data": "scdi", searchBuilderType: "string" },
+                    { "data": "khac1", searchBuilderType: "string" },
+                    { "data": "tochuc1", searchBuilderType: "string" },
+                    { "data": "nhataitro_2", searchBuilderType: "string" },
+                    { "data": "ngo", searchBuilderType: "string" },
+                    { "data": "tochuc1", searchBuilderType: "string" },
+                    { "data": "qlnn", searchBuilderType: "string" },
+                    { "data": "ccdv", searchBuilderType: "string" },
+                    { "data": "ttcn", searchBuilderType: "string" },
+                    { "data": "bc", searchBuilderType: "string" },
+                    { "data": "scdi1", searchBuilderType: "string" },
+                    { "data": "scdi2", searchBuilderType: "string" },
+                    { "data": "tinh", searchBuilderType: "string" },
+                    { "data": "tinh_2", searchBuilderType: "string" }
                 ],
                 "language": {
-                    "emptyTable": "Không có dữ liệu trong bản",
+                    "emptyTable": "Không có dữ liệu",
                     "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
                     "infoEmpty": "Hiển thị 0 đến 0 của 0 bản ghi",
                     "infoFiltered": "(lọc từ _MAX_ tổng bản ghi)",
@@ -167,7 +189,7 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'KetQuaXNNuocTieu_' + curr_datetime
+                        title: 'TrainingDataCollection_' + curr_datetime
                     }
                 ]
                 ,
@@ -179,7 +201,7 @@
                 }]
             });
         } else {
-            dataTableKetQuaXNNT.ajax.reload();
+            dataTableTrainingDataCollVIIV.ajax.reload();
         }
         hideLoading();
     };
@@ -189,7 +211,7 @@
     };
 
     $scope.ExportExcel = function () {
-        window.location.href = '/KetQuaXNNT/ExportData?keyword=' + $scope.modelSearch.KeyWord;
+        window.location.href = '/TrainingDataCollVIIV/ExportData?keyword=' + $scope.modelSearch.KeyWord;
     }
    
 });

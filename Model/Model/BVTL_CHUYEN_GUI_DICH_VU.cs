@@ -57,5 +57,14 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public string maduan { get; set; }
+        public string hotro_gttt { get; set; }
+        public Nullable<System.DateTime> ngayhotro_2 { get; set; }
+        public string hotro_pep { get; set; }
+        public string hotro_c { get; set; }
+        public string hotro_c_2 { get; set; }
+        public string hotro_lao { get; set; }
+        public string hotro_lao_2 { get; set; }
+        public string hotro_mtd { get; set; }
+        public string hotro_prep { get; set; }
     }
 }
