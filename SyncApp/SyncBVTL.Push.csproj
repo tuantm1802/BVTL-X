@@ -191,11 +191,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\SendEmailController.cs" />
     <Compile Include="Controllers\SyncDataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Jobs\SendNotificationJob.cs" />
     <Compile Include="Jobs\CheckConnectAPIJob.cs" />
     <Compile Include="Jobs\UpdateAllApiJob.cs" />
     <Compile Include="Jobs\GetDataAPIJob.cs" />

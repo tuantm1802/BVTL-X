@@ -46,5 +46,11 @@ namespace Data.InterfaceDA.Admin
         /// <param name="modelSearch"></param>
         /// <returns></returns>
         List<NotificationModel> GetNotification(ReportSearchModel modelSearch);
+
+        /// <summary>
+        /// Lấy danh sách người dùng có email not null
+        /// </summary>
+        /// <returns></returns>
+        List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull();
     }
 }

@@ -63,6 +63,16 @@ namespace SyncBVTL.Push.ScheduleTasks
                 .Build();
             _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
 
+
+            //Job tự động gửi email notification hàng ngày
+            //IJobDetail job_NotifiJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("NotifiJob").Build();
+            //ITrigger trigger_NotifiJob = TriggerBuilder.Create()
+            //    .WithIdentity("trigger_NotifiJob")
+            //    .StartNow()
+            //    .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())// chạy khi 1 giờ đêm
+            //    .Build();
+            //_ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
+
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
             foreach (ProcessModel item in processModels)
             {

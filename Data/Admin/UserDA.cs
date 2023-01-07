@@ -404,6 +404,15 @@ namespace Data.Admin
             }
             return result;
         }
+
+        /// <summary>
+        /// Lấy danh sách người dùng có email not null
+        /// </summary>
+        /// <returns></returns>
+        public List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull()
+        {
+            return db.BVTL_QT_NGUOI_DUNG.Where(x => x.Email != null && x.Email != "").ToList();
+        }
     }
     public class DataSelect
     {
