@@ -17,7 +17,7 @@ namespace SyncBVTL.Push.Jobs
         {
             var controller = DependencyResolver.Current.GetService<SendEmailController>();
 
-            var currentDate = DateTime.Today;
+            var currentDate = DateTime.Now;
             if (currentDate.Hour == 1)
             {
                 await controller.SendNotification();

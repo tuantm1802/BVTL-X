@@ -28,6 +28,9 @@ namespace SyncBVTL.Push.Controllers.PA
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string accessToken = "";
         public IUserDA userDA = new UserDA();
+        private readonly string AddressEmail = ConfigurationManager.AppSettings["AddressEmail"].ToString();
+        private readonly string PassEmail = ConfigurationManager.AppSettings["PassEmail"].ToString();
+
 
         public ActionResult Index()
         {
@@ -42,8 +45,7 @@ namespace SyncBVTL.Push.Controllers.PA
             {
                 var notificationSearch = new ReportSearchModel();
                 var notifications = new List<NotificationModel>();
-                var fromAddress = new MailAddress("from@gmail.com", "From Name");
-                string fromPassword = "fromPassword";
+                var fromAddress = new MailAddress(AddressEmail, "From Name");
                 var toAddress = new MailAddress("to@example.com", "To Name");
 
                 string subject = "Danh sách khách hàng sắp đến hẹn khám lại";
@@ -68,7 +70,6 @@ namespace SyncBVTL.Push.Controllers.PA
                             "<th style =\"width:auto;\"> Số điện thoại</th> " +
                         "</tr> " +
                     "</thead> ";
-                var smtp = new SmtpClient();
                 foreach (var user in users)
                 {
                     // Lấy danh sách thông báo theo người dùng
@@ -79,7 +80,7 @@ namespace SyncBVTL.Push.Controllers.PA
                     };
                     notifications = userDA.GetNotification(notificationSearch);
                     // Gửi thông báo đến người dùng
-                    if (notifications != null && notifications.Count > 0)
+                    //if (notifications != null && notifications.Count > 0)
                     {
                         foreach (var notification in notifications)
                         {
@@ -96,25 +97,23 @@ namespace SyncBVTL.Push.Controllers.PA
                         body += "</table></div>";
                         try
                         {
-                            smtp = new SmtpClient
+                            using (MailMessage mail = new MailMessage())
                             {
-                                Host = "smtp.gmail.com",
-                                Port = 587,
-                                EnableSsl = true,
-                                DeliveryMethod = SmtpDeliveryMethod.Network,
-                                UseDefaultCredentials = false,
-                                Credentials = new NetworkCredential(fromAddress.Address, fromPassword),
+                                mail.From = new MailAddress(AddressEmail);
+                                mail.To.Add(user.Email);
+                                mail.Subject = subject;
+                                mail.Body = body;
+                                mail.IsBodyHtml = true;
+                                //mail.Attachments.Add(new Attachment("C:\\file.zip"));
 
-                            };
-                            using (var message = new MailMessage(fromAddress, toAddress)
-                            {
-                                Subject = subject,
-                                Body = body,
-                                IsBodyHtml = true
-                            })
-                            {
-                                smtp.Send(message);
+                                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                {
+                                    smtp.Credentials = new NetworkCredential(AddressEmail, PassEmail);
+                                    smtp.EnableSsl = true;
+                                    smtp.Send(mail);
+                                }
                             }
+                            
                             log.Info("Gửi email notification(" + user.Email + ") thành công!");
                         }
                         catch (Exception ex) {
