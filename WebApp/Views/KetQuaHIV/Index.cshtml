@@ -50,13 +50,19 @@
                         <tr>
                             <th style="width: auto;">Dự án </th>
                             <th style="width: auto;">Tỉnh </th>
+                            <th style="width: auto;">Record ID </th>
                             <th style="width:9%;">Mã nhóm TBH</th>
                             <th style="width:auto;">Tên nhóm TBH </th>
                             <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
-                            <th style="width:9%;">Ngày xét nghiệm</th>
-                            <th style="width:9%;">Kết quả</th>
+                            @*<th style="width:auto;">Họ tên KH </th>*@
+                            <th style="width:9%;">Tình trạng</th>
+                            <th style="width:9%;">ARV</th>
+                            <th style="width:9%;">Cơ sở điều trị</th>
                             <th style="width:9%;">Đang điều trị HIV</th>
+                            <th style="width:9%;">Ngày xét nghiệm</th>
+                            <th style="width:9%;">Kết quả xét nghiệm</th>
+                            <th style="width:9%;">Lý do không xét nghiệm</th>
+
                         </tr>
                     </thead>
                     @foreach (var item in Model)
@@ -64,14 +70,20 @@
                 <tr>
                     <td class="text-left">@item.maduan</td>
                     <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.kqxnhiv_id</td>
                     <td class="text-left">@item.manhom_tbh</td>
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
-                    <td class="text-left">@item.hoten</td>
+                    @*<td class="text-left">@item.hoten</td>*@
+                    <td class="text-left">@item.tinhtrang</td>
+                    <td class="text-left">@item.arv</td>
+                    <td class="text-left">@item.cs_dieutri</td>
+                    <td class="text-center">@(item.dangdieutri_hiv == 1?"Có":(item.dangdieutri_hiv == 0?"Không":""))</td>
                     <td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-left">@item.ngayxntext</td>*@
                     <td class="text-right">@(item.ketqua ==-1 ? "Âm tính": (item.ketqua == 1 ? "Dương tính":"Không xác định"))</td>
-                    <td class="text-right">@item.dangdieutri_hiv</td>
+                    <td class="text-left">@item.lydo</td>
+
                 </tr>
                     }
                 </table>

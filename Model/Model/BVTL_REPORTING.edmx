@@ -385,6 +385,9 @@
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sottkh" Type="varchar" MaxLength="10" />
           <Property Name="lydo" Type="nvarchar" MaxLength="500" />
+          <Property Name="tinhtrang" Type="nvarchar" MaxLength="50" />
+          <Property Name="arv" Type="nvarchar" MaxLength="50" />
+          <Property Name="cs_dieutri" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_NUOC_TIEU">
           <Key>
@@ -509,6 +512,12 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="cau5_3_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="cau5_9" Type="nvarchar" MaxLength="10" />
+          <Property Name="cau5_4_3" Type="nvarchar" MaxLength="10" />
+          <Property Name="nuoccat" Type="nvarchar" MaxLength="10" />
+          <Property Name="nuoccatsl" Type="nvarchar" MaxLength="10" />
+          <Property Name="hopchia" Type="nvarchar" MaxLength="10" />
+          <Property Name="hopchiasl" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -1703,6 +1712,9 @@
           <NavigationProperty Name="BVTL_CITES" Relationship="Self.FK_BVTL_KQ_XN_HIV_BVTL_CITES" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="Self.FK_BVTL_KQ_XN_HIV_BVTL_DU_AN" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="Self.fk_BVTL_KQ_XN_HIV_BVTL_NHOM_TBH_1" FromRole="BVTL_KQ_XN_HIV" ToRole="BVTL_NHOM_TBH" />
+          <Property Name="tinhtrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="arv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="cs_dieutri" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_NUOC_TIEU">
           <Key>
@@ -1842,6 +1854,12 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="cau5_3_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_9" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4_3" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="nuoccat" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="nuoccatsl" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="hopchia" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="hopchiasl" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_QT_LOG">
           <Key>
@@ -3008,6 +3026,9 @@
           <EntitySetMapping Name="BVTL_KQ_XN_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
               <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+                <ScalarProperty Name="cs_dieutri" ColumnName="cs_dieutri" />
+                <ScalarProperty Name="arv" ColumnName="arv" />
+                <ScalarProperty Name="tinhtrang" ColumnName="tinhtrang" />
                 <ScalarProperty Name="kqxnhiv_id" ColumnName="kqxnhiv_id" />
                 <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="ngayxn" ColumnName="ngayxn" />
@@ -3097,6 +3118,12 @@
           <EntitySetMapping Name="BVTL_PHIEU_TU_VAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_PHIEU_TU_VAN">
               <MappingFragment StoreEntitySet="BVTL_PHIEU_TU_VAN">
+                <ScalarProperty Name="hopchiasl" ColumnName="hopchiasl" />
+                <ScalarProperty Name="hopchia" ColumnName="hopchia" />
+                <ScalarProperty Name="nuoccatsl" ColumnName="nuoccatsl" />
+                <ScalarProperty Name="nuoccat" ColumnName="nuoccat" />
+                <ScalarProperty Name="cau5_4_3" ColumnName="cau5_4_3" />
+                <ScalarProperty Name="cau5_9" ColumnName="cau5_9" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="ngaynhap" ColumnName="ngaynhap" />
                 <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />

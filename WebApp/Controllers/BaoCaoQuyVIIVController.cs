@@ -72,7 +72,7 @@ namespace WebApp.Controllers
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
                 modelSearch.TypeReport = 2;
                
-                var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
+                var data = _BaoCaoTongHopDA.GetDataReportVIIV(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo quý( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
                 return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
@@ -160,7 +160,7 @@ namespace WebApp.Controllers
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
 
-                var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
+                var data = _BaoCaoTongHopDA.GetDataReportVIIV(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();
@@ -168,15 +168,18 @@ namespace WebApp.Controllers
                     nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
                 else
                     nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhoms(maNhomTBHs); 
+
                 var tenDuAn = "";
                 if (!string.IsNullOrEmpty(maDuAn))
                     tenDuAn = "Dự án: " + _DuAnDA.GetItemByCode(maDuAn);
                 var tenNhomTBHs = "";
-                if (nhomTBHs != null && nhomTBHs.Count > 0)
-                {
-                    tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
-                }
-                var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
+                //if (nhomTBHs != null && nhomTBHs.Count > 0)
+                //{
+                //    tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                //}
+                //var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
+                var file_name = "VIIV" + "_" + CityCodes + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
+
                 using (XLWorkbook wb = new XLWorkbook())
                 {
 

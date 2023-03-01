@@ -119,14 +119,19 @@
                     { "data": "maduan", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
+                    { "data": "kqxnhiv_id", searchBuilderType: "string" },
                     { "data": "manhom_tbh", searchBuilderType: "string"},
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},
-                    { "data": "hoten", searchBuilderType: "string"},
+                    //{ "data": "hoten", searchBuilderType: "string"},
                     //{ "data": "ngayxntext", searchBuilderType: "string" },
                     { "data": "ngayxn", searchBuilderType: "date" },
                     { "data": "ketqua", searchBuilderType: "string" },
-                    { "data": "dangdieutri_hiv", searchBuilderType: "string" }
+                    { "data": "dangdieutri_hiv", searchBuilderType: "string" },
+                    { "data": "lydo", searchBuilderType: "string" },
+                    { "data": "tinhtrang", searchBuilderType: "string" },
+                    { "data": "arv", searchBuilderType: "string" },
+                    { "data": "cs_dieutri", searchBuilderType: "string" }
                 ],
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
