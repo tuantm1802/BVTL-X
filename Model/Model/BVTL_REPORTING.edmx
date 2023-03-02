@@ -388,6 +388,7 @@
           <Property Name="tinhtrang" Type="nvarchar" MaxLength="50" />
           <Property Name="arv" Type="nvarchar" MaxLength="50" />
           <Property Name="cs_dieutri" Type="nvarchar" MaxLength="200" />
+          <Property Name="record_id" Type="int" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_NUOC_TIEU">
           <Key>
@@ -1715,6 +1716,7 @@
           <Property Name="tinhtrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="arv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="cs_dieutri" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="record_id" Type="Int32" />
         </EntityType>
         <EntityType Name="BVTL_KQ_XN_NUOC_TIEU">
           <Key>
@@ -3026,6 +3028,7 @@
           <EntitySetMapping Name="BVTL_KQ_XN_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KQ_XN_HIV">
               <MappingFragment StoreEntitySet="BVTL_KQ_XN_HIV">
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="cs_dieutri" ColumnName="cs_dieutri" />
                 <ScalarProperty Name="arv" ColumnName="arv" />
                 <ScalarProperty Name="tinhtrang" ColumnName="tinhtrang" />

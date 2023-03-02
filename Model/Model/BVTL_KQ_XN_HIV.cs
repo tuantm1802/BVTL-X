@@ -31,6 +31,7 @@ namespace Model.Model
         public string tinhtrang { get; set; }
         public string arv { get; set; }
         public string cs_dieutri { get; set; }
+        public Nullable<int> record_id { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

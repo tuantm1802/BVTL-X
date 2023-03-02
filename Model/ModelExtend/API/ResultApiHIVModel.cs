@@ -8,7 +8,7 @@ namespace Model.ModelExtend.API
 {
     public class ResultApiHIVModel
     {
-        public string record_id { get; set; }
+        public int? record_id { get; set; }
         public string tbh { get; set; }
         public string hoten { get; set; }
         public string gioitinh { get; set; }
@@ -42,6 +42,7 @@ namespace Model.ModelExtend.API
         public string tinhtrang { get; set; }
         public string arv { get; set; }
         public string cs_dieutri { get; set; }
+        
         public string sng_lc_hiv_complete { get; set; }
     }
 }
