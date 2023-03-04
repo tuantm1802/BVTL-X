@@ -1,6 +1,8 @@
 ﻿using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
+using Model.ModelExtend.Report;
+using Model.ModelExtend.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,5 +39,18 @@ namespace Data.InterfaceDA.Admin
         /// <param name="nguoiDungId"></param>
         /// <returns></returns>
          bool CheckLock(int nguoiDungId);
+
+        /// <summary>
+        /// Lấy dữ liệu thông báo
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        List<NotificationModel> GetNotification(ReportSearchModel modelSearch);
+
+        /// <summary>
+        /// Lấy danh sách người dùng có email not null
+        /// </summary>
+        /// <returns></returns>
+        List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull();
     }
 }

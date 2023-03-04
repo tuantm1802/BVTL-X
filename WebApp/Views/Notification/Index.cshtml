@@ -1,0 +1,56 @@
+﻿@model  System.Collections.Generic.List<Model.ModelExtend.User.NotificationModel>
+@{
+    ViewBag.Title = "Danh sách thông báo";
+}
+<style type="text/css">
+    div.dataTables_length select {
+        width: 70px !important;
+    }
+</style>
+<div class="container-fluid" ng-controller="NotificationController">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Danh sách thông báo</h1>
+    <p class="mb-4">
+    </p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="card-tools">
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTableNotification" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: auto;">Nội dung </th>
+                            <th style="width: auto;">Mã KH </th>
+                            <th style="width: auto;">Họ tên</th>
+                            <th style="width:auto;">Giới tính </th>
+                            <th style="width: auto;">Năm sinh</th>
+                            <th style="width:auto;">Số điện thoại </th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-left">@item.NoiDung</td>
+                            <td class="text-left">@item.MaKH</td>
+                            <td class="text-left">@item.HoTen</td>
+                            <td class="text-left">@item.GioiTinh</td>
+                            <td class="text-left">@item.NamSinh</td>
+                            <td class="text-left">@item.SoDienThoai</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/NotificationController.js"></script>
+}

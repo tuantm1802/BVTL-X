@@ -6,6 +6,7 @@ using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
+using Model.ModelExtend.Report;
 using Model.ModelExtend.User;
 using System;
 using System.Collections.Generic;
@@ -147,6 +148,14 @@ namespace Data.Admin
         {
             ObjectMessage obj = new ObjectMessage();
 
+            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
+                .Select(x => new BVTL_NHOM_TBH
+                {
+                    manhom_tbh = x.manhom_tbh,
+                    tennhom_tbh = x.tennhom_tbh,
+                    city_code = x.city_code
+                }).ToList();
+
             using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
@@ -164,21 +173,25 @@ namespace Data.Admin
                         // Thêm người dùng vào nhóm
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-                            var nhomTBH = new BVTL_NHOM_TBH();
+                            
+                            var city_code = "";
                             for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
                                 context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
 
+                                var nhomTBH1s = nhomTBHs.Where(x => x.manhom_tbh == maNhomTBHs[i]).ToList();
                                 // Lấy nhóm tbh
-                                nhomTBH = context.BVTL_NHOM_TBH.FirstOrDefault(x=>x.manhom_tbh == maNhomTBHs[i]);
-                                if(nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
+                                if (nhomTBHs != null && nhomTBHs.Count > 0)
+                                    city_code = nhomTBHs.FirstOrDefault().city_code;
+                                
+                                if(!string.IsNullOrEmpty(city_code))
                                 {
                                     if (string.IsNullOrEmpty(cityCodes))
-                                        cityCodes = nhomTBH.city_code;
+                                        cityCodes = city_code;
                                     else
                                     {
-                                        if(!cityCodes.Contains(nhomTBH.city_code))
-                                            cityCodes +=','+ nhomTBH.city_code;
+                                        if(!cityCodes.Contains(city_code))
+                                            cityCodes +=','+ city_code;
                                     }
                                 }
                             }
@@ -367,6 +380,50 @@ namespace Data.Admin
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu thông báo
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<NotificationModel> GetNotification(ReportSearchModel modelSearch)
+        {
+            var result = new List<NotificationModel>();
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
+                    new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn),
+                    //new SqlParameter("Page", modelSearch.currentPage),
+                    //new SqlParameter("PageSize", modelSearch.pageSize)
+                };
+                result = _DatabaseSql.ExecuteProcToList<NotificationModel>(Constants.SP_Notification_Search_Data, param).ToList();
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "UserDA",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy danh sách thông báo lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+                result = new List<NotificationModel>();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy danh sách người dùng có email not null
+        /// </summary>
+        /// <returns></returns>
+        public List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull()
+        {
+            return db.BVTL_QT_NGUOI_DUNG.Where(x => x.Email != null && x.Email != "").ToList();
         }
     }
     public class DataSelect

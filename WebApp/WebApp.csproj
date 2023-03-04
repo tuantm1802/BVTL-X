@@ -218,6 +218,7 @@
     <Compile Include="Controllers\ChuyenGuiDichVuController.cs" />
     <Compile Include="Controllers\KetQuaSangLocController.cs" />
     <Compile Include="Controllers\KetQuaXNNTController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\PhieuTuVanController.cs" />
     <Compile Include="Controllers\KetQuaACEController.cs" />
     <Compile Include="Controllers\KetQuaASSISTController.cs" />
@@ -322,6 +323,7 @@
     <Content Include="app\Controller\SysparameterController.js" />
     <Content Include="app\Controller\TestGroupController.js" />
     <Content Include="app\Controller\UserChangePasswordController.js" />
+    <Content Include="app\Controller\NotificationController.js" />
     <Content Include="app\Controller\UserController.js" />
     <Content Include="app\directives\tree-grid-template.html" />
     <Content Include="app\directives\treeTableDirective.html" />

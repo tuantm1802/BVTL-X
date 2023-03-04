@@ -63,15 +63,26 @@ namespace SyncBVTL.Push.ScheduleTasks
                 .Build();
             _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
 
+
+            //Job tự động gửi email notification hàng ngày
+            IJobDetail job_NotifiJob = JobBuilder.Create<SendNotificationJob>().WithIdentity("NotifiJob").Build();
+            ITrigger trigger_NotifiJob = TriggerBuilder.Create()
+                .WithIdentity("trigger_NotifiJob")
+                .StartNow()
+               .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())// chạy khi 1 giờ đêm
+               //.WithCronSchedule("0 0/1 * * * ?") //Tự động chạy sau mỗi 1 phút
+                .Build();
+            _ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
+
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
             foreach (ProcessModel item in processModels)
             {
                 if (item.Active)
                 {
-                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId+"_Job").Build();
+                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId + "_Job").Build();
                     job_GetDataAPIJob.JobDataMap["Data"] = item;
                     ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
-                        .WithIdentity("trigger_"+ item.ReportId + "Job")
+                        .WithIdentity("trigger_" + item.ReportId + "Job")
                         .StartNow()
                         .WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(item.TimeLoop)
