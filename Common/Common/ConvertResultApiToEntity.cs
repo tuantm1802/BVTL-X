@@ -509,7 +509,10 @@ namespace Common.Common
                         if (resultApiHIV.hiv == "Có")
                             hiv.dangdieutri_hiv = 1;
                     }
-
+                    hiv.tinhtrang = resultApiHIV.tinhtrang;
+                    hiv.arv = resultApiHIV.arv;
+                    hiv.cs_dieutri = resultApiHIV.cs_dieutri;
+                    hiv.record_id = resultApiHIV.record_id;
                     hivs.Add(hiv);
 
                     #endregion

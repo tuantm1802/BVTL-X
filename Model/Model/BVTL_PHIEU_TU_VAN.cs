@@ -69,5 +69,11 @@ namespace Model.Model
         public string city_code { get; set; }
         public string maduan { get; set; }
         public string cau5_3_2 { get; set; }
+        public string cau5_9 { get; set; }
+        public string cau5_4_3 { get; set; }
+        public string nuoccat { get; set; }
+        public string nuoccatsl { get; set; }
+        public string hopchia { get; set; }
+        public string hopchiasl { get; set; }
     }
 }
