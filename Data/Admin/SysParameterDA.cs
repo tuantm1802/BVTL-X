@@ -138,5 +138,15 @@ namespace Data.Admin
             }
 
         }
+
+        /// <summary>
+        /// Lấy theo mã
+        /// </summary>
+        /// <param name="paramCode"></param>
+        /// <returns></returns>
+        public List<BVTL_QT_THAM_SO> GetByParamCode(string paramCode)
+        {
+            return db.BVTL_QT_THAM_SO.Where(x=>x.ParamCode == paramCode).ToList();
+        }
     }
 }

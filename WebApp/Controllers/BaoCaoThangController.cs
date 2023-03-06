@@ -40,7 +40,7 @@ namespace WebApp.Controllers
 
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
-                if (user.IsAdmin || (duAn != null && duAn.maduan == user.MaDuAn))
+                if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
                     return View();
                 else
                     return Redirect("/ErrorPage/Error404");

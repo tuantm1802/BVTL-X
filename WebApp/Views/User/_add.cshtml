@@ -119,15 +119,23 @@
                 </div>
             </div>
         </div>*@
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label  class="requiredInput" title="Dự án quản lý">Dự án quản lý</label>
-                    <select class="form-control" ui-select2 ng-model="model.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                    </select>
-                </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label class="requiredInput" title="Dự án quản lý">Dự án quản lý</label>
+                @*<select class="form-control" ui-select2 ng-model="model.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+        </select>*@
+                <select class="form-control" ui-select2 multiple ng-model="ListMaDuAn" name="ListMaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                </select>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="requiredInput" title="Mật khẩu">Mật khẩu</label>
+                <input type="password" class="form-control" ng-model="model.Password" name="Password" />
+            </div>
+        </div>
+    </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">

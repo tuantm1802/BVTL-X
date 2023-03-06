@@ -17,5 +17,12 @@ namespace Data.InterfaceDA.Admin
         ObjectMessage Add(BVTL_QT_THAM_SO model);
         ObjectMessage Edit(BVTL_QT_THAM_SO model);
         ObjectMessage Delete(int Id);
+
+        /// <summary>
+        /// Lấy theo mã
+        /// </summary>
+        /// <param name="paramCode"></param>
+        /// <returns></returns>
+        List<BVTL_QT_THAM_SO> GetByParamCode(string paramCode);
     }
 }

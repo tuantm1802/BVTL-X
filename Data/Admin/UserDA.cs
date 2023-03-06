@@ -50,30 +50,31 @@ namespace Data.Admin
         {
             db.Configuration.ProxyCreationEnabled = false;
             var result = (from u in db.BVTL_QT_NGUOI_DUNG
-                        join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
-                        where u.ID == Id
-                        select new UserPageModel
-                        {
-                            ID = u.ID,
-                            Name = u.Name,
-                            Phone = u.Phone,
-                            Status = u.Status,
-                            UserName = u.UserName,
-                            RoleName = r.Name,
-                            UserGroupID = u.GroupID,
-                            GroupID = u.GroupID,
-                            Address = u.Address,
-                            Avartar = u.Avartar,
-                            Email = u.Email,
-                            CreatedDate = u.CreatedDate,
-                            DateOfBirth = u.DateOfBirth,
-                            Gender = u.Gender,
-                            IdNumber = u.IdNumber,
-                            Possition = u.Possition,
-                            OperativeLevel = u.OperativeLevel,
-                            OriginId = u.OriginId,
-                            CityCodes = u.CityCodes
-                        }).FirstOrDefault();
+                          join r in db.BVTL_QT_QUYEN on u.GroupID equals r.ID
+                          where u.ID == Id
+                          select new UserPageModel
+                          {
+                              ID = u.ID,
+                              Name = u.Name,
+                              Phone = u.Phone,
+                              Status = u.Status,
+                              UserName = u.UserName,
+                              RoleName = r.Name,
+                              UserGroupID = u.GroupID,
+                              GroupID = u.GroupID,
+                              Address = u.Address,
+                              Avartar = u.Avartar,
+                              Email = u.Email,
+                              CreatedDate = u.CreatedDate,
+                              DateOfBirth = u.DateOfBirth,
+                              Gender = u.Gender,
+                              IdNumber = u.IdNumber,
+                              Possition = u.Possition,
+                              OperativeLevel = u.OperativeLevel,
+                              OriginId = u.OriginId,
+                              CityCodes = u.CityCodes,
+                              MaDuAn = u.MaDuAn
+                          }).FirstOrDefault();
 
 
             result.RoleName = db.BVTL_QT_QUYEN.FirstOrDefault(x => x.ID == result.GroupID).Name;
@@ -82,7 +83,7 @@ namespace Data.Admin
             result.TestGroups = new List<BVTL_NHOM_TBH>();
             result.TestGroups = (from tg in db.BVTL_NHOM_TBH
                                  join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa
-                                 where utg.NguoiDungId == Id
+                                 where utg.NguoiDungId == Id && utg.IsActive == true
                                  select tg).ToList();
 
             // Lấy danh sách tỉnh quản lý
@@ -90,7 +91,7 @@ namespace Data.Admin
             if (!string.IsNullOrEmpty(result.CityCodes))
             {
                 var cityCodes = result.CityCodes.Split(',').ToList();
-                result.Citys = db.BVTL_CITES.Where(x=> cityCodes.Contains(x.Code)).ToList();
+                result.Citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
             }
 
             return result;
@@ -163,7 +164,10 @@ namespace Data.Admin
                     try
                     {
                         // Thêm người dùng
-                        model.Password = _encryptor.MD5Hash("123456789a@");
+                        if (!string.IsNullOrEmpty(model.Password))
+                            model.Password = _encryptor.MD5Hash(model.Password);
+                        else
+                            model.Password = _encryptor.MD5Hash("123456789a@");
                         model.IsActive = true;
                         context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
@@ -173,7 +177,7 @@ namespace Data.Admin
                         // Thêm người dùng vào nhóm
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-                            
+
                             var city_code = "";
                             for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
@@ -183,15 +187,15 @@ namespace Data.Admin
                                 // Lấy nhóm tbh
                                 if (nhomTBHs != null && nhomTBHs.Count > 0)
                                     city_code = nhomTBHs.FirstOrDefault().city_code;
-                                
-                                if(!string.IsNullOrEmpty(city_code))
+
+                                if (!string.IsNullOrEmpty(city_code))
                                 {
                                     if (string.IsNullOrEmpty(cityCodes))
                                         cityCodes = city_code;
                                     else
                                     {
-                                        if(!cityCodes.Contains(city_code))
-                                            cityCodes +=','+ city_code;
+                                        if (!cityCodes.Contains(city_code))
+                                            cityCodes += ',' + city_code;
                                     }
                                 }
                             }
@@ -219,6 +223,13 @@ namespace Data.Admin
         public ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs)
         {
             ObjectMessage obj = new ObjectMessage();
+            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
+                .Select(x => new BVTL_NHOM_TBH
+                {
+                    manhom_tbh = x.manhom_tbh,
+                    tennhom_tbh = x.tennhom_tbh,
+                    city_code = x.city_code
+                }).ToList();
             using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
@@ -226,7 +237,7 @@ namespace Data.Admin
                     try
                     {
                         var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == model.ID);
-                        
+
                         var cityCodes = "";
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
@@ -241,6 +252,7 @@ namespace Data.Admin
                                 }
                                 context.SaveChanges();
                             }
+
                             var check = 0;
                             var checkTGs = new List<BVTL_QT_NGUOI_DUNG_NHOM_TBH>();
                             for (int i = 0; i < maNhomTBHs.Count; i++)
@@ -253,12 +265,12 @@ namespace Data.Admin
                                     checkTGs = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).ToList();
                                     for (int j = 0; j < checkTGs.Count; j++)
                                     {
-                                        checkTGs[j].IsActive = false;
+                                        checkTGs[j].IsActive = true;
                                     }
                                 }
 
                                 // Lấy nhóm tbh
-                                nhomTBH = context.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
+                                nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
                                 if (nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
                                 {
                                     if (string.IsNullOrEmpty(cityCodes))
@@ -307,6 +319,13 @@ namespace Data.Admin
             return obj;
         }
 
+        /// <summary>
+        /// thay đổi mật khẩu
+        /// </summary>
+        /// <param name="nguoiDungId"></param>
+        /// <param name="passwordOd"></param>
+        /// <param name="passwordNew"></param>
+        /// <returns></returns>
         public ObjectMessage ChangePassword(long nguoiDungId, string passwordOd, string passwordNew)
         {
             ObjectMessage obj = new ObjectMessage();
@@ -325,8 +344,39 @@ namespace Data.Admin
                     data.Password = _encryptor.MD5Hash(passwordNew);
                     db.SaveChanges();
                     obj.Error = false;
-                    obj.Title = "Thêm mới thành công!";
+                    obj.Title = "Thay đổi mật khẩu thành công!";
                 }
+
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message;
+                return obj;
+            }
+
+        }
+
+        /// <summary>
+        /// đặt lại mật khẩu mới
+        /// </summary>
+        /// <param name="nguoiDungId"></param>
+        /// <param name="passwordOd"></param>
+        /// <param name="passwordNew"></param>
+        /// <returns></returns>
+        public ObjectMessage ResetPassword(long nguoiDungId, string passwordNew)
+        {
+            ObjectMessage obj = new ObjectMessage();
+            try
+            {
+                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
+                var passwordOldb = data.Password;
+                obj.Email = data.Email;
+                data.Password = _encryptor.MD5Hash(passwordNew);
+                db.SaveChanges();
+                obj.Error = false;
+                obj.Title = "Reset mật khẩu thành công!";
 
                 return obj;
             }
@@ -424,6 +474,19 @@ namespace Data.Admin
         public List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull()
         {
             return db.BVTL_QT_NGUOI_DUNG.Where(x => x.Email != null && x.Email != "").ToList();
+        }
+
+        /// <summary>
+        /// Lấy danh sách nhóm TBH theo người dùng
+        /// </summary>
+        /// <returns></returns>
+        public string GetMaNhomTBHByUser(int userId)
+        {
+            var result = "";
+            var nhomTBHs = db.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == userId).ToList();
+            if (nhomTBHs != null && nhomTBHs.Count > 0)
+                result = string.Join(",", nhomTBHs.Select(x => x.NhomTBHMa));
+            return result;
         }
     }
     public class DataSelect

@@ -262,6 +262,38 @@
         }
     };
 
+    $scope.resetPassword = function () {
+        var seletedRow = dataTableUser.rows({ selected: true });
+        var count = seletedRow.count();
+        if (count > 0) {
+            $scope.UserIdSeleted = seletedRow.data()[0].ID;
+        } else {
+            $scope.UserIdSeleted = 0;
+        }
+
+        if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: '/User/_ResetPassword',
+                controller: 'resetPassword',
+                size: 'xl',
+                backdrop: 'static',
+                resolve: {
+                    itemId: function () {
+                        return $scope.UserIdSeleted;
+                    }
+                }
+            });
+
+            //kết quả trả về của modal
+            modalInstance.result.then(function (response) {
+                $scope.LoadPage(0);
+            });
+        } else {
+            toastr.error("Bạn chưa chọn bản ghi nào.");
+        }
+    };
+
     $scope.cancel = function () {
         $uibModalInstance.close();
     };
@@ -329,10 +361,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListDuAn = [];
-
+    $scope.ListMaDuAn = [];
     $scope.FileName = "";
     angular.element(document).ready(function () {
         $scope.ListTestGroupId = [];
+        $scope.ListMaDuAn = [];
         showToast();
         GetDanhMuc();
     });
@@ -376,6 +409,18 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
     $scope.model = {};
     $scope.submit = function () {
+        if ($scope.ListMaDuAn == null || $scope.ListMaDuAn.length == 0) {
+            toastr.error("Bạn chưa chọn Dự án quản lý");
+            return false;
+        } else {
+            for (var i = 0; i < $scope.ListMaDuAn.length; i++) {
+                if ($scope.model.MaDuAn == null || $scope.model.MaDuAn == '')
+                    $scope.model.MaDuAn = $scope.ListMaDuAn[i];
+                else
+                    $scope.model.MaDuAn += ',' + $scope.ListMaDuAn[i];
+            }
+        }
+
         showToast();
 
         $("#formSubmit").validate({
@@ -393,10 +438,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 Name: {
                     required: true,
                     maxlength: 250
-                },
-                MaDuAn: {
-                    required: true
                 }
+                //,
+                //MaDuAn: {
+                //    required: true
+                //}
             },
             messages: {
                 UserName: {
@@ -413,10 +459,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
-                },
-                MaDuAn: {
-                    required: "Vui lòng chọn Dự án quản lý"
                 }
+                //,
+                //MaDuAn: {
+                //    required: "Vui lòng chọn Dự án quản lý"
+                //}
             }
         });
         if ($("#formSubmit").valid()) {
@@ -473,6 +520,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListDuAn = [];
+    $scope.ListMaDuAn = [];
     $scope.FileName = "";
     $scope.model = {};
     angular.element(document).ready(function () {
@@ -493,6 +541,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     $scope.model.GroupID = $scope.model.UserGroupID;
                     $scope.ListTestGroupId = data.TestGroupId;
                     $scope.ListCityCode = data.CityCodes;
+                    $scope.ListMaDuAn = data.MaDuAns;
                     hideLoading();
                     $scope.$apply();
 
@@ -531,6 +580,19 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         });
     }
     $scope.submit = function () {
+        if ($scope.ListMaDuAn == null || $scope.ListMaDuAn.length == 0) {
+            toastr.error("Bạn chưa chọn Dự án quản lý");
+            return false;
+        } else {
+            $scope.model.MaDuAn = '';
+            for (var i = 0; i < $scope.ListMaDuAn.length; i++) {
+                if ($scope.model.MaDuAn == null || $scope.model.MaDuAn == '')
+                    $scope.model.MaDuAn = $scope.ListMaDuAn[i];
+                else
+                    $scope.model.MaDuAn +=',' +$scope.ListMaDuAn[i];
+            }
+        }
+
         $("#formSubmit").validate({
             rules: {
                 UserName: {
@@ -546,10 +608,11 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 Name: {
                     required: true,
                     maxlength: 250
-                },
-                MaDuAn: {
-                    required: true
                 }
+                //,
+                //MaDuAn: {
+                //    required: true
+                //}
             },
             messages: {
                 UserName: {
@@ -566,10 +629,11 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
-                },
-                MaDuAn: {
-                    required: "Vui lòng chọn Dự án quản lý"
                 }
+                //,
+                //MaDuAn: {
+                //    required: "Vui lòng chọn Dự án quản lý"
+                //}
             }
         });
         if ($("#formSubmit").valid()) {
@@ -682,4 +746,44 @@ app.controller('view', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         $uibModalInstance.close();
     };
 
+});
+
+app.controller('resetPassword', function ($scope, $uibModalInstance, itemId, $ngConfirm, showToast, hideLoading) {
+   
+    $scope.Password = "";
+
+    $scope.submit = function () {
+        $("#formSubmit").validate({
+            rules: {
+                Password: {
+                    required: true
+                }
+            },
+            messages: {
+                Password: {
+                    required: "Vui lòng nhập mật khẩu mới"
+                }
+            }
+        });
+        if ($("#formSubmit").valid()) {
+            $.ajax({
+                type: 'post',
+                url: '/User/ResetPassword',
+                data: { userId: itemId, password: $scope.Password },
+                success: function (data) {
+                    if (data.Error) {
+                        toastr.error(data.Title);
+                    } else {
+                        toastr.success(data.Title);
+                        $scope.cancel();
+                    }
+                }
+            });
+        }
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.close();
+    };
+   
 });

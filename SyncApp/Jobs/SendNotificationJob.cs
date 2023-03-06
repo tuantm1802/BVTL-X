@@ -20,7 +20,14 @@ namespace SyncBVTL.Push.Jobs
             var currentDate = DateTime.Now;
             if (currentDate.Hour == 1)
             {
+                // Gửi thông báo danh sách khách hàng sắp đến hạn khám lại
                 await controller.SendNotification();
+                // Gửi báo cáo tháng
+                await controller.SendReportMonth();
+                // Gửi báo cáo quý
+                await controller.SendReportQuater();
+                // Gửi báo cáo năm
+                //await controller.SendReportYear();
             }
         }
     }

@@ -11,7 +11,7 @@ namespace Model.ModelExtend.Base
         public bool Error { get; set; }
         public string Title { get; set; }
         public object ObjectData { get; set; }
-
+        public string Email { get; set; }
         public long Id { get; set; }
     }
 }
