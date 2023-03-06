@@ -94,7 +94,7 @@ namespace Data.Admin
                 }
                 else
                 {
-                    var duAns = db.BVTL_DU_AN.Where(x => x.maduan == user.MaDuAn).ToList();
+                    var duAns = db.BVTL_DU_AN.Where(x => user.MaDuAn.Contains( x.maduan )).ToList();
                     return duAns != null ? duAns : new List<BVTL_DU_AN>();
                 }
             }
