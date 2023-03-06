@@ -122,7 +122,9 @@
         <div class="col-md-12">
             <div class="form-group">
                 <label class="requiredInput" title="Dự án quản lý">Dự án quản lý</label>
-                <select class="form-control" ui-select2 ng-model="model.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                @*<select class="form-control" ui-select2 ng-model="model.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+        </select>*@
+                <select class="form-control" ui-select2 multiple ng-model="ListMaDuAn" name="ListMaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
                 </select>
             </div>
         </div>

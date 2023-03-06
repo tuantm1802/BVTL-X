@@ -161,18 +161,40 @@ namespace WebApp.Controllers
             {
                 var data = _userDA.GetItemById(Id);
 
+                var dataTestGroup = _BVTL_NHOM_TBHDA.GetAll().Select(x => new
+                {
+                    Id = x.manhom_tbh,
+                    Name = x.tennhom_tbh
+                })
+               .OrderBy(x => x.Name).ToList();
+
                 // Lấy danh sách id nhóm thu thập dữ liệu
                 var testGroupIds = data.TestGroups.Select(x => x.manhom_tbh).ToList();
 
+                if (dataTestGroup.Count == testGroupIds.Count)
+                    testGroupIds = new List<string>() { "ALL" };
+
                 if (testGroupIds == null)
                     testGroupIds = new List<string>();
+
+                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+
+                var maDuAns = new List<string>();
+                if (!string.IsNullOrEmpty(data.MaDuAn))
+                    maDuAns = data.MaDuAn.Split(',').ToList();
+
+                if (duAns.Count == maDuAns.Count)
+                    maDuAns = new List<string>() { "ALL" };
+
+                if (maDuAns == null)
+                    maDuAns = new List<string>();
 
                 var cityCodes = new List<string>();
                 if (!string.IsNullOrEmpty(data.CityCodes))
                     cityCodes = data.CityCodes.Split(',').ToList();
 
                 AddLog("Lấy dữ liệu theo ID bảng Người dùng( ID: " + Id + ") thành công.");
-                return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds, CityCodes = cityCodes });
+                return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds, CityCodes = cityCodes, MaDuAns = maDuAns });
             }
             catch (Exception ex)
             {

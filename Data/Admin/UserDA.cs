@@ -72,7 +72,8 @@ namespace Data.Admin
                               Possition = u.Possition,
                               OperativeLevel = u.OperativeLevel,
                               OriginId = u.OriginId,
-                              CityCodes = u.CityCodes
+                              CityCodes = u.CityCodes,
+                              MaDuAn = u.MaDuAn
                           }).FirstOrDefault();
 
 
@@ -82,7 +83,7 @@ namespace Data.Admin
             result.TestGroups = new List<BVTL_NHOM_TBH>();
             result.TestGroups = (from tg in db.BVTL_NHOM_TBH
                                  join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa
-                                 where utg.NguoiDungId == Id
+                                 where utg.NguoiDungId == Id && utg.IsActive == true
                                  select tg).ToList();
 
             // Lấy danh sách tỉnh quản lý
@@ -222,6 +223,13 @@ namespace Data.Admin
         public ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs)
         {
             ObjectMessage obj = new ObjectMessage();
+            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
+                .Select(x => new BVTL_NHOM_TBH
+                {
+                    manhom_tbh = x.manhom_tbh,
+                    tennhom_tbh = x.tennhom_tbh,
+                    city_code = x.city_code
+                }).ToList();
             using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
@@ -244,6 +252,7 @@ namespace Data.Admin
                                 }
                                 context.SaveChanges();
                             }
+
                             var check = 0;
                             var checkTGs = new List<BVTL_QT_NGUOI_DUNG_NHOM_TBH>();
                             for (int i = 0; i < maNhomTBHs.Count; i++)
@@ -256,12 +265,12 @@ namespace Data.Admin
                                     checkTGs = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).ToList();
                                     for (int j = 0; j < checkTGs.Count; j++)
                                     {
-                                        checkTGs[j].IsActive = false;
+                                        checkTGs[j].IsActive = true;
                                     }
                                 }
 
                                 // Lấy nhóm tbh
-                                nhomTBH = context.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
+                                nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
                                 if (nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
                                 {
                                     if (string.IsNullOrEmpty(cityCodes))

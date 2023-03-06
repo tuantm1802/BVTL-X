@@ -361,10 +361,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListDuAn = [];
-
+    $scope.ListMaDuAn = [];
     $scope.FileName = "";
     angular.element(document).ready(function () {
         $scope.ListTestGroupId = [];
+        $scope.ListMaDuAn = [];
         showToast();
         GetDanhMuc();
     });
@@ -408,6 +409,18 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
     $scope.model = {};
     $scope.submit = function () {
+        if ($scope.ListMaDuAn == null || $scope.ListMaDuAn.length == 0) {
+            toastr.error("Bạn chưa chọn Dự án quản lý");
+            return false;
+        } else {
+            for (var i = 0; i < $scope.ListMaDuAn.length; i++) {
+                if ($scope.model.MaDuAn == null || $scope.model.MaDuAn == '')
+                    $scope.model.MaDuAn = $scope.ListMaDuAn[i];
+                else
+                    $scope.model.MaDuAn += ',' + $scope.ListMaDuAn[i];
+            }
+        }
+
         showToast();
 
         $("#formSubmit").validate({
@@ -425,10 +438,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 Name: {
                     required: true,
                     maxlength: 250
-                },
-                MaDuAn: {
-                    required: true
                 }
+                //,
+                //MaDuAn: {
+                //    required: true
+                //}
             },
             messages: {
                 UserName: {
@@ -445,10 +459,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
-                },
-                MaDuAn: {
-                    required: "Vui lòng chọn Dự án quản lý"
                 }
+                //,
+                //MaDuAn: {
+                //    required: "Vui lòng chọn Dự án quản lý"
+                //}
             }
         });
         if ($("#formSubmit").valid()) {
@@ -505,6 +520,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListDuAn = [];
+    $scope.ListMaDuAn = [];
     $scope.FileName = "";
     $scope.model = {};
     angular.element(document).ready(function () {
@@ -525,6 +541,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     $scope.model.GroupID = $scope.model.UserGroupID;
                     $scope.ListTestGroupId = data.TestGroupId;
                     $scope.ListCityCode = data.CityCodes;
+                    $scope.ListMaDuAn = data.MaDuAns;
                     hideLoading();
                     $scope.$apply();
 
@@ -563,6 +580,19 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         });
     }
     $scope.submit = function () {
+        if ($scope.ListMaDuAn == null || $scope.ListMaDuAn.length == 0) {
+            toastr.error("Bạn chưa chọn Dự án quản lý");
+            return false;
+        } else {
+            $scope.model.MaDuAn = '';
+            for (var i = 0; i < $scope.ListMaDuAn.length; i++) {
+                if ($scope.model.MaDuAn == null || $scope.model.MaDuAn == '')
+                    $scope.model.MaDuAn = $scope.ListMaDuAn[i];
+                else
+                    $scope.model.MaDuAn +=',' +$scope.ListMaDuAn[i];
+            }
+        }
+
         $("#formSubmit").validate({
             rules: {
                 UserName: {
@@ -578,10 +608,11 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 Name: {
                     required: true,
                     maxlength: 250
-                },
-                MaDuAn: {
-                    required: true
                 }
+                //,
+                //MaDuAn: {
+                //    required: true
+                //}
             },
             messages: {
                 UserName: {
@@ -598,10 +629,11 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }, Name: {
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
-                },
-                MaDuAn: {
-                    required: "Vui lòng chọn Dự án quản lý"
                 }
+                //,
+                //MaDuAn: {
+                //    required: "Vui lòng chọn Dự án quản lý"
+                //}
             }
         });
         if ($("#formSubmit").valid()) {
