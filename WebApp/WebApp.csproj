@@ -4637,6 +4637,7 @@
     <Content Include="Views\TrainingDataCollVIIV\Index.cshtml" />
     <Content Include="Views\DGHLVIIV\Index.cshtml" />
     <Content Include="Views\Notification\Index.cshtml" />
+    <Content Include="Views\User\_resetPassword.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

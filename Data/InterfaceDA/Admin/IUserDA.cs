@@ -29,6 +29,13 @@ namespace Data.InterfaceDA.Admin
          ObjectMessage Add(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs);
          ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs);
 
+        /// <summary>
+        /// Thay đổi mật khẩu
+        /// </summary>
+        /// <param name="nguoiDungId"></param>
+        /// <param name="passwordOd"></param>
+        /// <param name="passwordNew"></param>
+        /// <returns></returns>
          ObjectMessage ChangePassword(long nguoiDungId, string passwordOd, string passwordNew);
 
          ObjectMessage Delete(int Id);
@@ -58,5 +65,14 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <returns></returns>
         string GetMaNhomTBHByUser(int userId);
+
+        /// <summary>
+        /// đặt lại mật khẩu mới
+        /// </summary>
+        /// <param name="nguoiDungId"></param>
+        /// <param name="passwordOd"></param>
+        /// <param name="passwordNew"></param>
+        /// <returns></returns>
+         ObjectMessage ResetPassword(long nguoiDungId, string passwordNew);
     }
 }

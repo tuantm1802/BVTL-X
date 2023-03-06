@@ -93,7 +93,7 @@ namespace SyncBVTL.Push.Controllers.PA
                     };
                     notifications = userDA.GetNotification(notificationSearch);
                     // Gửi thông báo đến người dùng
-                    //if (notifications != null && notifications.Count > 0)
+                    if (notifications != null && notifications.Count > 0)
                     {
                         foreach (var notification in notifications)
                         {

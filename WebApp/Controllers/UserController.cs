@@ -12,6 +12,8 @@ using System.Web;
 using System.Web.Mvc;
 using Common.Common;
 using Data.InterfaceDA.Admin;
+using System.Net.Mail;
+using System.Net;
 
 namespace WebApp.Controllers
 {
@@ -24,7 +26,7 @@ namespace WebApp.Controllers
         IRoleDA _RoleDA = new RoleDA();
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
-
+        ISysParameterDA _sysParameterDA = new SysParameterDA();
         // GET: User
         [HasCredential(ControllerName = "User")]
         public ActionResult Index()
@@ -54,6 +56,11 @@ namespace WebApp.Controllers
         public ActionResult _Edit()
         {
             return PartialView("_edit");
+        }
+
+        public ActionResult _ResetPassword()
+        {
+            return PartialView("_resetPassword");
         }
 
         public ActionResult _View()
@@ -108,23 +115,36 @@ namespace WebApp.Controllers
                 // danh sách nhóm thu thập dữ liệu
                 var dataTestGroup = _BVTL_NHOM_TBHDA.GetAll().Select(x => new
                 {
-                    Id= x.manhom_tbh,
+                    Id = x.manhom_tbh,
                     Name = x.tennhom_tbh
                 })
                 .OrderBy(x => x.Name).ToList();
 
+                dataTestGroup.Add(new
+                {
+                    Id = "ALL",
+                    Name = "Tất cả"
+                });
+
                 // Lấy danh sách tỉnh
-                var citys = _CityDA.GetAll().Select(x=>new {  Code = x.Code, Name = x.Name}).ToList();
+                var citys = _CityDA.GetAll().Select(x => new { Code = x.Code, Name = x.Name }).ToList();
 
                 // Lấy danh sách du an
                 var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
-
-                return Json(new { 
-                    DataRoles = dataRole, 
-                    DataTestGroup = dataTestGroup, 
-                    Citys = citys, 
-                    DuAns = duAns, 
-                    Error = false, Title = "Lấy dữ liệu thành công." });
+                duAns.Add(new
+                {
+                    Code = "ALL",
+                    Name = "Tất cả"
+                });
+                return Json(new
+                {
+                    DataRoles = dataRole,
+                    DataTestGroup = dataTestGroup,
+                    Citys = citys,
+                    DuAns = duAns,
+                    Error = false,
+                    Title = "Lấy dữ liệu thành công."
+                });
             }
             catch (Exception ex)
             {
@@ -142,7 +162,7 @@ namespace WebApp.Controllers
                 var data = _userDA.GetItemById(Id);
 
                 // Lấy danh sách id nhóm thu thập dữ liệu
-                var testGroupIds = data.TestGroups.Select(x=>x.manhom_tbh).ToList();
+                var testGroupIds = data.TestGroups.Select(x => x.manhom_tbh).ToList();
 
                 if (testGroupIds == null)
                     testGroupIds = new List<string>();
@@ -281,8 +301,28 @@ namespace WebApp.Controllers
                     user.CreatedDate = DateTime.Now;
                     if (testGroupMa == null)
                         testGroupMa = new List<string>();
+                    else
+                    {
+                        if (testGroupMa.Contains("ALL"))
+                        {
+                            // danh sách nhóm thu thập dữ liệu
+                            var dataTestGroup = _BVTL_NHOM_TBHDA.GetAll().Select(x => new
+                            {
+                                Id = x.manhom_tbh,
+                                Name = x.tennhom_tbh
+                            })
+                            .OrderBy(x => x.Name).ToList();
+                            testGroupMa = dataTestGroup.Select(x => x.Id).ToList();
+                        }
+                    }
 
-                    if(cityCodes != null && cityCodes.Count > 0)
+                    if (user.MaDuAn == "ALL")
+                    {
+                        var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+                        user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
+                    }
+
+                    if (cityCodes != null && cityCodes.Count > 0)
                         user.CityCodes = string.Join(",", cityCodes);
                     else
                         user.CityCodes = null;
@@ -407,6 +447,26 @@ namespace WebApp.Controllers
                 user.ModifiedDate = DateTime.Now;
                 if (testGroupMa == null)
                     testGroupMa = new List<string>();
+                else
+                {
+                    if (testGroupMa.Contains("ALL"))
+                    {
+                        // danh sách nhóm thu thập dữ liệu
+                        var dataTestGroup = _BVTL_NHOM_TBHDA.GetAll().Select(x => new
+                        {
+                            Id = x.manhom_tbh,
+                            Name = x.tennhom_tbh
+                        })
+                        .OrderBy(x => x.Name).ToList();
+                        testGroupMa = dataTestGroup.Select(x => x.Id).ToList();
+                    }
+                }
+
+                if (user.MaDuAn == "ALL")
+                {
+                    var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
+                    user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
+                }
 
                 if (cityCodes != null && cityCodes.Count > 0)
                     user.CityCodes = string.Join(",", cityCodes);
@@ -434,6 +494,77 @@ namespace WebApp.Controllers
                 return Json(obj);
             }
         }
+
+        [HttpPost]
+        public object ResetPassword(int userId, string password)
+        {
+            ObjectMessage obj = new ObjectMessage();
+            obj.Error = false;
+            try
+            {
+
+                obj = _userDA.ResetPassword(userId, password);
+                if (obj.Error)
+                    AddLog("Reset mật khẩu Người dùng(ID: " + userId + ") lỗi: " + obj.Title);
+                else
+                {
+                    AddLog("Reset mật khẩu Người dùng(ID: " + userId + ") thành công.");
+                    // Gửi Email
+                    if (!string.IsNullOrEmpty(obj.Email))
+                    {
+                        SendNotifiResetPassword(userId, password, obj.Email);
+                    }
+                }
+
+                return Json(obj);
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Reset mật khẩu Người dùng(ID: " + userId + ") lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+
+        /// <summary>
+        /// Gửi email thông báo thay đổi mật khẩu
+        /// </summary>
+        /// <returns></returns>
+        public void SendNotifiResetPassword(int userId, string password, string emailNhan)
+        {
+            var AddressEmail = _sysParameterDA.GetByParamCode("EmailSend").FirstOrDefault().ParamValue;
+            var PassEmail = _sysParameterDA.GetByParamCode("PassEmail").FirstOrDefault().ParamValue;
+
+            string subject = "Reset mật khẩu";
+            string body = "Mật khẩu của bạn đã được quản trị thay đổi thành: "+password+" vui lòng đăng nhập vào phần mềm và đổi lại mật khẩu khác!";
+            try
+            {
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(AddressEmail);
+                    mail.To.Add(emailNhan);
+                    mail.Subject = subject;
+                    mail.Body = body;
+                    mail.IsBodyHtml = false;
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential(AddressEmail, PassEmail);
+                        smtp.EnableSsl = true;
+                        smtp.Send(mail);
+                    }
+                }
+
+                AddLog("Gửi email thông báo thay đổi mật khẩu người dùng(" + userId + ") thành công!");
+            }
+            catch (Exception ex)
+            {
+                AddLog("Lỗi gửi email thông báo thay đổi mật khẩu người dùng(" + userId + "): " + ex.Message);
+            }
+        }
+
+
         [HttpPost]
         public object Delete(int Id)
         {
