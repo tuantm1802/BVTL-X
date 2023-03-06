@@ -52,5 +52,11 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <returns></returns>
         List<BVTL_QT_NGUOI_DUNG> GetAllUserByEmailNotNull();
+
+        /// <summary>
+        /// Lấy danh sách nhóm TBH theo người dùng
+        /// </summary>
+        /// <returns></returns>
+        string GetMaNhomTBHByUser(int userId);
     }
 }

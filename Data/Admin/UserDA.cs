@@ -425,6 +425,19 @@ namespace Data.Admin
         {
             return db.BVTL_QT_NGUOI_DUNG.Where(x => x.Email != null && x.Email != "").ToList();
         }
+
+        /// <summary>
+        /// Lấy danh sách nhóm TBH theo người dùng
+        /// </summary>
+        /// <returns></returns>
+        public string GetMaNhomTBHByUser(int userId)
+        {
+            var result = "";
+            var nhomTBHs = db.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x=>x.NguoiDungId == userId).ToList();
+            if (nhomTBHs != null && nhomTBHs.Count > 0)
+                result = string.Join(",", nhomTBHs.Select(x=>x.NhomTBHMa));
+            return result;
+        }
     }
     public class DataSelect
     {
