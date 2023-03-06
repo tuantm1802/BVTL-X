@@ -53,7 +53,7 @@
                             <th style="width:9%;">Mã nhóm TBH</th>
                             <th style="width:auto;">Tên nhóm TBH </th>
                             <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
+                            @*<th style="width:auto;">Họ tên KH </th>*@
                             <th>Loại hình chuyển gửi</th>
                             <th>Ngày xét nghiệm khẳng định HIV</th>
                             <th>Địa chỉ xét nghiệm khẳng định</th>
@@ -94,7 +94,7 @@
                     <td class="text-left">@item.manhom_tbh</td>
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
-                    <td class="text-left">@item.hoten</td>
+                    @*<td class="text-left">@item.hoten</td>*@
                     <td class="text-right">@item.loaihinh </td>
                     <td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
                     <td class="text-left">@item.diachi_xn </td>
