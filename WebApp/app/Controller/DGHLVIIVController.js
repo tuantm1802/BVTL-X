@@ -71,7 +71,7 @@
                     { "data": "manhom_tbh", searchBuilderType: "string"},
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},
-                    { "data": "hoten", searchBuilderType: "string"},
+                    //{ "data": "hoten", searchBuilderType: "string"},
                     //{ "data": "ngayxntext", searchBuilderType: "string" },
                     { "data": "ngay", searchBuilderType: "date" },
                     { "data": "lantuvan", searchBuilderType: "string" },

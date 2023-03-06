@@ -122,7 +122,7 @@
                     { "data": "manhom_tbh", searchBuilderType: "string"  },
                     { "data": "tennhom_tbh", searchBuilderType: "string"  },
                     { "data": "makh", searchBuilderType: "string"  },
-                    { "data": "hoten", searchBuilderType: "string"  },
+                    //{ "data": "hoten", searchBuilderType: "string"  },
                     //{ "data": "ngaysltext", searchBuilderType: "string"  },
                     { "data": "ngaysl", searchBuilderType: "date" },
                     { "data": "diem_QST", searchBuilderType: "string"  },

@@ -53,7 +53,7 @@
                             <th style="width:9%;">Mã nhóm TBH</th>
                             <th style="width:auto;">Tên nhóm TBH </th>
                             <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
+                            @*<th style="width:auto;">Họ tên KH </th>*@
                             <th style="width:9%;">Ngày xét nghiệm</th>
                             <th style="width:9%;">Kết quả XN Ma túy đá</th>
                             <th style="width:9%;">Kết quả XN Heroin</th>
@@ -67,7 +67,7 @@
                     <td class="text-left">@item.manhom_tbh</td>
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
-                    <td class="text-left">@item.hoten</td>
+                    @*<td class="text-left">@item.hoten</td>*@
                     <td class="text-center">@(item.ngayhoi != null ? item.ngayhoi.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-left">@item.ngayxntext</td>*@
                     <td class="text-right">@(item.kqxnda == 1 ? "Dương tính": (item.kqxnda == 2 ? "Âm tính":"Không xét nghiệm"))</td>
