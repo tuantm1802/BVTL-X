@@ -121,7 +121,7 @@
                     { "data": "manhom_tbh", searchBuilderType: "string"},
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},
-                    { "data": "hoten", searchBuilderType: "string"},
+                    //{ "data": "hoten", searchBuilderType: "string"},
                     
                     { "data": "loaihinh", searchBuilderType: "string" },
                     { "data": "ngay_xn", searchBuilderType: "date" },
