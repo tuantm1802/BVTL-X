@@ -171,7 +171,6 @@ namespace Data.Admin
                         model.IsActive = true;
                         context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
-
                         var cityCodes = "";
 
                         // Thêm người dùng vào nhóm
@@ -204,6 +203,7 @@ namespace Data.Admin
                         }
                         // thêm danh sách tỉnh quản lý
                         model.CityCodes = cityCodes;
+                        context.SaveChanges();
                         dbContextTransaction.Commit();
                         obj.Error = false;
                         obj.Title = "Thêm mới thành công!";

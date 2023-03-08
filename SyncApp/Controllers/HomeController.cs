@@ -1,5 +1,4 @@
 ﻿using Model.ModelExtend.API;
-using Newtonsoft.Json;
 using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.ScheduleTasks;

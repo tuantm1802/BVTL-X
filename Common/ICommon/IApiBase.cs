@@ -24,6 +24,8 @@ namespace Common.ICommon
 
         Task<HttpResponseMessage> GetJsonAsyncResponse(string url);
 
+        Task<HttpResponseMessage> GetJsonAsyncResponseReport(string url);
+
         Task<string> GetBase64Async(string url);
 
         // CuongHM add

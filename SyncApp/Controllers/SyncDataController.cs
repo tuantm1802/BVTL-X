@@ -5,7 +5,6 @@ using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.API;
-using Newtonsoft.Json;
 using SyncBVTL.Push.Services;
 using System;
 using System.Collections.Generic;

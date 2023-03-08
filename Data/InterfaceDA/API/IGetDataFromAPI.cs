@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.ModelExtend.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,5 +27,15 @@ namespace Data.InterfaceDA.API
         /// <param name="reportId"></param>
         /// <returns></returns>
         Task<string> PostDataFromApiReturnString(string url, string token, string reportId);
+
+        #region Call api tạo các file báo cáo
+
+        /// <summary>
+        /// Gọi api tạo danh sách file báo cáo
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+         Task<List<UserSendReportModel>> GetListFileReport(string url);
+        #endregion
     }
 }
