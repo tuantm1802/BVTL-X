@@ -26,6 +26,8 @@ namespace WebApp.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            AddLog("Redireact vào Login/Index.");
+
             return View();
         }
         public ActionResult Login(LoginModel model)

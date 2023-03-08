@@ -14,8 +14,9 @@
 /SyncApp/obj
 /Model/bin
 /Model/obj
+/WebBVTLAPI/bin
+/WebBVTLAPI/obj
 *.suo
 *.ide
 *.pdb
 *.cache
-

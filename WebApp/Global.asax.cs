@@ -24,5 +24,9 @@ namespace WebApp
             Application["JSVer"] = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace('.', '0') + ".js";
             Application["CSSVer"] = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace('.', '0') + ".css";
         }
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+        }
     }
 }
