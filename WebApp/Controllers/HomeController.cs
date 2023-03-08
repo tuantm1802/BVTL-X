@@ -1,4 +1,5 @@
 ﻿using Data.Admin;
+using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
 
@@ -14,8 +15,11 @@ namespace WebApp.Controllers
 {
     public class HomeController : BaseController
     {
+        ISysLogDA _sysLogDA = new SysLogDA();
+
         public ActionResult Index()
         {
+            AddLog("Redireact vào home.");
             return View();
         }
 
@@ -35,6 +39,18 @@ namespace WebApp.Controllers
         public ActionResult HomeOther()
         {
             return View();
+        }
+        private void AddLog(string content)
+        {
+            _sysLogDA.Add(
+                    new BVTL_QT_LOG
+                    {
+                        ControllerName = "Login",
+                        UserName = "",
+                        DateLog = DateTime.Now,
+                        Content = content
+                    }
+                    );
         }
     }
 }
