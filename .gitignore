@@ -18,7 +18,4 @@
 *.ide
 *.pdb
 *.cache
-WebApp.dll
-Data.dll
-Common.dll
-Model.dll
+
