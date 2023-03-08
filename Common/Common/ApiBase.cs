@@ -202,7 +202,49 @@ namespace Common.Common
             }
         }
 
-        public  async Task<string> GetBase64Async( string url)
+        public async Task<HttpResponseMessage> GetJsonAsyncResponseReport(string url)
+        {
+            HttpResponseMessage response = null;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    //client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    //client.DefaultRequestHeaders.Add("token", Token);
+                    //client.Timeout = new TimeSpan(100);
+                    response = await client.GetAsync(url);
+                    log.Debug("Trạng thái của API " + client.BaseAddress + ": " + response.StatusCode);
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        // Gọi lại khi token hết hạn
+                        // Lưu lại token
+                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                        configuration.Save(ConfigurationSaveMode.Full, true);
+                        ConfigurationManager.RefreshSection("appSettings");
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        //client.DefaultRequestHeaders.Add("token", Token);
+                        response = await (client.GetAsync(url));
+
+                    }
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                return new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
+                };
+            }
+        }
+
+
+        public async Task<string> GetBase64Async( string url)
         {
             try
             {

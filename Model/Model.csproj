@@ -106,6 +106,7 @@
     <Compile Include="ModelExtend\UserPageModel.cs" />
     <Compile Include="ModelExtend\User\MY_PROFILE_Model.cs" />
     <Compile Include="ModelExtend\User\NotificationModel.cs" />
+    <Compile Include="ModelExtend\User\UserSendReportModel.cs" />
     <Compile Include="ModelExtend\User\ViewProfile.cs" />
     <Compile Include="Model\BVTL_API.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
