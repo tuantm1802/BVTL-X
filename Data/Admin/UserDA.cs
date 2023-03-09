@@ -422,7 +422,7 @@ namespace Data.Admin
             using (var context = new BVTL_REPORTINGEntities())
             {
 
-                var resultPro = context.BVTL_QT_NGUOI_DUNG.Where(x => x.IsActive == false).ToList();
+                var resultPro = context.BVTL_QT_NGUOI_DUNG.Where(x => x.ID == nguoiDungId &&  x.IsActive == false).ToList();
                 if (resultPro != null && resultPro.Count > 0)
                     result = true;
                 else
