@@ -24,5 +24,6 @@ namespace Model.Model
         public Nullable<int> PARENT_PAGE_ID { get; set; }
         public bool IS_SYSTEM_ROLE { get; set; }
         public string TEN_DU_AN { get; set; }
+        public string TITLE_GROUP_MENU { get; set; }
     }
 }

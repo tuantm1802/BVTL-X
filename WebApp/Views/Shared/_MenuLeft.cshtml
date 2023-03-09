@@ -82,7 +82,7 @@
                 <hr class="sidebar-divider">
 
                 var menuChikd2 = menuLevel2.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == itemM1.ID).ToList();
-                var tenDuAns = menuChikd2.Where(x => !string.IsNullOrEmpty(x.TEN_DU_AN)).Select(x => x.TEN_DU_AN).Distinct().ToList();
+                var tenDuAns = menuChikd2.Where(x => !string.IsNullOrEmpty(x.TITLE_GROUP_MENU)).Select(x => x.TITLE_GROUP_MENU).Distinct().ToList();
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="@itemM1.HREF_URL" data-toggle="collapse" data-target="#collapseTwo@(itemM1.ID)"
                        aria-expanded="true" aria-controls="collapseTwo@(itemM1.ID)">
@@ -96,7 +96,8 @@
                                 foreach (var tenDuAn in tenDuAns)
                                 {
                                     <h6 class="collapse-header">@tenDuAn:</h6>
-                                    foreach (var itemM2 in menuChikd2.Where(x=>x.TEN_DU_AN == tenDuAn))
+                                    //foreach (var itemM2 in menuChikd2.Where(x=>x.TEN_DU_AN == tenDuAn))
+                                    foreach (var itemM2 in menuChikd2.Where(x=>x.TITLE_GROUP_MENU == tenDuAn))
                                     {
                                         <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
                                     }

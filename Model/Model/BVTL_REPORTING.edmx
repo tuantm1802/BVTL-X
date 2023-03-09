@@ -592,7 +592,8 @@
           <Property Name="HREF_URL" Type="nvarchar" MaxLength="500" />
           <Property Name="PARENT_PAGE_ID" Type="int" />
           <Property Name="IS_SYSTEM_ROLE" Type="bit" Nullable="false" />
-          <Property Name="TEN_DU_AN" Type="nvarchar" MaxLength="500" />
+          <Property Name="TEN_DU_AN" Type="nvarchar" MaxLength="100" />
+          <Property Name="TITLE_GROUP_MENU" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="BVTL_QT_QUYEN">
           <Key>
@@ -1935,7 +1936,8 @@
           <Property Name="HREF_URL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="PARENT_PAGE_ID" Type="Int32" />
           <Property Name="IS_SYSTEM_ROLE" Type="Boolean" Nullable="false" />
-          <Property Name="TEN_DU_AN" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="TEN_DU_AN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TITLE_GROUP_MENU" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="BVTL_QT_QUYEN">
           <Key>
@@ -3251,6 +3253,7 @@
           <EntitySetMapping Name="BVTL_QT_PAGE_MENU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_QT_PAGE_MENU">
               <MappingFragment StoreEntitySet="BVTL_QT_PAGE_MENU">
+                <ScalarProperty Name="TITLE_GROUP_MENU" ColumnName="TITLE_GROUP_MENU" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
