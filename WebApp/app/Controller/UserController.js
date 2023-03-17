@@ -314,17 +314,71 @@
 
             $ngConfirm({
                 title: 'Thông báo',
-                content: 'Bạn có chắc chắn muốn xóa người dùng ' + Username + ' không?',
+                content: 'Bạn có chắc chắn muốn bỏ hiệu lực người dùng ' + Username + ' không?',
                 scope: $scope,
                 buttons: {
                     delete: {
-                        text: 'Xóa',
+                        text: 'Bỏ hiệu lực',
                         btnClass: 'btn-primary',
                         action: function (scope, button) {
                             showToast();
                             $.ajax({
                                 type: 'post',
                                 url: '/User/Delete',
+                                data: { Id: $scope.UserIdSeleted },
+                                success: function (data) {
+                                    if (data.Error) {
+                                        toastr.error(data.Title);
+                                    } else {
+                                        toastr.success(data.Title);
+                                        $scope.LoadPage(0);
+                                    }
+                                    hideLoading();
+                                }
+                            });
+                        }
+                    },
+                    close: {
+                        text: 'Hủy',
+                        btnClass: 'btn-secondary',
+                        action: function (scope, button) {
+
+                        }
+                    }
+                }
+            });
+        } else {
+            toastr.error("Bạn chưa chọn bản ghi nào.");
+        }
+    };
+
+    $scope.activeUser = function (itemId) {
+        var seletedRow = dataTableUser.rows({ selected: true });
+        var count = seletedRow.count();
+        if (count > 0) {
+            $scope.UserIdSeleted = seletedRow.data()[0].ID;
+        } else {
+            $scope.UserIdSeleted = 0;
+        }
+
+        if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
+            var Username = $scope.ListUser.filter(function (item) {
+                return item.ID === $scope.UserIdSeleted;
+            })[0].UserName;
+
+            $ngConfirm({
+                title: 'Thông báo',
+                content: 'Bạn có chắc chắn muốn cập nhật hiệu lực người dùng ' + Username + ' không?',
+                scope: $scope,
+                buttons: {
+                    delete: {
+                        text: 'Hiệu lực',
+                        btnClass: 'btn-primary',
+                        action: function (scope, button) {
+                            showToast();
+                            $.ajax({
+                                type: 'post',
+                                url: '/User/ActiveUser',
                                 data: { Id: $scope.UserIdSeleted },
                                 success: function (data) {
                                     if (data.Error) {

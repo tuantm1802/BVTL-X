@@ -40,6 +40,8 @@ namespace Data.InterfaceDA.Admin
 
          ObjectMessage Delete(int Id);
 
+        ObjectMessage ActiveUser(int Id);
+
         /// <summary>
         /// Kiểm tra xem BVTL_QT_NGUOI_DUNG có bị khóa không
         /// </summary>

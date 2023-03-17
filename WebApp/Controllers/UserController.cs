@@ -607,7 +607,28 @@ namespace WebApp.Controllers
             {
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
-                AddLog("Xóa dữ liệu bảng Người dùng(ID: " + Id + ") lỗi: " + ex.Message);
+                AddLog("Bỏ hiệu lực Người dùng(ID: " + Id + ") lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+
+        [HttpPost]
+        public object ActiveUser(int Id)
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                obj = _userDA.ActiveUser(Id);
+                return Json(obj);
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Cập nhật hiệu lực Người dùng(ID: " + Id + ") lỗi: " + ex.Message);
                 return Json(obj);
             }
         }

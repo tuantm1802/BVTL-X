@@ -398,7 +398,28 @@ namespace Data.Admin
                 data.IsActive = false;
                 db.SaveChanges();
                 obj.Error = false;
-                obj.Title = "Xóa thành công!";
+                obj.Title = "Bỏ hiệu lực thành công!";
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message;
+                return obj;
+            }
+
+        }
+
+        public ObjectMessage ActiveUser(int Id)
+        {
+            ObjectMessage obj = new ObjectMessage();
+            try
+            {
+                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
+                data.IsActive = true;
+                db.SaveChanges();
+                obj.Error = false;
+                obj.Title = "Cập nhật hiệu lực thành công!";
                 return obj;
             }
             catch (Exception ex)
