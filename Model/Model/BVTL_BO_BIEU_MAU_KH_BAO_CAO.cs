@@ -179,6 +179,7 @@ namespace Model.Model
         public int ngaysl_month { get; set; }
         public int ngaysl_year { get; set; }
         public string sottkh { get; set; }
+        public Nullable<int> record_id_api { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

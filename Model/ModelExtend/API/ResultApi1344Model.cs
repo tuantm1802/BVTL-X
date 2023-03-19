@@ -8,7 +8,7 @@ namespace Model.ModelExtend.API
 {
     public class ResultApi1344Model
     {
-        public string record_id
+        public int? record_id
         {
             get; set;
         }

@@ -27,6 +27,7 @@ namespace Model.Model
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
         public string sottkh { get; set; }
+        public Nullable<int> record_id { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

@@ -118,6 +118,7 @@
                     { "data": "maduan", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
+                    { "data": "record_id", searchBuilderType: "string" },
                     { "data": "manhom_tbh", searchBuilderType: "string"},
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},

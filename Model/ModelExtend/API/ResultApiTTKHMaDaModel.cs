@@ -9,6 +9,7 @@ namespace Model.ModelExtend.API
     public class ResultApiTTKHMaDaModel
     {
         public string record_id { get; set; }
+        public int? record_id_api { get; set; }
         public string ngaynl { get; set; }
         public string matcv { get; set; }
         public string makh { get; set; }

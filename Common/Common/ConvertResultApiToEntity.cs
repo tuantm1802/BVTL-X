@@ -193,7 +193,7 @@ namespace Common.Common
                         if (sktt.diem_QST > 4)
                             sktt.ketqua_QST = 1;
                     }
-
+                    sktt.record_id = resultApi1344.record_id;
                     sktts.Add(sktt);
 
                     #endregion
@@ -323,6 +323,7 @@ namespace Common.Common
                         else if (assist.chatkhac_diem >= 27)
                             assist.chatkhac_nguyco = "Cao";
                     }
+                    assist.record_id = resultApi1344.record_id;
                     #endregion
 
                     assists.Add(assist);
@@ -668,6 +669,8 @@ namespace Common.Common
                         if (ace.tongdiem_ace >= 4)
                             ace.ketqua_ace = 1;
                     }
+                    ace.record_id = resultApiACE.record_id;
+
                     aces.Add(ace);
 
                     #endregion
@@ -809,7 +812,7 @@ namespace Common.Common
                         sottkh = customer_code.Substring(5)
                     };
 
-                    tongHop.record_id = string.IsNullOrEmpty(resultApiTH.record_id) ? 0 : Convert.ToInt32(resultApiTH.record_id);
+                    tongHop.record_id_api = string.IsNullOrEmpty(resultApiTH.record_id) ? 0 : Convert.ToInt32(resultApiTH.record_id);
                     tongHop.hanhvinguyco_timestamp = ngaynhapD;
                     tongHop.chatgaynghien = resultApiTH.chatgaynghien;
                     tongHop.loaikhac = resultApiTH.khac1;
@@ -964,7 +967,6 @@ namespace Common.Common
                     tongHop.c_4b = resultApiTH.c_4b;
                     tongHop.c_4c = resultApiTH.c_4c;
                     tongHop.tongdiem = string.IsNullOrEmpty(resultApiTH.tongdiem) ? 0 : Convert.ToInt32(resultApiTH.tongdiem);
-
                     tongHops.Add(tongHop);
 
                     #endregion
@@ -1124,7 +1126,7 @@ namespace Common.Common
 
                         #region Chuyển đổi dữ liệu sang bảng BVTL_PHIEU_TU_VAN
 
-                        //phieuTuVan.record_id = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
+                        phieuTuVan.record_id_api = string.IsNullOrEmpty(resultApiPTV.record_id) ? 0 : Convert.ToInt32(resultApiPTV.record_id);
 
                         phieuTuVan.ngaytuvan = ngaynhapD;
                         phieuTuVan.ngaytuvan_date = day;
@@ -1532,7 +1534,9 @@ namespace Common.Common
                     xnNuocTieu.ngayhoi_date = day;
                     xnNuocTieu.ngayhoi_month = month;
                     xnNuocTieu.ngayhoi_year = year;
-                    xnNuocTieu.kqxnnt_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    //xnNuocTieu.kqxnnt_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    xnNuocTieu.kqxnnt_id = resultApi.record_id == null ? 0: (int)resultApi.record_id;
+
                     if (!string.IsNullOrEmpty(resultApi.kqxnda))
                     {
                         if (resultApi.kqxnda?.Trim() == "Âm tính")
@@ -1582,7 +1586,8 @@ namespace Common.Common
                         else
                             xnNuocTieu.kqxnmdma = 3;
                     }
-                    
+                    xnNuocTieu.record_id = resultApi.record_id;
+
                     xnNuocTieus.Add(xnNuocTieu);
 
                     #endregion
@@ -1694,7 +1699,7 @@ namespace Common.Common
                     objDB.ngayth_date = day;
                     objDB.ngayth_month = month;
                     objDB.ngayth_year = year;
-                    objDB.record_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    objDB.record_id_api = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
                     if (!string.IsNullOrEmpty(resultApi.diadiem))
                     {
                         objDB.diadiem = resultApi.diadiem;
@@ -1852,7 +1857,7 @@ namespace Common.Common
                     objDB.ngayth_date = day;
                     objDB.ngayth_month = month;
                     objDB.ngayth_year = year;
-                    objDB.record_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    objDB.record_id_api = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
                     if (!string.IsNullOrEmpty(resultApi.doituong))
                     {
                         objDB.doituong = resultApi.doituong;
@@ -1967,7 +1972,7 @@ namespace Common.Common
                     {
                         objDB.tinh_2 = resultApi.tinh_2;
                     }
-
+                    
                     lsObjDB.Add(objDB);
 
                     #endregion
@@ -2082,7 +2087,7 @@ namespace Common.Common
                     objDB.ngayth_date = day;
                     objDB.ngayth_month = month;
                     objDB.ngayth_year = year;
-                    objDB.record_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    objDB.record_id_api = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
                     if (!string.IsNullOrEmpty(resultApi.lantuvan))
                     {
                         objDB.lantuvan = Int32.Parse(resultApi.lantuvan);
@@ -2117,7 +2122,7 @@ namespace Common.Common
                     {
                         objDB.cau6 = resultApi.cau6;
                     }
-                            
+
                     lsObjDB.Add(objDB);
 
                     #endregion
@@ -2239,7 +2244,8 @@ namespace Common.Common
                     objDB.ngayth_month = month;
                     objDB.ngayth_year = year;
 
-                    objDB.record_id = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    objDB.record_id_api = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                    //objDB.record_id_api = resultApi.record_id_api;
                             
                     lsObjDB.Add(objDB);
 

@@ -8,7 +8,7 @@ namespace Model.ModelExtend.API
 {
     public class ResultApiXnNuocTieuModel
     {
-        public string record_id { get; set; }
+        public int? record_id { get; set; }
         public string makh { get; set; }
         public string makh_2 { get; set; }
         public string makh_3 { get; set; }

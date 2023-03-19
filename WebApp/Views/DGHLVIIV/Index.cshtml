@@ -50,10 +50,11 @@
                         <tr>
                             <th style="width: auto;">Dự án </th>
                             <th style="width: auto;">Tỉnh </th>
-                            <th style="width:9%;">Mã nhóm TBH</th>
-                            <th style="width:auto;">Tên nhóm TBH </th>
+                            <th style="width: auto;">Record ID</th>
+                            <th style="width:9%;">Mã nhóm</th>
+                            <th style="width:auto;">Tên nhóm </th>
                             <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
+                            @*<th style="width:auto;">Họ tên KH </th>*@
                             <th style="width:9%;">Ngày thực hiện bảng hỏi</th>
                             <th style="width:9%;">Lần tư vấn thứ</th>
                             <th style="width:9%;">
@@ -88,10 +89,11 @@
                 <tr>
                     <td class="text-left">@item.maduan</td>
                     <td class="text-left">@item.CityName</td>
+                    <td class="text-left">@item.record_id_api</td>
                     <td class="text-left">@item.manhom_tbh</td>
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
-                    <td class="text-left">@item.hoten</td>
+                    @*<td class="text-left">@item.hoten</td>*@
                     <td class="text-center">@(item.ngay != null ? item.ngay.ToString("yyyy-MM-dd") : string.Empty )</td>
                     @*<td class="text-left">@item.ngayxntext</td>*@
                     <td class="text-right">@item.lantuvan</td>

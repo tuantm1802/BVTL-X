@@ -8,7 +8,7 @@ namespace Model.ModelExtend.API
 {
     public class ResultApiACEModel
     {
-        public string record_id { get; set; }
+        public int? record_id { get; set; }
         public string ngay { get; set; }
         public string matcv { get; set; }
         public string matcv_2 { get; set; }

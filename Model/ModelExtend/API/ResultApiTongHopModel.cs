@@ -197,6 +197,7 @@ namespace Model.ModelExtend.API
         public string cau25 { get; set; }
         public string cau26 { get; set; }
         public string cau27 { get; set; }
+        public int? record_id_api { get; set; }
         public string bng_hi_nh_gi_kin_thc_complete { get; set; }
 
     }

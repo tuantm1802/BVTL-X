@@ -75,5 +75,6 @@ namespace Model.Model
         public string nuoccatsl { get; set; }
         public string hopchia { get; set; }
         public string hopchiasl { get; set; }
+        public Nullable<int> record_id_api { get; set; }
     }
 }

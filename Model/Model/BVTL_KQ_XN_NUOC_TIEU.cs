@@ -29,6 +29,7 @@ namespace Model.Model
         public Nullable<int> kqxnheroin { get; set; }
         public Nullable<int> kqxnthc { get; set; }
         public Nullable<int> kqxnmdma { get; set; }
+        public Nullable<int> record_id { get; set; }
     
         public virtual BVTL_CITES BVTL_CITES { get; set; }
         public virtual BVTL_DU_AN BVTL_DU_AN { get; set; }

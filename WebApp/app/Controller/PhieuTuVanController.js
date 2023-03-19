@@ -4,7 +4,7 @@
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
-    $scope.modelSearch.SortColumn = "record_id";
+    $scope.modelSearch.SortColumn = "record_id_api";
     $scope.ListDuAn = [];
     var dataTablePhieuTuVan = null;
     $scope.ParamIdSeleted = 0;
@@ -35,8 +35,8 @@
                     });
                 }
 
-                if (data.DuAns != null && data.DuAns.length > 0) {
-                    $scope.ListDuAn = data.DuAns;
+                if (response.DuAns != null && response.DuAns.length > 0) {
+                    $scope.ListDuAn = response.DuAns;
                 }
                 $scope.$apply();
             }
@@ -119,6 +119,7 @@
                     { "data": "maduan", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
+                    { "data": "record_id_api", searchBuilderType: "string" },
                     { "data": "manhom_tbh", searchBuilderType: "string"},
                     { "data": "tennhom_tbh", searchBuilderType: "string"},
                     { "data": "makh", searchBuilderType: "string"},

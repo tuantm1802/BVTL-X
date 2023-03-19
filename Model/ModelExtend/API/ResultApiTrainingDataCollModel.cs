@@ -9,6 +9,7 @@ namespace Model.ModelExtend.API
     public class ResultApiTrainingDataCollModel
     {
         public string record_id { get; set; }
+        public int? record_id_api { get; set; }
         public string thoigian { get; set; }
         public string doituong { get; set; }
         public string taphuan { get; set; }

@@ -86,5 +86,6 @@ namespace Model.ModelExtend.API
         public string vande { get; set; }
         public string thoigian { get; set; }
         public string phiu_t_vn_complete { get; set; }
+        public int? record_id_api { get; set; }
     }
 }

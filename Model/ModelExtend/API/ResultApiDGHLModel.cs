@@ -9,6 +9,7 @@ namespace Model.ModelExtend.API
     public class ResultApiDGHLModel
     {
         public string record_id { get; set; }
+        public int? record_id_api { get; set; }
         public string ngay { get; set; }
         public string makh { get; set; }
         public string lantuvan { get; set; }
