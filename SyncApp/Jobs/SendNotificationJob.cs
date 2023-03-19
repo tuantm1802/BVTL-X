@@ -17,20 +17,20 @@ namespace SyncBVTL.Push.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
 
-            //var controller = DependencyResolver.Current.GetService<SendEmailController>();
+            var controller = DependencyResolver.Current.GetService<SendEmailController>();
 
-            //var currentDate = DateTime.Now;
-            //if (currentDate.Hour == 9)
-            //{
-            //    // Gửi thông báo danh sách khách hàng sắp đến hạn khám lại
-            //    await controller.SendNotification();
-            //}
-            //// Gửi báo cáo tháng
-            ////await controller.SendReportMonth();
-            //// Gửi báo cáo quý
-            ////await controller.SendReportQuater();
-            //// Gửi báo cáo năm
-            ////await controller.SendReportYear();
+            var currentDate = DateTime.Now;
+            if (currentDate.Hour == 9)
+            {
+                // Gửi thông báo danh sách khách hàng sắp đến hạn khám lại
+                await controller.SendNotification();
+            }
+            // Gửi báo cáo tháng
+            await controller.SendReportMonth();
+            // Gửi báo cáo quý
+            await controller.SendReportQuater();
+            // Gửi báo cáo năm
+            await controller.SendReportYear();
         }
     }
 }
