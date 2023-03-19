@@ -23,6 +23,7 @@
             url: '/PhieuTuVan/GetBottomAction',
             data: {},
             success: function (response) {
+                console.log(response);
                 if (response.Buttoms != null) {
                     angular.forEach(response.Buttoms, function (item) {
                         if (item == 'btnExportExcel') {
@@ -33,6 +34,7 @@
                         }
                     });
                 }
+
                 if (data.DuAns != null && data.DuAns.length > 0) {
                     $scope.ListDuAn = data.DuAns;
                 }

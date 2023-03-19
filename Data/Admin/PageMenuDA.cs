@@ -99,7 +99,8 @@ namespace Data.Admin
                               PARENT_PAGE_ID = pm.PARENT_PAGE_ID,
                               IS_SYSTEM_ROLE = pm.IS_SYSTEM_ROLE,
                               Actions = rp.CONTROL_STRING,
-                              TEN_DU_AN = pm.TEN_DU_AN
+                              TEN_DU_AN = pm.TEN_DU_AN,
+                              TITLE_GROUP_MENU = pm.TITLE_GROUP_MENU
                           }).ToList();
 
             }
