@@ -54,44 +54,44 @@ namespace SyncBVTL.Push.ScheduleTasks
 
             _ = scheduler.Start();
             //Job tự động cập nhật các đầu api
-            //IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
-            //job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
-            //ITrigger trigger_UpdateJob = TriggerBuilder.Create()
-            //    .WithIdentity("trigger_UpdateApiJob")
-            //    .StartNow()
-            //    .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
-            //    .Build();
-            //_ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
+            IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
+            job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
+            ITrigger trigger_UpdateJob = TriggerBuilder.Create()
+                .WithIdentity("trigger_UpdateApiJob")
+                .StartNow()
+                .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
+                .Build();
+            _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
 
 
             //Job tự động gửi email notification hàng ngày
-            IJobDetail job_NotifiJob = JobBuilder.Create<SendNotificationJob>().WithIdentity("NotifiJob").Build();
-            ITrigger trigger_NotifiJob = TriggerBuilder.Create()
-                .WithIdentity("trigger_NotifiJob")
-                .StartNow()
-               //.WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())// chạy khi 1 giờ đêm
-               .WithCronSchedule("0 0/1 * * * ?") //Tự động chạy sau mỗi 1 phút
-                .Build();
-            _ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
+            //IJobDetail job_NotifiJob = JobBuilder.Create<SendNotificationJob>().WithIdentity("NotifiJob").Build();
+            //ITrigger trigger_NotifiJob = TriggerBuilder.Create()
+            //    .WithIdentity("trigger_NotifiJob")
+            //    .StartNow()
+            //   //.WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())// chạy khi 1 giờ đêm
+            //   .WithCronSchedule("0 0/1 * * * ?") //Tự động chạy sau mỗi 1 phút
+            //    .Build();
+            //_ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
 
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
-            //foreach (ProcessModel item in processModels)
-            //{
-            //    if (item.Active)
-            //    {
-            //        IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId + "_Job").Build();
-            //        job_GetDataAPIJob.JobDataMap["Data"] = item;
-            //        ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
-            //            .WithIdentity("trigger_" + item.ReportId + "Job")
-            //            .StartNow()
-            //            .WithSimpleSchedule(x => x
-            //                .WithIntervalInSeconds(item.TimeLoop)
-            //                .RepeatForever())
-            //            .Build();
-            //        _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
-            //    }
+            foreach (ProcessModel item in processModels)
+            {
+                if (item.Active)
+                {
+                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId + "_Job").Build();
+                    job_GetDataAPIJob.JobDataMap["Data"] = item;
+                    ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
+                        .WithIdentity("trigger_" + item.ReportId + "Job")
+                        .StartNow()
+                        .WithSimpleSchedule(x => x
+                            .WithIntervalInSeconds(item.TimeLoop)
+                            .RepeatForever())
+                        .Build();
+                    _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
+                }
 
-            //}
+            }
             #endregion
         }
 
