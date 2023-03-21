@@ -17,6 +17,7 @@ namespace Data.InterfaceDA.Admin
         /// <returns></returns>
         List<BaoCaoModel> GetDataReport(ReportSearchModel modelSearch);
         List<BaoCaoModel> GetDataReportVIIV(ReportSearchModel modelSearch);
+        List<BaoCaoModel> GetDataYearReportVIIV(ReportSearchModel modelSearch);
         List<BaoCaoModel> GetDataReportChiSo(ReportSearchModel modelSearch);
 
         /// <summary>

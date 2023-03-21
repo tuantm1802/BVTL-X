@@ -35,6 +35,7 @@ namespace Common.Common
         public const string SP_User_Get_By_Page = "User_Get_By_Page";
         public const string SP_Report_Get_All_Data = "Report_Get_All_Data"; 
         public const string SP_Report_Get_All_Data_VIIV = "Report_Get_All_Data_VIIV"; 
+        public const string SP_Report_Get_All_Data_Year_VIIV = "Report_Get_All_Data_Year_VIIV"; 
         public const string SP_Report_Get_Data_Chi_So = "Report_Get_Data_Chi_So"; 
         public const string SP_Report_Get_Data_Chi_So_6Thang = "Report_Get_Data_Chi_So_6Thang"; 
         public const string SP_NhomTBH_Get_By_Page = "NhomTBH_Get_By_Page";
