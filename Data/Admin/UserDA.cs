@@ -169,7 +169,7 @@ namespace Data.Admin
                         else
                             model.Password = _encryptor.MD5Hash("123456789a@");
                         model.IsActive = true;
-                        context.BVTL_QT_NGUOI_DUNG.Add(model);
+                        model = context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
                         var cityCodes = "";
 
@@ -184,8 +184,8 @@ namespace Data.Admin
 
                                 var nhomTBH1s = nhomTBHs.Where(x => x.manhom_tbh == maNhomTBHs[i]).ToList();
                                 // Lấy nhóm tbh
-                                if (nhomTBHs != null && nhomTBHs.Count > 0)
-                                    city_code = nhomTBHs.FirstOrDefault().city_code;
+                                if (nhomTBH1s != null && nhomTBH1s.Count > 0)
+                                    city_code = nhomTBH1s.FirstOrDefault().city_code;
 
                                 if (!string.IsNullOrEmpty(city_code))
                                 {
@@ -286,7 +286,7 @@ namespace Data.Admin
                         }
 
                         // thêm danh sách tỉnh quản lý
-                        model.CityCodes = cityCodes;
+                        data.CityCodes = cityCodes;
                         data.UserName = model.UserName;
                         data.Address = model.Address;
                         data.Name = model.Name;
