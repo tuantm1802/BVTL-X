@@ -60,8 +60,6 @@ namespace WebApp.Controllers
                 AddLog(ex.Message);
                 return Redirect("/ErrorPage/Error404");
             }
-            
-            
         }
 
         [HttpPost]
