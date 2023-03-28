@@ -433,6 +433,7 @@
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -1775,6 +1776,7 @@
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BVTL_LOAI_DOI_TUONG">
           <Key>
@@ -3100,6 +3102,7 @@
           <EntitySetMapping Name="BVTL_KHACH_HANG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_KHACH_HANG">
               <MappingFragment StoreEntitySet="BVTL_KHACH_HANG">
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="khachhang_id" ColumnName="khachhang_id" />
                 <ScalarProperty Name="makh" ColumnName="makh" />
                 <ScalarProperty Name="sottkh" ColumnName="sottkh" />

@@ -761,7 +761,8 @@ namespace Common.Common
                             sodienthoai = resultApiTH.dienthoai,
                             diachi = resultApiTH.diachi,
                             sottkh = customer_code.Substring(5),
-                            maduan = maDuAn
+                            maduan = maDuAn,
+                            manhom_tbh = group_code
                         };
                         customer.city_code = cityCode;
                         if (!string.IsNullOrEmpty(resultApiTH.namsinh))

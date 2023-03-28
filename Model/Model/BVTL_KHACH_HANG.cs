@@ -28,5 +28,6 @@ namespace Model.Model
         public string city_code { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
+        public string manhom_tbh { get; set; }
     }
 }
