@@ -21,20 +21,46 @@ namespace WebApp.Controllers
         ISysLogDA _sysLogDA = new SysLogDA();
         IDuAnDA _DuAnDA = new DuAnDA();
         BaseController _helperController = new BaseController();
+        ICityDA _CityDA = new CityDA();
 
         // GET: KetQuaSKTT
         [HasCredential(ControllerName = "KetQuaSKTT")]
         public ActionResult Index()
         {
-            var modelSearch = new ModelSearch
+            try
             {
-                KeyWord =  string.Empty ,
-                currentPage = 1,
-                pageSize = int.MaxValue,
-                SortColumn = "kqslsktt_id"
-            };
-            var data = _KetQuaSKTTDA.GetAllByPage(modelSearch);
-            return View(data);
+                // Kiểm tra quyền 
+                var modelSearch = new ModelSearch
+                {
+                    KeyWord = string.Empty,
+                    currentPage = 1,
+                    pageSize = int.MaxValue,
+                    SortColumn = "kqslsktt_id"
+                };
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+
+                if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
+                {
+                    modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+                    var citys = _CityDA.GetCityReport((int)user.UserID);
+                    if (citys != null && citys.Count > 0)
+                        modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
+                    var data = _KetQuaSKTTDA.GetAllByPage(modelSearch);
+                    return View(data);
+                }
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
         }
 
 
@@ -48,6 +74,16 @@ namespace WebApp.Controllers
             try
             {
                 int totalItems = 0;
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                if (citys != null && citys.Count > 0)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
                 var data = _KetQuaSKTTDA.GetAllByPage(modelSearch);
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
@@ -136,6 +172,16 @@ namespace WebApp.Controllers
                     pageSize = int.MaxValue,
                     SortColumn = "kqslsktt_id"
                 };
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                if (citys != null && citys.Count > 0)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
                 var data = _KetQuaSKTTDA.GetAllByPage(modelSearch);
 
                 string file_name = "KetQuaSKTT_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToShortTimeString() + ".xlsx";

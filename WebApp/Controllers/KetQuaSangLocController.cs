@@ -42,6 +42,7 @@ namespace WebApp.Controllers
 
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+
                 if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
                     return View();
                 else
@@ -65,7 +66,6 @@ namespace WebApp.Controllers
             {
                 //if (modelSearch._FromDate != null)
                 //    modelSearch.FromDate = Convert.ToDateTime(modelSearch._FromDate).ToString("yyyyMMdd");
-
                 //if (modelSearch._ToDate != null)
                 //    modelSearch.ToDate = Convert.ToDateTime(modelSearch._ToDate).ToString("yyyyMMdd");
 
@@ -108,6 +108,12 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+               
+
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                if (citys != null && citys.Count > 0)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
 
                 _BaoCaoTongHopDA.KetQuaSangLoc(modelSearch, ref DoiTuongKHs, ref GioiTinhs, ref Tuois
              , ref KetQuaHIVs, ref ChatGayNghien3Thangs, ref SoChatGayNghiens, ref ChatGayNghienSDThuongXuyens
@@ -243,6 +249,11 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
+
+               
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                if (citys != null && citys.Count > 0)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
 
                 List<KetQuaSangLocModel> DoiTuongKHs = new List<KetQuaSangLocModel>();
                 List<KetQuaSangLocModel> GioiTinhs = new List<KetQuaSangLocModel>();

@@ -62,51 +62,56 @@
                     <thead>
                         <tr>
                             <th style="width:5%;">STT </th>
-                            <th style="width:9%;">Mã KH</th>
-                            <th style="width:auto;">Họ tên KH </th>
-                            <th style="width:9%;">Giới tính </th>
-                            <th style="width:9%;">Năm sinh </th>
-                            <th style="width:9%;">Đối tượng</th>
-                            <th style="width:9%;">Ngày tiếp cận</th>
-                            <th style="width:9%;">Số điện thoại</th>
+                            <th style="width:20%;">Mã KH</th>
+                            @*<th style="width:auto;">Họ tên KH </th>*@
+                            <th style="width:10%;">Giới tính </th>
+                            <th style="width:10%;">Năm sinh </th>
+                            <th style="width:10%;">Đối tượng</th>
+                            <th style="width:10%;">Ngày tiếp cận</th>
+                            @*<th style="width:9%;">Số điện thoại</th>*@
+                            <th style="width:10%;">Tỉnh</th>
                             <th style="width: auto;">Dự án </th>
-                            <th style="width:9%;">Tỉnh</th>
-                            <th style="width:9%;">Địa chỉ</th>
+                            @*<th style="width:9%;">Địa chỉ</th>*@
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
+                    @{ 
                         var stt = 1;
-                <tr>
-                    <td class="text-center">@stt</td>
-                    <td class="text-left">@item.makh</td>
-                    <td class="text-left">@item.hoten</td>
-                    <td class="text-left">@item.GioiTinhText</td>
-                    <td class="text-left">@item.namsinh</td>
-                    <td class="text-left">@item.LoaiDoiTuong</td>
-                    <td class="text-center">@(item.ngaytiepcan != null ? item.ngaytiepcan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    @*<td class="text-center">@item.ngaytiepcantext</td>*@
-                    <td class="text-left">@item.sodienthoai</td>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.diachi</td>
-                </tr>
-                        stt++;
+                    
+                        foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td class="text-center">@stt</td>
+                                <td class="text-left">@item.makh</td>
+                                @*<td class="text-left">@item.hoten</td>*@
+                                <td class="text-left">@item.GioiTinhText</td>
+                                <td class="text-left">@item.namsinh</td>
+                                <td class="text-left">@item.LoaiDoiTuong</td>
+                                <td class="text-center">@(item.ngaytiepcan != null ? item.ngaytiepcan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                                @*<td class="text-center">@item.ngaytiepcantext</td>*@
+                                @*<td class="text-left">@item.sodienthoai</td>*@
+                                <td class="text-left">@item.CityName</td>
+                                <td class="text-center">@item.maduan</td>
+
+                                @*<td class="text-left">@item.diachi</td>*@
+                            </tr>
+                            stt++;
+                        }
                     }
                     @*<tbody>
-                            <tr ng-repeat="item in ListCustomer1">
-                                <td class="text-left">{{$Index +1}}</td>
-                                <td class="text-left">{{item.makh}}</td>
-                                <td class="text-left">{{item.hoten}}</td>
-                                <td class="text-left">{{item.GioiTinhText}}</td>
-                                <td class="text-left">{{item.namsinh}}</td>
-                                <td class="text-left">{{item.LoaiDoiTuong}}</td>
-                                <td class="text-left">{{item.ngaytiepcantext}}</td>
-                                <td class="text-left">{{item.sodienthoai}}</td>
-                                <td class="text-left">{{item.CityName}}</td>
-                                <td class="text-left">{{item.diachi}}</td>
-                            </tr>
-                        </tbody>*@
+            <tr ng-repeat="item in ListCustomer1">
+                <td class="text-left">{{$Index +1}}</td>
+                <td class="text-left">{{item.makh}}</td>
+                <td class="text-left">{{item.hoten}}</td>
+                <td class="text-left">{{item.GioiTinhText}}</td>
+                <td class="text-left">{{item.namsinh}}</td>
+                <td class="text-left">{{item.LoaiDoiTuong}}</td>
+                <td class="text-left">{{item.ngaytiepcantext}}</td>
+                <td class="text-left">{{item.sodienthoai}}</td>
+                <td class="text-left">{{item.CityName}}</td>
+                <td class="text-left">{{item.diachi}}</td>
+            </tr>
+        </tbody>*@
                 </table>
             </div>
 

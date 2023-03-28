@@ -141,7 +141,7 @@
                                         Name: respone.data[i].Name,
                                         IdNumber: (respone.data[i].IdNumber == null || respone.data[i].IdNumber == undefined) ? '' : respone.data[i].IdNumber,
                                         RoleName: respone.data[i].RoleName,
-                                        Status: respone.data[i].Status == true ? 'Sử dụng' : 'Không sử dụng',
+                                        Status: respone.data[i].Status == true ? 'Active' : 'In Active',
                                         ID: respone.data[i].ID
                                     }
                                     dataUser.push(tmp);

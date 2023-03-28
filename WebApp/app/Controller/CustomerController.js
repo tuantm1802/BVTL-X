@@ -203,17 +203,18 @@
                 columns: [
                     { "data": "STT", searchBuilderType: "number" },
                     { "data": "makh", searchBuilderType: "string" },
-                    { "data": "hoten", searchBuilderType: "string" },
+                    //{ "data": "hoten", searchBuilderType: "string" },
                     { "data": "GioiTinhText", searchBuilderType: "string" },
                     { "data": "namsinh", searchBuilderType: "string" },
                     { "data": "LoaiDoiTuong", searchBuilderType: "string" },
                     //{ "data": "ngaytiepcantext", searchBuilderType: "string" },
                     { "data": "ngaytiepcan", searchBuilderType: "date" },
-                    { "data": "sodienthoai", searchBuilderType: "string" },
-                    { "data": "maduan", searchBuilderType: "string" },
+                    //{ "data": "sodienthoai", searchBuilderType: "string" },
                     //{ "data": "tenduan", searchBuilderType: "string" },
                     { "data": "CityName", searchBuilderType: "string" },
-                    { "data": "diachi", searchBuilderType: "string" }
+                    { "data": "maduan", searchBuilderType: "string" },
+
+                    //{ "data": "diachi", searchBuilderType: "string" }
                 ],
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
