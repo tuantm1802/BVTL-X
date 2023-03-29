@@ -34,6 +34,7 @@ namespace Data.API
         {
 
             BaseResult obj = new BaseResult();
+            DataTable dataTable = new DataTable();
 
             string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
             SqlConnection conn = new SqlConnection(stringConnect);
@@ -41,6 +42,7 @@ namespace Data.API
 
             if (conn.State == ConnectionState.Closed) conn.Open();
             transaction = conn.BeginTransaction();
+            SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction);
 
             try
             {
@@ -54,12 +56,12 @@ namespace Data.API
                 //long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
 
                 //Bulk insert into table SKTTTest
-                using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
-                {
+                //using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
+                //{
                     bulkcopy.DestinationTableName = "dbo." + tableName;
                     bulkcopy.WriteToServer(dattableInsert);
                     bulkcopy.Close();
-                }
+                //}
                 transaction.Commit();
                 conn.Close();
 
@@ -75,6 +77,31 @@ namespace Data.API
                 log.Error("Thêm dữ liệu bảng:" + tableName + " | CITY_CODE:"+ cityCode + " | MADUAN:" + maDuAn + " | Chi tiết lỗi: " + ex.Message);
                 obj.Success = false;
                 obj.Message = ex.Message;
+                
+                // loop through all inner exceptions to see if any relate to a constraint failure
+                bool dataExceptionFound = false;
+                Exception tmpException = ex;
+                while (tmpException != null)
+                {
+                    if (tmpException is SqlException
+                       && tmpException.Message.Contains("constraint"))
+                    {
+                        dataExceptionFound = true;
+                        break;
+                    }
+                    tmpException = tmpException.InnerException;
+                }
+
+                if (dataExceptionFound)
+                {
+                    // call the helper method to document the errors and invalid data
+                    string errorMessage = GetBulkCopyFailedData(
+                       conn.ConnectionString,
+                       bulkcopy.DestinationTableName,
+                       dataTable.CreateDataReader());
+                    throw new Exception(errorMessage, ex);
+                    log.Error("Thêm dữ liệu bảng - ERROR:" + errorMessage);
+                }
             }
             finally
             {
@@ -295,6 +322,101 @@ namespace Data.API
                 return obj;
             }
 
+        }
+
+        /// <summary>
+        /// Build an error message with the failed records and their related exceptions.
+        /// </summary>
+        /// <param name="connectionString">Connection string to the destination database</param>
+        /// <param name="tableName">Table name into which the data will be bulk copied.</param>
+        /// <param name="dataReader">DataReader to bulk copy</param>
+        /// <returns>Error message with failed constraints and invalid data rows.</returns>
+        public static string GetBulkCopyFailedData(
+           string connectionString,
+           string tableName,
+           IDataReader dataReader)
+        {
+            StringBuilder errorMessage = new StringBuilder("Bulk copy failures:" + Environment.NewLine);
+            SqlConnection connection = null;
+            SqlTransaction transaction = null;
+            SqlBulkCopy bulkCopy = null;
+            DataTable tmpDataTable = new DataTable();
+
+            try
+            {
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+                transaction = connection.BeginTransaction();
+                bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.CheckConstraints, transaction);
+                bulkCopy.DestinationTableName = tableName;
+
+                // create a datatable with the layout of the data.
+                DataTable dataSchema = dataReader.GetSchemaTable();
+                foreach (DataRow row in dataSchema.Rows)
+                {
+                    tmpDataTable.Columns.Add(new DataColumn(
+                       row["ColumnName"].ToString(),
+                       (Type)row["DataType"]));
+                }
+
+                // create an object array to hold the data being transferred into tmpDataTable 
+                //in the loop below.
+                object[] values = new object[dataReader.FieldCount];
+
+                // loop through the source data
+                while (dataReader.Read())
+                {
+                    // clear the temp DataTable from which the single-record bulk copy will be done
+                    tmpDataTable.Rows.Clear();
+
+                    // get the data for the current source row
+                    dataReader.GetValues(values);
+
+                    // load the values into the temp DataTable
+                    tmpDataTable.LoadDataRow(values, true);
+
+                    // perform the bulk copy of the one row
+                    try
+                    {
+                        bulkCopy.WriteToServer(tmpDataTable);
+                    }
+                    catch (Exception ex)
+                    {
+                        // an exception was raised with the bulk copy of the current row. 
+                        // The row that caused the current exception is the only one in the temp 
+                        // DataTable, so document it and add it to the error message.
+                        DataRow faultyDataRow = tmpDataTable.Rows[0];
+                        errorMessage.AppendFormat("Error: {0}{1}", ex.Message, Environment.NewLine);
+                        errorMessage.AppendFormat("Row data: {0}", Environment.NewLine);
+                        foreach (DataColumn column in tmpDataTable.Columns)
+                        {
+                            errorMessage.AppendFormat(
+                               "\tColumn {0} - [{1}]{2}",
+                               column.ColumnName,
+                               faultyDataRow[column.ColumnName].ToString(),
+                               Environment.NewLine);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                   "Unable to document SqlBulkCopy errors. See inner exceptions for details.",
+                   ex);
+            }
+            finally
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                }
+            }
+            return errorMessage.ToString();
         }
 
     }

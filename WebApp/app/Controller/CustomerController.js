@@ -204,6 +204,7 @@
                     { "data": "STT", searchBuilderType: "number" },
                     { "data": "makh", searchBuilderType: "string" },
                     //{ "data": "hoten", searchBuilderType: "string" },
+                    { "data": "tennhom_tbh", searchBuilderType: "string" },
                     { "data": "GioiTinhText", searchBuilderType: "string" },
                     { "data": "namsinh", searchBuilderType: "string" },
                     { "data": "LoaiDoiTuong", searchBuilderType: "string" },

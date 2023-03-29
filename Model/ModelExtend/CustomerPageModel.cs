@@ -15,5 +15,6 @@ namespace Model.ModelExtend
         public string LoaiDoiTuong { get; set; }
         public string ngaytiepcantext { get; set; }
         public string tenduan { get; set; }
+        public string tennhom_tbh { get; set; }
     }
 }
