@@ -174,7 +174,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'TTTruyenThongVIIV_' + curr_datetime
+                        title: null,
+                        sheetName: 'TTTruyenThongVIIV_' + curr_datetime                        
                     }
                 ]
                 ,

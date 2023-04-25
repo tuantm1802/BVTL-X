@@ -307,7 +307,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KhachHang_' + curr_datetime
                     }
                 ]
                 ,

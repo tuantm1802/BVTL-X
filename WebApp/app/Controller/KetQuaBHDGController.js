@@ -190,7 +190,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KetQuaBHDG_' + curr_datetime
                     }
                 ]
                 ,

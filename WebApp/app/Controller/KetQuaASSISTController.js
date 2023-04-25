@@ -256,7 +256,9 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KetquaASSIST_' + curr_datetime
+
                     }
                 ]
                 ,

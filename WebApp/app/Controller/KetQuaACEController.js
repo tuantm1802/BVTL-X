@@ -218,7 +218,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KetquaACE_' + curr_datetime
                     }
                 ]
                 ,

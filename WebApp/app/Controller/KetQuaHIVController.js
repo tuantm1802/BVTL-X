@@ -223,7 +223,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KetquaHIV_' + curr_datetime
                     }
                 ]
                 ,

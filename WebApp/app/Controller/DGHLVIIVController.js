@@ -173,7 +173,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'DanhGiaHaiLongKH_' + curr_datetime
+                        title: null,
+                        sheetName: 'DanhGiaHaiLongKH_' + curr_datetime
                     }
                 ]
                 ,

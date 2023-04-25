@@ -249,7 +249,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'ChuyenGuiDichVu_' + curr_datetime
                     }
                 ]
                 ,

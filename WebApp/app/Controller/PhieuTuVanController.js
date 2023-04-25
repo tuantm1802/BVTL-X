@@ -261,7 +261,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'PhieuTuVan_' + curr_datetime
                     }
                 ]
                 ,
