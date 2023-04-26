@@ -65,26 +65,33 @@
 
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-left">@item.tinhtrang</td>
-                    <td class="text-left">@item.arv</td>
-                    <td class="text-left">@item.cs_dieutri</td>
-                    <td class="text-center">@(item.dangdieutri_hiv == 1?"Có":(item.dangdieutri_hiv == 0?"Không":""))</td>
-                    <td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    @*<td class="text-left">@item.ngayxntext</td>*@
-                    <td class="text-right">@(item.ketqua ==-1 ? "Âm tính": (item.ketqua == 1 ? "Dương tính":"Không xác định"))</td>
-                    <td class="text-left">@item.lydo</td>
+                    @{
+                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-                </tr>
+                        foreach (var item in Model)
+                        {
+                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngayxn, cstZone);
+
+                            <tr>
+                                <td class="text-left">@item.maduan</td>
+                                <td class="text-left">@item.CityName</td>
+                                <td class="text-left">@item.record_id</td>
+                                <td class="text-left">@item.manhom_tbh</td>
+                                <td class="text-left">@item.tennhom_tbh</td>
+                                <td class="text-left">@item.makh</td>
+                                @*<td class="text-left">@item.hoten</td>*@
+                                <td class="text-left">@item.tinhtrang</td>
+                                <td class="text-left">@item.arv</td>
+                                <td class="text-left">@item.cs_dieutri</td>
+                                <td class="text-center">@(item.dangdieutri_hiv == 1?"Có":(item.dangdieutri_hiv == 0?"Không":""))</td>
+                                <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+                                @*<td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                                @*<td class="text-left">@item.ngayxntext</td>*@
+                                <td class="text-right">@(item.ketqua ==-1 ? "Âm tính": (item.ketqua == 1 ? "Dương tính":"Không xác định"))</td>
+                                <td class="text-left">@item.lydo</td>
+
+                            </tr>
+                        }
                     }
                 </table>
             </div>

@@ -90,41 +90,48 @@
                             <th>Nguy cơ</th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                        var stt = 1;
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    @*<td class="text-left">@item.ngaysltext</td>*@
-                    <td class="text-left">@item.thuocla_diem</td>
-                    <td class="text-left">@item.thuocla_nguyco</td>
-                    <td class="text-left">@item.conruou_diem</td>
-                    <td class="text-left">@item.conruou_nguyco</td>
-                    <td class="text-left">@item.cansa_diem</td>
-                    <td class="text-left">@item.cansa_nguyco</td>
-                    <td class="text-left">@item.cocaine_diem</td>
-                    <td class="text-left">@item.cocaine_nguyco</td>
-                    <td class="text-left">@item.matuyda_diem</td>
-                    <td class="text-left">@item.matuyda_nguyco</td>
-                    <td class="text-left">@item.khixonghit_diem</td>
-                    <td class="text-left">@item.khixonghit_nguyco</td>
-                    <td class="text-left">@item.thuocanthan_diem</td>
-                    <td class="text-left">@item.thuocanthan_nguyco</td>
-                    <td class="text-left">@item.chatgayaogiac_diem</td>
-                    <td class="text-left">@item.chatgayaogiac_nguyco</td>
-                    <td class="text-left">@item.thuocphien_diem</td>
-                    <td class="text-left">@item.thuocphien_nguyco</td>
-                    <td class="text-left">@item.chatkhac_diem</td>
-                    <td class="text-left">@item.chatkhac_nguyco</td>
-                </tr>
-                        stt++;
+                    @{
+                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+                        foreach (var item in Model)
+                        {
+                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngaysl, cstZone);
+
+                            var stt = 1;
+                                        <tr>
+                                            <td class="text-left">@item.maduan</td>
+                                            <td class="text-left">@item.CityName</td>
+                                            <td class="text-left">@item.record_id</td>
+                                            <td class="text-left">@item.manhom_tbh</td>
+                                            <td class="text-left">@item.tennhom_tbh</td>
+                                            <td class="text-left">@item.makh</td>
+                                            @*<td class="text-left">@item.hoten</td>*@
+                                            @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                                            @*<td class="text-left">@item.ngaysltext</td>*@
+                                            <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+                                            <td class="text-left">@item.thuocla_diem</td>
+                                            <td class="text-left">@item.thuocla_nguyco</td>
+                                            <td class="text-left">@item.conruou_diem</td>
+                                            <td class="text-left">@item.conruou_nguyco</td>
+                                            <td class="text-left">@item.cansa_diem</td>
+                                            <td class="text-left">@item.cansa_nguyco</td>
+                                            <td class="text-left">@item.cocaine_diem</td>
+                                            <td class="text-left">@item.cocaine_nguyco</td>
+                                            <td class="text-left">@item.matuyda_diem</td>
+                                            <td class="text-left">@item.matuyda_nguyco</td>
+                                            <td class="text-left">@item.khixonghit_diem</td>
+                                            <td class="text-left">@item.khixonghit_nguyco</td>
+                                            <td class="text-left">@item.thuocanthan_diem</td>
+                                            <td class="text-left">@item.thuocanthan_nguyco</td>
+                                            <td class="text-left">@item.chatgayaogiac_diem</td>
+                                            <td class="text-left">@item.chatgayaogiac_nguyco</td>
+                                            <td class="text-left">@item.thuocphien_diem</td>
+                                            <td class="text-left">@item.thuocphien_nguyco</td>
+                                            <td class="text-left">@item.chatkhac_diem</td>
+                                            <td class="text-left">@item.chatkhac_nguyco</td>
+                                        </tr>
+                            stt++;
+                        }
                     }
                 </table>
             </div>

@@ -18,7 +18,8 @@
 
     $scope.RoleBtnExportExcel = false;
     $scope.RoleBtnSearch = false;
-
+    var d = new Date();
+    var curr_datetime = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + '-' + d.getHours() + d.getMinutes();
     function GetBottomAction() {
         $.ajax({
             type: 'post',

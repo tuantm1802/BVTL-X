@@ -17,6 +17,8 @@
 
     $scope.RoleBtnExportExcel = false;
     $scope.RoleBtnSearch = false;
+    var d = new Date();
+    var curr_datetime = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + '-' + d.getHours() + d.getMinutes();
 
     function GetBottomAction() {
         $.ajax({
@@ -34,8 +36,8 @@
                         }
                     });
                 }
-                if (data.DuAns != null && data.DuAns.length > 0) {
-                    $scope.ListDuAn = data.DuAns;
+                if (response.DuAns != null && response.DuAns.length > 0) {
+                    $scope.ListDuAn = response.DuAns;
                 }
                 $scope.$apply();
             }

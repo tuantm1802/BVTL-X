@@ -86,48 +86,56 @@
 
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id_api</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty)</td>
-                    @*<td class="text-left">@item.ngayxntext</td>*@
-                    <td>@item.cau1</td>
-                    <td>@item.cau2</td>
-                    <td>@item.cau3</td>
-                    <td>@item.cau4</td>
-                    <td>@item.cau5</td>
-                    <td>@item.cau6</td>
-                    <td>@item.cau7</td>
-                    <td>@item.cau8</td>
-                    <td>@item.cau9</td>
-                    <td>@item.cau10</td>
-                    <td>@item.cau11</td>
-                    <td>@item.cau12</td>
-                    <td>@item.cau13</td>
-                    <td>@item.cau14</td>
-                    <td>@item.cau15</td>
-                    <td>@item.cau16</td>
-                    <td>@item.cau17</td>
-                    <td>@item.cau18</td>
-                    <td>@item.cau19</td>
-                    <td>@item.cau20</td>
-                    <td>@item.cau21</td>
-                    <td>@item.cau22</td>
-                    <td>@item.cau23</td>
-                    <td>@item.cau24</td>
-                    <td>@item.cau25</td>
-                    <td>@item.cau26</td>
-                    <td>@item.cau27</td>
+                    @{
+                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-                </tr>
-                    }
+                        foreach (var item in Model)
+                        {
+                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngaysl, cstZone);
+
+                        <tr>
+                            <td class="text-left">@item.maduan</td>
+                            <td class="text-left">@item.CityName</td>
+                            <td class="text-left">@item.record_id_api</td>
+                            <td class="text-left">@item.manhom_tbh</td>
+                            <td class="text-left">@item.tennhom_tbh</td>
+                            <td class="text-left">@item.makh</td>
+                            @*<td class="text-left">@item.hoten</td>*@
+                            @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty)</td>*@
+                            <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+
+                            @*<td class="text-left">@item.ngayxntext</td>*@
+                            <td>@item.cau1</td>
+                            <td>@item.cau2</td>
+                            <td>@item.cau3</td>
+                            <td>@item.cau4</td>
+                            <td>@item.cau5</td>
+                            <td>@item.cau6</td>
+                            <td>@item.cau7</td>
+                            <td>@item.cau8</td>
+                            <td>@item.cau9</td>
+                            <td>@item.cau10</td>
+                            <td>@item.cau11</td>
+                            <td>@item.cau12</td>
+                            <td>@item.cau13</td>
+                            <td>@item.cau14</td>
+                            <td>@item.cau15</td>
+                            <td>@item.cau16</td>
+                            <td>@item.cau17</td>
+                            <td>@item.cau18</td>
+                            <td>@item.cau19</td>
+                            <td>@item.cau20</td>
+                            <td>@item.cau21</td>
+                            <td>@item.cau22</td>
+                            <td>@item.cau23</td>
+                            <td>@item.cau24</td>
+                            <td>@item.cau25</td>
+                            <td>@item.cau26</td>
+                            <td>@item.cau27</td>
+
+                        </tr>
+                            }
+                        }
                 </table>
             </div>
         </div>

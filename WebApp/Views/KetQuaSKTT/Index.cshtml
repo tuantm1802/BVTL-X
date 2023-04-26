@@ -60,21 +60,28 @@
                             <th style="width:9%;">Kết quả  QST</th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    @*<td class="text-left">@item.ngaysltext</td>*@
-                    <td class="text-right">@item.diem_QST</td>
-                    <td class="text-right">@item.ketqua_QST</td>
-                </tr>
+                    @{
+                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+                        foreach (var item in Model)
+                        {
+                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngaysl, cstZone);
+                            <tr>
+                                <td class="text-left">@item.maduan</td>
+                                <td class="text-left">@item.CityName</td>
+                                <td class="text-left">@item.record_id</td>
+                                <td class="text-left">@item.manhom_tbh</td>
+                                <td class="text-left">@item.tennhom_tbh</td>
+                                <td class="text-left">@item.makh</td>
+                                @*<td class="text-left">@item.hoten</td>*@
+                                @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                                <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+
+                                @*<td class="text-left">@item.ngaysltext</td>*@
+                                <td class="text-right">@item.diem_QST</td>
+                                <td class="text-right">@item.ketqua_QST</td>
+                            </tr>
+                        }
                     }
                 </table>
             </div>
