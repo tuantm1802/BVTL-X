@@ -84,6 +84,7 @@
     <Compile Include="ModelExtend\KetQuaACEPageModel.cs" />
     <Compile Include="ModelExtend\KetQuaASSISTModel.cs" />
     <Compile Include="ModelExtend\KetQuaBHDGPageModel.cs" />
+    <Compile Include="ModelExtend\Report\DashboardModel.cs" />
     <Compile Include="ModelExtend\TrainingDataCollVIIVPageModel.cs" />
     <Compile Include="ModelExtend\TTKHMaDaVIIVPageModel.cs" />
     <Compile Include="ModelExtend\DGHLVIIVPageModel.cs" />

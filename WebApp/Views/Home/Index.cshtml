@@ -4,26 +4,231 @@
 }
 <style type="text/css">
     body {
-        overflow: hidden;
+        overflow: auto;
+    }
+    @@media (min-width: 768px){
+        .chart-bar {
+            height: 18rem;
+        }
+        .chart-pie {
+            height: 18rem !important;
+        }
     }
 </style>
-<main class="main-home">
-    <div class="container d-flex justify-content-center align-items-center">
-        <div class="row no-gutters">
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 align-self-end wow fadeInLeft" data-wow-duration=".5" data-wow-delay=".5s">
-                <div class="link-box">
-                    <a href="">
-                        <div class="images-box">
-                            <img src="~/App_Assets/images/h_ic6.svg" alt="">
-                        </div>
-
-                        <div class="text-box">
-                            <h4>Báo cáo</h4>
-                        </div>
-                    </a>
+<div class="container-fluid" ng-controller="HomeController">
+    
+    <div class="row">
+        <!--<div class="col-xl-3 col-lg-5">
+    <div class="card shadow mb-4">-->
+        <!-- Card Header - Dropdown -->
+        <!--<div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV</h6>
+    </div>-->
+        <!-- Card Body -->
+        <!--<div class="card-body">
+                <div class="chart-pie pt-0" style="height: 300px !important">
+                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="hivTinhTrangChart" width="480" height="316" style="display: block; height: 253px; width: 480px;" class="chartjs-render-monitor"></canvas>
                 </div>
             </div>
+        </div>
+    </div>-->
+        <!--<div class="col-xl-4 col-lg-5">
+    <div class="card shadow mb-4">-->
+        <!-- Card Header - Dropdown -->
+        <!--<div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo giới tính</h6>
+    </div>-->
+        <!-- Card Body -->
+        <!--<div class="card-body">
+                <div class="chart-bar" style="height: 300px !important">
+                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="hivGioiTinhChart" width="447" height="316" style="display: block; height: 253px; width: 358px;" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>-->
+        @*<div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo giới tính</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 300px !important">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <canvas id="hivGioiTinhChart" width="447" height="350" style="display: block; height: 300px; width: 358px;" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>*@
 
+        @*<div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Đối tượng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 300px !important">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <canvas id="hivDoiTuongChart" width="447" height="350" style="display: block; height: 300px; width: 358px;" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+        @*<div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 300px !important">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <canvas id="hivDoTuoiChart" width="447" height="350" style="display: block; height: 300px; width: 358px;" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+        <!--<div class="col-xl-3 col-lg-5">
+    <div class="card shadow mb-4">-->
+        <!-- Card Header - Dropdown -->
+        <!--<div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
+    </div>-->
+        <!-- Card Body -->
+        <!--<div class="card-body">
+                <div class="chart-bar pt-0" style="height: 300px !important">
+                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="hivDoTuoiChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>-->
+        <!-- Tình trạng HIV -->
+        <div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-0">
+                        <canvas id="hivTinhTrangChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- HIV Giới tính -->
+        <div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Giới tính</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="hivGioiTinhChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Theo Đối tượng -->
+        <div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Đối tượng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="hivDoiTuongChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- HIV Độ tuổi -->
+        <div class="col-xl-3 col-lg-5">
+            <div class="card shadow mb-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie">
+                        <canvas id="hivDoTuoiChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</main>
+    
+        <div class="row" style="display:none">
+            <!-- Donut Chart -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPieChart"></canvas>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            <!-- Donut Chart -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- Donut Chart -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <!-- Donut Chart -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+</div>
+@section Scripts{
+    <script src="~/Scripts/chart.js"></script>
+    <script src="~/Scripts/chartjs-plugin-datalabels.js"></script>    
+    <script src="~/app/Controller/HomeController.js"></script>
+}

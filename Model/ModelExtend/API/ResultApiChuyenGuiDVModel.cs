@@ -19,6 +19,11 @@ namespace Model.ModelExtend.API
         public string makh_8 { get; set; }
         public string makh_9 { get; set; }
         public string makh_10 { get; set; }
+        public string makh_11 { get; set; }
+        public string makh_12 { get; set; }
+        public string makh_13 { get; set; }
+        public string makh_14 { get; set; }
+        public string makh_15 { get; set; }
 
         public string tbh { get; set; }
         public string hoten { get; set; }

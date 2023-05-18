@@ -11,6 +11,7 @@ using Model.ModelExtend.Base;
 using Common.Common;
 using Common.ICommon;
 using System.Data.SqlClient;
+using Model.ModelExtend.Report;
 
 namespace Data.Admin
 {
@@ -77,6 +78,52 @@ namespace Data.Admin
                 result = new List<KetQuaHIVPageModel>();
             }
             return result;
+        }
+        public List<DashboardModel> getDBHIVGioiTinh()
+        {            
+            var param = new List<SqlParameter>
+                {
+                    new SqlParameter("Year", 0)
+                };
+            var resultPro = _DatabaseSql.ExecuteProcToList<DashboardModel>(Constants.SP_KetQuaHIV_Get_DB_GioiTinh, param).ToList();
+            //if (resultPro != null && resultPro.Count > 0)
+            //    result = resultPro.FirstOrDefault();
+            return resultPro;
+        }
+
+        public List<DashboardModel> getDBHIVTinhTrang()
+        {
+            var param = new List<SqlParameter>
+                {
+                    //new SqlParameter()
+                };
+            var resultPro = _DatabaseSql.ExecuteProcToList<DashboardModel>(Constants.SP_KetQuaHIV_Get_DB_TinhTrang, param).ToList();
+            //if (resultPro != null && resultPro.Count > 0)
+            //    result = resultPro.FirstOrDefault();
+            return resultPro;
+        }
+        public List<DashboardModel> getDBHIVDoiTuong()
+        {
+            var param = new List<SqlParameter>
+                {
+                    //new SqlParameter()
+                };
+            var resultPro = _DatabaseSql.ExecuteProcToList<DashboardModel>(Constants.SP_KetQuaHIV_Get_DB_DoiTuong, param).ToList();
+            //if (resultPro != null && resultPro.Count > 0)
+            //    result = resultPro.FirstOrDefault();
+            return resultPro;
+        }
+        
+        public List<DashboardModel> getDBHIVDoTuoi()
+        {
+            var param = new List<SqlParameter>
+                {
+                    //new SqlParameter()
+                };
+            var resultPro = _DatabaseSql.ExecuteProcToList<DashboardModel>(Constants.SP_KetQuaHIV_Get_DB_DoTuoi, param).ToList();
+            //if (resultPro != null && resultPro.Count > 0)
+            //    result = resultPro.FirstOrDefault();
+            return resultPro;
         }
     }
 }

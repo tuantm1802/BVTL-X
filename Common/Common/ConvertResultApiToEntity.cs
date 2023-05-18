@@ -1036,7 +1036,8 @@ namespace Common.Common
                     // Updated 07/11/2022: API Phiếu tư vấn thêm các trường makh_2,makh_3... và các trường matcv_2, matcv_3... tương ứng
                     // makh trong bảng dữ liệu giữ nguyên, makh = makh_2 -> makh_10 nếu 1 trong 10 makh đó có giá trị (trong 10 trường sẽ tồn tại 1 trường có dữ liệu)
                     //customer_code = resultApiPTV.makh;
-                    customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10);
+                    customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10
+                                                    , resultApiPTV.makh_11, resultApiPTV.makh_12, resultApiPTV.makh_13, resultApiPTV.makh_14, resultApiPTV.makh_15);
                     phieuTuVan = new BVTL_PHIEU_TU_VAN()
                     {
                         makh = customer_code,
@@ -1141,7 +1142,8 @@ namespace Common.Common
                             phieuTuVan.ngaytuvan = DateTime.ParseExact(resultApiPTV.ngaytuvan, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
                         phieuTuVan.diadiem = resultApiPTV.diadiem;
-                        phieuTuVan.matcv = String.Concat(resultApiPTV.matcv, resultApiPTV.matcv_2, resultApiPTV.matcv_3, resultApiPTV.matcv_4, resultApiPTV.matcv_5, resultApiPTV.matcv_6, resultApiPTV.matcv_7, resultApiPTV.matcv_8, resultApiPTV.matcv_9, resultApiPTV.matcv_10);
+                        phieuTuVan.matcv = String.Concat(resultApiPTV.matcv, resultApiPTV.matcv_2, resultApiPTV.matcv_3, resultApiPTV.matcv_4, resultApiPTV.matcv_5, resultApiPTV.matcv_6, resultApiPTV.matcv_7, resultApiPTV.matcv_8, resultApiPTV.matcv_9, resultApiPTV.matcv_10
+                                                        , resultApiPTV.matcv_11, resultApiPTV.matcv_12, resultApiPTV.matcv_13, resultApiPTV.matcv_14, resultApiPTV.matcv_15);
                         phieuTuVan.lantuvan = resultApiPTV.lantuvan;
                         phieuTuVan.cau1_1 = resultApiPTV.cau1_1;
                         phieuTuVan.cau1_1k = resultApiPTV.cau1_1k;
@@ -1255,7 +1257,8 @@ namespace Common.Common
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
 
                     //customer_code = resultApiCGDV.makh;
-                    customer_code = String.Concat(resultApiCGDV.makh, resultApiCGDV.makh_2, resultApiCGDV.makh_3, resultApiCGDV.makh_4, resultApiCGDV.makh_5, resultApiCGDV.makh_6, resultApiCGDV.makh_7, resultApiCGDV.makh_8, resultApiCGDV.makh_9, resultApiCGDV.makh_10);
+                    customer_code = String.Concat(resultApiCGDV.makh, resultApiCGDV.makh_2, resultApiCGDV.makh_3, resultApiCGDV.makh_4, resultApiCGDV.makh_5, resultApiCGDV.makh_6, resultApiCGDV.makh_7, resultApiCGDV.makh_8, resultApiCGDV.makh_9, resultApiCGDV.makh_10
+                                                    , resultApiCGDV.makh_11, resultApiCGDV.makh_12, resultApiCGDV.makh_13, resultApiCGDV.makh_14, resultApiCGDV.makh_15);
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
