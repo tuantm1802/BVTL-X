@@ -578,7 +578,8 @@ namespace Common.Common
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
 
                     //customer_code = resultApiACE.makh;
-                    customer_code = String.Concat(resultApiACE.makh, resultApiACE.makh_2, resultApiACE.makh_3, resultApiACE.makh_4, resultApiACE.makh_5, resultApiACE.makh_6, resultApiACE.makh_7, resultApiACE.makh_8, resultApiACE.makh_9, resultApiACE.makh_10);
+                    customer_code = String.Concat(resultApiACE.makh, resultApiACE.makh_2, resultApiACE.makh_3, resultApiACE.makh_4, resultApiACE.makh_5, resultApiACE.makh_6, resultApiACE.makh_7, resultApiACE.makh_8, resultApiACE.makh_9, resultApiACE.makh_10
+                        , resultApiACE.makh_11, resultApiACE.makh_12, resultApiACE.makh_13, resultApiACE.makh_14, resultApiACE.makh_15);
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
