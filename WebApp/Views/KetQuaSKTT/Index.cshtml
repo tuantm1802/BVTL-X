@@ -70,7 +70,9 @@
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
                     @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaysl)) </td>
+
                     @*<td class="text-left">@item.ngaysltext</td>*@
                     <td class="text-right">@item.diem_QST</td>
                     <td class="text-right">@item.ketqua_QST</td>

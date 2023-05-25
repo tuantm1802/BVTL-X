@@ -70,7 +70,8 @@
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
                     @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngayhoi != null ? item.ngayhoi.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngayhoi)) </td>
+                    @*<td class="text-center">@(item.ngayhoi != null ? item.ngayhoi.ToString("yyyy-MM-dd") : string.Empty )</td>*@
                     @*<td class="text-left">@item.ngayxntext</td>*@
                     <td class="text-right">@(item.kqxnda == 1 ? "Dương tính": (item.kqxnda == 2 ? "Âm tính":"Không xét nghiệm"))</td>
                     <td class="text-right">@(item.kqxnheroin == 1 ? "Dương tính": (item.kqxnheroin == 2 ? "Âm tính":"Không xét nghiệm"))</td>

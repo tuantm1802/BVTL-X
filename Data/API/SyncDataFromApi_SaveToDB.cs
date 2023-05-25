@@ -200,6 +200,8 @@ namespace Data.API
                         }
                     }
 
+
+
                     // Đầu api VIIV_THONG_TIN_TRUYEN_THONG
                     if (tableNames.Contains("VIIV_THONG_TIN_TRUYEN_THONG"))
                     {

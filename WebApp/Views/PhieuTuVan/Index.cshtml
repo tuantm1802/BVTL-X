@@ -111,8 +111,10 @@
                     <td class="text-left">@item.tennhom_tbh</td>
                     <td class="text-left">@item.makh</td>
                     @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaynhap != null ? item.ngaynhap.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    <td class="text-center">@(item.ngaytuvan != null ? item.ngaytuvan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    @*<td class="text-center">@(item.ngaynhap != null ? item.ngaynhap.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+        <td class="text-center">@(item.ngaytuvan != null ? item.ngaytuvan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaynhap)) </td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaytuvan)) </td>
                     <td class="text-left">@item.diadiem</td>
                     <td class="text-left">@item.matcv</td>
                     <td class="text-left">@item.lantuvan</td>
@@ -154,7 +156,8 @@
                     <td class="text-left">@item.tongket</td>
                     <td class="text-left">@item.tuvantiep</td>
                     <td class="text-left">@item.vande</td>
-                    <td class="text-center">@(item.thoigian != null ? item.thoigian.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.thoigian)) </td>
+                    @*<td class="text-center">@(item.thoigian != null ? item.thoigian.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
                 </tr>
                     }
                 </table>

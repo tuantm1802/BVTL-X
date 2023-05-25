@@ -79,7 +79,8 @@
                     <td class="text-left">@item.arv</td>
                     <td class="text-left">@item.cs_dieutri</td>
                     <td class="text-center">@(item.dangdieutri_hiv == 1?"Có":(item.dangdieutri_hiv == 0?"Không":""))</td>
-                    <td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngayxn)) </td>
+                    @*<td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>*@
                     @*<td class="text-left">@item.ngayxntext</td>*@
                     <td class="text-right">@(item.ketqua ==-1 ? "Âm tính": (item.ketqua == 1 ? "Dương tính":"Không xác định"))</td>
                     <td class="text-left">@item.lydo</td>

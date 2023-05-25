@@ -60,22 +60,25 @@
                             <th style="width:9%;">Kết quả</th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>
-                    @*<td class="text-left">@item.ngaysltext</td>*@
-                    <td class="text-right">@item.tongdiem_ace</td>
-                    <td class="text-right">@item.ketqua_ace</td>
-                </tr>
-                    }
+                    @{ 
+                        foreach (var item in Model)
+                        {
+                        <tr>
+                            <td class="text-left">@item.maduan</td>
+                            <td class="text-left">@item.CityName</td>
+                            <td class="text-left">@item.record_id</td>
+                            <td class="text-left">@item.manhom_tbh</td>
+                            <td class="text-left">@item.tennhom_tbh</td>
+                            <td class="text-left">@item.makh</td>
+                            @*<td class="text-left">@item.hoten</td>*@
+                            @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty )</td>*@
+                            <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaysl)) </td>
+                            @*<td class="text-left">@item.ngaysltext</td>*@
+                            <td class="text-right">@item.tongdiem_ace</td>
+                            <td class="text-right">@item.ketqua_ace</td>
+                        </tr>
+                            }
+                        }
                 </table>
             </div>
         </div>
