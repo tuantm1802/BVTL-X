@@ -995,6 +995,7 @@ namespace Common.Common
 
             log.Info("*********Bắt đầu chuyển đổi kết quả api phiếu tư vấn sang entity**************************************");
             log.Info("*********-----TỔNG SỐ RECORD API PHIEUTUVAN:" + resultApiPTVs.Count + " | MADUAN:" + maDuAn);
+
             try
             {
                 var phieuTuVan = new BVTL_PHIEU_TU_VAN();
@@ -1002,7 +1003,7 @@ namespace Common.Common
                 //var customers = db.BVTL_KHACH_HANG.ToList();
                 var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
                 var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
-                long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
+                //long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
 
                 var customer = new BVTL_KHACH_HANG();
                 var customer_code = "";
@@ -1037,8 +1038,14 @@ namespace Common.Common
                     // Updated 07/11/2022: API Phiếu tư vấn thêm các trường makh_2,makh_3... và các trường matcv_2, matcv_3... tương ứng
                     // makh trong bảng dữ liệu giữ nguyên, makh = makh_2 -> makh_10 nếu 1 trong 10 makh đó có giá trị (trong 10 trường sẽ tồn tại 1 trường có dữ liệu)
                     //customer_code = resultApiPTV.makh;
-                    customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10
-                                                    , resultApiPTV.makh_11, resultApiPTV.makh_12, resultApiPTV.makh_13, resultApiPTV.makh_14, resultApiPTV.makh_15);
+                    //customer_code = String.Concat(resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10
+                    //                                , resultApiPTV.makh_11, resultApiPTV.makh_12, resultApiPTV.makh_13, resultApiPTV.makh_14, resultApiPTV.makh_15);
+
+                    List<string> lsCustomerCode = new List<string> { resultApiPTV.makh, resultApiPTV.makh_2, resultApiPTV.makh_3, resultApiPTV.makh_4, resultApiPTV.makh_5, resultApiPTV.makh_6, resultApiPTV.makh_7, resultApiPTV.makh_8, resultApiPTV.makh_9, resultApiPTV.makh_10
+                                                    , resultApiPTV.makh_11, resultApiPTV.makh_12, resultApiPTV.makh_13, resultApiPTV.makh_14, resultApiPTV.makh_15};
+
+                    customer_code = getValFromMultiFields(lsCustomerCode);
+
                     phieuTuVan = new BVTL_PHIEU_TU_VAN()
                     {
                         makh = customer_code,
@@ -1126,6 +1133,7 @@ namespace Common.Common
                         }
 
                         #endregion
+                        //log.Info("##################LOI: " + i + " | SỐ Record_ID LỖI:" + resultApiPTV.record_id + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
 
                         #region Chuyển đổi dữ liệu sang bảng BVTL_PHIEU_TU_VAN
 
@@ -1607,7 +1615,171 @@ namespace Common.Common
             }
             log.Info("********************************Kết thúc chuyển đổi kết quả api XN_NUOC_TIEU sang entity**************************************");
         }
-        
+        public void ConvertApiBVTLTTTTToEntity(List<ResultApiBVTLTTTTModel> resultApiModels, string maDuAn, string apiCode, ref List<BVTL_THONG_TIN_TRUYEN_THONG> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api BVTL_THONG_TIN_TRUYEN_THONG sang entity**************************************");
+            var objDB = new BVTL_THONG_TIN_TRUYEN_THONG();
+            var resultApi = new ResultApiBVTLTTTTModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                //var customer_code = "";
+
+                var group_code = "";
+                var customer_code = "";
+                var cityCode = "";
+                //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                string cityCodeTemp = apiCode.Split('_')[1];
+                if (!string.IsNullOrEmpty(cityCodeTemp))
+                {
+                    cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                }
+
+                var nhomTBH = new BVTL_NHOM_TBH();
+                var month = 0;
+                var day = 0;
+                var year = 0;
+                var ngaynhap = "";
+                var ngaynhapD = new DateTime();
+
+                log.Info("*********-----TỔNG SỐ RECORD API BVTL_THONG_TIN_TRUYEN_THONG:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    resultApi = resultApiModels[i];
+
+                    
+                    //cityCode = "";
+                    //nhomTBH = new BVTL_NHOM_TBH();
+                    month = 0;
+                    day = 0;
+                    year = 0;
+                    ngaynhap = "";
+                    ngaynhapD = new DateTime();
+
+                    //customer = new BVTL_KHACH_HANG();
+                    //customer_code = String.Concat(resultApi.makh, resultApi.makh_2, resultApi.makh_3, resultApi.makh_4, resultApi.makh_5, resultApi.makh_6, resultApi.makh_7, resultApi.makh_8, resultApi.makh_9, resultApi.makh_10
+                    //                                , resultApi.makh_11, resultApi.makh_12, resultApi.makh_13, resultApi.makh_14, resultApi.makh_15);
+
+                    List<string> listCodeMaKh = getListValFromMultiFields(resultApi);
+
+                    //log.Info("Count: " + listCodeMaKh.Count + ":::::getListValFromMultiFields:::::" + listCodeMaKh.ToString());
+
+                    for (int j = 0; j < listCodeMaKh.Count; j++)
+                    {
+                        customer_code = listCodeMaKh[j];
+                        if (!string.IsNullOrEmpty(customer_code))
+                        {
+                            if (customer_code.Length > 11)
+                            {
+                                group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                                cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                            }
+                            else if (!string.IsNullOrEmpty(customer_code))
+                            {
+                                cityCode = customer_code.Substring(0, 3);
+                                group_code = customer_code.Substring(0, 5);
+                            }
+                            
+                            #region Chuyển đổi dữ liệu sang bảng BVTL_THONG_TIN_TRUYEN_THONG
+                            objDB = new BVTL_THONG_TIN_TRUYEN_THONG()
+                            {
+                                makh = customer_code,
+                                //manhom_tbh = group_code,
+                                city_code = cityCode,
+                                maduan = maDuAn
+                            };
+                            //objDB.city_code = cityCode;
+                            //objDB.makh = customer_code;
+                            // Lấy ngay, tháng, năm nhập dữ liệu
+                            // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
+                            if (!string.IsNullOrEmpty(resultApi.day))
+                            {
+                                ngaynhap = resultApi.day;
+                                ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                                day = ngaynhapD.Day;
+                                month = ngaynhapD.Month;
+                                year = ngaynhapD.Year;
+                            }
+
+                            objDB.day = ngaynhapD;
+                            objDB.ngayth_date = day;
+                            objDB.ngayth_month = month;
+                            objDB.ngayth_year = year;
+                            objDB.record_id_api = string.IsNullOrEmpty(resultApi.record_id) ? 0 : Convert.ToInt32(resultApi.record_id);
+                            if (!string.IsNullOrEmpty(resultApi.diadiem))
+                            {
+                                objDB.diadiem = resultApi.diadiem;
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.noidung))
+                            {
+                                objDB.noidung = resultApi.noidung;
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.sokh))
+                            {
+                                objDB.sokh = Int32.Parse(resultApi.sokh);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.bcs))
+                            {
+                                objDB.bcs = Int32.Parse(resultApi.bcs);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.gel))
+                            {
+                                objDB.gel = Int32.Parse(resultApi.gel);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.bomkt))
+                            {
+                                objDB.bomkt = Int32.Parse(resultApi.bomkt);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.nuoccat))
+                            {
+                                objDB.nuoccat = Int32.Parse(resultApi.nuoccat);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.hopchiathuoc))
+                            {
+                                objDB.hopchiathuoc = Int32.Parse(resultApi.hopchiathuoc);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.ghichu))
+                            {
+                                objDB.ghichu = resultApi.ghichu;
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.bvtl_thng_tin_truyn_thng_complete))
+                            {
+                                objDB.bvtl_thng_tin_truyn_thng_complete = resultApi.bvtl_thng_tin_truyn_thng_complete;
+                            }
+
+                            lsObjDB.Add(objDB);
+                        }
+                        
+                    }
+                    
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record BVTL - THONG TIN TRUYEN THONG ĐÃ CONVERT:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API BVTL - THONG TIN TRUYEN THONG sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api BVTL - THONG TIN TRUYEN THONG sang entity**************************************");
+        }
+
         public void ConvertApiTTTTToEntity(List<ResultApiTTTTModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_THONG_TIN_TRUYEN_THONG> lsObjDB)
         {
 
@@ -1748,6 +1920,11 @@ namespace Common.Common
                     if (!string.IsNullOrEmpty(resultApi.ghichu))
                     {
                         objDB.ghichu = resultApi.ghichu;
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.viiv_thng_tin_truyn_thng_complete))
+                    {
+                        objDB.viiv_thng_tin_truyn_thng_complete = resultApi.viiv_thng_tin_truyn_thng_complete;
                     }
 
                     lsObjDB.Add(objDB);
@@ -2267,7 +2444,30 @@ namespace Common.Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api VIIV_TT_KH_MAT_DAU sang entity**************************************");
         }
 
+        private string getValFromMultiFields(List<string> lsVals)
+        {
+            string strVal = "";
+            IEnumerable<string> distinctVals = lsVals.Where(s=>!string.IsNullOrWhiteSpace(s)).Distinct();
+            strVal = distinctVals.FirstOrDefault();
+            return strVal;
+        }
 
+        private List<string> getListValFromMultiFields(ResultApiBVTLTTTTModel resultApi)
+        {
+            string[] listCodeMaKh = { resultApi.ma1, resultApi.ma2, resultApi.ma3, resultApi.ma4, resultApi.ma5, resultApi.ma6, resultApi.ma7, resultApi.ma8, resultApi.ma9, resultApi.ma10
+                                        , resultApi.ma11, resultApi.ma12, resultApi.ma13, resultApi.ma14, resultApi.ma15, resultApi.ma16, resultApi.ma17, resultApi.ma18, resultApi.ma19, resultApi.ma20
+                                        , resultApi.ma21, resultApi.ma22, resultApi.ma23, resultApi.ma24, resultApi.ma25, resultApi.ma26, resultApi.ma27, resultApi.ma28, resultApi.ma29, resultApi.ma30
+                                        , resultApi.ma1_1, resultApi.ma1_2, resultApi.ma1_3, resultApi.ma1_4, resultApi.ma1_5, resultApi.ma1_6, resultApi.ma1_7, resultApi.ma1_8, resultApi.ma1_9, resultApi.ma1_10, resultApi.ma1_11, resultApi.ma1_12, resultApi.ma1_13, resultApi.ma1_14, resultApi.ma1_15, resultApi.ma1_16, resultApi.ma1_17, resultApi.ma1_18, resultApi.ma1_19, resultApi.ma1_20, resultApi.ma1_21, resultApi.ma1_22, resultApi.ma1_23, resultApi.ma1_24, resultApi.ma1_25, resultApi.ma1_26, resultApi.ma1_27, resultApi.ma1_28, resultApi.ma1_29, resultApi.ma1_30
+                                        , resultApi.ma2_1, resultApi.ma2_2, resultApi.ma2_3, resultApi.ma2_4, resultApi.ma2_5, resultApi.ma2_6, resultApi.ma2_7, resultApi.ma2_8, resultApi.ma2_9, resultApi.ma2_10, resultApi.ma2_11, resultApi.ma2_12, resultApi.ma2_13, resultApi.ma2_14, resultApi.ma2_15, resultApi.ma2_16, resultApi.ma2_17, resultApi.ma2_18, resultApi.ma2_19, resultApi.ma2_20, resultApi.ma2_21, resultApi.ma2_22, resultApi.ma2_23, resultApi.ma2_24, resultApi.ma2_25, resultApi.ma2_26, resultApi.ma2_27, resultApi.ma2_28, resultApi.ma2_29, resultApi.ma2_30
+                                        , resultApi.ma3_1, resultApi.ma3_2, resultApi.ma3_3, resultApi.ma3_4, resultApi.ma3_5, resultApi.ma3_6, resultApi.ma3_7, resultApi.ma3_8, resultApi.ma3_9, resultApi.ma3_10, resultApi.ma3_11, resultApi.ma3_12, resultApi.ma3_13, resultApi.ma3_14, resultApi.ma3_15, resultApi.ma3_16, resultApi.ma3_17, resultApi.ma3_18, resultApi.ma3_19, resultApi.ma3_20, resultApi.ma3_21, resultApi.ma3_22, resultApi.ma3_23, resultApi.ma3_24, resultApi.ma3_25, resultApi.ma3_26, resultApi.ma3_27, resultApi.ma3_28, resultApi.ma3_29, resultApi.ma3_30
+                                        , resultApi.ma4_1, resultApi.ma4_2, resultApi.ma4_3, resultApi.ma4_4, resultApi.ma4_5, resultApi.ma4_6, resultApi.ma4_7, resultApi.ma4_8, resultApi.ma4_9, resultApi.ma4_10, resultApi.ma4_11, resultApi.ma4_12, resultApi.ma4_13, resultApi.ma4_14, resultApi.ma4_15, resultApi.ma4_16, resultApi.ma4_17, resultApi.ma4_18, resultApi.ma4_19, resultApi.ma4_20, resultApi.ma4_21, resultApi.ma4_22, resultApi.ma4_23, resultApi.ma4_24, resultApi.ma4_25, resultApi.ma4_26, resultApi.ma4_27, resultApi.ma4_28, resultApi.ma4_29, resultApi.ma4_30
+                                        , resultApi.ma5_1, resultApi.ma5_2, resultApi.ma5_3, resultApi.ma5_4, resultApi.ma5_5, resultApi.ma5_6, resultApi.ma5_7, resultApi.ma5_8, resultApi.ma5_9, resultApi.ma5_10, resultApi.ma5_11, resultApi.ma5_12, resultApi.ma5_13, resultApi.ma5_14, resultApi.ma5_15, resultApi.ma5_16, resultApi.ma5_17, resultApi.ma5_18, resultApi.ma5_19, resultApi.ma5_20, resultApi.ma5_21, resultApi.ma5_22, resultApi.ma5_23, resultApi.ma5_24, resultApi.ma5_25, resultApi.ma5_26, resultApi.ma5_27, resultApi.ma5_28, resultApi.ma5_29, resultApi.ma5_30
+                                        , resultApi.ma6_1, resultApi.ma6_2, resultApi.ma6_3, resultApi.ma6_4, resultApi.ma6_5, resultApi.ma6_6, resultApi.ma6_7, resultApi.ma6_8, resultApi.ma6_9, resultApi.ma6_10, resultApi.ma6_11, resultApi.ma6_12, resultApi.ma6_13, resultApi.ma6_14, resultApi.ma6_15, resultApi.ma6_16, resultApi.ma6_17, resultApi.ma6_18, resultApi.ma6_19, resultApi.ma6_20, resultApi.ma6_21, resultApi.ma6_22, resultApi.ma6_23, resultApi.ma6_24, resultApi.ma6_25, resultApi.ma6_26, resultApi.ma6_27, resultApi.ma6_28, resultApi.ma6_29, resultApi.ma6_30
+                                    };
+
+            var ls = listCodeMaKh.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+            return ls;
+        }
 
 
 

@@ -205,6 +205,9 @@
     <Compile Include="Model\BVTL_TAN_SUAT_SU_DUNG.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\BVTL_THONG_TIN_TRUYEN_THONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\CHITIEU_DUAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>

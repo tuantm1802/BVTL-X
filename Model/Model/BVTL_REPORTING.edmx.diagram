@@ -69,6 +69,10 @@
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67F99" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03A67H16" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_KQ_X__manho__03B67F89" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_THONG_TIN_TRUYEN_THONG" Width="1.5" PointX="5.25" PointY="76.625" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__VIIV_THON__city___50E5F592" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__VIIV_THON__madua__4FF1D159" />
+        <AssociationConnector Association="BVTL_REPORTINGModel.FK__VIIV_THON__manho__51DA19CB" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
