@@ -29,6 +29,7 @@ namespace Model.Model
             this.VIIV_TT_KH_MAT_DAU = new HashSet<VIIV_TT_KH_MAT_DAU>();
             this.VIIV_THONG_TIN_TRUYEN_THONG = new HashSet<VIIV_THONG_TIN_TRUYEN_THONG>();
             this.BVTL_THONG_TIN_TRUYEN_THONG = new HashSet<BVTL_THONG_TIN_TRUYEN_THONG>();
+            this.BVTL_THEO_DAU_KH = new HashSet<BVTL_THEO_DAU_KH>();
         }
     
         public string Code { get; set; }
@@ -63,5 +64,7 @@ namespace Model.Model
         public virtual ICollection<VIIV_THONG_TIN_TRUYEN_THONG> VIIV_THONG_TIN_TRUYEN_THONG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_THONG_TIN_TRUYEN_THONG> BVTL_THONG_TIN_TRUYEN_THONG { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BVTL_THEO_DAU_KH> BVTL_THEO_DAU_KH { get; set; }
     }
 }

@@ -72,5 +72,7 @@ namespace Common.ICommon
         void ConvertApiTrainingDataCollToEntity(List<ResultApiTrainingDataCollModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_TRAINING_DATA_COLLECTION> lsObjDB);
         void ConvertApiDGHLToEntity(List<ResultApiDGHLModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_DANH_GIA_HAI_LONG> lsObjDB);
         void ConvertApiTTKHMaDaToEntity(List<ResultApiTTKHMaDaModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_TT_KH_MAT_DAU> lsObjDB);
+        void ConvertApiBVTLTHEODAUKHoEntity(List<ResultApiTheoDauKHModel> resultApiModels, string maDuAn, string apiCode, ref List<BVTL_THEO_DAU_KH> lsObjDB);
+
     }
 }

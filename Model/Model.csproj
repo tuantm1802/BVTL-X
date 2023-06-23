@@ -59,6 +59,7 @@
     <Compile Include="ModelExtend\API\ResultApiTTKHMaDaModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTrainingDataCollModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiDGHLModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiTheoDauKHModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTTTTModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiXnNuocTieuModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiChuyenGuiDVModel.cs" />
@@ -203,6 +204,9 @@
       <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_TAN_SUAT_SU_DUNG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\BVTL_THEO_DAU_KH.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_THONG_TIN_TRUYEN_THONG.cs">
