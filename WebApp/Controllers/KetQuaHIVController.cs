@@ -3,6 +3,7 @@ using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
@@ -12,6 +13,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using DataTable = System.Data.DataTable;
 
 namespace WebApp.Controllers
 {
@@ -89,7 +91,7 @@ namespace WebApp.Controllers
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
                 AddLog("Lấy dữ liệu theo trang bảng kết quả HIV( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công."}); ;
+                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công."});
             }
             catch (Exception ex)
             {
@@ -124,6 +126,91 @@ namespace WebApp.Controllers
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
                 AddLog("Lấy danh sách các botom được thực hiện trên from kết quả HIV lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+        [HttpPost]
+        public ActionResult getDBHIVGioiTinh()
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                var data = _KetQuaHIVDA.getDBHIVGioiTinh();
+                AddLog("Lấy thông tin Dashboard HIV theo giới tính thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." });
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy thông tin Dashboard HIV theo giới tính lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+        [HttpPost]
+        public ActionResult getDBHIVDoTuoi()
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                var data = _KetQuaHIVDA.getDBHIVDoTuoi();
+                AddLog("Lấy thông tin Dashboard HIV theo Độ tuổi thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." });
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy thông tin Dashboard HIV theo Độ tuổi lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+        
+        [HttpPost]
+        public ActionResult getDBHIVDoiTuong()
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                var data = _KetQuaHIVDA.getDBHIVDoiTuong();
+                AddLog("Lấy thông tin Dashboard HIV theo Đối tượng thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." });
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy thông tin Dashboard HIV theo Đối tượng lỗi: " + ex.Message);
+                return Json(obj);
+            }
+        }
+        [HttpPost]
+        public ActionResult getDBHIVTinhTrang()
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                var data = _KetQuaHIVDA.getDBHIVTinhTrang();
+                AddLog("Lấy thông tin Dashboard Tình trạng HIV thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." });
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy thông tin Dashboard Tình trạng HIV lỗi: " + ex.Message);
                 return Json(obj);
             }
         }

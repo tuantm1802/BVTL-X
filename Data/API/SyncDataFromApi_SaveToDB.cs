@@ -200,6 +200,47 @@ namespace Data.API
                         }
                     }
 
+                    // Đầu api BVTL_THONG_TIN_TRUYEN_THONG
+                    if (tableNames.Contains("BVTL_THONG_TIN_TRUYEN_THONG"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiBVTLTTTTModel>>(resultApiString);
+
+                        var tongHops = new List<BVTL_THONG_TIN_TRUYEN_THONG>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiBVTLTTTTToEntity(dataResultApi.Where(x => x.bvtl_thng_tin_truyn_thng_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_THONG_TIN_TRUYEN_THONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_THONG_TIN_TRUYEN_THONG", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+
+                    // Đầu api BVTL_THEO_DAU_KH
+                    if (tableNames.Contains("BVTL_THEO_DAU_KH"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiTheoDauKHModel>>(resultApiString);
+
+                        var tongHops = new List<BVTL_THEO_DAU_KH>();
+
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiBVTLTHEODAUKHoEntity(dataResultApi.Where(x => x.theo_du_kh_complete.Equals("Complete")).ToList(), maDuAn, apiCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng VIIV_THONG_TIN_TRUYEN_THONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "BVTL_THEO_DAU_KH", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                    }
+
                     // Đầu api VIIV_THONG_TIN_TRUYEN_THONG
                     if (tableNames.Contains("VIIV_THONG_TIN_TRUYEN_THONG"))
                     {

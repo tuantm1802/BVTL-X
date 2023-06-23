@@ -68,8 +68,11 @@ namespace Common.ICommon
         /// <param name="xnNuocTieu"></param>
         void ConvertApiXNNuocTieuToEntity(List<ResultApiXnNuocTieuModel> resultApiXnNuocTieu, string maDuAn, ref List<BVTL_KQ_XN_NUOC_TIEU> xnNuocTieu);
         void ConvertApiTTTTToEntity(List<ResultApiTTTTModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_THONG_TIN_TRUYEN_THONG> lsObjDB);
+        void ConvertApiBVTLTTTTToEntity(List<ResultApiBVTLTTTTModel> resultApiModels, string maDuAn, string apiCode, ref List<BVTL_THONG_TIN_TRUYEN_THONG> lsObjDB);
         void ConvertApiTrainingDataCollToEntity(List<ResultApiTrainingDataCollModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_TRAINING_DATA_COLLECTION> lsObjDB);
         void ConvertApiDGHLToEntity(List<ResultApiDGHLModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_DANH_GIA_HAI_LONG> lsObjDB);
         void ConvertApiTTKHMaDaToEntity(List<ResultApiTTKHMaDaModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_TT_KH_MAT_DAU> lsObjDB);
+        void ConvertApiBVTLTHEODAUKHoEntity(List<ResultApiTheoDauKHModel> resultApiModels, string maDuAn, string apiCode, ref List<BVTL_THEO_DAU_KH> lsObjDB);
+
     }
 }

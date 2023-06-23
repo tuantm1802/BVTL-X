@@ -57,5 +57,7 @@ namespace Model.Model
         public virtual DbSet<VIIV_TT_KH_MAT_DAU> VIIV_TT_KH_MAT_DAU { get; set; }
         public virtual DbSet<VIIV_THONG_TIN_TRUYEN_THONG> VIIV_THONG_TIN_TRUYEN_THONG { get; set; }
         public virtual DbSet<VIIV_TRAINING_DATA_COLLECTION> VIIV_TRAINING_DATA_COLLECTION { get; set; }
+        public virtual DbSet<BVTL_THONG_TIN_TRUYEN_THONG> BVTL_THONG_TIN_TRUYEN_THONG { get; set; }
+        public virtual DbSet<BVTL_THEO_DAU_KH> BVTL_THEO_DAU_KH { get; set; }
     }
 }

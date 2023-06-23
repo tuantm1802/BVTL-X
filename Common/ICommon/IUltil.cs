@@ -15,6 +15,7 @@ namespace Common.ICommon
         string LocDau(string str);
 
         string ConvertDate2(string dateString);
+        DateTime ConvertDateFromUtc(DateTime? dateTime);
         string ConvertDate4(string dateString);
         DateTime ConvertStringToDate(string dateString, string format = "yyyyMMdd");
         string ListInt2String(List<int> data);

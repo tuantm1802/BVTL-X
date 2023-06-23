@@ -1909,7 +1909,10 @@
             }
         }
 
-        $scope.modelSearch.MaNhomTBH = '';
+        console.log($scope.ListMaNhomTBH);
+        console.log($scope.modelSearch.MaNhomTBH);
+
+        //$scope.modelSearch.MaNhomTBH = '';
         if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
             for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
                 if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {

@@ -11,6 +11,21 @@ namespace Model.ModelExtend.API
         public string record_id { get; set; }
         public int? record_id_api { get; set; }
         public string makh { get; set; }
+        public string makh_1 { get; set; }
+        public string makh_2 { get; set; }
+        public string makh_3 { get; set; }
+        public string makh_4 { get; set; }
+        public string makh_5 { get; set; }
+        public string makh_6 { get; set; }
+        public string makh_7 { get; set; }
+        public string makh_8 { get; set; }
+        public string makh_9 { get; set; }
+        public string makh_10 { get; set; }
+        public string makh_11 { get; set; }
+        public string makh_12 { get; set; }
+        public string makh_13 { get; set; }
+        public string makh_14 { get; set; }
+        public string makh_15 { get; set; }
         public string day { get; set; }
         public string diadiem { get; set; }
         public string noidung { get; set; }
@@ -22,6 +37,244 @@ namespace Model.ModelExtend.API
         public string hopchiathuoc { get; set; }
         public string ghichu { get; set; }
         public string viiv_thng_tin_truyn_thng_complete { get; set; }
+        public string bvtl_thng_tin_truyn_thng_complete { get; set; }
+
+
+    }
+
+    public class ResultApiBVTLTTTTModel
+    {
+        public string record_id { get; set; }
+        public int? record_id_api { get; set; }
+        public string makh { get; set; }
+        public string ma1 { get; set; }
+        public string ma2 { get; set; }
+        public string ma3 { get; set; }
+        public string ma4 { get; set; }
+        public string ma5 { get; set; }
+        public string ma6 { get; set; }
+        public string ma7 { get; set; }
+        public string ma8 { get; set; }
+        public string ma9 { get; set; }
+        public string ma10 { get; set; }
+        public string ma11 { get; set; }
+        public string ma12 { get; set; }
+        public string ma13 { get; set; }
+        public string ma14 { get; set; }
+        public string ma15 { get; set; }
+        public string ma16 { get; set; }
+        public string ma17 { get; set; }
+        public string ma18 { get; set; }
+        public string ma19 { get; set; }
+        public string ma20 { get; set; }
+        public string ma21 { get; set; }
+        public string ma22 { get; set; }
+        public string ma23 { get; set; }
+        public string ma24 { get; set; }
+        public string ma25 { get; set; }
+        public string ma26 { get; set; }
+        public string ma27 { get; set; }
+        public string ma28 { get; set; }
+        public string ma29 { get; set; }
+        public string ma30 { get; set; }
+
+        public string ma1_1  { get; set; }
+        public string ma1_2  { get; set; }
+        public string ma1_3  { get; set; }
+        public string ma1_4  { get; set; }
+        public string ma1_5  { get; set; }
+        public string ma1_6  { get; set; }
+        public string ma1_7  { get; set; }
+        public string ma1_8  { get; set; }
+        public string ma1_9  { get; set; }
+        public string ma1_10 { get; set; }
+        public string ma1_11 { get; set; }
+        public string ma1_12 { get; set; }
+        public string ma1_13 { get; set; }
+        public string ma1_14 { get; set; }
+        public string ma1_15 { get; set; }
+        public string ma1_16 { get; set; }
+        public string ma1_17 { get; set; }
+        public string ma1_18 { get; set; }
+        public string ma1_19 { get; set; }
+        public string ma1_20 { get; set; }
+        public string ma1_21 { get; set; }
+        public string ma1_22 { get; set; }
+        public string ma1_23 { get; set; }
+        public string ma1_24 { get; set; }
+        public string ma1_25 { get; set; }
+        public string ma1_26 { get; set; }
+        public string ma1_27 { get; set; }
+        public string ma1_28 { get; set; }
+        public string ma1_29 { get; set; }
+        public string ma1_30 { get; set; }
+
+        public string ma2_1  { get; set; }
+        public string ma2_2  { get; set; }
+        public string ma2_3  { get; set; }
+        public string ma2_4  { get; set; }
+        public string ma2_5  { get; set; }
+        public string ma2_6  { get; set; }
+        public string ma2_7  { get; set; }
+        public string ma2_8  { get; set; }
+        public string ma2_9  { get; set; }
+        public string ma2_10 { get; set; }
+        public string ma2_11 { get; set; }
+        public string ma2_12 { get; set; }
+        public string ma2_13 { get; set; }
+        public string ma2_14 { get; set; }
+        public string ma2_15 { get; set; }
+        public string ma2_16 { get; set; }
+        public string ma2_17 { get; set; }
+        public string ma2_18 { get; set; }
+        public string ma2_19 { get; set; }
+        public string ma2_20 { get; set; }
+        public string ma2_21 { get; set; }
+        public string ma2_22 { get; set; }
+        public string ma2_23 { get; set; }
+        public string ma2_24 { get; set; }
+        public string ma2_25 { get; set; }
+        public string ma2_26 { get; set; }
+        public string ma2_27 { get; set; }
+        public string ma2_28 { get; set; }
+        public string ma2_29 { get; set; }
+        public string ma2_30 { get; set; }
+
+        public string ma3_1  { get; set; }
+        public string ma3_2  { get; set; }
+        public string ma3_3  { get; set; }
+        public string ma3_4  { get; set; }
+        public string ma3_5  { get; set; }
+        public string ma3_6  { get; set; }
+        public string ma3_7  { get; set; }
+        public string ma3_8  { get; set; }
+        public string ma3_9  { get; set; }
+        public string ma3_10 { get; set; }
+        public string ma3_11 { get; set; }
+        public string ma3_12 { get; set; }
+        public string ma3_13 { get; set; }
+        public string ma3_14 { get; set; }
+        public string ma3_15 { get; set; }
+        public string ma3_16 { get; set; }
+        public string ma3_17 { get; set; }
+        public string ma3_18 { get; set; }
+        public string ma3_19 { get; set; }
+        public string ma3_20 { get; set; }
+        public string ma3_21 { get; set; }
+        public string ma3_22 { get; set; }
+        public string ma3_23 { get; set; }
+        public string ma3_24 { get; set; }
+        public string ma3_25 { get; set; }
+        public string ma3_26 { get; set; }
+        public string ma3_27 { get; set; }
+        public string ma3_28 { get; set; }
+        public string ma3_29 { get; set; }
+        public string ma3_30 { get; set; }
+
+        public string ma4_1 { get; set; }
+        public string ma4_2 { get; set; }
+        public string ma4_3  { get; set;}
+        public string ma4_4  { get; set;}
+        public string ma4_5  { get; set;}
+        public string ma4_6  { get; set;}
+        public string ma4_7  { get; set;}
+        public string ma4_8  { get; set;}
+        public string ma4_9  { get; set;}
+        public string ma4_10 { get; set;}
+        public string ma4_11 { get; set;}
+        public string ma4_12 { get; set;}
+        public string ma4_13 { get; set;}
+        public string ma4_14 { get; set;}
+        public string ma4_15 { get; set;}
+        public string ma4_16 { get; set;}
+        public string ma4_17 { get; set;}
+        public string ma4_18 { get; set;}
+        public string ma4_19 { get; set;}
+        public string ma4_20 { get; set;}
+        public string ma4_21 { get; set;}
+        public string ma4_22 { get; set;}
+        public string ma4_23 { get; set;}
+        public string ma4_24 { get; set;}
+        public string ma4_25 { get; set;}
+        public string ma4_26 { get; set;}
+        public string ma4_27 { get; set;}
+        public string ma4_28 { get; set;}
+        public string ma4_29 { get; set;}
+        public string ma4_30 { get; set;}
+
+        public string ma5_1  { get; set;}
+        public string ma5_2  { get; set;}
+        public string ma5_3  { get; set;}
+        public string ma5_4  { get; set;}
+        public string ma5_5  { get; set;}
+        public string ma5_6  { get; set;}
+        public string ma5_7  { get; set;}
+        public string ma5_8  { get; set;}
+        public string ma5_9  { get; set;}
+        public string ma5_10 { get; set;}
+        public string ma5_11 { get; set;}
+        public string ma5_12 { get; set;}
+        public string ma5_13 { get; set;}
+        public string ma5_14 { get; set;}
+        public string ma5_15 { get; set;}
+        public string ma5_16 { get; set;}
+        public string ma5_17 { get; set;}
+        public string ma5_18 { get; set;}
+        public string ma5_19 { get; set;}
+        public string ma5_20 { get; set;}
+        public string ma5_21 { get; set;}
+        public string ma5_22 { get; set;}
+        public string ma5_23 { get; set;}
+        public string ma5_24 { get; set;}
+        public string ma5_25 { get; set;}
+        public string ma5_26 { get; set;}
+        public string ma5_27 { get; set;}
+        public string ma5_28 { get; set;}
+        public string ma5_29 { get; set;}
+        public string ma5_30 { get; set;}
+        
+        public string ma6_1  { get; set;}
+        public string ma6_2  { get; set;}
+        public string ma6_3  { get; set;}
+        public string ma6_4  { get; set;}
+        public string ma6_5  { get; set;}
+        public string ma6_6  { get; set;}
+        public string ma6_7  { get; set;}
+        public string ma6_8  { get; set;}
+        public string ma6_9  { get; set;}
+        public string ma6_10 { get; set;}
+        public string ma6_11 { get; set;}
+        public string ma6_12 { get; set;}
+        public string ma6_13 { get; set;}
+        public string ma6_14 { get; set;}
+        public string ma6_15 { get; set;}
+        public string ma6_16 { get; set;}
+        public string ma6_17 { get; set;}
+        public string ma6_18 { get; set;}
+        public string ma6_19 { get; set;}
+        public string ma6_20 { get; set;}
+        public string ma6_21 { get; set;}
+        public string ma6_22 { get; set;}
+        public string ma6_23 { get; set;}
+        public string ma6_24 { get; set;}
+        public string ma6_25 { get; set;}
+        public string ma6_26 { get; set;}
+        public string ma6_27 { get; set;}
+        public string ma6_28 { get; set;}
+        public string ma6_29 { get; set;}
+        public string ma6_30 { get; set;}
+
+        public string day { get; set; }
+        public string diadiem { get; set; }
+        public string noidung { get; set; }
+        public string sokh { get; set; }
+        public string bcs { get; set; }
+        public string gel { get; set; }
+        public string bomkt { get; set; }
+        public string nuoccat { get; set; }
+        public string hopchiathuoc { get; set; }
+        public string ghichu { get; set; }
+        public string bvtl_thng_tin_truyn_thng_complete { get; set; }
 
 
     }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
+using Model.ModelExtend.Report;
 
 namespace Data.InterfaceDA.Admin
 {
@@ -26,5 +27,10 @@ namespace Data.InterfaceDA.Admin
         /// <param name="pageSize"></param>
         /// <returns></returns>
         List<KetQuaHIVPageModel> GetAllByPage(ModelSearch modelSearch);
+        List<DashboardModel> getDBHIVGioiTinh();
+        List<DashboardModel> getDBHIVTinhTrang();
+        List<DashboardModel> getDBHIVDoiTuong();
+        List<DashboardModel> getDBHIVDoTuoi();
+
     }
 }

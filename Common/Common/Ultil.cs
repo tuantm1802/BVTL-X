@@ -50,6 +50,21 @@ namespace Common.Common
                 return "";
             }
         }
+        public DateTime ConvertDateFromUtc(DateTime? dateTime)
+        {
+            
+            try
+            {
+                TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                DateTime dNgay = TimeZoneInfo.ConvertTimeFromUtc((DateTime)dateTime, cstZone);
+                
+                return dNgay;
+            }
+            catch
+            {
+                return new DateTime();
+            }
+        }
         public  string ConvertDate4(string dateString)
         {
             try

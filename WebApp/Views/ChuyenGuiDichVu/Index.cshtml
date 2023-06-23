@@ -98,12 +98,14 @@
                     <td class="text-left">@item.makh</td>
                     @*<td class="text-left">@item.hoten</td>*@
                     <td class="text-right">@item.loaihinh </td>
-                    <td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_xn)) </td>
+                    @*<td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
                     <td class="text-left">@item.diachi_xn </td>
                     <td class="text-left">@item.kq_xn </td>
                     <td class="text-left">@item.dieutri </td>
                     <td class="text-left">@item.diachi_cg </td>
-                    <td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_bddt)) </td>
+                    @*<td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
                     <td class="text-left">@item.taiuong_bd </td>
                     <td class="text-left">@item.taiuong_bd_2 </td>
                     <td class="text-left">@item.taiuong_bd_21 </td>
@@ -111,7 +113,8 @@
                     <td class="text-left">@item.s6t </td>
                     <td class="text-left">@item.s9t </td>
                     <td class="text-left">@item.s12t </td>
-                    <td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaykham)) </td>
+                    @*<td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>*@
                     <td class="text-left">@item.diachikham </td>
                     <td class="text-left">@item.lankham </td>
                     <td class="text-left">@item.chandoan </td>
@@ -119,7 +122,8 @@
                     <td class="text-left">@item.kedon </td>
                     <td class="text-left">@item.dungthuoc </td>
                     <td class="text-left">@item.hotro </td>
-                    <td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>
+                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaykxn)) </td>
+                    @*<td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>*@
                     <td class="text-left">@item.diachi_kxn </td>
                     <td class="text-left">@item.lan_xnk </td>
                     <td class="text-left">@item.chandoan1 </td>

@@ -290,6 +290,7 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\HomeController.js" />
     <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
     <Content Include="app\Controller\BaoCaoChiSoController.js" />
     <Content Include="app\Controller\BaoCaoNamController.js" />
@@ -4357,6 +4358,9 @@
     <Content Include="Report\ReportFile\SoLuongHocVienTruongCAND.rdlc" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\chart.js" />
+    <Content Include="Scripts\chart.min.js" />
+    <Content Include="Scripts\chartjs-plugin-datalabels.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
