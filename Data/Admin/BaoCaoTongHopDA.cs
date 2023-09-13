@@ -2027,7 +2027,7 @@ namespace Data.Admin
                     var quy = "";
                     var IntQuy = 0;
                     var check = 0;
-                    while ((_thang <= modelSearch.DenNam && _nam == modelSearch.DenNam) || (_nam <= modelSearch.DenNam))
+                    while ((_thang <= modelSearch.DenThang && _nam == modelSearch.DenNam) || (_nam <= modelSearch.DenNam))
                     {
                         // Lấy quý
                         quy = "";

@@ -280,6 +280,8 @@
           <Property Name="hotro_lao_2" Type="nvarchar" MaxLength="50" />
           <Property Name="hotro_mtd" Type="nvarchar" MaxLength="50" />
           <Property Name="hotro_prep" Type="nvarchar" MaxLength="50" />
+          <Property Name="ngay_ht" Type="date" />
+          <Property Name="ngay" Type="date" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -470,35 +472,35 @@
           <Property Name="diadiem" Type="nvarchar" MaxLength="200" />
           <Property Name="matcv" Type="varchar" MaxLength="10" />
           <Property Name="lantuvan" Type="varchar" MaxLength="10" />
-          <Property Name="cau1_1" Type="nvarchar" MaxLength="200" />
-          <Property Name="cau1_1k" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau1_2" Type="nvarchar" MaxLength="200" />
-          <Property Name="cau1_3" Type="nvarchar" MaxLength="200" />
-          <Property Name="cau1_4" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau1_1" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau1_1k" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau1_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau1_3" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau1_4" Type="nvarchar" MaxLength="2000" />
           <Property Name="cau1_5" Type="nvarchar" MaxLength="500" />
           <Property Name="cau2" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau2_1k" Type="nvarchar" MaxLength="200" />
-          <Property Name="cau2_2" Type="nvarchar" MaxLength="1000" />
-          <Property Name="cau3" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau2_1k" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau2_2" Type="nvarchar" MaxLength="2000" />
+          <Property Name="cau3" Type="nvarchar" MaxLength="500" />
           <Property Name="cau3_1k" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau3_1k_2" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau4" Type="nvarchar" MaxLength="200" />
+          <Property Name="cau3_1k_2" Type="nvarchar" MaxLength="2000" />
+          <Property Name="cau4" Type="nvarchar" MaxLength="500" />
           <Property Name="cau4_1k" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau4_1k_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau4_1k_2" Type="nvarchar" MaxLength="4000" />
           <Property Name="cau5_1" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau5_1k" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau5_1_2" Type="nvarchar" MaxLength="2000" />
+          <Property Name="cau5_1k" Type="nvarchar" MaxLength="2000" />
+          <Property Name="cau5_1_2" Type="nvarchar" MaxLength="4000" />
           <Property Name="cau5_2" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_2k" Type="nvarchar" MaxLength="500" />
-          <Property Name="cau5_2k_2" Type="nvarchar" MaxLength="2000" />
-          <Property Name="cau5_3" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_3_1" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_4" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_4_1" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_5" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_4_2" Type="nvarchar" MaxLength="100" />
-          <Property Name="cau5_6" Type="nvarchar" MaxLength="200" />
-          <Property Name="cau5_6k" Type="nvarchar" MaxLength="100" />
+          <Property Name="cau5_2k_2" Type="nvarchar" MaxLength="4000" />
+          <Property Name="cau5_3" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_3_1" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_4" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_4_1" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_5" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_4_2" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_6" Type="nvarchar" MaxLength="500" />
+          <Property Name="cau5_6k" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_6k_2" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_7" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_7k" Type="nvarchar" MaxLength="500" />
@@ -506,7 +508,7 @@
           <Property Name="cau5_8" Type="nvarchar" MaxLength="500" />
           <Property Name="cau5_7k_2" Type="nvarchar" MaxLength="500" />
           <Property Name="tongket" Type="nvarchar" MaxLength="500" />
-          <Property Name="tuvantiep" Type="nvarchar" MaxLength="100" />
+          <Property Name="tuvantiep" Type="nvarchar" MaxLength="500" />
           <Property Name="vande" Type="nvarchar" MaxLength="500" />
           <Property Name="thoigian" Type="datetime" />
           <Property Name="makh" Type="varchar" MaxLength="12" />
@@ -653,7 +655,7 @@
           <Property Name="hinhthuc_khac" Type="nvarchar" MaxLength="100" />
           <Property Name="kq" Type="nvarchar" MaxLength="100" />
           <Property Name="khac" Type="nvarchar" MaxLength="100" />
-          <Property Name="ghichu" Type="nvarchar" MaxLength="150" />
+          <Property Name="ghichu" Type="nvarchar" MaxLength="500" />
           <Property Name="theo_du_kh_complete" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="6" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
@@ -686,6 +688,7 @@
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="record_id_api" Type="int" />
+          <Property Name="tailieu" Type="int" />
         </EntityType>
         <EntityType Name="CHITIEU_DUAN">
           <Key>
@@ -1746,6 +1749,8 @@
           <Property Name="hotro_lao_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="hotro_mtd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="hotro_prep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_ht" Type="DateTime" Precision="0" />
+          <Property Name="ngay" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="BVTL_DU_AN">
           <Key>
@@ -1977,35 +1982,35 @@
           <Property Name="diadiem" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="matcv" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="lantuvan" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="cau1_1" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="cau1_1k" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau1_2" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="cau1_3" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="cau1_4" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau1_4" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
           <Property Name="cau1_5" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau2_1k" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="cau2_2" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="cau3" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau2_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau2_2" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="cau3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau3_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau3_1k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau4" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="cau3_1k_2" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="cau4" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau4_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau4_1k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau4_1k_2" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="cau5_1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_1k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_1_2" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_1k" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_1_2" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_2k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_2k_2" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_3" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_3_1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_4" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_4_1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_5" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_4_2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_6" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="cau5_6k" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_2k_2" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_3_1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4_1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_5" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_4_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_6" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cau5_6k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_6k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_7" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_7k" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -2013,7 +2018,7 @@
           <Property Name="cau5_8" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cau5_7k_2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="tongket" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="tuvantiep" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="tuvantiep" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="vande" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="DateTime" Precision="3" />
           <Property Name="makh" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
@@ -2877,6 +2882,7 @@
           <NavigationProperty Name="BVTL_CITES" Relationship="BVTL_REPORTINGModel.FK__VIIV_THON__city___50E5F592" FromRole="BVTL_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_CITES" />
           <NavigationProperty Name="BVTL_DU_AN" Relationship="BVTL_REPORTINGModel.FK__VIIV_THON__madua__4FF1D159" FromRole="BVTL_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_DU_AN" />
           <NavigationProperty Name="BVTL_NHOM_TBH" Relationship="BVTL_REPORTINGModel.FK__VIIV_THON__manho__51DA19CB" FromRole="BVTL_THONG_TIN_TRUYEN_THONG" ToRole="BVTL_NHOM_TBH" />
+          <Property Name="tailieu" Type="Int32" />
         </EntityType>
         <Association Name="FK__VIIV_THON__city___50E5F592">
           <End Type="BVTL_REPORTINGModel.BVTL_CITES" Role="BVTL_CITES" Multiplicity="0..1" />
@@ -2928,7 +2934,7 @@
           <Property Name="hinhthuc_khac" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="kq" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="khac" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ghichu" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ghichu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="theo_du_kh_complete" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
@@ -3207,6 +3213,8 @@
           <EntitySetMapping Name="BVTL_CHUYEN_GUI_DICH_VU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_CHUYEN_GUI_DICH_VU">
               <MappingFragment StoreEntitySet="BVTL_CHUYEN_GUI_DICH_VU">
+                <ScalarProperty Name="ngay" ColumnName="ngay" />
+                <ScalarProperty Name="ngay_ht" ColumnName="ngay_ht" />
                 <ScalarProperty Name="hotro_prep" ColumnName="hotro_prep" />
                 <ScalarProperty Name="hotro_mtd" ColumnName="hotro_mtd" />
                 <ScalarProperty Name="hotro_lao_2" ColumnName="hotro_lao_2" />
@@ -3768,6 +3776,7 @@
           <EntitySetMapping Name="BVTL_THONG_TIN_TRUYEN_THONG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_THONG_TIN_TRUYEN_THONG">
               <MappingFragment StoreEntitySet="BVTL_THONG_TIN_TRUYEN_THONG">
+                <ScalarProperty Name="tailieu" ColumnName="tailieu" />
                 <ScalarProperty Name="record_id_api" ColumnName="record_id_api" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />

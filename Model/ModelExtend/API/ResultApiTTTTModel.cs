@@ -273,6 +273,7 @@ namespace Model.ModelExtend.API
         public string bomkt { get; set; }
         public string nuoccat { get; set; }
         public string hopchiathuoc { get; set; }
+        public string tailieu { get; set; }
         public string ghichu { get; set; }
         public string bvtl_thng_tin_truyn_thng_complete { get; set; }
 

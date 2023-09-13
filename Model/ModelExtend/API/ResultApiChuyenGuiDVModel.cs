@@ -76,6 +76,8 @@ namespace Model.ModelExtend.API
         public string hotro_lao { get; set; }
         public string hotro_lao_2 { get; set; }
         public string hotro_mtd { get; set; }
+        public string ngay_ht { get; set; }
+        public string ngay { get; set; }
         public string chuyn_gi_dch_v_complete { get; set; }
         public string taiuong_bd_21 { get; set; }
 

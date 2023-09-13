@@ -66,5 +66,7 @@ namespace Model.Model
         public string hotro_lao_2 { get; set; }
         public string hotro_mtd { get; set; }
         public string hotro_prep { get; set; }
+        public Nullable<System.DateTime> ngay_ht { get; set; }
+        public Nullable<System.DateTime> ngay { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Model.Model;
 using Model.ModelExtend.API;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Common.Common
@@ -1256,8 +1257,10 @@ namespace Common.Common
 
                 log.Info("*********-----TỔNG SỐ RECORD API CHUYEN_GUI_DICH_VU:" + resultApiCGDVs.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
+
                 for (int i = 0; i < resultApiCGDVs.Count; i++)
                 {
+                    CultureInfo provider = CultureInfo.InvariantCulture;
                     customer = new BVTL_KHACH_HANG();
                     customer_code = "";
                     //customer_id = 0;
@@ -1269,13 +1272,20 @@ namespace Common.Common
                     year = 0;
                     ngaynhap = "";
                     ngaynhapD = new DateTime();
+                    sottkh = "";
 
                     resultApiCGDV = resultApiCGDVs[i];
                     #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
 
                     //customer_code = resultApiCGDV.makh;
-                    customer_code = String.Concat(resultApiCGDV.makh, resultApiCGDV.makh_2, resultApiCGDV.makh_3, resultApiCGDV.makh_4, resultApiCGDV.makh_5, resultApiCGDV.makh_6, resultApiCGDV.makh_7, resultApiCGDV.makh_8, resultApiCGDV.makh_9, resultApiCGDV.makh_10
-                                                    , resultApiCGDV.makh_11, resultApiCGDV.makh_12, resultApiCGDV.makh_13, resultApiCGDV.makh_14, resultApiCGDV.makh_15);
+                    //customer_code = String.Concat(resultApiCGDV.makh, resultApiCGDV.makh_2, resultApiCGDV.makh_3, resultApiCGDV.makh_4, resultApiCGDV.makh_5, resultApiCGDV.makh_6, resultApiCGDV.makh_7, resultApiCGDV.makh_8, resultApiCGDV.makh_9, resultApiCGDV.makh_10
+                    //                                , resultApiCGDV.makh_11, resultApiCGDV.makh_12, resultApiCGDV.makh_13, resultApiCGDV.makh_14, resultApiCGDV.makh_15);
+
+                    List<string> lsCustomerCode = new List<string> { resultApiCGDV.makh, resultApiCGDV.makh_2, resultApiCGDV.makh_3, resultApiCGDV.makh_4, resultApiCGDV.makh_5, resultApiCGDV.makh_6, resultApiCGDV.makh_7, resultApiCGDV.makh_8, resultApiCGDV.makh_9, resultApiCGDV.makh_10
+                                                    , resultApiCGDV.makh_11, resultApiCGDV.makh_12, resultApiCGDV.makh_13, resultApiCGDV.makh_14, resultApiCGDV.makh_15};
+
+                    customer_code = getValFromMultiFields(lsCustomerCode);
+
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
@@ -1328,131 +1338,150 @@ namespace Common.Common
 
                     #endregion
                     #region Chuyển đổi dữ liệu sang bảng BVTL_CHUYEN_GUI_DICH_VU
-                    chuyenGuiDV = new BVTL_CHUYEN_GUI_DICH_VU()
+                    if (!string.IsNullOrEmpty(sottkh))
                     {
-                        makh = customer_code,
-                        manhom_tbh = group_code,
-                        sottkh = sottkh,
-                        city_code = cityCode,
-                        maduan = maDuAn
-                    };
+                        chuyenGuiDV = new BVTL_CHUYEN_GUI_DICH_VU()
+                        {
+                            makh = customer_code,
+                            manhom_tbh = group_code,
+                            sottkh = sottkh,
+                            city_code = cityCode,
+                            maduan = maDuAn
+                        };
 
-                    // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
-                    nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
-                    if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
-                    {
-                        db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiCGDV.tbh, city_code = cityCode });
-                        db.SaveChanges();
-                    }
-                    // Lấy ngay, tháng, năm nhập dữ liệu
-                    // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngay_bddt))
-                    {
-                        ngaynhap = resultApiCGDV.ngay_bddt;
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                        day = ngaynhapD.Day;
-                        month = ngaynhapD.Month;
-                        year = ngaynhapD.Year;
-                    }
-                    else if(!string.IsNullOrEmpty(resultApiCGDV.ngaykxn))
-                    {
-                        ngaynhap = resultApiCGDV.ngaykxn;
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                        day = ngaynhapD.Day;
-                        month = ngaynhapD.Month;
-                        year = ngaynhapD.Year;
-                    }else if(!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
-                    {
-                        ngaynhap = resultApiCGDV.ngay_xn;
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                        day = ngaynhapD.Day;
-                        month = ngaynhapD.Month;
-                        year = ngaynhapD.Year;
-                    }else if(!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
-                    {
-                        ngaynhap = resultApiCGDV.ngaykham;
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                        day = ngaynhapD.Day;
-                        month = ngaynhapD.Month;
-                        year = ngaynhapD.Year;
-                    }
-                    else if(!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
-                    {
-                        ngaynhap = resultApiCGDV.ngayhotro_2;
-                        ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                        day = ngaynhapD.Day;
-                        month = ngaynhapD.Month;
-                        year = ngaynhapD.Year;
-                    }
+                        // Kiểm tra xem có nhóm tbh chưa nếu chua có thì thêm
+                        nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == group_code);
+                        if (nhomTBH == null && !string.IsNullOrEmpty(group_code))
+                        {
+                            db.BVTL_NHOM_TBH.Add(new BVTL_NHOM_TBH() { manhom_tbh = group_code, tennhom_tbh = resultApiCGDV.tbh, city_code = cityCode });
+                            db.SaveChanges();
+                        }
+                        // Lấy ngay, tháng, năm nhập dữ liệu
+                        // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngay_bddt))
+                        {
+                            ngaynhap = resultApiCGDV.ngay_bddt;
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                            day = ngaynhapD.Day;
+                            month = ngaynhapD.Month;
+                            year = ngaynhapD.Year;
+                        }
+                        else if(!string.IsNullOrEmpty(resultApiCGDV.ngaykxn))
+                        {
+                            ngaynhap = resultApiCGDV.ngaykxn;
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                            day = ngaynhapD.Day;
+                            month = ngaynhapD.Month;
+                            year = ngaynhapD.Year;
+                        }else if(!string.IsNullOrEmpty(resultApiCGDV.ngay_xn))
+                        {
+                            ngaynhap = resultApiCGDV.ngay_xn;
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                            day = ngaynhapD.Day;
+                            month = ngaynhapD.Month;
+                            year = ngaynhapD.Year;
+                        }else if(!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
+                        {
+                            ngaynhap = resultApiCGDV.ngaykham;
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                            day = ngaynhapD.Day;
+                            month = ngaynhapD.Month;
+                            year = ngaynhapD.Year;
+                        }
+                        else if(!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
+                        {
+                            ngaynhap = resultApiCGDV.ngayhotro_2;
+                            ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                            day = ngaynhapD.Day;
+                            month = ngaynhapD.Month;
+                            year = ngaynhapD.Year;
+                        }
 
 
-                    chuyenGuiDV.ngay_xn = ngaynhapD;
-                    chuyenGuiDV.ngay_xn_date = day;
-                    chuyenGuiDV.ngay_xn_month = month;
-                    chuyenGuiDV.ngay_xn_year = year;
-                    chuyenGuiDV.record_id = string.IsNullOrEmpty(resultApiCGDV.record_id) ? 0 : Convert.ToInt32(resultApiCGDV.record_id);
-                    chuyenGuiDV.loaihinh = resultApiCGDV.loaihinh;
-                    chuyenGuiDV.diachi_xn = resultApiCGDV.diachi_xn;
-                    chuyenGuiDV.kq_xn = resultApiCGDV.kq_xn;
-                    chuyenGuiDV.dieutri = resultApiCGDV.dieutri;
-                    chuyenGuiDV.diachi_cg = resultApiCGDV.diachi_cg;
+                        chuyenGuiDV.ngay_xn = ngaynhapD;
+                        chuyenGuiDV.ngay_xn_date = day;
+                        chuyenGuiDV.ngay_xn_month = month;
+                        chuyenGuiDV.ngay_xn_year = year;
+                        chuyenGuiDV.record_id = string.IsNullOrEmpty(resultApiCGDV.record_id) ? 0 : Convert.ToInt32(resultApiCGDV.record_id);
+                        chuyenGuiDV.loaihinh = resultApiCGDV.loaihinh;
+                        chuyenGuiDV.diachi_xn = resultApiCGDV.diachi_xn;
+                        chuyenGuiDV.kq_xn = resultApiCGDV.kq_xn;
+                        chuyenGuiDV.dieutri = resultApiCGDV.dieutri;
+                        chuyenGuiDV.diachi_cg = resultApiCGDV.diachi_cg;
 
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngay_bddt))
-                        chuyenGuiDV.ngay_bddt = DateTime.ParseExact(resultApiCGDV.ngay_bddt, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    chuyenGuiDV.taiuong_bd = resultApiCGDV.taiuong_bd;
-                    chuyenGuiDV.anh1 = resultApiCGDV.anh1;
-                    chuyenGuiDV.taiuong_bd_2 = resultApiCGDV.taiuong_bd_2;
-                    chuyenGuiDV.anh2 = resultApiCGDV.anh2;
-                    chuyenGuiDV.taiuong_bd_21 = resultApiCGDV.taiuong_bd_21;
-                    chuyenGuiDV.anh3 = resultApiCGDV.anh3;
-                    chuyenGuiDV.s3t = resultApiCGDV.s3t;
-                    chuyenGuiDV.s6t = resultApiCGDV.s6t;
-                    chuyenGuiDV.s9t = resultApiCGDV.s9t;
-                    chuyenGuiDV.s12t = resultApiCGDV.s12t;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngay_bddt))
+                            chuyenGuiDV.ngay_bddt = DateTime.ParseExact(resultApiCGDV.ngay_bddt, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        chuyenGuiDV.taiuong_bd = resultApiCGDV.taiuong_bd;
+                        chuyenGuiDV.anh1 = resultApiCGDV.anh1;
+                        chuyenGuiDV.taiuong_bd_2 = resultApiCGDV.taiuong_bd_2;
+                        chuyenGuiDV.anh2 = resultApiCGDV.anh2;
+                        chuyenGuiDV.taiuong_bd_21 = resultApiCGDV.taiuong_bd_21;
+                        chuyenGuiDV.anh3 = resultApiCGDV.anh3;
+                        chuyenGuiDV.s3t = resultApiCGDV.s3t;
+                        chuyenGuiDV.s6t = resultApiCGDV.s6t;
+                        chuyenGuiDV.s9t = resultApiCGDV.s9t;
+                        chuyenGuiDV.s12t = resultApiCGDV.s12t;
 
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
-                        chuyenGuiDV.ngaykham = DateTime.ParseExact(resultApiCGDV.ngaykham, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    chuyenGuiDV.diachikham = resultApiCGDV.diachikham;
-                    chuyenGuiDV.lankham = resultApiCGDV.lankham;
-                    chuyenGuiDV.chandoan = resultApiCGDV.chandoan;
-                    chuyenGuiDV.khac = resultApiCGDV.khac;
-                    chuyenGuiDV.kedon = resultApiCGDV.kedon;
-                    chuyenGuiDV.dungthuoc = resultApiCGDV.dungthuoc;
-                    chuyenGuiDV.hotro = resultApiCGDV.hotro;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngaykham))
+                            chuyenGuiDV.ngaykham = DateTime.ParseExact(resultApiCGDV.ngaykham, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        chuyenGuiDV.diachikham = resultApiCGDV.diachikham;
+                        chuyenGuiDV.lankham = resultApiCGDV.lankham;
+                        chuyenGuiDV.chandoan = resultApiCGDV.chandoan;
+                        chuyenGuiDV.khac = resultApiCGDV.khac;
+                        chuyenGuiDV.kedon = resultApiCGDV.kedon;
+                        chuyenGuiDV.dungthuoc = resultApiCGDV.dungthuoc;
+                        chuyenGuiDV.hotro = resultApiCGDV.hotro;
 
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngaykxn))
-                        chuyenGuiDV.ngaykxn = DateTime.ParseExact(resultApiCGDV.ngaykxn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    chuyenGuiDV.diachi_kxn = resultApiCGDV.diachi_kxn;
-                    chuyenGuiDV.lan_xnk = resultApiCGDV.lan_xnk;
-                    chuyenGuiDV.chandoan1 = resultApiCGDV.chandoan1;
-                    chuyenGuiDV.khac_sti = resultApiCGDV.khac_sti;
-                    chuyenGuiDV.dieutri_sti = resultApiCGDV.dieutri_sti;
-                    chuyenGuiDV.hotro_sti = resultApiCGDV.hotro_sti;
-                    chuyenGuiDV.hotro_bhyt = resultApiCGDV.hotro_bhyt;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngaykxn))
+                            chuyenGuiDV.ngaykxn = DateTime.ParseExact(resultApiCGDV.ngaykxn, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        chuyenGuiDV.diachi_kxn = resultApiCGDV.diachi_kxn;
+                        chuyenGuiDV.lan_xnk = resultApiCGDV.lan_xnk;
+                        chuyenGuiDV.chandoan1 = resultApiCGDV.chandoan1;
+                        chuyenGuiDV.khac_sti = resultApiCGDV.khac_sti;
+                        chuyenGuiDV.dieutri_sti = resultApiCGDV.dieutri_sti;
+                        chuyenGuiDV.hotro_sti = resultApiCGDV.hotro_sti;
+                        chuyenGuiDV.hotro_bhyt = resultApiCGDV.hotro_bhyt;
 
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_gttt))
-                        chuyenGuiDV.hotro_gttt = resultApiCGDV.hotro_gttt;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
-                        chuyenGuiDV.ngayhotro_2 = DateTime.ParseExact(resultApiCGDV.ngayhotro_2, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_prep))
-                        chuyenGuiDV.hotro_prep = resultApiCGDV.hotro_prep;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_pep))
-                        chuyenGuiDV.hotro_pep = resultApiCGDV.hotro_pep;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c))
-                        chuyenGuiDV.hotro_c = resultApiCGDV.hotro_c;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c_2))
-                        chuyenGuiDV.hotro_c_2 = resultApiCGDV.hotro_c_2;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao))
-                        chuyenGuiDV.hotro_lao = resultApiCGDV.hotro_lao;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao_2))
-                        chuyenGuiDV.hotro_lao_2 = resultApiCGDV.hotro_lao_2;
-                    if (!string.IsNullOrEmpty(resultApiCGDV.hotro_mtd))
-                        chuyenGuiDV.hotro_mtd = resultApiCGDV.hotro_mtd;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_gttt))
+                            chuyenGuiDV.hotro_gttt = resultApiCGDV.hotro_gttt;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngayhotro_2))
+                            chuyenGuiDV.ngayhotro_2 = DateTime.ParseExact(resultApiCGDV.ngayhotro_2, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_prep))
+                            chuyenGuiDV.hotro_prep = resultApiCGDV.hotro_prep;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_pep))
+                            chuyenGuiDV.hotro_pep = resultApiCGDV.hotro_pep;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c))
+                            chuyenGuiDV.hotro_c = resultApiCGDV.hotro_c;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_c_2))
+                            chuyenGuiDV.hotro_c_2 = resultApiCGDV.hotro_c_2;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao))
+                            chuyenGuiDV.hotro_lao = resultApiCGDV.hotro_lao;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_lao_2))
+                            chuyenGuiDV.hotro_lao_2 = resultApiCGDV.hotro_lao_2;
+                        if (!string.IsNullOrEmpty(resultApiCGDV.hotro_mtd))
+                            chuyenGuiDV.hotro_mtd = resultApiCGDV.hotro_mtd;
+                        
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngay))
+                        {
+                            //provider = new CultureInfo("fr-FR");
+                            //resultApiCGDV.ngay = resultApiCGDV.ngay.Replace("-", "/");
+                            //chuyenGuiDV.ngay = DateTime.ParseExact(resultApiCGDV.ngay, "d/M/yyyy", provider);
+                            chuyenGuiDV.ngay = DateTime.ParseExact(resultApiCGDV.ngay, "yyyy-mm-dd", provider);
+                        }
+                            
+                        if (!string.IsNullOrEmpty(resultApiCGDV.ngay_ht))
+                        {
+                            //provider = new CultureInfo("fr-FR");
+                            //resultApiCGDV.ngay_ht = resultApiCGDV.ngay_ht.Replace("-", "/");
+                            //chuyenGuiDV.ngay_ht = DateTime.ParseExact(resultApiCGDV.ngay_ht, "d/M/yyyy", provider);
+                            chuyenGuiDV.ngay_ht = DateTime.ParseExact(resultApiCGDV.ngay_ht, "yyyy-mm-dd", provider);
 
-                    chuyenGuiDVs.Add(chuyenGuiDV);
+                        }
 
+                        chuyenGuiDVs.Add(chuyenGuiDV);
+                        }
                     #endregion
-                    
+
                 }
                 log.Info("*********-----SỐ Record CHUYEN_GUI_DICH_VU ĐÃ CONVERT:" + chuyenGuiDVs.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
 
@@ -1698,7 +1727,7 @@ namespace Common.Common
                             objDB = new BVTL_THONG_TIN_TRUYEN_THONG()
                             {
                                 makh = customer_code,
-                                //manhom_tbh = group_code,
+                                manhom_tbh = group_code,
                                 city_code = cityCode,
                                 maduan = maDuAn
                             };
@@ -1758,6 +1787,11 @@ namespace Common.Common
                             if (!string.IsNullOrEmpty(resultApi.hopchiathuoc))
                             {
                                 objDB.hopchiathuoc = Int32.Parse(resultApi.hopchiathuoc);
+                            }
+                            
+                            if (!string.IsNullOrEmpty(resultApi.tailieu))
+                            {
+                                objDB.tailieu = Int32.Parse(resultApi.tailieu);
                             }
 
                             if (!string.IsNullOrEmpty(resultApi.ghichu))
