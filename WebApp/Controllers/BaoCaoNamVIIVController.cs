@@ -147,7 +147,7 @@ namespace WebApp.Controllers
                     Year = Year, 
                     Months = Months, 
                     CityCodes = CityCodes, 
-                    TypeReport = 2, 
+                    TypeReport = 4, 
                     MaNhomTBH = maNhomTBHs,
                     MaDuAn = maDuAn 
                 };
@@ -160,7 +160,8 @@ namespace WebApp.Controllers
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
 
-                var data = _BaoCaoTongHopDA.GetDataReportVIIV(modelSearch);
+                //var data = _BaoCaoTongHopDA.GetDataReportVIIV(modelSearch);
+                var data = _BaoCaoTongHopDA.GetDataYearReportVIIV(modelSearch);
 
                 // Lấy danh sách nhóm TBH theo tỉnh
                 var nhomTBHs = new List<NhomTBHPageModel>();

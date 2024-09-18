@@ -345,7 +345,7 @@ namespace Common.Common
             return null;
         }
 
-        public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId)
+        public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
         {
             HttpResponseMessage response = null;
             try
@@ -358,7 +358,7 @@ namespace Common.Common
                     // client.DefaultRequestHeaders.Clear();
                     // //Define request data format  
                     // client.Timeout = TimeSpan.FromSeconds(100);
-
+                    
                     var data = new[]
                     {
                          new KeyValuePair<string, string>("token", token),
@@ -366,7 +366,7 @@ namespace Common.Common
                          new KeyValuePair<string, string>("format", "json"),
                          new KeyValuePair<string, string>("report_id", reportId),
                          new KeyValuePair<string, string>("csvDelimiter", ""),
-                         new KeyValuePair<string, string>("rawOrLabel", "label"),
+                         new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
                          new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
                          new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
                          new KeyValuePair<string, string>("returnFormat", "json")

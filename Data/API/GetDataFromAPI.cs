@@ -28,13 +28,14 @@ namespace Data.API
         /// <param name="url"></param>
         /// <param name="token"></param>
         /// <param name="reportId"></param>
+        /// <param name="rawOrLabel"></param>
         /// <returns></returns>
-        public async Task<List<T>> PostDataFromApiReturnList<T>(string url, string token, string reportId)      {
+        public async Task<List<T>> PostDataFromApiReturnList<T>(string url, string token, string reportId, string rawOrLabel)      {
             var result = new List<T>();
             try
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
-                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
+                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId, rawOrLabel);
                 log.Info("****************************###GetDataFromAPI:::PostDataFromApiReturnList:::response.StatusCode= " + response.StatusCode + "###***************************");
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -68,13 +69,13 @@ namespace Data.API
         /// <param name="token"></param>
         /// <param name="reportId"></param>
         /// <returns></returns>
-        public async Task<string> PostDataFromApiReturnString(string url, string token, string reportId)
+        public async Task<string> PostDataFromApiReturnString(string url, string token, string reportId, string rawOrLabel)
         {
             var result ="";
             try
             {
                 log.Info("****************************Bắt đầu lấy dữ liệu  api " + url + ", report id: " + reportId + " ********************************");
-                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId);
+                HttpResponseMessage response = await _apiBase.PostJsonAsyncRaw(url, token, reportId, rawOrLabel);
 
                 log.Info("****************************###GetDataFromAPI:::PostDataFromApiReturnString:::response.StatusCode= " + response.StatusCode + "|report id= " + reportId + "###***************************");
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)

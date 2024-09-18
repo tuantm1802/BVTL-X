@@ -16,15 +16,22 @@
     angular.element(document).ready(function () {
         $scope.ListMaNhomTBH = [];
     $scope.ListNhomTBH = [];
+
         var date = new Date();
-        for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
-            var tmpYear = {
-                Id: i,
-                Name: i + ''
-            };
-            $scope.ListYear.push(tmpYear);
-        }
-        $scope.modelSearch.Year = date.getFullYear();
+        
+    for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
+        var tmpYear = {
+            Id: i,
+            Name: i + ''
+        };
+        $scope.ListYear.push(tmpYear);
+    }
+    var tmpAll = { Id: 0, Name: '-' };        
+        $scope.ListYear.unshift(tmpAll);
+        console.log($scope.ListYear);
+    $scope.modelSearch.Year = date.getFullYear();
+
+
     GetBottomAction();
     $scope.Changecity();
         $scope.LoadPage(1);
@@ -61,7 +68,7 @@
 
 
     $scope.LoadPage = function (genTable) {
-        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
+        if ($scope.modelSearch.Year == null /*|| $scope.modelSearch.Year == 0*/) {
             toastr.error("Vui lòng chọn năm!");
             return;
         }
@@ -115,7 +122,7 @@
     };
 
     $scope.ExportExcel = function () {
-        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
+        if ($scope.modelSearch.Year == null /*|| $scope.modelSearch.Year == 0*/) {
             toastr.error("Vui lòng chọn năm!");
             return;
         }

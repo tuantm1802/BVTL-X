@@ -1,5 +1,6 @@
 ﻿using Common.ICommon;
 using log4net;
+using Microsoft.SqlServer.Server;
 using Model.Model;
 using Model.ModelExtend.API;
 using System;
@@ -2611,6 +2612,1640 @@ namespace Common.Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api BVTL_THEO_DAU_KH sang entity**************************************");
         }
 
+        public void ConvertApiKhachHangTTCBEntity(List<ResultApiKhachHangTTCBModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_THONG_TIN_CO_BAN> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_THONG_TIN_CO_BAN sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_THONG_TIN_CO_BAN();
+            var resultApi = new ResultApiKhachHangTTCBModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+                
+
+                log.Info("*********-----TỔNG SỐ RECORD API VIIV_TT_KH_MAT_DAU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    objDB = new CD43_KHACH_HANG_THONG_TIN_CO_BAN()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,                        
+                    };
+
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a1))
+                    {
+                        var ngay_thang_nam_sinh = resultApi.f1_q_a1;
+                        var ngaysinh = DateTime.ParseExact(ngay_thang_nam_sinh, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        objDB.ngay_thang_nam_sinh = ngaysinh;
+                        var nam_sinh = ngaysinh.Year;
+                        objDB.nam_sinh = nam_sinh;
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a2))
+                    {   
+                        objDB.gioi_tinh = resultApi.f1_q_a2;
+                    }
+                   
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a2_1))
+                    {
+                        objDB.gioi_tinh = resultApi.f1_q_a2_1;
+                    }
+                    
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a4))
+                    {
+                        objDB.cap_bac_hoc_van = resultApi.f1_q_a4;
+                    }
+                    
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a6))
+                    {
+                        objDB.nghe_nghiep = resultApi.f1_q_a6;
+                    }
+                    
+                    if (!string.IsNullOrEmpty(resultApi.f1_q_a6_1))
+                    {
+                        objDB.nghe_nghiep_khac = resultApi.f1_q_a6_1;
+                    }
+
+                    DateTime dateTime;
+                    if (resultApi.time != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.thoi_gian_bat_dau = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.thoi_gian_bat_dau = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.thoi_gian_bat_dau = null; // Gán null nếu không chuyển đổi được
+                        }
+                        
+                    }
+                    else
+                    {
+                        objDB.thoi_gian_bat_dau = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    if (resultApi.end_time != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.end_time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.thoi_gian_ket_thuc = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.thoi_gian_ket_thuc = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.thoi_gian_ket_thuc = null; // Gán null nếu không chuyển đổi được
+                        }
+                        
+                    }
+                    else
+                    {
+                        objDB.thoi_gian_ket_thuc = null; // Gán null nếu resultApi.time là null
+                    }
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_THONG_TIN_CO_BAN:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_THONG_TIN_CO_BAN sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_THONG_TIN_CO_BAN sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangSangLocNuocTieuEntity(List<ResultApiKhachHangSangLocNuocTieuModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU();
+            var resultApi = new ResultApiKhachHangSangLocNuocTieuModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    objDB = new CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (!string.IsNullOrEmpty(resultApi.ngayhoi))
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.ngayhoi, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngayhoi = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngayhoi = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngayhoi = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.ngayhoi = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.kqxnda))
+                    {
+                        objDB.kqxnda = resultApi.kqxnda;
+                        if (resultApi.kqxnda.Equals("1"))
+                        {
+                            objDB.kqxnda_text = "Dương tính";
+                        }
+                        else
+                        {
+                            objDB.kqxnda_text = "Âm tính";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.sng_lc_nc_tiu_complete))
+                    {
+                        objDB.sng_lc_nc_tiu_complete = resultApi.sng_lc_nc_tiu_complete;                        
+                    }
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangSangLocHIVEntity(List<ResultApiKhachHangSangLocHIVModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_SANG_LOC_HIV> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_SANG_LOC_HIV sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_SANG_LOC_HIV();
+            var resultApi = new ResultApiKhachHangSangLocHIVModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SANG_LOC_HIV:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_SANG_LOC_HIV
+                    objDB = new CD43_KHACH_HANG_SANG_LOC_HIV()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (!string.IsNullOrEmpty(resultApi.ngayhoi))
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.ngayhoi, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngayhoi = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngayhoi = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngayhoi = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.ngayhoi = null; // Gán null nếu resultApi.time là null
+                    }
+
+                     if (!string.IsNullOrEmpty(resultApi.hiv))
+                    {
+                        objDB.hiv = resultApi.hiv;
+                        if (resultApi.hiv.Equals("1"))
+                        {
+                            objDB.hiv_text = "Có";
+                        }
+                        else
+                        {
+                            objDB.hiv_text = "Không";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.dt_hiv))
+                    {
+                        objDB.dt_hiv = resultApi.dt_hiv;
+                        if (resultApi.dt_hiv.Equals("1"))
+                        {
+                            objDB.dt_hiv_text = "Có";
+                        }
+                        else
+                        {
+                            objDB.dt_hiv_text = "Không";
+                        }
+                    }
+                    
+                    if (!string.IsNullOrEmpty(resultApi.kqxn))
+                    {
+                        objDB.kqxn = resultApi.kqxn;
+                        if (resultApi.kqxn.Equals("1"))
+                        {
+                            objDB.kqxn_text = "Có phản ứng";
+                        }
+                        else
+                        {
+                            objDB.kqxn_text = "Âm tính";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(resultApi.sng_lc_hiv_complete))
+                    {
+                        objDB.sng_lc_hiv_complete = resultApi.sng_lc_hiv_complete;
+                    }
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_SANG_LOC_HIV:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_SANG_LOC_HIV sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_SANG_LOC_HIV sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangDanhGiaHaiLongEntity(List<ResultApiKhachHangDanhGiaHaiLongModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_DANH_GIA_HAI_LONG> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_DANH_GIA_HAI_LONG sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_DANH_GIA_HAI_LONG();
+            var resultApi = new ResultApiKhachHangDanhGiaHaiLongModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_DANH_GIA_HAI_LONG:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    objDB = new CD43_KHACH_HANG_DANH_GIA_HAI_LONG()
+                    {
+                        record_id = resultApi.record_id,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.ngay_3db24b != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (true ) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (resultApi.ngay_3db24b > new DateTime(1900, 1, 1) && resultApi.ngay_3db24b < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngay_3db24b = resultApi.ngay_3db24b; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngay_3db24b = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngay_3db24b = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.ngay_3db24b = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    if (resultApi.dichvu != null)
+                    {
+                        objDB.dichvu = resultApi.dichvu;                    
+                    }
+                    if (resultApi.dv_khac != null)
+                    {
+                        objDB.dv_khac = resultApi.dv_khac;                    
+                    }
+                    if (resultApi.cau1 != null)
+                    {
+                        objDB.cau1 = resultApi.cau1;                    
+                    }
+                    if (resultApi.cau2_b127b4 != null)
+                    {
+                        objDB.cau2_b127b4 = resultApi.cau2_b127b4;                    
+                    }
+                    if (resultApi.cau3_eaf641 != null)
+                    {
+                        objDB.cau3_eaf641 = resultApi.cau3_eaf641;                    
+                    }
+                    if (resultApi.cau4_60e585 != null)
+                    {
+                        objDB.cau4_60e585 = resultApi.cau4_60e585;                    
+                    }
+
+                    objDB.cau5 = resultApi.cau5;
+                    objDB.cau6 = resultApi.cau6;
+                    objDB.kenh___1 = resultApi.kenh___1;
+                    objDB.kenh___2 = resultApi.kenh___2;
+                    objDB.kenh___3 = resultApi.kenh___3;
+                    objDB.kenh___4 = resultApi.kenh___4;
+                    objDB.khac_1 = resultApi.khac_1;
+                    objDB.thongtin___1 = resultApi.thongtin___1;
+                    objDB.thongtin___2 = resultApi.thongtin___2;
+                    objDB.thongtin___3 = resultApi.thongtin___3;
+                    objDB.thongtin___4 = resultApi.thongtin___4;
+                    objDB.thongtin___5 = resultApi.thongtin___5;
+                    objDB.thongtin___6 = resultApi.thongtin___6;
+                    objDB.tt_khac = resultApi.tt_khac;
+                    objDB.chiase = resultApi.chiase;
+
+                    if (resultApi.nh_gi_mc_hi_lng_ca_kh_complete != null)
+                    {
+                        objDB.nh_gi_mc_hi_lng_ca_kh_complete = resultApi.nh_gi_mc_hi_lng_ca_kh_complete;
+                    }
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_DANH_GIA_HAI_LONG:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_DANH_GIA_HAI_LONG sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_DANH_GIA_HAI_LONG sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangTheoDauEntity(List<ResultApiKhachHangTheoDauModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_THEO_DAU> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_THEO_DAU sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_THEO_DAU();
+            var resultApi = new ResultApiKhachHangTheoDauModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_THEO_DAU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    objDB = new CD43_KHACH_HANG_THEO_DAU()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.time_theodau != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (resultApi.time_theodau > new DateTime(1900, 1, 1) && resultApi.time_theodau < new DateTime(5000, 1, 1))
+                            {
+                                objDB.time_theodau = resultApi.time_theodau; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.time_theodau = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.time_theodau = null; // Gán null nếu không chuyển đổi được
+                        }
+                    }
+                    else
+                    {
+                        objDB.time_theodau = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.kq_theodau = resultApi.kq_theodau;
+                    objDB.lydo_matdau = resultApi.lydo_matdau;
+                    objDB.matdau_khac = resultApi.matdau_khac;
+                    objDB.theo_du_complete = resultApi.theo_du_complete;
+                    
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_THEO_DAU:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_THEO_DAU sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_THEO_DAU sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangSinhHoatNhomEntity(List<ResultApiKhachHangSinhHoatNhomModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_SINH_HOAT_NHOM> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_SINH_HOAT_NHOM sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_SINH_HOAT_NHOM();
+            var resultApi = new ResultApiKhachHangSinhHoatNhomModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SINH_HOAT_NHOM:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_SINH_HOAT_NHOM
+                    objDB = new CD43_KHACH_HANG_SINH_HOAT_NHOM()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.ngay_shn != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (resultApi.ngay_shn > new DateTime(1900, 1, 1) && resultApi.ngay_shn < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngay_shn = resultApi.ngay_shn; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngay_shn = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngay_shn = null; // Gán null nếu không chuyển đổi được
+                        }
+                    }
+                    else
+                    {
+                        objDB.ngay_shn = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.chude = resultApi.chude;
+                    objDB.phatvatpham = resultApi.phatvatpham;
+                    objDB.bcs = resultApi.bcs;
+                    objDB.gel = resultApi.gel;
+                    objDB.sinh_hot_nhm_complete = resultApi.sinh_hot_nhm_complete;
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_SINH_HOAT_NHOM:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_SINH_HOAT_NHOM sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_SINH_HOAT_NHOM sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangPhieuTuVanEntity(List<ResultApiKhachHangPhieuTuVanModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_PHIEU_TU_VAN> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_PHIEU_TU_VAN sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_PHIEU_TU_VAN();
+            var resultApi = new ResultApiKhachHangPhieuTuVanModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_PHIEU_TU_VAN:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_SINH_HOAT_NHOM
+                    objDB = new CD43_KHACH_HANG_PHIEU_TU_VAN()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.ngaytuvan != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (resultApi.ngaytuvan > new DateTime(1900, 1, 1) && resultApi.ngaytuvan < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngaytuvan = resultApi.ngaytuvan; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngaytuvan = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngaytuvan = null; // Gán null nếu không chuyển đổi được
+                        }
+                    }
+                    else
+                    {
+                        objDB.ngaytuvan = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.diadiem = resultApi.diadiem;
+                    objDB.tcv = resultApi.tcv;
+                    objDB.lantuvan = resultApi.lantuvan;
+                    objDB.cau1_1___1 = resultApi.cau1_1___1;
+                    objDB.cau1_1___2 = resultApi.cau1_1___2;
+                    objDB.cau1_1___3 = resultApi.cau1_1___3;
+                    objDB.cau1_1___4 = resultApi.cau1_1___4;
+                    objDB.cau1_1___5 = resultApi.cau1_1___5;
+                    objDB.cau1_1___6 = resultApi.cau1_1___6;
+                    objDB.cau1_1___7 = resultApi.cau1_1___7;
+                    objDB.cau1_1k = resultApi.cau1_1k;
+                    objDB.cau1_2 = resultApi.cau1_2;
+                    objDB.cau1_3___8 = resultApi.cau1_3___8;
+                    objDB.cau1_3___9 = resultApi.cau1_3___9;
+                    objDB.cau1_3___10 = resultApi.cau1_3___10;
+                    objDB.cau1_3___11 = resultApi.cau1_3___11;
+                    objDB.cau_1_4_1___1 = resultApi.cau_1_4_1___1;
+                    objDB.cau_1_4_1___2 = resultApi.cau_1_4_1___2;
+                    objDB.cau_1_4_1___3 = resultApi.cau_1_4_1___3;
+                    objDB.cau_1_4_1___4 = resultApi.cau_1_4_1___4;
+                    objDB.cau_1_4_1___5 = resultApi.cau_1_4_1___5;
+                    objDB.cau_1_4_1___6 = resultApi.cau_1_4_1___6;
+                    objDB.cau_1_4_1___7 = resultApi.cau_1_4_1___7;
+                    objDB.cau_1_4_2 = resultApi.cau_1_4_2;
+                    objDB.cau_1_4_1_mt = resultApi.cau_1_4_1_mt;
+                    objDB.cau_1_5_2 = resultApi.cau_1_5_2;
+                    objDB.cau_1_5_3 = resultApi.cau_1_5_3;
+                    objDB.cau_1_5_4 = resultApi.cau_1_5_4;
+                    objDB.cau_1_5_5 = resultApi.cau_1_5_5;
+                    objDB.cau_1_5_6 = resultApi.cau_1_5_6;
+                    objDB.cau2___1 = resultApi.cau2___1;
+                    objDB.cau2___2 = resultApi.cau2___2;
+                    objDB.cau2___3 = resultApi.cau2___3;
+                    objDB.cau2___4 = resultApi.cau2___4;
+                    objDB.cau2___5 = resultApi.cau2___5;
+                    objDB.cau2___6 = resultApi.cau2___6;
+                    objDB.cau2___7 = resultApi.cau2___7;
+                    objDB.cau2_1k = resultApi.cau2_1k;
+                    objDB.cau2_2 = resultApi.cau2_2;
+                    objDB.cau3___1 = resultApi.cau3___1;
+                    objDB.cau3___2 = resultApi.cau3___2;
+                    objDB.cau3___3 = resultApi.cau3___3;
+                    objDB.cau3___4 = resultApi.cau3___4;
+                    objDB.cau3___5 = resultApi.cau3___5;
+                    objDB.cau3___6 = resultApi.cau3___6;
+                    objDB.cau3___7 = resultApi.cau3___7;
+                    objDB.cau3___8 = resultApi.cau3___8;
+                    objDB.cau3___10 = resultApi.cau3___10;
+                    objDB.cau3___9 = resultApi.cau3___9;
+                    objDB.cau3___11 = resultApi.cau3___11;
+                    objDB.cau3___12 = resultApi.cau3___12;
+                    objDB.cau3_1k = resultApi.cau3_1k;
+                    objDB.cau3_1k_2 = resultApi.cau3_1k_2;
+                    objDB.cau4___1 = resultApi.cau4___1;
+                    objDB.cau4___2 = resultApi.cau4___2;
+                    objDB.cau4___3 = resultApi.cau4___3;
+                    objDB.cau4___4 = resultApi.cau4___4;
+                    objDB.cau4___5 = resultApi.cau4___5;
+                    objDB.cau4___6 = resultApi.cau4___6;
+                    objDB.cau4___7 = resultApi.cau4___7;
+                    objDB.cau4___8 = resultApi.cau4___8;
+                    objDB.cau4___9 = resultApi.cau4___9;
+                    objDB.cau4___10 = resultApi.cau4___10;
+                    objDB.cau4___11 = resultApi.cau4___11;
+                    objDB.cau4___12 = resultApi.cau4___12;
+                    objDB.cau4_1k = resultApi.cau4_1k;
+                    objDB.cau4_1k_2 = resultApi.cau4_1k_2;
+                    objDB.cau_5___1 = resultApi.cau_5___1;
+                    objDB.cau_5___2 = resultApi.cau_5___2;
+                    objDB.cau_5___3 = resultApi.cau_5___3;
+                    objDB.cau_5___4 = resultApi.cau_5___4;
+                    objDB.cau_5___6 = resultApi.cau_5___6;
+                    objDB.cau_5___5 = resultApi.cau_5___5;
+                    objDB.sktd_khac = resultApi.sktd_khac;
+                    objDB.cau6_1___1 = resultApi.cau6_1___1;
+                    objDB.cau6_1___2 = resultApi.cau6_1___2;
+                    objDB.cau6_1___3 = resultApi.cau6_1___3;
+                    objDB.cau6_1___4 = resultApi.cau6_1___4;
+                    objDB.cau6_1___5 = resultApi.cau6_1___5;
+                    objDB.cau6_1___6 = resultApi.cau6_1___6;
+                    objDB.cau6_1k = resultApi.cau6_1k;
+                    objDB.cau6_1_2 = resultApi.cau6_1_2;
+                    objDB.cau6_2___6 = resultApi.cau6_2___6;
+                    objDB.cau6_2___7 = resultApi.cau6_2___7;
+                    objDB.cau6_2___8 = resultApi.cau6_2___8;
+                    objDB.cau6_2___9 = resultApi.cau6_2___9;
+                    objDB.cau6_2___10 = resultApi.cau6_2___10;
+                    objDB.cau6_2___11 = resultApi.cau6_2___11;
+                    objDB.cau6_2___12 = resultApi.cau6_2___12;
+                    objDB.cau6_2___15 = resultApi.cau6_2___15;
+                    objDB.cau6_2___13 = resultApi.cau6_2___13;
+                    objDB.cau6_2___14 = resultApi.cau6_2___14;
+                    objDB.cau6_2k = resultApi.cau6_2k;
+                    objDB.cau6_2k_2 = resultApi.cau6_2k_2;
+                    objDB.cau6_3_bs___1 = resultApi.cau6_3_bs___1;
+                    objDB.cau6_3_bs___2 = resultApi.cau6_3_bs___2;
+                    objDB.cau6_3_bs___3 = resultApi.cau6_3_bs___3;
+                    objDB.cau6_3_bs___4 = resultApi.cau6_3_bs___4;
+                    objDB.cau6_3_bs___5 = resultApi.cau6_3_bs___5;
+                    objDB.cau6_3_bs___6 = resultApi.cau6_3_bs___6;
+                    objDB.cau6_3_bs_1 = resultApi.cau6_3_bs_1;
+                    objDB.phiu_t_vn_complete = resultApi.phiu_t_vn_complete;
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_PHIEU_TU_VAN:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_PHIEU_TU_VAN sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_PHIEU_TU_VAN sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangChuyenGuiEntity(List<ResultApiKhachHangChuyenGuiModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_CHUYEN_GUI> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_CHUYEN_GUI sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_CHUYEN_GUI();
+            var resultApi = new ResultApiKhachHangChuyenGuiModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_CHUYEN_GUI:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_CHUYEN_GUI
+                    objDB = new CD43_KHACH_HANG_CHUYEN_GUI()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.f2_q_1_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_1_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_1_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_1_1 = resultApi.f2_q_1_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_1_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_1_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    // Gán giá trị các thuộc tính
+                    objDB.record_id = resultApi.record_id;
+                    objDB.sync_date = resultApi.sync_date;
+                    objDB.maduan = resultApi.maduan;
+                    objDB.manhom_tbh = resultApi.manhom_tbh;
+                    objDB.city_code = resultApi.city_code;
+                    objDB.chuyengui___1 = resultApi.chuyengui___1;
+                    objDB.chuyengui___2 = resultApi.chuyengui___2;
+                    objDB.chuyengui___3 = resultApi.chuyengui___3;
+                    objDB.chuyengui___4 = resultApi.chuyengui___4;
+                    objDB.chuyengui___5 = resultApi.chuyengui___5;
+                    objDB.chuyengui___6 = resultApi.chuyengui___6;
+                    objDB.p_1 = resultApi.p_1;
+                    
+                    objDB.f2_q_1_2 = resultApi.f2_q_1_2;
+                    objDB.f2_q_1_3 = resultApi.f2_q_1_3;
+                    objDB.f2_q_1_3_1 = resultApi.f2_q_1_3_1;
+                    objDB.f2_q_1_4 = resultApi.f2_q_1_4;
+                    objDB.f2_q_1_5 = resultApi.f2_q_1_5;
+                    objDB.f2_q_1_5_1 = resultApi.f2_q_1_5_1;
+                    objDB.f2_q_1_6 = resultApi.f2_q_1_6;
+                    objDB.f2_q_1_8 = resultApi.f2_q_1_8;
+                    
+                    if (resultApi.f2_q_1_8_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_1_8_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_1_8_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_1_8_1 = resultApi.f2_q_1_8_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_1_8_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_1_8_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.p_2 = resultApi.p_2;
+                    
+                    if (resultApi.f2_q_2_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_2_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_2_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_2_1 = resultApi.f2_q_2_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_2_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_2_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_2_2 = resultApi.f2_q_2_2;
+                    objDB.f2_q_2_3 = resultApi.f2_q_2_3;
+                    objDB.f2_q_2_4 = resultApi.f2_q_2_4;
+                    objDB.f2_q_2_5 = resultApi.f2_q_2_5;
+
+                    if (resultApi.f2_q_2_6 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_2_6 > new DateTime(1900, 1, 1) && resultApi.f2_q_2_6 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_2_6 = resultApi.f2_q_2_6; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_2_6 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_2_6 = null; // Gán null nếu resultApi.time là null
+                    }
+
+
+                    objDB.p_3 = resultApi.p_3;
+                    objDB.f2_q_3_1 = resultApi.f2_q_3_1;
+                    objDB.f2_q_3_1_1 = resultApi.f2_q_3_1_1;
+                    objDB.f2_q_3_1_1_1 = resultApi.f2_q_3_1_1_1;
+                    objDB.f2_q_3_1_2 = resultApi.f2_q_3_1_2;
+                    objDB.f2_q_3_1_1_2 = resultApi.f2_q_3_1_1_2;
+                    objDB.f2_q_3_1_3 = resultApi.f2_q_3_1_3;
+                    objDB.f2_q_3_1_3_1 = resultApi.f2_q_3_1_3_1;
+                    objDB.f2_q_3_2 = resultApi.f2_q_3_2;
+                    objDB.f2_q_3_3 = resultApi.f2_q_3_3;
+                    objDB.p_4 = resultApi.p_4;
+                    objDB.loaihinh4 = resultApi.loaihinh4;
+                    objDB.loaihinh4___1 = resultApi.loaihinh4___1;
+                    objDB.loaihinh4___2 = resultApi.loaihinh4___2;
+                    objDB.loaihinh4___3 = resultApi.loaihinh4___3;
+                    objDB.loaihinh4___4 = resultApi.loaihinh4___4;
+                    objDB.f2_q_4_1 = resultApi.f2_q_4_1;
+                    objDB.f2_q_4_1_1 = resultApi.f2_q_4_1_1;
+                    objDB.f2_q_4_1_2 = resultApi.f2_q_4_1_2;
+                    objDB.f2_q_4_1_3 = resultApi.f2_q_4_1_3;
+                    objDB.f2_q_4_1_4 = resultApi.f2_q_4_1_4;
+                    objDB.f2_q_4_1_4___1 = resultApi.f2_q_4_1_4___1;
+                    objDB.f2_q_4_1_4___2 = resultApi.f2_q_4_1_4___2;
+                    objDB.f2_q_4_1_4___3 = resultApi.f2_q_4_1_4___3;
+                    objDB.f2_q_4_1_4___4 = resultApi.f2_q_4_1_4___4;
+                    objDB.f2_q_4_1_4___5 = resultApi.f2_q_4_1_4___5;
+                    objDB.f2_q_4_1_4___6 = resultApi.f2_q_4_1_4___6;
+                    objDB.f2_q_4_1_4___7 = resultApi.f2_q_4_1_4___7;
+                    objDB.f2_q_4_1_4_1 = resultApi.f2_q_4_1_4_1;
+                    objDB.f2_q_4_1_5 = resultApi.f2_q_4_1_5;
+                    objDB.f2_q_4_1_6 = resultApi.f2_q_4_1_6;
+                    objDB.f2_q_4_1_7 = resultApi.f2_q_4_1_7;
+                    objDB.f2_q_4_2 = resultApi.f2_q_4_2;
+
+                    if (resultApi.f2_q_4_2_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_4_2_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_2_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_4_2_1 = resultApi.f2_q_4_2_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_4_2_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_4_2_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_4_2_2 = resultApi.f2_q_4_2_2;
+                    objDB.f2_q_4_2_3 = resultApi.f2_q_4_2_3;
+                    objDB.f2_q_4_2_4 = resultApi.f2_q_4_2_4;
+                    objDB.f2_q_4_2_5 = resultApi.f2_q_4_2_5;
+                    objDB.f2_q_4_2_6 = resultApi.f2_q_4_2_6;
+                    objDB.f2_q_4_3 = resultApi.f2_q_4_3;
+                    
+                    if (resultApi.f2_q_4_3_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_4_3_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_3_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_4_3_1 = resultApi.f2_q_4_3_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_4_3_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_4_3_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_4_3_2 = resultApi.f2_q_4_3_2;
+                    objDB.f2_q_4_3_3 = resultApi.f2_q_4_3_3;
+                    objDB.f2_q_4_3_4 = resultApi.f2_q_4_3_4;
+                    objDB.f2_q_4_4 = resultApi.f2_q_4_4;
+                    
+                    if (resultApi.f2_q_4_4_1 != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_4_4_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_4_1 < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_4_4_1 = resultApi.f2_q_4_4_1; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_4_4_1 = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_4_4_1 = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_4_4_2 = resultApi.f2_q_4_4_2;
+                    objDB.f2_q_4_4_2_1 = resultApi.f2_q_4_4_2_1;
+                    objDB.f2_q_4_4_3 = resultApi.f2_q_4_4_3;
+                    objDB.f2_q_4_4_3_1 = resultApi.f2_q_4_4_3_1;
+                    objDB.f2_q_4_4_4 = resultApi.f2_q_4_4_4;
+                    objDB.p_5 = resultApi.p_5;
+                    objDB.f2_q_5 = resultApi.f2_q_5;
+                    
+                    if (resultApi.f2_q_5_d != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_5_d > new DateTime(1900, 1, 1) && resultApi.f2_q_5_d < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_5_d = resultApi.f2_q_5_d; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_5_d = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_5_d = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_51 = resultApi.f2_q_51;
+                    objDB.f2_q_5_1 = resultApi.f2_q_5_1;
+                    objDB.f2_q_53 = resultApi.f2_q_53;
+                    objDB.f2_q_5_2 = resultApi.f2_q_5_2;
+                    objDB.p_6 = resultApi.p_6;
+                    
+                    if (resultApi.f2_q_6_d != null)
+                    {
+                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                        if (resultApi.f2_q_6_d > new DateTime(1900, 1, 1) && resultApi.f2_q_6_d < new DateTime(5000, 1, 1))
+                        {
+                            objDB.f2_q_6_d = resultApi.f2_q_6_d; // Gán giá trị nếu hợp lệ
+                        }
+                        else
+                        {
+                            objDB.f2_q_6_d = null; // Gán null nếu không nằm trong khoảng
+                        }
+                    }
+                    else
+                    {
+                        objDB.f2_q_6_d = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f2_q_6_1 = resultApi.f2_q_6_1;
+                    objDB.f2_q_6_2 = resultApi.f2_q_6_2;
+                    objDB.f2_q_6_3 = resultApi.f2_q_6_3;
+                    objDB.f2_q_6_4 = resultApi.f2_q_6_4;
+                    objDB.f2_q_6_5 = resultApi.f2_q_6_5;
+                    objDB.f2_q_6_6 = resultApi.f2_q_6_6;
+                    objDB.f2_q_6_7 = resultApi.f2_q_6_7;
+                    objDB.chuyn_gi_complete = resultApi.chuyn_gi_complete;
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_CHUYEN_GUI:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_CHUYEN_GUI sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_CHUYEN_GUI sang entity**************************************");
+        }
+
+        public void ConvertApiKhachHangHanhViNguyCoEntity(List<ResultApiKhachHangHanhViNguyCoModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_HANH_VI_NGUY_CO> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_HANH_VI_NGUY_CO sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_HANH_VI_NGUY_CO();
+            var resultApi = new ResultApiKhachHangHanhViNguyCoModel();
+            try
+            {
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_HANH_VI_NGUY_CO:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 2);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_HANH_VI_NGUY_CO
+                    objDB = new CD43_KHACH_HANG_HANH_VI_NGUY_CO()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+
+                    DateTime dateTime;
+                    if (resultApi.ngayhoi != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.ngayhoi, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.ngayhoi = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.ngayhoi = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.ngayhoi = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.ngayhoi = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    if (resultApi.time != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.thoi_gian_bat_dau = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.thoi_gian_bat_dau = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.thoi_gian_bat_dau = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.thoi_gian_bat_dau = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    if (resultApi.end_time != null)
+                    {
+                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                        if (DateTime.TryParseExact(resultApi.end_time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                            {
+                                objDB.thoi_gian_ket_thuc = dateTime; // Gán giá trị nếu hợp lệ
+                            }
+                            else
+                            {
+                                objDB.thoi_gian_ket_thuc = null; // Gán null nếu không nằm trong khoảng
+                            }
+                        }
+                        else
+                        {
+                            objDB.thoi_gian_ket_thuc = null; // Gán null nếu không chuyển đổi được
+                        }
+
+                    }
+                    else
+                    {
+                        objDB.thoi_gian_ket_thuc = null; // Gán null nếu resultApi.time là null
+                    }
+
+                    objDB.f1_q_a3 = resultApi.f1_q_a3;
+                    objDB.f1_q_a3_1 = resultApi.f1_q_a3_1;
+                    objDB.f1_q_a4 = resultApi.f1_q_a4;
+                    objDB.f1_q_a5 = resultApi.f1_q_a5;
+                    objDB.f1_q_a5___1 = resultApi.f1_q_a5___1;
+                    objDB.f1_q_a5___2 = resultApi.f1_q_a5___2;
+                    objDB.f1_q_a5___3 = resultApi.f1_q_a5___3;
+                    objDB.f1_q_a6 = resultApi.f1_q_a6;
+                    objDB.f1_q_a6_1 = resultApi.f1_q_a6_1;
+                    objDB.f1_q_b1 = resultApi.f1_q_b1;
+                    objDB.f1_q_b1_1 = resultApi.f1_q_b1_1;
+                    objDB.f1_q_b2 = resultApi.f1_q_b2;
+                    objDB.f1_q_b2_1 = resultApi.f1_q_b2_1;
+                    objDB.f1_q_b3 = resultApi.f1_q_b3;
+                    objDB.f1_q_b3_1 = resultApi.f1_q_b3_1;
+                    objDB.f1_q_b4 = resultApi.f1_q_b4;
+                    objDB.f1_q_b4_1 = resultApi.f1_q_b4_1;
+                    objDB.f1_q_b5 = resultApi.f1_q_b5;
+                    objDB.f1_q_b5_1 = resultApi.f1_q_b5_1;
+                    objDB.f1_q_b6 = resultApi.f1_q_b6;
+                    objDB.f1_q_b7 = resultApi.f1_q_b7;
+                    objDB.f1_q_b8 = resultApi.f1_q_b8;
+                    objDB.f1_q_b8_1 = resultApi.f1_q_b8_1;
+                    objDB.f1_q_b9 = resultApi.f1_q_b9;
+                    objDB.f1_q_b10 = resultApi.f1_q_b10;
+                    objDB.f1_q_b11 = resultApi.f1_q_b11;
+                    objDB.f1_q_b12 = resultApi.f1_q_b12;
+                    objDB.f1_q_b13 = resultApi.f1_q_b13;
+                    objDB.f1_q_b14 = resultApi.f1_q_b14;
+                    objDB.f1_q_b14_1 = resultApi.f1_q_b14_1;
+                    objDB.f1_q_b15 = resultApi.f1_q_b15;
+                    objDB.f1_q_b16 = resultApi.f1_q_b16;
+                    objDB.f1_q_b17 = resultApi.f1_q_b17;
+                    objDB.assist_mota = resultApi.assist_mota;
+                    objDB.thuocla = resultApi.thuocla;
+                    objDB.thucuong = resultApi.thucuong;
+                    objDB.cansa = resultApi.cansa;
+                    objDB.cocain = resultApi.cocain;
+                    objDB.chatkichthich = resultApi.chatkichthich;
+                    objDB.khixong = resultApi.khixong;
+                    objDB.thuocanthan = resultApi.thuocanthan;
+                    objDB.chatgayaogiac = resultApi.chatgayaogiac;
+                    objDB.thuocphien = resultApi.thuocphien;
+                    objDB.chatkhac = resultApi.chatkhac;
+                    objDB.cacchatkhac = resultApi.cacchatkhac;
+                    objDB.thuocla1 = resultApi.thuocla1;
+                    objDB.thucuong1 = resultApi.thucuong1;
+                    objDB.cansa1 = resultApi.cansa1;
+                    objDB.coca1 = resultApi.coca1;
+                    objDB.chatkichthich1 = resultApi.chatkichthich1;
+                    objDB.khixong1 = resultApi.khixong1;
+                    objDB.thuocanthan1 = resultApi.thuocanthan1;
+                    objDB.chatgayaogiac1 = resultApi.chatgayaogiac1;
+                    objDB.chatthuocphien1 = resultApi.chatthuocphien1;
+                    objDB.chatkhac1 = resultApi.chatkhac1;
+                    objDB.thuocla2 = resultApi.thuocla2;
+                    objDB.thucuong2 = resultApi.thucuong2;
+                    objDB.cansa2 = resultApi.cansa2;
+                    objDB.coca2 = resultApi.coca2;
+                    objDB.chatkichthich2 = resultApi.chatkichthich2;
+                    objDB.khixong2 = resultApi.khixong2;
+                    objDB.thuocanthan2 = resultApi.thuocanthan2;
+                    objDB.chatgayaogiac2 = resultApi.chatgayaogiac2;
+                    objDB.chatthuocphien2 = resultApi.chatthuocphien2;
+                    objDB.chatkhac2 = resultApi.chatkhac2;
+                    objDB.thuocla3 = resultApi.thuocla3;
+                    objDB.thucuong3 = resultApi.thucuong3;
+                    objDB.cansa3 = resultApi.cansa3;
+                    objDB.coca3 = resultApi.coca3;
+                    objDB.chatkichthich3 = resultApi.chatkichthich3;
+                    objDB.khixong3 = resultApi.khixong3;
+                    objDB.thuocanthan3 = resultApi.thuocanthan3;
+                    objDB.chatgayaogiac3 = resultApi.chatgayaogiac3;
+                    objDB.chatthuocphien3 = resultApi.chatthuocphien3;
+                    objDB.chatkhac3 = resultApi.chatkhac3;                    
+                    objDB.thucuong4 = resultApi.thucuong4;
+                    objDB.cansa4 = resultApi.cansa4;
+                    objDB.coca4 = resultApi.coca4;
+                    objDB.chatkichthich4 = resultApi.chatkichthich4;
+                    objDB.khixong4 = resultApi.khixong4;
+                    objDB.thuocanthan4 = resultApi.thuocanthan4;
+                    objDB.chatgayaogiac4 = resultApi.chatgayaogiac4;
+                    objDB.chatthuocphien4 = resultApi.chatthuocphien4;
+                    objDB.chatkhac4 = resultApi.chatkhac4;
+                    objDB.thuocla5 = resultApi.thuocla5;
+                    objDB.thucuong5 = resultApi.thucuong5;
+                    objDB.cansa5 = resultApi.cansa5;
+                    objDB.coca5 = resultApi.coca5;
+                    objDB.chatkichthich5 = resultApi.chatkichthich5;
+                    objDB.khixong5 = resultApi.khixong5;
+                    objDB.thuocanthan5 = resultApi.thuocanthan5;
+                    objDB.chatgayaogiac5 = resultApi.chatgayaogiac5;
+                    objDB.chatthuocphien5 = resultApi.chatthuocphien5;
+                    objDB.chatkhac5 = resultApi.chatkhac5;
+                    objDB.thuocla6 = resultApi.thuocla6;
+                    objDB.thucuong6 = resultApi.thucuong6;
+                    objDB.cansa6 = resultApi.cansa6;
+                    objDB.coca6 = resultApi.coca6;
+                    objDB.chatkichthich6 = resultApi.chatkichthich6;
+                    objDB.khixong6 = resultApi.khixong6;
+                    objDB.thuocanthan6 = resultApi.thuocanthan6;
+                    objDB.chatgayaogiac6 = resultApi.chatgayaogiac6;
+                    objDB.chatthuocphien6 = resultApi.chatthuocphien6;
+                    objDB.chatkhac6 = resultApi.chatkhac6;
+                    objDB.cau_8 = resultApi.cau_8;
+                    objDB.diemthuocla = resultApi.diemthuocla;
+                    objDB.diemthucuong = resultApi.diemthucuong;
+                    objDB.diemcansa = resultApi.diemcansa;
+                    objDB.diemcoca = resultApi.diemcoca;
+                    objDB.diemchatkichthich = resultApi.diemchatkichthich;
+                    objDB.diemkhixong = resultApi.diemkhixong;
+                    objDB.diemchatanthan = resultApi.diemchatanthan;
+                    objDB.diemchatgayaogiac = resultApi.diemchatgayaogiac;
+                    objDB.diemchatthuocphien = resultApi.diemchatthuocphien;
+                    objDB.diemchatkhac = resultApi.diemchatkhac;
+                    objDB.c_1a = resultApi.c_1a;
+                    objDB.c_1b = resultApi.c_1b;
+                    objDB.c_1c = resultApi.c_1c;
+                    objDB.c_1d = resultApi.c_1d;
+                    objDB.c_2 = resultApi.c_2;
+                    objDB.c_3 = resultApi.c_3;
+                    objDB.c_4a = resultApi.c_4a;
+                    objDB.c_4b = resultApi.c_4b;
+                    objDB.c_4c = resultApi.c_4c;
+                    objDB.tongdiem = resultApi.tongdiem;
+                    objDB.duongtinh = resultApi.duongtinh;
+                    objDB.amtinh = resultApi.amtinh;
+                    objDB.c1 = resultApi.c1;
+                    objDB.c2 = resultApi.c2;
+                    objDB.c3 = resultApi.c3;
+                    objDB.c4 = resultApi.c4;
+                    objDB.c5 = resultApi.c5;
+                    objDB.c6 = resultApi.c6;
+                    objDB.c7 = resultApi.c7;
+                    objDB.c8 = resultApi.c8;
+                    objDB.c9 = resultApi.c9;
+                    objDB.c10 = resultApi.c10;
+                    objDB.diem = resultApi.diem;
+                    objDB.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = resultApi.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete;
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_HANH_VI_NGUY_CO:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_HANH_VI_NGUY_CO sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_HANH_VI_NGUY_CO sang entity**************************************");
+        }
 
         private string getValFromMultiFields(List<string> lsVals)
         {

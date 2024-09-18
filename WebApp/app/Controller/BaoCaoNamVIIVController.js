@@ -27,6 +27,9 @@
             };
             $scope.ListYear.push(tmpYear);
         }
+        var tmpAll = { Id: 0, Name: '-' };
+        $scope.ListYear.unshift(tmpAll);
+        console.log($scope.ListYear);
 
         //if (date.getMonth() == 1 || date.getMonth() == 2 || date.getMonth() == 3) {
         //    $scope.Quy = "I";
@@ -73,7 +76,7 @@
 
 
     $scope.LoadPage = function (genTable) {
-        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
+        if ($scope.modelSearch.Year == null /*|| $scope.modelSearch.Year == 0*/) {
             toastr.error("Vui lòng chọn năm!");
             return;
         }
@@ -148,7 +151,7 @@
         //    }
         //});
 
-        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
+        if ($scope.modelSearch.Year == null /*|| $scope.modelSearch.Year == 0*/) {
             toastr.error("Vui lòng chọn năm!");
             return;
         }

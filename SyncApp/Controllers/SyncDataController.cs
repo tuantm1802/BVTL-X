@@ -33,7 +33,7 @@ namespace SyncBVTL.Push.Controllers.PA
             BaseResult apiResult = new BaseResult();
             if (model.Active)
             {
-                apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(model.Url, model.Token, model.ReportId, model.MaDuAn, model.TableNames, model.Code);
+                apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(model.Url, model.Token, model.ReportId, model.MaDuAn, model.TableNames, model.Code, model.RawOrLabel);
             }
             return apiResult;
         }

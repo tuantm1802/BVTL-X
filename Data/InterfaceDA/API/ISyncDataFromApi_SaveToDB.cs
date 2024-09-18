@@ -9,6 +9,6 @@ namespace Data.InterfaceDA.API
 {
     public interface ISyncDataFromApi_SaveToDB
     {
-        Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames, string apiCode);
+        Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames, string apiCode, string rawOrLabel);
     }
 }

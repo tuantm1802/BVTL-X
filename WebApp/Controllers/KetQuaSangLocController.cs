@@ -106,15 +106,14 @@ namespace WebApp.Controllers
                 var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
 
                 var user = Session["USER_SESSION"] as UserLogin;
-                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
-                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
-
-               
+                //var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                //modelSearch.MaDuAn = modelSearch.MaDuAn != null ? modelSearch.MaDuAn : "BVTL";
 
                 var citys = _CityDA.GetCityReport((int)user.UserID);
-                if (citys != null && citys.Count > 0)
+                
+                if (citys != null && citys.Count > 0 && modelSearch.CityCodes == null)
                     modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
-
+                
                 _BaoCaoTongHopDA.KetQuaSangLoc(modelSearch, ref DoiTuongKHs, ref GioiTinhs, ref Tuois
              , ref KetQuaHIVs, ref ChatGayNghien3Thangs, ref SoChatGayNghiens, ref ChatGayNghienSDThuongXuyens
              , ref DuongSDMaTuyDas, ref TanSuatSDMaTuyDas, ref LanDauSDMaTuyDas, ref LoaiMaTuyDaSDDauTiens
@@ -180,6 +179,7 @@ namespace WebApp.Controllers
             try
             {
                 var menu = Session["Menus"] as List<MenuModel>;
+                var user = Session["USER_SESSION"] as UserLogin;
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
                 AddLog("Lấy danh sách các botom được thực hiện trên from kết quả ACE thành công.");
@@ -190,7 +190,9 @@ namespace WebApp.Controllers
                 // Lấy danh sách nhóm tbh
                 var nhomTBHs = _NhomTBHDA.GetAll();
 
-                return Json(new { Buttoms = bottoms, Citis = citis, NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
+
+                return Json(new { Buttoms = bottoms, Citis = citis, DuAns = duAns, NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
             }
             catch (Exception ex)
             {

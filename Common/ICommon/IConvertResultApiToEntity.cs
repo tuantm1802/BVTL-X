@@ -73,6 +73,15 @@ namespace Common.ICommon
         void ConvertApiDGHLToEntity(List<ResultApiDGHLModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_DANH_GIA_HAI_LONG> lsObjDB);
         void ConvertApiTTKHMaDaToEntity(List<ResultApiTTKHMaDaModel> resultApiModels, string maDuAn, string apiCode, ref List<VIIV_TT_KH_MAT_DAU> lsObjDB);
         void ConvertApiBVTLTHEODAUKHoEntity(List<ResultApiTheoDauKHModel> resultApiModels, string maDuAn, string apiCode, ref List<BVTL_THEO_DAU_KH> lsObjDB);
+        void ConvertApiKhachHangTTCBEntity(List<ResultApiKhachHangTTCBModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_THONG_TIN_CO_BAN> lsObjDB);
+        void ConvertApiKhachHangSangLocNuocTieuEntity(List<ResultApiKhachHangSangLocNuocTieuModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU> lsObjDB);
+        void ConvertApiKhachHangSangLocHIVEntity(List<ResultApiKhachHangSangLocHIVModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_SANG_LOC_HIV> lsObjDB);
+        void ConvertApiKhachHangDanhGiaHaiLongEntity(List<ResultApiKhachHangDanhGiaHaiLongModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_DANH_GIA_HAI_LONG> lsObjDB);
+        void ConvertApiKhachHangTheoDauEntity(List<ResultApiKhachHangTheoDauModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_THEO_DAU> lsObjDB);
+        void ConvertApiKhachHangSinhHoatNhomEntity(List<ResultApiKhachHangSinhHoatNhomModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_SINH_HOAT_NHOM> lsObjDB);
+        void ConvertApiKhachHangPhieuTuVanEntity(List<ResultApiKhachHangPhieuTuVanModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_PHIEU_TU_VAN> lsObjDB);
+        void ConvertApiKhachHangChuyenGuiEntity(List<ResultApiKhachHangChuyenGuiModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_CHUYEN_GUI> lsObjDB);
+        void ConvertApiKhachHangHanhViNguyCoEntity(List<ResultApiKhachHangHanhViNguyCoModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_HANH_VI_NGUY_CO> lsObjDB);
 
     }
 }

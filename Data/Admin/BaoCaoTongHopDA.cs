@@ -39,7 +39,7 @@ namespace Data.Admin
                     new SqlParameter("MaNhomTBHs", string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
                     new SqlParameter("MaDuAn", string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn)
                 };
-                result = _DatabaseSql.ExecuteProcToList<BaoCaoModel>(Constants.SP_Report_Get_All_Data, param).ToList();
+                result = _DatabaseSql.ExecuteProcToList<BaoCaoModel>(Constants.SP_Report_Get_All_Data_Year_BVTL, param).ToList();
             }
             catch (Exception ex)
             {
@@ -197,7 +197,8 @@ namespace Data.Admin
                     new SqlParameter("FromDate", string.IsNullOrEmpty(modelSearch.FromDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.FromDate)),
                     new SqlParameter("ToDate",string.IsNullOrEmpty(modelSearch.ToDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.ToDate)),
                     new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
-                    new SqlParameter("MaNhomTBH",  string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH)
+                    new SqlParameter("MaNhomTBH",  string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
+                    new SqlParameter("MaDuAn",  string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn)
                     //new SqlParameter("FromSttKhachHang", modelSearch.TuSoMaKH == null ? 0 : modelSearch.TuSoMaKH),
                     //new SqlParameter("ToSttKhachHang", modelSearch.DenSoMaKH == null ? 0 : modelSearch.DenSoMaKH)
                 };
@@ -403,44 +404,34 @@ namespace Data.Admin
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a)).Sum(x => x.SoLuong);
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a) && x.c_4a.Contains("Có")).Sum(x => x.SoLuong);
             co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-
-
             co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
-
+            
             soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4a) && x.c_4a.Contains("Không")).Sum(x => x.SoLuong);
             khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-
-
             khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
-
-
+           
             // Cau c_4b
+            //co = new LoanThanModel(); co.NoiDung = "Có";
+            //khong = new LoanThanModel(); khong.NoiDung = "Không";
+
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b)).Sum(x => x.SoLuong);
-            soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Có")).Sum(x => x.SoLuong);
-            co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
+            soLuongYNghi = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Có")).Sum(x => x.SoLuong);
+            co.YNghi_SoLuong = soLuongYNghi;
+            co.YNghi_PhanTram = TinhPhanTram(soLuongYNghi, tongSo);
 
-
-            co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
-
-            soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Không")).Sum(x => x.SoLuong);
-            khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-
-
-            khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
-
+            soLuongYNghi = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4b) && x.c_4b.Contains("Không")).Sum(x => x.SoLuong);
+            khong.YNghi_SoLuong = soLuongYNghi;
+            khong.YNghi_PhanTram = TinhPhanTram(soLuongYNghi, tongSo);
+            
             // Cau c_4c
             tongSo = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c)).Sum(x => x.SoLuong);
-            soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Có")).Sum(x => x.SoLuong);
-            co.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
+            soLuongNgheThuMaNKKNT = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Có")).Sum(x => x.SoLuong);
+            co.NgheThuMaNKKNT_SoLuong = soLuongNgheThuMaNKKNT;
+            co.NgheThuMaNKKNT_PhanTram = TinhPhanTram(soLuongNgheThuMaNKKNT, tongSo);
 
-
-            co.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
-
-            soLuongTheoDoiRinhRap = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Không")).Sum(x => x.SoLuong);
-            khong.TheoDoiRinhRap_SoLuong = soLuongTheoDoiRinhRap;
-
-
-            khong.TheoDoiRinhRap_PhanTram = TinhPhanTram(soLuongTheoDoiRinhRap, tongSo);
+            soLuongNgheThuMaNKKNT = modelInputs.Where(x => !string.IsNullOrEmpty(x.c_4c) && x.c_4c.Contains("Không")).Sum(x => x.SoLuong);
+            khong.NgheThuMaNKKNT_SoLuong = soLuongNgheThuMaNKKNT;
+            khong.NgheThuMaNKKNT_PhanTram = TinhPhanTram(soLuongNgheThuMaNKKNT, tongSo);
 
             outDatas.Add(co);
             outDatas.Add(khong);
@@ -920,7 +911,7 @@ namespace Data.Admin
 
 
             // Hoang tưởng/ ảo giác
-            var soLuongHoangTuong = modelInputs.Where(x => x.trieuchung_2.Contains("Hoang")).Sum(x => x.SoLuong);
+            var soLuongHoangTuong = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Hoang")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -931,7 +922,7 @@ namespace Data.Admin
             });
 
             // Buồn nôn/ nôn mửa      
-            var soLuongBuonNon = modelInputs.Where(x => x.trieuchung_2.Contains("Buồn")).Sum(x => x.SoLuong);
+            var soLuongBuonNon = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Buồn")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -942,7 +933,7 @@ namespace Data.Admin
             });
 
             // Run rẩy/ co giật
-            var soLuongRunRay = modelInputs.Where(x => x.trieuchung_2.Contains("Run")).Sum(x => x.SoLuong);
+            var soLuongRunRay = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Run")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -953,7 +944,7 @@ namespace Data.Admin
             });
 
             // Cảm thấy tê liệt nhưng vẫn tỉnh
-            var soLuongCam = modelInputs.Where(x => x.trieuchung_2.Contains("Cảm")).Sum(x => x.SoLuong);
+            var soLuongCam = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Cảm")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -964,7 +955,7 @@ namespace Data.Admin
             });
 
             // Lo âu/ cơn hoảng loạn
-            var soLuongLoAu = modelInputs.Where(x => x.trieuchung_2.Contains("Lo")).Sum(x => x.SoLuong);
+            var soLuongLoAu = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Lo")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -975,7 +966,7 @@ namespace Data.Admin
             });
 
             // Đau ngực hoặc căng tức ngực
-            var soLuongDau = modelInputs.Where(x => x.trieuchung_2.Contains("Đau")).Sum(x => x.SoLuong);
+            var soLuongDau = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Đau")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -986,7 +977,7 @@ namespace Data.Admin
             });
 
             //Đột quỵ 
-            var soLuongDot = modelInputs.Where(x => x.trieuchung_2.Contains("Đột")).Sum(x => x.SoLuong);
+            var soLuongDot = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Đột")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -997,7 +988,7 @@ namespace Data.Admin
             });
 
             // Tim đập rất nhanh
-            var soLuongTim = modelInputs.Where(x => x.trieuchung_2.Contains("Tim")).Sum(x => x.SoLuong);
+            var soLuongTim = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Tim")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -1008,7 +999,7 @@ namespace Data.Admin
             });
 
             // Chưa từng gặp triệu chứng nào
-            var soLuongChua = modelInputs.Where(x => x.trieuchung_2.Contains("Chưa từng")).Sum(x => x.SoLuong);
+            var soLuongChua = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung_2) && x.trieuchung_2.Contains("Chưa từng")).Sum(x => x.SoLuong);
 
 
             outDatas.Add(new KetQuaSangLocModel
@@ -1038,7 +1029,7 @@ namespace Data.Admin
         {
             var tongSo = modelInputs.Sum(x => x.SoLuong);
 
-            var soLuongKhongGap = modelInputs.Where(x => x.trieuchung.ToLower().Contains("không gặp")).Sum(x => x.SoLuong);
+            var soLuongKhongGap = modelInputs.Where(x => !string.IsNullOrEmpty(x.trieuchung) && x.trieuchung.ToLower().Contains("không gặp")).Sum(x => x.SoLuong);
             // Từng có một trong các triệu chứng
 
 
@@ -1099,8 +1090,8 @@ namespace Data.Admin
                 NoiDung = "KB/KTL",
             };
 
-            var soLuongHTCo = modelInputs.Where(x => x.NoiDung_HT.Contains("Có")).Sum(x => x.SoLuong);
-            var soLuongQKCo = modelInputs.Where(x => x.NoiDung_QK.Contains("Có")).Sum(x => x.SoLuong);
+            var soLuongHTCo = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung_HT) && x.NoiDung_HT.Contains("Có")).Sum(x => x.SoLuong);
+            var soLuongQKCo = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung_QK) && x.NoiDung_QK.Contains("Có")).Sum(x => x.SoLuong);
 
 
 
@@ -1111,8 +1102,8 @@ namespace Data.Admin
 
             co.QuaKhu_PhanTram = TinhPhanTram(soLuongQKCo, tongSo);
 
-            var soLuongHTKhong = modelInputs.Where(x => x.NoiDung_HT.Contains("Không")).Sum(x => x.SoLuong);
-            var soLuongQKKhong = modelInputs.Where(x => x.NoiDung_QK.Contains("Không")).Sum(x => x.SoLuong);
+            var soLuongHTKhong = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung_HT) && x.NoiDung_HT.Contains("Không")).Sum(x => x.SoLuong);
+            var soLuongQKKhong = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung_QK) && x.NoiDung_QK.Contains("Không")).Sum(x => x.SoLuong);
 
             khong.HienTai_SoLuong = soLuongHTKhong;
             khong.HienTai_PhanTram = TinhPhanTram(soLuongHTKhong, tongSo);
@@ -1121,8 +1112,8 @@ namespace Data.Admin
 
             khong.QuaKhu_PhanTram = TinhPhanTram(soLuongQKKhong, tongSo);
 
-            var soLuongHTKB = modelInputs.Where(x => x.NoiDung_HT.Contains("KB")).Sum(x => x.SoLuong);
-            var soLuongQKKB = modelInputs.Where(x => x.NoiDung_QK.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongHTKB = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung_HT) && x.NoiDung_HT.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongQKKB = modelInputs.Where(x =>    x.NoiDung_QK.Contains("KB")).Sum(x => x.SoLuong);
 
 
             kbktl.HienTai_SoLuong = soLuongHTKB;
@@ -1160,37 +1151,37 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongLau = modelInputs.Where(x => x.sti1.Contains("LẬU")).Sum(x => x.SoLuong);
+            var soLuongLau = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("LẬU")).Sum(x => x.SoLuong);
 
 
             soNguoi.Lau = soLuongLau;
             tyLe.Lau = TinhPhanTram(soLuongLau, tongSo);
 
-            var soLuongSuiMaoGa = modelInputs.Where(x => x.sti1.Contains("SÙI")).Sum(x => x.SoLuong);
+            var soLuongSuiMaoGa = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("SÙI")).Sum(x => x.SoLuong);
 
 
             soNguoi.SuiMaoGa = soLuongSuiMaoGa;
             tyLe.SuiMaoGa = TinhPhanTram(soLuongSuiMaoGa, tongSo);
 
-            var soLuongKhongMac = modelInputs.Where(x => x.sti1.Contains("KHÔNG")).Sum(x => x.SoLuong);
+            var soLuongKhongMac = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("KHÔNG")).Sum(x => x.SoLuong);
 
 
             soNguoi.KhongMac = soLuongKhongMac;
             tyLe.KhongMac = TinhPhanTram(soLuongKhongMac, tongSo);
 
-            var soLuongKhac = modelInputs.Where(x => x.sti1.Contains("KHÁC")).Sum(x => x.SoLuong);
+            var soLuongKhac = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("KHÁC")).Sum(x => x.SoLuong);
 
 
             soNguoi.Khac = soLuongKhac;
             tyLe.Khac = TinhPhanTram(soLuongKhac, tongSo);
 
-            var soLuongGiangMai = modelInputs.Where(x => x.sti1.Contains("GIANG")).Sum(x => x.SoLuong);
+            var soLuongGiangMai = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("GIANG")).Sum(x => x.SoLuong);
 
 
             soNguoi.GiangMai = soLuongGiangMai;
             tyLe.GiangMai = TinhPhanTram(soLuongGiangMai, tongSo);
 
-            var soLuongKBKTL = modelInputs.Where(x => x.sti1.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongKBKTL = modelInputs.Where(x => !string.IsNullOrEmpty(x.sti1) && x.sti1.Contains("KB")).Sum(x => x.SoLuong);
 
 
             soNguoi.KBKTL = soLuongKBKTL;
@@ -1224,25 +1215,25 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuong1NC = modelInputs.Where(x => x.NoiDung.Contains("1")).Sum(x => x.SoLuong);
+            var soLuong1NC = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.Contains("1")).Sum(x => x.SoLuong);
 
 
             soNguoi.Mot = soLuong1NC;
             tyLe.Mot = TinhPhanTram(soLuong1NC, tongSo);
 
-            var soLuongHai = modelInputs.Where(x => x.NoiDung.Contains("2")).Sum(x => x.SoLuong);
+            var soLuongHai = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.Contains("2")).Sum(x => x.SoLuong);
 
 
             soNguoi.Hai = soLuongHai;
             tyLe.Hai = TinhPhanTram(soLuongHai, tongSo);
 
-            var soLuongBa = modelInputs.Where(x => x.NoiDung.Contains("3")).Sum(x => x.SoLuong);
+            var soLuongBa = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.Contains("3")).Sum(x => x.SoLuong);
 
 
             soNguoi.Ba = soLuongBa;
             tyLe.Ba = TinhPhanTram(soLuongBa, tongSo);
 
-            var soLuongBonNam = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) > 3).Sum(x => x.SoLuong);
+            var soLuongBonNam = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && Convert.ToInt32(x.NoiDung) > 3).Sum(x => x.SoLuong);
 
 
             soNguoi.BonNam = soLuongBonNam;
@@ -1276,19 +1267,19 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongCo = modelInputs.Where(x => x.NoiDung.Contains("có") || x.NoiDung.Contains("Có")).Sum(x => x.SoLuong);
+            var soLuongCo = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("CÓ")).Sum(x => x.SoLuong);
 
 
             soNguoi.Co = soLuongCo;
             tyLe.Co = TinhPhanTram(soLuongCo, tongSo);
 
-            var soLuongKhong = modelInputs.Where(x => x.NoiDung.Contains("không") || x.NoiDung.Contains("Không")).Sum(x => x.SoLuong);
+            var soLuongKhong = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("KHÔNG")).Sum(x => x.SoLuong);
 
 
             soNguoi.Khong = soLuongKhong;
             tyLe.Khong = TinhPhanTram(soLuongKhong, tongSo);
 
-            var soLuongKBKTL = modelInputs.Where(x => x.NoiDung.Contains("kB") || x.NoiDung.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongKBKTL = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("KB")).Sum(x => x.SoLuong);
 
 
             soNguoi.KBKTL = soLuongKBKTL;
@@ -1322,31 +1313,31 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongLuonLuon = modelInputs.Where(x => x.qhtd_2.Contains("luôn")).Sum(x => x.SoLuong);
+            var soLuongLuonLuon = modelInputs.Where(x => !string.IsNullOrEmpty(x.qhtd_2) && x.qhtd_2.ToUpper().Contains("LUÔN")).Sum(x => x.SoLuong);
 
 
             soNguoi.LuonLuon = soLuongLuonLuon;
             tyLe.LuonLuon = TinhPhanTram(soLuongLuonLuon, tongSo);
 
-            var soLuongThuongXuyen = modelInputs.Where(x => x.qhtd_2.Contains("thường") || x.qhtd_2.Contains("Thường")).Sum(x => x.SoLuong);
+            var soLuongThuongXuyen = modelInputs.Where(x => !string.IsNullOrEmpty(x.qhtd_2) && x.qhtd_2.ToUpper().Contains("THƯỜNG") ).Sum(x => x.SoLuong);
 
 
             soNguoi.ThuongXuyen = soLuongThuongXuyen;
             tyLe.ThuongXuyen = TinhPhanTram(soLuongThuongXuyen, tongSo);
 
-            var soLuongThiThoang = modelInputs.Where(x => x.qhtd_2.Contains("thỉnh") || x.qhtd_2.Contains("Thỉnh")).Sum(x => x.SoLuong);
+            var soLuongThiThoang = modelInputs.Where(x => !string.IsNullOrEmpty(x.qhtd_2) && x.qhtd_2.ToUpper().Contains("THỈNH")).Sum(x => x.SoLuong);
 
 
             soNguoi.ThiThoang = soLuongThiThoang;
             tyLe.ThiThoang = TinhPhanTram(soLuongThiThoang, tongSo);
 
-            var soLuongHiemKhi = modelInputs.Where(x => x.qhtd_2.Contains("hiếm") || x.qhtd_2.Contains("Hiếm")).Sum(x => x.SoLuong);
+            var soLuongHiemKhi = modelInputs.Where(x => !string.IsNullOrEmpty(x.qhtd_2) && x.qhtd_2.ToUpper().Contains("HIẾM")).Sum(x => x.SoLuong);
 
 
             soNguoi.HiemKhi = soLuongHiemKhi;
             tyLe.HiemKhi = TinhPhanTram(soLuongHiemKhi, tongSo);
 
-            var soLuongKhongBaoGio = modelInputs.Where(x => x.qhtd_2.Contains("không bao") || x.qhtd_2.Contains("Không bao")).Sum(x => x.SoLuong);
+            var soLuongKhongBaoGio = modelInputs.Where(x => !string.IsNullOrEmpty(x.qhtd_2) && x.qhtd_2.ToUpper().Contains("KHÔNG BAO")).Sum(x => x.SoLuong);
 
 
             soNguoi.KhongBaoGio = soLuongKhongBaoGio;
@@ -1380,25 +1371,25 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongChuaBaoGio = modelInputs.Where(x => x.qhtd.Contains("chưa") || x.qhtd.Contains("Chưa")).Sum(x => x.SoLuong);
+            var soLuongChuaBaoGio = modelInputs.Where(x => x.qhtd != null && x.qhtd.ToUpper().Contains("CHƯA")).Sum(x => x.SoLuong);
 
 
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
             tyLe.ChuaBaoGio = TinhPhanTram(soLuongChuaBaoGio, tongSo);
 
-            var soLuongDongGioi = modelInputs.Where(x => x.qhtd.Contains("đồng") || x.qhtd.Contains("Đồng")).Sum(x => x.SoLuong);
+            var soLuongDongGioi = modelInputs.Where(x => x.qhtd != null && x.qhtd.ToUpper().Contains("ĐỒNG")).Sum(x => x.SoLuong);
 
 
             soNguoi.DongGioi = soLuongDongGioi;
             tyLe.DongGioi = TinhPhanTram(soLuongDongGioi, tongSo);
 
-            var soLuongKhacGioi = modelInputs.Where(x => x.qhtd.Contains("khác") || x.qhtd.Contains("Khác")).Sum(x => x.SoLuong);
+            var soLuongKhacGioi = modelInputs.Where(x => x.qhtd != null && x.qhtd.ToUpper().Contains("KHÁC")).Sum(x => x.SoLuong);
 
 
             soNguoi.KhacGioi = soLuongKhacGioi;
             tyLe.KhacGioi = TinhPhanTram(soLuongKhacGioi, tongSo);
 
-            var soLuongCaHai = modelInputs.Where(x => x.qhtd.Contains(",")).Sum(x => x.SoLuong);
+            var soLuongCaHai = modelInputs.Where(x => x.qhtd != null && x.qhtd.Contains(",")).Sum(x => x.SoLuong);
 
 
             soNguoi.CaHai = soLuongCaHai;
@@ -1432,14 +1423,14 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongDaTungDungChung = modelInputs.Where(x => x.dungchung.Contains("đã") || x.dungchung.Contains("Đã")).Sum(x => x.SoLuong);
+            var soLuongDaTungDungChung = modelInputs.Where(x => !string.IsNullOrEmpty(x.dungchung) && x.dungchung.ToUpper().Contains("ĐÃ")).Sum(x => x.SoLuong);
 
 
             soNguoi.DaTungDungChung = soLuongDaTungDungChung;
             tyLe.DaTungDungChung = TinhPhanTram(soLuongDaTungDungChung, tongSo);
 
 
-            var soLuongChuaBaoGio = modelInputs.Where(x => x.dungchung.Contains("chưa bao") || x.dungchung.Contains("Chưa bao")).Sum(x => x.SoLuong);
+            var soLuongChuaBaoGio = modelInputs.Where(x => !string.IsNullOrEmpty(x.dungchung) && x.dungchung.ToUpper().Contains("CHƯA BAO")).Sum(x => x.SoLuong);
 
 
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
@@ -1473,19 +1464,19 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongChuaBaoGio = modelInputs.Where(x => x.tiemchich.Contains("chưa") || x.tiemchich.Contains("Chưa")).Sum(x => x.SoLuong);
+            var soLuongChuaBaoGio = modelInputs.Where(x => x.tiemchich != null && x.tiemchich.ToUpper().Contains("CHƯA") ).Sum(x => x.SoLuong);
 
 
             soNguoi.ChuaBaoGio = soLuongChuaBaoGio;
             tyLe.ChuaBaoGio = TinhPhanTram(soLuongChuaBaoGio, tongSo);
 
-            var soLuongDaTungTiemChich = modelInputs.Where(x => x.tiemchich.Contains("đã") || x.tiemchich.Contains("Đã")).Sum(x => x.SoLuong);
+            var soLuongDaTungTiemChich = modelInputs.Where(x => x.tiemchich != null && x.tiemchich.ToUpper().Contains("ĐÃ") ).Sum(x => x.SoLuong);
 
 
             soNguoi.DaTungTiemChich = soLuongDaTungTiemChich;
             tyLe.DaTungTiemChich = TinhPhanTram(soLuongDaTungTiemChich, tongSo);
 
-            var soLuongVanDangTiemChich = modelInputs.Where(x => x.tiemchich.Contains("vẫn") || x.tiemchich.Contains("Vẫn")).Sum(x => x.SoLuong);
+            var soLuongVanDangTiemChich = modelInputs.Where(x => x.tiemchich != null && x.tiemchich.ToUpper().Contains("VẪN")).Sum(x => x.SoLuong);
 
 
             soNguoi.VanDangTiemChich = soLuongVanDangTiemChich;
@@ -1519,37 +1510,37 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuongDa = modelInputs.Where(x => x.matuydautien.Contains("đá") || x.matuydautien.Contains("Đá")).Sum(x => x.SoLuong);
+            var soLuongDa = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("ĐÁ")).Sum(x => x.SoLuong);
 
             soNguoi.Da = soLuongDa;
             tyLe.Da = TinhPhanTram(soLuongDa, tongSo);
 
-            var soLuongKeo = modelInputs.Where(x => x.matuydautien.Contains("keo") || x.matuydautien.Contains("Keo")).Sum(x => x.SoLuong);
+            var soLuongKeo = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("KEO")).Sum(x => x.SoLuong);
 
             soNguoi.Keo = soLuongKeo;
             tyLe.Keo = TinhPhanTram(soLuongKeo, tongSo);
 
-            var soLuongCanCo = modelInputs.Where(x => x.matuydautien.Contains("cần") || x.matuydautien.Contains("Cần") || x.matuydautien.Contains("cỏ") || x.matuydautien.Contains("Cỏ")).Sum(x => x.SoLuong);
+            var soLuongCanCo = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("CẦN") || x.matuydautien.ToUpper().Contains("CỎ")).Sum(x => x.SoLuong);
 
             soNguoi.CanCo = soLuongCanCo;
             tyLe.CanCo = TinhPhanTram(soLuongCanCo, tongSo);
 
-            var soLuongKetamin = modelInputs.Where(x => x.matuydautien.Contains("ketamin") || x.matuydautien.Contains("Ketamin")).Sum(x => x.SoLuong);
+            var soLuongKetamin = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("KETAMIN")).Sum(x => x.SoLuong);
 
             soNguoi.Ketamin = soLuongKetamin;
             tyLe.Ketamin = TinhPhanTram(soLuongKetamin, tongSo);
 
-            var soLuongBongCuoi = modelInputs.Where(x => x.matuydautien.Contains("bóng") || x.matuydautien.Contains("Bóng")).Sum(x => x.SoLuong);
+            var soLuongBongCuoi = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("BÓNG")).Sum(x => x.SoLuong);
 
             soNguoi.BongCuoi = soLuongBongCuoi;
             tyLe.BongCuoi = TinhPhanTram(soLuongBongCuoi, tongSo);
 
-            var soLuongHeroin = modelInputs.Where(x => x.matuydautien.Contains("heroin") || x.matuydautien.Contains("Heroin")).Sum(x => x.SoLuong);
+            var soLuongHeroin = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("HEROIN")).Sum(x => x.SoLuong);
 
             soNguoi.Heroin = soLuongHeroin;
             tyLe.Heroin = TinhPhanTram(soLuongHeroin, tongSo);
 
-            var soLuongCacChatHit = modelInputs.Where(x => x.matuydautien.Contains("hít") || x.matuydautien.Contains("Hít")).Sum(x => x.SoLuong);
+            var soLuongCacChatHit = modelInputs.Where(x => !string.IsNullOrEmpty(x.matuydautien) && x.matuydautien.ToUpper().Contains("HÍT")).Sum(x => x.SoLuong);
 
             soNguoi.CacChatHit = soLuongCacChatHit;
             tyLe.CacChatHit = TinhPhanTram(soLuongCacChatHit, tongSo);
@@ -1582,47 +1573,47 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuong13Tuoi = modelInputs.Where(x => x.tuoi == 13).Sum(x => x.SoLuong);
+            var soLuong13Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 13).Sum(x => x.SoLuong);
             soNguoi._13 = soLuong13Tuoi;
             tyLe._13 = TinhPhanTram(soLuong13Tuoi, tongSo);
 
-            var soLuong14Tuoi = modelInputs.Where(x => x.tuoi == 14).Sum(x => x.SoLuong);
+            var soLuong14Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 14).Sum(x => x.SoLuong);
             soNguoi._14 = soLuong14Tuoi;
             tyLe._14 = TinhPhanTram(soLuong14Tuoi, tongSo);
 
-            var soLuong15Tuoi = modelInputs.Where(x => x.tuoi == 15).Sum(x => x.SoLuong);
+            var soLuong15Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 15).Sum(x => x.SoLuong);
             soNguoi._15 = soLuong15Tuoi;
             tyLe._15 = TinhPhanTram(soLuong15Tuoi, tongSo);
 
-            var soLuong16Tuoi = modelInputs.Where(x => x.tuoi == 16).Sum(x => x.SoLuong);
+            var soLuong16Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 16).Sum(x => x.SoLuong);
             soNguoi._16 = soLuong16Tuoi;
             tyLe._16 = TinhPhanTram(soLuong16Tuoi, tongSo);
 
-            var soLuong17Tuoi = modelInputs.Where(x => x.tuoi == 17).Sum(x => x.SoLuong);
+            var soLuong17Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 17).Sum(x => x.SoLuong);
             soNguoi._17 = soLuong17Tuoi;
             tyLe._17 = TinhPhanTram(soLuong17Tuoi, tongSo);
 
-            var soLuong18Tuoi = modelInputs.Where(x => x.tuoi == 18).Sum(x => x.SoLuong);
+            var soLuong18Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 18).Sum(x => x.SoLuong);
             soNguoi._18 = soLuong18Tuoi;
             tyLe._18 = TinhPhanTram(soLuong18Tuoi, tongSo);
 
-            var soLuong19Tuoi = modelInputs.Where(x => x.tuoi == 19).Sum(x => x.SoLuong);
+            var soLuong19Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 19).Sum(x => x.SoLuong);
             soNguoi._19 = soLuong19Tuoi;
             tyLe._19 = TinhPhanTram(soLuong19Tuoi, tongSo);
 
-            var soLuong20Tuoi = modelInputs.Where(x => x.tuoi == 20).Sum(x => x.SoLuong);
+            var soLuong20Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 20).Sum(x => x.SoLuong);
             soNguoi._20 = soLuong20Tuoi;
             tyLe._20 = TinhPhanTram(soLuong20Tuoi, tongSo);
 
-            var soLuong21Tuoi = modelInputs.Where(x => x.tuoi == 21).Sum(x => x.SoLuong);
+            var soLuong21Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 21).Sum(x => x.SoLuong);
             soNguoi._21 = soLuong21Tuoi;
             tyLe._21 = TinhPhanTram(soLuong21Tuoi, tongSo);
 
-            var soLuong22Tuoi = modelInputs.Where(x => x.tuoi == 22).Sum(x => x.SoLuong);
+            var soLuong22Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 22).Sum(x => x.SoLuong);
             soNguoi._22 = soLuong22Tuoi;
             tyLe._22 = TinhPhanTram(soLuong22Tuoi, tongSo);
 
-            var soLuong23Tuoi = modelInputs.Where(x => x.tuoi == 23).Sum(x => x.SoLuong);
+            var soLuong23Tuoi = modelInputs.Where(x => x.tuoi != null && x.tuoi == 23).Sum(x => x.SoLuong);
             soNguoi._23 = soLuong23Tuoi;
             tyLe._23 = TinhPhanTram(soLuong23Tuoi, tongSo);
 
@@ -1655,35 +1646,35 @@ namespace Data.Admin
                 NoiDung = "%",
             };
 
-            var soLuong1Ngay = modelInputs.Where(x => x.tansuatda.Contains("1 ngày")).Sum(x => x.SoLuong);
+            var soLuong1Ngay = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("1 NGÀY")).Sum(x => x.SoLuong);
             soNguoi.VaiLan1Ngay = soLuong1Ngay;
             tyLe.VaiLan1Ngay = TinhPhanTram(soLuong1Ngay, tongSo);
 
-            var soLuongHangNgay = modelInputs.Where(x => x.tansuatda.Contains("Hàng")).Sum(x => x.SoLuong);
+            var soLuongHangNgay = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("HÀNG")).Sum(x => x.SoLuong);
             soNguoi.HangNgay = soLuongHangNgay;
             tyLe.HangNgay = TinhPhanTram(soLuongHangNgay, tongSo);
 
-            var soLuongVaiLan1Tuan = modelInputs.Where(x => x.tansuatda.Contains("1 tuần")).Sum(x => x.SoLuong);
+            var soLuongVaiLan1Tuan = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("1 TUẦN")).Sum(x => x.SoLuong);
             soNguoi.VaiLan1Tuan = soLuongVaiLan1Tuan;
             tyLe.VaiLan1Tuan = TinhPhanTram(soLuongVaiLan1Tuan, tongSo);
 
-            var soLuongVaiNgayRoiTamNghi = modelInputs.Where(x => x.tansuatda.Contains("nghỉ")).Sum(x => x.SoLuong);
+            var soLuongVaiNgayRoiTamNghi = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("NGHỈ")).Sum(x => x.SoLuong);
             soNguoi.VaiNgayRoiTamNghi = soLuongVaiNgayRoiTamNghi;
             tyLe.VaiNgayRoiTamNghi = TinhPhanTram(soLuongVaiNgayRoiTamNghi, tongSo);
 
-            var soLuongDungCuoiTuan = modelInputs.Where(x => x.tansuatda.Contains("cuối")).Sum(x => x.SoLuong);
+            var soLuongDungCuoiTuan = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("CUỐI")).Sum(x => x.SoLuong);
             soNguoi.DungCuoiTuan = soLuongDungCuoiTuan;
             tyLe.DungCuoiTuan = TinhPhanTram(soLuongDungCuoiTuan, tongSo);
 
-            var soLuongVaiLan1Thang = modelInputs.Where(x => x.tansuatda.Contains("1 tháng")).Sum(x => x.SoLuong);
+            var soLuongVaiLan1Thang = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("1 THÁNG")).Sum(x => x.SoLuong);
             soNguoi.VaiLan1Thang = soLuongVaiLan1Thang;
             tyLe.VaiLan1Thang = TinhPhanTram(soLuongVaiLan1Thang, tongSo);
 
-            var soLuongItHon1Lan1Thang = modelInputs.Where(x => x.tansuatda.Contains("1 lần")).Sum(x => x.SoLuong);
+            var soLuongItHon1Lan1Thang = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("1 LẦN")).Sum(x => x.SoLuong);
             soNguoi.ItHon1Lan1Thang = soLuongItHon1Lan1Thang;
             tyLe.ItHon1Lan1Thang = TinhPhanTram(soLuongItHon1Lan1Thang, tongSo);
 
-            var soLuongKBKTL = modelInputs.Where(x => x.tansuatda.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongKBKTL = modelInputs.Where(x => !string.IsNullOrEmpty(x.tansuatda) && x.tansuatda.ToUpper().Contains("KB")).Sum(x => x.SoLuong);
             soNguoi.KBKTL = soLuongKBKTL;
             tyLe.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
@@ -1716,23 +1707,23 @@ namespace Data.Admin
                 NoiDung = "Tỉ lệ % người dùng từng loại",
             };
 
-            var soLuongHutHit = modelInputs.Where(x => x.NoiDung.Contains("Hút")).Sum(x => x.SoLuong);
+            var soLuongHutHit = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("HÚT")).Sum(x => x.SoLuong);
             soNguoiTungLoai.HutHit = soLuongHutHit;
             tyLeNguoiTungLoai.HutHit = TinhPhanTram(soLuongHutHit, tongSo);
 
-            var soLuongDangBot = modelInputs.Where(x => x.NoiDung.Contains("bột")).Sum(x => x.SoLuong);
+            var soLuongDangBot = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("BỘT")).Sum(x => x.SoLuong);
             soNguoiTungLoai.DangBot = soLuongDangBot;
             tyLeNguoiTungLoai.DangBot = TinhPhanTram(soLuongDangBot, tongSo);
 
-            var soLuongUongNuot = modelInputs.Where(x => x.NoiDung.Contains("nuốt")).Sum(x => x.SoLuong);
+            var soLuongUongNuot = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("NUỐT")).Sum(x => x.SoLuong);
             soNguoiTungLoai.UongNuot = soLuongUongNuot;
             tyLeNguoiTungLoai.UongNuot = TinhPhanTram(soLuongUongNuot, tongSo);
 
-            var soLuongTiemChich = modelInputs.Where(x => x.NoiDung.Contains("Tiêm")).Sum(x => x.SoLuong);
+            var soLuongTiemChich = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("TIÊM")).Sum(x => x.SoLuong);
             soNguoiTungLoai.TiemChich = soLuongTiemChich;
             tyLeNguoiTungLoai.TiemChich = TinhPhanTram(soLuongTiemChich, tongSo);
 
-            var soLuongKBKTL = modelInputs.Where(x => x.NoiDung.Contains("KB")).Sum(x => x.SoLuong);
+            var soLuongKBKTL = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && x.NoiDung.ToUpper().Contains("KB")).Sum(x => x.SoLuong);
             soNguoiTungLoai.KBKTL = soLuongKBKTL;
             tyLeNguoiTungLoai.KBKTL = TinhPhanTram(soLuongKBKTL, tongSo);
 
@@ -1754,7 +1745,7 @@ namespace Data.Admin
 
 
             // Chỉ 1 chất
-            var soLuong1Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 1).Sum(x => x.SoLuong);
+            var soLuong1Chat = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && Convert.ToInt32(x.NoiDung) == 1).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Chỉ 1 chất",
@@ -1763,7 +1754,7 @@ namespace Data.Admin
             });
 
             // 2 chất
-            var soLuong2Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 2).Sum(x => x.SoLuong);
+            var soLuong2Chat = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && Convert.ToInt32(x.NoiDung) == 2).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "2 chất",
@@ -1772,7 +1763,7 @@ namespace Data.Admin
             });
 
             // 3 chất
-            var soLuong3Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) == 3).Sum(x => x.SoLuong);
+            var soLuong3Chat = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && Convert.ToInt32(x.NoiDung) == 3).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "3 chất",
@@ -1781,7 +1772,7 @@ namespace Data.Admin
             });
 
             // 4 chất trở lên
-            var soLuong4Chat = modelInputs.Where(x => Convert.ToInt32(x.NoiDung) >= 4).Sum(x => x.SoLuong);
+            var soLuong4Chat = modelInputs.Where(x => !string.IsNullOrEmpty(x.NoiDung) && Convert.ToInt32(x.NoiDung) >= 4).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "4 chất trở lên",
@@ -1811,7 +1802,7 @@ namespace Data.Admin
             var tongSo = modelInputs.Sum(x => x.SoLuong);
 
             // Âm tính
-            var soLuongAmTinh = modelInputs.Where(x => x.ketqua == -1).Sum(x => x.SoLuong);
+            var soLuongAmTinh = modelInputs.Where(x => x.ketqua != null &&  x.ketqua == -1).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Âm tính",
@@ -1820,7 +1811,7 @@ namespace Data.Admin
             });
 
             // Dương tính mới
-            var soLuongDuongTinhMoi = modelInputs.Where(x => x.ketqua == 1).Sum(x => x.SoLuong);
+            var soLuongDuongTinhMoi = modelInputs.Where(x => x.ketqua != null && x.ketqua == 1).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Dương tính mới",
@@ -1847,7 +1838,7 @@ namespace Data.Admin
             });
 
             // Không xác định
-            var soLuongKXD = modelInputs.Where(x => x.ketqua == 0).Sum(x => x.SoLuong);
+            var soLuongKXD = modelInputs.Where(x => x.ketqua != null && x.ketqua == 0).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "Không xác định",
@@ -1873,10 +1864,10 @@ namespace Data.Admin
         /// <returns></returns>
         public void ChuyenDoi_BCTheoTuoi(List<KetQuaSangLocProModel> modelInputs, ref List<KetQuaSangLocModel> outDatas)
         {
-            var tongSo = modelInputs.Where(x => x.tuoi >= 16 && x.tuoi <= 24).Sum(x => x.SoLuong);
+            var tongSo = modelInputs.Where(x => x.ketqua != null && x.tuoi >= 16 && x.tuoi <= 24).Sum(x => x.SoLuong);
 
             // Nhóm tuổi tù 16-18
-            var soLuong1618 = modelInputs.Where(x => x.tuoi >= 16 && x.tuoi <= 18).Sum(x => x.SoLuong);
+            var soLuong1618 = modelInputs.Where(x => x.ketqua != null && x.tuoi >= 16 && x.tuoi <= 18).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "16-18",
@@ -1885,7 +1876,7 @@ namespace Data.Admin
             });
 
             // Nhóm tuổi tù 19-22
-            var soLuong1922 = modelInputs.Where(x => x.tuoi >= 19 && x.tuoi <= 22).Sum(x => x.SoLuong);
+            var soLuong1922 = modelInputs.Where(x => x.ketqua != null && x.tuoi >= 19 && x.tuoi <= 22).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "19-22",
@@ -1894,7 +1885,7 @@ namespace Data.Admin
             });
 
             // Nhóm tuổi tù 23-24
-            var soLuong2324 = modelInputs.Where(x => x.tuoi >= 23 && x.tuoi <= 24).Sum(x => x.SoLuong);
+            var soLuong2324 = modelInputs.Where(x => x.ketqua != null && x.tuoi >= 23 && x.tuoi <= 24).Sum(x => x.SoLuong);
             outDatas.Add(new KetQuaSangLocModel
             {
                 NoiDung = "23-24",

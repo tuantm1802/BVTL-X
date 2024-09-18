@@ -37,7 +37,8 @@ namespace Common.Common
         public const string SP_KetQuaASSIST_Get_By_Id = "KetQuaASSIST_Get_By_Id";
         public const string SP_KetQuaACE_Get_By_Id = "KetQuaACE_Get_By_Id";
         public const string SP_User_Get_By_Page = "User_Get_By_Page";
-        public const string SP_Report_Get_All_Data = "Report_Get_All_Data"; 
+        public const string SP_Report_Get_All_Data = "Report_Get_All_Data";
+        public const string SP_Report_Get_All_Data_Year_BVTL = "Report_Get_All_Data_Year_BVTL";
         public const string SP_Report_Get_All_Data_VIIV = "Report_Get_All_Data_VIIV"; 
         public const string SP_Report_Get_All_Data_Year_VIIV = "Report_Get_All_Data_Year_VIIV"; 
         public const string SP_Report_Get_Data_Chi_So = "Report_Get_Data_Chi_So"; 

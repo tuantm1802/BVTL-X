@@ -8,6 +8,7 @@
 
     $scope.ListCity = [];
     $scope.ListNhomTBH = [];
+    $scope.ListDuAn = [];
 
     $scope.DoiTuongKHs = [];
     $scope.GioiTinhs = [];
@@ -79,8 +80,10 @@
 
         $scope.ListCity = [];
         $scope.ListNhomTBH = [];
+        
         GetBottomAction();
         $scope.LoadPage(1);
+        
     });
 
     $scope.RoleBtnExportExcel = false;
@@ -105,9 +108,15 @@
                     });
 
                     $scope.ListCity = response.Citis;
-                    $scope.modelSearch.CityCodes = $scope.ListCity[0].Code;
+                    //$scope.modelSearch.CityCodes = $scope.ListCity[0].Code;
                     $scope.ListNhomTBH = response.NhomTBHs;
+                    $scope.ListDuAn = response.DuAns;
+                    //$scope.modelSearch.MaDuAn = $scope.ListDuAn[0].maduan;
                     //$scope.modelSearch.MaNhomTBH = $scope.ListNhomTBH[0].manhom_tbh;
+                    $("#CityCodes").select2({
+                        placeholder: "Chọn tỉnh",
+                        //allowClear: true
+                    });
                 }
                 //$scope.$apply();
             }
@@ -194,10 +203,10 @@
             return;
         }
 
-        if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
-            toastr.error("Vui lòng chọn Tỉnh!");
-            return;
-        }
+        //if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
+        //    toastr.error("Vui lòng chọn Tỉnh!");
+        //    return;
+        //}
 
         //if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '' || $scope.modelSearch.MaNhomTBH == undefined) {
         //    toastr.error("Vui lòng chọn Nhóm TBH!");
@@ -211,10 +220,12 @@
             ToDate: $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, ""),
             CityCodes: $scope.modelSearch.CityCodes,
             MaNhomTBH: $scope.modelSearch.MaNhomTBH,
+            MaDuAn: $scope.modelSearch.MaDuAn,
             TuSoMaKH: null,
             DenSoMaKH: null
         };
 
+        console.log(inputSearch);
         //var res = $scope.modelSearch.FromDate.toISOString().slice(0, 10).replace(/-/g, "");
 
         //var res1 = $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, "");
@@ -246,7 +257,7 @@
                 $scope.TanSuatSDMaTuyDas = respone.TanSuatSDMaTuyDas;
                 $scope.LanDauSDMaTuyDas = respone.LanDauSDMaTuyDas;
                 $scope.LoaiMaTuyDaSDDauTiens = respone.LoaiMaTuyDaSDDauTiens;
-                $scope.NguyCoSDMaTuyDas = respone.NguyCoSDMaTuyDas;
+                $scope.NguyCoSDMaTuyDas = respone.NguyCoSDMaTuyDas; console.log(respone.NguyCoSDMaTuyDas);
                 $scope.ChungBKTs = respone.ChungBKTs;
                 $scope.NguyCoTinhDucs = respone.NguyCoTinhDucs;
                 $scope.DungBCSs = respone.DungBCSs;

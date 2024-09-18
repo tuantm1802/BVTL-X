@@ -21,5 +21,6 @@ namespace Model.ModelExtend.API
         public string Start_Time_Sync { get; set; }
         public string End_Time_Syc { get; set; }
         public string Message { get; set; }
+        public string RawOrLabel { get; set; }
     }
 }

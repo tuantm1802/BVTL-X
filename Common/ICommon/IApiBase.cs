@@ -33,6 +33,6 @@ namespace Common.ICommon
 
         Task<HttpResponseMessage> PutJsonAsyncResponse(string url, string json);
 
-        Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId);
+        Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel);
     }
 }

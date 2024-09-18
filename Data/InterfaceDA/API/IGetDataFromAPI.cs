@@ -17,7 +17,7 @@ namespace Data.InterfaceDA.API
         /// <param name="token"></param>
         /// <param name="reportId"></param>
         /// <returns></returns>
-        Task<List<T>> PostDataFromApiReturnList<T>(string url, string token, string reportId);
+        Task<List<T>> PostDataFromApiReturnList<T>(string url, string token, string reportId, string rawOrLabel);
 
         /// <summary>
         /// Lấy dữ liệu từ đầu Api trả lại string json đầu api trả ra
@@ -26,7 +26,7 @@ namespace Data.InterfaceDA.API
         /// <param name="token"></param>
         /// <param name="reportId"></param>
         /// <returns></returns>
-        Task<string> PostDataFromApiReturnString(string url, string token, string reportId);
+        Task<string> PostDataFromApiReturnString(string url, string token, string reportId, string rawOrLabel);
 
         #region Call api tạo các file báo cáo
 

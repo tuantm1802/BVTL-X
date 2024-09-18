@@ -56,6 +56,7 @@
     <Compile Include="ModelExtend\API\ProcessModel.cs" />
     <Compile Include="ModelExtend\API\ResultApi1344Model.cs" />
     <Compile Include="ModelExtend\API\ResultApiACEModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiKhachHangTTCBModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTTKHMaDaModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTrainingDataCollModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiDGHLModel.cs" />
@@ -203,6 +204,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\BVTL_REPORTING1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Model\BVTL_TAN_SUAT_SU_DUNG.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
@@ -210,6 +216,33 @@
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BVTL_THONG_TIN_TRUYEN_THONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_CHUYEN_GUI.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_DANH_GIA_HAI_LONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_HANH_VI_NGUY_CO.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_PHIEU_TU_VAN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_SANG_LOC_HIV.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_SINH_HOAT_NHOM.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_THEO_DAU.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_THONG_TIN_CO_BAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\CHITIEU_DUAN.cs">
@@ -233,7 +266,7 @@
     <None Include="App.Config" />
     <EntityDeploy Include="Model\BVTL_REPORTING.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>BVTL_REPORTING.Designer.cs</LastGenOutput>
+      <LastGenOutput>BVTL_REPORTING1.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <None Include="Model\BVTL_REPORTING.edmx.diagram">
       <DependentUpon>BVTL_REPORTING.edmx</DependentUpon>

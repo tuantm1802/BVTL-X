@@ -79,6 +79,7 @@
                                         IsActive: respone.data[i].IsActive == true ? 'Active' : 'InActive',
                                         TimeReCall: respone.data[i].TimeReCall,
                                         Api_Id: respone.data[i].Api_Id,
+                                        RawOrLabel: respone.data[i].RawOrLabel,
                                         Start_Time_Sync: respone.data[i].Start_Time_Sync != null ? moment(respone.data[i].Start_Time_Sync).format("YYYY-MM-DD HH:mm:ss") : "",
                                         End_Time_Sync: respone.data[i].End_Time_Sync != null ? moment(respone.data[i].End_Time_Sync).format("YYYY-MM-DD HH:mm:ss") : "",
                                         Message: respone.data[i].Message
@@ -129,6 +130,7 @@
                     { "data": "Start_Time_Sync" },
                     { "data": "End_Time_Sync" },
                     { "data": "Message" },
+                    { "data": "RawOrLabel" },
                     {
                         "title": "Thao tác",
                         "render": function (data, type, full) { return '<button type="button" ng-click="SyncDataRow(' + full.Api_Id+')" class="btn btn-primary">Đồng bộ</button>' }
