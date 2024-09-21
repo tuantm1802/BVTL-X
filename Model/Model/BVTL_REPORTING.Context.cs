@@ -68,5 +68,11 @@ namespace Model.Model
         public virtual DbSet<CD43_KHACH_HANG_HANH_VI_NGUY_CO> CD43_KHACH_HANG_HANH_VI_NGUY_CO { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_SANG_LOC_HIV> CD43_KHACH_HANG_SANG_LOC_HIV { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU> CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_SANG_LOC_HIV> CH07_KHACH_HANG_SANG_LOC_HIV { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_THONG_TIN_CO_BAN> CH07_KHACH_HANG_THONG_TIN_CO_BAN { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU> CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_PHIEU_TU_VAN> CH07_KHACH_HANG_PHIEU_TU_VAN { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_THEO_DAU> CH07_KHACH_HANG_THEO_DAU { get; set; }
+        public virtual DbSet<CH07_KHACH_HANG_CHUYEN_GUI> CH07_KHACH_HANG_CHUYEN_GUI { get; set; }
     }
 }

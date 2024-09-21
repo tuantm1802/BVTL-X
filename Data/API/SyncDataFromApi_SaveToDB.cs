@@ -631,6 +631,187 @@ namespace Data.API
                         }
                     }
                     #endregion
+
+                    #region Lưu dữ liệu từ api vào db DỰ ÁN CH07
+                    
+                    // Đầu api CH07_KHACH_HANG_THONG_TIN_CO_BAN - #10
+                    if (tableNames.Contains("CH07_KHACH_HANG_THONG_TIN_CO_BAN"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangTTCBCH07Model>>(resultApiString);
+
+                        var tongHops = new List<CH07_KHACH_HANG_THONG_TIN_CO_BAN>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.thng_tin_c_bn_assist_qst_kin_thc_complete == 2).ToList();
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangTTCBCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);
+                        //_convertResultApiToEntity.ConvertApiKhachHangTTTCBCH07Entity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_KHACH_HANG_THONG_TIN_CO_BAN
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_KHACH_HANG_THONG_TIN_CO_BAN", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+
+                    // Đầu api CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU - #11
+                    if (tableNames.Contains("CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangSangLocNuocTieuCH07Model>>(resultApiString);
+
+                        var tongHops = new List<CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_nc_tiu_complete == 2).ToList();
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangSangLocNuocTieuCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+
+                    // Đầu api CH07_KHACH_HANG_SANG_LOC_HIV - #12
+                    if (tableNames.Contains("CH07_KHACH_HANG_SANG_LOC_HIV"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangSangLocHIVCH07Model>>(resultApiString);
+
+                        var tongHops = new List<CH07_KHACH_HANG_SANG_LOC_HIV>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_hiv_complete == 2).ToList();
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangSangLocHIVCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_KHACH_HANG_SANG_LOC_HIV
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_KHACH_HANG_SANG_LOC_HIV", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+
+                    // Đầu api CH07_KHACH_HANG_PHIEU_TU_VAN - #13
+                    if (tableNames.Contains("CH07_KHACH_HANG_PHIEU_TU_VAN"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangPhieuTuVanCH07Model>>(resultApiString);
+
+                        var tongHops = new List<CH07_KHACH_HANG_PHIEU_TU_VAN>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.phiu_t_vn_complete == 2).ToList();
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangPhieuTuVanCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_KHACH_HANG_PHIEU_TU_VAN
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_KHACH_HANG_PHIEU_TU_VAN", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+
+                    // Đầu api CH07_KHACH_HANG_CHUYEN_GUI - #14
+                    if (tableNames.Contains("CH07_KHACH_HANG_CHUYEN_GUI"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangChuyenGuiDichVuCH07Model>>(resultApiString);
+
+                        var tongHops = new List<CH07_KHACH_HANG_CHUYEN_GUI>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.chuyn_gi_dch_v_complete == 2).ToList();
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangChuyenGuiCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_KHACH_HANG_CHUYEN_GUI
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_KHACH_HANG_CHUYEN_GUI", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+                    #endregion
+
+
                 }
 
             }

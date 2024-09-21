@@ -82,6 +82,11 @@ namespace Common.ICommon
         void ConvertApiKhachHangPhieuTuVanEntity(List<ResultApiKhachHangPhieuTuVanModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_PHIEU_TU_VAN> lsObjDB);
         void ConvertApiKhachHangChuyenGuiEntity(List<ResultApiKhachHangChuyenGuiModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_CHUYEN_GUI> lsObjDB);
         void ConvertApiKhachHangHanhViNguyCoEntity(List<ResultApiKhachHangHanhViNguyCoModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CD43_KHACH_HANG_HANH_VI_NGUY_CO> lsObjDB);
+        void ConvertApiKhachHangTTCBCH07Entity(List<ResultApiKhachHangTTCBCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_THONG_TIN_CO_BAN> lsObjDB);
+        void ConvertApiKhachHangSangLocNuocTieuCH07Entity(List<ResultApiKhachHangSangLocNuocTieuCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU> lsObjDB);
+        void ConvertApiKhachHangSangLocHIVCH07Entity(List<ResultApiKhachHangSangLocHIVCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_SANG_LOC_HIV> lsObjDB);
+        void ConvertApiKhachHangPhieuTuVanCH07Entity(List<ResultApiKhachHangPhieuTuVanCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_PHIEU_TU_VAN> lsObjDB);
+        void ConvertApiKhachHangChuyenGuiCH07Entity(List<ResultApiKhachHangChuyenGuiDichVuCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_CHUYEN_GUI> lsObjDB);
 
     }
 }

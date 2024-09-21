@@ -20,13 +20,14 @@ namespace Data.InterfaceDA.Admin
         List<BaoCaoModel> GetDataYearReportVIIV(ReportSearchModel modelSearch);
         List<BaoCaoModel> GetDataReportChiSo(ReportSearchModel modelSearch);
 
+        List<BaoCaoModel> GetDataReportCD43(ReportSearchModel modelSearch);
         /// <summary>
         /// Lấy dữ liệu báo cáo tổng hợp theo trang
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-         List<BaoCaoTongHopPageModel> GetBaoCaoTongHopByPage(ModelSearch modelSearch);
+        List<BaoCaoTongHopPageModel> GetBaoCaoTongHopByPage(ModelSearch modelSearch);
 
         /// <summary>
         /// Lấy báo cáo tổng hợp theo id
