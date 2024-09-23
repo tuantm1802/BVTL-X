@@ -246,10 +246,19 @@
     <Compile Include="Model\CD43_KHACH_HANG_THONG_TIN_CO_BAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CH07_KHACH_HANG_BANG_HOI_ACE.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\CH07_KHACH_HANG_CHUYEN_GUI.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\CH07_KHACH_HANG_PHIEU_TU_VAN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\CH07_KHACH_HANG_SANG_LOC_HIV.cs">

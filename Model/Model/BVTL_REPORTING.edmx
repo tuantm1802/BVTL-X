@@ -1200,6 +1200,261 @@
           <Property Name="thoi_gian_ket_thuc" Type="datetime" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="record_id" Type="nvarchar" MaxLength="20" />
+          <Property Name="maduan" Type="nvarchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="nvarchar" MaxLength="5" />
+          <Property Name="city_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="ngaynhap" Type="date" />
+          <Property Name="anh" Type="nvarchar(max)" />
+          <Property Name="ngay" Type="date" />
+          <Property Name="doituong" Type="int" />
+          <Property Name="gioitinh" Type="int" />
+          <Property Name="namsinh" Type="int" />
+          <Property Name="chatgaynghien" Type="int" />
+          <Property Name="khac1" Type="nvarchar" MaxLength="255" />
+          <Property Name="chatgaynghien_2" Type="int" />
+          <Property Name="khac2" Type="nvarchar" MaxLength="255" />
+          <Property Name="duongsd" Type="int" />
+          <Property Name="tansuatda" Type="int" />
+          <Property Name="landau" Type="nvarchar" MaxLength="255" />
+          <Property Name="tuoi" Type="int" />
+          <Property Name="matuydautien" Type="nvarchar" MaxLength="255" />
+          <Property Name="tiemchich" Type="int" />
+          <Property Name="dungchung" Type="int" />
+          <Property Name="qhtd" Type="int" />
+          <Property Name="cau_7_1" Type="int" />
+          <Property Name="qhtd_2" Type="int" />
+          <Property Name="sdmatuy" Type="int" />
+          <Property Name="qhtdtt" Type="int" />
+          <Property Name="bandam" Type="int" />
+          <Property Name="sti" Type="int" />
+          <Property Name="sti1" Type="int" />
+          <Property Name="khac3" Type="nvarchar" MaxLength="255" />
+          <Property Name="lao" Type="nvarchar" MaxLength="255" />
+          <Property Name="quakhu" Type="int" />
+          <Property Name="hientai" Type="int" />
+          <Property Name="hientai_2" Type="int" />
+          <Property Name="ganc" Type="nvarchar" MaxLength="255" />
+          <Property Name="quakhu_2" Type="int" />
+          <Property Name="hientai_4" Type="int" />
+          <Property Name="hientai_3" Type="int" />
+          <Property Name="trieuchung_2" Type="int" />
+          <Property Name="khac_5" Type="nvarchar" MaxLength="255" />
+          <Property Name="cau1" Type="int" />
+          <Property Name="cau2" Type="int" />
+          <Property Name="cau3" Type="int" />
+          <Property Name="cau4" Type="int" />
+          <Property Name="cau5" Type="int" />
+          <Property Name="cau6" Type="int" />
+          <Property Name="cau7" Type="int" />
+          <Property Name="cau8" Type="int" />
+          <Property Name="cau9" Type="int" />
+          <Property Name="cau10" Type="int" />
+          <Property Name="cau11" Type="int" />
+          <Property Name="cau12" Type="int" />
+          <Property Name="cau13" Type="int" />
+          <Property Name="cau14" Type="int" />
+          <Property Name="cau15" Type="int" />
+          <Property Name="cau16" Type="int" />
+          <Property Name="cau17" Type="int" />
+          <Property Name="cau18" Type="int" />
+          <Property Name="cau19" Type="int" />
+          <Property Name="cau20" Type="int" />
+          <Property Name="cau21" Type="int" />
+          <Property Name="cau22" Type="int" />
+          <Property Name="cau23" Type="int" />
+          <Property Name="cau24" Type="int" />
+          <Property Name="cau25" Type="int" />
+          <Property Name="cau26" Type="int" />
+          <Property Name="cau27" Type="int" />
+          <Property Name="assist" Type="nvarchar(max)" />
+          <Property Name="thuocla" Type="int" />
+          <Property Name="thucuong" Type="int" />
+          <Property Name="cansa" Type="int" />
+          <Property Name="cocain" Type="int" />
+          <Property Name="chatkichthich" Type="int" />
+          <Property Name="khixong" Type="int" />
+          <Property Name="thuocanthan" Type="int" />
+          <Property Name="chatgayaogiac" Type="int" />
+          <Property Name="thuocphien" Type="int" />
+          <Property Name="chatkhac" Type="int" />
+          <Property Name="cacchatkhac" Type="nvarchar" MaxLength="255" />
+          <Property Name="lucdihoc" Type="int" />
+          <Property Name="thuocla1" Type="int" />
+          <Property Name="thucuong1" Type="int" />
+          <Property Name="cansa1" Type="int" />
+          <Property Name="coca1" Type="int" />
+          <Property Name="chatkichthich1" Type="int" />
+          <Property Name="khixong1" Type="int" />
+          <Property Name="thuocanthan1" Type="int" />
+          <Property Name="chatgayaogiac1" Type="int" />
+          <Property Name="chatthuocphien1" Type="int" />
+          <Property Name="chatkhac1" Type="int" />
+          <Property Name="thuocla2" Type="int" />
+          <Property Name="thucuong2" Type="int" />
+          <Property Name="cansa2" Type="int" />
+          <Property Name="coca2" Type="int" />
+          <Property Name="chatkichthich2" Type="int" />
+          <Property Name="khixong2" Type="int" />
+          <Property Name="thuocanthan2" Type="int" />
+          <Property Name="chatgayaogiac2" Type="int" />
+          <Property Name="chatthuocphien2" Type="int" />
+          <Property Name="chatkhac2" Type="int" />
+          <Property Name="thuocla3" Type="int" />
+          <Property Name="thucuong3" Type="int" />
+          <Property Name="cansa3" Type="int" />
+          <Property Name="coca3" Type="int" />
+          <Property Name="chatkichthich3" Type="int" />
+          <Property Name="khixong3" Type="int" />
+          <Property Name="thuocanthan3" Type="int" />
+          <Property Name="chatgayaogiac3" Type="int" />
+          <Property Name="chatthuocphien3" Type="int" />
+          <Property Name="chatkhac3" Type="int" />
+          <Property Name="thuocla4" Type="int" />
+          <Property Name="thucuong4" Type="int" />
+          <Property Name="cansa4" Type="int" />
+          <Property Name="coca4" Type="int" />
+          <Property Name="chatkichthich4" Type="int" />
+          <Property Name="khixong4" Type="int" />
+          <Property Name="thuocanthan4" Type="int" />
+          <Property Name="chatgayaogiac4" Type="int" />
+          <Property Name="chatthuocphien4" Type="int" />
+          <Property Name="chatkhac4" Type="int" />
+          <Property Name="thuocla5" Type="int" />
+          <Property Name="thucuong5" Type="int" />
+          <Property Name="cansa5" Type="int" />
+          <Property Name="coca5" Type="int" />
+          <Property Name="chatkichthich5" Type="int" />
+          <Property Name="khixong5" Type="int" />
+          <Property Name="thuocanthan5" Type="int" />
+          <Property Name="chatgayaogiac5" Type="int" />
+          <Property Name="chatthuocphien5" Type="int" />
+          <Property Name="chatkhac5" Type="int" />
+          <Property Name="thuocla6" Type="int" />
+          <Property Name="thucuong6" Type="int" />
+          <Property Name="cansa6" Type="int" />
+          <Property Name="coca6" Type="int" />
+          <Property Name="chatkichthich6" Type="int" />
+          <Property Name="khixong6" Type="int" />
+          <Property Name="thuocanthan6" Type="int" />
+          <Property Name="chatgayaogiac6" Type="int" />
+          <Property Name="chatthuocphien6" Type="int" />
+          <Property Name="chatkhac6" Type="int" />
+          <Property Name="cau_8" Type="int" />
+          <Property Name="diemthuocla" Type="int" />
+          <Property Name="nguycothap" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemthucuong" Type="int" />
+          <Property Name="nguycothap_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau_2" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemcansa" Type="int" />
+          <Property Name="nguycothap_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau_3" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemcoca" Type="int" />
+          <Property Name="nguycothap_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau_4" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemchatkichthich" Type="int" />
+          <Property Name="nguycothap_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau_5" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemkhixong" Type="int" />
+          <Property Name="nguycothap_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycotrungbinh_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="nguycocao_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="kocanthiep_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="canthiepngan_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="chuachuyensau_6" Type="nvarchar" MaxLength="50" />
+          <Property Name="diemchatanthan" Type="int" />
+          <Property Name="nguycothap_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycotrungbinh_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycocao_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="kocanthiep_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="canthiepngan_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="chuachuyensau_7" Type="nvarchar" MaxLength="255" />
+          <Property Name="diemchatgayaogiac" Type="int" />
+          <Property Name="nguycothap_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycotrungbinh_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycocao_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="kocanthiep_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="canthiepngan_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="chuachuyensau_8" Type="nvarchar" MaxLength="255" />
+          <Property Name="diemchatthuocphien" Type="int" />
+          <Property Name="nguycothap_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycotrungbinh_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycocao_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="kocanthiep_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="canthiepngan_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="chuachuyensau_9" Type="nvarchar" MaxLength="255" />
+          <Property Name="diemchatkhac" Type="int" />
+          <Property Name="nguycothap_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycotrungbinh_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="nguycocao_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="kocanthiep_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="canthiepngan_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="chuachuyensau_10" Type="nvarchar" MaxLength="255" />
+          <Property Name="c_1a" Type="int" />
+          <Property Name="c_1b" Type="int" />
+          <Property Name="c_1c" Type="int" />
+          <Property Name="c_1d" Type="int" />
+          <Property Name="c_2" Type="int" />
+          <Property Name="c_3" Type="int" />
+          <Property Name="c_4a" Type="int" />
+          <Property Name="c_4b" Type="int" />
+          <Property Name="c_4c" Type="int" />
+          <Property Name="tongdiem" Type="int" />
+          <Property Name="duongtinh" Type="nvarchar" MaxLength="255" />
+          <Property Name="amtinh" Type="nvarchar" MaxLength="255" />
+          <Property Name="thng_tin_c_bn_assist_qst_kin_thc_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_BANG_HOI_ACE">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="record_id" Type="varchar" MaxLength="20" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="ngay_ace" Type="date" />
+          <Property Name="c1" Type="int" />
+          <Property Name="c2" Type="int" />
+          <Property Name="c3" Type="int" />
+          <Property Name="c4" Type="int" />
+          <Property Name="c5" Type="int" />
+          <Property Name="c6" Type="int" />
+          <Property Name="c7" Type="int" />
+          <Property Name="c8" Type="int" />
+          <Property Name="c9" Type="int" />
+          <Property Name="c10" Type="int" />
+          <Property Name="diem" Type="int" />
+          <Property Name="bng_hi_ace_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
+        </EntityType>
         <EntityType Name="CH07_KHACH_HANG_CHUYEN_GUI">
           <Key>
             <PropertyRef Name="id" />
@@ -1249,6 +1504,7 @@
           <Property Name="dt_met" Type="int" />
           <Property Name="cs_met" Type="varchar" MaxLength="255" />
           <Property Name="chuyn_gi_dch_v_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_PHIEU_TU_VAN">
           <Key>
@@ -1381,6 +1637,22 @@
           <Property Name="vande" Type="nvarchar(max)" />
           <Property Name="thoigian" Type="nvarchar(max)" />
           <Property Name="phiu_t_vn_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="record_id" Type="varchar" MaxLength="20" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="solan" Type="int" />
+          <Property Name="ngayxetnghiem" Type="date" />
+          <Property Name="kqxn_lai" Type="int" />
+          <Property Name="phiu_xt_nghim_li_hiv_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_SANG_LOC_HIV">
           <Key>
@@ -2012,8 +2284,11 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySet Name="CD43_KHACH_HANG_SINH_HOAT_NHOM" EntityType="Self.CD43_KHACH_HANG_SINH_HOAT_NHOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_THEO_DAU" EntityType="Self.CD43_KHACH_HANG_THEO_DAU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN" EntityType="Self.CD43_KHACH_HANG_THONG_TIN_CO_BAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" EntityType="Self.CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CH07_KHACH_HANG_BANG_HOI_ACE" EntityType="Self.CH07_KHACH_HANG_BANG_HOI_ACE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_CHUYEN_GUI" EntityType="Self.CH07_KHACH_HANG_CHUYEN_GUI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_PHIEU_TU_VAN" EntityType="Self.CH07_KHACH_HANG_PHIEU_TU_VAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" EntityType="Self.CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_SANG_LOC_HIV" EntityType="Self.CH07_KHACH_HANG_SANG_LOC_HIV" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_THEO_DAU" EntityType="Self.CH07_KHACH_HANG_THEO_DAU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN" EntityType="Self.CH07_KHACH_HANG_THONG_TIN_CO_BAN" Schema="dbo" store:Type="Tables" />
@@ -3323,6 +3598,9 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySet Name="CH07_KHACH_HANG_PHIEU_TU_VAN" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_TU_VAN" />
           <EntitySet Name="CH07_KHACH_HANG_THEO_DAU" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_THEO_DAU" />
           <EntitySet Name="CH07_KHACH_HANG_CHUYEN_GUI" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_CHUYEN_GUI" />
+          <EntitySet Name="CH07_KHACH_HANG_BANG_HOI_ACE" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_BANG_HOI_ACE" />
+          <EntitySet Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" />
+          <EntitySet Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" />
         </EntityContainer>
         <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
           <Key>
@@ -4412,6 +4690,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="vande" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="phiu_t_vn_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_THEO_DAU">
           <Key>
@@ -4479,6 +4758,277 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="dt_met" Type="Int32" />
           <Property Name="cs_met" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="chuyn_gi_dch_v_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_BANG_HOI_ACE">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ngay_ace" Type="DateTime" Precision="0" />
+          <Property Name="c1" Type="Int32" />
+          <Property Name="c2" Type="Int32" />
+          <Property Name="c3" Type="Int32" />
+          <Property Name="c4" Type="Int32" />
+          <Property Name="c5" Type="Int32" />
+          <Property Name="c6" Type="Int32" />
+          <Property Name="c7" Type="Int32" />
+          <Property Name="c8" Type="Int32" />
+          <Property Name="c9" Type="Int32" />
+          <Property Name="c10" Type="Int32" />
+          <Property Name="diem" Type="Int32" />
+          <Property Name="bng_hi_ace_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="solan" Type="Int32" />
+          <Property Name="ngayxetnghiem" Type="DateTime" Precision="0" />
+          <Property Name="kqxn_lai" Type="Int32" />
+          <Property Name="phiu_xt_nghim_li_hiv_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ngaynhap" Type="DateTime" Precision="0" />
+          <Property Name="anh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ngay" Type="DateTime" Precision="0" />
+          <Property Name="doituong" Type="Int32" />
+          <Property Name="gioitinh" Type="Int32" />
+          <Property Name="namsinh" Type="Int32" />
+          <Property Name="chatgaynghien" Type="Int32" />
+          <Property Name="khac1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="chatgaynghien_2" Type="Int32" />
+          <Property Name="khac2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="duongsd" Type="Int32" />
+          <Property Name="tansuatda" Type="Int32" />
+          <Property Name="landau" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="tuoi" Type="Int32" />
+          <Property Name="matuydautien" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="tiemchich" Type="Int32" />
+          <Property Name="dungchung" Type="Int32" />
+          <Property Name="qhtd" Type="Int32" />
+          <Property Name="cau_7_1" Type="Int32" />
+          <Property Name="qhtd_2" Type="Int32" />
+          <Property Name="sdmatuy" Type="Int32" />
+          <Property Name="qhtdtt" Type="Int32" />
+          <Property Name="bandam" Type="Int32" />
+          <Property Name="sti" Type="Int32" />
+          <Property Name="sti1" Type="Int32" />
+          <Property Name="khac3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="lao" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="quakhu" Type="Int32" />
+          <Property Name="hientai" Type="Int32" />
+          <Property Name="hientai_2" Type="Int32" />
+          <Property Name="ganc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="quakhu_2" Type="Int32" />
+          <Property Name="hientai_4" Type="Int32" />
+          <Property Name="hientai_3" Type="Int32" />
+          <Property Name="trieuchung_2" Type="Int32" />
+          <Property Name="khac_5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="cau1" Type="Int32" />
+          <Property Name="cau2" Type="Int32" />
+          <Property Name="cau3" Type="Int32" />
+          <Property Name="cau4" Type="Int32" />
+          <Property Name="cau5" Type="Int32" />
+          <Property Name="cau6" Type="Int32" />
+          <Property Name="cau7" Type="Int32" />
+          <Property Name="cau8" Type="Int32" />
+          <Property Name="cau9" Type="Int32" />
+          <Property Name="cau10" Type="Int32" />
+          <Property Name="cau11" Type="Int32" />
+          <Property Name="cau12" Type="Int32" />
+          <Property Name="cau13" Type="Int32" />
+          <Property Name="cau14" Type="Int32" />
+          <Property Name="cau15" Type="Int32" />
+          <Property Name="cau16" Type="Int32" />
+          <Property Name="cau17" Type="Int32" />
+          <Property Name="cau18" Type="Int32" />
+          <Property Name="cau19" Type="Int32" />
+          <Property Name="cau20" Type="Int32" />
+          <Property Name="cau21" Type="Int32" />
+          <Property Name="cau22" Type="Int32" />
+          <Property Name="cau23" Type="Int32" />
+          <Property Name="cau24" Type="Int32" />
+          <Property Name="cau25" Type="Int32" />
+          <Property Name="cau26" Type="Int32" />
+          <Property Name="cau27" Type="Int32" />
+          <Property Name="assist" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="thuocla" Type="Int32" />
+          <Property Name="thucuong" Type="Int32" />
+          <Property Name="cansa" Type="Int32" />
+          <Property Name="cocain" Type="Int32" />
+          <Property Name="chatkichthich" Type="Int32" />
+          <Property Name="khixong" Type="Int32" />
+          <Property Name="thuocanthan" Type="Int32" />
+          <Property Name="chatgayaogiac" Type="Int32" />
+          <Property Name="thuocphien" Type="Int32" />
+          <Property Name="chatkhac" Type="Int32" />
+          <Property Name="cacchatkhac" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="lucdihoc" Type="Int32" />
+          <Property Name="thuocla1" Type="Int32" />
+          <Property Name="thucuong1" Type="Int32" />
+          <Property Name="cansa1" Type="Int32" />
+          <Property Name="coca1" Type="Int32" />
+          <Property Name="chatkichthich1" Type="Int32" />
+          <Property Name="khixong1" Type="Int32" />
+          <Property Name="thuocanthan1" Type="Int32" />
+          <Property Name="chatgayaogiac1" Type="Int32" />
+          <Property Name="chatthuocphien1" Type="Int32" />
+          <Property Name="chatkhac1" Type="Int32" />
+          <Property Name="thuocla2" Type="Int32" />
+          <Property Name="thucuong2" Type="Int32" />
+          <Property Name="cansa2" Type="Int32" />
+          <Property Name="coca2" Type="Int32" />
+          <Property Name="chatkichthich2" Type="Int32" />
+          <Property Name="khixong2" Type="Int32" />
+          <Property Name="thuocanthan2" Type="Int32" />
+          <Property Name="chatgayaogiac2" Type="Int32" />
+          <Property Name="chatthuocphien2" Type="Int32" />
+          <Property Name="chatkhac2" Type="Int32" />
+          <Property Name="thuocla3" Type="Int32" />
+          <Property Name="thucuong3" Type="Int32" />
+          <Property Name="cansa3" Type="Int32" />
+          <Property Name="coca3" Type="Int32" />
+          <Property Name="chatkichthich3" Type="Int32" />
+          <Property Name="khixong3" Type="Int32" />
+          <Property Name="thuocanthan3" Type="Int32" />
+          <Property Name="chatgayaogiac3" Type="Int32" />
+          <Property Name="chatthuocphien3" Type="Int32" />
+          <Property Name="chatkhac3" Type="Int32" />
+          <Property Name="thuocla4" Type="Int32" />
+          <Property Name="thucuong4" Type="Int32" />
+          <Property Name="cansa4" Type="Int32" />
+          <Property Name="coca4" Type="Int32" />
+          <Property Name="chatkichthich4" Type="Int32" />
+          <Property Name="khixong4" Type="Int32" />
+          <Property Name="thuocanthan4" Type="Int32" />
+          <Property Name="chatgayaogiac4" Type="Int32" />
+          <Property Name="chatthuocphien4" Type="Int32" />
+          <Property Name="chatkhac4" Type="Int32" />
+          <Property Name="thuocla5" Type="Int32" />
+          <Property Name="thucuong5" Type="Int32" />
+          <Property Name="cansa5" Type="Int32" />
+          <Property Name="coca5" Type="Int32" />
+          <Property Name="chatkichthich5" Type="Int32" />
+          <Property Name="khixong5" Type="Int32" />
+          <Property Name="thuocanthan5" Type="Int32" />
+          <Property Name="chatgayaogiac5" Type="Int32" />
+          <Property Name="chatthuocphien5" Type="Int32" />
+          <Property Name="chatkhac5" Type="Int32" />
+          <Property Name="thuocla6" Type="Int32" />
+          <Property Name="thucuong6" Type="Int32" />
+          <Property Name="cansa6" Type="Int32" />
+          <Property Name="coca6" Type="Int32" />
+          <Property Name="chatkichthich6" Type="Int32" />
+          <Property Name="khixong6" Type="Int32" />
+          <Property Name="thuocanthan6" Type="Int32" />
+          <Property Name="chatgayaogiac6" Type="Int32" />
+          <Property Name="chatthuocphien6" Type="Int32" />
+          <Property Name="chatkhac6" Type="Int32" />
+          <Property Name="cau_8" Type="Int32" />
+          <Property Name="diemthuocla" Type="Int32" />
+          <Property Name="nguycothap" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemthucuong" Type="Int32" />
+          <Property Name="nguycothap_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemcansa" Type="Int32" />
+          <Property Name="nguycothap_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemcoca" Type="Int32" />
+          <Property Name="nguycothap_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemchatkichthich" Type="Int32" />
+          <Property Name="nguycothap_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemkhixong" Type="Int32" />
+          <Property Name="nguycothap_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="diemchatanthan" Type="Int32" />
+          <Property Name="nguycothap_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_7" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="diemchatgayaogiac" Type="Int32" />
+          <Property Name="nguycothap_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_8" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="diemchatthuocphien" Type="Int32" />
+          <Property Name="nguycothap_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_9" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="diemchatkhac" Type="Int32" />
+          <Property Name="nguycothap_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycotrungbinh_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nguycocao_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="kocanthiep_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="canthiepngan_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="chuachuyensau_10" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="c_1a" Type="Int32" />
+          <Property Name="c_1b" Type="Int32" />
+          <Property Name="c_1c" Type="Int32" />
+          <Property Name="c_1d" Type="Int32" />
+          <Property Name="c_2" Type="Int32" />
+          <Property Name="c_3" Type="Int32" />
+          <Property Name="c_4a" Type="Int32" />
+          <Property Name="c_4b" Type="Int32" />
+          <Property Name="c_4c" Type="Int32" />
+          <Property Name="tongdiem" Type="Int32" />
+          <Property Name="duongtinh" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="amtinh" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="thng_tin_c_bn_assist_qst_kin_thc_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5905,6 +6455,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_PHIEU_TU_VAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_TU_VAN">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_PHIEU_TU_VAN">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="phiu_t_vn_complete" ColumnName="phiu_t_vn_complete" />
                 <ScalarProperty Name="thoigian" ColumnName="thoigian" />
                 <ScalarProperty Name="vande" ColumnName="vande" />
@@ -6056,6 +6607,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_CHUYEN_GUI">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_CHUYEN_GUI">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_CHUYEN_GUI">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="chuyn_gi_dch_v_complete" ColumnName="chuyn_gi_dch_v_complete" />
                 <ScalarProperty Name="cs_met" ColumnName="cs_met" />
                 <ScalarProperty Name="dt_met" ColumnName="dt_met" />
@@ -6096,6 +6648,279 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="diachi_xn" ColumnName="diachi_xn" />
                 <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />
                 <ScalarProperty Name="loaihinh" ColumnName="loaihinh" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CH07_KHACH_HANG_BANG_HOI_ACE">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_BANG_HOI_ACE">
+              <MappingFragment StoreEntitySet="CH07_KHACH_HANG_BANG_HOI_ACE">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="bng_hi_ace_complete" ColumnName="bng_hi_ace_complete" />
+                <ScalarProperty Name="diem" ColumnName="diem" />
+                <ScalarProperty Name="c10" ColumnName="c10" />
+                <ScalarProperty Name="c9" ColumnName="c9" />
+                <ScalarProperty Name="c8" ColumnName="c8" />
+                <ScalarProperty Name="c7" ColumnName="c7" />
+                <ScalarProperty Name="c6" ColumnName="c6" />
+                <ScalarProperty Name="c5" ColumnName="c5" />
+                <ScalarProperty Name="c4" ColumnName="c4" />
+                <ScalarProperty Name="c3" ColumnName="c3" />
+                <ScalarProperty Name="c2" ColumnName="c2" />
+                <ScalarProperty Name="c1" ColumnName="c1" />
+                <ScalarProperty Name="ngay_ace" ColumnName="ngay_ace" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+              <MappingFragment StoreEntitySet="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="phiu_xt_nghim_li_hiv_complete" ColumnName="phiu_xt_nghim_li_hiv_complete" />
+                <ScalarProperty Name="kqxn_lai" ColumnName="kqxn_lai" />
+                <ScalarProperty Name="ngayxetnghiem" ColumnName="ngayxetnghiem" />
+                <ScalarProperty Name="solan" ColumnName="solan" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+              <MappingFragment StoreEntitySet="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="thng_tin_c_bn_assist_qst_kin_thc_complete" ColumnName="thng_tin_c_bn_assist_qst_kin_thc_complete" />
+                <ScalarProperty Name="amtinh" ColumnName="amtinh" />
+                <ScalarProperty Name="duongtinh" ColumnName="duongtinh" />
+                <ScalarProperty Name="tongdiem" ColumnName="tongdiem" />
+                <ScalarProperty Name="c_4c" ColumnName="c_4c" />
+                <ScalarProperty Name="c_4b" ColumnName="c_4b" />
+                <ScalarProperty Name="c_4a" ColumnName="c_4a" />
+                <ScalarProperty Name="c_3" ColumnName="c_3" />
+                <ScalarProperty Name="c_2" ColumnName="c_2" />
+                <ScalarProperty Name="c_1d" ColumnName="c_1d" />
+                <ScalarProperty Name="c_1c" ColumnName="c_1c" />
+                <ScalarProperty Name="c_1b" ColumnName="c_1b" />
+                <ScalarProperty Name="c_1a" ColumnName="c_1a" />
+                <ScalarProperty Name="chuachuyensau_10" ColumnName="chuachuyensau_10" />
+                <ScalarProperty Name="canthiepngan_10" ColumnName="canthiepngan_10" />
+                <ScalarProperty Name="kocanthiep_10" ColumnName="kocanthiep_10" />
+                <ScalarProperty Name="nguycocao_10" ColumnName="nguycocao_10" />
+                <ScalarProperty Name="nguycotrungbinh_10" ColumnName="nguycotrungbinh_10" />
+                <ScalarProperty Name="nguycothap_10" ColumnName="nguycothap_10" />
+                <ScalarProperty Name="diemchatkhac" ColumnName="diemchatkhac" />
+                <ScalarProperty Name="chuachuyensau_9" ColumnName="chuachuyensau_9" />
+                <ScalarProperty Name="canthiepngan_9" ColumnName="canthiepngan_9" />
+                <ScalarProperty Name="kocanthiep_9" ColumnName="kocanthiep_9" />
+                <ScalarProperty Name="nguycocao_9" ColumnName="nguycocao_9" />
+                <ScalarProperty Name="nguycotrungbinh_9" ColumnName="nguycotrungbinh_9" />
+                <ScalarProperty Name="nguycothap_9" ColumnName="nguycothap_9" />
+                <ScalarProperty Name="diemchatthuocphien" ColumnName="diemchatthuocphien" />
+                <ScalarProperty Name="chuachuyensau_8" ColumnName="chuachuyensau_8" />
+                <ScalarProperty Name="canthiepngan_8" ColumnName="canthiepngan_8" />
+                <ScalarProperty Name="kocanthiep_8" ColumnName="kocanthiep_8" />
+                <ScalarProperty Name="nguycocao_8" ColumnName="nguycocao_8" />
+                <ScalarProperty Name="nguycotrungbinh_8" ColumnName="nguycotrungbinh_8" />
+                <ScalarProperty Name="nguycothap_8" ColumnName="nguycothap_8" />
+                <ScalarProperty Name="diemchatgayaogiac" ColumnName="diemchatgayaogiac" />
+                <ScalarProperty Name="chuachuyensau_7" ColumnName="chuachuyensau_7" />
+                <ScalarProperty Name="canthiepngan_7" ColumnName="canthiepngan_7" />
+                <ScalarProperty Name="kocanthiep_7" ColumnName="kocanthiep_7" />
+                <ScalarProperty Name="nguycocao_7" ColumnName="nguycocao_7" />
+                <ScalarProperty Name="nguycotrungbinh_7" ColumnName="nguycotrungbinh_7" />
+                <ScalarProperty Name="nguycothap_7" ColumnName="nguycothap_7" />
+                <ScalarProperty Name="diemchatanthan" ColumnName="diemchatanthan" />
+                <ScalarProperty Name="chuachuyensau_6" ColumnName="chuachuyensau_6" />
+                <ScalarProperty Name="canthiepngan_6" ColumnName="canthiepngan_6" />
+                <ScalarProperty Name="kocanthiep_6" ColumnName="kocanthiep_6" />
+                <ScalarProperty Name="nguycocao_6" ColumnName="nguycocao_6" />
+                <ScalarProperty Name="nguycotrungbinh_6" ColumnName="nguycotrungbinh_6" />
+                <ScalarProperty Name="nguycothap_6" ColumnName="nguycothap_6" />
+                <ScalarProperty Name="diemkhixong" ColumnName="diemkhixong" />
+                <ScalarProperty Name="chuachuyensau_5" ColumnName="chuachuyensau_5" />
+                <ScalarProperty Name="canthiepngan_5" ColumnName="canthiepngan_5" />
+                <ScalarProperty Name="kocanthiep_5" ColumnName="kocanthiep_5" />
+                <ScalarProperty Name="nguycocao_5" ColumnName="nguycocao_5" />
+                <ScalarProperty Name="nguycotrungbinh_5" ColumnName="nguycotrungbinh_5" />
+                <ScalarProperty Name="nguycothap_5" ColumnName="nguycothap_5" />
+                <ScalarProperty Name="diemchatkichthich" ColumnName="diemchatkichthich" />
+                <ScalarProperty Name="chuachuyensau_4" ColumnName="chuachuyensau_4" />
+                <ScalarProperty Name="canthiepngan_4" ColumnName="canthiepngan_4" />
+                <ScalarProperty Name="kocanthiep_4" ColumnName="kocanthiep_4" />
+                <ScalarProperty Name="nguycocao_4" ColumnName="nguycocao_4" />
+                <ScalarProperty Name="nguycotrungbinh_4" ColumnName="nguycotrungbinh_4" />
+                <ScalarProperty Name="nguycothap_4" ColumnName="nguycothap_4" />
+                <ScalarProperty Name="diemcoca" ColumnName="diemcoca" />
+                <ScalarProperty Name="chuachuyensau_3" ColumnName="chuachuyensau_3" />
+                <ScalarProperty Name="canthiepngan_3" ColumnName="canthiepngan_3" />
+                <ScalarProperty Name="kocanthiep_3" ColumnName="kocanthiep_3" />
+                <ScalarProperty Name="nguycocao_3" ColumnName="nguycocao_3" />
+                <ScalarProperty Name="nguycotrungbinh_3" ColumnName="nguycotrungbinh_3" />
+                <ScalarProperty Name="nguycothap_3" ColumnName="nguycothap_3" />
+                <ScalarProperty Name="diemcansa" ColumnName="diemcansa" />
+                <ScalarProperty Name="chuachuyensau_2" ColumnName="chuachuyensau_2" />
+                <ScalarProperty Name="canthiepngan_2" ColumnName="canthiepngan_2" />
+                <ScalarProperty Name="kocanthiep_2" ColumnName="kocanthiep_2" />
+                <ScalarProperty Name="nguycocao_2" ColumnName="nguycocao_2" />
+                <ScalarProperty Name="nguycotrungbinh_2" ColumnName="nguycotrungbinh_2" />
+                <ScalarProperty Name="nguycothap_2" ColumnName="nguycothap_2" />
+                <ScalarProperty Name="diemthucuong" ColumnName="diemthucuong" />
+                <ScalarProperty Name="chuachuyensau" ColumnName="chuachuyensau" />
+                <ScalarProperty Name="canthiepngan" ColumnName="canthiepngan" />
+                <ScalarProperty Name="kocanthiep" ColumnName="kocanthiep" />
+                <ScalarProperty Name="nguycocao" ColumnName="nguycocao" />
+                <ScalarProperty Name="nguycotrungbinh" ColumnName="nguycotrungbinh" />
+                <ScalarProperty Name="nguycothap" ColumnName="nguycothap" />
+                <ScalarProperty Name="diemthuocla" ColumnName="diemthuocla" />
+                <ScalarProperty Name="cau_8" ColumnName="cau_8" />
+                <ScalarProperty Name="chatkhac6" ColumnName="chatkhac6" />
+                <ScalarProperty Name="chatthuocphien6" ColumnName="chatthuocphien6" />
+                <ScalarProperty Name="chatgayaogiac6" ColumnName="chatgayaogiac6" />
+                <ScalarProperty Name="thuocanthan6" ColumnName="thuocanthan6" />
+                <ScalarProperty Name="khixong6" ColumnName="khixong6" />
+                <ScalarProperty Name="chatkichthich6" ColumnName="chatkichthich6" />
+                <ScalarProperty Name="coca6" ColumnName="coca6" />
+                <ScalarProperty Name="cansa6" ColumnName="cansa6" />
+                <ScalarProperty Name="thucuong6" ColumnName="thucuong6" />
+                <ScalarProperty Name="thuocla6" ColumnName="thuocla6" />
+                <ScalarProperty Name="chatkhac5" ColumnName="chatkhac5" />
+                <ScalarProperty Name="chatthuocphien5" ColumnName="chatthuocphien5" />
+                <ScalarProperty Name="chatgayaogiac5" ColumnName="chatgayaogiac5" />
+                <ScalarProperty Name="thuocanthan5" ColumnName="thuocanthan5" />
+                <ScalarProperty Name="khixong5" ColumnName="khixong5" />
+                <ScalarProperty Name="chatkichthich5" ColumnName="chatkichthich5" />
+                <ScalarProperty Name="coca5" ColumnName="coca5" />
+                <ScalarProperty Name="cansa5" ColumnName="cansa5" />
+                <ScalarProperty Name="thucuong5" ColumnName="thucuong5" />
+                <ScalarProperty Name="thuocla5" ColumnName="thuocla5" />
+                <ScalarProperty Name="chatkhac4" ColumnName="chatkhac4" />
+                <ScalarProperty Name="chatthuocphien4" ColumnName="chatthuocphien4" />
+                <ScalarProperty Name="chatgayaogiac4" ColumnName="chatgayaogiac4" />
+                <ScalarProperty Name="thuocanthan4" ColumnName="thuocanthan4" />
+                <ScalarProperty Name="khixong4" ColumnName="khixong4" />
+                <ScalarProperty Name="chatkichthich4" ColumnName="chatkichthich4" />
+                <ScalarProperty Name="coca4" ColumnName="coca4" />
+                <ScalarProperty Name="cansa4" ColumnName="cansa4" />
+                <ScalarProperty Name="thucuong4" ColumnName="thucuong4" />
+                <ScalarProperty Name="thuocla4" ColumnName="thuocla4" />
+                <ScalarProperty Name="chatkhac3" ColumnName="chatkhac3" />
+                <ScalarProperty Name="chatthuocphien3" ColumnName="chatthuocphien3" />
+                <ScalarProperty Name="chatgayaogiac3" ColumnName="chatgayaogiac3" />
+                <ScalarProperty Name="thuocanthan3" ColumnName="thuocanthan3" />
+                <ScalarProperty Name="khixong3" ColumnName="khixong3" />
+                <ScalarProperty Name="chatkichthich3" ColumnName="chatkichthich3" />
+                <ScalarProperty Name="coca3" ColumnName="coca3" />
+                <ScalarProperty Name="cansa3" ColumnName="cansa3" />
+                <ScalarProperty Name="thucuong3" ColumnName="thucuong3" />
+                <ScalarProperty Name="thuocla3" ColumnName="thuocla3" />
+                <ScalarProperty Name="chatkhac2" ColumnName="chatkhac2" />
+                <ScalarProperty Name="chatthuocphien2" ColumnName="chatthuocphien2" />
+                <ScalarProperty Name="chatgayaogiac2" ColumnName="chatgayaogiac2" />
+                <ScalarProperty Name="thuocanthan2" ColumnName="thuocanthan2" />
+                <ScalarProperty Name="khixong2" ColumnName="khixong2" />
+                <ScalarProperty Name="chatkichthich2" ColumnName="chatkichthich2" />
+                <ScalarProperty Name="coca2" ColumnName="coca2" />
+                <ScalarProperty Name="cansa2" ColumnName="cansa2" />
+                <ScalarProperty Name="thucuong2" ColumnName="thucuong2" />
+                <ScalarProperty Name="thuocla2" ColumnName="thuocla2" />
+                <ScalarProperty Name="chatkhac1" ColumnName="chatkhac1" />
+                <ScalarProperty Name="chatthuocphien1" ColumnName="chatthuocphien1" />
+                <ScalarProperty Name="chatgayaogiac1" ColumnName="chatgayaogiac1" />
+                <ScalarProperty Name="thuocanthan1" ColumnName="thuocanthan1" />
+                <ScalarProperty Name="khixong1" ColumnName="khixong1" />
+                <ScalarProperty Name="chatkichthich1" ColumnName="chatkichthich1" />
+                <ScalarProperty Name="coca1" ColumnName="coca1" />
+                <ScalarProperty Name="cansa1" ColumnName="cansa1" />
+                <ScalarProperty Name="thucuong1" ColumnName="thucuong1" />
+                <ScalarProperty Name="thuocla1" ColumnName="thuocla1" />
+                <ScalarProperty Name="lucdihoc" ColumnName="lucdihoc" />
+                <ScalarProperty Name="cacchatkhac" ColumnName="cacchatkhac" />
+                <ScalarProperty Name="chatkhac" ColumnName="chatkhac" />
+                <ScalarProperty Name="thuocphien" ColumnName="thuocphien" />
+                <ScalarProperty Name="chatgayaogiac" ColumnName="chatgayaogiac" />
+                <ScalarProperty Name="thuocanthan" ColumnName="thuocanthan" />
+                <ScalarProperty Name="khixong" ColumnName="khixong" />
+                <ScalarProperty Name="chatkichthich" ColumnName="chatkichthich" />
+                <ScalarProperty Name="cocain" ColumnName="cocain" />
+                <ScalarProperty Name="cansa" ColumnName="cansa" />
+                <ScalarProperty Name="thucuong" ColumnName="thucuong" />
+                <ScalarProperty Name="thuocla" ColumnName="thuocla" />
+                <ScalarProperty Name="assist" ColumnName="assist" />
+                <ScalarProperty Name="cau27" ColumnName="cau27" />
+                <ScalarProperty Name="cau26" ColumnName="cau26" />
+                <ScalarProperty Name="cau25" ColumnName="cau25" />
+                <ScalarProperty Name="cau24" ColumnName="cau24" />
+                <ScalarProperty Name="cau23" ColumnName="cau23" />
+                <ScalarProperty Name="cau22" ColumnName="cau22" />
+                <ScalarProperty Name="cau21" ColumnName="cau21" />
+                <ScalarProperty Name="cau20" ColumnName="cau20" />
+                <ScalarProperty Name="cau19" ColumnName="cau19" />
+                <ScalarProperty Name="cau18" ColumnName="cau18" />
+                <ScalarProperty Name="cau17" ColumnName="cau17" />
+                <ScalarProperty Name="cau16" ColumnName="cau16" />
+                <ScalarProperty Name="cau15" ColumnName="cau15" />
+                <ScalarProperty Name="cau14" ColumnName="cau14" />
+                <ScalarProperty Name="cau13" ColumnName="cau13" />
+                <ScalarProperty Name="cau12" ColumnName="cau12" />
+                <ScalarProperty Name="cau11" ColumnName="cau11" />
+                <ScalarProperty Name="cau10" ColumnName="cau10" />
+                <ScalarProperty Name="cau9" ColumnName="cau9" />
+                <ScalarProperty Name="cau8" ColumnName="cau8" />
+                <ScalarProperty Name="cau7" ColumnName="cau7" />
+                <ScalarProperty Name="cau6" ColumnName="cau6" />
+                <ScalarProperty Name="cau5" ColumnName="cau5" />
+                <ScalarProperty Name="cau4" ColumnName="cau4" />
+                <ScalarProperty Name="cau3" ColumnName="cau3" />
+                <ScalarProperty Name="cau2" ColumnName="cau2" />
+                <ScalarProperty Name="cau1" ColumnName="cau1" />
+                <ScalarProperty Name="khac_5" ColumnName="khac_5" />
+                <ScalarProperty Name="trieuchung_2" ColumnName="trieuchung_2" />
+                <ScalarProperty Name="hientai_3" ColumnName="hientai_3" />
+                <ScalarProperty Name="hientai_4" ColumnName="hientai_4" />
+                <ScalarProperty Name="quakhu_2" ColumnName="quakhu_2" />
+                <ScalarProperty Name="ganc" ColumnName="ganc" />
+                <ScalarProperty Name="hientai_2" ColumnName="hientai_2" />
+                <ScalarProperty Name="hientai" ColumnName="hientai" />
+                <ScalarProperty Name="quakhu" ColumnName="quakhu" />
+                <ScalarProperty Name="lao" ColumnName="lao" />
+                <ScalarProperty Name="khac3" ColumnName="khac3" />
+                <ScalarProperty Name="sti1" ColumnName="sti1" />
+                <ScalarProperty Name="sti" ColumnName="sti" />
+                <ScalarProperty Name="bandam" ColumnName="bandam" />
+                <ScalarProperty Name="qhtdtt" ColumnName="qhtdtt" />
+                <ScalarProperty Name="sdmatuy" ColumnName="sdmatuy" />
+                <ScalarProperty Name="qhtd_2" ColumnName="qhtd_2" />
+                <ScalarProperty Name="cau_7_1" ColumnName="cau_7_1" />
+                <ScalarProperty Name="qhtd" ColumnName="qhtd" />
+                <ScalarProperty Name="dungchung" ColumnName="dungchung" />
+                <ScalarProperty Name="tiemchich" ColumnName="tiemchich" />
+                <ScalarProperty Name="matuydautien" ColumnName="matuydautien" />
+                <ScalarProperty Name="tuoi" ColumnName="tuoi" />
+                <ScalarProperty Name="landau" ColumnName="landau" />
+                <ScalarProperty Name="tansuatda" ColumnName="tansuatda" />
+                <ScalarProperty Name="duongsd" ColumnName="duongsd" />
+                <ScalarProperty Name="khac2" ColumnName="khac2" />
+                <ScalarProperty Name="chatgaynghien_2" ColumnName="chatgaynghien_2" />
+                <ScalarProperty Name="khac1" ColumnName="khac1" />
+                <ScalarProperty Name="chatgaynghien" ColumnName="chatgaynghien" />
+                <ScalarProperty Name="namsinh" ColumnName="namsinh" />
+                <ScalarProperty Name="gioitinh" ColumnName="gioitinh" />
+                <ScalarProperty Name="doituong" ColumnName="doituong" />
+                <ScalarProperty Name="ngay" ColumnName="ngay" />
+                <ScalarProperty Name="anh" ColumnName="anh" />
+                <ScalarProperty Name="ngaynhap" ColumnName="ngaynhap" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />

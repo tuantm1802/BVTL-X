@@ -59,5 +59,6 @@ namespace Model.Model
         public Nullable<int> dt_met { get; set; }
         public string cs_met { get; set; }
         public Nullable<int> chuyn_gi_dch_v_complete { get; set; }
+        public Nullable<System.DateTime> sync_date { get; set; }
     }
 }

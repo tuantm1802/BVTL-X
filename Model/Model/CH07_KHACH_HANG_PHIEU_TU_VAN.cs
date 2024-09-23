@@ -141,5 +141,6 @@ namespace Model.Model
         public string vande { get; set; }
         public string thoigian { get; set; }
         public Nullable<int> phiu_t_vn_complete { get; set; }
+        public Nullable<System.DateTime> sync_date { get; set; }
     }
 }

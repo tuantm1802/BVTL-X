@@ -87,6 +87,10 @@ namespace Common.ICommon
         void ConvertApiKhachHangSangLocHIVCH07Entity(List<ResultApiKhachHangSangLocHIVCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_SANG_LOC_HIV> lsObjDB);
         void ConvertApiKhachHangPhieuTuVanCH07Entity(List<ResultApiKhachHangPhieuTuVanCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_PHIEU_TU_VAN> lsObjDB);
         void ConvertApiKhachHangChuyenGuiCH07Entity(List<ResultApiKhachHangChuyenGuiDichVuCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_CHUYEN_GUI> lsObjDB);
+        void ConvertApiKhachHangTheoDauCH07Entity(List<ResultApiKhachHangTheoDauCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_THEO_DAU> lsObjDB);
+        void ConvertApiKhachHangPhieuXetNghiemLaiHIVCH07Entity(List<ResultApiKhachHangPhieuXetNghiemLaiHIVCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV> lsObjDB);
+        void ConvertApiKhachHangBangHoiACECH07Entity(List<ResultApiKhachHangBangHoiACECH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_BANG_HOI_ACE> lsObjDB);
+        void ConvertApiKhachHangAssistQstKienThucCH07Entity(List<ResultApiKhachHangAssistQstKienThucCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC> lsObjDB);
 
     }
 }
