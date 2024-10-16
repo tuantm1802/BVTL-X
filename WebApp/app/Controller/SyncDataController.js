@@ -3,7 +3,7 @@
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
     $scope.modelSearch.maxSize = 5;
-    $scope.modelSearch.pageSize = 10;
+    $scope.modelSearch.pageSize = 50;
     $scope.modelSearch.SortColumn = "Name DESC";
     $scope.ListData = [];
 
@@ -47,10 +47,12 @@
         $scope.ListData = [];
         if (genTable == 1) {
             dataTableApiSync = $('#dataTableApiSync').DataTable({
-                lengthMenu: [10, 20, 30, 50, 60, 100],
+                lengthMenu: [50, 20, 30, 40, 60, 100],
                 serverSide: true,
                 ordering: false,
                 searching: false,
+                autoWidth: false,
+                scrollX: true,
                 ajax: function (data, callback, settings) {
                     var dataUser = [];
                     var totalItems = 0;
@@ -120,21 +122,34 @@
                     },
                 },
                 columns: [
-                    { "data": "STT", },
-                    { "data": "Api_Code" },
-                    { "data": "NameSyncdata" },
-                    { "data": "HrefApi" },
-                    { "data": "ReportId" },
-                    { "data": "TimeReCall" },
-                    { "data": "IsActive" },
-                    { "data": "Start_Time_Sync" },
-                    { "data": "End_Time_Sync" },
-                    { "data": "Message" },
-                    { "data": "RawOrLabel" },
+                    { "data": "STT", "width": "80px" },
+                    { "data": "Api_Code", "width": "150px" },
                     {
+                        "data": "NameSyncdata", "width": "200px",
+                        "createdCell": function (td) {
+                            $(td).css('white-space', 'nowrap');
+                        }
+                    },
+                    { "data": "HrefApi", "width": "250px" },
+                    { "data": "ReportId", "width": "100px" },
+                    { "data": "TimeReCall", "width": "100px" },
+                    { "data": "IsActive", "width": "80px" },
+                    { "data": "Start_Time_Sync", "width": "150px" },
+                    { "data": "End_Time_Sync", "width": "150px" },
+                    { "data": "Message", "width": "200px" },
+                    { "data": "RawOrLabel", "width": "100px" },
+                    {
+                        "data": null,   // Không yêu cầu dữ liệu từ nguồn
                         "title": "Thao tác",
-                        "render": function (data, type, full) { return '<button type="button" ng-click="SyncDataRow(' + full.Api_Id+')" class="btn btn-primary">Đồng bộ</button>' }
-                    }],
+                        "width": "100px",
+                        "createdCell": function (td) {
+                            $(td).css('white-space', 'nowrap');
+                        },
+                        "render": function (data, type, full) {
+                            return '<button type="button" ng-click="SyncDataRow(' + full.Api_Id + ')" class="btn btn-primary">Đồng bộ</button>'
+                        }
+                    }
+                ],
                 
                 rowCallback: function (row) {
                     if (!row.compiled) {
@@ -219,6 +234,9 @@
         $scope.SyncDataIdSeleted = apiId;
         if ($scope.SyncDataIdSeleted > 0 && $scope.SyncDataIdSeleted != undefined) {
 
+            var btn = $('button[ng-click="SyncDataRow(' + apiId + ')"]');
+            btn.html('Processing...').attr('disabled', true); // Đổi nội dung nút và vô hiệu hóa nút
+
             var name = $scope.ListData.filter(function (item) {
                 return item.Api_Id === $scope.SyncDataIdSeleted;
             })[0].NameSyncdata;
@@ -238,8 +256,10 @@
                                 data: { Id: $scope.SyncDataIdSeleted },
                                 success: function (data) {
                                     if (data.Error) {
+                                        btn.html('Thử lại').attr('disabled', false);
                                         toastr.error(data.Title);
                                     } else {
+                                        btn.html('Hoàn thành').attr('disabled', false);
                                         toastr.success(data.Title);
                                         $scope.LoadPage(0);
                                     }

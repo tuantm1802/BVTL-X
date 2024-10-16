@@ -3992,12 +3992,12 @@ namespace Common.Common
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
+                        cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 4);
                     }
 
@@ -4288,14 +4288,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4304,69 +4304,84 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_THONG_TIN_CO_BAN()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
                     
-                    DateTime dateTime;
-                    if (resultApi.ngaynhap != null)
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (resultApi.ngaynhap > new DateTime(1900, 1, 1) && resultApi.ngaynhap < new DateTime(5000, 1, 1))
-                            {
-                                objDB.ngaynhap = resultApi.ngaynhap; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.ngaynhap = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.ngaynhap = null; // Gán null nếu không chuyển đổi được
-                        }
-                    }
-                    else
-                    {
-                        objDB.ngaynhap = null; // Gán null nếu resultApi.time là null
-                    }
+                    //DateTime dateTime;
+                    //if (resultApi.ngaynhap != null)
+                    //{
+                    //    // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                    //    if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                    //    {
+                    //        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                    //        if (resultApi.ngaynhap > new DateTime(1900, 1, 1) && resultApi.ngaynhap < new DateTime(5000, 1, 1))
+                    //        {
+                    //            objDB.ngaynhap = resultApi.ngaynhap; // Gán giá trị nếu hợp lệ
+                    //        }
+                    //        else
+                    //        {
+                    //            objDB.ngaynhap = null; // Gán null nếu không nằm trong khoảng
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        objDB.ngaynhap = null; // Gán null nếu không chuyển đổi được
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    objDB.ngaynhap = null; // Gán null nếu resultApi.time là null
+                    //}
 
-                    if (resultApi.ngay != null)
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (DateTime.TryParseExact(resultApi.ngay, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                            {
-                                objDB.ngay = dateTime; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.ngay = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.ngay = null; // Gán null nếu không chuyển đổi được
-                        }
-                    }
-                    else
-                    {
-                        objDB.ngay = null; // Gán null nếu resultApi.time là null
-                    }
+                    //if (resultApi.ngay != null)
+                    //{
+                    //    // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
+                    //    if (DateTime.TryParseExact(resultApi.ngay, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                    //    {
+                    //        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
+                    //        if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
+                    //        {
+                    //            objDB.ngay = dateTime; // Gán giá trị nếu hợp lệ
+                    //        }
+                    //        else
+                    //        {
+                    //            objDB.ngay = null; // Gán null nếu không nằm trong khoảng
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        objDB.ngay = null; // Gán null nếu không chuyển đổi được
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    objDB.ngay = null; // Gán null nếu resultApi.time là null
+                    //}
 
+                    objDB.ngaynhap = ValidateDateTimeRange(resultApi.ngaynhap);
+                    objDB.ngay = ValidateDateTimeRange(resultApi.ngay);
                     objDB.doituong = resultApi.doituong;
                     objDB.gioitinh = resultApi.gioitinh;
                     objDB.namsinh = resultApi.namsinh;
                     objDB.tuoi = resultApi.tuoi;
                     objDB.thng_tin_c_bn_assist_qst_kin_thc_complete = resultApi.thng_tin_c_bn_assist_qst_kin_thc_complete;
-                    
+                    objDB.ngaytuvan = ValidateDateTimeRange(resultApi.ngaytuvan);
+                    objDB.ngaynhap_tuvan = ValidateDateTimeRange(resultApi.ngaynhap_tuvan);
+                    objDB.ngay_29b439 = ValidateDateTimeRange(resultApi.ngay_29b439);
+                    objDB.ngayxetnghiem = ValidateDateTimeRange(resultApi.ngayxetnghiem);
+                    objDB.ngay_7794e9 = ValidateDateTimeRange(resultApi.ngay_7794e9);
+                    objDB.ngay_ace = ValidateDateTimeRange(resultApi.ngay_ace);
+                    objDB.ngayhoi = ValidateDateTimeRange(resultApi.ngayhoi);
+                    objDB.ngayhoi_fdf6e6 = ValidateDateTimeRange(resultApi.ngayhoi_fdf6e6);
+                    objDB.sng_lc_nc_tiu_complete = resultApi.sng_lc_nc_tiu_complete;
+                    objDB.phiu_t_vn_complete = resultApi.phiu_t_vn_complete;
+                    objDB.chuyn_gi_dch_v_complete = resultApi.chuyn_gi_dch_v_complete;
+                    objDB.phiu_xt_nghim_li_hiv_complete = resultApi.phiu_xt_nghim_li_hiv_complete;
+                    objDB.theo_du_kh_complete = resultApi.theo_du_kh_complete;
+                    objDB.bng_hi_ace_complete = resultApi.bng_hi_ace_complete;
 
                     lsObjDB.Add(objDB);
 
@@ -4423,14 +4438,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4439,7 +4454,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -4531,14 +4546,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4547,7 +4562,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_SANG_LOC_HIV()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -4643,14 +4658,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4659,7 +4674,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_PHIEU_TU_VAN()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -4860,14 +4875,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4876,7 +4891,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_CHUYEN_GUI()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -4892,6 +4907,10 @@ namespace Common.Common
                     
                     // Mapping các thuộc tính từ resultApi sang objDB
                     objDB.loaihinh = resultApi.loaihinh;
+                    objDB.loaihinh___1 = resultApi.loaihinh___1;
+                    objDB.loaihinh___2 = resultApi.loaihinh___2;
+                    objDB.loaihinh___3 = resultApi.loaihinh___3;
+                    objDB.loaihinh___4 = resultApi.loaihinh___4;
                     
                     objDB.diachi_xn = resultApi.diachi_xn;
                     objDB.kq_xn = resultApi.kq_xn;
@@ -4981,14 +5000,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4997,7 +5016,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_THEO_DAU()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -5068,14 +5087,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -5084,7 +5103,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -5152,14 +5171,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -5168,7 +5187,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_BANG_HOI_ACE()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
@@ -5246,14 +5265,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -5262,7 +5281,7 @@ namespace Common.Common
                     objDB = new CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC()
                     {
                         record_id = customer_code,
-                        //city_code = cityCode,
+                        ma_tinh = cityCode,
                         city_code = cityCodeInput,
                         manhom_tbh = group_code,
                         maduan = maDuAn,

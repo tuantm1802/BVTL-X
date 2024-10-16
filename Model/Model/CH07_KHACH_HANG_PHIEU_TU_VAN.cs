@@ -142,5 +142,6 @@ namespace Model.Model
         public string thoigian { get; set; }
         public Nullable<int> phiu_t_vn_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public string ma_tinh { get; set; }
     }
 }

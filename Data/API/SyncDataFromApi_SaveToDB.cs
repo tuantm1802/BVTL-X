@@ -650,7 +650,7 @@ namespace Data.API
                             cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
                         }
 
-                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.thng_tin_c_bn_assist_qst_kin_thc_complete == 2).ToList();
+                        var listDataFiltered = dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList();
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
                         _convertResultApiToEntity.ConvertApiKhachHangTTCBCH07Entity(listDataFiltered, maDuAn, apiCode, cityCode, ref tongHops);

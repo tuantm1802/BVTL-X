@@ -194,9 +194,13 @@
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
+    <Compile Include="Controllers\BaoCao6ThangCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoChiSoController.cs" />
+    <Compile Include="Controllers\BaoCaoNamCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoNamVIIVController.cs" />
-    <Compile Include="Controllers\BaoCaoQuyVIIVController - Copy.cs" />
+    <Compile Include="Controllers\BaoCaoQuyCH07Controller.cs" />
+    <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
+    <Compile Include="Controllers\BaoCaoThangCH07Controller.cs" />
     <Compile Include="Controllers\DGHLVIIVController.cs" />
     <Compile Include="Controllers\KetQuaBHDGController.cs" />
     <Compile Include="Controllers\BaoCaoNamController.cs" />
@@ -291,7 +295,11 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\Controller\ApiController.js" />
+    <Content Include="app\Controller\BaoCao6ThangCH07Controller.js" />
+    <Content Include="app\Controller\BaoCaoNamCH07Controller.js" />
+    <Content Include="app\Controller\BaoCaoQuyCH07Controller.js" />
     <Content Include="app\Controller\BaoCaoQuyCD43Controller.js" />
+    <Content Include="app\Controller\BaoCaoThangCH07Controller.js" />
     <Content Include="app\Controller\HomeController.js" />
     <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
     <Content Include="app\Controller\BaoCaoChiSoController.js" />
@@ -560,8 +568,11 @@
     <Content Include="Assest\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Assest\css\bootstrap-duallistbox.min.css" />
     <Content Include="Assest\css\bootstrap-editable.min.css" />
+    <Content Include="Assest\css\bootstrap-grid.min.css" />
     <Content Include="Assest\css\bootstrap-multiselect.min.css" />
+    <Content Include="Assest\css\bootstrap-reboot.min.css" />
     <Content Include="Assest\css\bootstrap-timepicker.min.css" />
+    <Content Include="Assest\css\bootstrap-utilities.min.css" />
     <Content Include="Assest\css\bootstrap.min.css" />
     <Content Include="Assest\css\sb-admin-2.css" />
     <Content Include="Assest\css\sb-admin-2.min.css" />
@@ -2522,7 +2533,6 @@
     <Content Include="Assest\plugins\toastr\toastr.js.map" />
     <Content Include="Assest\plugins\toastr\toastr.min.css" />
     <Content Include="Assest\plugins\toastr\toastr.min.js" />
-    <Content Include="Content\Bao_cao_quan_so.xlsx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -2533,6 +2543,9 @@
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\chat-box.css" />
     <Content Include="Content\chat-box.js" />
+    <Content Include="Content\datatables\css\dataTables.bootstrap4.css" />
+    <Content Include="Content\datatables\css\datatables.min.css" />
+    <Content Include="Content\datatables\js\datatables.min.js" />
     <Content Include="Content\Images\32px.png" />
     <Content Include="Content\Images\40px.png" />
     <Content Include="Content\Images\check_radio_home.png" />
@@ -2575,6 +2588,15 @@
     <Content Include="Content\js\jquery.ztree.excheck.min.js" />
     <Content Include="Content\js\jquery.ztree.exhide.js" />
     <Content Include="Content\js\jquery.ztree.exhide.min.js" />
+    <Content Include="Content\sb-admin\assets\demo\chart-area-demo.js" />
+    <Content Include="Content\sb-admin\assets\demo\chart-bar-demo.js" />
+    <Content Include="Content\sb-admin\assets\demo\chart-pie-demo.js" />
+    <Content Include="Content\sb-admin\assets\demo\datatables-demo.js" />
+    <Content Include="Content\sb-admin\assets\img\error-404-monochrome.svg" />
+    <Content Include="Content\sb-admin\css\style.css" />
+    <Content Include="Content\sb-admin\css\styles.css" />
+    <Content Include="Content\sb-admin\js\datatables-simple-demo.js" />
+    <Content Include="Content\sb-admin\js\scripts.js" />
     <Content Include="Content\sb-theme\bootstrap\js\bootstrap.bundle.js" />
     <Content Include="Content\sb-theme\bootstrap\js\bootstrap.bundle.min.js" />
     <Content Include="Content\sb-theme\bootstrap\js\bootstrap.js" />
@@ -4283,11 +4305,16 @@
     <Content Include="Content\sb-theme\jquery\jquery.min.js" />
     <Content Include="Content\sb-theme\jquery\jquery.slim.js" />
     <Content Include="Content\sb-theme\jquery\jquery.slim.min.js" />
+    <Content Include="Content\select2\css\select2-bootstrap-5-theme.min.css" />
+    <Content Include="Content\select2\css\select2.min.css" />
+    <Content Include="Content\select2\js\bootstrap.bundle.min.js" />
+    <Content Include="Content\js\jquery-3.6.0.min.js" />
+    <Content Include="Content\select2\js\jquery.slim.min.js" />
+    <Content Include="Content\select2\js\select2.min.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\styleComboTree1.css" />
     <Content Include="Content\styleConboTree.css" />
-    <Content Include="Content\Template\Giai_Trinh_Cap_Phat.xlsx" />
     <Content Include="Content\zTreeStyle.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
@@ -4296,7 +4323,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Tmp_import_2810YYYY_fe7005f1-7d7b-4813-9434-efee44b64c2a.xlsx" />
     <Content Include="ReportViewerWebForm.aspx" />
     <Content Include="Report\DataSet\ChuyenTienDiaPhuongDataSet.xsc">
       <DependentUpon>ChuyenTienDiaPhuongDataSet.xsd</DependentUpon>
@@ -4648,6 +4674,10 @@
     <Content Include="Views\User\_resetPassword.cshtml" />
     <Content Include="Views\BaoCaoNamVIIV\Index.cshtml" />
     <Content Include="Views\BaoCaoQuyCD43\Index.cshtml" />
+    <Content Include="Views\BaoCaoThangCH07\Index.cshtml" />
+    <Content Include="Views\BaoCaoQuyCH07\Index.cshtml" />
+    <Content Include="Views\BaoCao6ThangCH07\Index.cshtml" />
+    <Content Include="Views\BaoCaoNamCH07\Index.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

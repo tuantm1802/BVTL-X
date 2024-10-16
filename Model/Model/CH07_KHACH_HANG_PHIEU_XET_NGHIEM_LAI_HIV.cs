@@ -24,5 +24,6 @@ namespace Model.Model
         public Nullable<int> kqxn_lai { get; set; }
         public Nullable<int> phiu_xt_nghim_li_hiv_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public string ma_tinh { get; set; }
     }
 }

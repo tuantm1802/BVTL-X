@@ -60,5 +60,10 @@ namespace Model.Model
         public string cs_met { get; set; }
         public Nullable<int> chuyn_gi_dch_v_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public Nullable<int> loaihinh___1 { get; set; }
+        public Nullable<int> loaihinh___2 { get; set; }
+        public Nullable<int> loaihinh___3 { get; set; }
+        public Nullable<int> loaihinh___4 { get; set; }
+        public string ma_tinh { get; set; }
     }
 }

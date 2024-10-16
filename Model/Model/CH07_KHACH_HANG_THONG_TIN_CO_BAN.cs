@@ -29,5 +29,20 @@ namespace Model.Model
         public string maduan { get; set; }
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
+        public Nullable<System.DateTime> ngaytuvan { get; set; }
+        public Nullable<System.DateTime> ngaynhap_tuvan { get; set; }
+        public Nullable<System.DateTime> ngay_29b439 { get; set; }
+        public Nullable<System.DateTime> ngayxetnghiem { get; set; }
+        public Nullable<System.DateTime> ngay_7794e9 { get; set; }
+        public Nullable<System.DateTime> ngay_ace { get; set; }
+        public Nullable<System.DateTime> ngayhoi { get; set; }
+        public Nullable<int> sng_lc_nc_tiu_complete { get; set; }
+        public Nullable<int> phiu_t_vn_complete { get; set; }
+        public Nullable<int> chuyn_gi_dch_v_complete { get; set; }
+        public Nullable<int> phiu_xt_nghim_li_hiv_complete { get; set; }
+        public Nullable<int> theo_du_kh_complete { get; set; }
+        public Nullable<int> bng_hi_ace_complete { get; set; }
+        public string ma_tinh { get; set; }
+        public Nullable<System.DateTime> ngayhoi_fdf6e6 { get; set; }
     }
 }

@@ -1430,6 +1430,7 @@
           <Property Name="amtinh" Type="nvarchar" MaxLength="255" />
           <Property Name="thng_tin_c_bn_assist_qst_kin_thc_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_BANG_HOI_ACE">
           <Key>
@@ -1454,6 +1455,7 @@
           <Property Name="diem" Type="int" />
           <Property Name="bng_hi_ace_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_CHUYEN_GUI">
           <Key>
@@ -1505,6 +1507,11 @@
           <Property Name="cs_met" Type="varchar" MaxLength="255" />
           <Property Name="chuyn_gi_dch_v_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="loaihinh___1" Type="int" />
+          <Property Name="loaihinh___2" Type="int" />
+          <Property Name="loaihinh___3" Type="int" />
+          <Property Name="loaihinh___4" Type="int" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_PHIEU_TU_VAN">
           <Key>
@@ -1635,9 +1642,10 @@
           <Property Name="tongket" Type="int" />
           <Property Name="tuvantiep" Type="int" />
           <Property Name="vande" Type="nvarchar(max)" />
-          <Property Name="thoigian" Type="nvarchar(max)" />
+          <Property Name="thoigian" Type="varchar" MaxLength="20" />
           <Property Name="phiu_t_vn_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
           <Key>
@@ -1653,6 +1661,7 @@
           <Property Name="kqxn_lai" Type="int" />
           <Property Name="phiu_xt_nghim_li_hiv_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_SANG_LOC_HIV">
           <Key>
@@ -1673,6 +1682,7 @@
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1692,6 +1702,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="sync_date" Type="datetime" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_THEO_DAU">
           <Key>
@@ -1709,6 +1720,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="khac_a7b30e" Type="nvarchar" MaxLength="255" />
           <Property Name="ghichu" Type="nvarchar(max)" />
           <Property Name="theo_du_kh_complete" Type="int" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
           <Key>
@@ -1729,6 +1741,21 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="ngaytuvan" Type="date" />
+          <Property Name="ngaynhap_tuvan" Type="date" />
+          <Property Name="ngay_29b439" Type="date" />
+          <Property Name="ngayxetnghiem" Type="date" />
+          <Property Name="ngay_7794e9" Type="date" />
+          <Property Name="ngay_ace" Type="date" />
+          <Property Name="ngayhoi" Type="date" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="int" />
+          <Property Name="phiu_t_vn_complete" Type="int" />
+          <Property Name="chuyn_gi_dch_v_complete" Type="int" />
+          <Property Name="phiu_xt_nghim_li_hiv_complete" Type="int" />
+          <Property Name="theo_du_kh_complete" Type="int" />
+          <Property Name="bng_hi_ace_complete" Type="int" />
+          <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
+          <Property Name="ngayhoi_fdf6e6" Type="date" />
         </EntityType>
         <EntityType Name="CHITIEU_DUAN">
           <Key>
@@ -2310,7 +2337,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
     [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[maduan] AS [maduan], 
     [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[manhom_tbh] AS [manhom_tbh], 
     [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[city_code] AS [city_code], 
-    [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[sync_date] AS [sync_date]
+    [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[sync_date] AS [sync_date], 
+    [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU].[ma_tinh] AS [ma_tinh]
     FROM [dbo].[CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU] AS [CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO" Association="Self.BVTL_CITES_BVTL_BO_BIEU_MAU_KH_BAO_CAO">
@@ -4521,6 +4549,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
           <Key>
@@ -4541,6 +4570,21 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ngaytuvan" Type="DateTime" Precision="0" />
+          <Property Name="ngaynhap_tuvan" Type="DateTime" Precision="0" />
+          <Property Name="ngay_29b439" Type="DateTime" Precision="0" />
+          <Property Name="ngayxetnghiem" Type="DateTime" Precision="0" />
+          <Property Name="ngay_7794e9" Type="DateTime" Precision="0" />
+          <Property Name="ngay_ace" Type="DateTime" Precision="0" />
+          <Property Name="ngayhoi" Type="DateTime" Precision="0" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="Int32" />
+          <Property Name="phiu_t_vn_complete" Type="Int32" />
+          <Property Name="chuyn_gi_dch_v_complete" Type="Int32" />
+          <Property Name="phiu_xt_nghim_li_hiv_complete" Type="Int32" />
+          <Property Name="theo_du_kh_complete" Type="Int32" />
+          <Property Name="bng_hi_ace_complete" Type="Int32" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="ngayhoi_fdf6e6" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU">
           <Key>
@@ -4558,6 +4602,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_PHIEU_TU_VAN">
           <Key>
@@ -4688,9 +4733,10 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="tongket" Type="Int32" />
           <Property Name="tuvantiep" Type="Int32" />
           <Property Name="vande" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="thoigian" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="thoigian" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="phiu_t_vn_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ma_tinh" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_THEO_DAU">
           <Key>
@@ -4708,6 +4754,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="khac_a7b30e" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ghichu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="theo_du_kh_complete" Type="Int32" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_CHUYEN_GUI">
           <Key>
@@ -4759,6 +4806,11 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="cs_met" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="chuyn_gi_dch_v_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="loaihinh___1" Type="Int32" />
+          <Property Name="loaihinh___2" Type="Int32" />
+          <Property Name="loaihinh___3" Type="Int32" />
+          <Property Name="loaihinh___4" Type="Int32" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_BANG_HOI_ACE">
           <Key>
@@ -4783,6 +4835,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="diem" Type="Int32" />
           <Property Name="bng_hi_ace_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
           <Key>
@@ -4798,6 +4851,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="kqxn_lai" Type="Int32" />
           <Property Name="phiu_xt_nghim_li_hiv_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
           <Key>
@@ -5029,6 +5083,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="amtinh" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="thng_tin_c_bn_assist_qst_kin_thc_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6395,6 +6450,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_SANG_LOC_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_SANG_LOC_HIV">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_SANG_LOC_HIV">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
@@ -6416,6 +6472,21 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_THONG_TIN_CO_BAN">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
+                <ScalarProperty Name="ngayhoi_fdf6e6" ColumnName="ngayhoi_fdf6e6" />
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
+                <ScalarProperty Name="bng_hi_ace_complete" ColumnName="bng_hi_ace_complete" />
+                <ScalarProperty Name="theo_du_kh_complete" ColumnName="theo_du_kh_complete" />
+                <ScalarProperty Name="phiu_xt_nghim_li_hiv_complete" ColumnName="phiu_xt_nghim_li_hiv_complete" />
+                <ScalarProperty Name="chuyn_gi_dch_v_complete" ColumnName="chuyn_gi_dch_v_complete" />
+                <ScalarProperty Name="phiu_t_vn_complete" ColumnName="phiu_t_vn_complete" />
+                <ScalarProperty Name="sng_lc_nc_tiu_complete" ColumnName="sng_lc_nc_tiu_complete" />
+                <ScalarProperty Name="ngayhoi" ColumnName="ngayhoi" />
+                <ScalarProperty Name="ngay_ace" ColumnName="ngay_ace" />
+                <ScalarProperty Name="ngay_7794e9" ColumnName="ngay_7794e9" />
+                <ScalarProperty Name="ngayxetnghiem" ColumnName="ngayxetnghiem" />
+                <ScalarProperty Name="ngay_29b439" ColumnName="ngay_29b439" />
+                <ScalarProperty Name="ngaynhap_tuvan" ColumnName="ngaynhap_tuvan" />
+                <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
@@ -6437,6 +6508,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -6455,6 +6527,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_PHIEU_TU_VAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_TU_VAN">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_PHIEU_TU_VAN">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="phiu_t_vn_complete" ColumnName="phiu_t_vn_complete" />
                 <ScalarProperty Name="thoigian" ColumnName="thoigian" />
@@ -6589,6 +6662,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_THEO_DAU">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_THEO_DAU">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_THEO_DAU">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="theo_du_kh_complete" ColumnName="theo_du_kh_complete" />
                 <ScalarProperty Name="ghichu" ColumnName="ghichu" />
                 <ScalarProperty Name="khac_a7b30e" ColumnName="khac_a7b30e" />
@@ -6607,6 +6681,11 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_CHUYEN_GUI">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_CHUYEN_GUI">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_CHUYEN_GUI">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
+                <ScalarProperty Name="loaihinh___4" ColumnName="loaihinh___4" />
+                <ScalarProperty Name="loaihinh___3" ColumnName="loaihinh___3" />
+                <ScalarProperty Name="loaihinh___2" ColumnName="loaihinh___2" />
+                <ScalarProperty Name="loaihinh___1" ColumnName="loaihinh___1" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="chuyn_gi_dch_v_complete" ColumnName="chuyn_gi_dch_v_complete" />
                 <ScalarProperty Name="cs_met" ColumnName="cs_met" />
@@ -6659,6 +6738,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_BANG_HOI_ACE">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_BANG_HOI_ACE">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_BANG_HOI_ACE">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="bng_hi_ace_complete" ColumnName="bng_hi_ace_complete" />
                 <ScalarProperty Name="diem" ColumnName="diem" />
@@ -6684,6 +6764,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="phiu_xt_nghim_li_hiv_complete" ColumnName="phiu_xt_nghim_li_hiv_complete" />
                 <ScalarProperty Name="kqxn_lai" ColumnName="kqxn_lai" />
@@ -6700,6 +6781,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
+                <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="sync_date" ColumnName="sync_date" />
                 <ScalarProperty Name="thng_tin_c_bn_assist_qst_kin_thc_complete" ColumnName="thng_tin_c_bn_assist_qst_kin_thc_complete" />
                 <ScalarProperty Name="amtinh" ColumnName="amtinh" />

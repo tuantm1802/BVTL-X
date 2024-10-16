@@ -240,5 +240,6 @@ namespace Model.Model
         public string amtinh { get; set; }
         public Nullable<int> thng_tin_c_bn_assist_qst_kin_thc_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public string ma_tinh { get; set; }
     }
 }

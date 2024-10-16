@@ -21,6 +21,7 @@ namespace Data.InterfaceDA.Admin
         List<BaoCaoModel> GetDataReportChiSo(ReportSearchModel modelSearch);
 
         List<BaoCaoModel> GetDataReportCD43(ReportSearchModel modelSearch);
+        List<BaoCaoModel> GetDataReportCH07(ReportSearchModel modelSearch);
         /// <summary>
         /// Lấy dữ liệu báo cáo tổng hợp theo trang
         /// </summary>

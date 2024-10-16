@@ -5,7 +5,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>D:\Publish\BVTL\Web</_PublishTargetUrl>
-    <History>True|2022-11-19T05:16:32.8960995Z;True|2022-10-27T22:01:33.9686408+07:00;True|2021-11-01T14:48:50.0222188+07:00;True|2021-11-01T10:19:26.7428763+07:00;True|2021-11-01T10:15:52.7627782+07:00;True|2021-10-28T14:26:55.0731160+07:00;True|2021-10-27T13:32:49.4769507+07:00;True|2021-10-27T13:31:45.7411410+07:00;True|2021-10-27T11:10:02.9301292+07:00;True|2021-10-19T14:12:35.6429155+07:00;True|2021-10-19T08:52:09.1733992+07:00;True|2021-10-15T12:42:15.1027602+07:00;False|2021-10-15T12:40:41.4887036+07:00;False|2021-10-15T12:39:31.1476899+07:00;True|2021-07-27T12:35:57.1606808+07:00;True|2021-07-27T11:16:28.3730227+07:00;True|2021-07-27T08:53:37.8073721+07:00;False|2021-07-27T08:52:30.7804996+07:00;True|2021-07-06T10:48:00.5515471+07:00;True|2021-07-02T09:13:17.6412651+07:00;True|2021-06-30T10:19:14.3561094+07:00;True|2021-06-30T09:55:53.2733827+07:00;True|2021-06-23T13:37:11.9524242+07:00;True|2021-06-23T09:39:29.1191563+07:00;True|2021-06-18T16:13:57.1551824+07:00;True|2021-06-17T09:10:26.9976032+07:00;True|2021-06-10T14:57:42.3986120+07:00;True|2021-06-09T17:31:17.3762055+07:00;True|2021-06-09T17:25:29.3555443+07:00;True|2021-06-09T14:05:26.2318835+07:00;True|2021-06-09T13:53:10.4807766+07:00;True|2021-06-09T08:44:07.2025698+07:00;True|2021-06-08T16:14:09.3385273+07:00;True|2021-06-04T13:57:02.4587053+07:00;True|2021-06-03T16:05:34.0213617+07:00;True|2021-06-02T10:34:51.5498492+07:00;True|2021-06-02T10:33:52.4077055+07:00;True|2021-05-31T14:26:33.5933998+07:00;True|2021-05-31T14:20:37.1738396+07:00;True|2021-05-31T09:12:50.4815665+07:00;True|2021-05-28T11:03:10.9609773+07:00;True|2021-05-28T10:39:18.3872202+07:00;False|2021-05-24T12:09:43.9132652+07:00;True|2021-05-20T18:04:33.3786585+07:00;True|2021-05-20T15:05:07.9267167+07:00;True|2021-05-19T17:55:59.6833958+07:00;True|2021-05-18T14:09:06.7468284+07:00;True|2021-05-18T11:52:55.2019534+07:00;True|2021-05-18T11:51:37.7134307+07:00;True|2021-05-17T16:52:11.8390977+07:00;True|2021-05-17T16:28:34.5843672+07:00;True|2021-05-17T14:24:07.6339366+07:00;True|2021-05-13T10:12:45.5676453+07:00;True|2021-05-13T09:40:38.7777588+07:00;True|2021-05-13T08:56:17.3232118+07:00;True|2021-05-05T16:58:27.9848553+07:00;False|2021-05-05T16:57:21.5609103+07:00;False|2021-05-05T16:56:52.6738337+07:00;False|2021-05-05T16:34:27.4118755+07:00;False|2021-05-05T16:22:30.1313984+07:00;True|2021-04-14T11:05:24.8490248+07:00;True|2021-04-14T11:04:21.0921570+07:00;True|2021-04-14T10:56:44.3415657+07:00;True|2021-04-12T08:38:27.3673666+07:00;True|2021-04-09T10:25:02.9164560+07:00;</History>
+    <History>True|2024-10-16T07:32:49.3355181Z||;True|2024-10-11T16:14:44.7471851+07:00||;True|2022-11-19T12:16:32.8960995+07:00||;True|2022-10-27T22:01:33.9686408+07:00||;True|2021-11-01T14:48:50.0222188+07:00||;True|2021-11-01T10:19:26.7428763+07:00||;True|2021-11-01T10:15:52.7627782+07:00||;True|2021-10-28T14:26:55.0731160+07:00||;True|2021-10-27T13:32:49.4769507+07:00||;True|2021-10-27T13:31:45.7411410+07:00||;True|2021-10-27T11:10:02.9301292+07:00||;True|2021-10-19T14:12:35.6429155+07:00||;True|2021-10-19T08:52:09.1733992+07:00||;True|2021-10-15T12:42:15.1027602+07:00||;False|2021-10-15T12:40:41.4887036+07:00||;False|2021-10-15T12:39:31.1476899+07:00||;True|2021-07-27T12:35:57.1606808+07:00||;True|2021-07-27T11:16:28.3730227+07:00||;True|2021-07-27T08:53:37.8073721+07:00||;False|2021-07-27T08:52:30.7804996+07:00||;True|2021-07-06T10:48:00.5515471+07:00||;True|2021-07-02T09:13:17.6412651+07:00||;True|2021-06-30T10:19:14.3561094+07:00||;True|2021-06-30T09:55:53.2733827+07:00||;True|2021-06-23T13:37:11.9524242+07:00||;True|2021-06-23T09:39:29.1191563+07:00||;True|2021-06-18T16:13:57.1551824+07:00||;True|2021-06-17T09:10:26.9976032+07:00||;True|2021-06-10T14:57:42.3986120+07:00||;True|2021-06-09T17:31:17.3762055+07:00||;True|2021-06-09T17:25:29.3555443+07:00||;True|2021-06-09T14:05:26.2318835+07:00||;True|2021-06-09T13:53:10.4807766+07:00||;True|2021-06-09T08:44:07.2025698+07:00||;True|2021-06-08T16:14:09.3385273+07:00||;True|2021-06-04T13:57:02.4587053+07:00||;True|2021-06-03T16:05:34.0213617+07:00||;True|2021-06-02T10:34:51.5498492+07:00||;True|2021-06-02T10:33:52.4077055+07:00||;True|2021-05-31T14:26:33.5933998+07:00||;True|2021-05-31T14:20:37.1738396+07:00||;True|2021-05-31T09:12:50.4815665+07:00||;True|2021-05-28T11:03:10.9609773+07:00||;True|2021-05-28T10:39:18.3872202+07:00||;False|2021-05-24T12:09:43.9132652+07:00||;True|2021-05-20T18:04:33.3786585+07:00||;True|2021-05-20T15:05:07.9267167+07:00||;True|2021-05-19T17:55:59.6833958+07:00||;True|2021-05-18T14:09:06.7468284+07:00||;True|2021-05-18T11:52:55.2019534+07:00||;True|2021-05-18T11:51:37.7134307+07:00||;True|2021-05-17T16:52:11.8390977+07:00||;True|2021-05-17T16:28:34.5843672+07:00||;True|2021-05-17T14:24:07.6339366+07:00||;True|2021-05-13T10:12:45.5676453+07:00||;True|2021-05-13T09:40:38.7777588+07:00||;True|2021-05-13T08:56:17.3232118+07:00||;True|2021-05-05T16:58:27.9848553+07:00||;False|2021-05-05T16:57:21.5609103+07:00||;False|2021-05-05T16:56:52.6738337+07:00||;False|2021-05-05T16:34:27.4118755+07:00||;False|2021-05-05T16:22:30.1313984+07:00||;True|2021-04-14T11:05:24.8490248+07:00||;True|2021-04-14T11:04:21.0921570+07:00||;True|2021-04-14T10:56:44.3415657+07:00||;True|2021-04-12T08:38:27.3673666+07:00||;True|2021-04-09T10:25:02.9164560+07:00||;</History>
+    <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
     <File Include="app/app.js">
@@ -14,32 +15,50 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="app/Controller/ApiController.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
+    <File Include="app/Controller/BaoCao6ThangCH07Controller.js">
+      <publishTime>10/11/2024 15:46:05</publishTime>
+    </File>
     <File Include="app/Controller/BaoCao6ThangController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoChiSo6ThangController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoChiSoController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
+    </File>
+    <File Include="app/Controller/BaoCaoNamCH07Controller.js">
+      <publishTime>10/11/2024 22:19:18</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoNamController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>01/08/2024 11:30:24</publishTime>
+    </File>
+    <File Include="app/Controller/BaoCaoNamVIIVController.js">
+      <publishTime>04/04/2024 15:35:13</publishTime>
+    </File>
+    <File Include="app/Controller/BaoCaoQuyCD43Controller.js">
+      <publishTime>09/18/2024 22:17:32</publishTime>
+    </File>
+    <File Include="app/Controller/BaoCaoQuyCH07Controller.js">
+      <publishTime>10/11/2024 14:38:37</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoQuyController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoQuyVIIVController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
+    </File>
+    <File Include="app/Controller/BaoCaoThangCH07Controller.js">
+      <publishTime>10/11/2024 00:36:55</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoThangController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoTongHopController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BaoCaoTongHopQuyVIIVController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/BienBanKiemKeController.js">
       <publishTime>03/13/2021 14:47:55</publishTime>
@@ -84,10 +103,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/26/2021 08:03:54</publishTime>
     </File>
     <File Include="app/Controller/ChuyenGuiDichVuController.js">
-      <publishTime>03/07/2023 21:29:40</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/CityController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/CongTyController.js">
       <publishTime>10/26/2021 08:03:54</publishTime>
@@ -96,7 +115,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>04/17/2021 10:19:23</publishTime>
     </File>
     <File Include="app/Controller/CustomerController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:28:20</publishTime>
     </File>
     <File Include="app/Controller/DanhMucDonViSuDungController.js">
       <publishTime>08/02/2021 08:50:34</publishTime>
@@ -114,7 +133,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="app/Controller/DGHLVIIVController.js">
-      <publishTime>03/06/2023 18:59:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/DonViCauHinhController.js">
       <publishTime>10/24/2021 09:02:13</publishTime>
@@ -140,6 +159,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="app/Controller/FlexValueController.js">
       <publishTime>10/16/2021 08:43:56</publishTime>
     </File>
+    <File Include="app/Controller/HomeController.js">
+      <publishTime>11/03/2023 00:24:02</publishTime>
+    </File>
     <File Include="app/Controller/HopDong/DinhMucVatTuController.js">
       <publishTime>10/24/2021 09:02:13</publishTime>
     </File>
@@ -162,25 +184,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/27/2021 08:38:45</publishTime>
     </File>
     <File Include="app/Controller/KetQuaACEController.js">
-      <publishTime>03/06/2023 18:57:37</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/KetQuaASSISTController.js">
-      <publishTime>03/06/2023 18:58:25</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/KetQuaBHDGController.js">
-      <publishTime>03/06/2023 18:58:35</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/KetQuaHIVController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/KetQuaSangLocController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>01/19/2024 15:46:00</publishTime>
     </File>
     <File Include="app/Controller/KetQuaSKTTController.js">
-      <publishTime>03/06/2023 18:59:13</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/KetQuaXNNTController.js">
-      <publishTime>03/06/2023 18:59:19</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/Kho/BienBanKiemKeController.js">
       <publishTime>05/07/2021 08:16:54</publishTime>
@@ -255,10 +277,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/27/2021 09:30:29</publishTime>
     </File>
     <File Include="app/Controller/NotificationController.js">
-      <publishTime>03/04/2023 08:31:16</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/PhieuTuVanController.js">
-      <publishTime>03/06/2023 19:00:32</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/QuanLyHopDongController.js">
       <publishTime>08/23/2021 09:11:41</publishTime>
@@ -306,7 +328,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="app/Controller/SyncDataController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>10/11/2024 00:35:42</publishTime>
     </File>
     <File Include="app/Controller/SysparameterController.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -345,22 +367,22 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/21/2021 10:36:27</publishTime>
     </File>
     <File Include="app/Controller/TrainingDataCollVIIVController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/TrangPhucController.js">
       <publishTime>10/23/2021 17:04:16</publishTime>
     </File>
     <File Include="app/Controller/TTKHMaDaVIIVController.js">
-      <publishTime>03/06/2023 18:59:49</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/TTTruyenThongVIIVController.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="app/Controller/UserChangePasswordController.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="app/Controller/UserController.js">
-      <publishTime>03/06/2023 23:09:36</publishTime>
+      <publishTime>04/11/2023 11:19:44</publishTime>
     </File>
     <File Include="app/Controller/VatTuPhuController.js">
       <publishTime>07/30/2021 10:11:36</publishTime>
@@ -1044,7 +1066,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
     <File Include="App_Assets/js/popper.min.js">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="App_Assets/sass/footer.scss">
       <publishTime>09/28/2022 15:59:07</publishTime>
@@ -1097,14 +1119,23 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Assest/css/bootstrap-editable.min.css">
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
+    <File Include="Assest/css/bootstrap-grid.min.css">
+      <publishTime>10/05/2024 15:33:50</publishTime>
+    </File>
     <File Include="Assest/css/bootstrap-multiselect.min.css">
       <publishTime>09/28/2022 15:59:07</publishTime>
+    </File>
+    <File Include="Assest/css/bootstrap-reboot.min.css">
+      <publishTime>10/05/2024 15:33:50</publishTime>
     </File>
     <File Include="Assest/css/bootstrap-timepicker.min.css">
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
+    <File Include="Assest/css/bootstrap-utilities.min.css">
+      <publishTime>10/05/2024 15:33:50</publishTime>
+    </File>
     <File Include="Assest/css/bootstrap.min.css">
-      <publishTime>09/28/2022 15:59:07</publishTime>
+      <publishTime>10/05/2024 15:33:50</publishTime>
     </File>
     <File Include="Assest/css/chosen.min.css">
       <publishTime>01/22/2021 09:22:58</publishTime>
@@ -1146,10 +1177,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
     <File Include="Assest/css/sb-admin-2.min.css">
-      <publishTime>10/24/2022 23:55:40</publishTime>
+      <publishTime>10/11/2024 22:30:35</publishTime>
     </File>
     <File Include="Assest/css/select2.min.css">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>10/07/2024 22:34:46</publishTime>
     </File>
     <File Include="Assest/css/treeGrid.css">
       <publishTime>04/17/2021 10:15:25</publishTime>
@@ -1497,7 +1528,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
     <File Include="Assest/js/bootstrap.min.js">
-      <publishTime>09/28/2022 15:59:07</publishTime>
+      <publishTime>10/05/2024 15:46:27</publishTime>
     </File>
     <File Include="Assest/js/buttons.colVis.min.js">
       <publishTime>01/22/2021 09:23:01</publishTime>
@@ -1626,7 +1657,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
     <File Include="Assest/js/jquery.validate.min.js">
-      <publishTime>09/28/2022 15:59:07</publishTime>
+      <publishTime>10/07/2024 14:59:14</publishTime>
     </File>
     <File Include="Assest/js/markdown.min.js">
       <publishTime>01/22/2021 09:23:01</publishTime>
@@ -1644,10 +1675,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:07</publishTime>
     </File>
     <File Include="Assest/js/sb-admin-2.min.js">
-      <publishTime>09/28/2022 15:59:07</publishTime>
+      <publishTime>10/07/2024 21:28:12</publishTime>
     </File>
     <File Include="Assest/js/select2.min.js">
-      <publishTime>09/28/2022 15:59:07</publishTime>
+      <publishTime>10/07/2024 22:06:31</publishTime>
     </File>
     <File Include="Assest/js/simple.money.format.js">
       <publishTime>09/28/2022 15:59:07</publishTime>
@@ -8124,25 +8155,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/25/2020 17:43:52</publishTime>
     </File>
     <File Include="bin/Common.dll">
-      <publishTime>03/08/2023 11:37:25</publishTime>
+      <publishTime>10/16/2024 20:43:03</publishTime>
     </File>
     <File Include="bin/Common.dll.config">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="bin/Common.pdb">
-      <publishTime>03/08/2023 11:37:25</publishTime>
+      <publishTime>10/16/2024 20:43:03</publishTime>
     </File>
     <File Include="bin/contact.cshtml.a8d08dba.compiled">
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/Data.dll">
-      <publishTime>03/08/2023 11:37:37</publishTime>
+      <publishTime>10/16/2024 20:43:03</publishTime>
     </File>
     <File Include="bin/Data.dll.config">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>04/03/2024 20:07:25</publishTime>
     </File>
     <File Include="bin/Data.pdb">
-      <publishTime>03/08/2023 11:37:37</publishTime>
+      <publishTime>10/16/2024 20:43:03</publishTime>
     </File>
     <File Include="bin/DataTables-Editor-Server.dll">
       <publishTime>10/05/2022 11:38:17</publishTime>
@@ -8178,13 +8209,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:41</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:15</publishTime>
     </File>
     <File Include="bin/EntityFramework.SqlServer.dll">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:15</publishTime>
     </File>
     <File Include="bin/EnvDTE.dll">
-      <publishTime>11/29/2018 17:35:16</publishTime>
+      <publishTime>02/11/2022 21:44:40</publishTime>
     </File>
     <File Include="bin/EPPlus.dll">
       <publishTime>11/08/2022 10:40:51</publishTime>
@@ -8619,13 +8650,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/05/2022 11:38:22</publishTime>
     </File>
     <File Include="bin/Model.dll">
-      <publishTime>03/08/2023 11:37:24</publishTime>
+      <publishTime>10/16/2024 20:43:02</publishTime>
     </File>
     <File Include="bin/Model.dll.config">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>10/16/2024 20:32:18</publishTime>
     </File>
     <File Include="bin/Model.pdb">
-      <publishTime>03/08/2023 11:37:24</publishTime>
+      <publishTime>10/16/2024 20:43:02</publishTime>
     </File>
     <File Include="bin/myprofile.cshtml.65793277.compiled">
       <publishTime>11/01/2021 14:47:41</publishTime>
@@ -8673,55 +8704,55 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:43</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe.config">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/csc.rsp">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/csi.exe">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/csi.exe.config">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/csi.rsp">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.Scripting.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CodeAnalysis.Scripting.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.amd64.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.x86.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.Managed.Core.targets">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/Microsoft.Win32.Primitives.dll">
       <publishTime>06/04/2021 10:54:23</publishTime>
@@ -8730,10 +8761,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:54:23</publishTime>
     </File>
     <File Include="bin/roslyn/System.Buffers.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Collections.Immutable.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Console.dll">
       <publishTime>06/04/2021 10:54:23</publishTime>
@@ -8763,7 +8794,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:54:23</publishTime>
     </File>
     <File Include="bin/roslyn/System.Memory.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Net.Http.dll">
       <publishTime>06/04/2021 10:54:23</publishTime>
@@ -8772,13 +8803,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:54:23</publishTime>
     </File>
     <File Include="bin/roslyn/System.Numerics.Vectors.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Reflection.Metadata.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Runtime.CompilerServices.Unsafe.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Runtime.InteropServices.RuntimeInformation.dll">
       <publishTime>06/04/2021 10:54:23</publishTime>
@@ -8796,10 +8827,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:54:23</publishTime>
     </File>
     <File Include="bin/roslyn/System.Text.Encoding.CodePages.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.Threading.Tasks.Extensions.dll">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/System.ValueTuple.dll">
       <publishTime>06/04/2021 10:54:23</publishTime>
@@ -8817,19 +8848,19 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/04/2021 10:54:23</publishTime>
     </File>
     <File Include="bin/roslyn/vbc.exe">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/vbc.exe.config">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/vbc.rsp">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/VBCSCompiler.exe">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/roslyn/VBCSCompiler.exe.config">
-      <publishTime>03/04/2023 08:28:37</publishTime>
+      <publishTime>03/29/2023 00:09:17</publishTime>
     </File>
     <File Include="bin/ru/Microsoft.ReportViewer.Common.resources.dll">
       <publishTime>10/05/2022 11:38:22</publishTime>
@@ -8868,7 +8899,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>01/20/2021 09:01:56</publishTime>
     </File>
     <File Include="bin/stdole.dll">
-      <publishTime>11/29/2018 17:35:16</publishTime>
+      <publishTime>02/11/2022 21:44:40</publishTime>
     </File>
     <File Include="bin/System.IdentityModel.Tokens.Jwt.dll">
       <publishTime>11/08/2022 10:40:51</publishTime>
@@ -8931,10 +8962,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/WebApp.dll">
-      <publishTime>03/08/2023 11:37:37</publishTime>
+      <publishTime>10/16/2024 20:43:05</publishTime>
     </File>
     <File Include="bin/WebApp.pdb">
-      <publishTime>03/08/2023 11:37:37</publishTime>
+      <publishTime>10/16/2024 20:43:05</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>10/05/2022 11:38:23</publishTime>
@@ -9689,6 +9720,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Content/chat-box.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
+    <File Include="Content/datatables/css/dataTables.bootstrap4.css">
+      <publishTime>10/10/2024 23:11:15</publishTime>
+    </File>
+    <File Include="Content/datatables/css/datatables.min.css">
+      <publishTime>10/05/2024 15:52:07</publishTime>
+    </File>
+    <File Include="Content/datatables/js/datatables.min.js">
+      <publishTime>10/05/2024 15:52:12</publishTime>
+    </File>
     <File Include="Content/Images/32px.png">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
@@ -9755,6 +9795,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Content/js/icontains.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
+    <File Include="Content/js/jquery-3.6.0.min.js">
+      <publishTime>10/07/2024 15:04:16</publishTime>
+    </File>
     <File Include="Content/js/jQuery.Gantt-master.rar">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
@@ -9820,6 +9863,33 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     </File>
     <File Include="Content/js/jquery.ztree.exhide.min.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
+    </File>
+    <File Include="Content/sb-admin/assets/demo/chart-area-demo.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/assets/demo/chart-bar-demo.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/assets/demo/chart-pie-demo.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/assets/demo/datatables-demo.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/assets/img/error-404-monochrome.svg">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/css/style.css">
+      <publishTime>10/07/2024 16:26:50</publishTime>
+    </File>
+    <File Include="Content/sb-admin/css/styles.css">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/js/datatables-simple-demo.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
+    </File>
+    <File Include="Content/sb-admin/js/scripts.js">
+      <publishTime>10/07/2024 15:59:38</publishTime>
     </File>
     <File Include="Content/sb-theme/bootstrap/js/bootstrap.bundle.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -10155,7 +10225,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Content/sb-theme/datatables/dataTables.bootstrap4.min.css">
-      <publishTime>09/28/2022 15:59:08</publishTime>
+      <publishTime>10/10/2024 23:10:19</publishTime>
     </File>
     <File Include="Content/sb-theme/datatables/dataTables.bootstrap4.min.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -15392,6 +15462,21 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Content/sb-theme/jquery/jquery.slim.min.map">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
+    <File Include="Content/select2/css/select2-bootstrap-5-theme.min.css">
+      <publishTime>10/05/2024 16:17:05</publishTime>
+    </File>
+    <File Include="Content/select2/css/select2.min.css">
+      <publishTime>10/05/2024 16:17:05</publishTime>
+    </File>
+    <File Include="Content/select2/js/bootstrap.bundle.min.js">
+      <publishTime>10/05/2024 16:16:30</publishTime>
+    </File>
+    <File Include="Content/select2/js/jquery.slim.min.js">
+      <publishTime>10/05/2024 16:16:30</publishTime>
+    </File>
+    <File Include="Content/select2/js/select2.min.js">
+      <publishTime>10/05/2024 16:16:30</publishTime>
+    </File>
     <File Include="Content/Site.css">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
@@ -15542,6 +15627,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Scripts/bootstrap.min.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
+    <File Include="Scripts/chart.js">
+      <publishTime>05/04/2023 22:57:35</publishTime>
+    </File>
+    <File Include="Scripts/chart.min.js">
+      <publishTime>05/04/2023 22:57:35</publishTime>
+    </File>
+    <File Include="Scripts/chartjs-plugin-datalabels.js">
+      <publishTime>05/14/2023 09:50:40</publishTime>
+    </File>
     <File Include="Scripts/jquery-3.4.1.js">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
@@ -15594,31 +15688,49 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/BaoCao6Thang/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>11/03/2023 00:06:28</publishTime>
+    </File>
+    <File Include="Views/BaoCao6ThangCH07/Index.cshtml">
+      <publishTime>10/16/2024 14:30:48</publishTime>
     </File>
     <File Include="Views/BaoCaoChiSo/ChiSo6Thang.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BaoCaoChiSo/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BaoCaoNam/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>01/08/2024 11:19:45</publishTime>
+    </File>
+    <File Include="Views/BaoCaoNamCH07/Index.cshtml">
+      <publishTime>10/16/2024 14:30:40</publishTime>
+    </File>
+    <File Include="Views/BaoCaoNamVIIV/Index.cshtml">
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BaoCaoQuy/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
+    </File>
+    <File Include="Views/BaoCaoQuyCD43/Index.cshtml">
+      <publishTime>09/18/2024 22:17:16</publishTime>
+    </File>
+    <File Include="Views/BaoCaoQuyCH07/Index.cshtml">
+      <publishTime>10/16/2024 14:30:57</publishTime>
     </File>
     <File Include="Views/BaoCaoQuyVIIV/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BaoCaoThang/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
+    </File>
+    <File Include="Views/BaoCaoThangCH07/Index.cshtml">
+      <publishTime>10/16/2024 14:31:12</publishTime>
     </File>
     <File Include="Views/BaoCaoTongHop/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BaoCaoTongHopQuyVIIV/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/BienBanKiemKe/BienBanKiemKe.cshtml">
       <publishTime>11/01/2021 14:47:51</publishTime>
@@ -15732,7 +15844,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:51</publishTime>
     </File>
     <File Include="Views/ChuyenGuiDichVu/Index.cshtml">
-      <publishTime>03/08/2023 09:27:01</publishTime>
+      <publishTime>05/24/2023 14:24:39</publishTime>
     </File>
     <File Include="Views/ChuyenTienDiaPhuong/Index.cshtml">
       <publishTime>11/01/2021 14:47:51</publishTime>
@@ -15792,7 +15904,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:51</publishTime>
     </File>
     <File Include="Views/Customer/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>04/25/2023 00:23:35</publishTime>
     </File>
     <File Include="Views/DanhMucLaiXe/index.cshtml">
       <publishTime>07/06/2021 08:53:35</publishTime>
@@ -15804,7 +15916,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/DGHLVIIV/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/DieuChuyenKho/DieuChuyenKho.cshtml">
       <publishTime>11/01/2021 14:47:51</publishTime>
@@ -15864,7 +15976,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:51</publishTime>
     </File>
     <File Include="Views/ErrorPage/Error404.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/ErrorPage/Error500.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -15900,7 +16012,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>10/24/2022 17:06:13</publishTime>
+      <publishTime>05/14/2023 11:30:05</publishTime>
     </File>
     <File Include="Views/Home/Kho.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -16122,25 +16234,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/KetQuaACE/Index.cshtml">
-      <publishTime>03/08/2023 09:23:32</publishTime>
+      <publishTime>05/24/2023 14:15:20</publishTime>
     </File>
     <File Include="Views/KetQuaASSIST/Index.cshtml">
-      <publishTime>03/08/2023 09:23:47</publishTime>
+      <publishTime>05/24/2023 14:17:04</publishTime>
     </File>
     <File Include="Views/KetQuaBHDG/Index.cshtml">
-      <publishTime>03/08/2023 09:23:56</publishTime>
+      <publishTime>05/24/2023 14:29:36</publishTime>
     </File>
     <File Include="Views/KetQuaHIV/Index.cshtml">
-      <publishTime>03/08/2023 09:24:03</publishTime>
+      <publishTime>05/24/2023 14:17:43</publishTime>
     </File>
     <File Include="Views/KetQuaSangLoc/Index.cshtml">
-      <publishTime>03/06/2023 18:29:20</publishTime>
+      <publishTime>11/07/2023 11:48:35</publishTime>
     </File>
     <File Include="Views/KetQuaSKTT/Index.cshtml">
-      <publishTime>03/08/2023 09:24:44</publishTime>
+      <publishTime>05/24/2023 14:24:11</publishTime>
     </File>
     <File Include="Views/KetQuaXNNT/Index.cshtml">
-      <publishTime>03/08/2023 09:24:54</publishTime>
+      <publishTime>05/24/2023 14:28:58</publishTime>
     </File>
     <File Include="Views/KHCPNhieuDonVi/Index.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>
@@ -16257,7 +16369,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/Notification/Index.cshtml">
-      <publishTime>03/04/2023 08:31:16</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/PhieuDieuChuyenKho/HangDoiPhieuDieuChuyen.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>
@@ -16290,7 +16402,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/PhieuTuVan/Index.cshtml">
-      <publishTime>03/08/2023 09:25:14</publishTime>
+      <publishTime>05/24/2023 14:23:36</publishTime>
     </File>
     <File Include="Views/PhieuXuatKho/HangDoiPhieuXuatKho.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>
@@ -16527,13 +16639,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/Shared/_Header.cshtml">
-      <publishTime>03/04/2023 08:31:16</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/Shared/_HeaderOther.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>10/11/2024 15:23:50</publishTime>
     </File>
     <File Include="Views/Shared/_Layout1.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -16542,7 +16654,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/Shared/_MenuLeft.cshtml">
-      <publishTime>03/08/2023 09:34:58</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/Shared/_MenuLeft1.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -16560,7 +16672,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/SyncData/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>10/11/2024 20:54:07</publishTime>
     </File>
     <File Include="Views/SysParameter/Index.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -16683,7 +16795,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/TrainingDataCollVIIV/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/TrangPhuc/AddData.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>
@@ -16695,10 +16807,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:52</publishTime>
     </File>
     <File Include="Views/TTKHMaDaVIIV/Index.cshtml">
-      <publishTime>03/06/2023 18:26:55</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/TTTruyenThongVIIV/Index.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/User/ChangePassword.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
@@ -16707,25 +16819,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/User/Index.cshtml">
-      <publishTime>03/06/2023 23:09:36</publishTime>
+      <publishTime>03/29/2023 00:13:50</publishTime>
     </File>
     <File Include="Views/User/MyProfile.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/User/_add.cshtml">
-      <publishTime>03/06/2023 23:09:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/User/_edit.cshtml">
-      <publishTime>03/06/2023 23:09:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/User/_lockUser.cshtml">
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Views/User/_resetPassword.cshtml">
-      <publishTime>03/06/2023 23:09:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/User/_view.cshtml">
-      <publishTime>03/04/2023 08:28:36</publishTime>
+      <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="Views/VatTuPhu/Index.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>
@@ -16752,7 +16864,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/28/2022 15:59:08</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/08/2023 11:38:47</publishTime>
+      <publishTime>10/11/2024 18:00:14</publishTime>
     </File>
     <File Include="WebAppDataSet.xsc">
       <publishTime>09/28/2022 15:59:08</publishTime>

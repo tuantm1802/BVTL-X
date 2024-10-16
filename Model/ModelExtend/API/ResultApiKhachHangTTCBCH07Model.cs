@@ -37,6 +37,21 @@ namespace Model.ModelExtend.API
         public string manhom_tbh { get; set; } // Mã nhóm TBH (nullable)
 
         public string city_code { get; set; } // Mã thành phố (nullable)
+        public string ngaytuvan { get; set; }
+        public string ngaynhap_tuvan { get; set; }
+        public string ngay_29b439 { get; set; }
+        public string ngayxetnghiem { get; set; }
+        public string ngay_7794e9 { get; set; }
+        public string ngay_ace { get; set; }
+        public string ngayhoi { get; set; }
+        public string ngayhoi_fdf6e6 { get; set; }
+        public int? sng_lc_nc_tiu_complete { get; set; }
+        public int? phiu_t_vn_complete { get; set; }
+        public int? chuyn_gi_dch_v_complete { get; set; }
+        public int? phiu_xt_nghim_li_hiv_complete { get; set; }
+        public int? theo_du_kh_complete { get; set; }
+        public int? bng_hi_ace_complete { get; set; }
+
     }
 
 
@@ -233,10 +248,10 @@ namespace Model.ModelExtend.API
         public string maduan { get; set; }
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
-        public int solan { get; set; }
-        public DateTime ngayxetnghiem { get; set; }
-        public int kqxn_lai { get; set; }
-        public int phiu_xt_nghim_li_hiv_complete { get; set; }
+        public int? solan { get; set; }
+        public DateTime? ngayxetnghiem { get; set; }
+        public int? kqxn_lai { get; set; }
+        public int? phiu_xt_nghim_li_hiv_complete { get; set; }
     }
 
     public class ResultApiKhachHangTheoDauCH07Model
@@ -247,13 +262,13 @@ namespace Model.ModelExtend.API
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
 
-        public DateTime ngay_7794e9 { get; set; }
-        public int hinhthuc { get; set; }
+        public DateTime? ngay_7794e9 { get; set; }
+        public int? hinhthuc { get; set; }
         public string hinhthuc_khac { get; set; }
-        public int kq { get; set; }
+        public int? kq { get; set; }
         public string khac_a7b30e { get; set; }
         public string ghichu { get; set; }
-        public int theo_du_kh_complete { get; set; }
+        public int? theo_du_kh_complete { get; set; }
     }
 
     public class ResultApiKhachHangChuyenGuiDichVuCH07Model
@@ -264,6 +279,10 @@ namespace Model.ModelExtend.API
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public int? loaihinh { get; set; }
+        public int? loaihinh___1 { get; set; }
+        public int? loaihinh___2 { get; set; }
+        public int? loaihinh___3 { get; set; }
+        public int? loaihinh___4 { get; set; }
         public string ngay_xn { get; set; }
         public string diachi_xn { get; set; }
         public int? kq_xn { get; set; }

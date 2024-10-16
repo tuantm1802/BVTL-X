@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Báo cáo năm CH07";
+}
+
+<div class="container-fluid" ng-controller="BaoCaoNamCH07Controller">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Báo cáo năm</h1>
+    <p class="mb-4">
+    </p>
+    <div class="form-group row">
+
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Năm</label>
+            <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
+            </select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Tỉnh</label>
+            <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity">
+            </select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Nhóm</label>
+            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
+            <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+            <button type="button" class="btn btn-secondary" ng-click="ExportExcel()">
+                <i class="fas fa-pencil-alt"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+    
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;"># </th>
+                                <th style="width: 39%;" colspan="2">Thông tin báo cáo </th>
+                                <th style="width: 8%; ">Tổng</th>
+                                <th style="width: 8%; ">Nam</th>
+                                <th style="width: 8%; ">Nữ</th>
+                                <th style="width: 8%; ">Chuyển giới</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in ListData">
+                                <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
+                                <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
+                                    <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
+                                    <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
+                                </td>
+                                <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
+                                <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
+                                <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
+                                <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
+                                <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts{
+        <script src="~/app/Controller/BaoCaoNamCH07Controller.js"></script>
+    }

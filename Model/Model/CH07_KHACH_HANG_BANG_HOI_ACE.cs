@@ -33,5 +33,6 @@ namespace Model.Model
         public Nullable<int> diem { get; set; }
         public Nullable<int> bng_hi_ace_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
+        public string ma_tinh { get; set; }
     }
 }

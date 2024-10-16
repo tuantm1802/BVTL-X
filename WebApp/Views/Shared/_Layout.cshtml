@@ -7,12 +7,19 @@
     <meta name="description" content="top menu &amp; navigation" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="shortcut icon" href="~/Content/Images/logo.jpg" type="image/svg" />
-    <link href="~/App_Assets/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/App_Assets/bootstrap/bootstrap.min.css" rel="stylesheet" /> <!-- bootstrap 4-->
+    @*<link href="~/Assest/css/bootstrap.min.css" rel="stylesheet" />*@ <!-- bootstrap 5-->
+
     <link href="~/App_Assets/animate_wow_js/animate.css" rel="stylesheet">
-    <link href="~/App_Assets/css/style.css" rel="stylesheet" />
-    @*<link href="~/Content/sb-theme/datatables/jquery.dataTables.min.css" rel="stylesheet" />*@
-    <link rel="stylesheet" href="~/Content/Site.css" />
-    <link rel="stylesheet" href="~/Assest/css/select2.min.css" />
+    @*<link href="~/App_Assets/css/style.css" rel="stylesheet" />*@
+    <link href="~/Content/sb-theme/datatables/jquery.dataTables.min.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="~/Content/Site.css" />*@
+
+    <!--select2 4.0-->
+    <link href="~/Assest/plugins/select2-bootstrap4-theme/select2-bootstrap4.css" rel="stylesheet" />
+    <link href="~/Assest/css/select2.min.css" rel="stylesheet" />
+
+
     <link href="~/Assest/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <link href="~/Assest/dist/css/angular-confirm.min.css" rel="stylesheet" />
     <link href="~/Assest/plugins/jexcel/jexcel.css" rel="stylesheet" />
@@ -25,24 +32,26 @@
 
     <link href="~/App_Assets/css/notify.css" rel="stylesheet" />
 
-    <link href="~/Content/sb-theme/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
+    <link href="~/Content/datatables/css/datatables.min.css" rel="stylesheet" />
+    <link href="~/Content/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
 
-    <link href="~/Content/sb-theme/datatables/searchBuilder.dataTables.min.css" rel="stylesheet" />
-    <link href="~/Content/sb-theme/datatables/dataTables.dateTime.min.css" rel="stylesheet" />
-    <!-- Custom styles for this page -->
-    <link href="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    @*<link href="~/Content/sb-theme/datatables/searchBuilder.dataTables.min.css" rel="stylesheet" />
+        <link href="~/Content/sb-theme/datatables/dataTables.dateTime.min.css" rel="stylesheet" />
+        <link href="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link href="~/Content/sb-theme/datatables/buttons.dataTables.min.css" rel="stylesheet" />
+        <link href="~/Content/sb-theme/datatables/editor.dataTables.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/Content/sb-theme/datatables/bootstrap.css">
+        <link rel="stylesheet" href="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="~/Content/sb-theme/datatables/buttons.bootstrap4.min.css">
+        <link rel="stylesheet" href="~/Content/sb-theme/datatables/responsive.bootstrap4.min.css">*@
 
-    <link href="~/Content/sb-theme/datatables/buttons.dataTables.min.css" rel="stylesheet" />
-    <link href="~/Content/sb-theme/datatables/editor.dataTables.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/Content/sb-theme/datatables/bootstrap.css">
-    <link rel="stylesheet" href="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="~/Content/sb-theme/datatables/buttons.bootstrap4.min.css">
-    <link rel="stylesheet" href="~/Content/sb-theme/datatables/responsive.bootstrap4.min.css">
     <!-- Custom styles for this template -->
+    <link href="~/Content/sb-theme/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="~/Assest/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="~/Assest/plugins/toastr/toastr.css" rel="stylesheet" />
-    <link href="~/Content/style.css" rel="stylesheet" />
+    @*<link href="~/Content/style.css" rel="stylesheet" />*@
+
 </head>
 
 <body ng-app="web-app" id="page-top">
@@ -69,7 +78,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; 2024 SCDI</span>
                     </div>
                 </div>
             </footer>
@@ -87,19 +96,19 @@
     @*<script src="~/Content/sb-theme/datatables/jquery-3.5.1.js"></script>*@
     <!-- Bootstrap core JavaScript-->
     <script src="~/App_Assets/js/popper.min.js"></script>
-    <script src="~/Content/sb-theme/jquery/jquery.min.js"></script>
+    @*<script src="~/Content/sb-theme/jquery/jquery.min.js"></script>*@
+    <script src="~/Content/js/jquery-3.6.0.min.js"></script>
     <script src="~/Content/sb-theme/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <!--select2 4.0-->
+    <script src="~/Assest/js/select2.min.js"></script>
 
-    @*<script src="~/App_Assets/js/jquery.min.js"></script>*@
     <script src="~/Assest/plugins/angularjs/angular.min.js"></script>
-    <script src="~/Assest/js/sb-admin-2.js"></script>
-    <script src="~/Assest/js/sb-admin-2.min.js"></script>
     <script src="~/Assest/js/bootstrap-datepicker.min.js"></script>
     <script src="~/Assest/js/bootstrap-timepicker.min.js"></script>
     <script src="~/Assest/plugins/moment/moment.min.js"></script>
     <script src="~/Assest/plugins/moment/locales.js"></script>
-    <script src="~/Assest/plugins/select2/js/select2.full.min.js"></script>
+    @*<script src="~/Assest/plugins/select2/js/select2.full.min.js"></script>*@
     <script src="~/Assest/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Assest/plugins/jexcel/jexcel.js"></script>
     <script src="~/Assest/plugins/jexcel/jsuites.js"></script>
@@ -111,7 +120,8 @@
     <script src="~/Assest/plugins/toastr/toastr.min.js"></script>
     <script src="~/Assest/dist/js/jquery.toast.js"></script>
     <script src="~/Assest/plugins/angularjs/ui.jexcel.js"></script>
-    <script src="~/Assest/plugins/jquery-validation/jquery.validate.min.js"></script>
+    @*<script src="~/Assest/plugins/jquery-validation/jquery.validate.min.js"></script>*@
+    <script src="~/Assest/js/jquery.validate.min.js"></script>
     <script src="~/Content/js/comboTreePlugin.js"></script>
     <script src="~/Content/js/icontains.js"></script>
     <script src="~/Content/js/jquery.ztree.core.js"></script>
@@ -132,28 +142,31 @@
     <script src="~/Content/sb-theme/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
+    @*<script src="~/Assest/js/sb-admin-2.js"></script>*@
     <script src="~/Assest/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
+    @*<script src="~/Content/sb-theme/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.select.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/jszip.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/buttons.html5.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/buttons.colVis.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.responsive.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/responsive.bootstrap4.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.rowsGroup.js"></script>
+        <script type="text/javascript" src="~/Content/sb-theme/datatables/pdfmake.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.searchBuilder.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.editor.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.buttons.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/dataTables.dateTime.min.js"></script>
+        <script src="~/Content/sb-theme/datatables/vfs_fonts.js"></script>
+        <script src="~/Content/sb-theme/datatables/buttons.bootstrap4.min.js"></script>*@
 
     <script src="~/Content/sb-theme/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/dataTables.select.min.js"></script>
+    <script src="~/Content/datatables/js/datatables.min.js"></script>
     <script src="~/Content/sb-theme/datatables/dataTables.bootstrap4.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/jszip.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/buttons.html5.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/buttons.colVis.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/dataTables.responsive.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/responsive.bootstrap4.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/dataTables.rowsGroup.js"></script>
-    <script type="text/javascript" src="~/Content/sb-theme/datatables/pdfmake.min.js"></script>
 
-    <script src="~/Content/sb-theme/datatables/dataTables.searchBuilder.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/dataTables.editor.min.js"></script>
-
-    <script src="~/Content/sb-theme/datatables/dataTables.buttons.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/dataTables.dateTime.min.js"></script>
-    <script src="~/Content/sb-theme/datatables/vfs_fonts.js"></script>
-    <script src="~/Content/sb-theme/datatables/buttons.bootstrap4.min.js"></script>
     <script src="~/app/app.js"></script>
 
     <script>

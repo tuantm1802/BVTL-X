@@ -10522,8 +10522,8 @@ a:focus {
                     padding: .5rem 1.5rem;
                     text-transform: uppercase;
                     font-weight: 800;
-                    font-size: .65rem;
-                    color: #b7b9cc
+                    font-size: .75rem;
+                    color: #007bff
                 }
 
                 .sidebar .nav-item .collapse .collapse-inner .collapse-item, .sidebar .nav-item .collapsing .collapse-inner .collapse-item {

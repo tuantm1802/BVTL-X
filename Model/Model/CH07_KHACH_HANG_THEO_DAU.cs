@@ -26,5 +26,6 @@ namespace Model.Model
         public string khac_a7b30e { get; set; }
         public string ghichu { get; set; }
         public Nullable<int> theo_du_kh_complete { get; set; }
+        public string ma_tinh { get; set; }
     }
 }
