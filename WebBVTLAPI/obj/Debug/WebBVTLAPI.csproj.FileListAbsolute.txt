@@ -77,3 +77,5 @@ D:\VuVanLai\Code\BVTL\Code\WebBVTLAPI\obj\Debug\WebBVTLAPI.pdb
 D:\VuVanLai\Code\BVTL\Code\WebBVTLAPI\bin\DocumentFormat.OpenXml.dll
 D:\VuVanLai\Code\BVTL\Code\WebBVTLAPI\bin\DocumentFormat.OpenXml.xml
 D:\VuVanLai\Code\BVTL\Code\WebBVTLAPI\bin\EntityFramework.SqlServer.dll
+D:\Projects\BVTL\Source_V1.0\WebBVTLAPI\obj\Debug\WebBVTLAPI.csproj.AssemblyReference.cache
+D:\Projects\BVTL\Source_V1.0\WebBVTLAPI\obj\Debug\WebBVTLAPI.csproj.CoreCompileInputs.cache

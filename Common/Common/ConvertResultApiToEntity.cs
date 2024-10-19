@@ -2654,12 +2654,12 @@ namespace Common.Common
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
+                        cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 4);
                     }
 
@@ -2709,58 +2709,24 @@ namespace Common.Common
                         objDB.nghe_nghiep_khac = resultApi.f1_q_a6_1;
                     }
 
-                    DateTime dateTime;
-                    if (resultApi.time != null)
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (DateTime.TryParseExact(resultApi.time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                            {
-                                objDB.thoi_gian_bat_dau = dateTime; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.thoi_gian_bat_dau = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.thoi_gian_bat_dau = null; // Gán null nếu không chuyển đổi được
-                        }
-                        
-                    }
-                    else
-                    {
-                        objDB.thoi_gian_bat_dau = null; // Gán null nếu resultApi.time là null
-                    }
+                    objDB.thoi_gian_bat_dau = ValidateDateTimeRange(resultApi.time);
+                    objDB.thoi_gian_ket_thuc = ValidateDateTimeRange(resultApi.end_time);
+                    objDB.ngayhoi = ValidateDateTimeRange(resultApi.ngayhoi);
+                    objDB.ngaychuyengui_f2_q_5_d = ValidateDateTimeRange(resultApi.f2_q_5_d);
+                    objDB.ngaytuvan = ValidateDateTimeRange(resultApi.ngaytuvan);
+                    objDB.ngay_shn = ValidateDateTimeRange(resultApi.ngay_shn);
+                    objDB.ngaytheodau_time = ValidateDateTimeRange(resultApi.time_theodau);
+                    objDB.ngaybanghoi_ngay_3db24b = ValidateDateTimeRange(resultApi.ngay_3db24b);
 
-                    if (resultApi.end_time != null)
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (DateTime.TryParseExact(resultApi.end_time, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                            {
-                                objDB.thoi_gian_ket_thuc = dateTime; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.thoi_gian_ket_thuc = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.thoi_gian_ket_thuc = null; // Gán null nếu không chuyển đổi được
-                        }
-                        
-                    }
-                    else
-                    {
-                        objDB.thoi_gian_ket_thuc = null; // Gán null nếu resultApi.time là null
-                    }
+                    objDB.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = resultApi.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete;
+                    objDB.sng_lc_nc_tiu_complete = resultApi.sng_lc_nc_tiu_complete;
+                    objDB.sng_lc_hiv_complete = resultApi.sng_lc_hiv_complete;
+                    objDB.chuyn_gi_complete = resultApi.chuyn_gi_complete;
+                    objDB.phiu_t_vn_complete = resultApi.phiu_t_vn_complete;
+                    objDB.nh_gi_mc_hi_lng_ca_kh_complete = resultApi.nh_gi_mc_hi_lng_ca_kh_complete;
+                    objDB.sinh_hot_nhm_complete = resultApi.sinh_hot_nhm_complete;
+                    objDB.theo_du_complete = resultApi.theo_du_complete;
+
                     lsObjDB.Add(objDB);
 
                     #endregion
@@ -2839,32 +2805,7 @@ namespace Common.Common
                         maduan = maDuAn,
                     };
 
-                    DateTime dateTime;
-                    if (!string.IsNullOrEmpty(resultApi.ngayhoi))
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (DateTime.TryParseExact(resultApi.ngayhoi, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                            {
-                                objDB.ngayhoi = dateTime; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.ngayhoi = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.ngayhoi = null; // Gán null nếu không chuyển đổi được
-                        }
-
-                    }
-                    else
-                    {
-                        objDB.ngayhoi = null; // Gán null nếu resultApi.time là null
-                    }
+                    objDB.ngayhoi = ValidateDateTimeRange(resultApi.ngayhoi);
 
                     if (!string.IsNullOrEmpty(resultApi.kqxnda))
                     {
@@ -2879,10 +2820,7 @@ namespace Common.Common
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(resultApi.sng_lc_nc_tiu_complete))
-                    {
-                        objDB.sng_lc_nc_tiu_complete = resultApi.sng_lc_nc_tiu_complete;                        
-                    }
+                    objDB.sng_lc_nc_tiu_complete = resultApi.sng_lc_nc_tiu_complete;
 
                     lsObjDB.Add(objDB);
 
@@ -2940,14 +2878,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -2962,34 +2900,9 @@ namespace Common.Common
                         maduan = maDuAn,
                     };
 
-                    DateTime dateTime;
-                    if (!string.IsNullOrEmpty(resultApi.ngayhoi))
-                    {
-                        // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                        if (DateTime.TryParseExact(resultApi.ngayhoi, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                            if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                            {
-                                objDB.ngayhoi = dateTime; // Gán giá trị nếu hợp lệ
-                            }
-                            else
-                            {
-                                objDB.ngayhoi = null; // Gán null nếu không nằm trong khoảng
-                            }
-                        }
-                        else
-                        {
-                            objDB.ngayhoi = null; // Gán null nếu không chuyển đổi được
-                        }
+                    objDB.ngayhoi = ValidateDateTimeRange(resultApi.ngayhoi);
 
-                    }
-                    else
-                    {
-                        objDB.ngayhoi = null; // Gán null nếu resultApi.time là null
-                    }
-
-                     if (!string.IsNullOrEmpty(resultApi.hiv))
+                    if (!string.IsNullOrEmpty(resultApi.hiv))
                     {
                         objDB.hiv = resultApi.hiv;
                         if (resultApi.hiv.Equals("1"))
@@ -3027,11 +2940,8 @@ namespace Common.Common
                             objDB.kqxn_text = "Âm tính";
                         }
                     }
+                    objDB.sng_lc_hiv_complete = resultApi.sng_lc_hiv_complete;
 
-                    if (!string.IsNullOrEmpty(resultApi.sng_lc_hiv_complete))
-                    {
-                        objDB.sng_lc_hiv_complete = resultApi.sng_lc_hiv_complete;
-                    }
 
                     lsObjDB.Add(objDB);
 
@@ -3088,14 +2998,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -3238,14 +3148,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -3347,12 +3257,12 @@ namespace Common.Common
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
                         group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
+                        cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 4);
                     }
 
@@ -3455,14 +3365,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -3661,14 +3571,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
-                        cityCode = customer_code.Substring(1, 2); // Lấy id tỉnh
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
-                        cityCode = customer_code.Substring(0, 2);
-                        group_code = customer_code.Substring(0, 4);
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -3683,23 +3593,7 @@ namespace Common.Common
                         maduan = maDuAn,
                     };
 
-                    DateTime dateTime;
-                    if (resultApi.f2_q_1_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_1_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_1_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_1_1 = resultApi.f2_q_1_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_1_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_1_1 = null; // Gán null nếu resultApi.time là null
-                    }
+                    objDB.f2_q_1_1 = ValidateDateTimeRange(resultApi.f2_q_1_1);
 
                     // Gán giá trị các thuộc tính
                     objDB.record_id = resultApi.record_id;
@@ -3723,67 +3617,19 @@ namespace Common.Common
                     objDB.f2_q_1_5_1 = resultApi.f2_q_1_5_1;
                     objDB.f2_q_1_6 = resultApi.f2_q_1_6;
                     objDB.f2_q_1_8 = resultApi.f2_q_1_8;
+                    objDB.f2_q_1_8_1 = ValidateDateTimeRange(resultApi.f2_q_1_8_1);
                     
-                    if (resultApi.f2_q_1_8_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_1_8_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_1_8_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_1_8_1 = resultApi.f2_q_1_8_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_1_8_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_1_8_1 = null; // Gán null nếu resultApi.time là null
-                    }
-
                     objDB.p_2 = resultApi.p_2;
                     
-                    if (resultApi.f2_q_2_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_2_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_2_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_2_1 = resultApi.f2_q_2_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_2_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_2_1 = null; // Gán null nếu resultApi.time là null
-                    }
-
+                    objDB.f2_q_2_1 = ValidateDateTimeRange(resultApi.f2_q_2_1);
                     objDB.f2_q_2_2 = resultApi.f2_q_2_2;
                     objDB.f2_q_2_3 = resultApi.f2_q_2_3;
                     objDB.f2_q_2_4 = resultApi.f2_q_2_4;
                     objDB.f2_q_2_5 = resultApi.f2_q_2_5;
-
-                    if (resultApi.f2_q_2_6 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_2_6 > new DateTime(1900, 1, 1) && resultApi.f2_q_2_6 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_2_6 = resultApi.f2_q_2_6; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_2_6 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_2_6 = null; // Gán null nếu resultApi.time là null
-                    }
-
+                    objDB.f2_q_2_6 = ValidateDateTimeRange(resultApi.f2_q_2_6);
 
                     objDB.p_3 = resultApi.p_3;
+                    objDB.f2_q_3_1_d = ValidateDateTimeRange(resultApi.f2_q_3_1_d);
                     objDB.f2_q_3_1 = resultApi.f2_q_3_1;
                     objDB.f2_q_3_1_1 = resultApi.f2_q_3_1_1;
                     objDB.f2_q_3_1_1_1 = resultApi.f2_q_3_1_1_1;
@@ -3817,23 +3663,7 @@ namespace Common.Common
                     objDB.f2_q_4_1_7 = resultApi.f2_q_4_1_7;
                     objDB.f2_q_4_2 = resultApi.f2_q_4_2;
 
-                    if (resultApi.f2_q_4_2_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_4_2_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_2_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_4_2_1 = resultApi.f2_q_4_2_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_4_2_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_4_2_1 = null; // Gán null nếu resultApi.time là null
-                    }
-
+                    objDB.f2_q_4_2_1 = ValidateDateTimeRange(resultApi.f2_q_4_2_1);
                     objDB.f2_q_4_2_2 = resultApi.f2_q_4_2_2;
                     objDB.f2_q_4_2_3 = resultApi.f2_q_4_2_3;
                     objDB.f2_q_4_2_4 = resultApi.f2_q_4_2_4;
@@ -3841,100 +3671,37 @@ namespace Common.Common
                     objDB.f2_q_4_2_6 = resultApi.f2_q_4_2_6;
                     objDB.f2_q_4_3 = resultApi.f2_q_4_3;
                     
-                    if (resultApi.f2_q_4_3_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_4_3_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_3_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_4_3_1 = resultApi.f2_q_4_3_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_4_3_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_4_3_1 = null; // Gán null nếu resultApi.time là null
-                    }
-
+                    objDB.f2_q_4_3_1 = ValidateDateTimeRange(resultApi.f2_q_4_3_1);
                     objDB.f2_q_4_3_2 = resultApi.f2_q_4_3_2;
                     objDB.f2_q_4_3_3 = resultApi.f2_q_4_3_3;
                     objDB.f2_q_4_3_4 = resultApi.f2_q_4_3_4;
                     objDB.f2_q_4_4 = resultApi.f2_q_4_4;
                     
-                    if (resultApi.f2_q_4_4_1 != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_4_4_1 > new DateTime(1900, 1, 1) && resultApi.f2_q_4_4_1 < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_4_4_1 = resultApi.f2_q_4_4_1; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_4_4_1 = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_4_4_1 = null; // Gán null nếu resultApi.time là null
-                    }
-
+                    objDB.f2_q_4_4_1 = ValidateDateTimeRange(resultApi.f2_q_4_4_1);
                     objDB.f2_q_4_4_2 = resultApi.f2_q_4_4_2;
                     objDB.f2_q_4_4_2_1 = resultApi.f2_q_4_4_2_1;
                     objDB.f2_q_4_4_3 = resultApi.f2_q_4_4_3;
                     objDB.f2_q_4_4_3_1 = resultApi.f2_q_4_4_3_1;
                     objDB.f2_q_4_4_4 = resultApi.f2_q_4_4_4;
                     objDB.p_5 = resultApi.p_5;
-                    objDB.f2_q_5 = resultApi.f2_q_5;
-                    
-                    if (resultApi.f2_q_5_d != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_5_d > new DateTime(1900, 1, 1) && resultApi.f2_q_5_d < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_5_d = resultApi.f2_q_5_d; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_5_d = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_5_d = null; // Gán null nếu resultApi.time là null
-                    }
+                    objDB.f2_q_5 = resultApi.f2_q_5;                   
+                    objDB.f2_q_5_d = ValidateDateTimeRange(resultApi.f2_q_5_d);
 
                     objDB.f2_q_51 = resultApi.f2_q_51;
                     objDB.f2_q_5_1 = resultApi.f2_q_5_1;
                     objDB.f2_q_53 = resultApi.f2_q_53;
                     objDB.f2_q_5_2 = resultApi.f2_q_5_2;
                     objDB.p_6 = resultApi.p_6;
-                    
-                    if (resultApi.f2_q_6_d != null)
-                    {
-                        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                        if (resultApi.f2_q_6_d > new DateTime(1900, 1, 1) && resultApi.f2_q_6_d < new DateTime(5000, 1, 1))
-                        {
-                            objDB.f2_q_6_d = resultApi.f2_q_6_d; // Gán giá trị nếu hợp lệ
-                        }
-                        else
-                        {
-                            objDB.f2_q_6_d = null; // Gán null nếu không nằm trong khoảng
-                        }
-                    }
-                    else
-                    {
-                        objDB.f2_q_6_d = null; // Gán null nếu resultApi.time là null
-                    }
-
+                   
+                    objDB.f2_q_6_d = ValidateDateTimeRange(resultApi.f2_q_6_d);
                     objDB.f2_q_6_1 = resultApi.f2_q_6_1;
                     objDB.f2_q_6_2 = resultApi.f2_q_6_2;
                     objDB.f2_q_6_3 = resultApi.f2_q_6_3;
                     objDB.f2_q_6_4 = resultApi.f2_q_6_4;
                     objDB.f2_q_6_5 = resultApi.f2_q_6_5;
                     objDB.f2_q_6_6 = resultApi.f2_q_6_6;
-                    objDB.f2_q_6_7 = resultApi.f2_q_6_7;
+                    objDB.f2_q_6_7 = resultApi.f2_q_6_7;  
+                    
                     objDB.chuyn_gi_complete = resultApi.chuyn_gi_complete;
 
                     lsObjDB.Add(objDB);
@@ -3991,14 +3758,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 4);
+                        group_code = customer_code.Substring(0, 5);
                     }
 
                     #endregion
@@ -4310,56 +4077,6 @@ namespace Common.Common
                         maduan = maDuAn,
                     };
                     
-                    //DateTime dateTime;
-                    //if (resultApi.ngaynhap != null)
-                    //{
-                    //    // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                    //    if (true) //DateTime.TryParseExact(resultApi.ngay_3db24b, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                    //    {
-                    //        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                    //        if (resultApi.ngaynhap > new DateTime(1900, 1, 1) && resultApi.ngaynhap < new DateTime(5000, 1, 1))
-                    //        {
-                    //            objDB.ngaynhap = resultApi.ngaynhap; // Gán giá trị nếu hợp lệ
-                    //        }
-                    //        else
-                    //        {
-                    //            objDB.ngaynhap = null; // Gán null nếu không nằm trong khoảng
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        objDB.ngaynhap = null; // Gán null nếu không chuyển đổi được
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    objDB.ngaynhap = null; // Gán null nếu resultApi.time là null
-                    //}
-
-                    //if (resultApi.ngay != null)
-                    //{
-                    //    // Thử chuyển đổi chuỗi thành DateTime với các định dạng được chỉ định
-                    //    if (DateTime.TryParseExact(resultApi.ngay, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                    //    {
-                    //        // Kiểm tra nếu dateTime nằm trong khoảng 1900-01-01 đến 5000-01-01
-                    //        if (dateTime > new DateTime(1900, 1, 1) && dateTime < new DateTime(5000, 1, 1))
-                    //        {
-                    //            objDB.ngay = dateTime; // Gán giá trị nếu hợp lệ
-                    //        }
-                    //        else
-                    //        {
-                    //            objDB.ngay = null; // Gán null nếu không nằm trong khoảng
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        objDB.ngay = null; // Gán null nếu không chuyển đổi được
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    objDB.ngay = null; // Gán null nếu resultApi.time là null
-                    //}
 
                     objDB.ngaynhap = ValidateDateTimeRange(resultApi.ngaynhap);
                     objDB.ngay = ValidateDateTimeRange(resultApi.ngay);
@@ -5530,16 +5247,10 @@ namespace Common.Common
         public DateTime? ValidateDateTimeRange(object inputDate)
         {
             DateTime dateTime;
-            string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+            string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "dd/MM/yyyy HH:mm" };
             // Trường hợp đầu vào là kiểu string
             if (inputDate is string inputString)
             {
-                if (formats == null)
-                {
-                    // Định dạng mặc định nếu không cung cấp
-                    formats = new[] { "yyyy-MM-dd", "dd/MM/yyyy", "MM/dd/yyyy" };
-                }
-
                 // Thử chuyển đổi từ chuỗi sang DateTime với các định dạng được cung cấp
                 if (DateTime.TryParseExact(inputString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
                 {

@@ -160,7 +160,7 @@ namespace Model.Model
         public string c9 { get; set; }
         public string c10 { get; set; }
         public string diem { get; set; }
-        public string thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
+        public Nullable<int> thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
         public Nullable<System.DateTime> ngayhoi { get; set; }
     }
 }

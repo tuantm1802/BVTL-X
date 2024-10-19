@@ -26,7 +26,7 @@ namespace Model.Model
         public string dt_hiv_text { get; set; }
         public string kqxn { get; set; }
         public string kqxn_text { get; set; }
-        public string sng_lc_hiv_complete { get; set; }
+        public Nullable<int> sng_lc_hiv_complete { get; set; }
         public string city_code { get; set; }
     }
 }

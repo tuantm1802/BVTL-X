@@ -14,6 +14,7 @@ namespace Model.Model
     
     public partial class CD43_KHACH_HANG_THONG_TIN_CO_BAN
     {
+        public int id { get; set; }
         public string record_id { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
@@ -28,5 +29,19 @@ namespace Model.Model
         public Nullable<System.DateTime> thoi_gian_bat_dau { get; set; }
         public Nullable<System.DateTime> thoi_gian_ket_thuc { get; set; }
         public string city_code { get; set; }
+        public Nullable<System.DateTime> ngayhoi { get; set; }
+        public Nullable<int> sng_lc_nc_tiu_complete { get; set; }
+        public Nullable<int> sng_lc_hiv_complete { get; set; }
+        public Nullable<int> thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
+        public Nullable<int> chuyn_gi_complete { get; set; }
+        public Nullable<System.DateTime> ngaychuyengui_f2_q_5_d { get; set; }
+        public Nullable<System.DateTime> ngaytuvan { get; set; }
+        public Nullable<int> phiu_t_vn_complete { get; set; }
+        public Nullable<System.DateTime> ngaybanghoi_ngay_3db24b { get; set; }
+        public Nullable<int> nh_gi_mc_hi_lng_ca_kh_complete { get; set; }
+        public Nullable<System.DateTime> ngay_shn { get; set; }
+        public Nullable<int> sinh_hot_nhm_complete { get; set; }
+        public Nullable<System.DateTime> ngaytheodau_time { get; set; }
+        public Nullable<int> theo_du_complete { get; set; }
     }
 }

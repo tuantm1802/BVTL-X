@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAP5n1/yVBW0Gvx1Z13/XAnAAAAAACAAAAAAAQZgAAAAEAACAAAADzhSaRf2y995QdUyhc2FTWHvhVUpUrppfrvAnRS3r2ZwAAAAAOgAAAAAIAACAAAAAlA6IzpXL+T78Pj7WmAfFmixnEFzMp6Ykx9vQB0qO+KCAAAAA4DfJz3U2ZPo6YD/GA8/JaVHXEwrJ87+s7BcIXiFy2u0AAAAAkI4sP1YjJ5KKY7M+TlB4rhmX0dYaMVq3w0ccJ3IAJDs1PktZU5cwI34PaZRCArKQLbiOsCEIfeLJ/whV6C20e</EncryptedPassword>
+    <_PublishTargetUrl>ftp://103.77.167.206:21/SyncLive</_PublishTargetUrl>
+  </PropertyGroup>
+</Project>

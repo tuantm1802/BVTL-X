@@ -21,7 +21,21 @@ namespace Model.ModelExtend.API
         public string time { get; set; } //thoi_gian_bat_dau
         public string end_time  { get; set; } //thoi_gian_ket_thuc
         public string city_code { get; set; }
-        public string thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
+        public string ngayhoi { get; set; }
+        public Nullable<int> sng_lc_nc_tiu_complete { get; set; }
+        public Nullable<int> sng_lc_hiv_complete { get; set; }
+        
+        public Nullable<int> chuyn_gi_complete { get; set; }
+        public string f2_q_5_d { get; set; }
+        public string ngaytuvan { get; set; }
+        public Nullable<int> phiu_t_vn_complete { get; set; }
+        public string ngay_3db24b { get; set; }
+        public Nullable<int> nh_gi_mc_hi_lng_ca_kh_complete { get; set; }
+        public string ngay_shn { get; set; }
+        public Nullable<int> sinh_hot_nhm_complete { get; set; }
+        public string time_theodau { get; set; }
+        public Nullable<int> theo_du_complete { get; set; }
+        public int? thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
 
 
     }
@@ -34,7 +48,7 @@ namespace Model.ModelExtend.API
         public string ngayhoi { get; set; } //ngay hoi
         public string kqxnda { get; set; }
         public string city_code { get; set; }
-        public string sng_lc_nc_tiu_complete { get; set; }
+        public int? sng_lc_nc_tiu_complete { get; set; }
 
 
     }
@@ -49,7 +63,7 @@ namespace Model.ModelExtend.API
         public string dt_hiv { get; set; }
         public string kqxn { get; set; }
         public string city_code { get; set; }
-        public string sng_lc_hiv_complete { get; set; }
+        public int? sng_lc_hiv_complete { get; set; }
 
 
     }
@@ -272,7 +286,7 @@ namespace Model.ModelExtend.API
         public string manhom_tbh { get; set; } // manhom_tbh is varchar(5)
 
         public string city_code { get; set; } // city_code is varchar(10)
-        public string phiu_t_vn_complete { get; set; }
+        public int? phiu_t_vn_complete { get; set; }
     }
 
     public class ResultApiKhachHangChuyenGuiModel
@@ -305,7 +319,7 @@ namespace Model.ModelExtend.API
         public string f2_q_2_3 { get; set; }
         public string f2_q_2_4 { get; set; }
         public string f2_q_2_5 { get; set; }
-        public DateTime? f2_q_2_6 { get; set; }
+        public DateTime? f2_q_2_6 { get; set; }        
         public string p_3 { get; set; }
         public string f2_q_3_1 { get; set; }
         public string f2_q_3_1_1 { get; set; }
@@ -314,6 +328,7 @@ namespace Model.ModelExtend.API
         public string f2_q_3_1_1_2 { get; set; }
         public string f2_q_3_1_3 { get; set; }
         public string f2_q_3_1_3_1 { get; set; }
+        public DateTime? f2_q_3_1_d { get; set; }
         public string f2_q_3_2 { get; set; }
         public string f2_q_3_3 { get; set; }
         public string p_4 { get; set; }
@@ -373,7 +388,7 @@ namespace Model.ModelExtend.API
         public string f2_q_6_5 { get; set; }
         public string f2_q_6_6 { get; set; }
         public string f2_q_6_7 { get; set; }
-        public string chuyn_gi_complete { get; set; }
+        public int? chuyn_gi_complete { get; set; }
     }
 
     public class ResultApiKhachHangHanhViNguyCoModel
@@ -525,7 +540,7 @@ namespace Model.ModelExtend.API
         public string c9 { get; set; }
         public string c10 { get; set; }
         public string diem { get; set; }
-        public string thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
+        public int? thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
     }
 
 }

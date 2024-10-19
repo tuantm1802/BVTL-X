@@ -792,7 +792,8 @@
           <Property Name="f2_q_6_5" Type="varchar" MaxLength="1" />
           <Property Name="f2_q_6_6" Type="varchar" MaxLength="1" />
           <Property Name="f2_q_6_7" Type="varchar" MaxLength="255" />
-          <Property Name="chuyn_gi_complete" Type="varchar" MaxLength="1" />
+          <Property Name="chuyn_gi_complete" Type="int" />
+          <Property Name="f2_q_3_1_d" Type="datetime" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
           <Key>
@@ -980,7 +981,7 @@
           <Property Name="c9" Type="varchar" MaxLength="1" />
           <Property Name="c10" Type="varchar" MaxLength="1" />
           <Property Name="diem" Type="varchar" MaxLength="3" />
-          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="varchar" MaxLength="1" />
+          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="int" />
           <Property Name="ngayhoi" Type="datetime" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_PHIEU_TU_VAN">
@@ -1104,7 +1105,7 @@
           <Property Name="tuvantiep" Type="nvarchar(max)" />
           <Property Name="vande" Type="nvarchar(max)" />
           <Property Name="thoigian" Type="nvarchar(max)" />
-          <Property Name="phiu_t_vn_complete" Type="varchar" MaxLength="1" />
+          <Property Name="phiu_t_vn_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
@@ -1126,7 +1127,7 @@
           <Property Name="dt_hiv_text" Type="nvarchar" MaxLength="200" />
           <Property Name="kqxn" Type="varchar" MaxLength="100" />
           <Property Name="kqxn_text" Type="nvarchar" MaxLength="200" />
-          <Property Name="sng_lc_hiv_complete" Type="varchar" MaxLength="100" />
+          <Property Name="sng_lc_hiv_complete" Type="int" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU">
@@ -1141,7 +1142,7 @@
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
-          <Property Name="sng_lc_nc_tiu_complete" Type="varchar" MaxLength="1" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="int" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_SINH_HOAT_NHOM">
@@ -1183,9 +1184,10 @@
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
           <Key>
-            <PropertyRef Name="record_id" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="record_id" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="record_id" Type="varchar" MaxLength="15" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
@@ -1199,6 +1201,20 @@
           <Property Name="thoi_gian_bat_dau" Type="datetime" />
           <Property Name="thoi_gian_ket_thuc" Type="datetime" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="ngayhoi" Type="date" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="int" />
+          <Property Name="sng_lc_hiv_complete" Type="int" />
+          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="int" />
+          <Property Name="chuyn_gi_complete" Type="int" />
+          <Property Name="ngaychuyengui_f2_q_5_d" Type="date" />
+          <Property Name="ngaytuvan" Type="date" />
+          <Property Name="phiu_t_vn_complete" Type="int" />
+          <Property Name="ngaybanghoi_ngay_3db24b" Type="date" />
+          <Property Name="nh_gi_mc_hi_lng_ca_kh_complete" Type="int" />
+          <Property Name="ngay_shn" Type="date" />
+          <Property Name="sinh_hot_nhm_complete" Type="int" />
+          <Property Name="ngaytheodau_time" Type="date" />
+          <Property Name="theo_du_complete" Type="int" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC">
           <Key>
@@ -3611,12 +3627,10 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_THEO_DAU_KH" EntitySet="BVTL_THEO_DAU_KH" />
           </AssociationSet>
-          <EntitySet Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_THONG_TIN_CO_BAN" />
           <EntitySet Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_HAI_LONG" />
           <EntitySet Name="CD43_KHACH_HANG_THEO_DAU" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_THEO_DAU" />
           <EntitySet Name="CD43_KHACH_HANG_SINH_HOAT_NHOM" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SINH_HOAT_NHOM" />
           <EntitySet Name="CD43_KHACH_HANG_PHIEU_TU_VAN" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_PHIEU_TU_VAN" />
-          <EntitySet Name="CD43_KHACH_HANG_CHUYEN_GUI" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_CHUYEN_GUI" />
           <EntitySet Name="CD43_KHACH_HANG_HANH_VI_NGUY_CO" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_HANH_VI_NGUY_CO" />
           <EntitySet Name="CD43_KHACH_HANG_SANG_LOC_HIV" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SANG_LOC_HIV" />
           <EntitySet Name="CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU" />
@@ -3629,6 +3643,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySet Name="CH07_KHACH_HANG_BANG_HOI_ACE" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_BANG_HOI_ACE" />
           <EntitySet Name="CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV" />
           <EntitySet Name="CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" EntityType="BVTL_REPORTINGModel.CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC" />
+          <EntitySet Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_THONG_TIN_CO_BAN" />
+          <EntitySet Name="CD43_KHACH_HANG_CHUYEN_GUI" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_CHUYEN_GUI" />
         </EntityContainer>
         <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
           <Key>
@@ -4021,25 +4037,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
-          <Key>
-            <PropertyRef Name="record_id" />
-          </Key>
-          <Property Name="record_id" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="sync_date" Type="DateTime" Precision="3" />
-          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="ngay_thang_nam_sinh" Type="DateTime" Precision="0" />
-          <Property Name="nam_sinh" Type="Int32" />
-          <Property Name="gioi_tinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="gioi_tinh_khac" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="cap_bac_hoc_van" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="nghe_nghiep" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="nghe_nghiep_khac" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="thoi_gian_bat_dau" Type="DateTime" Precision="3" />
-          <Property Name="thoi_gian_ket_thuc" Type="DateTime" Precision="3" />
-          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
           <Key>
             <PropertyRef Name="id" />
@@ -4234,114 +4231,11 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="tuvantiep" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="vande" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="phiu_t_vn_complete" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="phiu_t_vn_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="CD43_KHACH_HANG_CHUYEN_GUI">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="record_id" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="sync_date" Type="DateTime" Precision="3" />
-          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="chuyengui___6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="p_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_1" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_3_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_5_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_8" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_1_8_1" Type="DateTime" Precision="3" />
-          <Property Name="p_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_2_1" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_2_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_2_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_2_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_2_5" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_2_6" Type="DateTime" Precision="3" />
-          <Property Name="p_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_1_3_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_3_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="p_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="loaihinh4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="loaihinh4___1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="loaihinh4___2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="loaihinh4___3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="loaihinh4___4" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4___7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_4_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_1_7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2_1" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_4_2_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_2_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_3_1" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_4_3_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_3_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_3_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4_1" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_4_4_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4_2_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4_3_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_4_4_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="p_5" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_5_d" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_51" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_5_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_53" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_5_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="p_6" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_d" Type="DateTime" Precision="3" />
-          <Property Name="f2_q_6_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="f2_q_6_7" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="chuyn_gi_complete" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_HANH_VI_NGUY_CO">
           <Key>
@@ -4493,7 +4387,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="c9" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="c10" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="diem" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="Int32" />
           <Property Name="ngayhoi" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_SANG_LOC_HIV">
@@ -4512,7 +4406,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="dt_hiv_text" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="kqxn" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="kqxn_text" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="sng_lc_hiv_complete" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="sng_lc_hiv_complete" Type="Int32" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU">
@@ -4527,7 +4421,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="sng_lc_nc_tiu_complete" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="Int32" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_SANG_LOC_HIV">
@@ -5084,6 +4978,144 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="thng_tin_c_bn_assist_qst_kin_thc_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="ngay_thang_nam_sinh" Type="DateTime" Precision="0" />
+          <Property Name="nam_sinh" Type="Int32" />
+          <Property Name="gioi_tinh" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="gioi_tinh_khac" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cap_bac_hoc_van" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="nghe_nghiep" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="nghe_nghiep_khac" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="thoi_gian_bat_dau" Type="DateTime" Precision="3" />
+          <Property Name="thoi_gian_ket_thuc" Type="DateTime" Precision="3" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ngayhoi" Type="DateTime" Precision="0" />
+          <Property Name="sng_lc_nc_tiu_complete" Type="Int32" />
+          <Property Name="sng_lc_hiv_complete" Type="Int32" />
+          <Property Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" Type="Int32" />
+          <Property Name="chuyn_gi_complete" Type="Int32" />
+          <Property Name="ngaychuyengui_f2_q_5_d" Type="DateTime" Precision="0" />
+          <Property Name="ngaytuvan" Type="DateTime" Precision="0" />
+          <Property Name="phiu_t_vn_complete" Type="Int32" />
+          <Property Name="ngaybanghoi_ngay_3db24b" Type="DateTime" Precision="0" />
+          <Property Name="nh_gi_mc_hi_lng_ca_kh_complete" Type="Int32" />
+          <Property Name="ngay_shn" Type="DateTime" Precision="0" />
+          <Property Name="sinh_hot_nhm_complete" Type="Int32" />
+          <Property Name="ngaytheodau_time" Type="DateTime" Precision="0" />
+          <Property Name="theo_du_complete" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CD43_KHACH_HANG_CHUYEN_GUI">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="chuyengui___6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="p_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_1" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_3_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_5_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_8" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_1_8_1" Type="DateTime" Precision="3" />
+          <Property Name="p_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_2_1" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_2_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_2_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_2_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_2_5" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_2_6" Type="DateTime" Precision="3" />
+          <Property Name="p_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_1_3_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_3_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="p_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh4___1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh4___2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh4___3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="loaihinh4___4" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4___7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_4_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2_1" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_4_2_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_2_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_3" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_3_1" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_4_3_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_3_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_3_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4_1" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_4_4_2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4_2_1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4_3_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_4_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="p_5" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_5_d" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_51" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_5_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_53" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_5_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="p_6" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_d" Type="DateTime" Precision="3" />
+          <Property Name="f2_q_6_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_6_7" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="chuyn_gi_complete" Type="Int32" />
+          <Property Name="f2_q_3_1_d" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5929,26 +5961,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_THONG_TIN_CO_BAN">
-              <MappingFragment StoreEntitySet="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
-                <ScalarProperty Name="city_code" ColumnName="city_code" />
-                <ScalarProperty Name="thoi_gian_ket_thuc" ColumnName="thoi_gian_ket_thuc" />
-                <ScalarProperty Name="thoi_gian_bat_dau" ColumnName="thoi_gian_bat_dau" />
-                <ScalarProperty Name="nghe_nghiep_khac" ColumnName="nghe_nghiep_khac" />
-                <ScalarProperty Name="nghe_nghiep" ColumnName="nghe_nghiep" />
-                <ScalarProperty Name="cap_bac_hoc_van" ColumnName="cap_bac_hoc_van" />
-                <ScalarProperty Name="gioi_tinh_khac" ColumnName="gioi_tinh_khac" />
-                <ScalarProperty Name="gioi_tinh" ColumnName="gioi_tinh" />
-                <ScalarProperty Name="nam_sinh" ColumnName="nam_sinh" />
-                <ScalarProperty Name="ngay_thang_nam_sinh" ColumnName="ngay_thang_nam_sinh" />
-                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
-                <ScalarProperty Name="maduan" ColumnName="maduan" />
-                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
-                <ScalarProperty Name="record_id" ColumnName="record_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
               <MappingFragment StoreEntitySet="CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
@@ -6150,110 +6162,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="redcap_repeat_instrument" ColumnName="redcap_repeat_instrument" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CD43_KHACH_HANG_CHUYEN_GUI">
-            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_CHUYEN_GUI">
-              <MappingFragment StoreEntitySet="CD43_KHACH_HANG_CHUYEN_GUI">
-                <ScalarProperty Name="chuyn_gi_complete" ColumnName="chuyn_gi_complete" />
-                <ScalarProperty Name="f2_q_6_7" ColumnName="f2_q_6_7" />
-                <ScalarProperty Name="f2_q_6_6" ColumnName="f2_q_6_6" />
-                <ScalarProperty Name="f2_q_6_5" ColumnName="f2_q_6_5" />
-                <ScalarProperty Name="f2_q_6_4" ColumnName="f2_q_6_4" />
-                <ScalarProperty Name="f2_q_6_3" ColumnName="f2_q_6_3" />
-                <ScalarProperty Name="f2_q_6_2" ColumnName="f2_q_6_2" />
-                <ScalarProperty Name="f2_q_6_1" ColumnName="f2_q_6_1" />
-                <ScalarProperty Name="f2_q_6_d" ColumnName="f2_q_6_d" />
-                <ScalarProperty Name="p_6" ColumnName="p_6" />
-                <ScalarProperty Name="f2_q_5_2" ColumnName="f2_q_5_2" />
-                <ScalarProperty Name="f2_q_53" ColumnName="f2_q_53" />
-                <ScalarProperty Name="f2_q_5_1" ColumnName="f2_q_5_1" />
-                <ScalarProperty Name="f2_q_51" ColumnName="f2_q_51" />
-                <ScalarProperty Name="f2_q_5_d" ColumnName="f2_q_5_d" />
-                <ScalarProperty Name="f2_q_5" ColumnName="f2_q_5" />
-                <ScalarProperty Name="p_5" ColumnName="p_5" />
-                <ScalarProperty Name="f2_q_4_4_4" ColumnName="f2_q_4_4_4" />
-                <ScalarProperty Name="f2_q_4_4_3_1" ColumnName="f2_q_4_4_3_1" />
-                <ScalarProperty Name="f2_q_4_4_3" ColumnName="f2_q_4_4_3" />
-                <ScalarProperty Name="f2_q_4_4_2_1" ColumnName="f2_q_4_4_2_1" />
-                <ScalarProperty Name="f2_q_4_4_2" ColumnName="f2_q_4_4_2" />
-                <ScalarProperty Name="f2_q_4_4_1" ColumnName="f2_q_4_4_1" />
-                <ScalarProperty Name="f2_q_4_4" ColumnName="f2_q_4_4" />
-                <ScalarProperty Name="f2_q_4_3_4" ColumnName="f2_q_4_3_4" />
-                <ScalarProperty Name="f2_q_4_3_3" ColumnName="f2_q_4_3_3" />
-                <ScalarProperty Name="f2_q_4_3_2" ColumnName="f2_q_4_3_2" />
-                <ScalarProperty Name="f2_q_4_3_1" ColumnName="f2_q_4_3_1" />
-                <ScalarProperty Name="f2_q_4_3" ColumnName="f2_q_4_3" />
-                <ScalarProperty Name="f2_q_4_2_6" ColumnName="f2_q_4_2_6" />
-                <ScalarProperty Name="f2_q_4_2_5" ColumnName="f2_q_4_2_5" />
-                <ScalarProperty Name="f2_q_4_2_4" ColumnName="f2_q_4_2_4" />
-                <ScalarProperty Name="f2_q_4_2_3" ColumnName="f2_q_4_2_3" />
-                <ScalarProperty Name="f2_q_4_2_2" ColumnName="f2_q_4_2_2" />
-                <ScalarProperty Name="f2_q_4_2_1" ColumnName="f2_q_4_2_1" />
-                <ScalarProperty Name="f2_q_4_2" ColumnName="f2_q_4_2" />
-                <ScalarProperty Name="f2_q_4_1_7" ColumnName="f2_q_4_1_7" />
-                <ScalarProperty Name="f2_q_4_1_6" ColumnName="f2_q_4_1_6" />
-                <ScalarProperty Name="f2_q_4_1_5" ColumnName="f2_q_4_1_5" />
-                <ScalarProperty Name="f2_q_4_1_4_1" ColumnName="f2_q_4_1_4_1" />
-                <ScalarProperty Name="f2_q_4_1_4___7" ColumnName="f2_q_4_1_4___7" />
-                <ScalarProperty Name="f2_q_4_1_4___6" ColumnName="f2_q_4_1_4___6" />
-                <ScalarProperty Name="f2_q_4_1_4___5" ColumnName="f2_q_4_1_4___5" />
-                <ScalarProperty Name="f2_q_4_1_4___4" ColumnName="f2_q_4_1_4___4" />
-                <ScalarProperty Name="f2_q_4_1_4___3" ColumnName="f2_q_4_1_4___3" />
-                <ScalarProperty Name="f2_q_4_1_4___2" ColumnName="f2_q_4_1_4___2" />
-                <ScalarProperty Name="f2_q_4_1_4___1" ColumnName="f2_q_4_1_4___1" />
-                <ScalarProperty Name="f2_q_4_1_4" ColumnName="f2_q_4_1_4" />
-                <ScalarProperty Name="f2_q_4_1_3" ColumnName="f2_q_4_1_3" />
-                <ScalarProperty Name="f2_q_4_1_2" ColumnName="f2_q_4_1_2" />
-                <ScalarProperty Name="f2_q_4_1_1" ColumnName="f2_q_4_1_1" />
-                <ScalarProperty Name="f2_q_4_1" ColumnName="f2_q_4_1" />
-                <ScalarProperty Name="loaihinh4___4" ColumnName="loaihinh4___4" />
-                <ScalarProperty Name="loaihinh4___3" ColumnName="loaihinh4___3" />
-                <ScalarProperty Name="loaihinh4___2" ColumnName="loaihinh4___2" />
-                <ScalarProperty Name="loaihinh4___1" ColumnName="loaihinh4___1" />
-                <ScalarProperty Name="loaihinh4" ColumnName="loaihinh4" />
-                <ScalarProperty Name="p_4" ColumnName="p_4" />
-                <ScalarProperty Name="f2_q_3_3" ColumnName="f2_q_3_3" />
-                <ScalarProperty Name="f2_q_3_2" ColumnName="f2_q_3_2" />
-                <ScalarProperty Name="f2_q_3_1_3_1" ColumnName="f2_q_3_1_3_1" />
-                <ScalarProperty Name="f2_q_3_1_3" ColumnName="f2_q_3_1_3" />
-                <ScalarProperty Name="f2_q_3_1_1_2" ColumnName="f2_q_3_1_1_2" />
-                <ScalarProperty Name="f2_q_3_1_2" ColumnName="f2_q_3_1_2" />
-                <ScalarProperty Name="f2_q_3_1_1_1" ColumnName="f2_q_3_1_1_1" />
-                <ScalarProperty Name="f2_q_3_1_1" ColumnName="f2_q_3_1_1" />
-                <ScalarProperty Name="f2_q_3_1" ColumnName="f2_q_3_1" />
-                <ScalarProperty Name="p_3" ColumnName="p_3" />
-                <ScalarProperty Name="f2_q_2_6" ColumnName="f2_q_2_6" />
-                <ScalarProperty Name="f2_q_2_5" ColumnName="f2_q_2_5" />
-                <ScalarProperty Name="f2_q_2_4" ColumnName="f2_q_2_4" />
-                <ScalarProperty Name="f2_q_2_3" ColumnName="f2_q_2_3" />
-                <ScalarProperty Name="f2_q_2_2" ColumnName="f2_q_2_2" />
-                <ScalarProperty Name="f2_q_2_1" ColumnName="f2_q_2_1" />
-                <ScalarProperty Name="p_2" ColumnName="p_2" />
-                <ScalarProperty Name="f2_q_1_8_1" ColumnName="f2_q_1_8_1" />
-                <ScalarProperty Name="f2_q_1_8" ColumnName="f2_q_1_8" />
-                <ScalarProperty Name="f2_q_1_6" ColumnName="f2_q_1_6" />
-                <ScalarProperty Name="f2_q_1_5_1" ColumnName="f2_q_1_5_1" />
-                <ScalarProperty Name="f2_q_1_5" ColumnName="f2_q_1_5" />
-                <ScalarProperty Name="f2_q_1_4" ColumnName="f2_q_1_4" />
-                <ScalarProperty Name="f2_q_1_3_1" ColumnName="f2_q_1_3_1" />
-                <ScalarProperty Name="f2_q_1_3" ColumnName="f2_q_1_3" />
-                <ScalarProperty Name="f2_q_1_2" ColumnName="f2_q_1_2" />
-                <ScalarProperty Name="f2_q_1_1" ColumnName="f2_q_1_1" />
-                <ScalarProperty Name="p_1" ColumnName="p_1" />
-                <ScalarProperty Name="chuyengui___6" ColumnName="chuyengui___6" />
-                <ScalarProperty Name="chuyengui___5" ColumnName="chuyengui___5" />
-                <ScalarProperty Name="chuyengui___4" ColumnName="chuyengui___4" />
-                <ScalarProperty Name="chuyengui___3" ColumnName="chuyengui___3" />
-                <ScalarProperty Name="chuyengui___2" ColumnName="chuyengui___2" />
-                <ScalarProperty Name="chuyengui___1" ColumnName="chuyengui___1" />
-                <ScalarProperty Name="city_code" ColumnName="city_code" />
-                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
-                <ScalarProperty Name="maduan" ColumnName="maduan" />
-                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
-                <ScalarProperty Name="record_id" ColumnName="record_id" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7008,6 +6916,146 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_THONG_TIN_CO_BAN">
+              <MappingFragment StoreEntitySet="CD43_KHACH_HANG_THONG_TIN_CO_BAN">
+                <ScalarProperty Name="theo_du_complete" ColumnName="theo_du_complete" />
+                <ScalarProperty Name="ngaytheodau_time" ColumnName="ngaytheodau_time" />
+                <ScalarProperty Name="sinh_hot_nhm_complete" ColumnName="sinh_hot_nhm_complete" />
+                <ScalarProperty Name="ngay_shn" ColumnName="ngay_shn" />
+                <ScalarProperty Name="nh_gi_mc_hi_lng_ca_kh_complete" ColumnName="nh_gi_mc_hi_lng_ca_kh_complete" />
+                <ScalarProperty Name="ngaybanghoi_ngay_3db24b" ColumnName="ngaybanghoi_ngay_3db24b" />
+                <ScalarProperty Name="phiu_t_vn_complete" ColumnName="phiu_t_vn_complete" />
+                <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />
+                <ScalarProperty Name="ngaychuyengui_f2_q_5_d" ColumnName="ngaychuyengui_f2_q_5_d" />
+                <ScalarProperty Name="chuyn_gi_complete" ColumnName="chuyn_gi_complete" />
+                <ScalarProperty Name="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" ColumnName="thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete" />
+                <ScalarProperty Name="sng_lc_hiv_complete" ColumnName="sng_lc_hiv_complete" />
+                <ScalarProperty Name="sng_lc_nc_tiu_complete" ColumnName="sng_lc_nc_tiu_complete" />
+                <ScalarProperty Name="ngayhoi" ColumnName="ngayhoi" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="thoi_gian_ket_thuc" ColumnName="thoi_gian_ket_thuc" />
+                <ScalarProperty Name="thoi_gian_bat_dau" ColumnName="thoi_gian_bat_dau" />
+                <ScalarProperty Name="nghe_nghiep_khac" ColumnName="nghe_nghiep_khac" />
+                <ScalarProperty Name="nghe_nghiep" ColumnName="nghe_nghiep" />
+                <ScalarProperty Name="cap_bac_hoc_van" ColumnName="cap_bac_hoc_van" />
+                <ScalarProperty Name="gioi_tinh_khac" ColumnName="gioi_tinh_khac" />
+                <ScalarProperty Name="gioi_tinh" ColumnName="gioi_tinh" />
+                <ScalarProperty Name="nam_sinh" ColumnName="nam_sinh" />
+                <ScalarProperty Name="ngay_thang_nam_sinh" ColumnName="ngay_thang_nam_sinh" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CD43_KHACH_HANG_CHUYEN_GUI">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_CHUYEN_GUI">
+              <MappingFragment StoreEntitySet="CD43_KHACH_HANG_CHUYEN_GUI">
+                <ScalarProperty Name="f2_q_3_1_d" ColumnName="f2_q_3_1_d" />
+                <ScalarProperty Name="chuyn_gi_complete" ColumnName="chuyn_gi_complete" />
+                <ScalarProperty Name="f2_q_6_7" ColumnName="f2_q_6_7" />
+                <ScalarProperty Name="f2_q_6_6" ColumnName="f2_q_6_6" />
+                <ScalarProperty Name="f2_q_6_5" ColumnName="f2_q_6_5" />
+                <ScalarProperty Name="f2_q_6_4" ColumnName="f2_q_6_4" />
+                <ScalarProperty Name="f2_q_6_3" ColumnName="f2_q_6_3" />
+                <ScalarProperty Name="f2_q_6_2" ColumnName="f2_q_6_2" />
+                <ScalarProperty Name="f2_q_6_1" ColumnName="f2_q_6_1" />
+                <ScalarProperty Name="f2_q_6_d" ColumnName="f2_q_6_d" />
+                <ScalarProperty Name="p_6" ColumnName="p_6" />
+                <ScalarProperty Name="f2_q_5_2" ColumnName="f2_q_5_2" />
+                <ScalarProperty Name="f2_q_53" ColumnName="f2_q_53" />
+                <ScalarProperty Name="f2_q_5_1" ColumnName="f2_q_5_1" />
+                <ScalarProperty Name="f2_q_51" ColumnName="f2_q_51" />
+                <ScalarProperty Name="f2_q_5_d" ColumnName="f2_q_5_d" />
+                <ScalarProperty Name="f2_q_5" ColumnName="f2_q_5" />
+                <ScalarProperty Name="p_5" ColumnName="p_5" />
+                <ScalarProperty Name="f2_q_4_4_4" ColumnName="f2_q_4_4_4" />
+                <ScalarProperty Name="f2_q_4_4_3_1" ColumnName="f2_q_4_4_3_1" />
+                <ScalarProperty Name="f2_q_4_4_3" ColumnName="f2_q_4_4_3" />
+                <ScalarProperty Name="f2_q_4_4_2_1" ColumnName="f2_q_4_4_2_1" />
+                <ScalarProperty Name="f2_q_4_4_2" ColumnName="f2_q_4_4_2" />
+                <ScalarProperty Name="f2_q_4_4_1" ColumnName="f2_q_4_4_1" />
+                <ScalarProperty Name="f2_q_4_4" ColumnName="f2_q_4_4" />
+                <ScalarProperty Name="f2_q_4_3_4" ColumnName="f2_q_4_3_4" />
+                <ScalarProperty Name="f2_q_4_3_3" ColumnName="f2_q_4_3_3" />
+                <ScalarProperty Name="f2_q_4_3_2" ColumnName="f2_q_4_3_2" />
+                <ScalarProperty Name="f2_q_4_3_1" ColumnName="f2_q_4_3_1" />
+                <ScalarProperty Name="f2_q_4_3" ColumnName="f2_q_4_3" />
+                <ScalarProperty Name="f2_q_4_2_6" ColumnName="f2_q_4_2_6" />
+                <ScalarProperty Name="f2_q_4_2_5" ColumnName="f2_q_4_2_5" />
+                <ScalarProperty Name="f2_q_4_2_4" ColumnName="f2_q_4_2_4" />
+                <ScalarProperty Name="f2_q_4_2_3" ColumnName="f2_q_4_2_3" />
+                <ScalarProperty Name="f2_q_4_2_2" ColumnName="f2_q_4_2_2" />
+                <ScalarProperty Name="f2_q_4_2_1" ColumnName="f2_q_4_2_1" />
+                <ScalarProperty Name="f2_q_4_2" ColumnName="f2_q_4_2" />
+                <ScalarProperty Name="f2_q_4_1_7" ColumnName="f2_q_4_1_7" />
+                <ScalarProperty Name="f2_q_4_1_6" ColumnName="f2_q_4_1_6" />
+                <ScalarProperty Name="f2_q_4_1_5" ColumnName="f2_q_4_1_5" />
+                <ScalarProperty Name="f2_q_4_1_4_1" ColumnName="f2_q_4_1_4_1" />
+                <ScalarProperty Name="f2_q_4_1_4___7" ColumnName="f2_q_4_1_4___7" />
+                <ScalarProperty Name="f2_q_4_1_4___6" ColumnName="f2_q_4_1_4___6" />
+                <ScalarProperty Name="f2_q_4_1_4___5" ColumnName="f2_q_4_1_4___5" />
+                <ScalarProperty Name="f2_q_4_1_4___4" ColumnName="f2_q_4_1_4___4" />
+                <ScalarProperty Name="f2_q_4_1_4___3" ColumnName="f2_q_4_1_4___3" />
+                <ScalarProperty Name="f2_q_4_1_4___2" ColumnName="f2_q_4_1_4___2" />
+                <ScalarProperty Name="f2_q_4_1_4___1" ColumnName="f2_q_4_1_4___1" />
+                <ScalarProperty Name="f2_q_4_1_4" ColumnName="f2_q_4_1_4" />
+                <ScalarProperty Name="f2_q_4_1_3" ColumnName="f2_q_4_1_3" />
+                <ScalarProperty Name="f2_q_4_1_2" ColumnName="f2_q_4_1_2" />
+                <ScalarProperty Name="f2_q_4_1_1" ColumnName="f2_q_4_1_1" />
+                <ScalarProperty Name="f2_q_4_1" ColumnName="f2_q_4_1" />
+                <ScalarProperty Name="loaihinh4___4" ColumnName="loaihinh4___4" />
+                <ScalarProperty Name="loaihinh4___3" ColumnName="loaihinh4___3" />
+                <ScalarProperty Name="loaihinh4___2" ColumnName="loaihinh4___2" />
+                <ScalarProperty Name="loaihinh4___1" ColumnName="loaihinh4___1" />
+                <ScalarProperty Name="loaihinh4" ColumnName="loaihinh4" />
+                <ScalarProperty Name="p_4" ColumnName="p_4" />
+                <ScalarProperty Name="f2_q_3_3" ColumnName="f2_q_3_3" />
+                <ScalarProperty Name="f2_q_3_2" ColumnName="f2_q_3_2" />
+                <ScalarProperty Name="f2_q_3_1_3_1" ColumnName="f2_q_3_1_3_1" />
+                <ScalarProperty Name="f2_q_3_1_3" ColumnName="f2_q_3_1_3" />
+                <ScalarProperty Name="f2_q_3_1_1_2" ColumnName="f2_q_3_1_1_2" />
+                <ScalarProperty Name="f2_q_3_1_2" ColumnName="f2_q_3_1_2" />
+                <ScalarProperty Name="f2_q_3_1_1_1" ColumnName="f2_q_3_1_1_1" />
+                <ScalarProperty Name="f2_q_3_1_1" ColumnName="f2_q_3_1_1" />
+                <ScalarProperty Name="f2_q_3_1" ColumnName="f2_q_3_1" />
+                <ScalarProperty Name="p_3" ColumnName="p_3" />
+                <ScalarProperty Name="f2_q_2_6" ColumnName="f2_q_2_6" />
+                <ScalarProperty Name="f2_q_2_5" ColumnName="f2_q_2_5" />
+                <ScalarProperty Name="f2_q_2_4" ColumnName="f2_q_2_4" />
+                <ScalarProperty Name="f2_q_2_3" ColumnName="f2_q_2_3" />
+                <ScalarProperty Name="f2_q_2_2" ColumnName="f2_q_2_2" />
+                <ScalarProperty Name="f2_q_2_1" ColumnName="f2_q_2_1" />
+                <ScalarProperty Name="p_2" ColumnName="p_2" />
+                <ScalarProperty Name="f2_q_1_8_1" ColumnName="f2_q_1_8_1" />
+                <ScalarProperty Name="f2_q_1_8" ColumnName="f2_q_1_8" />
+                <ScalarProperty Name="f2_q_1_6" ColumnName="f2_q_1_6" />
+                <ScalarProperty Name="f2_q_1_5_1" ColumnName="f2_q_1_5_1" />
+                <ScalarProperty Name="f2_q_1_5" ColumnName="f2_q_1_5" />
+                <ScalarProperty Name="f2_q_1_4" ColumnName="f2_q_1_4" />
+                <ScalarProperty Name="f2_q_1_3_1" ColumnName="f2_q_1_3_1" />
+                <ScalarProperty Name="f2_q_1_3" ColumnName="f2_q_1_3" />
+                <ScalarProperty Name="f2_q_1_2" ColumnName="f2_q_1_2" />
+                <ScalarProperty Name="f2_q_1_1" ColumnName="f2_q_1_1" />
+                <ScalarProperty Name="p_1" ColumnName="p_1" />
+                <ScalarProperty Name="chuyengui___6" ColumnName="chuyengui___6" />
+                <ScalarProperty Name="chuyengui___5" ColumnName="chuyengui___5" />
+                <ScalarProperty Name="chuyengui___4" ColumnName="chuyengui___4" />
+                <ScalarProperty Name="chuyengui___3" ColumnName="chuyengui___3" />
+                <ScalarProperty Name="chuyengui___2" ColumnName="chuyengui___2" />
+                <ScalarProperty Name="chuyengui___1" ColumnName="chuyengui___1" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

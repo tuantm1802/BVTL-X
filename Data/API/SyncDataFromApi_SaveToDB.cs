@@ -347,7 +347,7 @@ namespace Data.API
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
                         //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
-                        _convertResultApiToEntity.ConvertApiKhachHangTTCBEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangTTCBEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
                         if (tongHops != null && tongHops.Count > 0)
@@ -379,7 +379,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangSangLocNuocTieuEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_nc_tiu_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangSangLocNuocTieuEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_nc_tiu_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU
                         if (tongHops != null && tongHops.Count > 0)
@@ -411,7 +411,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangSangLocHIVEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_hiv_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangSangLocHIVEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.sng_lc_hiv_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_SANG_LOC_HIV
                         if (tongHops != null && tongHops.Count > 0)
@@ -443,7 +443,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangDanhGiaHaiLongEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.nh_gi_mc_hi_lng_ca_kh_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangDanhGiaHaiLongEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.nh_gi_mc_hi_lng_ca_kh_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
                         //_convertResultApiToEntity.ConvertApiKhachHangDanhGiaHaiLongEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) ).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_DANH_GIA_HAI_LONG
@@ -478,7 +478,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangTheoDauEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.theo_du_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangTheoDauEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.theo_du_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
                         //_convertResultApiToEntity.ConvertApiKhachHangTheoDauEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_THEO_DAU
@@ -546,7 +546,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangPhieuTuVanEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.phiu_t_vn_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangPhieuTuVanEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.phiu_t_vn_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
                         //_convertResultApiToEntity.ConvertApiKhachHangPhieuTuVanEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_PHIEU_TU_VAN
@@ -614,7 +614,7 @@ namespace Data.API
                         }
 
                         // Chuyển đổi dữ liệu sang các bảng tương ứng
-                        _convertResultApiToEntity.ConvertApiKhachHangHanhViNguyCoEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiKhachHangHanhViNguyCoEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
                         //_convertResultApiToEntity.ConvertApiKhachHangHanhViNguyCoEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id)).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
 
                         // Thêm dữ liệu bảng CD43_KHACH_HANG_HANH_VI_NGUY_CO

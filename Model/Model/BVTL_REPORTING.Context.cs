@@ -59,12 +59,10 @@ namespace Model.Model
         public virtual DbSet<VIIV_TRAINING_DATA_COLLECTION> VIIV_TRAINING_DATA_COLLECTION { get; set; }
         public virtual DbSet<BVTL_THONG_TIN_TRUYEN_THONG> BVTL_THONG_TIN_TRUYEN_THONG { get; set; }
         public virtual DbSet<BVTL_THEO_DAU_KH> BVTL_THEO_DAU_KH { get; set; }
-        public virtual DbSet<CD43_KHACH_HANG_THONG_TIN_CO_BAN> CD43_KHACH_HANG_THONG_TIN_CO_BAN { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_DANH_GIA_HAI_LONG> CD43_KHACH_HANG_DANH_GIA_HAI_LONG { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_THEO_DAU> CD43_KHACH_HANG_THEO_DAU { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_SINH_HOAT_NHOM> CD43_KHACH_HANG_SINH_HOAT_NHOM { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_PHIEU_TU_VAN> CD43_KHACH_HANG_PHIEU_TU_VAN { get; set; }
-        public virtual DbSet<CD43_KHACH_HANG_CHUYEN_GUI> CD43_KHACH_HANG_CHUYEN_GUI { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_HANH_VI_NGUY_CO> CD43_KHACH_HANG_HANH_VI_NGUY_CO { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_SANG_LOC_HIV> CD43_KHACH_HANG_SANG_LOC_HIV { get; set; }
         public virtual DbSet<CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU> CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU { get; set; }
@@ -77,5 +75,7 @@ namespace Model.Model
         public virtual DbSet<CH07_KHACH_HANG_BANG_HOI_ACE> CH07_KHACH_HANG_BANG_HOI_ACE { get; set; }
         public virtual DbSet<CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV> CH07_KHACH_HANG_PHIEU_XET_NGHIEM_LAI_HIV { get; set; }
         public virtual DbSet<CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC> CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC { get; set; }
+        public virtual DbSet<CD43_KHACH_HANG_THONG_TIN_CO_BAN> CD43_KHACH_HANG_THONG_TIN_CO_BAN { get; set; }
+        public virtual DbSet<CD43_KHACH_HANG_CHUYEN_GUI> CD43_KHACH_HANG_CHUYEN_GUI { get; set; }
     }
 }

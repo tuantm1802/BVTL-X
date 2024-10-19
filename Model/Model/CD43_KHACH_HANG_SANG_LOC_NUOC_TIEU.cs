@@ -22,7 +22,7 @@ namespace Model.Model
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }
         public string manhom_tbh { get; set; }
-        public string sng_lc_nc_tiu_complete { get; set; }
+        public Nullable<int> sng_lc_nc_tiu_complete { get; set; }
         public string city_code { get; set; }
     }
 }
