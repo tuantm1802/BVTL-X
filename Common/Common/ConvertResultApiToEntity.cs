@@ -3597,10 +3597,10 @@ namespace Common.Common
 
                     // Gán giá trị các thuộc tính
                     objDB.record_id = resultApi.record_id;
-                    objDB.sync_date = resultApi.sync_date;
+                    //objDB.sync_date = resultApi.sync_date;
                     objDB.maduan = resultApi.maduan;
                     objDB.manhom_tbh = resultApi.manhom_tbh;
-                    objDB.city_code = resultApi.city_code;
+                    
                     objDB.chuyengui___1 = resultApi.chuyengui___1;
                     objDB.chuyengui___2 = resultApi.chuyengui___2;
                     objDB.chuyengui___3 = resultApi.chuyengui___3;

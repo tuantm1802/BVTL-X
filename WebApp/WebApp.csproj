@@ -302,6 +302,7 @@
     <Content Include="app\Controller\BaoCaoQuyCH07Controller.js" />
     <Content Include="app\Controller\BaoCaoQuyCD43Controller.js" />
     <Content Include="app\Controller\BaoCaoThangCH07Controller.js" />
+    <Content Include="app\Controller\BaoCaoTongHopQuyCD43Controller.js" />
     <Content Include="app\Controller\HomeController.js" />
     <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
     <Content Include="app\Controller\BaoCaoChiSoController.js" />
@@ -4682,6 +4683,7 @@
     <Content Include="Views\BaoCaoNamCH07\Index.cshtml" />
     <Content Include="Views\BaoCaoCD43\BaoCaoQuy.cshtml" />
     <Content Include="Views\BaoCaoCD43\BaoCaoNam.cshtml" />
+    <Content Include="Views\BaoCaoCD43\BaoCaoHoatDong.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

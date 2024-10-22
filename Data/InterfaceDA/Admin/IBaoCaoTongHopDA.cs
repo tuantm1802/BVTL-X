@@ -59,5 +59,6 @@ namespace Data.InterfaceDA.Admin
         /// <param name="pageSize"></param>
         /// <returns></returns>
          List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoTongHopQuyVIIV(ReportSearchModel modelSearch);
+         List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoHoatDongCD43(ReportSearchModel modelSearch);
     }
 }

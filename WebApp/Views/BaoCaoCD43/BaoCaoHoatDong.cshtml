@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU DỰ ÁN CD43";
+}
+
+<div class="container-fluid" ng-controller="BaoCaoCD43Controller">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU DỰ ÁN CD43</h1>
+    <p class="mb-4">
+    </p>
+    <div class="form-group row">
+
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Từ quý</label>
+            <select class="form-control" ng-model="TuQuy" name="TuQuy">
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+            </select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>năm</label>
+            <select class="form-control" ui-select2 ng-model="modelSearch.TuNam" name="TuNam" ng-options="item.Id as item.Name for item in ListYear">
+            </select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Đến quý</label>
+            <select class="form-control" ng-model="DenQuy" name="DenQuy">
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+            </select>
+        </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>năm</label>
+            <select class="form-control" ui-select2 ng-model="modelSearch.DenNam" name="DenNam" ng-options="item.Id as item.Name for item in ListYear">
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
+            <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+            <button type="button" class="btn btn-secondary" ng-click="ExportExcel()">
+                <i class="fas fa-pencil-alt"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%;">STT </th>
+                            <th style="width: 39%;">Hoạt động </th>
+                            <th style="width: 8%; ">Chỉ tiêu</th>
+                            <th style="width: 8%;">Đơn vị </th>
+                            <th ng-repeat="item in ListQuy">{{item.Quy}}</th>
+                            <th>Tỷ lệ (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in ListData">
+                            <td class="text-center">{{item.STT}}</td>
+                            <td class="text-left">
+                                <span ng-show="item.BoldText == false">{{item.HoatDong}}</span>
+                                <b ng-show="item.BoldText == true">{{item.HoatDong}}</b>
+                            </td>
+                            <td class="text-left">
+                                <span>{{item.ChiTieu}}</span>
+                            </td>
+                            <td class="text-left">
+                                <span>{{item.DonVi}}</span>
+                            </td>
+                            <td ng-repeat="itemQ in item.ListQuy" class="text-right">{{itemQ.SoLuong | number:0}}</td>
+                            <td class="text-right">{{item.TyLe | number:0}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+    @section Scripts{
+        <script src="~/app/Controller/BaoCaoTongHopQuyCD43Controller.js"></script>
+    }

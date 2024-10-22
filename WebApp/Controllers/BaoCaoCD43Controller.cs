@@ -100,6 +100,29 @@ namespace WebApp.Controllers
             }
         }
 
+        public ActionResult BaoCaoHoatDong()
+        {
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
+        }
 
         [HttpPost]
         public ActionResult SearchData(ReportSearchModel modelSearch)
@@ -129,6 +152,46 @@ namespace WebApp.Controllers
                 obj.Error = true;
                 obj.Title = ex.Message.ToString();
                 AddLog("Lấy dữ liệu báo cáo quý(tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
+
+                return Json(obj);
+            }
+        }
+
+        public ActionResult SearchDataBaoCaoHoatDong(ReportSearchModel modelSearch)
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                modelSearch.TypeReport = 2;
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "CD43";
+                var data = _BaoCaoTongHopDA.LayDuLieuBaoCaoHoatDongCD43(modelSearch);
+                AddLog("Lấy dữ liệu báo cáo tổng hợp quý CD43( từ tháng: " + modelSearch.TuThang +
+                                                               ", từ năm: " + modelSearch.TuNam +
+                                                                ", đến tháng: " + modelSearch.DenThang +
+                                                                 ", đến năm: " + modelSearch.DenNam +
+                                                               ", tỉnh: " + modelSearch.CityCodes +
+                                                               ") thành công.");
+                return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("ERROR - SearchDataBaoCaoHoatDong::SearchData: Lấy dữ liệu báo cáo tổng hợp quý CD43(từ tháng: " + modelSearch.TuThang +
+                                                               ", từ năm: " + modelSearch.TuNam +
+                                                                ", đến tháng: " + modelSearch.DenThang +
+                                                                 ", đến năm: " + modelSearch.DenNam +
+                                                               ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
 
                 return Json(obj);
             }

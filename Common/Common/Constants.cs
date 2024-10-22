@@ -67,9 +67,11 @@ namespace Common.Common
         public const string SP_Report_Ket_Qua_Sang_Loc = "Report_Ket_Qua_Sang_Loc";
         public const string SP_DuAn_Get_By_Page = "DuAn_Get_By_Page";
         public const string SP_Report_BC_Tong_Hop_Quy_VIIV = "Report_BC_Tong_Hop_Quy_VIIV";
+        
         public const string SP_Notification_Search_Data = "Notification_Search_Data";
 
         public const string SP_Report_Get_All_Data_CD43 = "Report_Get_All_Data_CD43";
+        public const string SP_Report_BC_Tong_Hop_Quy_CD43 = "Report_BC_Tong_Hop_Quy_CD43";
         public const string SP_Report_Get_All_Data_CH07 = "Report_Get_All_Data_CH07_LIVE";
         #endregion
     }
