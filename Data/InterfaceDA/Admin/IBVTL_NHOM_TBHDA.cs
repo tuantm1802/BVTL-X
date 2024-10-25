@@ -39,6 +39,7 @@ namespace Data.InterfaceDA.Admin
         /// <param name="maNhoms"></param>
         /// <returns></returns>
          List<NhomTBHPageModel> GetItemByMaNhoms(string maNhoms);
+         List<NhomTBHPageModel> GetItemByMaNhomMap(string maNhom);
 
         /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo tỉnh

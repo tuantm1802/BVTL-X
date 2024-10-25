@@ -4684,6 +4684,8 @@
     <Content Include="Views\BaoCaoCD43\BaoCaoQuy.cshtml" />
     <Content Include="Views\BaoCaoCD43\BaoCaoNam.cshtml" />
     <Content Include="Views\BaoCaoCD43\BaoCaoHoatDong.cshtml" />
+    <Content Include="Views\BaoCaoCD43\BaoCaoHoatDongNhom.cshtml" />
+    <Content Include="Views\KetQuaSangLoc\BaoCaoSangLoc.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

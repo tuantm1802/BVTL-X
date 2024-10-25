@@ -20,5 +20,6 @@ namespace Model.Model
         public int CHITIEU { get; set; }
         public string DONVI { get; set; }
         public string MADUAN { get; set; }
+        public string MANHOM { get; set; }
     }
 }

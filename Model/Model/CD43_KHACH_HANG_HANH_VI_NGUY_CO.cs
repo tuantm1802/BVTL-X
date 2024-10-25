@@ -162,5 +162,36 @@ namespace Model.Model
         public string diem { get; set; }
         public Nullable<int> thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
         public Nullable<System.DateTime> ngayhoi { get; set; }
+        public string f1_q_b1___1 { get; set; }
+        public string f1_q_b1___2 { get; set; }
+        public string f1_q_b1___3 { get; set; }
+        public string f1_q_b1___4 { get; set; }
+        public string f1_q_b1___5 { get; set; }
+        public string f1_q_b1___6 { get; set; }
+        public string f1_q_b1___7 { get; set; }
+        public string f1_q_b2___1 { get; set; }
+        public string f1_q_b2___2 { get; set; }
+        public string f1_q_b2___3 { get; set; }
+        public string f1_q_b2___4 { get; set; }
+        public string f1_q_b2___5 { get; set; }
+        public string f1_q_b2___6 { get; set; }
+        public string f1_q_b2___7 { get; set; }
+        public string f1_q_b3___1 { get; set; }
+        public string f1_q_b3___2 { get; set; }
+        public string f1_q_b3___3 { get; set; }
+        public string f1_q_b3___4 { get; set; }
+        public string f1_q_b3___5 { get; set; }
+        public string f1_q_b3___6 { get; set; }
+        public string f1_q_b3___7 { get; set; }
+        public string f1_q_b3___8 { get; set; }
+        public string f1_q_b3___9 { get; set; }
+        public string f1_q_b4___1 { get; set; }
+        public string f1_q_b4___2 { get; set; }
+        public string f1_q_b4___3 { get; set; }
+        public string f1_q_b4___4 { get; set; }
+        public string f1_q_b4___5 { get; set; }
+        public string f1_q_b4___6 { get; set; }
+        public string f1_q_b4___7 { get; set; }
+        public string f1_q_b4___8 { get; set; }
     }
 }

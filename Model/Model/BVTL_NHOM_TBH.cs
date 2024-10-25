@@ -34,6 +34,7 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string tennhom_tbh { get; set; }
         public string city_code { get; set; }
+        public string manhom_tbh_map { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_BO_BIEU_MAU_KH_BAO_CAO> BVTL_BO_BIEU_MAU_KH_BAO_CAO { get; set; }

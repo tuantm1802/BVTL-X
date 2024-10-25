@@ -218,7 +218,7 @@
         $scope.ListMaNhomTBH = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoCD43/GetNhomTBHByCityCodes',
+            url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
             cache: false,
             async: false,
             data: {

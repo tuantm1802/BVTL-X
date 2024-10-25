@@ -148,7 +148,7 @@ namespace Data.API
             var result = new List<BVTL_API>();
             try
             {
-                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API;").ToList();// where IsActive = 1
+                result = _databaseSql.ExecuteCommanToList<BVTL_API>("select * from BVTL_API WHERE IsActive = 1 ORDER BY Api_Code DESC;").ToList();// where IsActive = 1
             }
             catch (Exception ex)
             {

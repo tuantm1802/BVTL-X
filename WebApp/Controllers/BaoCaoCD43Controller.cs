@@ -123,6 +123,29 @@ namespace WebApp.Controllers
                 return Redirect("/ErrorPage/Error404");
             }
         }
+        public ActionResult BaoCaoHoatDongNhom()
+        {
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
+        }
 
         [HttpPost]
         public ActionResult SearchData(ReportSearchModel modelSearch)
@@ -243,6 +266,14 @@ namespace WebApp.Controllers
         {
             // Lấy danh sách nhóm TBH theo tỉnh
             var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+            return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+        }
+
+        [HttpPost]
+        public ActionResult GetNhomTBHByMaNhomMap(string maNhom)
+        {
+            // Lấy danh sách nhóm TBH theo tỉnh
+            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhomMap(maNhom);
             return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
         }
 

@@ -44,10 +44,13 @@
         }
         $scope.modelSearch.TuNam = date.getFullYear();
         $scope.modelSearch.DenNam = date.getFullYear();
-        console.log(123123);
+        
         GetBottomAction();
         $scope.Changecity();
         $scope.LoadPage(1);
+
+        console.log($scope.ListMaNhomTBH);
+        console.log($scope.ListNhomTBH);
     });
 
     $scope.RoleBtnUpdate = false;
@@ -256,7 +259,7 @@
         $scope.ListMaNhomTBH = [];
         $.ajax({
             type: 'post',
-            url: '/BaoCaoCD43/GetNhomTBHByCityCodes',
+            url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
             cache: false,
             async: false,
             data: {

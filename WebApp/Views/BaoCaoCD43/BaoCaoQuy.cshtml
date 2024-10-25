@@ -23,6 +23,10 @@
             <label class="form-label">Năm</label>
             <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear"></select>
         </div>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            <label>Nhóm</label>
+            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+        </div>
         <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
             <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                 <i class="fas fa-search"></i> Tìm kiếm

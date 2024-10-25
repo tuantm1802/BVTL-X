@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="200ffc435879416e947fda66ae3ee9b8" Name="Diagram1" ZoomLevel="82">
+      <Diagram DiagramId="200ffc435879416e947fda66ae3ee9b8" Name="Diagram1" ZoomLevel="30">
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_API" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_BO_BIEU_MAU_KH_BAO_CAO" Width="1.5" PointX="14.25" PointY="51.25" IsExpanded="true" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.BVTL_CITES" Width="1.5" PointX="0.75" PointY="35" IsExpanded="true" />

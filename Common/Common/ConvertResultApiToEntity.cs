@@ -3997,6 +3997,38 @@ namespace Common.Common
                     objDB.c9 = resultApi.c9;
                     objDB.c10 = resultApi.c10;
                     objDB.diem = resultApi.diem;
+                    objDB.f1_q_b1___1 = resultApi.f1_q_b1___1;
+                    objDB.f1_q_b1___2 = resultApi.f1_q_b1___2;
+                    objDB.f1_q_b1___3 = resultApi.f1_q_b1___3;
+                    objDB.f1_q_b1___4 = resultApi.f1_q_b1___4;
+                    objDB.f1_q_b1___5 = resultApi.f1_q_b1___5;
+                    objDB.f1_q_b1___6 = resultApi.f1_q_b1___6;
+                    objDB.f1_q_b1___7 = resultApi.f1_q_b1___7;
+                    objDB.f1_q_b2___1 = resultApi.f1_q_b2___1;
+                    objDB.f1_q_b2___2 = resultApi.f1_q_b2___2;
+                    objDB.f1_q_b2___3 = resultApi.f1_q_b2___3;
+                    objDB.f1_q_b2___4 = resultApi.f1_q_b2___4;
+                    objDB.f1_q_b2___5 = resultApi.f1_q_b2___5;
+                    objDB.f1_q_b2___6 = resultApi.f1_q_b2___6;
+                    objDB.f1_q_b2___7 = resultApi.f1_q_b2___7;
+                    objDB.f1_q_b3___1 = resultApi.f1_q_b3___1;
+                    objDB.f1_q_b3___2 = resultApi.f1_q_b3___2;
+                    objDB.f1_q_b3___3 = resultApi.f1_q_b3___3;
+                    objDB.f1_q_b3___4 = resultApi.f1_q_b3___4;
+                    objDB.f1_q_b3___5 = resultApi.f1_q_b3___5;
+                    objDB.f1_q_b3___6 = resultApi.f1_q_b3___6;
+                    objDB.f1_q_b3___7 = resultApi.f1_q_b3___7;
+                    objDB.f1_q_b3___8 = resultApi.f1_q_b3___8;
+                    objDB.f1_q_b3___9 = resultApi.f1_q_b3___9;
+                    objDB.f1_q_b4___1 = resultApi.f1_q_b4___1;
+                    objDB.f1_q_b4___2 = resultApi.f1_q_b4___2;
+                    objDB.f1_q_b4___3 = resultApi.f1_q_b4___3;
+                    objDB.f1_q_b4___4 = resultApi.f1_q_b4___4;
+                    objDB.f1_q_b4___5 = resultApi.f1_q_b4___5;
+                    objDB.f1_q_b4___6 = resultApi.f1_q_b4___6;
+                    objDB.f1_q_b4___7 = resultApi.f1_q_b4___7;
+                    objDB.f1_q_b4___8 = resultApi.f1_q_b4___8;
+
                     objDB.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = resultApi.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete;
 
                     lsObjDB.Add(objDB);

@@ -118,6 +118,42 @@ namespace Data.Admin
                 return result;
             }
         }
+        
+        public List<NhomTBHPageModel> GetItemByMaNhomMap(string maNhom)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            if (!string.IsNullOrEmpty(maNhom))
+            {
+                var result = (from ntbh in db.BVTL_NHOM_TBH
+                              join c in db.BVTL_CITES on ntbh.city_code equals c.Code
+                              where maNhom.Contains(ntbh.manhom_tbh_map)
+                                && ntbh.manhom_tbh_map != null
+                              select new NhomTBHPageModel
+                              {
+                                  manhom_tbh = ntbh.manhom_tbh_map,
+                                  tennhom_tbh = ntbh.tennhom_tbh,
+                                  city_code = ntbh.city_code,
+                                  CityName = c.Name
+                              }).ToList();
+
+                return result;
+            }
+            else
+            {
+                var result = (from ntbh in db.BVTL_NHOM_TBH
+                              join c in db.BVTL_CITES on ntbh.city_code equals c.Code
+                              where ntbh.manhom_tbh_map != null
+                              select new NhomTBHPageModel
+                              {
+                                  manhom_tbh = ntbh.manhom_tbh_map,
+                                  tennhom_tbh = ntbh.tennhom_tbh,
+                                  city_code = ntbh.city_code,
+                                  CityName = c.Name
+                              }).ToList();
+
+                return result;
+            }
+        }
 
 
         /// <summary>
