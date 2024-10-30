@@ -54,6 +54,31 @@ namespace WebApp.Controllers
                 return Redirect("/ErrorPage/Error404");
             }
         }
+        [HasCredential(ControllerName = "KetQuaSangLoc")]
+        public ActionResult BaoCaoSangLoc()
+        {
+            try
+            {
+                // Kiểm tra quyền 
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+
+                if (user.IsAdmin || (duAn != null && user.MaDuAn.Contains(duAn.maduan)))
+                    return View();
+                else
+                    return Redirect("/ErrorPage/Error404");
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+                return Redirect("/ErrorPage/Error404");
+            }
+        }
 
         [HttpPost]
         public ActionResult GetAll(ReportSearchModel modelSearch)
@@ -168,6 +193,63 @@ namespace WebApp.Controllers
                 return Json(obj);
             }
         }
+        
+        public ActionResult GetAllCD43(ReportSearchModel modelSearch)
+        {
+            ObjectMessage obj = new ObjectMessage
+            {
+                Error = false
+            };
+            try
+            {
+                //if (modelSearch._FromDate != null)
+                //    modelSearch.FromDate = Convert.ToDateTime(modelSearch._FromDate).ToString("yyyyMMdd");
+                //if (modelSearch._ToDate != null)
+                //    modelSearch.ToDate = Convert.ToDateTime(modelSearch._ToDate).ToString("yyyyMMdd");
+
+                List<BaoCaoSangLocModel> KetQuaTTCBHanhViNguyCos = new List<BaoCaoSangLocModel>();
+                List<CacChatGayNghienAssistModel> CacLoaiChatGayNghienAssists = new List<CacChatGayNghienAssistModel>();
+                List<KetQuaQSTModel> KetQuaQSTs = new List<KetQuaQSTModel>();
+                List<KetQuaQSTModel> KetQuaACEs = new List<KetQuaQSTModel>();
+                
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                //var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                //modelSearch.MaDuAn = modelSearch.MaDuAn != null ? modelSearch.MaDuAn : "BVTL";
+
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                
+                if (citys != null && citys.Count > 0 && modelSearch.CityCodes == null)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
+                
+                _BaoCaoTongHopDA.KetQuaSangLocCD43(modelSearch,  ref KetQuaTTCBHanhViNguyCos, ref CacLoaiChatGayNghienAssists, ref KetQuaQSTs, ref KetQuaACEs);
+
+                AddLog("Lấy dữ liệu theo trang bảng kết quả sàng lọc thành công.");
+                return Json(new
+                {
+
+                    KetQuaTTCBHanhViNguyCos = KetQuaTTCBHanhViNguyCos,
+                    CacLoaiChatGayNghienAssists = CacLoaiChatGayNghienAssists,
+                    KetQuaQSTs = KetQuaQSTs,
+                    KetQuaACEs = KetQuaACEs,
+                    
+                    Error = false,
+                    Title = "Lấy dữ liệu thành công."
+                }); ;
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = ex.Message.ToString();
+                AddLog("Lấy dữ liệu theo trang bảng kết quả sàng lọc lỗi: " + ex.Message);
+
+                return Json(obj);
+            }
+        }
 
         [HttpPost]
         public ActionResult GetBottomAction()
@@ -185,10 +267,13 @@ namespace WebApp.Controllers
                 AddLog("Lấy danh sách các botom được thực hiện trên from kết quả ACE thành công.");
 
                 // Lấy danh sách tỉnh, tp phố
-                var citis = _CityDA.GetAll();
+                //var citis = _CityDA.GetAll();
+                var citis = _CityDA.GetAllByCodeMap();
 
                 // Lấy danh sách nhóm tbh
-                var nhomTBHs = _NhomTBHDA.GetAll();
+                //var nhomTBHs = _NhomTBHDA.GetAll();
+                string maNhom = null;
+                var nhomTBHs = _NhomTBHDA.GetItemByMaNhomMap(maNhom);
 
                 var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
 

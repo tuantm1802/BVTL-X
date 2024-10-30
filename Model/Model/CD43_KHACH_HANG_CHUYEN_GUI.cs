@@ -113,5 +113,6 @@ namespace Model.Model
         public string f2_q_6_7 { get; set; }
         public Nullable<int> chuyn_gi_complete { get; set; }
         public Nullable<System.DateTime> f2_q_3_1_d { get; set; }
+        public string city_code_map { get; set; }
     }
 }

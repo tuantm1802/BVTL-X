@@ -24,5 +24,6 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public Nullable<int> sng_lc_nc_tiu_complete { get; set; }
         public string city_code { get; set; }
+        public string city_code_map { get; set; }
     }
 }

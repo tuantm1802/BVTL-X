@@ -22,5 +22,21 @@ namespace Model.ModelExtend.Report
         public int? Colpan { get; set; }
         public string BoldText { get; set; }
         public string IsShow { get; set; }
+        public string SubThongTinBC_Them { get; set; }
+        public int? SubRowspan { get; set; }
+    }
+    public class BaoCaoSangLocModel
+    {
+        public string STT { get; set; }
+        public string ThongTinBC { get; set; }
+        public string ThongTinBC_Them { get; set; }
+        public int? SoLuong { get; set; }
+        public decimal? Tyle { get; set; }
+        public int? Rowpan { get; set; }
+        public int? Colpan { get; set; }
+        public string BoldText { get; set; }
+        public string IsShow { get; set; }
+        public string SubThongTinBC_Them { get; set; }
+        public int? SubRowspan { get; set; }
     }
 }

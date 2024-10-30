@@ -279,4 +279,152 @@ namespace Model.ModelExtend.API
 
 
     }
+
+    public class ResultApiCH07ThongTinTruyenThongModel
+    {
+        public int record_id { get; set; }
+        public string nhom { get; set; }
+        public string dichvu { get; set; }
+        public string day { get; set; }
+        public string diadiem { get; set; }
+        public string diadiem_khac { get; set; }
+        public string noidung { get; set; }
+        public int? sokh { get; set; }
+
+        // Các thuộc tính mã hno34 từ 1 đến 30
+        public string ma_hno34_1 { get; set; }
+        public string ma_hno34_2 { get; set; }
+        public string ma_hno34_3 { get; set; }
+        public string ma_hno34_4 { get; set; }
+        public string ma_hno34_5 { get; set; }
+        public string ma_hno34_6 { get; set; }
+        public string ma_hno34_7 { get; set; }
+        public string ma_hno34_8 { get; set; }
+        public string ma_hno34_9 { get; set; }
+        public string ma_hno34_10 { get; set; }
+        public string ma_hno34_11 { get; set; }
+        public string ma_hno34_12 { get; set; }
+        public string ma_hno34_13 { get; set; }
+        public string ma_hno34_14 { get; set; }
+        public string ma_hno34_15 { get; set; }
+        public string ma_hno34_16 { get; set; }
+        public string ma_hno34_17 { get; set; }
+        public string ma_hno34_18 { get; set; }
+        public string ma_hno34_19 { get; set; }
+        public string ma_hno34_20 { get; set; }
+        public string ma_hno34_21 { get; set; }
+        public string ma_hno34_22 { get; set; }
+        public string ma_hno34_23 { get; set; }
+        public string ma_hno34_24 { get; set; }
+        public string ma_hno34_25 { get; set; }
+        public string ma_hno34_26 { get; set; }
+        public string ma_hno34_27 { get; set; }
+        public string ma_hno34_28 { get; set; }
+        public string ma_hno34_29 { get; set; }
+        public string ma_hno34_30 { get; set; }
+
+        // Các thuộc tính mã hno18 từ 1 đến 30
+        public string ma_hno18_1 { get; set; }
+        public string ma_hno18_2 { get; set; }
+        public string ma_hno18_3 { get; set; }
+        public string ma_hno18_4 { get; set; }
+        public string ma_hno18_5 { get; set; }
+        public string ma_hno18_6 { get; set; }
+        public string ma_hno18_7 { get; set; }
+        public string ma_hno18_8 { get; set; }
+        public string ma_hno18_9 { get; set; }
+        public string ma_hno18_10 { get; set; }
+        public string ma_hno18_11 { get; set; }
+        public string ma_hno18_12 { get; set; }
+        public string ma_hno18_13 { get; set; }
+        public string ma_hno18_14 { get; set; }
+        public string ma_hno18_15 { get; set; }
+        public string ma_hno18_16 { get; set; }
+        public string ma_hno18_17 { get; set; }
+        public string ma_hno18_18 { get; set; }
+        public string ma_hno18_19 { get; set; }
+        public string ma_hno18_20 { get; set; }
+        public string ma_hno18_21 { get; set; }
+        public string ma_hno18_22 { get; set; }
+        public string ma_hno18_23 { get; set; }
+        public string ma_hno18_24 { get; set; }
+        public string ma_hno18_25 { get; set; }
+        public string ma_hno18_26 { get; set; }
+        public string ma_hno18_27 { get; set; }
+        public string ma_hno18_28 { get; set; }
+        public string ma_hno18_29 { get; set; }
+        public string ma_hno18_30 { get; set; }
+
+        // Các thuộc tính mã nan08 từ 1 đến 30
+        public string ma_nan08_1 { get; set; }
+        public string ma_nan08_2 { get; set; }
+        public string ma_nan08_3 { get; set; }
+        public string ma_nan08_4 { get; set; }
+        public string ma_nan08_5 { get; set; }
+        public string ma_nan08_6 { get; set; }
+        public string ma_nan08_7 { get; set; }
+        public string ma_nan08_8 { get; set; }
+        public string ma_nan08_9 { get; set; }
+        public string ma_nan08_10 { get; set; }
+        public string ma_nan08_11 { get; set; }
+        public string ma_nan08_12 { get; set; }
+        public string ma_nan08_13 { get; set; }
+        public string ma_nan08_14 { get; set; }
+        public string ma_nan08_15 { get; set; }
+        public string ma_nan08_16 { get; set; }
+        public string ma_nan08_17 { get; set; }
+        public string ma_nan08_18 { get; set; }
+        public string ma_nan08_19 { get; set; }
+        public string ma_nan08_20 { get; set; }
+        public string ma_nan08_21 { get; set; }
+        public string ma_nan08_22 { get; set; }
+        public string ma_nan08_23 { get; set; }
+        public string ma_nan08_24 { get; set; }
+        public string ma_nan08_25 { get; set; }
+        public string ma_nan08_26 { get; set; }
+        public string ma_nan08_27 { get; set; }
+        public string ma_nan08_28 { get; set; }
+        public string ma_nan08_29 { get; set; }
+        public string ma_nan08_30 { get; set; }
+
+        // Các thuộc tính mã tbh11 từ 1 đến 30
+        public string ma_tbh11_1 { get; set; }
+        public string ma_tbh11_2 { get; set; }
+        public string ma_tbh11_3 { get; set; }
+        public string ma_tbh11_4 { get; set; }
+        public string ma_tbh11_5 { get; set; }
+        public string ma_tbh11_6 { get; set; }
+        public string ma_tbh11_7 { get; set; }
+        public string ma_tbh11_8 { get; set; }
+        public string ma_tbh11_9 { get; set; }
+        public string ma_tbh11_10 { get; set; }
+        public string ma_tbh11_11 { get; set; }
+        public string ma_tbh11_12 { get; set; }
+        public string ma_tbh11_13 { get; set; }
+        public string ma_tbh11_14 { get; set; }
+        public string ma_tbh11_15 { get; set; }
+        public string ma_tbh11_16 { get; set; }
+        public string ma_tbh11_17 { get; set; }
+        public string ma_tbh11_18 { get; set; }
+        public string ma_tbh11_19 { get; set; }
+        public string ma_tbh11_20 { get; set; }
+        public string ma_tbh11_21 { get; set; }
+        public string ma_tbh11_22 { get; set; }
+        public string ma_tbh11_23 { get; set; }
+        public string ma_tbh11_24 { get; set; }
+        public string ma_tbh11_25 { get; set; }
+        public string ma_tbh11_26 { get; set; }
+        public string ma_tbh11_27 { get; set; }
+        public string ma_tbh11_28 { get; set; }
+        public string ma_tbh11_29 { get; set; }
+        public string ma_tbh11_30 { get; set; }
+
+        // Các thuộc tính còn lại
+        public string tailieu { get; set; }
+        public string bcs { get; set; }
+        public string gel { get; set; }
+        public string ghichu { get; set; }
+        public string ch_07_thng_tin_truyn_thng_complete { get; set; }
+    }
+
 }

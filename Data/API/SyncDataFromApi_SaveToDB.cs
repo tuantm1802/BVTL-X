@@ -949,6 +949,40 @@ namespace Data.API
                         }
                     }
 
+                    // Đầu api CH07_THONG_TIN_TRUYEN_THONG - #17
+                    if (tableNames.Contains("CH07_THONG_TIN_TRUYEN_THONG"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiCH07ThongTinTruyenThongModel>>(resultApiString);
+
+                        var tongHops = new List<CH07_THONG_TIN_TRUYEN_THONG>();
+                        
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        //_convertResultApiToEntity.ConvertApiChuyenGuiDichVuToEntity(dataResultApi.Where(x => !string.IsNullOrEmpty(x.makh) && x.chuyn_gi_dch_v_complete.Equals("Complete")).ToList(), maDuAn, ref tongHops);
+                        _convertResultApiToEntity.ConvertApiCH07TTTTToEntity(dataResultApi.Where(x => x.ch_07_thng_tin_truyn_thng_complete.Equals("Complete")).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+
+                        // Thêm dữ liệu bảng CH07_THONG_TIN_TRUYEN_THONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CH07_THONG_TIN_TRUYEN_THONG", tongHops.FirstOrDefault().city_code, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
+
+
                     #endregion
 
 

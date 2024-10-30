@@ -23,6 +23,17 @@ namespace Model.ModelExtend.Report
         public string NoiDung_HT { get; set; }
 
     }
+    public class KetQuaQSTModel
+    {
+        public string KetQua { get; set; }
+        public int SoLuong { get; set; }
+        public decimal TyLe { get; set; }
+        public string GhiChu { get; set; }
+        public string IsShow { get; set; }
+        public int? SubRowspan { get; set; }
+        
+
+    }
 
     public class DuongSuDungMaTuyDaModel
     {
@@ -156,6 +167,17 @@ namespace Model.ModelExtend.Report
         public decimal NguyCoCao_SoLuong { get; set; }
         public decimal NguyCoCao_PhanTram { get; set; }
         public decimal Tong_SoLuong { get; set; }
+    }
+    public class CacChatGayNghienAssistModel
+    {
+        public string LoaiDiem  { get; set; }
+        public int NguyCo_Thap { get; set; }
+        public decimal TyLe_NguyCo_Thap { get; set; }
+        public int NguyCo_TrungBinh { get; set; }
+        public decimal TyLe_NguyCo_TrungBinh { get; set; }
+        public int NguyCo_Cao { get; set; }
+        public decimal TyLe_NguyCo_Cao { get; set; }
+        
     }
 
     public class MucDoGapVanDeSKTTModel

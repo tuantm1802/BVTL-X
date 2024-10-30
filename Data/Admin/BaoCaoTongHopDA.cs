@@ -374,6 +374,50 @@ namespace Data.Admin
             }
         }
 
+        public void KetQuaSangLocCD43(ReportSearchModel modelSearch,
+                                        ref List<BaoCaoSangLocModel> KetQuaTTCBHanhViNguyCos
+                                        , ref List<CacChatGayNghienAssistModel> CacLoaiChatGayNghienAssists
+                                        , ref List<KetQuaQSTModel> KetQuaQSTs
+                                        , ref List<KetQuaQSTModel> KetQuaACEs
+                                        )
+        {
+            try
+            {
+                var param = new List<SqlParameter>
+                {
+                    new SqlParameter("FromDate", string.IsNullOrEmpty(modelSearch.FromDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.FromDate)),
+                    new SqlParameter("ToDate",string.IsNullOrEmpty(modelSearch.ToDate) ? DBNull.Value : (object)Convert.ToInt32(modelSearch.ToDate)),
+                    new SqlParameter("CityCodes", string.IsNullOrEmpty(modelSearch.CityCodes) ? DBNull.Value : (object)modelSearch.CityCodes),
+                    new SqlParameter("MaNhomTBHs",  string.IsNullOrEmpty(modelSearch.MaNhomTBH) ? DBNull.Value : (object)modelSearch.MaNhomTBH),
+                    new SqlParameter("MaDuAn",  string.IsNullOrEmpty(modelSearch.MaDuAn) ? DBNull.Value : (object)modelSearch.MaDuAn)
+                    //new SqlParameter("FromSttKhachHang", modelSearch.TuSoMaKH == null ? 0 : modelSearch.TuSoMaKH),
+                    //new SqlParameter("ToSttKhachHang", modelSearch.DenSoMaKH == null ? 0 : modelSearch.DenSoMaKH)
+                };
+                var ds = _DatabaseSql.ExecuteProcDataSet(Constants.SP_Report_Ket_Qua_Sang_Loc_CD43, param);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+
+                    ////////////////////Báo cáo theo kết quả HIV ////
+                    KetQuaTTCBHanhViNguyCos = _DatabaseSql.ConvertDataTableToList<BaoCaoSangLocModel>(ds.Tables[0]).ToList();
+                    CacLoaiChatGayNghienAssists = _DatabaseSql.ConvertDataTableToList<CacChatGayNghienAssistModel>(ds.Tables[1]).ToList();
+                    KetQuaQSTs = _DatabaseSql.ConvertDataTableToList<KetQuaQSTModel>(ds.Tables[2]).ToList();
+                    KetQuaACEs = _DatabaseSql.ConvertDataTableToList<KetQuaQSTModel>(ds.Tables[3]).ToList();
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "BaoCaoTongHopDACD43",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Lấy tổng hợp báo cáo theo trang lỗi:" + ex.Message
+                };
+                db.BVTL_QT_LOG.Add(log);
+            }
+        }
+
 
         /// <summary>
         /// Tính toán dữ liệu báo cáo theo loạn thần

@@ -74,6 +74,11 @@ namespace Data.Admin
             db.Configuration.ProxyCreationEnabled = false;
             return db.BVTL_CITES.ToList();
         }
+        public List<BVTL_CITES> GetAllByCodeMap()
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            return db.BVTL_CITES.Where(x=>x.Code_Map != null).ToList();
+        }
 
         /// <summary>
         /// Lấy danh sách tỉnh theo người dùng

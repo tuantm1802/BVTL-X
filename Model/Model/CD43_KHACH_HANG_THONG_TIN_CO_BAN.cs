@@ -43,5 +43,6 @@ namespace Model.Model
         public Nullable<int> sinh_hot_nhm_complete { get; set; }
         public Nullable<System.DateTime> ngaytheodau_time { get; set; }
         public Nullable<int> theo_du_complete { get; set; }
+        public string city_code_map { get; set; }
     }
 }

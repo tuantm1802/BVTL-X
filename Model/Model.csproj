@@ -273,6 +273,9 @@
     <Compile Include="Model\CH07_KHACH_HANG_THONG_TIN_CO_BAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\CH07_THONG_TIN_TRUYEN_THONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\CHITIEU_DUAN.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>

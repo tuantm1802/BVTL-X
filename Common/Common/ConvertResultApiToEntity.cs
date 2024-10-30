@@ -2630,6 +2630,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
                 
 
                 log.Info("*********-----TỔNG SỐ RECORD API VIIV_TT_KH_MAT_DAU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
@@ -2662,6 +2663,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 4);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -2671,6 +2673,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,                        
                     };
@@ -2760,6 +2763,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
@@ -2792,6 +2796,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 2);
                         group_code = customer_code.Substring(0, 4);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -2801,6 +2806,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -2855,7 +2861,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
-
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SANG_LOC_HIV:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -2887,6 +2893,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -2896,6 +2903,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -2976,6 +2984,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_DANH_GIA_HAI_LONG:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3007,6 +3016,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3016,6 +3026,7 @@ namespace Common.Common
                         record_id = resultApi.record_id,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -3126,6 +3137,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_THEO_DAU:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3157,6 +3169,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3166,6 +3179,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -3234,6 +3248,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_SINH_HOAT_NHOM:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3265,6 +3280,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 4);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3274,6 +3290,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -3343,6 +3360,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_PHIEU_TU_VAN:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3374,6 +3392,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3383,6 +3402,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -3549,6 +3569,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_CHUYEN_GUI:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3580,6 +3601,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3589,6 +3611,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -3736,6 +3759,7 @@ namespace Common.Common
                 var customer_code = "";
                 var group_code = "";
                 var cityCode = "";
+                var city_code_map = "";
 
                 log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_HANH_VI_NGUY_CO:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
                 int errNo = 0;
@@ -3767,6 +3791,7 @@ namespace Common.Common
                         cityCode = customer_code.Substring(0, 3);
                         group_code = customer_code.Substring(0, 5);
                     }
+                    city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
@@ -3776,6 +3801,7 @@ namespace Common.Common
                         record_id = customer_code,
                         //city_code = cityCode,
                         city_code = cityCodeInput,
+                        city_code_map = city_code_map,
                         manhom_tbh = group_code,
                         maduan = maDuAn,
                     };
@@ -4028,6 +4054,12 @@ namespace Common.Common
                     objDB.f1_q_b4___6 = resultApi.f1_q_b4___6;
                     objDB.f1_q_b4___7 = resultApi.f1_q_b4___7;
                     objDB.f1_q_b4___8 = resultApi.f1_q_b4___8;
+                    objDB.f1_q_b14___1 = resultApi.f1_q_b14___1;
+                    objDB.f1_q_b14___2 = resultApi.f1_q_b14___2;
+                    objDB.f1_q_b14___3 = resultApi.f1_q_b14___3;
+                    objDB.f1_q_b14___4 = resultApi.f1_q_b14___4;
+                    objDB.f1_q_b14___5 = resultApi.f1_q_b14___5;
+
 
                     objDB.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = resultApi.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete;
 
@@ -5274,6 +5306,156 @@ namespace Common.Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC sang entity**************************************");
         }
 
+        public void ConvertApiCH07TTTTToEntity(List<ResultApiCH07ThongTinTruyenThongModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CH07_THONG_TIN_TRUYEN_THONG> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api BVTL_THONG_TIN_TRUYEN_THONG sang entity**************************************");
+            var objDB = new CH07_THONG_TIN_TRUYEN_THONG();
+            var resultApi = new ResultApiCH07ThongTinTruyenThongModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                //var customer_code = "";
+
+                var group_code = "";
+                var customer_code = "";
+                var cityCode = "";
+
+                //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                string cityCodeTemp = apiCode.Split('_')[1];
+                if (!string.IsNullOrEmpty(cityCodeTemp))
+                {
+                    cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                }
+
+                var nhomTBH = new BVTL_NHOM_TBH();
+                var month = 0;
+                var day = 0;
+                var year = 0;
+                var ngaynhap = "";
+                var ngaynhapD = new DateTime();
+
+                log.Info("*********-----TỔNG SỐ RECORD API CH07_THONG_TIN_TRUYEN_THONG:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    resultApi = resultApiModels[i];
+
+
+                    //cityCode = "";
+                    //nhomTBH = new BVTL_NHOM_TBH();
+                    month = 0;
+                    day = 0;
+                    year = 0;
+                    ngaynhap = "";
+                    ngaynhapD = new DateTime();
+
+                    //customer = new BVTL_KHACH_HANG();
+                    //customer_code = String.Concat(resultApi.makh, resultApi.makh_2, resultApi.makh_3, resultApi.makh_4, resultApi.makh_5, resultApi.makh_6, resultApi.makh_7, resultApi.makh_8, resultApi.makh_9, resultApi.makh_10
+                    //                                , resultApi.makh_11, resultApi.makh_12, resultApi.makh_13, resultApi.makh_14, resultApi.makh_15);
+
+                    List<string> listCodeMaKh = getListValFromMultiFieldsCH07(resultApi);
+
+                    for (int j = 0; j < listCodeMaKh.Count; j++)
+                    {
+                        customer_code = listCodeMaKh[j];
+                        if (!string.IsNullOrEmpty(customer_code))
+                        {
+                            if (customer_code.Length > 11)
+                            {
+                                group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                                cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+                            }
+                            else if (!string.IsNullOrEmpty(customer_code))
+                            {
+                                cityCode = customer_code.Substring(0, 3);
+                                group_code = customer_code.Substring(0, 5);
+                            }
+
+                            #region Chuyển đổi dữ liệu sang bảng BVTL_THONG_TIN_TRUYEN_THONG
+                            objDB = new CH07_THONG_TIN_TRUYEN_THONG()
+                            {
+                                makh = customer_code,
+                                manhom_tbh = group_code,
+                                ma_tinh = cityCode,
+                                city_code = cityCodeInput,
+                                maduan = maDuAn
+                            };
+                            //objDB.city_code = cityCode;
+                            //objDB.makh = customer_code;
+                            // Lấy ngay, tháng, năm nhập dữ liệu
+                            // Edit: Nếu ngày xét nghiệm không có thì lấy Ngày Khám
+                            if (!string.IsNullOrEmpty(resultApi.day))
+                            {
+                                ngaynhap = resultApi.day;
+                                ngaynhapD = DateTime.ParseExact(ngaynhap, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                                day = ngaynhapD.Day;
+                                month = ngaynhapD.Month;
+                                year = ngaynhapD.Year;
+                            }
+                            objDB.day = ValidateDateTimeRange(resultApi.day);
+                            objDB.record_id = resultApi.record_id;
+                            objDB.dichvu = resultApi.dichvu;
+
+                            if (!string.IsNullOrEmpty(resultApi.diadiem))
+                            {
+                                objDB.diadiem = resultApi.diadiem;
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.noidung))
+                            {
+                                objDB.noidung = resultApi.noidung;
+                            }
+                                                        
+                            objDB.sokh = resultApi.sokh;
+                           
+                            if (!string.IsNullOrEmpty(resultApi.bcs))
+                            {
+                                objDB.bcs = Int32.Parse(resultApi.bcs);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.gel))
+                            {
+                                objDB.gel = Int32.Parse(resultApi.gel);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.tailieu))
+                            {
+                                objDB.tailieu = Int32.Parse(resultApi.tailieu);
+                            }
+
+                            if (!string.IsNullOrEmpty(resultApi.ghichu))
+                            {
+                                objDB.ghichu = resultApi.ghichu;
+                            }
+
+                            
+                            objDB.ch_07_thng_tin_truyn_thng_complete = resultApi.ch_07_thng_tin_truyn_thng_complete;
+                            
+
+                            lsObjDB.Add(objDB);
+                        }
+
+                    }
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CH07 - THONG TIN TRUYEN THONG ĐÃ CONVERT:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CH07 - THONG TIN TRUYEN THONG sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CH07 - THONG TIN TRUYEN THONG sang entity**************************************");
+        }
+
+
         #endregion
 
         public DateTime? ValidateDateTimeRange(object inputDate)
@@ -5348,6 +5530,138 @@ namespace Common.Common
                                         , resultApi.ma5_1, resultApi.ma5_2, resultApi.ma5_3, resultApi.ma5_4, resultApi.ma5_5, resultApi.ma5_6, resultApi.ma5_7, resultApi.ma5_8, resultApi.ma5_9, resultApi.ma5_10, resultApi.ma5_11, resultApi.ma5_12, resultApi.ma5_13, resultApi.ma5_14, resultApi.ma5_15, resultApi.ma5_16, resultApi.ma5_17, resultApi.ma5_18, resultApi.ma5_19, resultApi.ma5_20, resultApi.ma5_21, resultApi.ma5_22, resultApi.ma5_23, resultApi.ma5_24, resultApi.ma5_25, resultApi.ma5_26, resultApi.ma5_27, resultApi.ma5_28, resultApi.ma5_29, resultApi.ma5_30
                                         , resultApi.ma6_1, resultApi.ma6_2, resultApi.ma6_3, resultApi.ma6_4, resultApi.ma6_5, resultApi.ma6_6, resultApi.ma6_7, resultApi.ma6_8, resultApi.ma6_9, resultApi.ma6_10, resultApi.ma6_11, resultApi.ma6_12, resultApi.ma6_13, resultApi.ma6_14, resultApi.ma6_15, resultApi.ma6_16, resultApi.ma6_17, resultApi.ma6_18, resultApi.ma6_19, resultApi.ma6_20, resultApi.ma6_21, resultApi.ma6_22, resultApi.ma6_23, resultApi.ma6_24, resultApi.ma6_25, resultApi.ma6_26, resultApi.ma6_27, resultApi.ma6_28, resultApi.ma6_29, resultApi.ma6_30
                                     };
+
+            var ls = listCodeMaKh.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+            return ls;
+        }
+        private List<string> getListValFromMultiFieldsCH07(ResultApiCH07ThongTinTruyenThongModel resultApi)
+        {
+            string[] listCodeMaKh = {
+                    resultApi.ma_hno34_1 ,
+                    resultApi.ma_hno34_2 ,
+                    resultApi.ma_hno34_3 ,
+                    resultApi.ma_hno34_4 ,
+                    resultApi.ma_hno34_5 ,
+                    resultApi.ma_hno34_6 ,
+                    resultApi.ma_hno34_7 ,
+                    resultApi.ma_hno34_8 ,
+                    resultApi.ma_hno34_9 ,
+                    resultApi.ma_hno34_10,
+                    resultApi.ma_hno34_11,
+                    resultApi.ma_hno34_12,
+                    resultApi.ma_hno34_13,
+                    resultApi.ma_hno34_14,
+                    resultApi.ma_hno34_15,
+                    resultApi.ma_hno34_16,
+                    resultApi.ma_hno34_17,
+                    resultApi.ma_hno34_18,
+                    resultApi.ma_hno34_19,
+                    resultApi.ma_hno34_20,
+                    resultApi.ma_hno34_21,
+                    resultApi.ma_hno34_22,
+                    resultApi.ma_hno34_23,
+                    resultApi.ma_hno34_24,
+                    resultApi.ma_hno34_25,
+                    resultApi.ma_hno34_26,
+                    resultApi.ma_hno34_27,
+                    resultApi.ma_hno34_28,
+                    resultApi.ma_hno34_29,
+                    resultApi.ma_hno34_30,
+
+
+                    resultApi.ma_hno18_1 ,
+                    resultApi.ma_hno18_2 ,
+                    resultApi.ma_hno18_3 ,
+                    resultApi.ma_hno18_4 ,
+                    resultApi.ma_hno18_5 ,
+                    resultApi.ma_hno18_6 ,
+                    resultApi.ma_hno18_7 ,
+                    resultApi.ma_hno18_8 ,
+                    resultApi.ma_hno18_9 ,
+                    resultApi.ma_hno18_10,
+                    resultApi.ma_hno18_11,
+                    resultApi.ma_hno18_12,
+                    resultApi.ma_hno18_13,
+                    resultApi.ma_hno18_14,
+                    resultApi.ma_hno18_15,
+                    resultApi.ma_hno18_16,
+                    resultApi.ma_hno18_17,
+                    resultApi.ma_hno18_18,
+                    resultApi.ma_hno18_19,
+                    resultApi.ma_hno18_20,
+                    resultApi.ma_hno18_21,
+                    resultApi.ma_hno18_22,
+                    resultApi.ma_hno18_23,
+                    resultApi.ma_hno18_24,
+                    resultApi.ma_hno18_25,
+                    resultApi.ma_hno18_26,
+                    resultApi.ma_hno18_27,
+                    resultApi.ma_hno18_28,
+                    resultApi.ma_hno18_29,
+                    resultApi.ma_hno18_30,
+
+                    resultApi.ma_nan08_1 ,
+                    resultApi.ma_nan08_2 ,
+                    resultApi.ma_nan08_3 ,
+                    resultApi.ma_nan08_4 ,
+                    resultApi.ma_nan08_5 ,
+                    resultApi.ma_nan08_6 ,
+                    resultApi.ma_nan08_7 ,
+                    resultApi.ma_nan08_8 ,
+                    resultApi.ma_nan08_9 ,
+                    resultApi.ma_nan08_10,
+                    resultApi.ma_nan08_11,
+                    resultApi.ma_nan08_12,
+                    resultApi.ma_nan08_13,
+                    resultApi.ma_nan08_14,
+                    resultApi.ma_nan08_15,
+                    resultApi.ma_nan08_16,
+                    resultApi.ma_nan08_17,
+                    resultApi.ma_nan08_18,
+                    resultApi.ma_nan08_19,
+                    resultApi.ma_nan08_20,
+                    resultApi.ma_nan08_21,
+                    resultApi.ma_nan08_22,
+                    resultApi.ma_nan08_23,
+                    resultApi.ma_nan08_24,
+                    resultApi.ma_nan08_25,
+                    resultApi.ma_nan08_26,
+                    resultApi.ma_nan08_27,
+                    resultApi.ma_nan08_28,
+                    resultApi.ma_nan08_29,
+                    resultApi.ma_nan08_30,
+
+                    resultApi.ma_tbh11_1 ,
+                    resultApi.ma_tbh11_2 ,
+                    resultApi.ma_tbh11_3 ,
+                    resultApi.ma_tbh11_4 ,
+                    resultApi.ma_tbh11_5 ,
+                    resultApi.ma_tbh11_6 ,
+                    resultApi.ma_tbh11_7 ,
+                    resultApi.ma_tbh11_8 ,
+                    resultApi.ma_tbh11_9 ,
+                    resultApi.ma_tbh11_10,
+                    resultApi.ma_tbh11_11,
+                    resultApi.ma_tbh11_12,
+                    resultApi.ma_tbh11_13,
+                    resultApi.ma_tbh11_14,
+                    resultApi.ma_tbh11_15,
+                    resultApi.ma_tbh11_16,
+                    resultApi.ma_tbh11_17,
+                    resultApi.ma_tbh11_18,
+                    resultApi.ma_tbh11_19,
+                    resultApi.ma_tbh11_20,
+                    resultApi.ma_tbh11_21,
+                    resultApi.ma_tbh11_22,
+                    resultApi.ma_tbh11_23,
+                    resultApi.ma_tbh11_24,
+                    resultApi.ma_tbh11_25,
+                    resultApi.ma_tbh11_26,
+                    resultApi.ma_tbh11_27,
+                    resultApi.ma_tbh11_28,
+                    resultApi.ma_tbh11_29,
+                    resultApi.ma_tbh11_30,
+            };
 
             var ls = listCodeMaKh.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
             return ls;

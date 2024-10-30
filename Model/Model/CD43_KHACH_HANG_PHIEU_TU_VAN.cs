@@ -136,5 +136,6 @@ namespace Model.Model
         public string maduan { get; set; }
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
+        public string city_code_map { get; set; }
     }
 }

@@ -193,5 +193,11 @@ namespace Model.Model
         public string f1_q_b4___6 { get; set; }
         public string f1_q_b4___7 { get; set; }
         public string f1_q_b4___8 { get; set; }
+        public string f1_q_b14___1 { get; set; }
+        public string f1_q_b14___2 { get; set; }
+        public string f1_q_b14___3 { get; set; }
+        public string f1_q_b14___4 { get; set; }
+        public string f1_q_b14___5 { get; set; }
+        public string city_code_map { get; set; }
     }
 }

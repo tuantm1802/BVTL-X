@@ -322,6 +322,7 @@
     <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
     <Content Include="app\Controller\KetQuaBHDGController.js" />
+    <Content Include="app\Controller\KetQuaSangLocCD43Controller.js" />
     <Content Include="app\Controller\KetQuaSangLocController.js" />
     <Content Include="app\Controller\DGHLVIIVController.js" />
     <Content Include="app\Controller\TTKHMaDaVIIVController.js" />

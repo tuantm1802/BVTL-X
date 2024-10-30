@@ -31,6 +31,7 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <returns></returns>
         List<BVTL_CITES> GetAll();
+        List<BVTL_CITES> GetAllByCodeMap();
 
         /// <summary>
         /// Lấy danh sách tỉnh theo người dùng

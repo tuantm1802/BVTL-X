@@ -28,5 +28,6 @@ namespace Model.Model
         public string kqxn_text { get; set; }
         public Nullable<int> sng_lc_hiv_complete { get; set; }
         public string city_code { get; set; }
+        public string city_code_map { get; set; }
     }
 }

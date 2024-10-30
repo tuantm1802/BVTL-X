@@ -29,6 +29,7 @@ namespace Model.Model
             this.VIIV_THONG_TIN_TRUYEN_THONG = new HashSet<VIIV_THONG_TIN_TRUYEN_THONG>();
             this.BVTL_THONG_TIN_TRUYEN_THONG = new HashSet<BVTL_THONG_TIN_TRUYEN_THONG>();
             this.BVTL_THEO_DAU_KH = new HashSet<BVTL_THEO_DAU_KH>();
+            this.CH07_THONG_TIN_TRUYEN_THONG = new HashSet<CH07_THONG_TIN_TRUYEN_THONG>();
         }
     
         public string manhom_tbh { get; set; }
@@ -61,5 +62,7 @@ namespace Model.Model
         public virtual ICollection<BVTL_THONG_TIN_TRUYEN_THONG> BVTL_THONG_TIN_TRUYEN_THONG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BVTL_THEO_DAU_KH> BVTL_THEO_DAU_KH { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CH07_THONG_TIN_TRUYEN_THONG> CH07_THONG_TIN_TRUYEN_THONG { get; set; }
     }
 }

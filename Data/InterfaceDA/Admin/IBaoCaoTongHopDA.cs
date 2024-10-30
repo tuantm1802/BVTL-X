@@ -51,6 +51,13 @@ namespace Data.InterfaceDA.Admin
             , ref List<KetQuaSangLocModel> SocMeths, ref List<CacChatGayNghienModel> CacLoaiChatGayNghiens, ref List<KetQuaSangLocModel> KetQuaQSTs, ref List<MucDoGapVanDeSKTTModel> MucDoGapVanDeSKTTs
             , ref List<SuDungMTDKhiQHTDModel> TuLamHaiBanThans, ref List<SuDungMTDKhiQHTDModel> CoTuSats, ref List<LoanThanModel> LoanThans);
 
+        void KetQuaSangLocCD43(ReportSearchModel modelSearch
+                                , ref List<BaoCaoSangLocModel> KetQuaTTCBHanhViNguyCos
+                                , ref List<CacChatGayNghienAssistModel> CacLoaiChatGayNghienAssists
+                                , ref List<KetQuaQSTModel> KetQuaQSTs
+                                , ref List<KetQuaQSTModel> KetQuaACEs
+            );
+
 
         /// <summary>
         /// Lấy dữ liệu báo cáo tổng hợp quý VIIV
