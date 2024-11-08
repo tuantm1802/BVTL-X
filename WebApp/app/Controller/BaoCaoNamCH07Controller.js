@@ -60,7 +60,9 @@
 
                 $scope.ListDuAn = response.DuAns;
                 $scope.ListCity = response.Citys;
-                $scope.modelSearch.MaDuAn = $scope.ListDuAn[0].maduan;
+                //$scope.modelSearch.MaDuAn = $scope.ListDuAn[0].maduan;
+                $scope.modelSearch.MaDuAn = 'CH07';
+
                 $scope.$apply();
             }
         });

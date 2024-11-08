@@ -38,6 +38,7 @@
         GetBottomAction();
         $scope.Changecity();
         $scope.LoadPage(1);
+        console.log($scope.ListNhomTBH);
     });
 
     $scope.RoleBtnUpdate = false;
@@ -146,15 +147,10 @@
         //    }
         //});
 
-        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
-            toastr.error("Vui lòng chọn năm!");
-            return;
-        }
-
-        if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
-            toastr.error("Vui lòng chọn dự án!");
-            return;
-        }
+        //if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
+        //    toastr.error("Vui lòng chọn dự án!");
+        //    return;
+        //}
 
         $scope.modelSearch.Months = '';
         if ($scope.Thangs != null && $scope.Thangs.length > 0) {
@@ -170,16 +166,23 @@
             toastr.error("Vui lòng chọn tháng!");
             return;
         }
-        $scope.modelSearch.CityCodes = '';
-        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
-            for (var i = 0; i < $scope.ListCityCode.length; i++) {
-                if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
-                    $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
-                } else {
-                    $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
-                }
-            }
+
+        if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
+            toastr.error("Vui lòng chọn năm!");
+            return;
         }
+
+        //$scope.modelSearch.CityCodes = '';
+        //if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+        //    for (var i = 0; i < $scope.ListCityCode.length; i++) {
+        //        if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+        //            $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
+        //        } else {
+        //            $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
+        //        }
+        //    }
+        //}
+
         $scope.modelSearch.MaNhomTBH = '';
         if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
             for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
@@ -221,6 +224,7 @@
             },
             success: function (respone) {
                 $scope.ListNhomTBH = respone.NhomTBHs;
+                
             }
         });
 

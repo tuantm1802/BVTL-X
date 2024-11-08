@@ -109,6 +109,30 @@ namespace Data.Admin
             }
             return result;
         }
+        public List<BVTL_CITES> GetCityReportCodeMap(int userId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var result = new List<BVTL_CITES>();
+            try
+            {
+                var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x=>x.ID == userId);
+                if (string.IsNullOrEmpty(user.CityCodes) || user.IsAdmin)
+                {
+                    return db.BVTL_CITES.ToList();
+                }
+                else
+                {
+                    var cityCodes = user.CityCodes.Split(',').ToList();
+                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
+                    return citys != null ? citys : new List<BVTL_CITES>();
+                }
+            }
+            catch (Exception)
+            {
+                result = new List<BVTL_CITES>();
+            }
+            return result;
+        }
 
     }
 }

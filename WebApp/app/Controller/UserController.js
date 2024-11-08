@@ -112,7 +112,8 @@
         $scope.ListUser = [];
         if (genTable == 1) {
             dataTableUser = $('#dataTableUser').DataTable({
-                lengthMenu: [10, 20, 30, 50, 60, 100],
+                //lengthMenu: [10, 20, 30, 50, 60, 100],
+                lengthChange: false, // Bỏ tùy chọn số bản ghi hiển thị
                 serverSide: true,
                 ordering: false,
                 searching: false,
@@ -161,7 +162,7 @@
                 },
                 rowId: 'ID',
                 select: {
-                    info: false
+                    style: 'single'
                 },
                 "language": {
                     "emptyTable": "Không có dữ liệu trong bản",
@@ -232,6 +233,7 @@
     };
     $scope.edit = function () {
         var seletedRow = dataTableUser.rows({ selected: true });
+
         var count = seletedRow.count();
         if (count > 0) {
             $scope.UserIdSeleted = seletedRow.data()[0].ID;
@@ -580,6 +582,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     angular.element(document).ready(function () {
         showToast();
         GetDanhMuc();
+        console.log('111111111111111111111');
         $.ajax({
             type: 'post',
             url: '/User/GetItemByID',
@@ -587,6 +590,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
             async: false,
             data: { Id: itemId },
             success: function (data) {
+                console.log(data);
                 if (data.Error) {
                     toastr.error(data.Title);
                 } else {

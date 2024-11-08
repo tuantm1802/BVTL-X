@@ -234,7 +234,7 @@
             }
         }
 
-        window.location.href = '/BaoCaoCD43/ExportData?TuThang=' + $scope.modelSearch.TuThang + '&TuNam=' + $scope.modelSearch.TuNam
+        window.location.href = '/BaoCaoCD43/ExportDataTongHopQuy?TuThang=' + $scope.modelSearch.TuThang + '&TuNam=' + $scope.modelSearch.TuNam
             + '&DenThang=' + $scope.modelSearch.DenThang + '&DenNam=' + $scope.modelSearch.DenNam
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes) 
             + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH)

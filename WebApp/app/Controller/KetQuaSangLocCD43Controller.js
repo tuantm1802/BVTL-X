@@ -83,7 +83,9 @@
         $scope.CacLoaiChatGayNghienAssists = [];
         $scope.KetQuaQSTs = [];
         $scope.KetQuaACEs = [];
-        
+
+        console.log($scope.modelSearch.FromDate);
+
         // Check điều kiện tìm kiếm
         if ($scope.modelSearch.FromDate == null || $scope.modelSearch.FromDate == '' || $scope.modelSearch.FromDate == undefined) {
             toastr.error("Vui lòng chọn Từ ngày!");
@@ -143,7 +145,7 @@
                 $scope.CacLoaiChatGayNghienAssists = respone.CacLoaiChatGayNghienAssists;
                 $scope.KetQuaQSTs = respone.KetQuaQSTs;
                 $scope.KetQuaACEs = respone.KetQuaACEs;
-                
+                console.log($scope.KetQuaTTCBHanhViNguyCos);
             }
         });
 
@@ -239,10 +241,10 @@
             return;
         }
 
-        if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
-            toastr.error("Vui lòng chọn Tỉnh!");
-            return;
-        }
+        //if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
+        //    toastr.error("Vui lòng chọn Tỉnh!");
+        //    return;
+        //}
 
        
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
@@ -270,6 +272,53 @@
         }
 
         window.location.href = '/KetQuaSangLoc/ExportData?FromDate=' + $scope.modelSearch.FromDate.toISOString().slice(0, 10).replace(/-/g, "")
+            + '&ToDate=' + $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, "")
+            + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
+            + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);
+    }
+    $scope.ExportDataSangLoc = function () {
+        // Check điều kiện tìm kiếm
+        if ($scope.modelSearch.FromDate == null || $scope.modelSearch.FromDate == '' || $scope.modelSearch.FromDate == undefined) {
+            toastr.error("Vui lòng chọn Từ ngày!");
+            return;
+        }
+
+        if ($scope.modelSearch.ToDate == null || $scope.modelSearch.ToDate == '' || $scope.modelSearch.ToDate == undefined) {
+            toastr.error("Vui lòng chọn Đến ngày!");
+            return;
+        }
+
+        //if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '' || $scope.modelSearch.CityCodes == undefined) {
+        //    toastr.error("Vui lòng chọn Tỉnh!");
+        //    return;
+        //}
+
+       
+        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if ($scope.modelSearch.CityCodes == null || $scope.modelSearch.CityCodes == '') {
+                    $scope.modelSearch.CityCodes = $scope.ListCityCode[i];
+                } else {
+                    $scope.modelSearch.CityCodes += ',' + $scope.ListCityCode[i];
+                }
+            }
+        }
+
+        console.log($scope.ListMaNhomTBH);
+        console.log($scope.modelSearch.MaNhomTBH);
+
+        //$scope.modelSearch.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
+
+        window.location.href = '/KetQuaSangLoc/ExportDataSangLoc?FromDate=' + $scope.modelSearch.FromDate.toISOString().slice(0, 10).replace(/-/g, "")
             + '&ToDate=' + $scope.modelSearch.ToDate.toISOString().slice(0, 10).replace(/-/g, "")
             + '&CityCodes=' + ($scope.modelSearch.CityCodes == undefined ? '' : $scope.modelSearch.CityCodes)
             + '&maNhomTBHs=' + ($scope.modelSearch.MaNhomTBH == undefined ? '' : $scope.modelSearch.MaNhomTBH);

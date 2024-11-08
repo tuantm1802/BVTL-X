@@ -47,6 +47,7 @@ namespace Data.InterfaceDA.Admin
         /// <param name="maNhom"></param>
         /// <returns></returns>
         List<NhomTBHPageModel> GetItemByCityCodes(string cityCodes);
+        List<NhomTBHPageModel> GetItemByCityCodesMaDuAn(string cityCodes, string maDuAn);
 
         /// <summary>
         /// Lấy danh sách người dùng thep Nhóm thu thập dữ liệu theo id

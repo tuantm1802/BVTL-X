@@ -3620,9 +3620,6 @@ namespace Common.Common
 
                     // Gán giá trị các thuộc tính
                     objDB.record_id = resultApi.record_id;
-                    //objDB.sync_date = resultApi.sync_date;
-                    objDB.maduan = resultApi.maduan;
-                    objDB.manhom_tbh = resultApi.manhom_tbh;
                     
                     objDB.chuyengui___1 = resultApi.chuyengui___1;
                     objDB.chuyengui___2 = resultApi.chuyengui___2;
@@ -4059,7 +4056,14 @@ namespace Common.Common
                     objDB.f1_q_b14___3 = resultApi.f1_q_b14___3;
                     objDB.f1_q_b14___4 = resultApi.f1_q_b14___4;
                     objDB.f1_q_b14___5 = resultApi.f1_q_b14___5;
-
+                    objDB.f1_q_b8___1 = resultApi.f1_q_b8___1; 
+                    objDB.f1_q_b8___2 = resultApi.f1_q_b8___2;
+                    objDB.f1_q_b8___3 = resultApi.f1_q_b8___3;
+                    objDB.f1_q_b8___4 = resultApi.f1_q_b8___4;
+                    objDB.f1_q_b8___5 = resultApi.f1_q_b8___5;
+                    objDB.f1_q_b8___6 = resultApi.f1_q_b8___6;
+                    objDB.f1_q_b8___7 = resultApi.f1_q_b8___7;
+                    objDB.f1_q_b8___8 = resultApi.f1_q_b8___8;
 
                     objDB.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = resultApi.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete;
 
@@ -5661,6 +5665,131 @@ namespace Common.Common
                     resultApi.ma_tbh11_28,
                     resultApi.ma_tbh11_29,
                     resultApi.ma_tbh11_30,
+
+                    resultApi.ma_nbi12_1,
+                    resultApi.ma_nbi12_2,
+                    resultApi.ma_nbi12_3,
+                    resultApi.ma_nbi12_4,
+                    resultApi.ma_nbi12_5,
+                    resultApi.ma_nbi12_6,
+                    resultApi.ma_nbi12_7,
+                    resultApi.ma_nbi12_8,
+                    resultApi.ma_nbi12_9,
+                    resultApi.ma_nbi12_10,
+                    resultApi.ma_nbi12_11,
+                    resultApi.ma_nbi12_12,
+                    resultApi.ma_nbi12_13,
+                    resultApi.ma_nbi12_14,
+                    resultApi.ma_nbi12_15,
+                    resultApi.ma_nbi12_16,
+                    resultApi.ma_nbi12_17,
+                    resultApi.ma_nbi12_18,
+                    resultApi.ma_nbi12_19,
+                    resultApi.ma_nbi12_20,
+                    resultApi.ma_nbi12_21,
+                    resultApi.ma_nbi12_22,
+                    resultApi.ma_nbi12_23,
+                    resultApi.ma_nbi12_24,
+                    resultApi.ma_nbi12_25,
+                    resultApi.ma_nbi12_26,
+                    resultApi.ma_nbi12_27,
+                    resultApi.ma_nbi12_28,
+                    resultApi.ma_nbi12_29,
+                    resultApi.ma_nbi12_30,
+
+resultApi.ma_nbi16_1,
+resultApi.ma_nbi16_2,
+resultApi.ma_nbi16_3,
+resultApi.ma_nbi16_4,
+resultApi.ma_nbi16_5,
+resultApi.ma_nbi16_6,
+resultApi.ma_nbi16_7,
+resultApi.ma_nbi16_8,
+resultApi.ma_nbi16_9,
+resultApi.ma_nbi16_10,
+resultApi.ma_nbi16_11,
+resultApi.ma_nbi16_12,
+resultApi.ma_nbi16_13,
+resultApi.ma_nbi16_14,
+resultApi.ma_nbi16_15,
+resultApi.ma_nbi16_16,
+resultApi.ma_nbi16_17,
+resultApi.ma_nbi16_18,
+resultApi.ma_nbi16_19,
+resultApi.ma_nbi16_20,
+resultApi.ma_nbi16_21,
+resultApi.ma_nbi16_22,
+resultApi.ma_nbi16_23,
+resultApi.ma_nbi16_24,
+resultApi.ma_nbi16_25,
+resultApi.ma_nbi16_26,
+resultApi.ma_nbi16_27,
+resultApi.ma_nbi16_28,
+resultApi.ma_nbi16_29,
+resultApi.ma_nbi16_30,
+
+resultApi.ma_nbi17_1,
+resultApi.ma_nbi17_2,
+resultApi.ma_nbi17_3,
+resultApi.ma_nbi17_4,
+resultApi.ma_nbi17_5,
+resultApi.ma_nbi17_6,
+resultApi.ma_nbi17_7,
+resultApi.ma_nbi17_8,
+resultApi.ma_nbi17_9,
+resultApi.ma_nbi17_10,
+resultApi.ma_nbi17_11,
+resultApi.ma_nbi17_12,
+resultApi.ma_nbi17_13,
+resultApi.ma_nbi17_14,
+resultApi.ma_nbi17_15,
+resultApi.ma_nbi17_16,
+resultApi.ma_nbi17_17,
+resultApi.ma_nbi17_18,
+resultApi.ma_nbi17_19,
+resultApi.ma_nbi17_20,
+resultApi.ma_nbi17_21,
+resultApi.ma_nbi17_22,
+resultApi.ma_nbi17_23,
+resultApi.ma_nbi17_24,
+resultApi.ma_nbi17_25,
+resultApi.ma_nbi17_26,
+resultApi.ma_nbi17_27,
+resultApi.ma_nbi17_28,
+resultApi.ma_nbi17_29,
+resultApi.ma_nbi17_30,
+
+resultApi.ma_nan07_1,
+resultApi.ma_nan07_2,
+resultApi.ma_nan07_3,
+resultApi.ma_nan07_4,
+resultApi.ma_nan07_5,
+resultApi.ma_nan07_6,
+resultApi.ma_nan07_7,
+resultApi.ma_nan07_8,
+resultApi.ma_nan07_9,
+resultApi.ma_nan07_10,
+resultApi.ma_nan07_11,
+resultApi.ma_nan07_12,
+resultApi.ma_nan07_13,
+resultApi.ma_nan07_14,
+resultApi.ma_nan07_15,
+resultApi.ma_nan07_16,
+resultApi.ma_nan07_17,
+resultApi.ma_nan07_18,
+resultApi.ma_nan07_19,
+resultApi.ma_nan07_20,
+resultApi.ma_nan07_21,
+resultApi.ma_nan07_22,
+resultApi.ma_nan07_23,
+resultApi.ma_nan07_24,
+resultApi.ma_nan07_25,
+resultApi.ma_nan07_26,
+resultApi.ma_nan07_27,
+resultApi.ma_nan07_28,
+resultApi.ma_nan07_29,
+resultApi.ma_nan07_30,
+
             };
 
             var ls = listCodeMaKh.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();

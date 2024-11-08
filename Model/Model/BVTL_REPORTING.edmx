@@ -464,6 +464,7 @@
           <Property Name="tennhom_tbh" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="city_code" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="manhom_tbh_map" Type="varchar" MaxLength="6" />
+          <Property Name="maduan" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="BVTL_PHIEU_TU_VAN">
           <Key>
@@ -1024,6 +1025,14 @@
           <Property Name="f1_q_b14___4" Type="varchar" MaxLength="1" />
           <Property Name="f1_q_b14___5" Type="varchar" MaxLength="1" />
           <Property Name="city_code_map" Type="varchar" MaxLength="2" />
+          <Property Name="f1_q_b8___1" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___2" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___3" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___4" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___5" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___6" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___7" Type="varchar" MaxLength="1" />
+          <Property Name="f1_q_b8___8" Type="varchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_PHIEU_TU_VAN">
           <Key>
@@ -2182,18 +2191,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BVTL_THON__city___5E54FF49">
-          <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
-          <End Role="CH07_THONG_TIN_TRUYEN_THONG" Type="Self.CH07_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_CITES">
-              <PropertyRef Name="Code" />
-            </Principal>
-            <Dependent Role="CH07_THONG_TIN_TRUYEN_THONG">
-              <PropertyRef Name="city_code" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__BVTL_THON__madua__55AAAAAF">
           <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="1" />
           <End Role="BVTL_THEO_DAU_KH" Type="Self.BVTL_THEO_DAU_KH" Multiplicity="*" />
@@ -2206,18 +2203,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BVTL_THON__madua__5D60DB10">
-          <End Role="BVTL_DU_AN" Type="Self.BVTL_DU_AN" Multiplicity="0..1" />
-          <End Role="CH07_THONG_TIN_TRUYEN_THONG" Type="Self.CH07_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_DU_AN">
-              <PropertyRef Name="maduan" />
-            </Principal>
-            <Dependent Role="CH07_THONG_TIN_TRUYEN_THONG">
-              <PropertyRef Name="maduan" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__BVTL_THON__manho__5792F321">
           <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
           <End Role="BVTL_THEO_DAU_KH" Type="Self.BVTL_THEO_DAU_KH" Multiplicity="*" />
@@ -2226,18 +2211,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
               <PropertyRef Name="manhom_tbh" />
             </Principal>
             <Dependent Role="BVTL_THEO_DAU_KH">
-              <PropertyRef Name="manhom_tbh" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__BVTL_THON__manho__5F492382">
-          <End Role="BVTL_NHOM_TBH" Type="Self.BVTL_NHOM_TBH" Multiplicity="0..1" />
-          <End Role="CH07_THONG_TIN_TRUYEN_THONG" Type="Self.CH07_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BVTL_NHOM_TBH">
-              <PropertyRef Name="manhom_tbh" />
-            </Principal>
-            <Dependent Role="CH07_THONG_TIN_TRUYEN_THONG">
               <PropertyRef Name="manhom_tbh" />
             </Dependent>
           </ReferentialConstraint>
@@ -2540,25 +2513,13 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
             <End Role="BVTL_THEO_DAU_KH" EntitySet="BVTL_THEO_DAU_KH" />
           </AssociationSet>
-          <AssociationSet Name="FK__BVTL_THON__city___5E54FF49" Association="Self.FK__BVTL_THON__city___5E54FF49">
-            <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
-            <End Role="CH07_THONG_TIN_TRUYEN_THONG" EntitySet="CH07_THONG_TIN_TRUYEN_THONG" />
-          </AssociationSet>
           <AssociationSet Name="FK__BVTL_THON__madua__55AAAAAF" Association="Self.FK__BVTL_THON__madua__55AAAAAF">
             <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
             <End Role="BVTL_THEO_DAU_KH" EntitySet="BVTL_THEO_DAU_KH" />
           </AssociationSet>
-          <AssociationSet Name="FK__BVTL_THON__madua__5D60DB10" Association="Self.FK__BVTL_THON__madua__5D60DB10">
-            <End Role="BVTL_DU_AN" EntitySet="BVTL_DU_AN" />
-            <End Role="CH07_THONG_TIN_TRUYEN_THONG" EntitySet="CH07_THONG_TIN_TRUYEN_THONG" />
-          </AssociationSet>
           <AssociationSet Name="FK__BVTL_THON__manho__5792F321" Association="Self.FK__BVTL_THON__manho__5792F321">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_THEO_DAU_KH" EntitySet="BVTL_THEO_DAU_KH" />
-          </AssociationSet>
-          <AssociationSet Name="FK__BVTL_THON__manho__5F492382" Association="Self.FK__BVTL_THON__manho__5F492382">
-            <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
-            <End Role="CH07_THONG_TIN_TRUYEN_THONG" EntitySet="CH07_THONG_TIN_TRUYEN_THONG" />
           </AssociationSet>
           <AssociationSet Name="FK__VIIV_THON__city___50E5F592" Association="Self.FK__VIIV_THON__city___50E5F592">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -3137,6 +3098,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <NavigationProperty Name="BVTL_THEO_DAU_KH" Relationship="BVTL_REPORTINGModel.FK__BVTL_THON__manho__5792F321" FromRole="BVTL_NHOM_TBH" ToRole="BVTL_THEO_DAU_KH" />
           <Property Name="manhom_tbh_map" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CH07_THONG_TIN_TRUYEN_THONG" Relationship="BVTL_REPORTINGModel.FK__BVTL_THON__manho__5F492382" FromRole="BVTL_NHOM_TBH" ToRole="CH07_THONG_TIN_TRUYEN_THONG" />
+          <Property Name="maduan" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BVTL_PHIEU_TU_VAN">
           <Key>
@@ -4572,6 +4534,14 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="f1_q_b14___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="f1_q_b14___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="city_code_map" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___2" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___3" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___4" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___5" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___6" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___7" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="f1_q_b8___8" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_SANG_LOC_HIV">
           <Key>
@@ -5844,6 +5814,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="BVTL_NHOM_TBH">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.BVTL_NHOM_TBH">
               <MappingFragment StoreEntitySet="BVTL_NHOM_TBH">
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
                 <ScalarProperty Name="manhom_tbh_map" ColumnName="manhom_tbh_map" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
                 <ScalarProperty Name="tennhom_tbh" ColumnName="tennhom_tbh" />
@@ -6427,6 +6398,14 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CD43_KHACH_HANG_HANH_VI_NGUY_CO">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_HANH_VI_NGUY_CO">
               <MappingFragment StoreEntitySet="CD43_KHACH_HANG_HANH_VI_NGUY_CO">
+                <ScalarProperty Name="f1_q_b8___8" ColumnName="f1_q_b8___8" />
+                <ScalarProperty Name="f1_q_b8___7" ColumnName="f1_q_b8___7" />
+                <ScalarProperty Name="f1_q_b8___6" ColumnName="f1_q_b8___6" />
+                <ScalarProperty Name="f1_q_b8___5" ColumnName="f1_q_b8___5" />
+                <ScalarProperty Name="f1_q_b8___4" ColumnName="f1_q_b8___4" />
+                <ScalarProperty Name="f1_q_b8___3" ColumnName="f1_q_b8___3" />
+                <ScalarProperty Name="f1_q_b8___2" ColumnName="f1_q_b8___2" />
+                <ScalarProperty Name="f1_q_b8___1" ColumnName="f1_q_b8___1" />
                 <ScalarProperty Name="city_code_map" ColumnName="city_code_map" />
                 <ScalarProperty Name="f1_q_b14___5" ColumnName="f1_q_b14___5" />
                 <ScalarProperty Name="f1_q_b14___4" ColumnName="f1_q_b14___4" />

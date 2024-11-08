@@ -25,7 +25,7 @@
 
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Nhóm</label>
-            <select class="form-control" ui-select2 multiple ng-model="modelSearch.MaNhomTBH" style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+            <select class="form-control" ui-select2 multiple ng-model="modelSearch.MaNhomTBH" style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' - ' + item.CityName) for item in ListNhomTBH"></select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Tỉnh</label>
@@ -39,7 +39,7 @@
             <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                 <i class="fas fa-search"></i> Tìm kiếm
             </button>
-            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-secondary" ng-click="ExportExcel()">
+            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-secondary" ng-click="ExportDataSangLoc()">
                 <i class="fas fa-pencil-alt"></i> Xuất Excel
             </button>
         </div>
@@ -55,13 +55,13 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" @*id="dataTableKetQuaHIVs"*@ width="100%" cellspacing="0">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th style="width:5%;"># </th>
+                                    <th style="width:5%;" class="text-center"># </th>
                                     <th colspan="3">Tiêu chí</th>
-                                    <th>Số lượng</th>
-                                    <th>% </th>
+                                    <th style="width:10%;" class="text-center">Số lượng</th>
+                                    <th style="width:10%;" class="text-center">Tỷ lệ (%)</th>
                                 </tr>
                             </thead>
                             <tr ng-repeat="item in KetQuaTTCBHanhViNguyCos">
@@ -87,7 +87,7 @@
             @*////////////////////Báo cáo theo CÁC LOẠI CHẤT GÂY NGHIỆN\KẾT QUẢ ASSIST////*@
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Các loại chất gân nghiện/kết quả ASSIST</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Các loại chất gây nghiện/kết quả ASSIST</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

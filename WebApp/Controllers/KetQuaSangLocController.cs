@@ -224,7 +224,7 @@ namespace WebApp.Controllers
                 var citys = _CityDA.GetCityReport((int)user.UserID);
                 
                 if (citys != null && citys.Count > 0 && modelSearch.CityCodes == null)
-                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code));
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code_Map));
                 
                 _BaoCaoTongHopDA.KetQuaSangLocCD43(modelSearch,  ref KetQuaTTCBHanhViNguyCos, ref CacLoaiChatGayNghienAssists, ref KetQuaQSTs, ref KetQuaACEs);
 
@@ -561,7 +561,113 @@ namespace WebApp.Controllers
             }
         }
 
+        public ActionResult ExportDataSangLoc(string FromDate, string ToDate, string CityCodes, string maNhomTBHs)
+        {
+            try
+            {
 
+                var modelSearch = new ReportSearchModel() { FromDate = FromDate, ToDate = ToDate, CityCodes = CityCodes, MaNhomTBH = maNhomTBHs };
+
+                var menus = Session["Menus"] as List<MenuModel>;
+                var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
+
+                var menu = menus.FirstOrDefault(x => x.CONTROLLER_NAME == controllerName);
+
+                var user = Session["USER_SESSION"] as UserLogin;
+                var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
+                modelSearch.MaDuAn = duAn != null ? duAn.maduan : "CD43";
+
+
+                var citys = _CityDA.GetCityReport((int)user.UserID);
+                if (citys != null && citys.Count > 0)
+                    modelSearch.CityCodes = string.Join(",", citys.Select(x => x.Code_Map));
+
+                List<BaoCaoSangLocModel> KetQuaTTCBHanhViNguyCos = new List<BaoCaoSangLocModel>();
+                List<CacChatGayNghienAssistModel> CacLoaiChatGayNghienAssists = new List<CacChatGayNghienAssistModel>();
+                List<KetQuaQSTModel> KetQuaQSTs = new List<KetQuaQSTModel>();
+                List<KetQuaQSTModel> KetQuaACEs = new List<KetQuaQSTModel>();
+
+                _BaoCaoTongHopDA.KetQuaSangLocCD43(modelSearch, ref KetQuaTTCBHanhViNguyCos, ref CacLoaiChatGayNghienAssists, ref KetQuaQSTs, ref KetQuaACEs);
+
+                // Lấy danh sách nhóm TBH theo tỉnh
+                var nhomTBHs = new List<NhomTBHPageModel>();
+                if (string.IsNullOrEmpty(maNhomTBHs))
+                    nhomTBHs = _NhomTBHDA.GetItemByCityCodes(CityCodes);
+                else
+                    nhomTBHs = _NhomTBHDA.GetItemByMaNhoms(maNhomTBHs);
+                var tenDuAn = "";
+                if (!string.IsNullOrEmpty(modelSearch.MaDuAn))
+                    tenDuAn = "Dự án: " + _DuAnDA.GetItemByCode(modelSearch.MaDuAn);
+
+                var tenNhomTBHs = "";
+                string sTenNhom = "ALL_NHOM";
+                if (!user.IsAdmin && !string.IsNullOrEmpty(maNhomTBHs))
+                {
+                    if (nhomTBHs != null && nhomTBHs.Count > 0)
+                    {
+                        tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Where(x => x.manhom_tbh_map != null).Select(x => x.tennhom_tbh + "-" + x.CityName));
+                    }
+
+                    sTenNhom = string.Join("-", nhomTBHs.Where(x=>x.manhom_tbh_map != null).Select(x => x.manhom_tbh_map));
+
+                }
+                var file_name = modelSearch.MaDuAn + "_" + sTenNhom + "_BAO_CAO_KET_QUA_SANG_LOC_TU_NGAY_" + FromDate + "-" + ToDate + ".xlsx";
+                
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    var ws = wb.Worksheets.Add("Từ ngày " + _Ultil.LoadDate(FromDate).Replace("/", "-") + "-" + _Ultil.LoadDate(ToDate).Replace("/", "-"));
+                    var thoiGianTuyen = "Thời gian tuyển: Từ ngày " + _Ultil.LoadDate(FromDate) + " - " + _Ultil.LoadDate(ToDate);
+                    CreateHeaderSangLoc(ws, thoiGianTuyen, tenNhomTBHs);
+
+                    var row = 4;
+
+                    // Thêm dữ liệu DoiTuongKHs
+                    //row = CreateTableBC_DoiTuongKH(ws, row, DoiTuongKHs);
+                    row = CreateTableBC_KetQuaSangLoc(ws, row, KetQuaTTCBHanhViNguyCos);
+                    row++;
+                    
+                    row = CreateTableBC_KetQuaChatGayNghien_Assist(ws, row, CacLoaiChatGayNghienAssists);
+                    row++;
+
+                    row = CreateTableBC_KetQuaQST(ws, row, KetQuaQSTs);
+                    row++;
+
+                    row = CreateTableBC_KetQuaACE(ws, row, KetQuaACEs);
+                    row++;
+
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        ws.Columns(2, 30).AdjustToContents();
+                        ws.Column("B").Width = 40;
+                        ws.Column("C").Width = 30;
+                        ws.Column("D").Width = 30;
+                        ws.Column("E").Width = 20;
+                        ws.Column("F").Width = 20;
+                        ws.Column("G").Width = 20;
+                        ws.Column("H").Width = 20;
+                        ws.Column("I").Width = 20;
+                        
+                        //ws.Column("A").Style.Alignment.SetWrapText(true);
+                        ws.Column("B").Style.Alignment.SetWrapText(true);
+                        ws.Column("C").Style.Alignment.SetWrapText(true);
+                        ws.Column("D").Style.Alignment.SetWrapText(true);
+                        ws.Column("E").Style.Alignment.SetWrapText(true);
+                        ws.Column("F").Style.Alignment.SetWrapText(true);
+                        ws.Column("G").Style.Alignment.SetWrapText(true);
+                        ws.Column("H").Style.Alignment.SetWrapText(true);
+                        ws.Column("I").Style.Alignment.SetWrapText(true);
+                        
+                        wb.SaveAs(stream);
+                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
         private string GetExcelColumnName(int columnNumber)
         {
             string columnName = "";
@@ -670,6 +776,426 @@ namespace WebApp.Controllers
             #endregion
         }
 
+        private void CreateHeaderSangLoc(IXLWorksheet ws, string thoiGianTuyen, string tenNhomTBHs)
+        {
+            #region header
+            // 
+            ws.Cell("A1").Value = "BÁO CÁO SÀNG LỌC";
+            //ws.Range("A1:J1").Row(1).Merge();
+            ws.Row(1).Height = 30;
+            ws.Cell("A1").Style.Font.Bold = true;
+            ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A1").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A1").Style.Font.FontSize = 13;
+
+            // 
+            ws.Cell("A2").Value = thoiGianTuyen;
+            ws.Row(2).Height = 25;
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A2").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A2").Style.Font.FontSize = 13;
+
+            // 
+            if (!string.IsNullOrEmpty(tenNhomTBHs)) { 
+                ws.Cell("A3").Value = tenNhomTBHs;
+                ws.Range("A3:F3").Row(1).Merge();
+            }
+            ws.Row(3).Height = 25;
+            ws.Cell("A3").Style.Font.Bold = true;
+            ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A3").Style.Font.FontName = "Times New Roman";
+            ws.Cell("A3").Style.Font.FontSize = 13;            
+
+            #endregion
+        }
+
+        private int CreateTableBC_KetQuaSangLoc(IXLWorksheet ws, int row, List<BaoCaoSangLocModel> data)
+        {
+            #region create header table
+
+            ws.Cell("A" + row).Value = "Kết quả sàng lọc";
+            ws.Range("A" + row + ":C" + row).Row(1).Merge();
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A" + row).Style.Font.FontName = "Times New Roman";
+            ws.Cell("A" + row).Style.Font.FontSize = 13;
+
+            row++;
+            ws.Cell("B" + row).Value = "Tiêu chí";
+            ws.Range("B" + row + ":C" + row).Row(1).Merge();
+            ws.Cell("B" + row).Style.Font.Bold = true;
+            ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("B" + row).Style.Font.FontName = "Times New Roman";
+            ws.Cell("B" + row).Style.Font.FontSize = 13;
+            
+            ws.Cell("E" + row).Value = "Số lượng (n)";
+            ws.Cell("E" + row).Style.Font.Bold = true;
+            ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("F" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("F" + row).Style.Font.Bold = true;
+            ws.Cell("F" + row).Style.Alignment.WrapText = true;
+            ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            
+            #endregion
+
+            row++;
+            var columnName = "";
+            var columnNumber = 0;
+            if (data.Any())
+            {
+
+                foreach (var rowReport in data)
+                {
+                    if (rowReport.IsShow == "Y")
+                    {
+                        // Thêm dữ liệu cột STT
+                        InsertDataCell(ws, "A", row, rowReport.STT, true, XLAlignmentHorizontalValues.Center, XLAlignmentVerticalValues.Center, false);
+
+                        if (!string.IsNullOrEmpty(rowReport.ThongTinBC))
+                        {
+                            // Thêm dữ liệu cột thông tin BC
+                            InsertDataCell(ws, "B", row, rowReport.ThongTinBC, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                            if (rowReport.Colpan > 1)
+                            {
+                                columnNumber = ExcelColumnNameToNumber("B");
+                                columnName = GetExcelColumnName(columnNumber + (int)rowReport.Colpan);
+                                ws.Range("B" + row + ":" + columnName + row).Column(1).Merge();
+                            }
+                            else
+                            {
+                                // Thêm dữ liệu cột thông tin BC - thêm
+                                InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                            }
+
+                            if (rowReport.Rowpan > 1)
+                            {
+                                ws.Range("B" + row + ":" + "B" + (row + rowReport.Rowpan - 1)).Merge();
+                            }
+                        }
+                        else
+                        {
+                            // Thêm dữ liệu cột thông tin BC - thêm
+                            InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                        }
+
+                        // Thêm dữ liệu cột SubThongTinBC_Them
+                        InsertDataCell(ws, "D", row, rowReport.SubThongTinBC_Them , false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                        // Thêm dữ liệu cột Nữ
+                        InsertDataCell(ws, "E", row, rowReport.SoLuong > 0 ? rowReport.SoLuong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SoLuong > 0 ? true : false);
+
+                        // Thêm dữ liệu cột Tổng
+                        InsertDataCell(ws, "F", row, rowReport.Tyle > 0 ? rowReport.Tyle.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                        // Thêm dữ liệu cột Chuyển giới
+                        //InsertDataCell(ws, "G", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+
+                        row++;
+                    }
+                }
+            }
+
+            int endRow = row - 1;
+            ws.Range("A5:F" + endRow).Style.Font.FontName = "Times New Roman";
+            ws.Range("A5:F" + endRow).Style.Font.FontSize = 13;
+            ws.Range("A5:F" + endRow).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range("A5:F" + endRow).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range("A5:F" + endRow).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            ws.Range("A5:F" + endRow).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            return row;
+        }
+
+        private int CreateTableBC_KetQuaChatGayNghien_Assist(IXLWorksheet ws, int row, List<CacChatGayNghienAssistModel> data)
+        {
+            #region create header table
+            row++;
+            ws.Cell("A" + row).Value = "Các loại chất gân nghiện/kết quả ASSIST";
+            ws.Range("A" + row + ":H" + row).Row(1).Merge();
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A" + row).Style.Font.FontName = "Times New Roman";
+            ws.Cell("A" + row).Style.Font.FontSize = 13;
+            
+            row++;
+
+            int startRow = row;
+            //header table
+            ws.Cell("A" + row).Value = "#";
+            ws.Range("A" + row + ":A" + (row + 1)).Merge(); // Merges A(row) and A(row+1)
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("B" + row).Value = "Các loại chất";
+            ws.Range("B" + row + ":B" + (row + 1)).Merge(); // Merges A(row) and A(row+1)
+            ws.Cell("B" + row).Style.Font.Bold = true;
+            ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("C" + row).Value = "Nguy cơ thấp (0-3)";
+            ws.Range("C" + row + ":D" + row).Row(1).Merge();
+            ws.Cell("C" + row).Style.Font.Bold = true;
+            ws.Cell("C" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("E" + row).Value = "Nguy cơ trung bình (4-27)";
+           ws.Range("E" + row + ":F" + row).Row(1).Merge();
+            ws.Cell("E" + row).Style.Font.Bold = true;
+            ws.Cell("E" + row).Style.Alignment.WrapText = false;
+            ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("G" + row).Value = "Nguy cơ cao (27+)";
+           ws.Range("G" + row + ":H" + row).Row(1).Merge();
+            ws.Cell("G" + row).Style.Font.Bold = true;
+            ws.Cell("G" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("G" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("I" + row).Value = "Tổng";
+           //ws.Range("I" + row + ":H" + row + 1).Row(1).Merge();
+            ws.Cell("I" + row).Style.Font.Bold = true;
+            ws.Cell("I" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("I" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            row++;
+            ws.Cell("C" + row).Value = "Số lượng";
+            ws.Cell("C" + row).Style.Font.Bold = false;
+            ws.Cell("C" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("D" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("D" + row).Style.Font.Bold = false;
+            ws.Cell("D" + row).Style.Alignment.WrapText = false;
+            ws.Cell("D" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("D" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("E" + row).Value = "Số lượng";
+            ws.Cell("E" + row).Style.Font.Bold = false;
+            ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("F" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("F" + row).Style.Font.Bold = false;
+            ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("G" + row).Value = "Số lượng";
+            ws.Cell("G" + row).Style.Font.Bold = false;
+            ws.Cell("G" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("G" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("H" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("H" + row).Style.Font.Bold = false;
+            ws.Cell("H" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("H" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            #endregion
+
+             
+            row++;
+            
+            if (data.Any())
+            {
+                int tongCong = 0;
+                int stt = 1;
+                foreach (var rowReport in data)
+                {
+                    tongCong = 0;
+                    // Thêm dữ liệu cột STT
+                    InsertDataCell(ws, "A", row, stt.ToString(), true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "B", row, rowReport.LoaiDiem, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    
+                    if (!string.IsNullOrEmpty(rowReport.LoaiDiem))
+                    {
+                        tongCong += rowReport.NguyCo_Thap + rowReport.NguyCo_TrungBinh + rowReport.NguyCo_Cao;
+
+                        InsertDataCell(ws, "C", row, rowReport.NguyCo_Thap > 0 ? rowReport.NguyCo_Thap.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                        InsertDataCell(ws, "D", row, rowReport.TyLe_NguyCo_Thap > 0 ? rowReport.TyLe_NguyCo_Thap.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                        InsertDataCell(ws, "E", row, rowReport.NguyCo_TrungBinh > 0 ? rowReport.NguyCo_TrungBinh.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                        InsertDataCell(ws, "F", row, rowReport.TyLe_NguyCo_TrungBinh > 0 ? rowReport.TyLe_NguyCo_TrungBinh.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                        InsertDataCell(ws, "G", row, rowReport.NguyCo_Cao > 0 ? rowReport.NguyCo_Cao.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                        InsertDataCell(ws, "H", row, rowReport.TyLe_NguyCo_Cao > 0 ? rowReport.TyLe_NguyCo_Cao.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                        InsertDataCell(ws, "I", row, tongCong > 0 ? tongCong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                    }
+                    stt++;
+                    row++;
+                }
+            }
+
+            int endRow = row - 1;
+            ws.Range("A" + startRow + ":I" + endRow).Style.Font.FontName = "Times New Roman";
+            ws.Range("A" + startRow + ":I" + endRow).Style.Font.FontSize = 13;
+            ws.Range("A" + startRow + ":I" + endRow).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":I" + endRow).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":I" + endRow).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":I" + endRow).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            return row;
+        }
+
+        private int CreateTableBC_KetQuaQST(IXLWorksheet ws, int row, List<KetQuaQSTModel> data)
+        {
+            #region create header table
+            row++;
+            ws.Cell("A" + row).Value = "Kết quả QST";
+            ws.Range("A" + row + ":E" + row).Row(1).Merge();
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A" + row).Style.Font.FontName = "Times New Roman";
+            ws.Cell("A" + row).Style.Font.FontSize = 13;
+
+            row++;
+
+            int startRow = row;
+            //header table
+            ws.Cell("A" + row).Value = "#";
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("B" + row).Value = "Kết quả QST";
+            ws.Cell("B" + row).Style.Font.Bold = true;
+            ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("C" + row).Value = "Ghi chú";
+            ws.Cell("C" + row).Style.Font.Bold = true;
+            ws.Cell("C" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("D" + row).Value = "Số lượng";
+            ws.Cell("D" + row).Style.Font.Bold = true;
+            ws.Cell("D" + row).Style.Alignment.WrapText = false;
+            ws.Cell("D" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("D" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("E" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("E" + row).Style.Font.Bold = false;
+            ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            #endregion
+
+
+            row++;
+
+            if (data.Any())
+            {
+                int stt = 1;
+                foreach (var rowReport in data)
+                {
+                    // Thêm dữ liệu cột STT
+                    InsertDataCell(ws, "A", row, stt.ToString(), false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                    InsertDataCell(ws, "B", row, rowReport.KetQua, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+
+                    if (!string.IsNullOrEmpty(rowReport.KetQua))
+                    {
+                        InsertDataCell(ws, "C", row, rowReport.GhiChu, false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+
+                        InsertDataCell(ws, "D", row, rowReport.SoLuong > 0 ? rowReport.SoLuong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                        InsertDataCell(ws, "E", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                    }
+                    stt++;
+                    row++;
+                }
+            }
+
+            int endRow = row - 1;
+            ws.Range("A" + startRow + ":E" + endRow).Style.Font.FontName = "Times New Roman";
+            ws.Range("A" + startRow + ":E" + endRow).Style.Font.FontSize = 13;
+            ws.Range("A" + startRow + ":E" + endRow).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":E" + endRow).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":E" + endRow).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":E" + endRow).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            return row;
+        }
+
+        private int CreateTableBC_KetQuaACE(IXLWorksheet ws, int row, List<KetQuaQSTModel> data)
+        {
+            #region create header table
+            row++;
+            ws.Cell("A" + row).Value = "Kết quả ACE";
+            ws.Range("A" + row + ":D" + row).Row(1).Merge();
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("A" + row).Style.Font.FontName = "Times New Roman";
+            ws.Cell("A" + row).Style.Font.FontSize = 13;
+
+            row++;
+
+            int startRow = row;
+            //header table
+            ws.Cell("A" + row).Value = "";
+            ws.Cell("A" + row).Style.Font.Bold = true;
+            ws.Cell("A" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("A" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("B" + row).Value = "Kết quả ACE";
+            ws.Cell("B" + row).Style.Font.Bold = true;
+            ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("C" + row).Value = "Số lượng";
+            ws.Cell("C" + row).Style.Font.Bold = true;
+            ws.Cell("C" + row).Style.Alignment.WrapText = false;
+            ws.Cell("C" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("C" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ws.Cell("D" + row).Value = "Tỷ lệ (%)";
+            ws.Cell("D" + row).Style.Font.Bold = true;
+            ws.Cell("D" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("D" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            #endregion
+
+
+            row++;
+
+            if (data.Any())
+            {
+                foreach (var rowReport in data)
+                {
+                    InsertDataCell(ws, "B", row, rowReport.KetQua, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+
+                    if (!string.IsNullOrEmpty(rowReport.KetQua))
+                    {
+                        InsertDataCell(ws, "C", row, rowReport.SoLuong > 0 ? rowReport.SoLuong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, true);
+
+                        InsertDataCell(ws, "D", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+
+                    }
+                    row++;
+                }
+            }
+
+            int endRow = row - 1;
+            ws.Range("A" + startRow + ":D" + endRow).Style.Font.FontName = "Times New Roman";
+            ws.Range("A" + startRow + ":D" + endRow).Style.Font.FontSize = 13;
+            ws.Range("A" + startRow + ":D" + endRow).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":D" + endRow).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":D" + endRow).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            ws.Range("A" + startRow + ":D" + endRow).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            return row;
+        }
         /// <summary>
         /// Tạo dữ liệu table Đối tượng khách hàng
         /// </summary>

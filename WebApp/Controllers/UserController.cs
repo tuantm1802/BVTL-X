@@ -155,7 +155,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public object GetItemByID(int Id)
+        public JsonResult GetItemByID(int Id)
         {
             try
             {
@@ -194,7 +194,8 @@ namespace WebApp.Controllers
                     cityCodes = data.CityCodes.Split(',').ToList();
 
                 AddLog("Lấy dữ liệu theo ID bảng Người dùng( ID: " + Id + ") thành công.");
-                return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds, CityCodes = cityCodes, MaDuAns = maDuAns });
+                //return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds, CityCodes = cityCodes, MaDuAns = maDuAns });
+                return Json(new { Error = false, Title = "Lấy dữ liệu thành công.", data = data, TestGroupId = testGroupIds, CityCodes = cityCodes, MaDuAns = maDuAns }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

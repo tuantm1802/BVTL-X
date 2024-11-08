@@ -577,6 +577,15 @@ namespace Model.ModelExtend.API
         public string f1_q_b14___4 {get; set;}
         public string f1_q_b14___5 { get; set; }
 
+        public string f1_q_b8___1 {get;set;}
+        public string f1_q_b8___2 {get;set;}
+        public string f1_q_b8___3 {get;set;}
+        public string f1_q_b8___4 {get;set;}
+        public string f1_q_b8___5 {get;set;}
+        public string f1_q_b8___6 {get;set;}
+        public string f1_q_b8___7 {get;set;}
+        public string f1_q_b8___8 { get; set; }
+
         public int? thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
     }
 

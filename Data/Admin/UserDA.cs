@@ -91,7 +91,7 @@ namespace Data.Admin
             if (!string.IsNullOrEmpty(result.CityCodes))
             {
                 var cityCodes = result.CityCodes.Split(',').ToList();
-                result.Citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
+                //result.Citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
             }
 
             return result;
