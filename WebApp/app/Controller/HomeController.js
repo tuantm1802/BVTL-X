@@ -22,7 +22,7 @@
     $scope.selectedTinhName = null;
 
     $scope.isLoading = true; // Bật loading khi bắt đầu
-    let loadCount = 14; // Số hàm cần gọi khi trang load
+    let loadCount = 0; // Số hàm cần gọi khi trang load
 
     function checkLoadingComplete() {
         loadCount--;
@@ -33,55 +33,70 @@
             $scope.$apply(); // Đảm bảo Angular cập nhật view
         }
     }
+    function fetchData(url, data = {}) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                success: function (response) {
+                    resolve(response);
+                },
+                error: function (error) {
+                    reject(error);
+                }
+            });
+        });
+    }
 
-    angular.element(document).ready(function () {
-         
-        //getDBHIVGioiTinh();
-        //getDBHIVTinhTrang();
-        //getDBHIVDoiTuong();
-        //getDBHIVDoTuoi();
+    function initializeData() {
+        angular.element(document).ready(function () {
+            const apiCode = 'API_ALL_CD43_KHACH_HANG_TTCB';
+            $scope.isLoading = true;
+            loadCount = 14; 
 
-        const apiCode = 'API_ALL_CD43_KHACH_HANG_TTCB';
-        Promise.resolve(fetchEndTimeSync(apiCode)).finally(checkLoadingComplete);
-        Promise.resolve(GetTinh()).finally(checkLoadingComplete);
-        Promise.resolve(GetNhomByTinh()).finally(checkLoadingComplete);    
-        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);
-        Promise.resolve(GetTanSuatChemsex3ThangTheoDiemAssist()).finally(checkLoadingComplete);
-        Promise.resolve(GetTanSuatChemsex3ThangTheoDiemACE()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDoTuoi()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoQHTDTT()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoBanDam()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemACE()).finally(checkLoadingComplete);
-        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemQST()).finally(checkLoadingComplete);
-        Promise.resolve(GetTanSuatChemsexTrong3ThangTheoDiemQST()).finally(checkLoadingComplete);          
-        
-    });
-    function GetTinh() {        
-        $.ajax({
-            type: 'post',
-            url: '/BaoCaoCD43/GetBottomAction',
-            data: {},
-            success: function (response) {
-                $scope.ListCity = response.Citys;    
+            // Gọi hàm Promise và đợi từng hàm hoàn tất
+            fetchEndTimeSync(apiCode).then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetTinh().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetNhomByTinh().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetTanSuatChemsex3ThangTheoDoTuoi().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetTanSuatChemsex3ThangTheoDiemAssist().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetTanSuatChemsex3ThangTheoDiemACE().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoDoTuoi().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoQHTDTT().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoBanDam().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoDiemACE().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetSuDungDaChatTrongChemsexTheoDiemQST().then(checkLoadingComplete).catch(checkLoadingComplete);
+            GetTanSuatChemsexTrong3ThangTheoDiemQST().then(checkLoadingComplete).catch(checkLoadingComplete);
+        });
+    }
+
+    function fetchEndTimeSync(apiCode) {
+        return fetchData('/SyncData/GetEndTimeSync', { apiCode }).then(response => {
+            if (response.success) {
+                $('#endTimeSyncDisplay').text('Dữ liệu được đồng bộ lần cuối vào lúc: ' + response.endTimeSync);
+            } else {
+                $('#endTimeSyncDisplay').text(response.message);
             }
+        }).catch(() => {
+            $('#endTimeSyncDisplay').text('Đã xảy ra lỗi khi lấy dữ liệu');
+        });
+    }
+
+
+    function GetTinh() {
+        return fetchData('/BaoCaoCD43/GetBottomAction').then(response => {
+            $scope.ListCity = response.Citys;
+            $scope.$apply();
         });
     }
 
     function GetNhomByTinh() {
-        var CityCodes = '';
-        $.ajax({
-            type: 'post',
-            url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
-            cache: false,
-            async: false,
-            data: {
-                CityCodes: CityCodes
-            },
-            success: function (respone) {
-                $scope.ListNhomTBH = respone.NhomTBHs;
-            }
+        return fetchData('/BaoCaoCD43/GetNhomTBHByMaNhomMap', { CityCodes: '' }).then(response => {
+            $scope.ListNhomTBH = response.NhomTBHs;
+            $scope.$apply();
         });
     }
 
@@ -89,187 +104,86 @@
     $scope.selectNhom = function (maNhom, nhomName) {
         $scope.selectedNhom = maNhom;
         $scope.selectedNhomName = nhomName;
-        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);  
+        //Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);  
+        initializeData();
     };
 
     // Xử lý khi chọn tỉnh
     $scope.selectTinh = function (maTinh, tinhName) {
         $scope.selectedTinh = maTinh;
         $scope.selectedTinhName = tinhName;
-        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);
+        //Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);
+        initializeData();
     };
-
+    
     function GetTanSuatChemsex3ThangTheoDoTuoi() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetTanSuatChemsex3ThangTheoDoTuoi',
-            data: { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh },
-            success: function (response) {
-                
-                $scope.dbTanSuatChemsex3ThangTheoDoTuoi = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetTanSuatChemsex3ThangTheoDoTuoi', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbTanSuatChemsex3ThangTheoDoTuoi = response.data;
+            $scope.$apply();
         });
     }
     function GetTanSuatChemsex3ThangTheoDiemAssist() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetTanSuatChemsex3ThangTheoDiemAssist',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbTanSuatChemsex3ThangTheoDiemAssist = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetTanSuatChemsex3ThangTheoDiemAssist', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbTanSuatChemsex3ThangTheoDiemAssist = response.data;
+            $scope.$apply();
         });
     }
-    
     function GetTanSuatChemsex3ThangTheoDiemACE() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetTanSuatChemsex3ThangTheoDiemACE',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbTanSuatChemsex3ThangTheoDiemACE = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetTanSuatChemsex3ThangTheoDiemACE', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbTanSuatChemsex3ThangTheoDiemACE = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }    
     function GetSuDungDaChatTrongChemsexTheoDoTuoi() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoDoTuoi',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoDoTuoi = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoDoTuoi', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoDoTuoi = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoQHTDTT() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoQHTDTT',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoQHTDTT = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoQHTDTT', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoQHTDTT = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoBanDam() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoBanDam',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoBanDam = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoBanDam', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoBanDam = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoDiemACE() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemACE',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoDiemACE = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoDiemACE', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoDiemACE = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetSuDungDaChatTrongChemsexTheoDiemQST() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemQST',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbSuDungDaChatTrongChemsexTheoDiemQST = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetSuDungDaChatTrongChemsexTheoDiemQST', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbSuDungDaChatTrongChemsexTheoDiemQST = response.data;
+            $scope.$apply();
         });
-    }
-    
+    }  
     function GetTanSuatChemsexTrong3ThangTheoDiemQST() {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/GetTanSuatChemsexTrong3ThangTheoDiemQST',
-            data: {},
-            success: function (response) {
-                console.log(response);
-                $scope.dbTanSuatChemsexTrong3ThangTheoDiemQST = response.data;
-                $scope.$apply();
-
-            }
+        return fetchData('/Home/GetTanSuatChemsexTrong3ThangTheoDiemQST', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
+            $scope.dbTanSuatChemsexTrong3ThangTheoDiemQST = response.data;
+            $scope.$apply();
         });
-    }
+    }  
 
-    function fetchEndTimeSync(apiCode) {
-        $.ajax({
-            url: '/SyncData/GetEndTimeSync',
-            type: 'GET',
-            data: { apiCode: apiCode },
-            success: function (response) {
-                if (response.success) {
-                    // Hiển thị thông tin ngày giờ lấy được
-                    $('#endTimeSyncDisplay').text('Dữ liệu được đồng bộ lần cuối vào lúc: ' + response.endTimeSync);
-                } else {
-                    $('#endTimeSyncDisplay').text(response.message);
-                }
-            },
-            error: function () {
-                $('#endTimeSyncDisplay').text('Đã xảy ra lỗi khi lấy dữ liệu');
-            }
-        });
-    }
+    initializeData();
 
     function getDBHIVGioiTinh() {
         $.ajax({

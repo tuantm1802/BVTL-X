@@ -139,7 +139,7 @@ namespace WebApp.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult GetEndTimeSync(string apiCode)
         {
             var endTimeSync = db.BVTL_API

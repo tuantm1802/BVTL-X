@@ -2453,7 +2453,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemAssist(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
@@ -2471,6 +2474,8 @@ namespace Data.Admin
                             WHERE 
                                 hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
 		                            AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                    AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                    AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
@@ -2505,7 +2510,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemACE(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
@@ -2521,7 +2529,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-		                            AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+		                        AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                    WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
@@ -2555,7 +2565,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoTuoi(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
@@ -2571,7 +2584,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                     WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
@@ -2604,7 +2619,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN f1_q_a3 = 1 THEN N'QHTD đồng giới'
@@ -2620,7 +2638,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_a3 IN (1, 2, 3 ,4) 
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                CASE 
                                     WHEN f1_q_a3 = 1 THEN N'QHTD đồng giới'
@@ -2654,7 +2674,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoQHTDTT(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN f1_q_b11 = 1 THEN N'Có'
@@ -2670,7 +2693,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b11 IN (1, 2, 3 ) 
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                CASE 
                                     WHEN f1_q_b11 = 1 THEN N'Có'
@@ -2703,7 +2728,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoBanDam(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN f1_q_b12 = 1 THEN N'Có'
@@ -2719,7 +2747,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_a3 IN (1, 2, 3 ) 
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                CASE 
                                     WHEN f1_q_b12 = 1 THEN N'Có'
@@ -2752,7 +2782,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
@@ -2767,7 +2800,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
@@ -2801,7 +2836,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemACE(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
@@ -2814,7 +2852,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                     WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
@@ -2846,7 +2886,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemQST(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN f1_q_b7 = 1 THEN N'Có'
@@ -2859,7 +2902,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                      WHEN f1_q_b7 = 1 THEN N'Có'
@@ -2890,7 +2935,10 @@ namespace Data.Admin
         public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsexTrong3ThangTheoDiemQST(string maNhom, string maTinh)
         {
             var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
-            string query = @"
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            string query = $@"
                             SELECT 
                                 CASE 
                                     WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
@@ -2905,7 +2953,9 @@ namespace Data.Admin
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
                             WHERE 
                                 hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
-                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                                AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                                AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
                                     WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
