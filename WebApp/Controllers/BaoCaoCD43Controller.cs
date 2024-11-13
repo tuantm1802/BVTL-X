@@ -164,7 +164,9 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
-                modelSearch.TypeReport = 2;
+                if (modelSearch.TypeReport == null) {
+                    modelSearch.TypeReport = 2;
+                };
                
                 var data = _BaoCaoTongHopDA.GetDataReportCD43(modelSearch);
                 AddLog("Lấy dữ liệu báo cáo quý( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
@@ -233,7 +235,8 @@ namespace WebApp.Controllers
                 var controllerName = Request.RequestContext.RouteData.GetRequiredString("controller");
                 var bottoms = _helperController.GetBottomRoleByController(controllerName, menu);
                 var user = Session["USER_SESSION"] as UserLogin;
-                var citys = _CityDA.GetCityReport((int)user.UserID);
+                //var citys = _CityDA.GetCityReport((int)user.UserID);
+                var citys = _CityDA.GetAllByCodeMap();
                 var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
                 AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
                 return Json(new { Buttoms = bottoms, Citys = citys, DuAns = duAns, Error = false, Title = "Lấy dữ liệu thành công." }); ;

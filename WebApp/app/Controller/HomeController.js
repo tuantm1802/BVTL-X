@@ -2,18 +2,275 @@
     $scope.xValuesHivGioiTinh = [];
     $scope.yValuesHivGioiTinh = [];
     $scope.hivGioiTinhDB = [];
+    $scope.dbTanSuatChemsex3ThangTheoDoTuoi = {};
+    $scope.dbTanSuatChemsex3ThangTheoDiemAssist = {};
+    $scope.dbTanSuatChemsex3ThangTheoDiemACE = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoDoTuoi = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoQHTDTT = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoBanDam = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoDiemACE = {};
+    $scope.dbSuDungDaChatTrongChemsexTheoDiemQST = {};
+    $scope.dbTanSuatChemsexTrong3ThangTheoDiemQST = {};
+
+    $scope.ListNhomTBH = [];
+    $scope.ListCity = [];
+    $scope.selectedNhom = null;
+    $scope.selectedNhomName = null;
+    $scope.selectedTinh = null;
+    $scope.selectedTinhName = null;
+
+    $scope.isLoading = true; // Bật loading khi bắt đầu
+    let loadCount = 14; // Số hàm cần gọi khi trang load
+
+    function checkLoadingComplete() {
+        loadCount--;
+        console.log(loadCount);
+
+        if (loadCount === 0) {
+            $scope.isLoading = false; // Tắt loading khi tất cả hàm hoàn thành
+            $scope.$apply(); // Đảm bảo Angular cập nhật view
+        }
+    }
 
     angular.element(document).ready(function () {
-               
-        getDBHIVGioiTinh();
-        getDBHIVTinhTrang();
-        getDBHIVDoiTuong();
-        getDBHIVDoTuoi();
+         
+        //getDBHIVGioiTinh();
+        //getDBHIVTinhTrang();
+        //getDBHIVDoiTuong();
+        //getDBHIVDoTuoi();
 
+        const apiCode = 'API_ALL_CD43_KHACH_HANG_TTCB';
+        Promise.resolve(fetchEndTimeSync(apiCode)).finally(checkLoadingComplete);
+        Promise.resolve(GetTinh()).finally(checkLoadingComplete);
+        Promise.resolve(GetNhomByTinh()).finally(checkLoadingComplete);    
+        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);
+        Promise.resolve(GetTanSuatChemsex3ThangTheoDiemAssist()).finally(checkLoadingComplete);
+        Promise.resolve(GetTanSuatChemsex3ThangTheoDiemACE()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDoTuoi()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoQHTDTT()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoBanDam()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemACE()).finally(checkLoadingComplete);
+        Promise.resolve(GetSuDungDaChatTrongChemsexTheoDiemQST()).finally(checkLoadingComplete);
+        Promise.resolve(GetTanSuatChemsexTrong3ThangTheoDiemQST()).finally(checkLoadingComplete);          
         
-       
     });
+    function GetTinh() {        
+        $.ajax({
+            type: 'post',
+            url: '/BaoCaoCD43/GetBottomAction',
+            data: {},
+            success: function (response) {
+                $scope.ListCity = response.Citys;    
+            }
+        });
+    }
+
+    function GetNhomByTinh() {
+        var CityCodes = '';
+        $.ajax({
+            type: 'post',
+            url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
+            cache: false,
+            async: false,
+            data: {
+                CityCodes: CityCodes
+            },
+            success: function (respone) {
+                $scope.ListNhomTBH = respone.NhomTBHs;
+            }
+        });
+    }
+
+    // Xử lý khi chọn nhóm
+    $scope.selectNhom = function (maNhom, nhomName) {
+        $scope.selectedNhom = maNhom;
+        $scope.selectedNhomName = nhomName;
+        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);  
+    };
+
+    // Xử lý khi chọn tỉnh
+    $scope.selectTinh = function (maTinh, tinhName) {
+        $scope.selectedTinh = maTinh;
+        $scope.selectedTinhName = tinhName;
+        Promise.resolve(GetTanSuatChemsex3ThangTheoDoTuoi()).finally(checkLoadingComplete);
+    };
+
+    function GetTanSuatChemsex3ThangTheoDoTuoi() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetTanSuatChemsex3ThangTheoDoTuoi',
+            data: { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh },
+            success: function (response) {
+                
+                $scope.dbTanSuatChemsex3ThangTheoDoTuoi = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    function GetTanSuatChemsex3ThangTheoDiemAssist() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetTanSuatChemsex3ThangTheoDiemAssist',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbTanSuatChemsex3ThangTheoDiemAssist = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
     
+    function GetTanSuatChemsex3ThangTheoDiemACE() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetTanSuatChemsex3ThangTheoDiemACE',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbTanSuatChemsex3ThangTheoDiemACE = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoDoTuoi() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoDoTuoi',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoDoTuoi = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoQHTDTT() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoQHTDTT',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoQHTDTT = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoBanDam() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoBanDam',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoBanDam = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoDiemACE() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemACE',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoDiemACE = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetSuDungDaChatTrongChemsexTheoDiemQST() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetSuDungDaChatTrongChemsexTheoDiemQST',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbSuDungDaChatTrongChemsexTheoDiemQST = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+    
+    function GetTanSuatChemsexTrong3ThangTheoDiemQST() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/GetTanSuatChemsexTrong3ThangTheoDiemQST',
+            data: {},
+            success: function (response) {
+                console.log(response);
+                $scope.dbTanSuatChemsexTrong3ThangTheoDiemQST = response.data;
+                $scope.$apply();
+
+            }
+        });
+    }
+
+    function fetchEndTimeSync(apiCode) {
+        $.ajax({
+            url: '/SyncData/GetEndTimeSync',
+            type: 'GET',
+            data: { apiCode: apiCode },
+            success: function (response) {
+                if (response.success) {
+                    // Hiển thị thông tin ngày giờ lấy được
+                    $('#endTimeSyncDisplay').text('Dữ liệu được đồng bộ lần cuối vào lúc: ' + response.endTimeSync);
+                } else {
+                    $('#endTimeSyncDisplay').text(response.message);
+                }
+            },
+            error: function () {
+                $('#endTimeSyncDisplay').text('Đã xảy ra lỗi khi lấy dữ liệu');
+            }
+        });
+    }
+
     function getDBHIVGioiTinh() {
         $.ajax({
             type: 'post',

@@ -2884,14 +2884,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
@@ -3007,20 +3007,20 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
-                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_DANH_GIA_HAI_LONG
                     objDB = new CD43_KHACH_HANG_DANH_GIA_HAI_LONG()
                     {
                         record_id = resultApi.record_id,
@@ -3160,14 +3160,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
@@ -3383,20 +3383,20 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
                     #endregion
 
-                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_SINH_HOAT_NHOM
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_PHIEU_TU_VAN
                     objDB = new CD43_KHACH_HANG_PHIEU_TU_VAN()
                     {
                         record_id = customer_code,
@@ -3534,6 +3534,15 @@ namespace Common.Common
                     objDB.cau6_3_bs___5 = resultApi.cau6_3_bs___5;
                     objDB.cau6_3_bs___6 = resultApi.cau6_3_bs___6;
                     objDB.cau6_3_bs_1 = resultApi.cau6_3_bs_1;
+                    
+                    objDB.cau6_3 = resultApi.cau6_3;
+                    objDB.cau6_3_1 = resultApi.cau6_3_1;
+                    objDB.cau6_3_2 = resultApi.cau6_3_2;
+                    objDB.cau6_4 = resultApi.cau6_4;
+                    objDB.cau6_4_1 = resultApi.cau6_4_1;
+                    objDB.cau6_5 = resultApi.cau6_5;
+                    objDB.cau6_5_1 = resultApi.cau6_5_1;
+
                     objDB.phiu_t_vn_complete = resultApi.phiu_t_vn_complete;
 
                     lsObjDB.Add(objDB);
@@ -3592,14 +3601,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
@@ -3779,14 +3788,14 @@ namespace Common.Common
 
                     if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
                     {
-                        group_code = customer_code.Substring(1, 5); //Lấy mã nhóm TBH
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
                         cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
 
                     }
                     else if (!string.IsNullOrEmpty(customer_code))
                     {
                         cityCode = customer_code.Substring(0, 3);
-                        group_code = customer_code.Substring(0, 5);
+                        group_code = customer_code.Substring(0, 4);
                     }
                     city_code_map = customer_code.Substring(0, 2);
 
@@ -4135,7 +4144,7 @@ namespace Common.Common
 
                     #endregion
 
-                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_SINH_HOAT_NHOM
+                    #region Chuyển đổi dữ liệu sang bảng CH07_KHACH_HANG_THONG_TIN_CO_BAN
                     objDB = new CH07_KHACH_HANG_THONG_TIN_CO_BAN()
                     {
                         record_id = customer_code,

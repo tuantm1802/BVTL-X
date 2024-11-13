@@ -96,7 +96,7 @@
                 $290.29 has been deposited into your account!
             </div>
         </a>*@
-                @if (notifications.Any())
+                @if (notifications != null && notifications.Any())
                 {
                     foreach (var item in notifications)
                     {

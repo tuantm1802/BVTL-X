@@ -33,6 +33,7 @@ namespace WebApp.Controllers
         IInsertDataDA _insertDataDA = new InsertDataDA();
         ISyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
         IApiBase _apiBase = new ApiBase();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
         ISysLogDA _sysLogDA = new SysLogDA();
         BaseController _helperController = new BaseController();
@@ -137,6 +138,25 @@ namespace WebApp.Controllers
                 return Json(obj);
             }
         }
+
+        [HttpGet]
+        public JsonResult GetEndTimeSync(string apiCode)
+        {
+            var endTimeSync = db.BVTL_API
+                .Where(x => x.Api_Code == apiCode)
+                .Select(x => x.End_Time_Sync)
+                .FirstOrDefault();
+
+            if (endTimeSync.HasValue)
+            {
+                return Json(new { success = true, endTimeSync = endTimeSync.Value.ToString("dd/MM/yyyy HH:mm") }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = "Không tìm thấy thông tin" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
     }
 

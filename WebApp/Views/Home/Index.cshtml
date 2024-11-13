@@ -16,9 +16,42 @@
     }
 </style>
 <div class="container-fluid" ng-controller="HomeController">
+    
+    <div class="alert alert-info" role="alert">
+        <div id="endTimeSyncDisplay"></div>
+        <div class="d-flex justify-content-center" ng-show="isLoading">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="btn-group">
+                <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                    {{ selectedTinhName || 'Chọn tỉnh' }}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" ng-repeat="tinh in ListCity" ng-click="selectTinh(tinh.Code_Map, tinh.Name)">{{ tinh.Name }}</a>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                    {{ selectedNhomName || 'Chọn nhóm' }}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" ng-repeat="nhom in ListNhomTBH" ng-click="selectNhom(nhom.manhom_tbh, nhom.tennhom_tbh)">{{ nhom.tennhom_tbh }}</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-xl-8 col-lg-8 col-md-8">
-            <div class="card shadow mb-2">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo độ tuổi</h6>
                 </div>
@@ -28,18 +61,18 @@
                             <tr>
                                 <th scope="col" class="col-md-2">Độ tuổi</th>
                                 <th scope="col" class="col-md-2">1 - 2 lần</th>
-                                <th scope="col" class="col-md-2">Mỗi tháng</th>
-                                <th scope="col" class="col-md-2">Mỗi tuần</th>
-                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày</th>                                
+                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
+                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
+                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="dichvu in dbTanSuatChemsex3ThangTheoDoTuoi">
-                                <td>Lần {{$index + 1}}</td>
-                                <td>{{parseDate(dichvu.NgayTuVan) | date:'dd/MM/yyyy'}}</td>
-                                <td>{{dichvu.HanhViNguyCo || 'N/A'}}</td>
-                                <td>{{dichvu.SucKhoeTheChat || 'N/A'}}</td>
-                                <td>{{dichvu.SucKhoeTamThan || 'N/A'}}</td>                                
+                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDoTuoi">
+                                <td class="text-center">{{dashboard.MucDoTuoi || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
                             </tr>
 
                             <tr ng-if="!dbTanSuatChemsex3ThangTheoDoTuoi || dbTanSuatChemsex3ThangTheoDoTuoi.length === 0">
@@ -49,75 +82,384 @@
 
                     </table>
                 </div>
+
             </div>
         </div>
         <div class="col-xl-4 col-lg-4 col-md-4">
-            <div class="card shadow mb-2">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo độ tuổi</h6>
                 </div>
                 <div class="card-body">
-                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-4">Độ tuổi</th>
+                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDoTuoi">
+                                <td class="text-center">{{dashboard.MucDoTuoi || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDoTuoi || dbSuDungDaChatTrongChemsexTheoDoTuoi.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+
     <div class="row">
-       
-        <!-- Tình trạng HIV -->
-        <div class="col-xl-3 col-lg-5">
-            <div class="card shadow mb-2">
+        <div class="col-xl-8 col-lg-8 col-md-8">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo điểm ASSIST ma túy đá</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-0">
-                        <canvas id="hivTinhTrangChart"></canvas>
-                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-2">Điểm ASSIST ma túy đá</th>
+                                <th scope="col" class="col-md-2">1 - 2 lần</th>
+                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
+                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
+                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDiemAssist">
+                                <td class="text-center">{{dashboard.MucDoNguyCo || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbTanSuatChemsex3ThangTheoDiemAssist || dbTanSuatChemsex3ThangTheoDiemAssist.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
                 </div>
             </div>
         </div>
-        <!-- HIV Giới tính -->
-        <div class="col-xl-3 col-lg-5">
-            <div class="card shadow mb-2">
+        <div class="col-xl-4 col-lg-4 col-md-4">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Giới tính</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi quan hệ tình dục</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="hivGioiTinhChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Theo Đối tượng -->
-        <div class="col-xl-3 col-lg-5">
-            <div class="card shadow mb-2">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Đối tượng</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="hivDoiTuongChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- HIV Độ tuổi -->
-        <div class="col-xl-3 col-lg-5">
-            <div class="card shadow mb-2">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-pie">
-                        <canvas id="hivDoTuoiChart"></canvas>
-                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-4">Đối tượng QHTD</th>
+                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD">
+                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD || dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-8 col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo điểm ACE</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-2">Điểm ACE</th>
+                                <th scope="col" class="col-md-2">1 - 2 lần</th>
+                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
+                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
+                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDiemACE">
+                                <td class="text-center">{{dashboard.MucDoNguyCo || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbTanSuatChemsex3ThangTheoDiemACE || dbTanSuatChemsex3ThangTheoDiemACE.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo điểm ASSIST ma túy đá</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="col-md-4">Điểm ASSIST ma túy đá</th>
+                                        <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                        <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa">
+                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                                    </tr>
+
+                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa || dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa.length === 0">
+                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Điểm QST theo tình trạng sử dụng đa chất trong Chemsex</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="col-md-4">Sử dụng chất</th>
+                                        <th scope="col" class="col-md-4">Dương tính</th>
+                                        <th scope="col" class="col-md-4">Âm tính</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemQST">
+                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.SoLuongDuongTinh || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.SoLuongAmTinh || 'N/A'}}</td>
+                                    </tr>
+
+                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemQST || dbSuDungDaChatTrongChemsexTheoDiemQST.length === 0">
+                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo điểm ACE</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="col-md-4">Điểm ACE</th>
+                                        <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                        <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemACE">
+                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                                    </tr>
+
+                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemACE || dbSuDungDaChatTrongChemsexTheoDiemACE.length === 0">
+                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Điểm QST theo tần suất Chemsex trong 3 tháng qua</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="col-md-6">Tần suất</th>
+                                        <th scope="col" class="col-md-3">Dương tính</th>
+                                        <th scope="col" class="col-md-3">Âm tính</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dashboard in dbTanSuatChemsexTrong3ThangTheoDiemQST">
+                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.SoLuongDuongTinh || 'N/A'}}</td>
+                                        <td class="text-center">{{dashboard.SoLuongAmTinh || 'N/A'}}</td>
+                                    </tr>
+
+                                    <tr ng-if="!dbTanSuatChemsexTrong3ThangTheoDiemQST || dbTanSuatChemsexTrong3ThangTheoDiemQST.length === 0">
+                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi quan hệ tình dục tập thể</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-4">QHTD tập thể</th>
+                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoQHTDTT">
+                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoQHTDTT || dbSuDungDaChatTrongChemsexTheoQHTDTT.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi bán dâm</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-md-4">Bán dâm</th>
+                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoBanDam">
+                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
+                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
+                            </tr>
+
+                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoBanDam || dbSuDungDaChatTrongChemsexTheoBanDam.length === 0">
+                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*
+        <div class="row">
+
+            <!-- Tình trạng HIV -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-2">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-pie pt-0">
+                            <canvas id="hivTinhTrangChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- HIV Giới tính -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-2">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Giới tính</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="hivGioiTinhChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Theo Đối tượng -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-2">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Đối tượng</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="hivDoiTuongChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- HIV Độ tuổi -->
+            <div class="col-xl-3 col-lg-5">
+                <div class="card shadow mb-2">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-pie">
+                            <canvas id="hivDoTuoiChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row" style="display:none">
             <!-- Donut Chart -->
             <div class="col-xl-3 col-lg-5">
@@ -130,7 +472,7 @@
                     <div class="card-body">
                         <div class="chart-pie pt-4">
                             <canvas id="myPieChart"></canvas>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,7 +488,7 @@
                         <div class="chart-pie pt-4">
                             <canvas id="myPieChart"></canvas>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -162,7 +504,7 @@
                         <div class="chart-pie pt-4">
                             <canvas id="myPieChart"></canvas>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
@@ -178,13 +520,13 @@
                         <div class="chart-pie pt-4">
                             <canvas id="myPieChart"></canvas>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
         </div>
 
-    
+    *@
 </div>
 @section Scripts{
     <script src="~/Scripts/chart.js"></script>

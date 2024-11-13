@@ -5,6 +5,8 @@
     $scope.modelSearch.maxSize = 5;
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "ParamCode DESC";
+    $scope.modelSearch.TypeReport = TypeReport;
+    //$scope.modelSearch.TypeReport = 1;
     $scope.ListYear = [];
     $scope.ListCity = [];
     $scope.ListCityCode = [];
@@ -71,7 +73,6 @@
         });
     }
 
-
     $scope.LoadPage = function (genTable) {
         if ($scope.modelSearch.Year == null || $scope.modelSearch.Year == 0) {
             toastr.error("Vui lòng chọn năm!");
@@ -79,20 +80,25 @@
         }
 
         $scope.modelSearch.Months = '';
-        if ($scope.Quy == null || $scope.Quy == '') {
-            toastr.error("Vui lòng chọn quý!");
-            return;
-        } else {
-            if ($scope.Quy == 'I') {
-                $scope.modelSearch.Months = '1,2,3';
-            } else if ($scope.Quy == 'II') {
-                $scope.modelSearch.Months = '4,5,6';
-            } else if ($scope.Quy == 'III') {
-                $scope.modelSearch.Months = '7,8,9';
-            } else if ($scope.Quy == 'IV') {
-                $scope.modelSearch.Months = '10,11,12';
+        if ($scope.modelSearch.TypeReport == 2) {
+            if ($scope.Quy == null || $scope.Quy == '') {
+                toastr.error("Vui lòng chọn quý!");
+                return;
+            } else {
+                if ($scope.Quy == 'I') {
+                    $scope.modelSearch.Months = '1,2,3';
+                } else if ($scope.Quy == 'II') {
+                    $scope.modelSearch.Months = '4,5,6';
+                } else if ($scope.Quy == 'III') {
+                    $scope.modelSearch.Months = '7,8,9';
+                } else if ($scope.Quy == 'IV') {
+                    $scope.modelSearch.Months = '10,11,12';
+                }
             }
+        } else if ($scope.modelSearch.TypeReport == 4) {
+            $scope.modelSearch.Months = '1,2,3,4,5,6,7,8,9,10,11,12';
         }
+
         $scope.modelSearch.CityCodes = '';
         if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
             for (var i = 0; i < $scope.ListCityCode.length; i++) {
@@ -134,7 +140,9 @@
         hideLoading();
     };
 
+    
     $scope.Refesh = function () {
+        
         $scope.LoadPage(0);
     };
 

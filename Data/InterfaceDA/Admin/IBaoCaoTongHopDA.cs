@@ -67,5 +67,16 @@ namespace Data.InterfaceDA.Admin
         /// <returns></returns>
          List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoTongHopQuyVIIV(ReportSearchModel modelSearch);
          List<BaoCaoTongHopQuyVIIVModel> LayDuLieuBaoCaoHoatDongCD43(ReportSearchModel modelSearch);
+         List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDoTuoi(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemAssist(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemACE(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoTuoi(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoQHTDTT(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoBanDam(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemACE(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemQST(string maNhom, string maTinh);
+        List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsexTrong3ThangTheoDiemQST(string maNhom, string maTinh);
     }
 }

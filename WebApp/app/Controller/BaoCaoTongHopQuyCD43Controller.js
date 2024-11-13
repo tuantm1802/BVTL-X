@@ -136,15 +136,19 @@
         }
 
         $scope.modelSearch.MaNhomTBH = '';
-        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
-            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
-                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
-                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
-                } else {
-                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
-                }
-            }
-        }
+        console.log($scope.ListMaNhomTBH);
+
+        //if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+        //    for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+        //        if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+        //            $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+        //        } else {
+        //            $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+        //        }
+        //    }
+        //}
+        $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH;
+        
 
 
         showToast();
@@ -224,15 +228,16 @@
         }
 
         $scope.modelSearch.MaNhomTBH = '';
-        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
-            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
-                if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
-                    $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
-                } else {
-                    $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
-                }
-            }
-        }
+        //if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+        //    for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+        //        if ($scope.modelSearch.MaNhomTBH == null || $scope.modelSearch.MaNhomTBH == '') {
+        //            $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH[i];
+        //        } else {
+        //            $scope.modelSearch.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+        //        }
+        //    }
+        //}
+        $scope.modelSearch.MaNhomTBH = $scope.ListMaNhomTBH;
 
         window.location.href = '/BaoCaoCD43/ExportDataTongHopQuy?TuThang=' + $scope.modelSearch.TuThang + '&TuNam=' + $scope.modelSearch.TuNam
             + '&DenThang=' + $scope.modelSearch.DenThang + '&DenNam=' + $scope.modelSearch.DenNam

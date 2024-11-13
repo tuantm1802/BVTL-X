@@ -10,6 +10,7 @@ using Common.ICommon;
 using System.Data.SqlClient;
 using Model.ModelExtend.Report;
 using Model.ModelExtend;
+using System.Data;
 
 namespace Data.Admin
 {
@@ -2387,5 +2388,553 @@ namespace Data.Admin
             }
             return result;
         }
+
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDoTuoi(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+
+            // Xử lý giá trị tham số để đảm bảo không bị NULL
+            maNhom = string.IsNullOrEmpty(maNhom) ? "" : maNhom;
+            maTinh = string.IsNullOrEmpty(maTinh) ? "" : maTinh;
+
+            // Chèn trực tiếp tham số vào query
+            string query = $@"
+                    SELECT 
+                        CASE 
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN '26-35'
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
+                            ELSE 'Khác' 
+                        END AS MucDoTuoi,
+                        SUM(CASE WHEN hvnc.f1_q_b6 = 1 THEN 1 ELSE 0 END) AS TanSuat1_2Lan,
+                        SUM(CASE WHEN hvnc.f1_q_b6 = 2 THEN 1 ELSE 0 END) AS TanSuatMoiThang,
+                        SUM(CASE WHEN hvnc.f1_q_b6 = 3 THEN 1 ELSE 0 END) AS TanSuatMoiTuan,
+                        SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay
+                    FROM 
+                        CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                        INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                    WHERE 
+                        hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                        AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                        AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
+                        AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
+                    GROUP BY 
+                        CASE 
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN '26-35'
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
+                            ELSE 'Khác' 
+                        END
+                    ORDER BY 
+                        MucDoTuoi;
+                    ";
+
+            // Thực thi query
+            var result = _DatabaseSql.ExecuteTable(query);
+
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        MucDoTuoi = row.Field<string>("MucDoTuoi"),
+                        TanSuat1_2Lan = row.Field<int?>("TanSuat1_2Lan"),
+                        TanSuatMoiThang = row.Field<int?>("TanSuatMoiThang"),
+                        TanSuatMoiTuan = row.Field<int?>("TanSuatMoiTuan"),
+                        TanSuatMoiNgay = row.Field<int?>("TanSuatMoiNgay")
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemAssist(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich) >= 27 THEN 'Mức nguy cơ Cao'
+                                    ELSE '' 
+                                END AS MucDoNguyCo,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 1 THEN 1 ELSE 0 END) AS TanSuat1_2Lan,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 2 THEN 1 ELSE 0 END) AS TanSuatMoiThang,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 3 THEN 1 ELSE 0 END) AS TanSuatMoiTuan,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+		                            AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich) >= 27 THEN 'Mức nguy cơ Cao'
+                                    ELSE '' 
+                                END
+                            ORDER BY 
+                                MucDoNguyCo;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        MucDoNguyCo = row.Field<string>("MucDoNguyCo"),
+                        TanSuat1_2Lan = row.Field<int?>("TanSuat1_2Lan"),
+                        TanSuatMoiThang = row.Field<int?>("TanSuatMoiThang"),
+                        TanSuatMoiTuan = row.Field<int?>("TanSuatMoiTuan"),
+                        TanSuatMoiNgay = row.Field<int?>("TanSuatMoiNgay"),
+
+                    });
+                }
+            }
+
+            return list;
+        }
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsex3ThangTheoDiemACE(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
+                                    WHEN diem > 3 THEN N'>= 4'        
+                                    ELSE '' 
+                                END AS MucDoNguyCo,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 1 THEN 1 ELSE 0 END) AS TanSuat1_2Lan,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 2 THEN 1 ELSE 0 END) AS TanSuatMoiThang,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 3 THEN 1 ELSE 0 END) AS TanSuatMoiTuan,
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+		                            AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                   WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
+                                    WHEN diem > 3 THEN N'>= 4'        
+                                    ELSE '' 
+                                END
+                            ORDER BY 
+                                MucDoNguyCo;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        MucDoNguyCo = row.Field<string>("MucDoNguyCo"),
+                        TanSuat1_2Lan = row.Field<int?>("TanSuat1_2Lan"),
+                        TanSuatMoiThang = row.Field<int?>("TanSuatMoiThang"),
+                        TanSuatMoiTuan = row.Field<int?>("TanSuatMoiTuan"),
+                        TanSuatMoiNgay = row.Field<int?>("TanSuatMoiNgay"),
+
+                    });
+                }
+            }
+
+            return list;
+        }
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoTuoi(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN '26-35'
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
+                                    ELSE 'Khác' 
+                                END AS MucDoTuoi,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+    
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN '18-25'
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN '26-35'
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
+                                    ELSE 'Khác' 
+                                END
+                            ORDER BY 
+                                MucDoTuoi;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        MucDoTuoi = row.Field<string>("MucDoTuoi"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN f1_q_a3 = 1 THEN N'QHTD đồng giới'
+                                    WHEN f1_q_a3 = 2 THEN N'QHTD khác giới'
+                                    WHEN f1_q_a3 = 3 THEN N'QHTD đồng giới và khác giới'
+                                    WHEN f1_q_a3 = 4 THEN N'Khác'
+                                END AS DoiTuongQuanHe,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+    
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_a3 IN (1, 2, 3 ,4) 
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                               CASE 
+                                    WHEN f1_q_a3 = 1 THEN N'QHTD đồng giới'
+                                    WHEN f1_q_a3 = 2 THEN N'QHTD khác giới'
+                                    WHEN f1_q_a3 = 3 THEN N'QHTD đồng giới và khác giới'
+                                    WHEN f1_q_a3 = 4 THEN N'Khác'
+                                END
+                            ORDER BY 
+                                DoiTuongQuanHe;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("DoiTuongQuanHe"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoQHTDTT(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN f1_q_b11 = 1 THEN N'Có'
+                                    WHEN f1_q_b11 = 2 THEN N'Không'
+                                    WHEN f1_q_b11 = 3 THEN N'Không biết/Không trả lời'
+        
+                                END AS QHTDTT,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+    
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b11 IN (1, 2, 3 ) 
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                               CASE 
+                                    WHEN f1_q_b11 = 1 THEN N'Có'
+                                    WHEN f1_q_b11 = 2 THEN N'Không'
+                                    WHEN f1_q_b11 = 3 THEN N'Không biết/Không trả lời'
+                                END
+                            ORDER BY 
+                                QHTDTT;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("QHTDTT"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoBanDam(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN f1_q_b12 = 1 THEN N'Có'
+                                    WHEN f1_q_b12 = 2 THEN N'Không'
+                                    WHEN f1_q_b12 = 3 THEN N'Không biết/Không trả lời'
+        
+                                END AS BanDam,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+    
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_a3 IN (1, 2, 3 ) 
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                               CASE 
+                                    WHEN f1_q_b12 = 1 THEN N'Có'
+                                    WHEN f1_q_b12 = 2 THEN N'Không'
+                                    WHEN f1_q_b12 = 3 THEN N'Không biết/Không trả lời'
+                                END
+                            ORDER BY 
+                                BanDam;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("BanDam"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+        
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
+                                    ELSE '' 
+                                END AS MucDoNguyCo,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
+                                    ELSE '' 
+                                END
+                            ORDER BY 
+                                MucDoNguyCo;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("MucDoNguyCo"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+        
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemACE(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
+				                            WHEN diem > 3 THEN N'>= 4'
+                                END AS NoiDung,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                    WHEN (diem) BETWEEN 0 AND 3 THEN N'< 4'
+				                            WHEN diem > 3 THEN N'>= 4' 
+                                END
+                            ORDER BY 
+                                NoiDung;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("NoiDung"),
+                        CoSuDungDaChat = row.Field<int?>("CoSuDungDaChat"),
+                        KhongSuDungDaChat = row.Field<int?>("KhongSuDungDaChat"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+        
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetSuDungDaChatTrongChemsexTheoDiemQST(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN f1_q_b7 = 1 THEN N'Có'
+				                            WHEN f1_q_b7 = 2 THEN N'Không'				
+                                END AS NoiDung,
+                                SUM(CASE WHEN hvnc.tongdiem >= 11 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
+                                SUM(CASE WHEN hvnc.tongdiem < 11 THEN 1 ELSE 0 END) AS SoLuongAmTinh
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b7 IN (1, 2) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                     WHEN f1_q_b7 = 1 THEN N'Có'
+				                            WHEN f1_q_b7 = 2 THEN N'Không'	
+                                END
+                            ORDER BY 
+                                NoiDung;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("NoiDung"),
+                        SoLuongDuongTinh = row.Field<int?>("SoLuongDuongTinh"),
+                        SoLuongAmTinh = row.Field<int?>("SoLuongAmTinh"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+        public List<DashboardTanSuatSuDungTheoDoTuoi> GetTanSuatChemsexTrong3ThangTheoDiemQST(string maNhom, string maTinh)
+        {
+            var list = new List<DashboardTanSuatSuDungTheoDoTuoi>();
+            string query = @"
+                            SELECT 
+                                CASE 
+                                    WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
+				                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'				
+				                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'				
+				                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'				
+                                END AS NoiDung,
+                                SUM(CASE WHEN hvnc.tongdiem >= 11 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
+                                SUM(CASE WHEN hvnc.tongdiem < 11 THEN 1 ELSE 0 END) AS SoLuongAmTinh
+                            FROM 
+                                CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
+                                INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
+                            WHERE 
+                                hvnc.f1_q_b6 IN (1, 2, 3, 4) -- Giới hạn các giá trị hợp lệ cho f1_q_b6
+                                    AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
+                            GROUP BY 
+                                CASE 
+                                    WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
+				                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'				
+				                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'				
+				                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'
+                                END
+                            ORDER BY 
+                                NoiDung;
+                             ";
+
+            var result = _DatabaseSql.ExecuteTable(query);
+            
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    list.Add(new DashboardTanSuatSuDungTheoDoTuoi
+                    {
+                        NoiDung = row.Field<string>("NoiDung"),
+                        SoLuongDuongTinh = row.Field<int?>("SoLuongDuongTinh"),
+                        SoLuongAmTinh = row.Field<int?>("SoLuongAmTinh"),
+                        
+                    });
+                }
+            }
+
+            return list;
+        }
+
     }
 }

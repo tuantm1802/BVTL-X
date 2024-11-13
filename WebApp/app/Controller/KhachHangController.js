@@ -75,7 +75,7 @@
                     }
                 },
                 columns: [
-                    { data: 'Id' },
+                    //{ data: 'Id' },
                     { data: 'RecordId' },
                     { data: 'MaNhomTbh' },
                     {
@@ -84,9 +84,47 @@
                             return moment(data).isValid() ? moment(data).format('DD/MM/YYYY') : '';
                         }
                     },
-                    { data: 'GioiTinh' },
-                    { data: 'CapBacHocVan' },
-                    { data: 'NgheNghiep' },
+                    {
+                        data: 'GioiTinh',
+                        render: function (data) {
+                            switch (data) {
+                                case '1': return 'Nam'
+                                case '2': return 'Nữ'
+                                case '3': return 'Khác'                         
+                                default: return '';
+                            }
+                        }
+                    },
+                    {
+                        data: 'CapBacHocVan',
+                        render: function (data) {
+                            switch (data) {
+                                case '1': return 'Không đi học'
+                                case '2': return 'Cấp I (Lớp 1 - lớp 5)'
+                                case '3': return 'Cấp II (Lớp 6 - lớp 9)'
+                                case '4': return 'Cấp III (Lớp 10 - lớp 12)'
+                                case '5': return 'Trung cấp, cao đẳng, đại học'
+                                case '6': return 'Sau đại học (thạc sĩ, tiến sĩ...)'
+                                default: return '';
+                            }
+                        }
+                    },
+                    {
+                        data: 'NgheNghiep',
+                        render: function (data) {
+                            switch (data) {
+                                case '1': return 'Khu vực tư nhân';
+                                case '2': return 'Khu vực Nhà nước';
+                                case '3': return 'Kinh doanh';
+                                case '4': return 'Lao động tình dục (mại dâm)';
+                                case '5': return 'Học sinh/sinh viên';
+                                case '6': return 'Lao động tự do';
+                                case '7': return 'Không có việc làm/ nội trợ';
+                                case '8': return 'Khác';
+                                default: return '';
+                            }
+                        }
+                    },
                     {
                         data: 'NgayHoi',
                         render: function (data) {

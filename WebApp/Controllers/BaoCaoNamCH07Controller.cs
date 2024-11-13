@@ -74,7 +74,7 @@ namespace WebApp.Controllers
                 var data = _BaoCaoTongHopDA.GetDataReportCH07(modelSearch);
 
                 AddLog("Lấy dữ liệu báo cáo năm( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
-                return Json(new { data = data,  Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { data = data,  Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {
