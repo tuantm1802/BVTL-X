@@ -358,7 +358,7 @@ namespace WebApp.Controllers
                                     else
                                     {
                                         // Thêm dữ liệu cột thông tin BC - thêm
-                                        InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                                        InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                                     }
 
                                     if (rowReport.Rowpan > 1)
@@ -369,17 +369,17 @@ namespace WebApp.Controllers
                                 else
                                 {
                                     // Thêm dữ liệu cột thông tin BC - thêm
-                                    InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, true, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
+                                    InsertDataCell(ws, "C", row, rowReport.ThongTinBC_Them, false, XLAlignmentHorizontalValues.Left, XLAlignmentVerticalValues.Center, false);
                                 }
                                                                                                 
                                 // Thêm dữ liệu cột Nam
-                                InsertDataCell(ws, "D", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
+                                InsertDataCell(ws, "D", row, rowReport.Nam > 0 ? rowReport.Nam.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nam > 0 ? true : false);
 
                                 // Thêm dữ liệu cột Nữ
-                                InsertDataCell(ws, "E", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
+                                InsertDataCell(ws, "E", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
                                 
                                 // Thêm dữ liệu cột Tổng
-                                InsertDataCell(ws, "F", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
+                                InsertDataCell(ws, "F", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
 
                                 // Thêm dữ liệu cột Chuyển giới
                                 //InsertDataCell(ws, "G", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
@@ -942,28 +942,23 @@ namespace WebApp.Controllers
             ws.Cell("B" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("B" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("D" + row).Value = "Tổng";
+            ws.Cell("D" + row).Value = "Nam";
             ws.Cell("D" + row).Style.Font.Bold = true;
             ws.Cell("D" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("D" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("E" + row).Value = "Nam";
+            ws.Cell("E" + row).Value = "Nữ";
             ws.Cell("E" + row).Style.Font.Bold = true;
             ws.Cell("E" + row).Style.Alignment.WrapText = true;
             ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("F" + row).Value = "Nữ";
+            ws.Cell("F" + row).Value = "Tổng";
             ws.Cell("F" + row).Style.Font.Bold = true;
             ws.Cell("F" + row).Style.Alignment.WrapText = true;
             ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("G" + row).Value = "Chuyển giới";
-            ws.Cell("G" + row).Style.Font.Bold = true;
-            ws.Cell("G" + row).Style.Alignment.WrapText = true;
-            ws.Cell("G" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            ws.Cell("G" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             #endregion
         }
         private void CreateFooter(IXLWorksheet ws, string tileReport, UserLogin user, string tenNhomTBHs)

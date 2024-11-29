@@ -1,9 +1,13 @@
-﻿using Model.ModelExtend.API;
+﻿using Data.Admin;
+using Data.InterfaceDA.Admin;
+using Model.Model;
+using Model.ModelExtend.API;
 using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.Jobs;
 using SyncBVTL.Push.Jobs.PAJobs;
 using SyncBVTL.Push.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -15,6 +19,7 @@ namespace SyncBVTL.Push.ScheduleTasks
     public class JobScheduler
     {
         static string logDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
+        static ISysLogDA _sysLogDA = new SysLogDA();
 
         public static async Task StartAll()
         {
@@ -54,6 +59,7 @@ namespace SyncBVTL.Push.ScheduleTasks
 
             _ = scheduler.Start();
             //Job tự động cập nhật các đầu api
+            /*
             IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
             job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
             ITrigger trigger_UpdateJob = TriggerBuilder.Create()
@@ -62,7 +68,7 @@ namespace SyncBVTL.Push.ScheduleTasks
                 .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
                 .Build();
             _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
-
+            */
 
             //Job tự động gửi email notification hàng ngày
             //IJobDetail job_NotifiJob = JobBuilder.Create<SendNotificationJob>().WithIdentity("NotifiJob").Build();
@@ -73,6 +79,16 @@ namespace SyncBVTL.Push.ScheduleTasks
             //   .WithCronSchedule("0 0/1 * * * ?") //Tự động chạy sau mỗi 1 phút
             //    .Build();
             //_ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
+
+            var log = new BVTL_QT_LOG
+            {
+                ControllerName = "JobScheduler",
+                UserName = "",
+                DateLog = DateTime.Now,
+                Content = "Gọi hàm SyncBVTL.Push.ScheduleTasks.JobScheduler.StartAll | GetDataAPIJob"
+            };
+            _sysLogDA.Add(log);
+            
 
             #region Các job thực thi các tiến trình đồng bộ dữ liệu
             foreach (ProcessModel item in processModels)
@@ -85,8 +101,8 @@ namespace SyncBVTL.Push.ScheduleTasks
                         .WithIdentity("trigger_" + item.ReportId + "Job")
                         .StartNow()
                         .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(item.TimeLoop)
-                            .RepeatForever())
+                        .WithIntervalInSeconds(item.TimeLoop)
+                        .RepeatForever())
                         .Build();
                     _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
                 }

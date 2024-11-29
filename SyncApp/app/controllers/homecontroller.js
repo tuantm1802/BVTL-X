@@ -94,11 +94,7 @@
         $scope.reloadProcess = function () {
             getListProcess();
         }
-
-
         
-       
-
         $scope.onchangeDataType = function (value) {
             $scope.taskName = value;
         }

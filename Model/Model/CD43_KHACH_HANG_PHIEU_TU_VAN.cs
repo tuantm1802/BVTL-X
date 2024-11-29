@@ -130,7 +130,7 @@ namespace Model.Model
         public string cau6_5_1 { get; set; }
         public string tuvantiep { get; set; }
         public string vande { get; set; }
-        public string thoigian { get; set; }
+        public Nullable<System.DateTime> thoigian { get; set; }
         public Nullable<int> phiu_t_vn_complete { get; set; }
         public Nullable<System.DateTime> sync_date { get; set; }
         public string maduan { get; set; }

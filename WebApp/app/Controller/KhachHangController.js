@@ -223,21 +223,23 @@ app.controller('CustomerDetailsController', ['$scope', '$http', '$location', fun
                 $scope.customer.NgayThangNamSinh = moment($scope.customer.NgayThangNamSinh).format('DD/MM/YYYY');
             }
 
-            $scope.customer.gioiTinhText = $scope.customer.GioiTinh === 1 ? 'Nam' :
-                $scope.customer.GioiTinh === 2 ? 'Nữ' : 'Khác';
-            $scope.customer.capBacHocVanText = $scope.customer.CapBacHocVan === 1 ? 'Không đi học' :
-                $scope.customer.CapBacHocVan === 2 ? 'Cấp I (Lớp 1 - lớp 5)' :
-                    $scope.customer.CapBacHocVan === 3 ? 'Cấp II (Lớp 6 - lớp 9)' :
-                        $scope.customer.CapBacHocVan === 4 ? 'Cấp III (Lớp 10 - lớp 12)' :
-                            $scope.customer.CapBacHocVan === 5 ? 'Trung cấp, cao đẳng, đại học' :
+            $scope.customer.gioiTinhText = $scope.customer.GioiTinh === '1' ? 'Nam' :
+                $scope.customer.GioiTinh === '2' ? 'Nữ' : 'Khác';
+
+            $scope.customer.capBacHocVanText = $scope.customer.CapBacHocVan === '1' ? 'Không đi học' :
+                $scope.customer.CapBacHocVan === '2' ? 'Cấp I (Lớp 1 - lớp 5)' :
+                    $scope.customer.CapBacHocVan === '3' ? 'Cấp II (Lớp 6 - lớp 9)' :
+                        $scope.customer.CapBacHocVan === '4' ? 'Cấp III (Lớp 10 - lớp 12)' :
+                            $scope.customer.CapBacHocVan === '5' ? 'Trung cấp, cao đẳng, đại học' :
                                 'Sau đại học (thạc sĩ, tiến sĩ...)';
-            $scope.customer.ngheNghiepText = $scope.customer.NgheNghiep === 1 ? 'Khu vực tư nhân' :
-                $scope.customer.NgheNghiep === 2 ? 'Khu vực Nhà nước' :
-                    $scope.customer.NgheNghiep === 3 ? 'Kinh doanh' :
-                        $scope.customer.NgheNghiep === 4 ? 'Lao động tình dục' :
-                            $scope.customer.NgheNghiep === 5 ? 'Học sinh/sinh viên' :
-                                $scope.customer.NgheNghiep === 6 ? 'Lao động tự do' :
-                                    $scope.customer.NgheNghiep === 7 ? 'Không có việc làm/ nội trợ' : 'Khác';
+
+            $scope.customer.ngheNghiepText = $scope.customer.NgheNghiep === '1' ? 'Khu vực tư nhân' :
+                $scope.customer.NgheNghiep === '2' ? 'Khu vực Nhà nước' :
+                    $scope.customer.NgheNghiep === '3' ? 'Kinh doanh' :
+                        $scope.customer.NgheNghiep === '4' ? 'Lao động tình dục' :
+                            $scope.customer.NgheNghiep === '5' ? 'Học sinh/sinh viên' :
+                                $scope.customer.NgheNghiep === '6' ? 'Lao động tự do' :
+                                    $scope.customer.NgheNghiep === '7' ? 'Không có việc làm/ nội trợ' : 'Khác';
 
         }, function (error) {
             console.error('Error fetching customer details:', error);

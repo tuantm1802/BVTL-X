@@ -63,8 +63,8 @@ namespace SyncBVTL.Push.Jobs.PAJobs
                             .WithIdentity("trigger_" + item.TableNames + "Job")
                             .StartNow()
                             .WithSimpleSchedule(x => x
-                                .WithIntervalInSeconds(item.TimeLoop)
-                                .RepeatForever())
+                            .WithIntervalInSeconds(item.TimeLoop)
+                            .RepeatForever())
                             .Build();
                         _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
                     }

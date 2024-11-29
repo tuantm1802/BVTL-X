@@ -1,4 +1,7 @@
-﻿using Model.ModelExtend.API;
+﻿using Data.Admin;
+using Data.InterfaceDA.Admin;
+using Model.Model;
+using Model.ModelExtend.API;
 using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.Jobs.PAJobs;
@@ -11,8 +14,19 @@ namespace SyncBVTL.Push.ScheduleTasks
 {
     public class JobScheduleSingle
     {
+        static ISysLogDA _sysLogDA = new SysLogDA();
+
         public static async Task StartSingle(ProcessModel item)
         {
+            var log = new BVTL_QT_LOG
+            {
+                ControllerName = "JobScheduleSingle",
+                UserName = "",
+                DateLog = DateTime.Now,
+                Content = "Gọi hàm SyncBVTL.Push.ScheduleTasks.StartSingle | GetDataAPIJob"
+            };
+            _sysLogDA.Add(log);
+
             NameValueCollection properties = new NameValueCollection();
             properties["quartz.threadPool.threadCount"] = "100";
 

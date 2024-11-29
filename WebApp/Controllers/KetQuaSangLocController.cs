@@ -703,19 +703,38 @@ namespace WebApp.Controllers
         /// </summary>
         /// <param name="ws"></param>
         private void InsertDataCell(IXLWorksheet ws, string cellName, int row, string value, bool bold,
-            XLAlignmentHorizontalValues horizontal, XLAlignmentVerticalValues vertical, bool isNumber = true)
+    XLAlignmentHorizontalValues horizontal, XLAlignmentVerticalValues vertical, bool isNumber = true)
         {
-            if (isNumber == true && string.IsNullOrEmpty(value))
+            if (isNumber && string.IsNullOrEmpty(value))
                 value = "0";
 
-            ws.Cell(cellName + row).Value = isNumber == false ? (object)value : Convert.ToDecimal(value);
+            decimal number = 0;
+            bool isNumericValue = isNumber && decimal.TryParse(value, out number);
+
+            // Nếu là số thì chuyển đổi, nếu không thì giữ nguyên giá trị chuỗi với ký tự nháy
+            if (isNumericValue)
+            {
+                ws.Cell(cellName + row).Value = number;
+            }
+            else
+            {
+                // Ép buộc Excel hiểu là chuỗi bằng cách thêm dấu nháy '
+                ws.Cell(cellName + row).Value = "'" + value;
+            }
+
             ws.Cell(cellName + row).Style.Font.Bold = bold;
             ws.Cell(cellName + row).Style.Alignment.Horizontal = horizontal;
             ws.Cell(cellName + row).Style.Alignment.Vertical = vertical;
             ws.Cell(cellName + row).Style.Alignment.WrapText = true;
-            if (isNumber)
-                ws.Cell(cellName + row).Style.NumberFormat.Format = "#,##0";//"#,##0.00"
+
+            // Chỉ áp dụng định dạng số nếu là số
+            if (isNumericValue)
+            {
+                ws.Cell(cellName + row).Style.NumberFormat.Format = "#,##0"; // hoặc "#,##0.00" nếu cần định dạng thập phân
+            }
         }
+
+
         /// Gán dữ liệu cho cell có gộp cell
         /// </summary>
         /// <param name="ws"></param>

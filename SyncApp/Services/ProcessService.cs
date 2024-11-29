@@ -41,10 +41,13 @@ namespace SyncBVTL.Push.Services
                     };
 
                     if (api.Start_Time_Sync != null)
-                        process.Start_Time_Sync = Convert.ToDateTime(api.Start_Time_Sync).ToString("dd/MM/yyyy HH:mm");
+                        //process.Start_Time_Sync = Convert.ToDateTime(api.Start_Time_Sync).ToString("dd/MM/yyyy HH:mm");
+                        process.Start_Time_Sync = api.Start_Time_Sync?.ToString("dd/MM/yyyy HH:mm");
 
-                    if (api.End_Time_Sync != null)
-                        process.End_Time_Syc = Convert.ToDateTime(api.End_Time_Sync).ToString("dd/MM/yyyy HH:mm");
+                    if (api.End_Time_Sync.HasValue)
+                    {
+                        process.End_Time_Syc = api.End_Time_Sync.Value.ToString("dd/MM/yyyy HH:mm");
+                    }
 
                     if (!string.IsNullOrEmpty(api.TableNameSaveData))
                         process.TableNames = new List<string> { api.TableNameSaveData };

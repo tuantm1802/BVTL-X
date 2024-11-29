@@ -1,4 +1,5 @@
-﻿using Model.ModelExtend.API;
+﻿using Model.Model;
+using Model.ModelExtend.API;
 using Quartz;
 using Quartz.Impl;
 using SyncBVTL.Push.ScheduleTasks;
@@ -18,6 +19,8 @@ namespace SyncBVTL.Push.Controllers
     public class HomeController : Controller
     {
         readonly ProcessService processSrv = new ProcessService();
+        BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+
         //readonly string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Start/ProcessConfig.json");
         public async Task<ActionResult> Index()
         {
@@ -39,6 +42,15 @@ namespace SyncBVTL.Push.Controllers
         public ActionResult GetListProcess()
         {
             var model = processSrv.GetListProcess();
+            var log = new BVTL_QT_LOG
+            {
+                ControllerName = "HomeController",
+                UserName = "",
+                DateLog = DateTime.Now,
+                Content = "Gọi hàm SyncBVTL.Push.Controllers.GetListProcess"
+            };
+            db.BVTL_QT_LOG.Add(log);
+
             return Json(new { code = "200", data = model }, JsonRequestBehavior.AllowGet);
         }
 
@@ -47,6 +59,15 @@ namespace SyncBVTL.Push.Controllers
         {
             try
             {
+                var log = new BVTL_QT_LOG
+                {
+                    ControllerName = "HomeController",
+                    UserName = "",
+                    DateLog = DateTime.Now,
+                    Content = "Gọi hàm SyncBVTL.Push.Controllers.UpdateProcess"
+                };
+                db.BVTL_QT_LOG.Add(log);
+
                 var listProcess = processSrv.GetListProcess();
                 var process = listProcess.FirstOrDefault(x => x.Code == model.Code);
                 if (process == null)

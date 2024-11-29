@@ -66,7 +66,7 @@ namespace Data.API
                 conn.Close();
 
                 obj.Success = true;
-                obj.Message = "Tổng record đã thêm: " + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn;
+                obj.Message = DateTime.Now.ToString() + ": Tổng record đã thêm: " + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn;
                 log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
             }
 

@@ -8,11 +8,17 @@ using Common;
 using Model.ModelExtend.API;
 using Common.Common;
 using System.Collections.Specialized;
+using Model.Model;
+using Data.Admin;
+using Data.InterfaceDA.Admin;
+using System;
 
 namespace SyncBVTL.Push.ScheduleTasks
 {
     public static class JobScheduleChangeTimeloop
     {
+        static ISysLogDA _sysLogDA = new SysLogDA();
+
         public static async Task ChangeTimeloop(ProcessModel item)
         {
             NameValueCollection properties = new NameValueCollection();
@@ -26,6 +32,17 @@ namespace SyncBVTL.Push.ScheduleTasks
 
             await scheduler.DeleteJob(new JobKey(item.ReportId + "_Job"));
             IJobDetail jobDetail = CreateJob(item.Code, item.ReportId);
+
+            var log = new BVTL_QT_LOG
+            {
+                ControllerName = "JobScheduleChangeTimeloop",
+                UserName = "",
+                DateLog = DateTime.Now,
+                Content = "Gọi hàm SyncBVTL.Push.JobScheduleChangeTimeloop.ChangeTimeloop | " + item.Code
+            };
+            _sysLogDA.Add(log);
+
+
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger_" + item.ReportId + "Job")
                 .StartNow()

@@ -169,92 +169,84 @@ namespace Data.Admin
         public Customer GetCustomerSuDungChatById(int id)
         {
             Customer customer = null;
-            string query = "SELECT                                                                          "+
-                           " t.id as Id,                                                                    "+
-                           " t.record_id AS RecordId,                                                       " +
-                           " CASE                                                                           "+
-                           "     WHEN h.f1_q_b4___1 = 1 THEN N'Methamphetamin (Ma túy đá)'                  "+
-                           "     WHEN h.f1_q_b4___2 = 1 THEN N'Ecstasy (kẹo, lắc)'                          "+
-                           "     WHEN h.f1_q_b4___3 = 1 THEN N'Ketamin (ke)'                                "+
-                           "     WHEN h.f1_q_b4___4 = 1 THEN N'Các chất hít hơi (Poppers)'                  "+
-                           "     WHEN h.f1_q_b4___5 = 1 THEN N'Thuốc cương dương (Viagra)'                  "+
-                           "     WHEN h.f1_q_b4___6 = 1 THEN N'Hồng phiến (ngựa, da)'                       "+
-                           "     WHEN h.f1_q_b4___7 = 1 THEN N'Nước biển (nước G)'                          "+
-                           "     WHEN h.f1_q_b4___8 = 1 THEN N'Khác'                                        "+
-                           "     ELSE NULL                                                                  "+
-                           " END AS ChatSuDungChemsex3Thang,                                                "+
-		                   "     CASE                                                                       "+
-                           "     WHEN h.f1_q_b5 = 1 THEN N'Methamphetamin (Ma túy đá)'                      "+
-                           "     WHEN h.f1_q_b5 = 2 THEN N'Ecstasy (kẹo, lắc)'                              "+
-                           "     WHEN h.f1_q_b5 = 3 THEN N'Ketamin (ke)'                                    "+
-                           "     WHEN h.f1_q_b5 = 4 THEN N'Các chất hít hơi (Poppers)'                      "+
-                           "     WHEN h.f1_q_b5 = 5 THEN N'Thuốc cương dương (Viagra)'                      "+
-                           "     WHEN h.f1_q_b5 = 6 THEN N'Hồng phiến (ngựa, da)'                           "+
-                           "     WHEN h.f1_q_b5 = 7 THEN N'Nước biển (nước G)'                              "+
-                           "     WHEN h.f1_q_b5 = 8 THEN N'Khác'                                            "+
-                           "     ELSE NULL                                                                  "+
-                           " END AS ChatSuDungThuongXuyenNhat,                                              "+
-		                   "                                                                                "+
-		                   "     CASE                                                                       "+
-                           "     WHEN h.f1_q_b6 = 1 THEN N'1 - 2 lần'                                       "+
-                           "     WHEN h.f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                           "+
-                           "     WHEN h.f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                       "+
-                           "     WHEN h.f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)' "+
-                           "     ELSE NULL                                                                  "+
-                           " END AS TanSuatSuDungMTDChemsex3Thang,                                          "+
-		                   "     CASE                                                                       "+
-                           "         WHEN h.f1_q_b7 = 1 THEN N'Đã từng'                                     "+
-                           "                                                                                "+
-                           "         WHEN h.f1_q_b7 = 2 THEN N'Chưa từng'                                   "+
-                           "                                                                                "+
-                           "     END AS SuDungDaChat,                                                       "+
-		                   "                                                                                "+
-		                   "     STUFF((                                                                    "+
-                           "     SELECT ', ' + CASE                                                         "+
-                           "         WHEN h.f1_q_b8___1 = 1 THEN N'Methamphetamin (Ma túy đá)'              "+
-                           "         WHEN h.f1_q_b8___2 = 1 THEN N'Ecstasy (kẹo, lắc)'                      "+
-                           "         WHEN h.f1_q_b8___3 = 1 THEN N'Ketamin (ke)'                            "+
-                           "         WHEN h.f1_q_b8___4 = 1 THEN N'Các chất hít hơi (Poppers)'              "+
-                           "         WHEN h.f1_q_b8___5 = 1 THEN N'Thuốc cương dương (Viagra)'              "+
-                           "         WHEN h.f1_q_b8___6 = 1 THEN N'Hồng phiến (ngựa, da)'                   "+
-                           "         WHEN h.f1_q_b8___7 = 1 THEN N'Nước biển (nước G)'                      "+
-                           "         WHEN h.f1_q_b8___8 = 1 THEN N'Khác'                                    "+
-                           "         ELSE ''                                                                "+
-                           "     END                                                                        "+
-                           "     FROM CD43_KHACH_HANG_HANH_VI_NGUY_CO h2                                    "+
-                           "     WHERE h2.record_id = h.record_id                                           "+
-                           "     AND(                                                                       "+
-                           "         h2.f1_q_b8___1 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___2 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___3 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___4 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___5 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___6 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___7 = 1 OR                                                  "+
-                           "         h2.f1_q_b8___8 = 1)                                                    " +
-                           "     FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS SuDungChatDaChat,"+
-                           " CASE                                                                           "+
-                           "      WHEN h.f1_q_b9 = 1 THEN N'1 - 2 lần'                                      "+
-                           "      WHEN h.f1_q_b9 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                          "+
-                           "      WHEN h.f1_q_b9 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                      "+
-                           "      WHEN h.f1_q_b9 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'"+
-                           "      WHEN h.f1_q_b9 = 5 THEN N'Không lần nào'                                  "+
-                           "      ELSE NULL                                                                 "+
-                           "  END AS TanSuatSuDungDaChat3Thang                                              "+
-                        " FROM                                                                              " +
-                        "        CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                         "+
-                        "        LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id   "+
-                        " WHERE(                                                                            "+
-                        "    h.f1_q_b4___1 = 1                                                              "+
-                        "    OR h.f1_q_b4___2 = 1                                                           "+
-                        "    OR h.f1_q_b4___3 = 1                                                           "+
-                        "    OR h.f1_q_b4___4 = 1                                                           "+
-                        "    OR h.f1_q_b4___5 = 1                                                           "+
-                        "    OR h.f1_q_b4___6 = 1                                                           "+
-                        "    OR h.f1_q_b4___7 = 1                                                           "+
-                        "    OR h.f1_q_b4___8 = 1)                                                          "+
-                        " AND t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2                   "+
-                        " AND t.Id =" + id;
+            string query = @"SELECT                                                                          
+                                t.id as Id,                                                                    
+                                t.record_id AS RecordId,                                                        
+                                STUFF((                                                                    
+		                                SELECT ', ' + 
+			                                CASE WHEN h.f1_q_b4___1 = 1 THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___2 = 1 THEN N', Ecstasy (kẹo, lắc)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___3 = 1 THEN N', Ketamin (ke)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___4 = 1 THEN N', Các chất hít hơi (Poppers)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___5 = 1 THEN N', Thuốc cương dương (Viagra)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___6 = 1 THEN N', Hồng phiến (ngựa, da)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___7 = 1 THEN N', Nước biển (nước G)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___8 = 1 THEN N', Khác' ELSE '' END
+		                                FROM CD43_KHACH_HANG_HANH_VI_NGUY_CO h1                                  
+		                                WHERE h1.record_id = h.record_id                                         
+		                                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') 
+		                                AS ChatSuDungChemsex3Thang,                                                
+                                CASE                                                                       
+		                                WHEN h.f1_q_b5 = 1 THEN N'Methamphetamin (Ma túy đá)'                      
+		                                WHEN h.f1_q_b5 = 2 THEN N'Ecstasy (kẹo, lắc)'                              
+		                                WHEN h.f1_q_b5 = 3 THEN N'Ketamin (ke)'                                    
+		                                WHEN h.f1_q_b5 = 4 THEN N'Các chất hít hơi (Poppers)'                      
+		                                WHEN h.f1_q_b5 = 5 THEN N'Thuốc cương dương (Viagra)'                      
+		                                WHEN h.f1_q_b5 = 6 THEN N'Hồng phiến (ngựa, da)'                           
+		                                WHEN h.f1_q_b5 = 7 THEN N'Nước biển (nước G)'                              
+		                                WHEN h.f1_q_b5 = 8 THEN N'Khác'                                            
+		                                ELSE NULL                                                                  
+                                END AS ChatSuDungThuongXuyenNhat,                                              
+																																					 
+                                CASE                                                                       
+		                                WHEN h.f1_q_b6 = 1 THEN N'1 - 2 lần'                                       
+		                                WHEN h.f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                           
+		                                WHEN h.f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                       
+		                                WHEN h.f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)' 
+		                                ELSE NULL                                                                  
+                                END AS TanSuatSuDungMTDChemsex3Thang,                                          
+                                CASE                                                                       
+				                                WHEN h.f1_q_b7 = 1 THEN N'Đã từng' 																		 
+				                                WHEN h.f1_q_b7 = 2 THEN N'Chưa từng'   																	 
+		                                END AS SuDungDaChat,                                                       
+																																					 
+                                STUFF((                                                                    
+		                                SELECT ', '  +                                                          
+				                                CASE WHEN h.f1_q_b8___1 = 1 THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___2 = 1 THEN N', Ecstasy (kẹo, lắc)'         ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___3 = 1 THEN N', Ketamin (ke)'               ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___4 = 1 THEN N', Các chất hít hơi (Poppers)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___5 = 1 THEN N', Thuốc cương dương (Viagra)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___6 = 1 THEN N', Hồng phiến (ngựa, da)'      ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___7 = 1 THEN N', Nước biển (nước G)'         ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___8 = 1 THEN N', Khác'                       ELSE '' END              
+	
+		                                FROM CD43_KHACH_HANG_HANH_VI_NGUY_CO h2                                    
+		                                WHERE h2.record_id = h.record_id                                           
+		                                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS SuDungChatDaChat,
+		
+                                CASE                                                                           
+		                                    WHEN h.f1_q_b9 = 1 THEN N'1 - 2 lần'                                      
+		                                    WHEN h.f1_q_b9 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                          
+		                                    WHEN h.f1_q_b9 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                      
+		                                    WHEN h.f1_q_b9 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'
+		                                    WHEN h.f1_q_b9 = 5 THEN N'Không lần nào'                                  
+		                                    ELSE NULL                                                                 
+                                    END AS TanSuatSuDungDaChat3Thang                                              
+                                FROM                                                                               
+		                                CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                         
+		                                LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id   
+                                WHERE(                                                                            
+                                h.f1_q_b4___1 = 1                                                              
+                                OR h.f1_q_b4___2 = 1                                                           
+                                OR h.f1_q_b4___3 = 1                                                           
+                                OR h.f1_q_b4___4 = 1                                                           
+                                OR h.f1_q_b4___5 = 1                                                           
+                                OR h.f1_q_b4___6 = 1                                                           
+                                OR h.f1_q_b4___7 = 1                                                           
+                                OR h.f1_q_b4___8 = 1)                                                          
+                                AND t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2   
+                                AND t.Id =" + @id;
 
             var result = _DatabaseSql.ExecuteTable(query);
             if (result.Rows.Count > 0)
@@ -279,85 +271,87 @@ namespace Data.Admin
         public Customer GetCustomerQHTDById(int id)
         {
             Customer customer = null;
-            string query = "SELECT top 1                                                           "+
-                           " t.id AS Id,                                                           "+
-                           " t.record_id AS RecordId,                                              "+
-                           " CASE                                                                  "+
-                           "     WHEN h.f1_q_a3 = 1 THEN N'Quan hệ tình dục đồng giới'             "+
-                           "     WHEN h.f1_q_a3 = 2 THEN N'Quan hệ tình dục khác giới'             "+
-                           "     WHEN h.f1_q_a3 = 3 THEN N'Quan hệ tình dục đồng giới và khác giới'"+
-                           "     WHEN h.f1_q_a3 = 4 THEN N'Khác'                                   "+
-                           "     ELSE NULL                                                         " +
-                           " END AS DoiTuongQuanHe,                                                  " +
-		                   "     CASE                                                              "+
-                           "     WHEN h.f1_q_a5___1 = 1 THEN N'Đang có bạn tình không thường xuyên'"+
-                           "     WHEN h.f1_q_a5___2 = 1 THEN N'Đang có bạn tình nam thường xuyên'  "+
-                           "     WHEN h.f1_q_a5___3 = 1 THEN N'Đang có bạn tình nữ thường xuyên'   "+
-                           "     ELSE NULL                                                         "+
-                           " END AS TinhTrangMoiQHHT,                                              "+
-		                   "     CASE                                                              "+
-                           "     WHEN h.f1_q_b10 = 1 THEN N'Luôn luôn'                             "+
-                           "     WHEN h.f1_q_b10 = 2 THEN N'Thường xuyên'                          "+
-                           "     WHEN h.f1_q_b10 = 3 THEN N'Thỉnh thoảng'                          "+
-                           "     WHEN h.f1_q_b10 = 4 THEN N'Hiếm khi'                              "+
-                           "     WHEN h.f1_q_b10 = 5 THEN N'Không bao giờ'                         "+
-                           "     ELSE NULL                                                         "+
-                           " END AS TanSuatSuDungBCSChemsex3Thang,                                 "+
-		                   " CASE                                                              "+
-                           "     WHEN h.f1_q_b11 = 1 THEN N'Có'                                "+
-                           "     WHEN h.f1_q_b11 = 2 THEN N'Không'                             "+
-                           "     WHEN h.f1_q_b11 = 3 THEN N'Không biết/Không trả lời'          "+
-                           " END AS QHTDTT3Thang,                                              "+
-		                   " CASE                                                              "+
-                           "     WHEN h.f1_q_b12 = 1 THEN N'Có'                                    "+
-                           "     WHEN h.f1_q_b12 = 2 THEN N'Không'                                 "+
-                           "     WHEN h.f1_q_b12 = 3 THEN N'Không biết/Không trả lời'              "+
-                           "     ELSE NULL                                                         "+
-                           " END AS BanDam3Thang,                                                   "+
-                           " CASE                                                                   "+
-                           "      WHEN h.f1_q_b13 = 1 THEN N'Có'                                    "+
-                           "      WHEN h.f1_q_b13 = 2 THEN N'Không'                                 "+
-                           "      WHEN h.f1_q_b13 = 3 THEN N'Không biết/Không trả lời'              "+
-                           "      ELSE NULL                                                         "+
-                           "  END AS STIs,		                                                    "+
-		                   "      CASE                                                              "+
-                           "      WHEN h.f1_q_b16 = 1 THEN N'Không mắc viêm gan C'                  "+
-                           "      WHEN h.f1_q_b16 = 2 THEN N'Đã từng mắc viêm gan C và đã điều trị' "+
-                           "      WHEN h.f1_q_b16 = 3 THEN N'Hiện tại mắc viêm gan C'               "+
-                           "      ELSE NULL                                                         "+
-                           "  END AS TinhTrangViemGanC,                                             "+
-		                   "      CASE                                                              "+
-                           "      WHEN h.diemthuocla >= 0 AND h.diemthuocla <= 3 THEN N'Mức nguy cơ: THẤP'                   "+
-                           "      WHEN h.diemthuocla >= 4 AND h.diemthuocla <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'            "+
-                           "      WHEN h.diemthuocla >= 27 THEN N'Mức nguy cơ: CAO'                                          "+
-                           "      ELSE NULL                                                                                  "+
-                           "  END AS MucDoNguyCoThuocLa,                                                                     "+
-		                   "      CASE                                                                                       "+
-                           "      WHEN h.diemthucuong >= 0 AND h.diemthucuong <= 10 THEN N'Mức nguy cơ: THẤP'                "+
-                           "      WHEN h.diemthucuong >= 11 AND h.diemthucuong <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'         "+
-                           "      WHEN h.diemthucuong >= 27 THEN N'Mức nguy cơ: CAO'                                         "+
-                           "      ELSE NULL                                                                                  "+
-                           "  END AS MucDoNguyCoThucUong,                                                                    "+
-		                   "      CASE                                                                                       "+
-                           "      WHEN h.diemchatkichthich >= 0 AND h.diemchatkichthich <= 3 THEN N'Mức nguy cơ: THẤP'       "+
-                           "      WHEN h.diemchatkichthich >= 4 AND h.diemchatkichthich <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'"+
-                           "      WHEN h.diemchatkichthich >= 27 THEN N'Mức nguy cơ: CAO'                                    "+
-                           "      ELSE NULL                                                                                  "+
-                           "  END AS MucDoNguyCoMaTuyDa,                                                                     "+
-                           "     CASE                                                                                        "+
-                           "     WHEN h.c_3 = 0 THEN N'Không'                                                                "+
-                           "     WHEN h.c_3 = 1 THEN N'Có'                                                                   "+
-                           "     WHEN h.c_3 = 2 THEN N'Không biết/Không trả lời'                                             "+
-                           "     ELSE NULL                                                                                   "+
-                           " END AS QSTCoTuSat,                                                                              "+
-		                   "     h.tongdiem AS QSTTongDiem,                                                                  "+
-		                   "     h.diem AS ACESoLuong                                                                        "+
-                           " FROM                                                                          "+
-                           "      CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                       "+
-                           "      LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id "+
-                           "WHERE                                                                  " +
-                           " t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2 " +
-                           " AND t.Id = " + id;
+            string query = @"SELECT top 1                                                           
+                            t.id AS Id,                                                           
+                            t.record_id AS RecordId,                                              
+                            CASE                                                                  
+                                WHEN h.f1_q_a3 = 1 THEN N'Quan hệ tình dục đồng giới'             
+                                WHEN h.f1_q_a3 = 2 THEN N'Quan hệ tình dục khác giới'             
+                                WHEN h.f1_q_a3 = 3 THEN N'Quan hệ tình dục đồng giới và khác giới'
+                                WHEN h.f1_q_a3 = 4 THEN N'Khác'                                   
+                                ELSE NULL                                                         
+                            END AS DoiTuongQuanHe,                                                  
+		                        CASE                                                              
+                                WHEN h.f1_q_a5___1 = 1 THEN N'Đang có bạn tình không thường xuyên'
+                                WHEN h.f1_q_a5___2 = 1 THEN N'Đang có bạn tình nam thường xuyên'  
+                                WHEN h.f1_q_a5___3 = 1 THEN N'Đang có bạn tình nữ thường xuyên'   
+                                ELSE NULL                                                         
+                            END AS TinhTrangMoiQHHT,                                              
+		                        CASE                                                              
+                                WHEN h.f1_q_b10 = 1 THEN N'Luôn luôn'                             
+                                WHEN h.f1_q_b10 = 2 THEN N'Thường xuyên'                          
+                                WHEN h.f1_q_b10 = 3 THEN N'Thỉnh thoảng'                          
+                                WHEN h.f1_q_b10 = 4 THEN N'Hiếm khi'                              
+                                WHEN h.f1_q_b10 = 5 THEN N'Không bao giờ'                         
+                                ELSE NULL                                                         
+                            END AS TanSuatSuDungBCSChemsex3Thang,                                 
+		                    CASE                                                              
+                                WHEN h.f1_q_b11 = 1 THEN N'Có'                                
+                                WHEN h.f1_q_b11 = 2 THEN N'Không'                             
+                                WHEN h.f1_q_b11 = 3 THEN N'Không biết/Không trả lời'          
+                            END AS QHTDTT3Thang,                                              
+		                    CASE                                                              
+                                WHEN h.f1_q_b12 = 1 THEN N'Có'                                    
+                                WHEN h.f1_q_b12 = 2 THEN N'Không'                                 
+                                WHEN h.f1_q_b12 = 3 THEN N'Không biết/Không trả lời'              
+                                ELSE NULL                                                         
+                            END AS BanDam3Thang,                                                   
+                            CASE                                                                   
+                                 WHEN h.f1_q_b13 = 1 THEN N'Có'                                    
+                                 WHEN h.f1_q_b13 = 2 THEN N'Không'                                 
+                                 WHEN h.f1_q_b13 = 3 THEN N'Không biết/Không trả lời'              
+                                 ELSE NULL                                                         
+                             END AS STIs,		                                                    
+															CASE     																																																											
+                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 1 THEN N'Không mắc viêm gan C'                  
+                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 2 THEN N'Đã từng mắc viêm gan C và đã điều trị' 
+                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 3 THEN N'Hiện tại mắc viêm gan C'               
+                                 WHEN h.f1_q_b15 = 2 THEN N'Không'
+                                 WHEN h.f1_q_b15 = 3 THEN N'Không biết/Không trả lời'																	
+																 ELSE NULL                                                         
+                             END AS TinhTrangViemGanC,                                             
+		                         CASE                                                              
+                                 WHEN h.diemthuocla >= 0 AND h.diemthuocla <= 3 THEN N'Mức nguy cơ: THẤP'                   
+                                 WHEN h.diemthuocla >= 4 AND h.diemthuocla <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'            
+                                 WHEN h.diemthuocla >= 27 THEN N'Mức nguy cơ: CAO'                                          
+                                 ELSE NULL                                                                                  
+                             END AS MucDoNguyCoThuocLa,                                                                     
+		                         CASE                                                                                       
+                                 WHEN h.diemthucuong >= 0 AND h.diemthucuong <= 10 THEN N'Mức nguy cơ: THẤP'                
+                                 WHEN h.diemthucuong >= 11 AND h.diemthucuong <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'         
+                                 WHEN h.diemthucuong >= 27 THEN N'Mức nguy cơ: CAO'                                         
+                                 ELSE NULL                                                                                  
+                             END AS MucDoNguyCoThucUong,                                                                    
+		                         CASE                                                                                       
+                                 WHEN h.diemchatkichthich >= 0 AND h.diemchatkichthich <= 3 THEN N'Mức nguy cơ: THẤP'       
+                                 WHEN h.diemchatkichthich >= 4 AND h.diemchatkichthich <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+                                 WHEN h.diemchatkichthich >= 27 THEN N'Mức nguy cơ: CAO'                                    
+                                 ELSE NULL                                                                                  
+                             END AS MucDoNguyCoMaTuyDa,                                                                     
+                                CASE                                                                                        
+                                WHEN h.c_3 = 0 THEN N'Không'                                                                
+                                WHEN h.c_3 = 1 THEN N'Có'                                                                   
+                                WHEN h.c_3 = 2 THEN N'Không biết/Không trả lời'                                             
+                                ELSE NULL                                                                                   
+                            END AS QSTCoTuSat,                                                                              
+		                        h.tongdiem AS QSTTongDiem,                                                                  
+		                        h.diem AS ACESoLuong                                                                        
+                            FROM                                                                          
+                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                       
+                                 LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id 
+                           WHERE                                                                  
+                            t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2            
+                            AND t.Id = " + id;
 
             var result = _DatabaseSql.ExecuteTable(query);
             if (result.Rows.Count > 0)
@@ -392,15 +386,15 @@ namespace Data.Admin
             string query = @" SELECT 
                                 cg.record_id AS RecordId,
                                 CASE 
-                                    WHEN cg.chuyengui___1 = '1' THEN 'Khám và điều trị sức khỏe tâm thần'
-                                    WHEN cg.chuyengui___2 = '1' THEN 'Xét nghiệm khẳng định HIV và điều trị ARV'
-                                    WHEN cg.chuyengui___3 = '1' THEN 'Xét nghiệm tải lượng virus HIV'
+                                    WHEN cg.chuyengui___1 = '1' THEN N'Khám và điều trị sức khỏe tâm thần'
+                                    WHEN cg.chuyengui___2 = '1' THEN N'Xét nghiệm khẳng định HIV và điều trị ARV'
+                                    WHEN cg.chuyengui___3 = '1' THEN N'Xét nghiệm tải lượng virus HIV'
                                     WHEN cg.chuyengui___4 = '1' AND cg.loaihinh4___1 = '1' THEN 'STI'
                                     WHEN cg.chuyengui___4 = '1' AND cg.loaihinh4___2 = '1' THEN 'Viêm gan C'
                                     WHEN cg.chuyengui___4 = '1' AND cg.loaihinh4___3 = '1' THEN 'MMT'
                                     WHEN cg.chuyengui___4 = '1' AND cg.loaihinh4___4 = '1' THEN 'Lao'
-                                    WHEN cg.chuyengui___5 = '1' THEN 'Hỗ trợ các dịch vụ y tế khác'
-                                    WHEN cg.chuyengui___6 = '1' THEN 'Hỗ trợ các dịch vụ y tế khác'
+                                    WHEN cg.chuyengui___5 = '1' THEN N'Hỗ trợ các dịch vụ y tế khác'
+                                    WHEN cg.chuyengui___6 = '1' THEN N'Hỗ trợ các dịch vụ y tế khác'
                                 END AS DichVuChuyenGui,
     
                                 CASE 

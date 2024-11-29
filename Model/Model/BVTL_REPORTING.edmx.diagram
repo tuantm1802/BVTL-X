@@ -80,7 +80,6 @@
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_HAI_LONG" Width="3.25" PointX="23.5" PointY="18.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_THEO_DAU" Width="1.5" PointX="15.375" PointY="0.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SINH_HOAT_NHOM" Width="1.5" PointX="0.75" PointY="15.75" />
-        <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_PHIEU_TU_VAN" Width="1.5" PointX="9.375" PointY="17.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_HANH_VI_NGUY_CO" Width="3.875" PointX="3.375" PointY="14.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SANG_LOC_HIV" Width="1.5" PointX="13.375" PointY="13.75" />
         <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_SANG_LOC_NUOC_TIEU" Width="1.5" PointX="22.875" PointY="7.625" />
@@ -99,6 +98,7 @@
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_THON__city___5E54FF49" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_THON__madua__5D60DB10" />
         <AssociationConnector Association="BVTL_REPORTINGModel.FK__BVTL_THON__manho__5F492382" />
+        <EntityTypeShape EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_PHIEU_TU_VAN" Width="1.5" PointX="8.375" PointY="17.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
