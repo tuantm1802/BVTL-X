@@ -2207,31 +2207,32 @@ namespace Data.Admin
                     var quy = "";
                     var IntQuy = 0;
                     var check = 0;
-                    while ((_thang <= modelSearch.DenThang && _nam == modelSearch.DenNam) || (_nam <= modelSearch.DenNam))
+                    //while ((_thang <= modelSearch.DenThang && _nam == modelSearch.DenNam) || (_nam <= modelSearch.DenNam))
+                    while ((_nam < modelSearch.DenNam) || (_nam == modelSearch.DenNam && _thang <= modelSearch.DenThang))
                     {
                         // Lấy quý
                         quy = "";
                         IntQuy = 0;
                         check = 0;
-                        if (_thang < 4)
+                        if (_thang >= 1 && _thang <= 3)
                         {
                             IntQuy = 1;
-                            quy = "Quý I/" + _nam;
+                            quy = $"Quý I/{_nam}";
                         }
-                        else if (_thang > 3 && _thang < 7)
+                        else if (_thang >= 4 && _thang <= 6)
                         {
                             IntQuy = 2;
-                            quy = "Quý II/" + _nam;
+                            quy = $"Quý II/{_nam}";
                         }
-                        else if (_thang > 6 && _thang < 10)
+                        else if (_thang >= 7 && _thang <= 9)
                         {
                             IntQuy = 3;
-                            quy = "Quý III/" + _nam;
+                            quy = $"Quý III/{_nam}";
                         }
                         else
                         {
                             IntQuy = 4;
-                            quy = "Quý IV/" + _nam;
+                            quy = $"Quý IV/{_nam}";
                         }
 
                         // Kiểm tra xem quý đã tồn tại trong list quý chưa
@@ -2252,10 +2253,13 @@ namespace Data.Admin
                             orderby++;
                         }
 
-                        if (_thang == 12)
-                            _nam++;
-
+                        // Cập nhật tháng và năm
                         _thang++;
+                        if (_thang > 12)
+                        {
+                            _thang = 1; // Đặt lại tháng về 1
+                            _nam++;     // Tăng năm
+                        }
                     }
 
                     if (listQuys != null && listQuys.Count > 0)
@@ -2269,7 +2273,7 @@ namespace Data.Admin
                     var dataBC = new BaoCaoTongHopQuyVIIVModel();
                     var _quyBC = new ListQuyModel();
 
-                    for (int rowBC = 1; rowBC < 25; rowBC++)
+                    for (int rowBC = 1; rowBC < 28; rowBC++)
                     {
                         dataBC = new BaoCaoTongHopQuyVIIVModel() { ListQuy = new List<ListQuyModel>() };
                         // Lấy dữ liệu theo hàng
@@ -2461,13 +2465,19 @@ namespace Data.Admin
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
                                     WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
-                                    WHEN (diemchatkichthich) >= 27 THEN 'Mức nguy cơ Cao'
+                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
                                     ELSE '' 
                                 END AS MucDoNguyCo,
                                 SUM(CASE WHEN hvnc.f1_q_b6 = 1 THEN 1 ELSE 0 END) AS TanSuat1_2Lan,
                                 SUM(CASE WHEN hvnc.f1_q_b6 = 2 THEN 1 ELSE 0 END) AS TanSuatMoiThang,
                                 SUM(CASE WHEN hvnc.f1_q_b6 = 3 THEN 1 ELSE 0 END) AS TanSuatMoiTuan,
-                                SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay
+                                SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay,
+								CASE 
+										WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN 1
+										WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN 2
+										WHEN (diemchatkichthich) >= 27 THEN 3
+										ELSE 4
+								END AS MucDoNguyCoOrder
                             FROM 
                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2476,15 +2486,22 @@ namespace Data.Admin
 		                            AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
                                     AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
                                     AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
+                                    AND (diemchatkichthich IS NOT NULL AND diemchatkichthich != '')
                             GROUP BY 
                                 CASE 
                                     WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
                                     WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
-                                    WHEN (diemchatkichthich) >= 27 THEN 'Mức nguy cơ Cao'
+                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
                                     ELSE '' 
+                                END,
+                                CASE 
+                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN 1
+                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN 2
+                                    WHEN (diemchatkichthich) >= 27 THEN 3
+                                    ELSE 4
                                 END
                             ORDER BY 
-                                MucDoNguyCo;
+                                MucDoNguyCoOrder;
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);
@@ -2788,13 +2805,19 @@ namespace Data.Admin
             string query = $@"
                             SELECT 
                                 CASE 
-                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
-                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
-                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) >= 27 THEN N'Mức nguy cơ Cao'
                                     ELSE '' 
                                 END AS MucDoNguyCo,
                                 SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
-                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
+                                SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat,
+		                        CASE 
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 0 AND 3 THEN 1
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 4 AND 26 THEN 2
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) >= 27 THEN 3
+                                    ELSE 4 
+                                END AS MucDoNguyCoOrder
                             FROM 
                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2803,15 +2826,22 @@ namespace Data.Admin
                                 AND kh.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2
                                 AND ('{maNhom}' = '' OR kh.manhom_tbh = '{maNhom}')
                                 AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
+                                AND (diemchatkichthich IS NOT NULL AND diemchatkichthich != '')
                             GROUP BY 
                                 CASE 
-                                    WHEN (diemchatkichthich) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
-                                    WHEN (diemchatkichthich) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
-                                    WHEN (diemchatkichthich) >= 27 THEN N'Mức nguy cơ Cao'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 0 AND 3 THEN N'Mức nguy cơ Thấp'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 4 AND 26 THEN N'Mức nguy cơ Trung bình'
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) >= 27 THEN N'Mức nguy cơ Cao'
                                     ELSE '' 
+                                END,
+		                        CASE 
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 0 AND 3 THEN 1
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) BETWEEN 4 AND 26 THEN 2
+                                    WHEN (diemchatkichthich IS NOT NULL AND diemchatkichthich != '') AND CAST(diemchatkichthich AS INT) >= 27 THEN 3
+                                    ELSE 4 
                                 END
                             ORDER BY 
-                                MucDoNguyCo;
+                                MucDoNguyCoOrder;
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);
@@ -2892,11 +2922,11 @@ namespace Data.Admin
             string query = $@"
                             SELECT 
                                 CASE 
-                                    WHEN f1_q_b7 = 1 THEN N'Có'
-				                            WHEN f1_q_b7 = 2 THEN N'Không'				
+                                    WHEN f1_q_b7 = 1 THEN N'Đã từng'
+                                    WHEN f1_q_b7 = 2 THEN N'Chưa từng'
                                 END AS NoiDung,
-                                SUM(CASE WHEN hvnc.tongdiem >= 11 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
-                                SUM(CASE WHEN hvnc.tongdiem < 11 THEN 1 ELSE 0 END) AS SoLuongAmTinh
+                                SUM(CASE WHEN hvnc.tongdiem >= 11 OR hvnc.c_3 = 1 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
+                                SUM(CASE WHEN hvnc.tongdiem < 11 AND (hvnc.c_3 = 0 OR hvnc.c_3 = 2) THEN 1 ELSE 0 END) AS SoLuongAmTinh
                             FROM 
                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2907,8 +2937,8 @@ namespace Data.Admin
                                 AND ('{maTinh}' = '' OR kh.city_code_map = '{maTinh}')
                             GROUP BY 
                                 CASE 
-                                     WHEN f1_q_b7 = 1 THEN N'Có'
-				                            WHEN f1_q_b7 = 2 THEN N'Không'	
+                                     WHEN f1_q_b7 = 1 THEN N'Đã từng'
+                                     WHEN f1_q_b7 = 2 THEN N'Chưa từng'	
                                 END
                             ORDER BY 
                                 NoiDung;
@@ -2942,12 +2972,13 @@ namespace Data.Admin
                             SELECT 
                                 CASE 
                                     WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
-				                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'				
-				                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'				
-				                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'				
+                                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng'				
+                                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần'				
+                                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày'					
                                 END AS NoiDung,
-                                SUM(CASE WHEN hvnc.tongdiem >= 11 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
-                                SUM(CASE WHEN hvnc.tongdiem < 11 THEN 1 ELSE 0 END) AS SoLuongAmTinh
+                                SUM(CASE WHEN hvnc.tongdiem >= 11 OR hvnc.c_3 = 1 THEN 1 ELSE 0 END) AS SoLuongDuongTinh,
+		                        SUM(CASE WHEN hvnc.tongdiem < 11 AND (hvnc.c_3 = 0 OR hvnc.c_3 = 2) THEN 1 ELSE 0 END) AS SoLuongAmTinh,
+		                        f1_q_b6 AS MucDoNguyCoOrder
                             FROM 
                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2959,12 +2990,13 @@ namespace Data.Admin
                             GROUP BY 
                                 CASE 
                                     WHEN f1_q_b6 = 1 THEN N'1 - 2 lần'
-				                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'				
-				                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'				
-				                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'
+                                    WHEN f1_q_b6 = 2 THEN N'Mỗi tháng'				
+                                    WHEN f1_q_b6 = 3 THEN N'Mỗi tuần'				
+                                    WHEN f1_q_b6 = 4 THEN N'Mỗi ngày'					
                                 END
+                                ,f1_q_b6
                             ORDER BY 
-                                NoiDung;
+                                MucDoNguyCoOrder;
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);

@@ -129,7 +129,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" class="col-md-2">Điểm ASSIST ma túy đá</th>
+                                <th scope="col" class="col-md-2">Mức độ</th>
                                 <th scope="col" class="col-md-2">1 - 2 lần</th>
                                 <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
                                 <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
@@ -139,16 +139,25 @@
                         <tbody>
                             <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDiemAssist">
                                 <td class="text-center">{{dashboard.MucDoNguyCo || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
+                                <td class="text-center">
+                                    {{dashboard.TanSuat1_2Lan !== null && dashboard.TanSuat1_2Lan >= 0 ? dashboard.TanSuat1_2Lan : 'N/A'}}
+                                </td>
+                                <td class="text-center">
+                                    {{dashboard.TanSuatMoiThang !== null && dashboard.TanSuatMoiThang >= 0 ? dashboard.TanSuatMoiThang : 'N/A'}}
+                                </td>
+                                <td class="text-center">
+                                    {{dashboard.TanSuatMoiTuan !== null && dashboard.TanSuatMoiTuan >= 0 ? dashboard.TanSuatMoiTuan : 'N/A'}}                                    
+                                </td>
+                                <td class="text-center">
+                                    {{dashboard.TanSuatMoiNgay !== null && dashboard.TanSuatMoiNgay >= 0 ? dashboard.TanSuatMoiNgay : 'N/A'}}
+                                </td>
                             </tr>
 
                             <tr ng-if="!dbTanSuatChemsex3ThangTheoDiemAssist || dbTanSuatChemsex3ThangTheoDiemAssist.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                <td colspan="5"><p class="font-italic">Không có dữ liệu</p></td>
                             </tr>
                         </tbody>
+
 
                     </table>
                 </div>
@@ -232,8 +241,8 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="col-md-4">Điểm ASSIST ma túy đá</th>
-                                        <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
+                                        <th scope="col" class="col-md-5">Điểm ASSIST ma túy đá</th>
+                                        <th scope="col" class="col-md-3">Có sử dụng đa chất</th>
                                         <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
 
                                     </tr>
@@ -320,7 +329,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="col-md-6">Tần suất</th>
+                                        <th scope="col" class="col-md-6">Tần suất Chemsex</th>
                                         <th scope="col" class="col-md-3">Dương tính</th>
                                         <th scope="col" class="col-md-3">Âm tính</th>
 

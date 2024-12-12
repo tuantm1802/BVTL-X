@@ -36,6 +36,9 @@ namespace Model.ModelExtend
         public DateTime? NgayTheoDauTime { get; set; }
         public string CityCodeMap { get; set; }
         public string KetQuaXNHiv { get; set; }
+        public string KetQuaChuyenGuiDieuTriARV { get; set; }
+        public string KetQuaChuyenGuiTaiLuongVR { get; set; }
+
         public DateTime? NgayXNTLVR { get; set; }
         public string ChuyenGuiStatus { get; set; }
         public string ChatSuDungChemsex3Thang       {get; set;}
@@ -54,6 +57,13 @@ namespace Model.ModelExtend
         public string MucDoNguyCoThuocLa { get; set; }
         public string MucDoNguyCoThucUong { get; set; }
         public string MucDoNguyCoMaTuyDa { get; set; }
+        public string MucDoNguyCoCanSa { get; set; }
+        public string MucDoNguyCoCoCain { get; set; }
+        public string MucDoNguyCoKhiXong { get; set; }
+        public string MucDoNguyCoAnThan { get; set; }
+        public string MucDoNguyCoGayAoGiac { get; set; }
+        public string MucDoNguyCoThuocPhien { get; set; }
+        public string MucDoNguyCoKhac { get; set; }
         public string QSTCoTuSat { get; set; }
         public string QSTTongDiem { get; set; }
         public string ACESoLuong { get; set; }
@@ -119,6 +129,7 @@ namespace Model.ModelExtend
         public DateTime? NgayHenTaiKham { get; set; }
         public string TrieuChung { get; set; }
         public string ChanDoan { get; set; } 
+        public string KeDon { get; set; } 
         public string DungTheoDon { get; set; } 
         
     }

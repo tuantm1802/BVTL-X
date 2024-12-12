@@ -31,7 +31,7 @@ namespace Model.ModelExtend.Report
         public string ThongTinBC { get; set; }
         public string ThongTinBC_Them { get; set; }
         public int? SoLuong { get; set; }
-        public decimal? Tyle { get; set; }
+        public decimal? TyLe { get; set; }
         public int? Rowpan { get; set; }
         public int? Colpan { get; set; }
         public string BoldText { get; set; }

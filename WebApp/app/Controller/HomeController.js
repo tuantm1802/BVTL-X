@@ -125,12 +125,13 @@
     function GetTanSuatChemsex3ThangTheoDiemAssist() {
         return fetchData('/Home/GetTanSuatChemsex3ThangTheoDiemAssist', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
             $scope.dbTanSuatChemsex3ThangTheoDiemAssist = response.data;
+            console.log($scope.dbTanSuatChemsex3ThangTheoDiemAssist);
             $scope.$apply();
         });
     }
     function GetTanSuatChemsex3ThangTheoDiemACE() {
         return fetchData('/Home/GetTanSuatChemsex3ThangTheoDiemACE', { maNhom: $scope.selectedNhom, maTinh: $scope.selectedTinh }).then(response => {
-            $scope.dbTanSuatChemsex3ThangTheoDiemACE = response.data;
+            $scope.dbTanSuatChemsex3ThangTheoDiemACE = response.data;            
             $scope.$apply();
         });
     }    

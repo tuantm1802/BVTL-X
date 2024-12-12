@@ -630,10 +630,44 @@ namespace Data.API
                             result.Success = false;
                         }
                     }
+
+                    // Đầu api CD43_KHACH_HANG_DANH_GIA_TAC_DONG - #10
+                    if (tableNames.Contains("CD43_KHACH_HANG_DANH_GIA_TAC_DONG"))
+                    {
+
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiKhachHangDanhGiaTacDongModel>>(resultApiString);
+
+                        var tongHops = new List<CD43_KHACH_HANG_DANH_GIA_TAC_DONG>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng
+                        _convertResultApiToEntity.ConvertApiKhachHangDanhGiaTacDongEntity(dataResultApi.Where(x => !String.IsNullOrEmpty(x.record_id) && x.phng_vn_nh_gi_tc_ng_complete == 2).ToList(), maDuAn, apiCode, cityCode, ref tongHops);
+                        
+
+                        // Thêm dữ liệu bảng CD43_KHACH_HANG_DANH_GIA_TAC_DONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "CD43_KHACH_HANG_DANH_GIA_TAC_DONG", cityCode, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
                     #endregion
 
                     #region Lưu dữ liệu từ api vào db DỰ ÁN CH07
-                    
+
                     // Đầu api CH07_KHACH_HANG_THONG_TIN_CO_BAN - #10
                     if (tableNames.Contains("CH07_KHACH_HANG_THONG_TIN_CO_BAN"))
                     {

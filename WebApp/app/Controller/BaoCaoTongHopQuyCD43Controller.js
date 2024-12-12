@@ -92,6 +92,12 @@
             toastr.error("Vui lòng chọn đến năm!");
             return;
         }
+        if ($scope.modelSearch.TuNam != null && $scope.modelSearch.DenNam != null && $scope.modelSearch.TuNam > $scope.modelSearch.DenNam) {
+            toastr.error("Vui lòng chọn từ năm < đến năm!");
+            return;
+        }
+
+        
 
         if ($scope.TuQuy == null || $scope.TuQuy == '') {
             toastr.error("Vui lòng chọn từ quý!");
@@ -121,6 +127,11 @@
             } else if ($scope.DenQuy == 'IV') {
                 $scope.modelSearch.DenThang = 12;
             }
+        }
+
+        if ($scope.modelSearch.TuNam != null && $scope.modelSearch.TuNam == $scope.modelSearch.DenNam && $scope.modelSearch.TuThang > $scope.modelSearch.DenThang) {
+            toastr.error("Vui lòng chọn từ quý <= đến quý!");
+            return;
         }
 
         $scope.modelSearch.CityCodes = '';

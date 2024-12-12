@@ -3230,6 +3230,90 @@ namespace Common.Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_THEO_DAU sang entity**************************************");
         }
 
+        public void ConvertApiKhachHangDanhGiaTacDongEntity(List<ResultApiKhachHangDanhGiaTacDongModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_DANH_GIA_TAC_DONG> lsObjDB)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_KHACH_HANG_DANH_GIA_TAC_DONG sang entity**************************************");
+            var objDB = new CD43_KHACH_HANG_DANH_GIA_TAC_DONG();
+            var resultApi = new ResultApiKhachHangDanhGiaTacDongModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var nhomTBH = new BVTL_NHOM_TBH();
+
+                //var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                var customer_code = "";
+                var group_code = "";
+                var cityCode = "";
+                var city_code_map = "";
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_KHACH_HANG_DANH_GIA_TAC_DONG:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                string[] formats = { "yyyy-MM-dd HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
+
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    //customer = new BVTL_KHACH_HANG();
+                    customer_code = "";
+
+                    group_code = "";
+                    //cityCode = "";
+                    nhomTBH = new BVTL_NHOM_TBH();
+
+                    resultApi = resultApiModels[i];
+                    #region Lấy thông tin khách hàng, nhóm thu thập dữ liệu
+
+                    //customer_code = resultApiCGDV.makh;
+                    customer_code = String.Concat(resultApi.record_id);
+
+                    if (!string.IsNullOrEmpty(customer_code) && customer_code.Length > 11)
+                    {
+                        group_code = customer_code.Substring(1, 4); //Lấy mã nhóm TBH
+                        cityCode = customer_code.Substring(1, 3); // Lấy id tỉnh
+
+                    }
+                    else if (!string.IsNullOrEmpty(customer_code))
+                    {
+                        cityCode = customer_code.Substring(0, 3);
+                        group_code = customer_code.Substring(0, 4);
+                    }
+                    city_code_map = customer_code.Substring(0, 2);
+
+                    #endregion
+
+                    #region Chuyển đổi dữ liệu sang bảng CD43_KHACH_HANG_THONG_TIN_CO_BAN
+                    objDB = new CD43_KHACH_HANG_DANH_GIA_TAC_DONG()
+                    {
+                        record_id = customer_code,
+                        //city_code = cityCode,
+                        city_code = cityCodeInput,
+                        city_code_map = city_code_map,
+                        manhom_tbh = group_code,
+                        maduan = maDuAn,
+                    };
+                    
+                    objDB.date_vi = ValidateDateTimeRange(resultApi.date_vi);
+                    objDB.s2_vi = resultApi.s2_vi;                   
+                    objDB.phng_vn_nh_gi_tc_ng_complete = resultApi.phng_vn_nh_gi_tc_ng_complete;
+
+                    lsObjDB.Add(objDB);
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CD43_KHACH_HANG_DANH_GIA_TAC_DONG:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CD43_KHACH_HANG_DANH_GIA_TAC_DONG sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CD43_KHACH_HANG_DANH_GIA_TAC_DONG sang entity**************************************");
+        }
+
         public void ConvertApiKhachHangSinhHoatNhomEntity(List<ResultApiKhachHangSinhHoatNhomModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<CD43_KHACH_HANG_SINH_HOAT_NHOM> lsObjDB)
         {
 
@@ -3692,6 +3776,8 @@ namespace Common.Common
                     objDB.f2_q_4_1_4___7 = resultApi.f2_q_4_1_4___7;
                     objDB.f2_q_4_1_4_1 = resultApi.f2_q_4_1_4_1;
                     objDB.f2_q_4_1_5 = resultApi.f2_q_4_1_5;
+                    if (resultApi.f2_q_4_1_5_1 != null && !string.IsNullOrEmpty(resultApi.f2_q_4_1_5_1))
+                        objDB.f2_q_4_1_5_1 = "1";
                     objDB.f2_q_4_1_6 = resultApi.f2_q_4_1_6;
                     objDB.f2_q_4_1_7 = resultApi.f2_q_4_1_7;
                     objDB.f2_q_4_2 = resultApi.f2_q_4_2;

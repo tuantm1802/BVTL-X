@@ -225,6 +225,9 @@
     <Compile Include="Model\CD43_KHACH_HANG_DANH_GIA_HAI_LONG.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\CD43_KHACH_HANG_DANH_GIA_TAC_DONG.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\CD43_KHACH_HANG_HANH_VI_NGUY_CO.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>

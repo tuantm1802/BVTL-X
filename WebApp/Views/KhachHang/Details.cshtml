@@ -79,7 +79,8 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <p><strong>Kết quả XN nhanh HIV:</strong> {{ customer.KetQuaXNHiv }}</p>
-                            <p><strong>Được chuyển gửi XN TLVVR:</strong> {{ customerChuyenGui.ChuyenGuiStatus}}</p>
+                            <p><strong>XN Khẳng định và Điều trị ARV:</strong> {{ customer.KetQuaChuyenGuiDieuTriARV}}</p>
+                            <p><strong>XN Tải lượng VR:</strong> {{ customer.KetQuaChuyenGuiTaiLuongVR}}</p>
                         </div>
 
                     </div>
@@ -111,6 +112,13 @@
                             <tr><th>Thuốc lá:</th><td>{{ customerQHTD.MucDoNguyCoThuocLa }}</td></tr>
                             <tr><th>Đồ uống có cồn:</th><td>{{ customerQHTD.MucDoNguyCoThucUong}}</td></tr>
                             <tr><th>Ma túy đá:</th><td>{{ customerQHTD.MucDoNguyCoMaTuyDa}}</td></tr>
+                            <tr><th>Cần sa:</th><td>{{ customerQHTD.MucDoNguyCoCanSa}}</td></tr>
+                            <tr><th>Cocain:</th><td>{{ customerQHTD.MucDoNguyCoCoCain}}</td></tr>
+                            <tr><th>Khí xông:</th><td>{{ customerQHTD.MucDoNguyCoKhiXong}}</td></tr>
+                            <tr><th>Chất an thần:</th><td>{{ customerQHTD.MucDoNguyCoAnThan}}</td></tr>
+                            <tr><th>Chất gây ảo giác:</th><td>{{ customerQHTD.MucDoNguyCoGayAoGiac}}</td></tr>
+                            <tr><th>Thuốc phiện:</th><td>{{ customerQHTD.MucDoNguyCoThuocPhien}}</td></tr>
+                            <tr><th>Chất khác:</th><td>{{ customerQHTD.MucDoNguyCoKhac}}</td></tr>
                         </table>
                     </div>
                 </div>
@@ -147,7 +155,7 @@
                     <div class="card-body">
                         <table class="table">
                             <tr><th>Tình trạng mắc STIs:</th><td> {{ customerQHTD.STIs }}</td></tr>
-                            <tr><th>Tình trạng mắc viêm gan C:</th><td> {{ customerQHTD.TinhTrangViemGanC}}</td></tr>
+                            <tr><th>Tình trạng mắc VGC:</th><td> {{ customerQHTD.TinhTrangViemGanC}}</td></tr>
                         </table>
                     </div>
                 </div>
@@ -231,6 +239,7 @@
                                     <td>{{parseDate(dichvu.NgayKham) | date:'dd/MM/yyyy'}}</td>                                    
                                     <td>{{dichvu.TrieuChung || 'N/A'}}</td>
                                     <td>{{dichvu.ChanDoan || 'N/A'}}</td>
+                                    <td>{{dichvu.KeDon || 'N/A'}}</td>
                                     <td>{{dichvu.DungTheoDon || 'N/A'}}</td>
                                     <td>{{parseDate(dichvu.NgayHenTaiKham) | date:'dd/MM/yyyy'}}</td>                                    
                                     

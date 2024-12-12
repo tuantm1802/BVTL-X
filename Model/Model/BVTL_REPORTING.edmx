@@ -798,6 +798,7 @@
           <Property Name="chuyn_gi_complete" Type="int" />
           <Property Name="f2_q_3_1_d" Type="datetime" />
           <Property Name="city_code_map" Type="varchar" MaxLength="2" />
+          <Property Name="f2_q_4_1_5_1" Type="varchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG">
           <Key>
@@ -830,6 +831,21 @@
           <Property Name="tt_khac" Type="nvarchar" MaxLength="255" />
           <Property Name="chiase" Type="varchar" MaxLength="1" />
           <Property Name="nh_gi_mc_hi_lng_ca_kh_complete" Type="int" />
+          <Property Name="sync_date" Type="datetime" />
+          <Property Name="maduan" Type="varchar" MaxLength="50" />
+          <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
+          <Property Name="city_code" Type="varchar" MaxLength="10" />
+          <Property Name="city_code_map" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="record_id" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="date_vi" Type="datetime" />
+          <Property Name="s2_vi" Type="nvarchar" MaxLength="1" />
+          <Property Name="phng_vn_nh_gi_tc_ng_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
@@ -2403,6 +2419,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySet Name="BVTL_THONG_TIN_TRUYEN_THONG" EntityType="Self.BVTL_THONG_TIN_TRUYEN_THONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_CHUYEN_GUI" EntityType="Self.CD43_KHACH_HANG_CHUYEN_GUI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_DANH_GIA_HAI_LONG" EntityType="Self.CD43_KHACH_HANG_DANH_GIA_HAI_LONG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG" EntityType="Self.CD43_KHACH_HANG_DANH_GIA_TAC_DONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_HANH_VI_NGUY_CO" EntityType="Self.CD43_KHACH_HANG_HANH_VI_NGUY_CO" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_PHIEU_TU_VAN" EntityType="Self.CD43_KHACH_HANG_PHIEU_TU_VAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CD43_KHACH_HANG_SANG_LOC_HIV" EntityType="Self.CD43_KHACH_HANG_SANG_LOC_HIV" Schema="dbo" store:Type="Tables" />
@@ -3749,6 +3766,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             <End Role="CH07_THONG_TIN_TRUYEN_THONG" EntitySet="CH07_THONG_TIN_TRUYEN_THONG" />
           </AssociationSet>
           <EntitySet Name="CD43_KHACH_HANG_PHIEU_TU_VAN" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_PHIEU_TU_VAN" />
+          <EntitySet Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_TAC_DONG" />
           </EntityContainer>
         <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
           <Key>
@@ -5145,6 +5163,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="chuyn_gi_complete" Type="Int32" />
           <Property Name="f2_q_3_1_d" Type="DateTime" Precision="3" />
           <Property Name="city_code_map" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="f2_q_4_1_5_1" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CH07_THONG_TIN_TRUYEN_THONG">
           <Key>
@@ -5333,6 +5352,21 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="vande" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="thoigian" Type="DateTime" Precision="0" />
           <Property Name="phiu_t_vn_complete" Type="Int32" />
+          <Property Name="sync_date" Type="DateTime" Precision="3" />
+          <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="city_code_map" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="record_id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="date_vi" Type="DateTime" Precision="3" />
+          <Property Name="s2_vi" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="phng_vn_nh_gi_tc_ng_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
@@ -7106,6 +7140,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CD43_KHACH_HANG_CHUYEN_GUI">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_CHUYEN_GUI">
               <MappingFragment StoreEntitySet="CD43_KHACH_HANG_CHUYEN_GUI">
+                <ScalarProperty Name="f2_q_4_1_5_1" ColumnName="f2_q_4_1_5_1" />
                 <ScalarProperty Name="city_code_map" ColumnName="city_code_map" />
                 <ScalarProperty Name="f2_q_3_1_d" ColumnName="f2_q_3_1_d" />
                 <ScalarProperty Name="chuyn_gi_complete" ColumnName="chuyn_gi_complete" />
@@ -7360,6 +7395,22 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="ngaytuvan" ColumnName="ngaytuvan" />
                 <ScalarProperty Name="redcap_repeat_instance" ColumnName="redcap_repeat_instance" />
                 <ScalarProperty Name="redcap_repeat_instrument" ColumnName="redcap_repeat_instrument" />
+                <ScalarProperty Name="record_id" ColumnName="record_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_TAC_DONG">
+              <MappingFragment StoreEntitySet="CD43_KHACH_HANG_DANH_GIA_TAC_DONG">
+                <ScalarProperty Name="city_code_map" ColumnName="city_code_map" />
+                <ScalarProperty Name="city_code" ColumnName="city_code" />
+                <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
+                <ScalarProperty Name="maduan" ColumnName="maduan" />
+                <ScalarProperty Name="sync_date" ColumnName="sync_date" />
+                <ScalarProperty Name="phng_vn_nh_gi_tc_ng_complete" ColumnName="phng_vn_nh_gi_tc_ng_complete" />
+                <ScalarProperty Name="s2_vi" ColumnName="s2_vi" />
+                <ScalarProperty Name="date_vi" ColumnName="date_vi" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>

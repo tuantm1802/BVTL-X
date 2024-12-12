@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Common.ICommon;
+using Newtonsoft.Json;
 
 namespace Common.Common
 {
@@ -438,16 +439,74 @@ namespace Common.Common
         #endregion
 
         #region Convert DataTable to List<T>
-        public  List<T> ConvertDataTableToList<T>(DataTable dt)
+        //public  List<T> ConvertDataTableToList<T>(DataTable dt)
+        //{
+        //    var objectsList = new List<T>();
+
+        //    if (dt.Rows.Count == 0) return objectsList;
+        //    //objectsList = ConvertToList<T>(dt);
+        //    //Covert datatable to json string
+        //    string jsonString = serializer.Serialize(ParseTableToDictionary(dt));
+
+        //    //Convert jsonString to List<T>
+        //    InvalidJsonElements = null;
+        //    var array = JArray.Parse(jsonString);
+
+        //    foreach (var item in array)
+        //    {
+        //        try
+        //        {
+        //            //Map single json in array to object<T>.
+        //            var itemMapped = item.ToObject<T>();
+
+        //            objectsList.Add(itemMapped);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            InvalidJsonElements = InvalidJsonElements ?? new List<string>();
+        //            InvalidJsonElements.Add(item.ToString());
+        //        }
+        //    }
+
+        //    return objectsList;
+        //}
+        public List<T> ConvertDataTableToList<T>(DataTable dt)
         {
             var objectsList = new List<T>();
 
             if (dt.Rows.Count == 0) return objectsList;
-            //objectsList = ConvertToList<T>(dt);
-            //Covert datatable to json string
-            string jsonString = serializer.Serialize(ParseTableToDictionary(dt));
 
-            //Convert jsonString to List<T>
+            // Chuẩn bị danh sách hàng với các số thập phân được định dạng
+            var formattedRows = new List<Dictionary<string, object>>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                var rowDict = new Dictionary<string, object>();
+
+                foreach (DataColumn column in dt.Columns)
+                {
+                    var value = row[column];
+
+                    // Kiểm tra nếu là số thập phân
+                    if (value is decimal decimalValue)
+                    {
+                        // Chuyển đổi số thập phân với định dạng "0.00"
+                        rowDict[column.ColumnName] = decimalValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        // Dữ liệu khác giữ nguyên
+                        rowDict[column.ColumnName] = value;
+                    }
+                }
+
+                formattedRows.Add(rowDict);
+            }
+
+            // Chuyển danh sách hàng đã định dạng sang chuỗi JSON
+            string jsonString = JsonConvert.SerializeObject(formattedRows);
+
+            // Chuyển JSON thành danh sách đối tượng <T>
             InvalidJsonElements = null;
             var array = JArray.Parse(jsonString);
 
@@ -455,9 +514,8 @@ namespace Common.Common
             {
                 try
                 {
-                    //Map single json in array to object<T>.
+                    // Map từng phần tử JSON sang đối tượng <T>.
                     var itemMapped = item.ToObject<T>();
-
                     objectsList.Add(itemMapped);
                 }
                 catch (Exception ex)
@@ -474,7 +532,7 @@ namespace Common.Common
         //  DataTable dtTable = GetEmployeeDataTable();
         //  List<Employee> employeeList = dtTable.DataTableToList<Employee>();
 
-        public  IList<T> DataTableToList<T>(DataTable table)
+        public IList<T> DataTableToList<T>(DataTable table)
         {
             try
             {

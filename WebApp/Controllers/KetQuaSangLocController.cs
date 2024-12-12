@@ -913,7 +913,7 @@ namespace WebApp.Controllers
                         InsertDataCell(ws, "E", row, rowReport.SoLuong > 0 ? rowReport.SoLuong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SoLuong > 0 ? true : false);
 
                         // Thêm dữ liệu cột Tổng
-                        InsertDataCell(ws, "F", row, rowReport.Tyle > 0 ? rowReport.Tyle.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
+                        InsertDataCell(ws, "F", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, false);
 
                         // Thêm dữ liệu cột Chuyển giới
                         //InsertDataCell(ws, "G", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);

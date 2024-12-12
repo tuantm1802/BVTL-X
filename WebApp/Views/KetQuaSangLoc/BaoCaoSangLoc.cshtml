@@ -77,7 +77,7 @@
                                 </td>
 
                                 <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.Tyle | number}}%</td>
+                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
                             </tr>
                         </table>
                     </div>
@@ -112,11 +112,17 @@
                             <tr ng-repeat="item in CacLoaiChatGayNghienAssists">
                                 <td class="text-left">{{item.LoaiDiem}}</td>
                                 <td class="text-right">{{item.NguyCo_Thap | number}}</td>
-                                <td class="text-right">{{item.TyLe_NguyCo_Thap | number}}%</td>
+                                <td class="text-right">                                    
+                                    {{item.TyLe_NguyCo_Thap == null ? '' : (item.TyLe_NguyCo_Thap === 0 ? '0%' : (item.TyLe_NguyCo_Thap | number:2) + '%')}}
+                                </td>
                                 <td class="text-right">{{item.NguyCo_TrungBinh | number}}</td>
-                                <td class="text-right">{{item.TyLe_NguyCo_TrungBinh | number}}%</td>
+                                <td class="text-right">
+                                    {{item.TyLe_NguyCo_TrungBinh == null ? '' : (item.TyLe_NguyCo_TrungBinh === 0 ? '0%' : (item.TyLe_NguyCo_TrungBinh | number:2) + '%')}}
+                                </td>
                                 <td class="text-right">{{item.NguyCo_Cao | number}}</td>
-                                <td class="text-right">{{item.TyLe_NguyCo_Cao | number}}%</td>
+                                <td class="text-right">
+                                    {{item.TyLe_NguyCo_Cao == null ? '' : (item.TyLe_NguyCo_Cao === 0 ? '0%' : (item.TyLe_NguyCo_Cao | number:2) + '%')}}
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -144,7 +150,7 @@
                                 <td class="text-left" rowspan="{{item.SubRowspan}}" ng-hide="item.IsShow == 'N'">{{item.KetQua}}</td>
                                 <td class="text-left">{{item.GhiChu}}</td>
                                 <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.TyLe | number}}%</td>
+                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
                             </tr>
                         </table>
                     </div>
@@ -171,7 +177,7 @@
                             <tr ng-repeat="item in KetQuaACEs">
                                 <td class="text-left" >{{item.KetQua}}</td>
                                 <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.TyLe | number}}%</td>
+                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
                             </tr>
                         </table>
                     </div>

@@ -351,6 +351,7 @@ namespace Model.ModelExtend.API
         public string f2_q_4_1_4___7 { get; set; }
         public string f2_q_4_1_4_1 { get; set; }
         public string f2_q_4_1_5 { get; set; }
+        public string f2_q_4_1_5_1 { get; set; }
         public string f2_q_4_1_6 { get; set; }
         public string f2_q_4_1_7 { get; set; }
         public string f2_q_4_2 { get; set; }
@@ -587,6 +588,27 @@ namespace Model.ModelExtend.API
         public string f1_q_b8___8 { get; set; }
 
         public int? thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete { get; set; }
+    }
+
+    public class ResultApiKhachHangDanhGiaTacDongModel
+    {
+        public long id { get; set; } // Trường id là kiểu bigint và tự tăng
+
+        public string record_id { get; set; } // record_id là kiểu nvarchar(20)
+
+        public string date_vi { get; set; } // time_theodau là kiểu datetime
+
+        public string s2_vi { get; set; } // kq_theodau là kiểu nvarchar(255)
+        
+        public int? phng_vn_nh_gi_tc_ng_complete { get; set; } // theo_du_complete là kiểu int
+
+        public DateTime? sync_date { get; set; } // sync_date là kiểu datetime với giá trị mặc định là GETDATE()
+
+        public string maduan { get; set; } // maduan là kiểu varchar(50)
+
+        public string manhom_tbh { get; set; } // manhom_tbh là kiểu varchar(5)
+
+        public string city_code { get; set; } // city_code là kiểu varchar(10)
     }
 
 }
