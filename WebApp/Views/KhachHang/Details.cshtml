@@ -80,7 +80,7 @@
                         <div class="mb-3">
                             <p><strong>Kết quả XN nhanh HIV:</strong> {{ customer.KetQuaXNHiv }}</p>
                             <p><strong>XN Khẳng định và Điều trị ARV:</strong> {{ customer.KetQuaChuyenGuiDieuTriARV}}</p>
-                            <p><strong>XN Tải lượng VR:</strong> {{ customer.KetQuaChuyenGuiTaiLuongVR}}</p>
+                            @*<p><strong>XN Tải lượng VR:</strong> {{ customer.KetQuaChuyenGuiTaiLuongVR}}</p>*@
                         </div>
 
                     </div>
@@ -109,16 +109,16 @@
                     <div class="card-header font-weight-bold text-primary">4. ASSIST</div>
                     <div class="card-body">
                         <table class="table">
-                            <tr><th>Thuốc lá:</th><td>{{ customerQHTD.MucDoNguyCoThuocLa }}</td></tr>
-                            <tr><th>Đồ uống có cồn:</th><td>{{ customerQHTD.MucDoNguyCoThucUong}}</td></tr>
-                            <tr><th>Ma túy đá:</th><td>{{ customerQHTD.MucDoNguyCoMaTuyDa}}</td></tr>
-                            <tr><th>Cần sa:</th><td>{{ customerQHTD.MucDoNguyCoCanSa}}</td></tr>
-                            <tr><th>Cocain:</th><td>{{ customerQHTD.MucDoNguyCoCoCain}}</td></tr>
-                            <tr><th>Khí xông:</th><td>{{ customerQHTD.MucDoNguyCoKhiXong}}</td></tr>
-                            <tr><th>Chất an thần:</th><td>{{ customerQHTD.MucDoNguyCoAnThan}}</td></tr>
-                            <tr><th>Chất gây ảo giác:</th><td>{{ customerQHTD.MucDoNguyCoGayAoGiac}}</td></tr>
-                            <tr><th>Thuốc phiện:</th><td>{{ customerQHTD.MucDoNguyCoThuocPhien}}</td></tr>
-                            <tr><th>Chất khác:</th><td>{{ customerQHTD.MucDoNguyCoKhac}}</td></tr>
+                            <tr><th>Thuốc lá:</th><td>{{ customerQHTD.MucDoNguyCoThuocLa || 'N/A'}}</td></tr>
+                            <tr><th>Đồ uống có cồn:</th><td>{{ customerQHTD.MucDoNguyCoThucUong || 'N/A'}}</td></tr>
+                            <tr><th>Ma túy đá:</th><td>{{ customerQHTD.MucDoNguyCoMaTuyDa || 'N/A'}}</td></tr>
+                            <tr><th>Cần sa:</th><td>{{ customerQHTD.MucDoNguyCoCanSa || 'N/A'}}</td></tr>
+                            <tr><th>Cocain:</th><td>{{ customerQHTD.MucDoNguyCoCoCain || 'N/A'}}</td></tr>
+                            <tr><th>Khí xông:</th><td>{{ customerQHTD.MucDoNguyCoKhiXong || 'N/A'}}</td></tr>
+                            <tr><th>Chất an thần:</th><td>{{ customerQHTD.MucDoNguyCoAnThan || 'N/A'}}</td></tr>
+                            <tr><th>Chất gây ảo giác:</th><td>{{ customerQHTD.MucDoNguyCoGayAoGiac || 'N/A'}}</td></tr>
+                            <tr><th>Thuốc phiện:</th><td>{{ customerQHTD.MucDoNguyCoThuocPhien || 'N/A'}}</td></tr>
+                            <tr><th>Chất khác:</th><td>{{ customerQHTD.MucDoNguyCoKhac || 'N/A'}}</td></tr>
                         </table>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                     <div class="card-body">
                         <table class="table">
                             <tr><th>Tình trạng mắc STIs:</th><td> {{ customerQHTD.STIs }}</td></tr>
-                            <tr><th>Tình trạng mắc VGC:</th><td> {{ customerQHTD.TinhTrangViemGanC}}</td></tr>
+                            <tr><th>Khách hàng biết tình trạng mắc VGC:</th><td> {{ customerQHTD.TinhTrangViemGanC}}</td></tr>
                         </table>
                     </div>
                 </div>
@@ -174,7 +174,7 @@
 
     <div ng-show="activeTab === 'intervention'" class="mt-3">
         <div class="row">
-            <div class="col-xl-4 mt-4">
+            <div class="col-xl-5 mt-4">
                 <div class="card mb-6 mb-xl-0">
                     <div class="card-header font-weight-bold text-primary h5">1.Thông tin chung</div>
                     <div class="card-body">
@@ -186,32 +186,43 @@
                                     <th scope="col">Chuyển gửi Dịch vụ</th>
                                     <th scope="col">Ngày khám</th>
                                     <th scope="col">Lần khám</th>
+                                    <th scope="col">Ngày XN TLVR</th>
+                                    <th scope="col">TLVR</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="dichvu in customerChuyenGuiDichVu">
                                     <td>{{$index + 1}}</td>
                                     <td>{{dichvu.DichVu}}</td>
-                                    <td>{{parseDate(dichvu.NgayKham) | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{parseDate(dichvu.NgayKham) | date:'dd/MM/yyyy' || 'N/A'}}</td>
                                     <td>{{dichvu.LanKham || 'N/A'}}</td>
+                                    <td>{{parseDate(dichvu.NgayXNTLVR) | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{dichvu.TaiLuongVR || 'N/A'}}</td>
                                 </tr>
                                 <!-- Kiểm tra nếu danh sách customerChuyenGuiDichVu trống, hiển thị thông báo "Không có dữ liệu" -->
                                 <tr ng-if="!customerChuyenGuiDichVu || customerChuyenGuiDichVu.length === 0">
-                                    <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                    <td colspan="6"><p class="font-italic">Không có dữ liệu</p></td>
                                 </tr>
                             </tbody>
                         </table>
                         <hr class="my-4">
                         <h6 class="mb-1 font-weight-bold">Sinh hoạt nhóm</h6>
                         <table class="table">
-                            <tr><th class="col-md-4">Tham gia sinh hoạt nhóm:</th><td class="col-md-4"> {{ customerSinhHoatNhom.ThamGiaSinhHoatNhom }}</td><td class="col-md-4">{{ customerSinhHoatNhom.SoLanThamGia }} <p class="font-italic d-inline">buổi</p></td></tr>
+                            <tr>
+                                <th class="col-md-4">Tham gia sinh hoạt nhóm:</th>
+                                <td class="col-md-4"> {{ customerSinhHoatNhom.ThamGiaSinhHoatNhom }}</td>
+                                <td class="col-md-4">
+                                    {{ customerSinhHoatNhom.SoLanThamGia ? customerSinhHoatNhom.SoLanThamGia + ' buổi' : 'N/A' }}
+                                </td>
+
+                            </tr>
                         </table>
                     </div>
                 </div>
 
             </div>
             
-            <div class="col-xl-8 mt-4">
+            <div class="col-xl-7 mt-4">
                 <div class="card mb-6 mb-xl-4">
                     <div class="card-header font-weight-bold text-primary">3. Khám và điều trị SKTT</div>
                     <div class="card-body">

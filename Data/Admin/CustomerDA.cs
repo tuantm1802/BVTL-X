@@ -140,7 +140,7 @@ namespace Data.Admin
 			                                CASE 
 				                                WHEN chuyengui___3 = 1 THEN 
 					                                CONCAT(N'Đã Xét nghiệm tải lượng virus HIV vào ngày: ', FORMAT(f2_q_3_1_d, 'dd/MM/yyyy'), N'; Tải lượng VR: ',f2_q_3_1_1)
-				                                ELSE 'Chưa Xét nghiệm tải lượng virus HIV'
+				                                ELSE N'Chưa Xét nghiệm tải lượng virus HIV'
 			                                END
 		                                ELSE 'N/A' 
 	                                END AS [ketQuaChuyenGuiTaiLuongVR],
@@ -319,7 +319,7 @@ namespace Data.Admin
         public Customer GetCustomerQHTDById(int id)
         {
             Customer customer = null;
-            string query = @"SELECT top 1                                                           
+            string query = @"												SELECT top 1                                                           
                             t.id AS Id,                                                           
                             t.record_id AS RecordId,                                              
                             CASE                                                                  
@@ -369,70 +369,70 @@ namespace Data.Admin
 																 ELSE NULL                                                         
                              END AS TinhTrangViemGanC,                                             
 		                         CASE                                                              
-                                 WHEN h.diemthuocla >= 0 AND h.diemthuocla <= 3 THEN N'Mức nguy cơ: THẤP'                   
-                                 WHEN h.diemthuocla >= 4 AND h.diemthuocla <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'            
-                                 WHEN h.diemthuocla >= 27 THEN N'Mức nguy cơ: CAO'                                          
+                                 WHEN h.diemthuocla != '' AND CAST(h.diemthuocla AS INT) >= 0 AND CAST(h.diemthuocla AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'                   
+                                 WHEN CAST(h.diemthuocla AS INT) >= 4 AND CAST(h.diemthuocla AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'            
+                                 WHEN CAST(h.diemthuocla AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                          
                                  ELSE NULL                                                                                  
                              END AS MucDoNguyCoThuocLa,                                                                     
 		                         CASE                                                                                       
-                                 WHEN h.diemthucuong >= 0 AND h.diemthucuong <= 10 THEN N'Mức nguy cơ: THẤP'                
-                                 WHEN h.diemthucuong >= 11 AND h.diemthucuong <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'         
-                                 WHEN h.diemthucuong >= 27 THEN N'Mức nguy cơ: CAO'                                         
+                                 WHEN h.diemthucuong != '' AND CAST(h.diemthucuong AS INT) >= 0 AND  CAST(h.diemthucuong AS INT) <= 10 THEN N'Mức nguy cơ: THẤP'                
+                                 WHEN CAST(h.diemthucuong AS INT) >= 11 AND CAST(h.diemthucuong AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'         
+                                 WHEN CAST(h.diemthucuong AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                         
                                  ELSE NULL                                                                                  
                              END AS MucDoNguyCoThucUong,                                                                    
 		                         CASE                                                                                       
-                                 WHEN h.diemchatkichthich >= 0 AND h.diemchatkichthich <= 3 THEN N'Mức nguy cơ: THẤP'       
-                                 WHEN h.diemchatkichthich >= 4 AND h.diemchatkichthich <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-                                 WHEN h.diemchatkichthich >= 27 THEN N'Mức nguy cơ: CAO'                                    
+                                 WHEN h.diemchatkichthich != '' AND CAST(h.diemchatkichthich AS INT) >= 0 AND CAST(h.diemchatkichthich AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+                                 WHEN CAST(h.diemchatkichthich AS INT) >= 4 AND CAST(h.diemchatkichthich AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+                                 WHEN CAST(h.diemchatkichthich AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
                                  ELSE NULL                                                                                  
                              END AS MucDoNguyCoMaTuyDa,         
                              
                              CASE                                                                                       
-				                     WHEN h.diemcansa >= 0 AND h.diemcansa <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemcansa >= 4 AND h.diemcansa <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemcansa >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemcansa !='' AND  CAST(h.diemcansa AS INT) >= 0 AND CAST(h.diemcansa AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemcansa AS INT) >= 4 AND CAST(h.diemcansa AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemcansa AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoCanSa,            
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemcoca >= 0 AND h.diemcoca <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemcoca >= 4 AND h.diemcoca <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemcoca >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemcoca != '' AND CAST(h.diemcoca AS INT) >= 0 AND CAST(h.diemcoca AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemcoca AS INT) >= 4 AND CAST(h.diemcoca AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemcoca AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoCoCain, 
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemkhixong >= 0 AND h.diemkhixong <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemkhixong >= 4 AND h.diemkhixong <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemkhixong >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemkhixong !='' AND CAST(h.diemkhixong AS INT) >= 0 AND CAST(h.diemkhixong AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemkhixong AS INT) >= 4 AND CAST(h.diemkhixong AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemkhixong AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoKhiXong, 
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemchatanthan >= 0 AND h.diemchatanthan <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemchatanthan >= 4 AND h.diemchatanthan <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemchatanthan >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemchatanthan != '' AND CAST(h.diemchatanthan AS INT) >= 0 AND CAST(h.diemchatanthan AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemchatanthan AS INT) >= 4 AND h.diemchatanthan <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemchatanthan AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoAnThan, 
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemchatgayaogiac >= 0 AND h.diemchatgayaogiac <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemchatgayaogiac >= 4 AND h.diemchatgayaogiac <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemchatgayaogiac >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemchatgayaogiac != '' AND CAST(h.diemchatgayaogiac AS INT) >= 0 AND CAST(h.diemchatgayaogiac AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemchatgayaogiac AS INT) >= 4 AND CAST(h.diemchatgayaogiac AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemchatgayaogiac AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoGayAoGiac, 
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemchatthuocphien >= 0 AND h.diemchatthuocphien <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemchatthuocphien >= 4 AND h.diemchatthuocphien <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemchatthuocphien >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemchatthuocphien != '' AND CAST(h.diemchatthuocphien AS INT) >= 0 AND CAST(h.diemchatthuocphien AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemchatthuocphien AS INT) >= 4 AND CAST(h.diemchatthuocphien AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemchatthuocphien AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoThuocPhien, 
 		 
 		                     CASE                                                                                       
-				                     WHEN h.diemchatkhac >= 0 AND h.diemchatkhac <= 3 THEN N'Mức nguy cơ: THẤP'       
-				                     WHEN h.diemchatkhac >= 4 AND h.diemchatkhac <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
-				                     WHEN h.diemchatkhac >= 27 THEN N'Mức nguy cơ: CAO'                                    
+				                     WHEN h.diemchatkhac!= '' AND CAST(h.diemchatkhac AS INT) >= 0 AND CAST(h.diemchatkhac AS INT) <= 3 THEN N'Mức nguy cơ: THẤP'       
+				                     WHEN CAST(h.diemchatkhac AS INT) >= 4 AND CAST(h.diemchatkhac AS INT) <= 26 THEN N'Mức nguy cơ: TRUNG BÌNH'
+				                     WHEN CAST(h.diemchatkhac AS INT) >= 27 THEN N'Mức nguy cơ: CAO'                                    
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoKhac, 
                                 CASE                                                                                        
@@ -517,8 +517,9 @@ namespace Data.Admin
                                     WHEN cg.chuyengui___1 = '1' THEN cg.f2_q_1_3
                                     WHEN cg.chuyengui___4 = '1' AND cg.loaihinh4___1 = '1' THEN cg.f2_q_4_1_3
                                     ELSE NULL
-                                END AS LanKham
-    
+                                END AS LanKham,
+                                f2_q_3_1_d AS NgayXNTLVR,
+								f2_q_3_1_1 AS TaiLuongVR
                             FROM 
                                 CD43_KHACH_HANG_CHUYEN_GUI cg
                             WHERE 
@@ -542,7 +543,9 @@ namespace Data.Admin
                     {
                         DichVu = row.Field<string>("DichVuChuyenGui"),
                         NgayKham = row.Field<DateTime?>("NgayKham"),
-                        LanKham = row.Field<string>("LanKham")
+                        LanKham = row.Field<string>("LanKham"),
+                        NgayXNTLVR = row.Field<DateTime?>("NgayXNTLVR"),
+                        TaiLuongVR = row.Field<string>("TaiLuongVR"),
                     });
                 }
             }

@@ -2414,6 +2414,12 @@ namespace Data.Admin
                         SUM(CASE WHEN hvnc.f1_q_b6 = 2 THEN 1 ELSE 0 END) AS TanSuatMoiThang,
                         SUM(CASE WHEN hvnc.f1_q_b6 = 3 THEN 1 ELSE 0 END) AS TanSuatMoiTuan,
                         SUM(CASE WHEN hvnc.f1_q_b6 = 4 THEN 1 ELSE 0 END) AS TanSuatMoiNgay
+                        ,CASE 
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN 1
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN 2
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN 3
+                            ELSE 4
+			            END AS MucDoTuoiOrder
                     FROM 
                         CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                         INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2429,8 +2435,14 @@ namespace Data.Admin
                             WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
                             ELSE 'Khác' 
                         END
+                        ,CASE 
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN 1
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN 2
+                            WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN 3
+                            ELSE 4
+			            END
                     ORDER BY 
-                        MucDoTuoi;
+                        MucDoTuoiOrder;
                     ";
 
             // Thực thi query
@@ -2595,7 +2607,12 @@ namespace Data.Admin
                                 END AS MucDoTuoi,
                                 SUM(CASE WHEN hvnc.f1_q_b7 = 1 THEN 1 ELSE 0 END) AS CoSuDungDaChat,
                                 SUM(CASE WHEN hvnc.f1_q_b7 = 2 THEN 1 ELSE 0 END) AS KhongSuDungDaChat
-    
+    		                    ,CASE 
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN 1
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN 2
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN 3
+                                    ELSE 4
+			                    END AS MucDoTuoiOrder 
                             FROM 
                                 CD43_KHACH_HANG_THONG_TIN_CO_BAN kh
                                 INNER JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO hvnc ON kh.record_id = hvnc.record_id
@@ -2611,8 +2628,14 @@ namespace Data.Admin
                                     WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN '>= 36'
                                     ELSE 'Khác' 
                                 END
+		                        ,CASE 
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 18 AND 25 THEN 1
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) BETWEEN 26 AND 35 THEN 2
+                                    WHEN (YEAR(GETDATE()) - kh.nam_sinh) >= 36 THEN 3
+                                    ELSE 4
+			                     END
                             ORDER BY 
-                                MucDoTuoi;
+                                MucDoTuoiOrder;
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);

@@ -108,6 +108,8 @@ namespace Model.ModelExtend
         public DateTime? NgayKham { get; set; }
         public string LanKham { get; set; }
         public string LoaiHinh { get; set; } // STI, Viêm gan C, MMT, Lao
+        public string TaiLuongVR { get; set; } // STI, Viêm gan C, MMT, Lao
+        public DateTime? NgayXNTLVR { get; set; }
     }
     public class PhieuTuVan
     {

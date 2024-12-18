@@ -335,10 +335,22 @@ app.controller('CustomerDetailsController', ['$scope', '$http', '$location', fun
         });
 
     $scope.parseDate = function (dateString) {
-        // Chuyển đổi từ định dạng /Date(1718902800000)/ sang Date object
-        var date = new Date(parseInt(dateString.replace("/Date(", "").replace(")/", ""), 10));
-        return date;
+        // Kiểm tra nếu dateString là null, undefined hoặc không phải chuỗi hợp lệ
+        if (!dateString || typeof dateString !== "string" || !dateString.includes("/Date(")) {
+            console.warn("Invalid dateString:", dateString); // Ghi log cảnh báo nếu giá trị không hợp lệ
+            return null; // Trả về null khi giá trị không hợp lệ
+        }
+
+        try {
+            // Chuyển đổi từ định dạng /Date(1718902800000)/ sang Date object
+            var timestamp = parseInt(dateString.replace("/Date(", "").replace(")/", ""), 10);
+            return new Date(timestamp); // Trả về đối tượng Date
+        } catch (error) {
+            console.error("Error parsing dateString:", dateString, error); // Ghi log lỗi nếu xảy ra lỗi
+            return null; // Trả về null nếu lỗi xảy ra
+        }
     };
+
 
 }]);
 

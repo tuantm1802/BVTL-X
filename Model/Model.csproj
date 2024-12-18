@@ -62,6 +62,7 @@
     <Compile Include="ModelExtend\API\ResultApiTrainingDataCollModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiDGHLModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTheoDauKHModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiGiaoNhanVatPhamModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTTTTModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiXnNuocTieuModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiChuyenGuiDVModel.cs" />
