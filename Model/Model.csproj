@@ -63,6 +63,7 @@
     <Compile Include="ModelExtend\API\ResultApiDGHLModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTheoDauKHModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiGiaoNhanVatPhamModel.cs" />
+    <Compile Include="ModelExtend\API\ResultApiBBGNVatPhamModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiTTTTModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiXnNuocTieuModel.cs" />
     <Compile Include="ModelExtend\API\ResultApiChuyenGuiDVModel.cs" />
@@ -280,7 +281,22 @@
     <Compile Include="Model\CH07_THONG_TIN_TRUYEN_THONG.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\ChiTietPhieuXuatNhap.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\CHITIEU_DUAN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PhieuXuatNhap.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SanPham.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TCV_TU_VAN_VIEN.cs">
+      <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\TonKho.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\VIIV_DANH_GIA_HAI_LONG.cs">

@@ -844,7 +844,7 @@
           <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="record_id" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="date_vi" Type="datetime" />
-          <Property Name="s2_vi" Type="nvarchar" MaxLength="1" />
+          <Property Name="s2_vi" Type="nvarchar" MaxLength="2" />
           <Property Name="phng_vn_nh_gi_tc_ng_complete" Type="int" />
           <Property Name="sync_date" Type="datetime" />
           <Property Name="maduan" Type="varchar" MaxLength="50" />
@@ -1233,6 +1233,7 @@
           <Property Name="manhom_tbh" Type="varchar" MaxLength="5" />
           <Property Name="city_code" Type="varchar" MaxLength="10" />
           <Property Name="city_code_map" Type="varchar" MaxLength="2" />
+          <Property Name="tg" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_THEO_DAU">
           <Key>
@@ -1871,6 +1872,17 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="dichvu" Type="nvarchar" MaxLength="100" />
           <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
         </EntityType>
+        <EntityType Name="ChiTietPhieuXuatNhap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PhieuXuatNhapId" Type="int" Nullable="false" />
+          <Property Name="SanPhamId" Type="int" Nullable="false" />
+          <Property Name="SoLuong" Type="int" Nullable="false" />
+          <Property Name="DonGia" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ThanhTien" Type="decimal" Precision="29" Scale="2" StoreGeneratedPattern="Computed" />
+        </EntityType>
         <EntityType Name="CHITIEU_DUAN">
           <Key>
             <PropertyRef Name="ID_CHITIEU" />
@@ -1882,6 +1894,46 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="DONVI" Type="nvarchar" MaxLength="50" />
           <Property Name="MADUAN" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="MANHOM" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PhieuXuatNhap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaPhieu" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LoaiPhieu" Type="int" Nullable="false" />
+          <Property Name="NgayLap" Type="datetime" Nullable="false" />
+          <Property Name="NguoiLap" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="GhiChu" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SanPham">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaSanPham" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TenSanPham" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="DonViTinh" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GiaNhap" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="GiaBan" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NgayTao" Type="datetime" Nullable="false" />
+          <Property Name="TrangThai" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TCV_TU_VAN_VIEN">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="hovaten" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="TonKho">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SanPhamId" Type="int" Nullable="false" />
+          <Property Name="SoLuongTon" Type="int" Nullable="false" />
+          <Property Name="NgayCapNhat" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
           <Key>
@@ -2231,6 +2283,48 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__ChiTietPh__Phieu__7814D14C">
+          <End Role="PhieuXuatNhap" Type="Self.PhieuXuatNhap" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ChiTietPhieuXuatNhap" Type="Self.ChiTietPhieuXuatNhap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhieuXuatNhap">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChiTietPhieuXuatNhap">
+              <PropertyRef Name="PhieuXuatNhapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ChiTietPh__SanPh__7908F585">
+          <End Role="SanPham" Type="Self.SanPham" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ChiTietPhieuXuatNhap" Type="Self.ChiTietPhieuXuatNhap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanPham">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChiTietPhieuXuatNhap">
+              <PropertyRef Name="SanPhamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TonKho__SanPhamI__7DCDAAA2">
+          <End Role="SanPham" Type="Self.SanPham" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TonKho" Type="Self.TonKho" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanPham">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TonKho">
+              <PropertyRef Name="SanPhamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__VIIV_THON__city___50E5F592">
           <End Role="BVTL_CITES" Type="Self.BVTL_CITES" Multiplicity="0..1" />
           <End Role="BVTL_THONG_TIN_TRUYEN_THONG" Type="Self.BVTL_THONG_TIN_TRUYEN_THONG" Multiplicity="*" />
@@ -2436,7 +2530,12 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySet Name="CH07_KHACH_HANG_THEO_DAU" EntityType="Self.CH07_KHACH_HANG_THEO_DAU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN" EntityType="Self.CH07_KHACH_HANG_THONG_TIN_CO_BAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CH07_THONG_TIN_TRUYEN_THONG" EntityType="Self.CH07_THONG_TIN_TRUYEN_THONG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChiTietPhieuXuatNhap" EntityType="Self.ChiTietPhieuXuatNhap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHITIEU_DUAN" EntityType="Self.CHITIEU_DUAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhieuXuatNhap" EntityType="Self.PhieuXuatNhap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SanPham" EntityType="Self.SanPham" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TCV_TU_VAN_VIEN" EntityType="Self.TCV_TU_VAN_VIEN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TonKho" EntityType="Self.TonKho" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIIV_DANH_GIA_HAI_LONG" EntityType="Self.VIIV_DANH_GIA_HAI_LONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIIV_THONG_TIN_TRUYEN_THONG" EntityType="Self.VIIV_THONG_TIN_TRUYEN_THONG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIIV_TRAINING_DATA_COLLECTION" EntityType="Self.VIIV_TRAINING_DATA_COLLECTION" Schema="dbo" store:Type="Tables" />
@@ -2537,6 +2636,18 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <AssociationSet Name="FK__BVTL_THON__manho__5792F321" Association="Self.FK__BVTL_THON__manho__5792F321">
             <End Role="BVTL_NHOM_TBH" EntitySet="BVTL_NHOM_TBH" />
             <End Role="BVTL_THEO_DAU_KH" EntitySet="BVTL_THEO_DAU_KH" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ChiTietPh__Phieu__7814D14C" Association="Self.FK__ChiTietPh__Phieu__7814D14C">
+            <End Role="PhieuXuatNhap" EntitySet="PhieuXuatNhap" />
+            <End Role="ChiTietPhieuXuatNhap" EntitySet="ChiTietPhieuXuatNhap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ChiTietPh__SanPh__7908F585" Association="Self.FK__ChiTietPh__SanPh__7908F585">
+            <End Role="SanPham" EntitySet="SanPham" />
+            <End Role="ChiTietPhieuXuatNhap" EntitySet="ChiTietPhieuXuatNhap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TonKho__SanPhamI__7DCDAAA2" Association="Self.FK__TonKho__SanPhamI__7DCDAAA2">
+            <End Role="SanPham" EntitySet="SanPham" />
+            <End Role="TonKho" EntitySet="TonKho" />
           </AssociationSet>
           <AssociationSet Name="FK__VIIV_THON__city___50E5F592" Association="Self.FK__VIIV_THON__city___50E5F592">
             <End Role="BVTL_CITES" EntitySet="BVTL_CITES" />
@@ -3767,6 +3878,23 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           </AssociationSet>
           <EntitySet Name="CD43_KHACH_HANG_PHIEU_TU_VAN" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_PHIEU_TU_VAN" />
           <EntitySet Name="CD43_KHACH_HANG_DANH_GIA_TAC_DONG" EntityType="BVTL_REPORTINGModel.CD43_KHACH_HANG_DANH_GIA_TAC_DONG" />
+          <EntitySet Name="ChiTietPhieuXuatNhap" EntityType="BVTL_REPORTINGModel.ChiTietPhieuXuatNhap" />
+          <EntitySet Name="PhieuXuatNhap" EntityType="BVTL_REPORTINGModel.PhieuXuatNhap" />
+          <EntitySet Name="SanPham" EntityType="BVTL_REPORTINGModel.SanPham" />
+          <EntitySet Name="TCV_TU_VAN_VIEN" EntityType="BVTL_REPORTINGModel.TCV_TU_VAN_VIEN" />
+          <EntitySet Name="TonKho" EntityType="BVTL_REPORTINGModel.TonKho" />
+          <AssociationSet Name="FK__ChiTietPh__Phieu__7814D14C" Association="BVTL_REPORTINGModel.FK__ChiTietPh__Phieu__7814D14C">
+            <End Role="PhieuXuatNhap" EntitySet="PhieuXuatNhap" />
+            <End Role="ChiTietPhieuXuatNhap" EntitySet="ChiTietPhieuXuatNhap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ChiTietPh__SanPh__7908F585" Association="BVTL_REPORTINGModel.FK__ChiTietPh__SanPh__7908F585">
+            <End Role="SanPham" EntitySet="SanPham" />
+            <End Role="ChiTietPhieuXuatNhap" EntitySet="ChiTietPhieuXuatNhap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TonKho__SanPhamI__7DCDAAA2" Association="BVTL_REPORTINGModel.FK__TonKho__SanPhamI__7DCDAAA2">
+            <End Role="SanPham" EntitySet="SanPham" />
+            <End Role="TonKho" EntitySet="TonKho" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="VIIV_DANH_GIA_HAI_LONG">
           <Key>
@@ -4234,6 +4362,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="manhom_tbh" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="city_code_map" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="tg" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="CD43_KHACH_HANG_HANH_VI_NGUY_CO">
           <Key>
@@ -5365,7 +5494,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="record_id" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="date_vi" Type="DateTime" Precision="3" />
-          <Property Name="s2_vi" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="s2_vi" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="phng_vn_nh_gi_tc_ng_complete" Type="Int32" />
           <Property Name="sync_date" Type="DateTime" Precision="3" />
           <Property Name="maduan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -5373,6 +5502,105 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="city_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="city_code_map" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="ChiTietPhieuXuatNhap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PhieuXuatNhapId" Type="Int32" Nullable="false" />
+          <Property Name="SanPhamId" Type="Int32" Nullable="false" />
+          <Property Name="SoLuong" Type="Int32" Nullable="false" />
+          <Property Name="DonGia" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="ThanhTien" Type="Decimal" Precision="29" Scale="2" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="PhieuXuatNhap" Relationship="BVTL_REPORTINGModel.FK__ChiTietPh__Phieu__7814D14C" FromRole="ChiTietPhieuXuatNhap" ToRole="PhieuXuatNhap" />
+          <NavigationProperty Name="SanPham" Relationship="BVTL_REPORTINGModel.FK__ChiTietPh__SanPh__7908F585" FromRole="ChiTietPhieuXuatNhap" ToRole="SanPham" />
+        </EntityType>
+        <EntityType Name="PhieuXuatNhap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaPhieu" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LoaiPhieu" Type="Int32" Nullable="false" />
+          <Property Name="NgayLap" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NguoiLap" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GhiChu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ChiTietPhieuXuatNhap" Relationship="BVTL_REPORTINGModel.FK__ChiTietPh__Phieu__7814D14C" FromRole="PhieuXuatNhap" ToRole="ChiTietPhieuXuatNhap" />
+        </EntityType>
+        <EntityType Name="SanPham">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaSanPham" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TenSanPham" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DonViTinh" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GiaNhap" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="GiaBan" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="NgayTao" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TrangThai" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ChiTietPhieuXuatNhap" Relationship="BVTL_REPORTINGModel.FK__ChiTietPh__SanPh__7908F585" FromRole="SanPham" ToRole="ChiTietPhieuXuatNhap" />
+          <NavigationProperty Name="TonKho" Relationship="BVTL_REPORTINGModel.FK__TonKho__SanPhamI__7DCDAAA2" FromRole="SanPham" ToRole="TonKho" />
+        </EntityType>
+        <EntityType Name="TCV_TU_VAN_VIEN">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="hovaten" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TonKho">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SanPhamId" Type="Int32" Nullable="false" />
+          <Property Name="SoLuongTon" Type="Int32" Nullable="false" />
+          <Property Name="NgayCapNhat" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="SanPham" Relationship="BVTL_REPORTINGModel.FK__TonKho__SanPhamI__7DCDAAA2" FromRole="TonKho" ToRole="SanPham" />
+        </EntityType>
+        <Association Name="FK__ChiTietPh__Phieu__7814D14C">
+          <End Type="BVTL_REPORTINGModel.PhieuXuatNhap" Role="PhieuXuatNhap" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BVTL_REPORTINGModel.ChiTietPhieuXuatNhap" Role="ChiTietPhieuXuatNhap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhieuXuatNhap">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChiTietPhieuXuatNhap">
+              <PropertyRef Name="PhieuXuatNhapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ChiTietPh__SanPh__7908F585">
+          <End Type="BVTL_REPORTINGModel.SanPham" Role="SanPham" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BVTL_REPORTINGModel.ChiTietPhieuXuatNhap" Role="ChiTietPhieuXuatNhap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanPham">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChiTietPhieuXuatNhap">
+              <PropertyRef Name="SanPhamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TonKho__SanPhamI__7DCDAAA2">
+          <End Type="BVTL_REPORTINGModel.SanPham" Role="SanPham" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BVTL_REPORTINGModel.TonKho" Role="TonKho" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SanPham">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TonKho">
+              <PropertyRef Name="SanPhamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6282,6 +6510,7 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CD43_KHACH_HANG_SINH_HOAT_NHOM">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CD43_KHACH_HANG_SINH_HOAT_NHOM">
               <MappingFragment StoreEntitySet="CD43_KHACH_HANG_SINH_HOAT_NHOM">
+                <ScalarProperty Name="tg" ColumnName="tg" />
                 <ScalarProperty Name="city_code_map" ColumnName="city_code_map" />
                 <ScalarProperty Name="city_code" ColumnName="city_code" />
                 <ScalarProperty Name="manhom_tbh" ColumnName="manhom_tbh" />
@@ -7413,6 +7642,62 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="date_vi" ColumnName="date_vi" />
                 <ScalarProperty Name="record_id" ColumnName="record_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChiTietPhieuXuatNhap">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.ChiTietPhieuXuatNhap">
+              <MappingFragment StoreEntitySet="ChiTietPhieuXuatNhap">
+                <ScalarProperty Name="ThanhTien" ColumnName="ThanhTien" />
+                <ScalarProperty Name="DonGia" ColumnName="DonGia" />
+                <ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
+                <ScalarProperty Name="SanPhamId" ColumnName="SanPhamId" />
+                <ScalarProperty Name="PhieuXuatNhapId" ColumnName="PhieuXuatNhapId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhieuXuatNhap">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.PhieuXuatNhap">
+              <MappingFragment StoreEntitySet="PhieuXuatNhap">
+                <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
+                <ScalarProperty Name="NguoiLap" ColumnName="NguoiLap" />
+                <ScalarProperty Name="NgayLap" ColumnName="NgayLap" />
+                <ScalarProperty Name="LoaiPhieu" ColumnName="LoaiPhieu" />
+                <ScalarProperty Name="MaPhieu" ColumnName="MaPhieu" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SanPham">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.SanPham">
+              <MappingFragment StoreEntitySet="SanPham">
+                <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
+                <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
+                <ScalarProperty Name="GiaBan" ColumnName="GiaBan" />
+                <ScalarProperty Name="GiaNhap" ColumnName="GiaNhap" />
+                <ScalarProperty Name="DonViTinh" ColumnName="DonViTinh" />
+                <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
+                <ScalarProperty Name="MaSanPham" ColumnName="MaSanPham" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TCV_TU_VAN_VIEN">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.TCV_TU_VAN_VIEN">
+              <MappingFragment StoreEntitySet="TCV_TU_VAN_VIEN">
+                <ScalarProperty Name="hovaten" ColumnName="hovaten" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TonKho">
+            <EntityTypeMapping TypeName="BVTL_REPORTINGModel.TonKho">
+              <MappingFragment StoreEntitySet="TonKho">
+                <ScalarProperty Name="NgayCapNhat" ColumnName="NgayCapNhat" />
+                <ScalarProperty Name="SoLuongTon" ColumnName="SoLuongTon" />
+                <ScalarProperty Name="SanPhamId" ColumnName="SanPhamId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

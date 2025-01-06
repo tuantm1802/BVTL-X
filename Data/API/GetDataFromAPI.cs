@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,6 +89,10 @@ namespace Data.API
                     if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
                     {
                         result = responseString;
+                        //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 ;
+
+                        //await SendTelegramMessage("589101034", "🎉 API:"+ reportId+ " đồng bộ OK! [GetDataFromAPI::PostDataFromApiReturnString]").ConfigureAwait(false);
+
                     }
                 }
             }
@@ -103,9 +108,32 @@ namespace Data.API
             return result;
         }
 
+        public static async Task SendTelegramMessage(string chatId, string message)
+        {
+            string botToken = "7553997923:AAFBabzEfRLdluri42vy3VixZwrLfv2BHPs";
+            string url = $"https://api.telegram.org/bot{botToken}/sendMessage";
+
+            using (var client = new HttpClient())
+            {
+                var parameters = new Dictionary<string, string>
+        {
+            { "chat_id", chatId },
+            { "text", message }
+        };
+
+                var content = new FormUrlEncodedContent(parameters);
+                HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string error = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Error sending Telegram message: {error}");
+                }
+            }
+        }
 
         #region Call api tạo các file báo cáo
-        
+
         /// <summary>
         /// Gọi api tạo danh sách file báo cáo
         /// </summary>

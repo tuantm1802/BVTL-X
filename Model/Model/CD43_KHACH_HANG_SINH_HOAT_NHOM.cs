@@ -29,5 +29,6 @@ namespace Model.Model
         public string manhom_tbh { get; set; }
         public string city_code { get; set; }
         public string city_code_map { get; set; }
+        public string tg { get; set; }
     }
 }

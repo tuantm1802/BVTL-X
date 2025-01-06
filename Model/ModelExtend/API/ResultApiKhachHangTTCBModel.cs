@@ -141,6 +141,8 @@ namespace Model.ModelExtend.API
 
         public DateTime? ngay_shn { get; set; } // ngay_shn is date
 
+        public string tg { get; set; }
+
         public string chude { get; set; } // chude is nvarchar(255)
 
         public string phatvatpham { get; set; } // phatvatpham is nvarchar(255)

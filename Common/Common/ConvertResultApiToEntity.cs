@@ -3409,6 +3409,7 @@ namespace Common.Common
                     objDB.phatvatpham = resultApi.phatvatpham;
                     objDB.bcs = resultApi.bcs;
                     objDB.gel = resultApi.gel;
+                    objDB.tg = resultApi.tg;
                     objDB.sinh_hot_nhm_complete = resultApi.sinh_hot_nhm_complete;
 
                     lsObjDB.Add(objDB);

@@ -200,6 +200,7 @@
     </Compile>
     <Compile Include="Jobs\SendNotificationJob.cs" />
     <Compile Include="Jobs\CheckConnectAPIJob.cs" />
+    <Compile Include="Jobs\TelegramNotifier.cs" />
     <Compile Include="Jobs\UpdateAllApiJob.cs" />
     <Compile Include="Jobs\GetDataAPIJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

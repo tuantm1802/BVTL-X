@@ -37,7 +37,8 @@ namespace SyncBVTL.Push.Services
                         Token = api.TokenApi,
                         ReportId = api.ReportId,
                         MaDuAn = api.maduan,
-                        Message = api.Message
+                        Message = api.Message,
+                        RawOrLabel = api.RawOrLabel,
                     };
 
                     if (api.Start_Time_Sync != null)

@@ -1,5 +1,6 @@
 ﻿using Data.Admin;
 using Data.InterfaceDA.Admin;
+using log4net;
 using Model.Model;
 using Model.ModelExtend.API;
 using Quartz;
@@ -12,6 +13,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SyncBVTL.Push.ScheduleTasks
@@ -20,6 +23,7 @@ namespace SyncBVTL.Push.ScheduleTasks
     {
         static string logDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
         static ISysLogDA _sysLogDA = new SysLogDA();
+        static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static async Task StartAll()
         {
@@ -108,8 +112,67 @@ namespace SyncBVTL.Push.ScheduleTasks
                 }
 
             }
+            
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            //await SendTelegramMessage("589101034", "🎉 Tất cả các job đã được khởi chạy thành công!");
+
+
+            // Gửi thông báo qua Telegram - https://t.me/SCDISyncBot
+            //https://api.telegram.org/bot7553997923:AAFBabzEfRLdluri42vy3VixZwrLfv2BHPs/getUpdates
+            
+            string botToken = "7553997923:AAFBabzEfRLdluri42vy3VixZwrLfv2BHPs";
+            string chatId = "589101034";
+            string chatId1 = "-1002496745464";
+            //string chatId2 = "-4734041041";
+            TelegramNotifier notifier = new TelegramNotifier(botToken, chatId);
+            TelegramNotifier notifier1 = new TelegramNotifier(botToken, chatId1);
+            //TelegramNotifier notifier2 = new TelegramNotifier(botToken, chatId2);
+
+            await notifier.SendMessageAsync("🎉 Tất cả các job đã được khởi chạy thành công! [" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "][JobScheduler:StartAll]");
+            await notifier1.SendMessageAsync("🎉 Tất cả các job đã được khởi chạy thành công! [" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "][JobScheduler:StartAll]");
+            //await notifier2.SendMessageAsync("🎉 Tất cả các job đã được khởi chạy thành công! [" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "][JobScheduler:StartAll]");
+
             #endregion
         }
+
+        public static async Task SendTelegramMessage(string chatId, string message)
+        {
+            string botToken = "7553997923:AAFBabzEfRLdluri42vy3VixZwrLfv2BHPs";
+            string url = $"https://api.telegram.org/bot{botToken}/sendMessage";
+            try { 
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromSeconds(30); // Set timeout
+                    var parameters = new Dictionary<string, string>
+                    {
+                        { "chat_id", chatId },
+                        { "text", message }
+                    };
+
+                    var content = new FormUrlEncodedContent(parameters);
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    //HttpResponseMessage response = await client.PostAsync(url, content);
+                    HttpResponseMessage _response = await client.PostAsync(url, content).ConfigureAwait(false);
+
+                    if (!_response.IsSuccessStatusCode)
+                    {
+                        string error = await _response.Content.ReadAsStringAsync();
+                        throw new Exception($"Error sending Telegram message: {error}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception [JobScheduler]: {ex.Message}\n ");
+
+                Console.WriteLine($"Exception: {ex.Message}");
+                // Log thêm stack trace nếu cần
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            }
+        }
+
 
     }
 }

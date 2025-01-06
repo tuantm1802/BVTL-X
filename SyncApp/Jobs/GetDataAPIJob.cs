@@ -21,8 +21,12 @@ namespace SyncBVTL.Push.Jobs.PAJobs
             if (data.Active)
             {
                 var result = await controller.GetDataFromAPI(data);
+                
+                var notifier = new TelegramNotifier();
 
-                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                await notifier.SendMessageAsync("🎉 API " + data.ReportId + " đã hoàn thành đồng bộ. KQ ["+ result.Success+"]["+result.Message+"]! [GetDataAPIJob:Execute]");
+
+                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + ".log";
                 if (!Directory.Exists("Log"))
                 {
                     Directory.CreateDirectory("Log");

@@ -17,7 +17,7 @@ namespace Common.Common
         private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //private  readonly string insideUrl = ConfigurationManager.AppSettings["insideUrl"].ToString();
         private  readonly string insideUrl = "";
-
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public  async Task<HttpResponseMessage> UPPostJsonAsync( string uri, string json)
         {
@@ -344,59 +344,95 @@ namespace Common.Common
             }
             return null;
         }
-
-        public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
+        public async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
         {
-            HttpResponseMessage response = null;
             try
             {
-                using (var client = new HttpClient())
+                var data = new[]
                 {
-                    // //Passing service base url  
-                    // client.BaseAddress = new Uri(insideUrl);
+                    new KeyValuePair<string, string>("token", token),
+                    new KeyValuePair<string, string>("content", "report"),
+                    new KeyValuePair<string, string>("format", "json"),
+                    new KeyValuePair<string, string>("report_id", reportId),
+                    new KeyValuePair<string, string>("csvDelimiter", ""),
+                    new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
+                    new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
+                    new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
+                    new KeyValuePair<string, string>("returnFormat", "json")
+                };
 
-                    // client.DefaultRequestHeaders.Clear();
-                    // //Define request data format  
-                    // client.Timeout = TimeSpan.FromSeconds(100);
-                    
-                    var data = new[]
-                    {
-                         new KeyValuePair<string, string>("token", token),
-                         new KeyValuePair<string, string>("content", "report"),
-                         new KeyValuePair<string, string>("format", "json"),
-                         new KeyValuePair<string, string>("report_id", reportId),
-                         new KeyValuePair<string, string>("csvDelimiter", ""),
-                         new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
-                         new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
-                         new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
-                         new KeyValuePair<string, string>("returnFormat", "json")
-                     };
-                    // client.DefaultRequestHeaders.Add("content-type", "application/x-www-form-urlencoded");
+                using (var content = new FormUrlEncodedContent(data))
+                {
+                    //_httpClient.Timeout = TimeSpan.FromSeconds(30); // Giới hạn thời gian chờ
 
-                    // var content = new FormUrlEncodedContent(data);
-                    //// content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                    // response = await client.PostAsync(url, content);
-
-                    using (var content = new FormUrlEncodedContent(data))
-                    {
-                        content.Headers.Clear();
-                        content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
-                        response = await client.PostAsync(url, content);
-                    }
-
-                    return response;
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    return await _httpClient.PostAsync(url, content);
                 }
             }
             catch (Exception ex)
             {
                 log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
-                return new HttpResponseMessage()
+                return new HttpResponseMessage
                 {
                     StatusCode = System.Net.HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
         }
+
+        //public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
+        //{
+        //    HttpResponseMessage response = null;
+        //    try
+        //    {
+        //        using (var client = new HttpClient())
+        //        {
+        //            // //Passing service base url  
+        //            // client.BaseAddress = new Uri(insideUrl);
+
+        //            // client.DefaultRequestHeaders.Clear();
+        //            // //Define request data format  
+        //            // client.Timeout = TimeSpan.FromSeconds(100);
+
+        //            var data = new[]
+        //            {
+        //                 new KeyValuePair<string, string>("token", token),
+        //                 new KeyValuePair<string, string>("content", "report"),
+        //                 new KeyValuePair<string, string>("format", "json"),
+        //                 new KeyValuePair<string, string>("report_id", reportId),
+        //                 new KeyValuePair<string, string>("csvDelimiter", ""),
+        //                 new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
+        //                 new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
+        //                 new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
+        //                 new KeyValuePair<string, string>("returnFormat", "json")
+        //             };
+        //            // client.DefaultRequestHeaders.Add("content-type", "application/x-www-form-urlencoded");
+
+        //            // var content = new FormUrlEncodedContent(data);
+        //            //// content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+        //            // response = await client.PostAsync(url, content);
+
+        //            using (var content = new FormUrlEncodedContent(data))
+        //            {
+        //                content.Headers.Clear();
+        //                content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
+        //                response = await client.PostAsync(url, content).ConfigureAwait(false);
+        //            }
+
+        //            return response;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+        //        return new HttpResponseMessage()
+        //        {
+        //            StatusCode = System.Net.HttpStatusCode.NotImplemented,
+        //            Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
+        //        };
+        //    }
+        //}
     }
 }

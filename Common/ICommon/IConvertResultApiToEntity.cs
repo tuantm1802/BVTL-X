@@ -93,5 +93,7 @@ namespace Common.ICommon
         void ConvertApiKhachHangBangHoiACECH07Entity(List<ResultApiKhachHangBangHoiACECH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_BANG_HOI_ACE> lsObjDB);
         void ConvertApiKhachHangAssistQstKienThucCH07Entity(List<ResultApiKhachHangAssistQstKienThucCH07Model> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_KHACH_HANG_ASSIST_QST_KIEN_THUC> lsObjDB);
         void ConvertApiCH07TTTTToEntity(List<ResultApiCH07ThongTinTruyenThongModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<CH07_THONG_TIN_TRUYEN_THONG> lsObjDB);
+
+        //void ConvertApiBBGNVatPhamCD43Entity(List<ResultApiBBGNVatPhamModel> resultApiModels, string maDuAn, string apiCode, string cityCode, ref List<PhieuXuatNhap> lsObjDB);
     }
 }

@@ -123,6 +123,9 @@ namespace WebApp.Controllers
                 var apiResult = await syncDataFromApi_SaveToDB.GetDataFromApi_SaveToDB(infoApi.HrefApi, infoApi.TokenApi, infoApi.ReportId, infoApi.maduan, tableNames, infoApi.Api_Code, infoApi.RawOrLabel);
                 obj.Error = !apiResult.Success;
                 obj.Title = apiResult.Success ? "Đồng bộ thành công.": apiResult.Message;
+                
+                await SendTelegramMessage("589101034", "🎉 API "+ infoApi.ReportId + " đồng bộ thủ công thành công! [SyncDataFromApi][Manual Sync]");
+                await SendTelegramMessage("-1002496745464", "🎉 API "+ infoApi.ReportId + " đồng bộ thủ công thành công! [SyncDataFromApi][Manual Sync]");
 
                 if (obj.Error)
                     AddLog("Lấy dữ liệu từ api (" + infoApi.HrefApi + ") lỗi: " + obj.Title);
@@ -136,6 +139,30 @@ namespace WebApp.Controllers
                 obj.Title = ex.Message.ToString();
                 AddLog("Lấy dữ liệu từ api (ID: " + Id + ") lỗi: " + ex.Message);
                 return Json(obj);
+            }
+        }
+
+        public static async Task SendTelegramMessage(string chatId, string message)
+        {
+            string botToken = "7553997923:AAFBabzEfRLdluri42vy3VixZwrLfv2BHPs";
+            string url = $"https://api.telegram.org/bot{botToken}/sendMessage";
+
+            using (var client = new HttpClient())
+            {
+                var parameters = new Dictionary<string, string>
+        {
+            { "chat_id", chatId },
+            { "text", message }
+        };
+
+                var content = new FormUrlEncodedContent(parameters);
+                HttpResponseMessage response = await client.PostAsync(url, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string error = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Error sending Telegram message: {error}");
+                }
             }
         }
 
