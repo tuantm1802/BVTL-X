@@ -71,6 +71,7 @@
     <Compile Include="Admin\BVTL_NHOM_TBHDA.cs" />
     <Compile Include="Admin\ChatGayNghien3THDA.cs" />
     <Compile Include="Admin\ChatGayNghienTX3THDA.cs" />
+    <Compile Include="Admin\KhoVatPhamDA.cs" />
     <Compile Include="Admin\DuAnDA.cs" />
     <Compile Include="Admin\CityDA.cs" />
     <Compile Include="Admin\CustomerDA.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghien3THDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghienTX3THDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IKhoVatPhamDA.cs" />
     <Compile Include="InterfaceDA\Admin\IDuAnDA.cs" />
     <Compile Include="InterfaceDA\Admin\ICityDA.cs" />
     <Compile Include="InterfaceDA\Admin\ICustomerDA.cs" />

@@ -82,6 +82,7 @@
     <Compile Include="ModelExtend\ChatGayNghien3THPageModel.cs" />
     <Compile Include="ModelExtend\ChatGayNghienTX3THPageModel.cs" />
     <Compile Include="ModelExtend\ChuyenGuiDichVuPageModel.cs" />
+    <Compile Include="ModelExtend\KhoVatPhamModel.cs" />
     <Compile Include="ModelExtend\DuAnPageModel.cs" />
     <Compile Include="ModelExtend\CityPageModel.cs" />
     <Compile Include="ModelExtend\CustomerPageModel.cs" />

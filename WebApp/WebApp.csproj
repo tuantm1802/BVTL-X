@@ -201,6 +201,7 @@
     <Compile Include="Controllers\BaoCaoQuyCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoThangCH07Controller.cs" />
+    <Compile Include="Controllers\KhoVatPhamController.cs" />
     <Compile Include="Controllers\KhachHangController.cs" />
     <Compile Include="Controllers\DGHLVIIVController.cs" />
     <Compile Include="Controllers\KetQuaBHDGController.cs" />
@@ -321,6 +322,7 @@
     <Content Include="app\Controller\DuongSuDungController.js" />
     <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
+    <Content Include="app\Controller\KhoVatPhamController.js" />
     <Content Include="app\Controller\KhachHangController.js" />
     <Content Include="app\Controller\KetQuaBHDGController.js" />
     <Content Include="app\Controller\KetQuaSangLocCD43Controller.js" />
@@ -4692,6 +4694,9 @@
     <Content Include="Views\KetQuaSangLoc\BaoCaoSangLoc.cshtml" />
     <Content Include="Views\KhachHang\Index.cshtml" />
     <Content Include="Views\KhachHang\Details.cshtml" />
+    <Content Include="Views\KhoVatPham\Details.cshtml" />
+    <Content Include="Views\KhoVatPham\Index.cshtml" />
+    <Content Include="Views\KhoVatPham\BaoCaoTonKho.cshtml" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

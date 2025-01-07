@@ -1,0 +1,329 @@
+﻿@model Model.ModelExtend.Customer
+
+@{
+    ViewBag.Title = "Chi tiết Khách hàng";
+}
+<div class="container-fluid" ng-controller="CustomerDetailsController">
+
+    <h2>Chi tiết khách hàng</h2>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" ng-click="setTab('basic-info')">
+            <a class="nav-link" ng-class="{'active': activeTab === 'basic-info'}">I. Thông tin cơ bản</a>
+        </li>
+        <li class="nav-item" ng-click="setTab('hiv-arv-results')">
+            <a class="nav-link" ng-class="{'active': activeTab === 'hiv-arv-results'}">II. Kết quả XN HIV và ARV</a>
+        </li>
+        <li class="nav-item" ng-click="setTab('screening-results')">
+            <a class="nav-link" ng-class="{'active': activeTab === 'screening-results'}">III. Kết quả sàng lọc</a>
+        </li>
+        <li class="nav-item" ng-click="setTab('intervention')">
+            <a class="nav-link" ng-class="{'active': activeTab === 'intervention'}">IV. Can thiệp</a>
+        </li>
+    </ul>
+
+    <div ng-show="activeTab === 'basic-info'" class="mt-3">
+        <div class="row">
+            <div class="col-xl-4 mt-4">
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header font-weight-bold text-primary">Hình ảnh</div>
+                    <div class="card-body text-center">
+                        <img class="img-account-profile rounded-circle mb-2 img-thumbnail" style="width:46%" src="~/Assest/img/undraw_profile.svg" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <div class="card mb-4 mt-4">
+                    <div class="card-header font-weight-bold text-primary">Thông tin chi tiết</div>
+                    <div class="card-body">
+                        <div class="row gx-3 mb-3">
+
+                            <div class="col-md-6">
+                                <label class="mb-1 font-weight-bold">Mã khách hàng</label>
+                                <p class="text-left">{{ customer.RecordId }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="mb-1 font-weight-bold">Ngày sinh</label>
+                                <p class="text-left">{{ customer.NgayThangNamSinh }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="mb-1 font-weight-bold">Giới tính</label>
+                                <p class="text-left">{{ customer.gioiTinhText }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="mb-1 font-weight-bold" for="">Bậc học cao nhất</label>
+                                <p class="text-left">{{ customer.capBacHocVanText }}</p>
+
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="mb-1 font-weight-bold">Nghề nghiệp</label>
+                            <p class="text-left">{{ customer.ngheNghiepText }}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div ng-show="activeTab === 'hiv-arv-results'" class="mt-3">
+        <div class="row">
+            <div class="col-xl-6 mt-6">
+                <div class="card mb-6 mb-xl-0">
+                    <div class="card-header font-weight-bold text-primary">Kết quả xét nghiệm HIV và ARV</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <p><strong>Kết quả XN nhanh HIV:</strong> {{ customer.KetQuaXNHiv }}</p>
+                            <p><strong>XN Khẳng định và Điều trị ARV:</strong> {{ customer.KetQuaChuyenGuiDieuTriARV}}</p>
+                            @*<p><strong>XN Tải lượng VR:</strong> {{ customer.KetQuaChuyenGuiTaiLuongVR}}</p>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="activeTab === 'screening-results'" class="mt-3">
+        <div class="row">
+            <div class="col-xl-4 mt-6">
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">1. Sử dụng chất</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Các chất sử dụng khi Chemsex trong 3 tháng qua:</th><td> {{ customerSuDungChat.ChatSuDungChemsex3Thang }}</td></tr>
+                            <tr><th>Chất sử dụng thường xuyên nhất khi Chemsex trong 3 tháng qua:</th><td> {{ customerSuDungChat.ChatSuDungThuongXuyenNhat}}</td></tr>
+                            <tr><th>Tần suất sử dụng:</th><td> {{ customerSuDungChat.TanSuatSuDungMTDChemsex3Thang}}</td></tr>
+                            <tr><th>Sử dụng đa chất:</th><td> {{ customerSuDungChat.SuDungDaChat}}</td></tr>
+                            <tr><th>Các chất được sử dụng kết hợp với nhau:</th><td> {{ customerSuDungChat.SuDungChatDaChat}}</td></tr>
+                            <tr><th>Tần suất sử dụng đa chất:</th><td> {{ customerSuDungChat.TanSuatSuDungDaChat3Thang}}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">4. ASSIST</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Thuốc lá:</th><td>{{ customerQHTD.MucDoNguyCoThuocLa || 'N/A'}}</td></tr>
+                            <tr><th>Đồ uống có cồn:</th><td>{{ customerQHTD.MucDoNguyCoThucUong || 'N/A'}}</td></tr>
+                            <tr><th>Ma túy đá:</th><td>{{ customerQHTD.MucDoNguyCoMaTuyDa || 'N/A'}}</td></tr>
+                            <tr><th>Cần sa:</th><td>{{ customerQHTD.MucDoNguyCoCanSa || 'N/A'}}</td></tr>
+                            <tr><th>Cocain:</th><td>{{ customerQHTD.MucDoNguyCoCoCain || 'N/A'}}</td></tr>
+                            <tr><th>Khí xông:</th><td>{{ customerQHTD.MucDoNguyCoKhiXong || 'N/A'}}</td></tr>
+                            <tr><th>Chất an thần:</th><td>{{ customerQHTD.MucDoNguyCoAnThan || 'N/A'}}</td></tr>
+                            <tr><th>Chất gây ảo giác:</th><td>{{ customerQHTD.MucDoNguyCoGayAoGiac || 'N/A'}}</td></tr>
+                            <tr><th>Thuốc phiện:</th><td>{{ customerQHTD.MucDoNguyCoThuocPhien || 'N/A'}}</td></tr>
+                            <tr><th>Chất khác:</th><td>{{ customerQHTD.MucDoNguyCoKhac || 'N/A'}}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 mt-6">
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">2. Quan hệ tình dục</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Đối tượng QHTD:</th><td> {{ customerQHTD.DoiTuongQuanHe }}</td></tr>
+                            <tr><th>Tình trạng mối quan hệ hiện tại:</th><td> {{ customerQHTD.TinhTrangMoiQHHT}}</td></tr>
+                            <tr><th>Tần suất sử dụng BCS 3 tháng qua:</th><td> {{ customerQHTD.TanSuatSuDungBCSChemsex3Thang}}</td></tr>
+                            <tr><th>QHTD tập thể trong 3 tháng qua:</th><td> {{ customerQHTD.QHTDTT3Thang}}</td></tr>
+                            <tr><th>Bán dâm trong 3 tháng qua:</th><td> {{ customerQHTD.BanDam3Thang}}</td></tr>
+                        </table>
+
+                    </div>
+
+                </div>
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">5. QST</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Từ trước đến nay, KH đã bao giờ cố tự sát chưa:</th><td>{{ customerQHTD.QSTCoTuSat }}</td></tr>
+                            <tr><th>Điểm QST:</th><td> {{ customerQHTD.QSTTongDiem}}</td></tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 mt-6">
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">3. STIs và viêm gan C</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Tình trạng mắc STIs:</th><td> {{ customerQHTD.STIs }}</td></tr>
+                            <tr><th>Khách hàng biết tình trạng mắc VGC:</th><td> {{ customerQHTD.TinhTrangViemGanC}}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">6. ACE</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Số lượng:</th><td> {{ customerQHTD.ACESoLuong }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div ng-show="activeTab === 'intervention'" class="mt-3">
+        <div class="row">
+            <div class="col-xl-5 mt-4">
+                <div class="card mb-6 mb-xl-0">
+                    <div class="card-header font-weight-bold text-primary h5">1.Thông tin chung</div>
+                    <div class="card-body">
+                        <h6 class="mb-1 font-weight-bold">Chuyển gửi dịch vụ</h6>
+                        <table class="table" id="tblChuyenGuiDichVu">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Chuyển gửi Dịch vụ</th>
+                                    <th scope="col">Ngày khám</th>
+                                    <th scope="col">Lần khám</th>
+                                    <th scope="col">Ngày XN TLVR</th>
+                                    <th scope="col">TLVR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="dichvu in customerChuyenGuiDichVu">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{dichvu.DichVu}}</td>
+                                    <td>{{parseDate(dichvu.NgayKham) | date:'dd/MM/yyyy' || 'N/A'}}</td>
+                                    <td>{{dichvu.LanKham || 'N/A'}}</td>
+                                    <td>{{parseDate(dichvu.NgayXNTLVR) | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{dichvu.TaiLuongVR || 'N/A'}}</td>
+                                </tr>
+                                <!-- Kiểm tra nếu danh sách customerChuyenGuiDichVu trống, hiển thị thông báo "Không có dữ liệu" -->
+                                <tr ng-if="!customerChuyenGuiDichVu || customerChuyenGuiDichVu.length === 0">
+                                    <td colspan="6"><p class="font-italic">Không có dữ liệu</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr class="my-4">
+                        <h6 class="mb-1 font-weight-bold">Sinh hoạt nhóm</h6>
+                        <table class="table">
+                            <tr>
+                                <th class="col-md-4">Tham gia sinh hoạt nhóm:</th>
+                                <td class="col-md-4"> {{ customerSinhHoatNhom.ThamGiaSinhHoatNhom }}</td>
+                                <td class="col-md-4">
+                                    {{ customerSinhHoatNhom.SoLanThamGia ? customerSinhHoatNhom.SoLanThamGia + ' buổi' : 'N/A' }}
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="col-xl-7 mt-4">
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">3. Khám và điều trị SKTT</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th>Số lần khám:</th><td>{{ customerKhamVaDieuTri.SoLanKham }}</td></tr>
+                        </table>
+
+                        <hr class="my-4">
+                        <h6 class="mb-1 font-weight-bold">Chi tiết các lần khám</h6>
+                        <table class="table" id="tblKhamDieuTriSKTT">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#/Nội dung khám</th>
+                                    <th scope="col">Ngày khám</th>
+                                    <th scope="col">Triệu chứng</th>
+                                    <th scope="col">Chẩn đoán</th>
+                                    <th scope="col">Kê đơn (Có /Không)</th>
+                                    <th scope="col">KH uống thuốc theo đơn (Có/Không)</th>
+                                    <th scope="col">Ngày hẹn tái khám</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="dichvu in customerListKhamVaDieuTriSKTT">
+                                    <td>Lần {{$index + 1}}</td>
+                                    <td>{{parseDate(dichvu.NgayKham) | date:'dd/MM/yyyy'}}</td>                                    
+                                    <td>{{dichvu.TrieuChung || 'N/A'}}</td>
+                                    <td>{{dichvu.ChanDoan || 'N/A'}}</td>
+                                    <td>{{dichvu.KeDon || 'N/A'}}</td>
+                                    <td>{{dichvu.DungTheoDon || 'N/A'}}</td>
+                                    <td>{{parseDate(dichvu.NgayHenTaiKham) | date:'dd/MM/yyyy'}}</td>                                    
+                                    
+                                </tr>
+                                <!-- Kiểm tra nếu danh sách customerChuyenGuiDichVu trống, hiển thị thông báo "Không có dữ liệu" -->
+                                <tr ng-if="!customerListKhamVaDieuTriSKTT || customerListKhamVaDieuTriSKTT.length === 0">
+                                    <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12 mt-4">
+                <div class="card mb-6 mb-xl-4">
+                    <div class="card-header font-weight-bold text-primary">2. Tư vấn</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr><th class="col-md-2">Số lần tư vấn:</th><td>{{ customerPhieuTuVan.SoLanTuVan }}</td></tr>
+                            <tr><th class="col-md-2">TCV tư vấn:</th><td> {{ customerPhieuTuVan.TuVanVien}}</td></tr>
+                        </table>
+
+                        <hr class="my-4">
+
+                        <h6 class="mb-1 font-weight-bold">Chi tiết các lần tư vấn</h6>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#/Nội dung tư vấn</th>
+                                    <th scope="col">Ngày tư vấn</th>
+                                    <th scope="col">Hành vi nguy cơ</th>
+                                    <th scope="col">Sức khỏe thể chất</th>
+                                    <th scope="col">Sức khỏe tâm thần        </th>
+                                    <th scope="col">Sức khỏe tình dục        </th>
+                                    <th scope="col">Can thiệp Tư vấn giảm hại</th>
+                                    <th scope="col">Can thiệp Hỗ trợ SKTT    </th>
+                                    <th scope="col">Can thiệp Hỗ trợ SKTD    </th>
+                                    <th scope="col">Ngày hẹn tư vấn tiếp theo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="dichvu in customerListPhieuTuVan">
+                                    <td>Lần {{$index + 1}}</td>
+                                    <td>{{parseDate(dichvu.NgayTuVan) | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{dichvu.HanhViNguyCo || 'N/A'}}</td>
+                                    <td>{{dichvu.SucKhoeTheChat || 'N/A'}}</td>
+                                    <td>{{dichvu.SucKhoeTamThan || 'N/A'}}</td>
+                                    <td>{{dichvu.SucKhoeTinhDuc || 'N/A'}}</td>
+                                    <td>{{dichvu.TuVanGiamHai || 'N/A'}}</td>
+                                    <td>{{dichvu.HoTroSKTT || 'N/A'}}</td>
+                                    <td>{{dichvu.HoTroSKTD || 'N/A'}}</td>
+                                    <td>{{dichvu.ThoiGianTuVanTiep ? (parseDate(dichvu.ThoiGianTuVanTiep) | date:'dd/MM/yyyy') : ''}}</td>
+                                </tr>
+
+                                <tr ng-if="!customerListPhieuTuVan || customerListPhieuTuVan.length === 0">
+                                    <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <a href="@Url.Action("Index", "KhachHang")" class="btn btn-primary mt-3">Quay lại danh sách</a>
+</div>
+
+        @section Scripts{
+            <script src="~/app/Controller/KhachHangController.js"></script>
+        }

@@ -5559,6 +5559,114 @@ namespace Common.Common
             log.Info("********************************Kết thúc chuyển đổi kết quả api CH07 - THONG TIN TRUYEN THONG sang entity**************************************");
         }
 
+        public void ConvertApiBBGNVatPhamCD43Entity(List<ResultApiBBGNVatPhamModel> resultApiModels, string maDuAn, string apiCode, string cityCodeInput, ref List<PhieuXuatNhap> lsObjDB, ref List<ChiTietPhieuXuatNhap> lsObjDBChiTiet)
+        {
+
+            log.Info("********************************Bắt đầu chuyển đổi kết quả api CD43_BIEN_BAN_GIAO_NHAN_VAT_PHAM sang entity**************************************");
+            var objDB = new PhieuXuatNhap();
+            var objDBChiTiet = new ChiTietPhieuXuatNhap();
+            var resultApi = new ResultApiBBGNVatPhamModel();
+            try
+            {
+
+                //var customers = db.BVTL_KHACH_HANG.ToList();
+                var nhomTBHs = db.BVTL_NHOM_TBH.ToList();
+                var loaiDoiTuongs = db.BVTL_LOAI_DOI_TUONG.ToList();
+                //var customer = new BVTL_KHACH_HANG();
+                //var customer_code = "";
+
+                var group_code = "";
+                var customer_code = "";
+                var cityCode = "";
+
+                var vatphamchon = "";
+
+                //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                string cityCodeTemp = apiCode.Split('_')[1];
+                if (!string.IsNullOrEmpty(cityCodeTemp))
+                {
+                    cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                }
+
+                var nhomTBH = new BVTL_NHOM_TBH();
+                var month = 0;
+                var day = 0;
+                var year = 0;
+                var ngaynhap = "";
+                var ngaynhapD = new DateTime();
+
+                log.Info("*********-----TỔNG SỐ RECORD API CD43_BIEN_BAN_GIAO_NHAN_VAT_PHAM:" + resultApiModels.Count + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+                int errNo = 0;
+                for (int i = 0; i < resultApiModels.Count; i++)
+                {
+                    resultApi = resultApiModels[i];
+
+                    //cityCode = "";
+                    //nhomTBH = new BVTL_NHOM_TBH();
+                    month = 0;
+                    day = 0;
+                    year = 0;
+                    ngaynhap = "";
+                    ngaynhapD = new DateTime();
+
+                    #region Chuyển đổi dữ liệu sang bảng PhieuXuatNhap
+                    objDB = new PhieuXuatNhap()
+                    {
+                        MaPhieu = "PN" + resultApi.record_id,
+                        manhom_tbh = group_code,
+                        //ma_tinh = cityCode,
+                        city_code = cityCodeInput,
+                        maduan = maDuAn,
+                        GhiChu = resultApi.nguoi_giao + "|" + resultApi.nguoi_nhan + "|BBGN " + resultApi.ngay_giao
+                    };
+
+                    objDB.NgayLap = ValidateDateTimeRange(resultApi.ngay_nhan);
+                    objDB.NguoiLap = resultApi.nguoi_nhan;
+                    objDB.LoaiPhieu = 1;
+                    objDB.record_id = resultApi.record_id;
+
+                    List<string> listCodeVatPham = getListValFromMultiFieldsBBGNVatPham(resultApi);
+                    List<string> listCodeVatPhamSoLuong = getListValFromMultiFieldsBBGNVatPhamSoLuong(resultApi);
+
+                    for (int j = 0; j < listCodeVatPham.Count; j++)
+                    {
+                        vatphamchon = listCodeVatPham[j];
+                        var soluongchon = listCodeVatPhamSoLuong[j];
+                        if (!string.IsNullOrEmpty(vatphamchon) && vatphamchon.Equals("1"))
+                        {
+                            objDBChiTiet = new ChiTietPhieuXuatNhap();
+                            objDBChiTiet.MaPhieu = objDB.MaPhieu;
+                            objDBChiTiet.MaSanPham = "vat_pham___" + (j+1);
+
+                            objDBChiTiet.SoLuong = Int32.Parse(soluongchon);
+                            
+                            objDBChiTiet.LoaiPhieu = 1; //1: Nhập, 2: Xuất
+                            objDBChiTiet.NgayLap = objDB.NgayLap;
+                            objDBChiTiet.GhiChu = objDB.GhiChu;
+                            objDBChiTiet.DonGia = 0;
+                            objDBChiTiet.ThanhTien = 0;
+                            objDBChiTiet.manhom_tbh = objDB.manhom_tbh;
+                            objDBChiTiet.city_code = objDB.city_code;
+                            objDBChiTiet.maduan = objDB.maduan;
+                            lsObjDBChiTiet.Add(objDBChiTiet);
+                        }
+                        
+                    }
+
+                    lsObjDB.Add(objDB);             
+
+                    #endregion
+
+                }
+                log.Info("*********-----SỐ Record CH43 - BIEN BAN GIAO NHAN VAT PHAM:" + lsObjDB.Count() + " | SỐ Record LỖI:" + errNo + " | CITY_CODE:" + cityCode + " | GROUP_CODE:" + group_code + " | MADUAN:" + maDuAn);
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Chuyển đổi kết quả API CH43 - BIEN BAN GIAO NHAN VAT PHAM sang Entity lỗi: " + ex.Message + " | CITY_CODE:" + objDB.city_code + " | MADUAN:" + maDuAn);
+            }
+            log.Info("********************************Kết thúc chuyển đổi kết quả api CH43 - BIEN BAN GIAO NHAN VAT PHAM sang entity**************************************");
+        }
 
         #endregion
 
@@ -5896,7 +6004,66 @@ namespace Common.Common
             return ls;
         }
 
+        private List<string> getListValFromMultiFieldsBBGNVatPham(ResultApiBBGNVatPhamModel resultApi)
+        {
+            string[] listCodeMaVatPham = {
+                    resultApi.vat_pham___1,
+                    resultApi.vat_pham___2,
+                    resultApi.vat_pham___3,
+                    resultApi.vat_pham___4,
+                    resultApi.vat_pham___5,
+                    resultApi.vat_pham___6,
+                    resultApi.vat_pham___7,
+                    resultApi.vat_pham___8,
+                    resultApi.vat_pham___9,
+                    resultApi.vat_pham___10,
+                    resultApi.vat_pham___11,
+                    resultApi.vat_pham___12,
+                    resultApi.vat_pham___13,
+                    resultApi.vat_pham___14,
+                    resultApi.vat_pham___15,
+                    resultApi.vat_pham___16,
+                    resultApi.vat_pham___17,
+                    resultApi.vat_pham___18,
+                    resultApi.vat_pham___19,
+                    resultApi.vat_pham___20,
 
+            };
+
+            var ls = listCodeMaVatPham.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+            return ls;
+        }
+
+        private List<string> getListValFromMultiFieldsBBGNVatPhamSoLuong(ResultApiBBGNVatPhamModel resultApi)
+        {
+            string[] listCodeMaVatPham = {                  
+
+                    resultApi.baocaosu,
+                    resultApi.gel_www,
+                    resultApi.gel_safe_fit,
+                    resultApi.vatpham_d,
+                    resultApi.vatpham_e,
+                    resultApi.vatpham_f,
+                    resultApi.vatpham_g,
+                    resultApi.vatpham_h,
+                    resultApi.vatpham_i,
+                    resultApi.vatpham_j,
+                    resultApi.vatpham_k,
+                    resultApi.vatpham_l,
+                    resultApi.vatpham_m,
+                    resultApi.vatpham_n,
+                    resultApi.vatpham_o,
+                    resultApi.vatpham_p,
+                    resultApi.vatpham_q,
+                    resultApi.vatpham_r,
+                    resultApi.vatpham_s,
+                    resultApi.vatpham_t,
+            };
+
+            //var ls = listCodeMaVatPham.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+            var ls = listCodeMaVatPham.ToList();
+            return ls;
+        }
 
     }
 }

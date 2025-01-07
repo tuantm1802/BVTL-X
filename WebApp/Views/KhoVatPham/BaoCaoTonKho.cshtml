@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Báo cáo tồn kho vật phẩm";
+}
+<div ng-controller="TonKhoVatPhamController">
+    <div class="container-fluid mt-5">
+        <h2>Báo cáo Tồn kho Vật phẩm</h2>
+
+        <!-- Bộ lọc Từ Ngày, Đến Ngày -->
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="fromDate">Từ Ngày:</label>
+                <input type="date" id="fromDate" class="form-control" ng-model="fromDate">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="toDate">Đến Ngày:</label>
+                <input type="date" id="toDate" class="form-control" ng-model="toDate">
+            </div>
+            <div class="form-group col-md-4 align-self-end">
+                <button class="btn btn-primary" ng-click="searchTonKho()">Tìm kiếm</button>
+                <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
+                    <i class="fas fa-pencil-alt"></i> Xuất Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Bảng hiển thị dữ liệu -->
+        <table id="BaoCaoTonKhoTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên vật phẩm</th>
+                    <th>ĐVT</th>
+                    <th>Tồn kho đầu kỳ</th>
+                    <th>Nhập kho</th>
+                    <th>Xuất kho</th>
+                    <th>Tồn kho cuối kỳ</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/app/Controller/KhoVatPhamController.js"></script>
+}

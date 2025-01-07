@@ -65,8 +65,45 @@ namespace Common.Common
         }
         #endregion
 
+        #region Execute Table for query with Parameters
+        public DataTable ExecuteTable(string sql, List<SqlParameter> parameters = null)
+        {
+            var con = GetConnect();
+            SqlCommand cmd = new SqlCommand(sql, con)
+            {
+                CommandType = CommandType.Text,
+                CommandTimeout = 360
+            };
+
+            // Nếu có tham số, thêm chúng vào command
+            if (parameters != null && parameters.Count > 0)
+            {
+                cmd.Parameters.AddRange(parameters.ToArray());
+            }
+
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+
+            try
+            {
+                da.Fill(dt);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                log.Error("ERROR: " + ex.Message);
+                return null;
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        #endregion
+
         #region Execute Non Query for query
-        public  int ExecuteNonQuery(string sql)
+        public int ExecuteNonQuery(string sql)
         {
             var con = GetConnect();
             SqlCommand cmd = new SqlCommand(sql, con)

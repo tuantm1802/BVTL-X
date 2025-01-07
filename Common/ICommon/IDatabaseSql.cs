@@ -28,6 +28,7 @@ namespace Common.ICommon
 
         #region Execute Table for query
         DataTable ExecuteTable(string sql);
+        DataTable ExecuteTable(string sql, List<SqlParameter> parameters = null);
         #endregion
 
         #region Execute Non Query for query

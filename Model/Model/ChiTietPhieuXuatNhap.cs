@@ -15,13 +15,17 @@ namespace Model.Model
     public partial class ChiTietPhieuXuatNhap
     {
         public int Id { get; set; }
-        public int PhieuXuatNhapId { get; set; }
-        public int SanPhamId { get; set; }
         public int SoLuong { get; set; }
-        public decimal DonGia { get; set; }
+        public Nullable<decimal> DonGia { get; set; }
+        public string manhom_tbh { get; set; }
+        public string city_code { get; set; }
+        public Nullable<System.DateTime> sync_date { get; set; }
+        public string maduan { get; set; }
+        public string MaSanPham { get; set; }
+        public string MaPhieu { get; set; }
         public Nullable<decimal> ThanhTien { get; set; }
-    
-        public virtual PhieuXuatNhap PhieuXuatNhap { get; set; }
-        public virtual SanPham SanPham { get; set; }
+        public Nullable<int> LoaiPhieu { get; set; }
+        public string GhiChu { get; set; }
+        public Nullable<System.DateTime> NgayLap { get; set; }
     }
 }

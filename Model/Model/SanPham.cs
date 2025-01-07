@@ -17,7 +17,6 @@ namespace Model.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SanPham()
         {
-            this.ChiTietPhieuXuatNhap = new HashSet<ChiTietPhieuXuatNhap>();
             this.TonKho = new HashSet<TonKho>();
         }
     
@@ -25,13 +24,11 @@ namespace Model.Model
         public string MaSanPham { get; set; }
         public string TenSanPham { get; set; }
         public string DonViTinh { get; set; }
-        public decimal GiaNhap { get; set; }
-        public decimal GiaBan { get; set; }
-        public System.DateTime NgayTao { get; set; }
+        public Nullable<decimal> GiaNhap { get; set; }
+        public Nullable<decimal> GiaBan { get; set; }
+        public Nullable<System.DateTime> NgayTao { get; set; }
         public int TrangThai { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuXuatNhap> ChiTietPhieuXuatNhap { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TonKho> TonKho { get; set; }
     }

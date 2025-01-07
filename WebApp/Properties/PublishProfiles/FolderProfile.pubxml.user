@@ -255,6 +255,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="app/Controller/Kho/XuatKhoController.js">
       <publishTime>05/07/2021 08:16:54</publishTime>
     </File>
+    <File Include="app/Controller/KhoVatPhamController.js">
+      <publishTime>01/07/2025 17:51:21</publishTime>
+    </File>
     <File Include="app/Controller/KhuVucController.js">
       <publishTime>10/18/2021 10:34:30</publishTime>
     </File>
@@ -8167,25 +8170,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/25/2020 17:43:52</publishTime>
     </File>
     <File Include="bin/Common.dll">
-      <publishTime>12/20/2024 14:51:22</publishTime>
+      <publishTime>01/07/2025 18:36:09</publishTime>
     </File>
     <File Include="bin/Common.dll.config">
       <publishTime>03/29/2023 00:09:13</publishTime>
     </File>
     <File Include="bin/Common.pdb">
-      <publishTime>12/20/2024 14:51:22</publishTime>
+      <publishTime>01/07/2025 18:36:09</publishTime>
     </File>
     <File Include="bin/contact.cshtml.a8d08dba.compiled">
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/Data.dll">
-      <publishTime>12/20/2024 14:51:23</publishTime>
+      <publishTime>01/07/2025 18:36:10</publishTime>
     </File>
     <File Include="bin/Data.dll.config">
       <publishTime>04/03/2024 20:07:25</publishTime>
     </File>
     <File Include="bin/Data.pdb">
-      <publishTime>12/20/2024 14:51:23</publishTime>
+      <publishTime>01/07/2025 18:36:10</publishTime>
     </File>
     <File Include="bin/DataTables-Editor-Server.dll">
       <publishTime>10/05/2022 11:38:17</publishTime>
@@ -8662,13 +8665,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/05/2022 11:38:22</publishTime>
     </File>
     <File Include="bin/Model.dll">
-      <publishTime>12/20/2024 14:51:21</publishTime>
+      <publishTime>01/07/2025 18:36:09</publishTime>
     </File>
     <File Include="bin/Model.dll.config">
       <publishTime>10/30/2024 16:32:32</publishTime>
     </File>
     <File Include="bin/Model.pdb">
-      <publishTime>12/20/2024 14:51:21</publishTime>
+      <publishTime>01/07/2025 18:36:09</publishTime>
     </File>
     <File Include="bin/myprofile.cshtml.65793277.compiled">
       <publishTime>11/01/2021 14:47:41</publishTime>
@@ -8974,10 +8977,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/01/2021 14:47:20</publishTime>
     </File>
     <File Include="bin/WebApp.dll">
-      <publishTime>12/20/2024 14:51:25</publishTime>
+      <publishTime>01/07/2025 18:36:12</publishTime>
     </File>
     <File Include="bin/WebApp.pdb">
-      <publishTime>12/20/2024 14:51:25</publishTime>
+      <publishTime>01/07/2025 18:36:12</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>10/05/2022 11:38:23</publishTime>
@@ -16310,6 +16313,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     </File>
     <File Include="Views/KhoHang/_addSpDinhKem.cshtml">
       <publishTime>05/19/2021 08:18:23</publishTime>
+    </File>
+    <File Include="Views/KhoVatPham/BaoCaoTonKho.cshtml">
+      <publishTime>01/07/2025 17:13:25</publishTime>
+    </File>
+    <File Include="Views/KhoVatPham/Details.cshtml">
+      <publishTime>01/07/2025 09:30:34</publishTime>
+    </File>
+    <File Include="Views/KhoVatPham/Index.cshtml">
+      <publishTime>01/07/2025 17:04:51</publishTime>
     </File>
     <File Include="Views/KhuVuc/AddKhuVuc.cshtml">
       <publishTime>11/01/2021 14:47:52</publishTime>

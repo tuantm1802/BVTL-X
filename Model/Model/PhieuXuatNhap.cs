@@ -14,20 +14,16 @@ namespace Model.Model
     
     public partial class PhieuXuatNhap
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PhieuXuatNhap()
-        {
-            this.ChiTietPhieuXuatNhap = new HashSet<ChiTietPhieuXuatNhap>();
-        }
-    
         public int Id { get; set; }
         public string MaPhieu { get; set; }
         public int LoaiPhieu { get; set; }
-        public System.DateTime NgayLap { get; set; }
+        public Nullable<System.DateTime> NgayLap { get; set; }
         public string NguoiLap { get; set; }
         public string GhiChu { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuXuatNhap> ChiTietPhieuXuatNhap { get; set; }
+        public string manhom_tbh { get; set; }
+        public string city_code { get; set; }
+        public Nullable<System.DateTime> sync_date { get; set; }
+        public string maduan { get; set; }
+        public string record_id { get; set; }
     }
 }

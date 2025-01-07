@@ -26,6 +26,7 @@ namespace Data.API
         public async Task<BaseResult> GetDataFromApi_SaveToDB(string urlApi, string token, string reportId, string maDuAn, List<string> tableNames, string apiCode, string rawOrLabel)
         {
             var result = new BaseResult();
+            var resultChiTiet = new BaseResult();
 
             // Cập nhật thời gian bắt đầu đồng bộ
             insertDataDA.UpdateTimeSync(apiCode, true, "");
@@ -1016,6 +1017,42 @@ namespace Data.API
                         }
                     }
 
+                    // Đầu api CD43_BIEN_BAN_GIAO_NHAN_VAT_PHAM - #18
+                    if (tableNames.Contains("PhieuXuatNhap"))
+                    {
+                        var dataResultApi = JsonConvert.DeserializeObject<List<ResultApiBBGNVatPhamModel>>(resultApiString);
+
+                        var tongHops = new List<PhieuXuatNhap>();
+                        var chiTietXuatNhaps = new List<ChiTietPhieuXuatNhap>();
+
+                        //Lay ma Code Tinh theo API CODE: API_VHNO_02/API_HNO_02
+                        var cityCode = "";
+                        string cityCodeTemp = apiCode.Split('_')[1];
+                        if (!string.IsNullOrEmpty(cityCodeTemp))
+                        {
+                            cityCode = cityCodeTemp.Length == 3 ? cityCodeTemp.Substring(0, 3) : cityCodeTemp.Substring(1, 3);
+                        }
+
+                        // Chuyển đổi dữ liệu sang các bảng tương ứng                        
+                        _convertResultApiToEntity.ConvertApiBBGNVatPhamCD43Entity(dataResultApi.Where(x => x.cd_43_bin_bn_giao_nhn_vt_phm_complete.Equals("2")).ToList(), maDuAn, apiCode, cityCode, ref tongHops, ref chiTietXuatNhaps);
+
+                        // Thêm dữ liệu bảng CH07_THONG_TIN_TRUYEN_THONG
+                        if (tongHops != null && tongHops.Count > 0)
+                        {
+                            var dattableInsert = insertDataDA.ConvertToDataTable(tongHops);
+
+                            result = insertDataDA.InsertDataFromApi(dattableInsert, "PhieuXuatNhap", tongHops.FirstOrDefault().city_code, maDuAn);
+
+                            var dattableInsertChiTiet = insertDataDA.ConvertToDataTable(chiTietXuatNhaps);
+
+                            resultChiTiet = insertDataDA.InsertDataFromApi(dattableInsertChiTiet, "ChiTietPhieuXuatNhap", chiTietXuatNhaps.FirstOrDefault().city_code, maDuAn);
+                        }
+                        else
+                        {
+                            result.Message = "Không có dữ liệu!";
+                            result.Success = false;
+                        }
+                    }
 
                     #endregion
 
