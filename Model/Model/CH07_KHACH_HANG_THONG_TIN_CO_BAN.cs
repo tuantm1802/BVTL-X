@@ -44,5 +44,7 @@ namespace Model.Model
         public Nullable<int> bng_hi_ace_complete { get; set; }
         public string ma_tinh { get; set; }
         public Nullable<System.DateTime> ngayhoi_fdf6e6 { get; set; }
+        public Nullable<System.DateTime> ngay_xn { get; set; }
+        public Nullable<System.DateTime> ngaykham { get; set; }
     }
 }

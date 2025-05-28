@@ -1845,6 +1845,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="bng_hi_ace_complete" Type="int" />
           <Property Name="ma_tinh" Type="varchar" MaxLength="3" />
           <Property Name="ngayhoi_fdf6e6" Type="date" />
+          <Property Name="ngay_xn" Type="date" />
+          <Property Name="ngaykham" Type="date" />
         </EntityType>
         <EntityType Name="CH07_THONG_TIN_TRUYEN_THONG">
           <Key>
@@ -4621,6 +4623,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="bng_hi_ace_complete" Type="Int32" />
           <Property Name="ma_tinh" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
           <Property Name="ngayhoi_fdf6e6" Type="DateTime" Precision="0" />
+          <Property Name="ngay_xn" Type="DateTime" Precision="0" />
+          <Property Name="ngaykham" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="CH07_KHACH_HANG_SANG_LOC_NUOC_TIEU">
           <Key>
@@ -6739,6 +6743,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <EntitySetMapping Name="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
             <EntityTypeMapping TypeName="BVTL_REPORTINGModel.CH07_KHACH_HANG_THONG_TIN_CO_BAN">
               <MappingFragment StoreEntitySet="CH07_KHACH_HANG_THONG_TIN_CO_BAN">
+                <ScalarProperty Name="ngaykham" ColumnName="ngaykham" />
+                <ScalarProperty Name="ngay_xn" ColumnName="ngay_xn" />
                 <ScalarProperty Name="ngayhoi_fdf6e6" ColumnName="ngayhoi_fdf6e6" />
                 <ScalarProperty Name="ma_tinh" ColumnName="ma_tinh" />
                 <ScalarProperty Name="bng_hi_ace_complete" ColumnName="bng_hi_ace_complete" />

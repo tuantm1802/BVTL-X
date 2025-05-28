@@ -273,10 +273,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetNhomTBHByMaNhomMap(string maNhom)
+        public ActionResult GetNhomTBHByMaNhomMap(string CityCodes)
         {
             // Lấy danh sách nhóm TBH theo tỉnh
-            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhomMap(maNhom);
+            //var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhomMap(maNhom);
+            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodesMaDuAn(CityCodes, "CD43");
             return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
         }
 
@@ -377,12 +378,13 @@ namespace WebApp.Controllers
 
                                 // Thêm dữ liệu cột Nữ
                                 InsertDataCell(ws, "E", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
-                                
-                                // Thêm dữ liệu cột Tổng
-                                InsertDataCell(ws, "F", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
+
 
                                 // Thêm dữ liệu cột Chuyển giới
-                                //InsertDataCell(ws, "G", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+                                InsertDataCell(ws, "F", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+
+                                // Thêm dữ liệu cột Tổng
+                                InsertDataCell(ws, "G", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
 
                                 row++;
                             }
@@ -391,12 +393,12 @@ namespace WebApp.Controllers
 
                     CreateFooter(ws, titleReport, user, tenNhomTBHs);
 
-                    ws.Range("A5:F" + row).Style.Font.FontName = "Times New Roman";
-                    ws.Range("A5:F" + row).Style.Font.FontSize = 13;
-                    ws.Range("A5:F" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Font.FontName = "Times New Roman";
+                    ws.Range("A5:G" + row).Style.Font.FontSize = 13;
+                    ws.Range("A5:G" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -406,7 +408,7 @@ namespace WebApp.Controllers
                         ws.Column("D").Width = 20;
                         ws.Column("E").Width = 20;
                         ws.Column("F").Width = 20;
-                        //ws.Column("G").Width = 20;
+                        ws.Column("G").Width = 20;
                         
                         ws.Column("A").Style.Alignment.SetWrapText(true);
                         ws.Column("B").Style.Alignment.SetWrapText(true);
@@ -414,7 +416,7 @@ namespace WebApp.Controllers
                         ws.Column("D").Style.Alignment.SetWrapText(true);
                         ws.Column("E").Style.Alignment.SetWrapText(true);
                         ws.Column("F").Style.Alignment.SetWrapText(true);
-                        //ws.Column("G").Style.Alignment.SetWrapText(true);
+                        ws.Column("G").Style.Alignment.SetWrapText(true);
                         
                         wb.SaveAs(stream);
                         return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
@@ -526,12 +528,13 @@ namespace WebApp.Controllers
                                 // Thêm dữ liệu cột Nữ
                                 InsertDataCell(ws, "E", row, rowReport.Nu > 0 ? rowReport.Nu.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Nu > 0 ? true : false);
 
-                                // Thêm dữ liệu cột Tổng
-                                InsertDataCell(ws, "F", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
-
                                 // Thêm dữ liệu cột Chuyển giới
-                                //InsertDataCell(ws, "G", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
+                                InsertDataCell(ws, "F", row, rowReport.ChuyenGioi > 0 ? rowReport.ChuyenGioi.ToString() : "", false, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.ChuyenGioi > 0 ? true : false);
 
+                                // Thêm dữ liệu cột Tổng
+                                InsertDataCell(ws, "G", row, rowReport.Tong > 0 ? rowReport.Tong.ToString() : "", true, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.Tong > 0 ? true : false);
+
+                                
                                 row++;
                             }
                         }
@@ -539,12 +542,12 @@ namespace WebApp.Controllers
 
                     CreateFooter(ws, titleReport, user, tenNhomTBHs);
 
-                    ws.Range("A5:F" + row).Style.Font.FontName = "Times New Roman";
-                    ws.Range("A5:F" + row).Style.Font.FontSize = 13;
-                    ws.Range("A5:F" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:F" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Font.FontName = "Times New Roman";
+                    ws.Range("A5:G" + row).Style.Font.FontSize = 13;
+                    ws.Range("A5:G" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:G" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -554,7 +557,7 @@ namespace WebApp.Controllers
                         ws.Column("D").Width = 20;
                         ws.Column("E").Width = 20;
                         ws.Column("F").Width = 20;
-                        //ws.Column("G").Width = 20;
+                        ws.Column("G").Width = 20;
                         
                         ws.Column("A").Style.Alignment.SetWrapText(true);
                         ws.Column("B").Style.Alignment.SetWrapText(true);
@@ -562,7 +565,7 @@ namespace WebApp.Controllers
                         ws.Column("D").Style.Alignment.SetWrapText(true);
                         ws.Column("E").Style.Alignment.SetWrapText(true);
                         ws.Column("F").Style.Alignment.SetWrapText(true);
-                        //ws.Column("G").Style.Alignment.SetWrapText(true);
+                        ws.Column("G").Style.Alignment.SetWrapText(true);
                         
                         wb.SaveAs(stream);
                         return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file_name);
@@ -955,11 +958,17 @@ namespace WebApp.Controllers
             ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ws.Cell("F" + row).Value = "Tổng";
+            ws.Cell("F" + row).Value = "Chuyển giới";
             ws.Cell("F" + row).Style.Font.Bold = true;
             ws.Cell("F" + row).Style.Alignment.WrapText = true;
             ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            
+            ws.Cell("G" + row).Value = "Tổng";
+            ws.Cell("G" + row).Style.Font.Bold = true;
+            ws.Cell("G" + row).Style.Alignment.WrapText = true;
+            ws.Cell("G" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell("G" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
             #endregion
         }

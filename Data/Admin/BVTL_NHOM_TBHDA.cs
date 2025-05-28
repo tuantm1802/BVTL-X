@@ -206,7 +206,7 @@ namespace Data.Admin
                               where cityCodes.Contains(c.Code)
                               select new NhomTBHPageModel
                               {
-                                  manhom_tbh = ntbh.manhom_tbh,
+                                  manhom_tbh = ntbh.manhom_tbh_map,
                                   tennhom_tbh = ntbh.tennhom_tbh,
                                   city_code = ntbh.city_code,
                                   CityName = c.Name
@@ -221,7 +221,7 @@ namespace Data.Admin
                               where (maDuAn == null || ntbh.maduan.Contains(maDuAn))
                               select new NhomTBHPageModel
                               {
-                                  manhom_tbh = ntbh.manhom_tbh,
+                                  manhom_tbh = ntbh.manhom_tbh_map,
                                   tennhom_tbh = ntbh.tennhom_tbh,
                                   city_code = ntbh.city_code,
                                   CityName = c.Name

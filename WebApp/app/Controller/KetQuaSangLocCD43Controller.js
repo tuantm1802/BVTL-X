@@ -145,7 +145,7 @@
                 $scope.CacLoaiChatGayNghienAssists = respone.CacLoaiChatGayNghienAssists;
                 $scope.KetQuaQSTs = respone.KetQuaQSTs;
                 $scope.KetQuaACEs = respone.KetQuaACEs;
-                console.log($scope.KetQuaTTCBHanhViNguyCos);
+                console.log($scope.KetQuaQSTs);
             }
         });
 

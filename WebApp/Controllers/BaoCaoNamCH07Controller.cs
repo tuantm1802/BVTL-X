@@ -131,7 +131,8 @@ namespace WebApp.Controllers
         public ActionResult GetNhomTBHByCityCodes(string CityCodes)
         {
             // Lấy danh sách nhóm TBH theo tỉnh
-            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+            //var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes(CityCodes);
+            var nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodesMaDuAn(CityCodes, "CH07");
             return Json(new { NhomTBHs = nhomTBHs, Error = false, Title = "Lấy dữ liệu thành công." }); ;
         }
 

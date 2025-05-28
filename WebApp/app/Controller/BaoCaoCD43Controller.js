@@ -254,7 +254,7 @@
             + '&maDuAn=' + ($scope.modelSearch.MaDuAn == undefined ? '' : $scope.modelSearch.MaDuAn);
     }
 
-    // Lấy danh sách Nhóm TBH theo tỉnh
+    // Lấy danh sách Nhóm TBH theo tỉnh và Theo Mã Dự Án
     $scope.Changecity = function () {
 
         var CityCodes = '';

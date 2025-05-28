@@ -17,7 +17,7 @@
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label>Nhóm</label>
-            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' - ' + item.CityName) for item in ListNhomTBH"></select>
+            <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + item.CityName) for item in ListNhomTBH"></select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
             <button type="button" ng-click="Refesh(4)" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
@@ -38,10 +38,11 @@
                     <thead>
                         <tr>
                             <th style="width:5%;"># </th>
-                            <th style="width: 39%;" colspan="2">Thông tin báo cáo </th>
-                            <th style="width: 8%; ">Nam</th>
-                            <th style="width: 8%; ">Nữ</th>
-                            <th style="width: 8%; ">Tổng</th>
+                            <th style="width: 40%;" colspan="2">Thông tin báo cáo </th>
+                            <th style="width: 10%; ">Nam</th>
+                            <th style="width: 10%; ">Nữ</th>
+                            <th style="width: 10%; ">Chuyển giới</th>
+                            <th style="width: 10%; ">Tổng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +55,7 @@
                             <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
+                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
                             <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
                         </tr>
                     </tbody>

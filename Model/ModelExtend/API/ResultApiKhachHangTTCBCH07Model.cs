@@ -45,6 +45,8 @@ namespace Model.ModelExtend.API
         public string ngay_ace { get; set; }
         public string ngayhoi { get; set; }
         public string ngayhoi_fdf6e6 { get; set; }
+        public string ngay_xn { get; set; }
+        public string ngaykham { get; set; }
         public int? sng_lc_nc_tiu_complete { get; set; }
         public int? phiu_t_vn_complete { get; set; }
         public int? chuyn_gi_dch_v_complete { get; set; }

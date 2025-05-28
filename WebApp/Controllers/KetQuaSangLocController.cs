@@ -273,7 +273,9 @@ namespace WebApp.Controllers
                 // Lấy danh sách nhóm tbh
                 //var nhomTBHs = _NhomTBHDA.GetAll();
                 string maNhom = null;
-                var nhomTBHs = _NhomTBHDA.GetItemByMaNhomMap(maNhom);
+                //var nhomTBHs = _NhomTBHDA.GetItemByMaNhomMap(maNhom);
+                var nhomTBHs = _NhomTBHDA.GetItemByCityCodesMaDuAn("","CD43");
+
 
                 var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
 
