@@ -754,6 +754,37 @@ namespace Model.ModelExtend.API
 	    public string ma_hcm15_29 {get; set;}
 	    public string ma_hcm15_30 {get; set;}
 
+        public string ma_hcm19_01 {get; set;}
+        public string ma_hcm19_02 {get; set;}
+        public string ma_hcm19_03 {get; set;}
+        public string ma_hcm19_04 {get; set;}
+        public string ma_hcm19_05 {get; set;}
+        public string ma_hcm19_06 {get; set;}
+        public string ma_hcm19_07 {get; set;}
+        public string ma_hcm19_08 {get; set;}
+        public string ma_hcm19_09 {get; set;}
+        public string ma_hcm19_10 {get; set;}
+        public string ma_hcm19_11 {get; set;}
+        public string ma_hcm19_12 {get; set;}
+        public string ma_hcm19_13 {get; set;}
+        public string ma_hcm19_14 {get; set;}
+        public string ma_hcm19_15 {get; set;}
+        public string ma_hcm19_16 {get; set;}
+        public string ma_hcm19_17 {get; set;}
+        public string ma_hcm19_18 {get; set;}
+        public string ma_hcm19_19 {get; set;}
+        public string ma_hcm19_20 {get; set;}
+        public string ma_hcm19_21 {get; set;}
+        public string ma_hcm19_22 {get; set;}
+        public string ma_hcm19_23 {get; set;}
+        public string ma_hcm19_24 {get; set;}
+        public string ma_hcm19_25 {get; set;}
+        public string ma_hcm19_26 {get; set;}
+        public string ma_hcm19_27 {get; set;}
+        public string ma_hcm19_28 {get; set;}
+        public string ma_hcm19_29 {get; set;}
+        public string ma_hcm19_30 {get; set;}
+
         // Các thuộc tính còn lại
         public string tailieu { get; set; }
         public string bcs { get; set; }

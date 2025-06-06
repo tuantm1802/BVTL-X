@@ -6210,9 +6210,38 @@ namespace Common.Common
                 resultApi.ma_hcm15_28,
                 resultApi.ma_hcm15_29,
                 resultApi.ma_hcm15_30,
+                resultApi.ma_hcm19_01,
+                resultApi.ma_hcm19_02,
+                resultApi.ma_hcm19_03,
+                resultApi.ma_hcm19_04,
+                resultApi.ma_hcm19_05,
+                resultApi.ma_hcm19_06,
+                resultApi.ma_hcm19_07,
+                resultApi.ma_hcm19_08,
+                resultApi.ma_hcm19_09,
+                resultApi.ma_hcm19_10,
+                resultApi.ma_hcm19_11,
+                resultApi.ma_hcm19_12,
+                resultApi.ma_hcm19_13,
+                resultApi.ma_hcm19_14,
+                resultApi.ma_hcm19_15,
+                resultApi.ma_hcm19_16,
+                resultApi.ma_hcm19_17,
+                resultApi.ma_hcm19_18,
+                resultApi.ma_hcm19_19,
+                resultApi.ma_hcm19_20,
+                resultApi.ma_hcm19_21,
+                resultApi.ma_hcm19_22,
+                resultApi.ma_hcm19_23,
+                resultApi.ma_hcm19_24,
+                resultApi.ma_hcm19_25,
+                resultApi.ma_hcm19_26,
+                resultApi.ma_hcm19_27,
+                resultApi.ma_hcm19_28,
+                resultApi.ma_hcm19_29,
+                resultApi.ma_hcm19_30,
 
-
-    };
+            };
 
             var ls = listCodeMaKh.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
             return ls;
