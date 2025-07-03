@@ -318,13 +318,28 @@ namespace WebApp.Controllers
                 var tenDuAn = "";
                 if (!string.IsNullOrEmpty(maDuAn))
                     tenDuAn = "Dự án: " + _DuAnDA.GetItemByCode(maDuAn);
+
+                var file_name = maDuAn + "_" + CityCodes;
+
                 var tenNhomTBHs = "";
-                //if (nhomTBHs != null && nhomTBHs.Count > 0)
-                //{
-                //    tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
-                //}
+                if (nhomTBHs != null && nhomTBHs.Count > 0)
+                {
+                    tenNhomTBHs = "Nhóm: " + string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                }
+
                 //var file_name = maDuAn + "_" + string.Join("-", nhomTBHs.Select(x => x.manhom_tbh)) + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
-                var file_name = maDuAn + "_" + CityCodes + "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
+                string sNhomFilename = "";
+                if (nhomTBHs != null && nhomTBHs.Count == 1)
+                {
+                    sNhomFilename = string.Join("-", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                    file_name += "_" + sNhomFilename;
+                }
+                else
+                {
+                    file_name += "_" + string.Join("-", nhomTBHs.Select(x => x.tennhom_tbh));
+                }
+
+                file_name += "_BAO_CAO_QUY_" + quy+"-"+Year+".xlsx";
 
                 using (XLWorkbook wb = new XLWorkbook())
                 {
@@ -906,7 +921,7 @@ namespace WebApp.Controllers
             #region header
             // 
             ws.Cell("A1").Value = "BÁO CÁO QUÝ DỰ ÁN CD43";
-            ws.Range("A1:F1").Row(1).Merge();
+            ws.Range("A1:G1").Row(1).Merge();
             ws.Row(1).Height = 30;
             ws.Cell("A1").Style.Font.Bold = true;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -916,7 +931,7 @@ namespace WebApp.Controllers
 
             // 
             ws.Cell("A2").Value = tileReport;
-            ws.Range("A2:F2").Row(1).Merge();
+            ws.Range("A2:G2").Row(1).Merge();
             ws.Cell("A2").Style.Font.Bold = true;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -926,7 +941,7 @@ namespace WebApp.Controllers
             // 
             ws.Cell("A3").Value = tenNhomTBHs;
             ws.Row(1).Height = 40;
-            ws.Range("A3:F3").Row(1).Merge();
+            ws.Range("A3:G3").Row(1).Merge();
             ws.Cell("A3").Style.Font.Bold = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             ws.Cell("A3").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;

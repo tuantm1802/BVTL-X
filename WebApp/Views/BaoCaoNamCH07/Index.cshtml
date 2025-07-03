@@ -12,7 +12,7 @@
 
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label>Năm</label>
-            <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear">
+            <select class="form-control" ui-select2 multiple ng-model="ListYearCode" name="ListYearCode" ng-options="item.Id as item.Name for item in ListYear">
             </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">

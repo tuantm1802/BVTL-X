@@ -6,6 +6,7 @@
     $scope.modelSearch.pageSize = 10;
     $scope.modelSearch.SortColumn = "ParamCode DESC";
     $scope.ListYear = [];
+    $scope.ListYearCode = [];
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListMaNhomTBH = [];
@@ -15,25 +16,26 @@
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
         $scope.ListMaNhomTBH = [];
-    $scope.ListNhomTBH = [];
+        $scope.ListNhomTBH = [];
 
         var date = new Date();
         
-    for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
-        var tmpYear = {
-            Id: i,
-            Name: i + ''
-        };
-        $scope.ListYear.push(tmpYear);
-    }
-    var tmpAll = { Id: 0, Name: '-' };        
+        for (var i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
+            var tmpYear = {
+                Id: i,
+                Name: i + ''
+            };
+            $scope.ListYear.push(tmpYear);
+        }
+
+        var tmpAll = { Id: 0, Name: '-' };        
         $scope.ListYear.unshift(tmpAll);
         console.log($scope.ListYear);
-    $scope.modelSearch.Year = date.getFullYear();
+        $scope.modelSearch.Year = date.getFullYear();
+        $scope.ListYearCode.push(date.getFullYear())
 
-
-    GetBottomAction();
-    $scope.Changecity();
+        GetBottomAction();
+        $scope.Changecity();
         $scope.LoadPage(1);
     });
 
@@ -73,7 +75,17 @@
         if ($scope.modelSearch.Year == null /*|| $scope.modelSearch.Year == 0*/) {
             toastr.error("Vui lòng chọn năm!");
             return;
+        } else {
+            $scope.modelSearch.Years = '';
+            for (var i = 0; i < $scope.ListYearCode.length; i++) {
+                if ($scope.modelSearch.Years == null || $scope.modelSearch.Years == '') {
+                    $scope.modelSearch.Years = $scope.ListYearCode[i];
+                } else {
+                    $scope.modelSearch.Years += ',' + $scope.ListYearCode[i];
+                }
+            }
         }
+        console.log($scope.modelSearch.Years);
 
         //if ($scope.modelSearch.MaDuAn == null || $scope.modelSearch.MaDuAn == '') {
         //    toastr.error("Vui lòng chọn dự án!");
