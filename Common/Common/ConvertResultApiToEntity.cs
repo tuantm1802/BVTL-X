@@ -5626,6 +5626,7 @@ namespace Common.Common
                     objDB.NguoiLap = resultApi.nguoi_nhan;
                     objDB.LoaiPhieu = 1;
                     objDB.record_id = resultApi.record_id;
+                    objDB.manhom_tbh = resultApi.nhom;
 
                     List<string> listCodeVatPham = getListValFromMultiFieldsBBGNVatPham(resultApi);
                     List<string> listCodeVatPhamSoLuong = getListValFromMultiFieldsBBGNVatPhamSoLuong(resultApi);

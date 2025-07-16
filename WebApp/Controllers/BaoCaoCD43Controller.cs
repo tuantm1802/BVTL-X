@@ -711,11 +711,13 @@ namespace WebApp.Controllers
                                     InsertDataCell(ws, GetExcelColumnName(startColumn), row, quy.SoLuong > 0 ? quy.SoLuong.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, quy.SoLuong > 0 ? true : false);
                                     startColumn++;
                                 }
-                                InsertDataCell(ws, GetExcelColumnName(startColumn), row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
+                                InsertDataCell(ws, GetExcelColumnName(startColumn), row, rowReport.SoLuongTuDauDA > 0 ? rowReport.SoLuongTuDauDA.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SoLuongTuDauDA > 0 ? true : false);
+                                InsertDataCell(ws, GetExcelColumnName(startColumn+1), row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
                             }
                             else
                             {
-                                InsertDataCell(ws, "E", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
+                                InsertDataCell(ws, "E", row, rowReport.SoLuongTuDauDA > 0 ? rowReport.SoLuongTuDauDA.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.SoLuongTuDauDA > 0 ? true : false);
+                                InsertDataCell(ws, "F", row, rowReport.TyLe > 0 ? rowReport.TyLe.ToString() : "", boldText, XLAlignmentHorizontalValues.Right, XLAlignmentVerticalValues.Center, rowReport.TyLe > 0 ? true : false);
                             }
 
                             row++;
@@ -724,12 +726,12 @@ namespace WebApp.Controllers
 
                     CreateFooterTongHopQuy(ws, titleReport, user, tenNhomTBHs);
                     
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Font.FontName = "Times New Roman";
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Font.FontSize = 13;
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 5) + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Font.FontName = "Times New Roman";
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Font.FontSize = 13;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws.Range("A5:" + GetExcelColumnName(listQuy.Count + 6) + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -831,19 +833,31 @@ namespace WebApp.Controllers
                     ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                     startColumn++;
                 }
-                ws.Cell(GetExcelColumnName(startColumn) + row).Value = "Tỷ lệ";
+                ws.Cell(GetExcelColumnName(startColumn) + row).Value = "Số lượng từ đầu DA";
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Font.Bold = true;
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.WrapText = true;
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell(GetExcelColumnName(startColumn) + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+                ws.Cell(GetExcelColumnName(startColumn+1) + row).Value = "Tỷ lệ (%)";
+                ws.Cell(GetExcelColumnName(startColumn+1) + row).Style.Font.Bold = true;
+                ws.Cell(GetExcelColumnName(startColumn+1) + row).Style.Alignment.WrapText = true;
+                ws.Cell(GetExcelColumnName(startColumn+1) + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws.Cell(GetExcelColumnName(startColumn+1) + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             }
             else
             {
-                ws.Cell("E" + row).Value = "Tỷ lệ";
+                ws.Cell("E" + row).Value = "Số lượng từ đầu DA";
                 ws.Cell("E" + row).Style.Font.Bold = true;
                 ws.Cell("E" + row).Style.Alignment.WrapText = true;
                 ws.Cell("E" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Cell("E" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+                ws.Cell("F" + row).Value = "Tỷ lệ (%)";
+                ws.Cell("F" + row).Style.Font.Bold = true;
+                ws.Cell("F" + row).Style.Alignment.WrapText = true;
+                ws.Cell("F" + row).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws.Cell("F" + row).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             }
 
             #endregion

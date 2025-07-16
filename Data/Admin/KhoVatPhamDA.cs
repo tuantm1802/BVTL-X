@@ -136,7 +136,7 @@ namespace Data.Admin
                     SELECT 1
                     FROM (
                         SELECT 
-                            'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
+                            'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
                             2 AS LoaiPhieu, -- Phiếu Xuất
                             NgayPhat AS NgayLap
                         FROM (
@@ -172,29 +172,31 @@ namespace Data.Admin
                         LoaiPhieu,
                         NgayLap,
                         GhiChu,
-                        sync_date
+                        sync_date,
+                        manhom_tbh
                     )
-                    SELECT 
-                        'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
-                        2 AS LoaiPhieu, -- Phiếu Xuất
-                        NgayPhat AS NgayLap,
-                        N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu,
-                        GETDATE() AS sync_date
-                    FROM (
-                        -- Dữ liệu từ CD43_KHACH_HANG_PHIEU_TU_VAN
-                        SELECT ptv.ngaytuvan AS NgayPhat
-                        FROM CD43_KHACH_HANG_PHIEU_TU_VAN ptv
-                        WHERE (ptv.cau6_4 = 1 OR ptv.cau6_5 = 1)
-                        AND ptv.phiu_t_vn_complete = 2
+                     SELECT 
+                         'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
+                         2 AS LoaiPhieu, -- Phiếu Xuất
+                         NgayPhat AS NgayLap,
+                         N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu,
+                         GETDATE() AS sync_date,
+		                  manhom_tbh
+                     FROM (
+                         -- Dữ liệu từ CD43_KHACH_HANG_PHIEU_TU_VAN
+                         SELECT ptv.ngaytuvan AS NgayPhat, ptv.manhom_tbh
+                         FROM CD43_KHACH_HANG_PHIEU_TU_VAN ptv
+                         WHERE (ptv.cau6_4 = 1 OR ptv.cau6_5 = 1)
+                         AND ptv.phiu_t_vn_complete = 2
 
-                        UNION ALL
+                         UNION ALL
 
-                        -- Dữ liệu từ CD43_KHACH_HANG_SINH_HOAT_NHOM
-                        SELECT shn.ngay_shn AS NgayPhat
-                        FROM CD43_KHACH_HANG_SINH_HOAT_NHOM shn
-                        WHERE shn.phatvatpham = 1
-                    ) AS Data
-                    GROUP BY NgayPhat;
+                         -- Dữ liệu từ CD43_KHACH_HANG_SINH_HOAT_NHOM
+                         SELECT shn.ngay_shn AS NgayPhat, shn.manhom_tbh
+                         FROM CD43_KHACH_HANG_SINH_HOAT_NHOM shn
+                         WHERE shn.phatvatpham = 1
+                     ) AS Data
+                     GROUP BY NgayPhat, manhom_tbh;
                 ";
 
                     //db.Database.ExecuteSqlRaw(insertPhieuXuatNhapQuery);
@@ -208,7 +210,7 @@ namespace Data.Admin
                         FROM (
                             -- Chuẩn bị các bản ghi sẽ được chèn vào
                             SELECT 
-                                'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
+                                'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
                                 'vat_pham___1' AS MaSanPham,
                                 2 AS LoaiPhieu,
                                 NgayPhat AS NgayLap
@@ -231,7 +233,7 @@ namespace Data.Admin
                             UNION ALL
 
                             SELECT 
-                                'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
+                                'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
                                 'vat_pham___2' AS MaSanPham,
                                 2 AS LoaiPhieu,
                                 NgayPhat AS NgayLap
@@ -273,22 +275,25 @@ namespace Data.Admin
                         SoLuong,
                         maduan,
                         sync_date,
-                        GhiChu
+                        GhiChu,
+                        manhom_tbh
                     )
                     SELECT 
                         NgayPhat AS NgayLap,
                         2 AS LoaiPhieu,
-                        'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
+                        'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
                         'vat_pham___1' AS MaSanPham,
                         SUM(TRY_CAST(SoLuongBCS AS INT)) AS SoLuong,
                         'CD43' AS maduan,
                         GETDATE() AS sync_date,
-                        N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu
+                        N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu,
+                        manhom_tbh
                     FROM (
                         SELECT 
                             ptv.ngaytuvan AS NgayPhat,
                             ptv.cau6_4_1 AS SoLuongBCS,
-                            NULL AS SoLuongGel
+                            NULL AS SoLuongGel,
+				                    manhom_tbh
                         FROM CD43_KHACH_HANG_PHIEU_TU_VAN ptv
                         WHERE (ptv.cau6_4 = 1 OR ptv.cau6_5 = 1)
                         AND ptv.phiu_t_vn_complete = 2
@@ -298,28 +303,31 @@ namespace Data.Admin
                         SELECT 
                             shn.ngay_shn AS NgayPhat,
                             shn.bcs AS SoLuongBCS,
-                            NULL AS SoLuongGel
+                            NULL AS SoLuongGel,
+				                    manhom_tbh
                         FROM CD43_KHACH_HANG_SINH_HOAT_NHOM shn
                         WHERE shn.phatvatpham = 1
                     ) AS DataBCS
-                    GROUP BY NgayPhat
+                    GROUP BY NgayPhat, manhom_tbh
 
                     UNION ALL
 
                     SELECT 
                         NgayPhat AS NgayLap,
                         2 AS LoaiPhieu,
-                        'PX' + FORMAT(NgayPhat, 'yyyyMMdd') AS MaPhieu,
+                        'PX' + FORMAT(NgayPhat, 'yyyyMMdd') + manhom_tbh AS MaPhieu,
                         'vat_pham___2' AS MaSanPham,
                         SUM(TRY_CAST(SoLuongGel AS INT)) AS SoLuong,
                         'CD43' AS maduan,
                         GETDATE() AS sync_date,
-                        N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu
+                        N'Phiếu xuất từ dữ liệu Phiếu tư vấn và Sinh hoạt nhóm' AS GhiChu,
+		                    manhom_tbh
                     FROM (
                         SELECT 
                             ptv.ngaytuvan AS NgayPhat,
                             NULL AS SoLuongBCS,
-                            ptv.cau6_5_1 AS SoLuongGel
+                            ptv.cau6_5_1 AS SoLuongGel,
+				                    manhom_tbh
                         FROM CD43_KHACH_HANG_PHIEU_TU_VAN ptv
                         WHERE (ptv.cau6_4 = 1 OR ptv.cau6_5 = 1)
                         AND ptv.phiu_t_vn_complete = 2
@@ -329,11 +337,12 @@ namespace Data.Admin
                         SELECT 
                             shn.ngay_shn AS NgayPhat,
                             NULL AS SoLuongBCS,
-                            shn.gel AS SoLuongGel
+                            shn.gel AS SoLuongGel,
+				                    manhom_tbh
                         FROM CD43_KHACH_HANG_SINH_HOAT_NHOM shn
                         WHERE shn.phatvatpham = 1
                     ) AS DataGel
-                    GROUP BY NgayPhat;
+                    GROUP BY NgayPhat, manhom_tbh;
                 ";
 
                     //db.Database.ExecuteSqlRaw(insertChiTietPhieuXuatNhapQuery);
@@ -343,6 +352,82 @@ namespace Data.Admin
                 //db.SaveChanges();
                 return true;
             
+        }
+
+        public List<TonKhoModel> GetTonKhoData(DateTime fromDate, DateTime toDate, string maNhomTBH)
+        {
+            var listTonKho = new List<TonKhoModel>();
+
+            string query = @"
+        -- Tồn kho đầu kỳ
+        WITH TonKhoDauKy AS (
+            SELECT 
+                SP.MaSanPham,
+                SP.TenSanPham, SP.DonViTinh,
+                ISNULL(SUM(CASE 
+                    WHEN PXN.NgayLap < @FromDate AND PXN.LoaiPhieu = 1 THEN CT.SoLuong 
+                    WHEN PXN.NgayLap < @FromDate AND PXN.LoaiPhieu = 2 THEN -CT.SoLuong 
+                    ELSE 0 END), 0) AS TonDauKy
+            FROM 
+                SanPham SP
+            LEFT JOIN ChiTietPhieuXuatNhap CT ON SP.MaSanPham = CT.MaSanPham
+            LEFT JOIN PhieuXuatNhap PXN ON CT.MaPhieu = PXN.MaPhieu
+            WHERE (@MaNhomTBH IS NULL OR CT.manhom_tbh = @MaNhomTBH)
+            GROUP BY SP.MaSanPham, SP.TenSanPham, SP.DonViTinh
+        ),
+        -- Nhập kho và xuất kho trong khoảng thời gian
+        NhapXuatTrongKy AS (
+            SELECT 
+                SP.MaSanPham,
+                SUM(CASE WHEN PXN.LoaiPhieu = 1 THEN CT.SoLuong ELSE 0 END) AS NhapKho,
+                SUM(CASE WHEN PXN.LoaiPhieu = 2 THEN CT.SoLuong ELSE 0 END) AS XuatKho
+            FROM 
+                SanPham SP
+            LEFT JOIN ChiTietPhieuXuatNhap CT ON SP.MaSanPham = CT.MaSanPham
+            LEFT JOIN PhieuXuatNhap PXN ON CT.MaPhieu = PXN.MaPhieu
+            WHERE PXN.NgayLap BETWEEN @FromDate AND @ToDate
+              AND (@MaNhomTBH IS NULL OR CT.manhom_tbh = @MaNhomTBH)
+            GROUP BY SP.MaSanPham
+        )
+        -- Tổng hợp báo cáo
+        SELECT 
+            TKD.MaSanPham,
+            TKD.TenSanPham, TKD.DonViTinh,
+            TKD.TonDauKy,
+            NX.NhapKho,
+            NX.XuatKho,
+            (TKD.TonDauKy + ISNULL(NX.NhapKho,0) - ISNULL(NX.XuatKho,0)) AS TonCuoiKy
+        FROM TonKhoDauKy TKD
+        LEFT JOIN NhapXuatTrongKy NX ON TKD.MaSanPham = NX.MaSanPham
+        ORDER BY TKD.MaSanPham";
+
+            var parameters = new List<SqlParameter>
+                                {
+                                    new SqlParameter("@FromDate", SqlDbType.DateTime) { Value = fromDate },
+                                    new SqlParameter("@ToDate", SqlDbType.DateTime) { Value = toDate },
+                                    new SqlParameter("@MaNhomTBH", SqlDbType.VarChar, 50) { Value = string.IsNullOrWhiteSpace(maNhomTBH) ? DBNull.Value : (object)maNhomTBH  }
+                                };
+
+            var result = _DatabaseSql.ExecuteTable(query, parameters);
+
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    listTonKho.Add(new TonKhoModel
+                    {
+                        MaSanPham = row.Field<string>("MaSanPham"),
+                        TenSanPham = row.Field<string>("TenSanPham"),
+                        DVT = row.Field<string>("DonViTinh"),
+                        TonDauKy = row.Field<int?>("TonDauKy"),
+                        TonCuoiKy = row.Field<int?>("TonCuoiKy"),
+                        NhapKho = row.Field<int?>("NhapKho"),
+                        XuatKho = row.Field<int?>("XuatKho"),
+                    });
+                }
+            }
+
+            return listTonKho;
         }
 
         public List<TonKhoModel> GetTonKhoData(DateTime fromDate, DateTime toDate)

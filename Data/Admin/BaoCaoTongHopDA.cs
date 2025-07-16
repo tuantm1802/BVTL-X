@@ -2284,6 +2284,7 @@ namespace Data.Admin
                         dataBC.DonVi = bcByRow.FirstOrDefault().DonVi;
                         dataBC.BoldText = bcByRow.FirstOrDefault().BoldText;
                         dataBC.TyLe = bcByRow.FirstOrDefault().TyLe;
+                        dataBC.SoLuongTuDauDA = bcByRow.FirstOrDefault().SoLuongTuDauDA;
 
                         int tongSoLuong = 0;
                         // Tính dữ liệu quý
@@ -2307,10 +2308,10 @@ namespace Data.Admin
                         }
 
                         // Tyle = Tổng số lượng các Quý/Chỉ tiêu
-                        if (!String.IsNullOrEmpty(dataBC.ChiTieu) && Int32.Parse(dataBC.ChiTieu) > 0)
-                        {
-                            dataBC.TyLe = (int)TinhPhanTram(tongSoLuong, Int32.Parse(dataBC.ChiTieu));
-                        }
+                        //if (!String.IsNullOrEmpty(dataBC.ChiTieu) && Int32.Parse(dataBC.ChiTieu) > 0)
+                        //{
+                        //    dataBC.TyLe = (int)TinhPhanTram(tongSoLuong, Int32.Parse(dataBC.ChiTieu));
+                        //}
 
                         result.Add(dataBC);
                     }

@@ -15,12 +15,17 @@
                 <label for="toDate">Đến Ngày:</label>
                 <input type="date" id="toDate" class="form-control" ng-model="toDate">
             </div>
+            <div class="form-group col-md-2">
+                <label>Nhóm</label>
+                <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + item.CityName) for item in ListNhomTBH"></select>
+            </div>
             <div class="form-group col-md-4 align-self-end">
                 <button class="btn btn-primary" ng-click="searchTonKho()">Tìm kiếm</button>
                 <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
                     <i class="fas fa-pencil-alt"></i> Xuất Excel
                 </button>
             </div>
+            
         </div>
 
         <!-- Bảng hiển thị dữ liệu -->

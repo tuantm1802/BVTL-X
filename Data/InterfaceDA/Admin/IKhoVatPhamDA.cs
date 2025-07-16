@@ -31,6 +31,7 @@ namespace Data.InterfaceDA.Admin
         DataTableResponse<ChiTietPhieuXuatNhapModel> GetAllChiTietPhieuXuatNhaps(DataTableRequest request);
         bool CapNhatPhieuXuatNhap(ChiTietPhieuXuatNhapModel model);
         List<TonKhoModel> GetTonKhoData(DateTime fromDate, DateTime toDate);
+        List<TonKhoModel> GetTonKhoData(DateTime fromDate, DateTime toDate, string maNhomTBH);
 
         //DataTableResponse<ChiTietPhieuXuatNhap> GetAllChiTietPhieuXuats(DataTableRequest request);
         //DataTableResponse<ChiTietPhieuXuatNhap> GetAllChiTietPhieuNhaps(DataTableRequest request);

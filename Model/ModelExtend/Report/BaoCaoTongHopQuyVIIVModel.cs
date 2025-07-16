@@ -14,6 +14,7 @@ namespace Model.ModelExtend.Report
         public string DonVi { get; set; }
         public bool BoldText { get; set; }
         public List<ListQuyModel> ListQuy { get; set; }
+        public int? SoLuongTuDauDA { get; set; }
         public int? TyLe { get; set; }
     }
 
@@ -37,6 +38,7 @@ namespace Model.ModelExtend.Report
         public int? Quy { get; set; }
         public int? Nam { get; set; }
         public int? SoLuong { get; set; }
+        public int? SoLuongTuDauDA { get; set; }
         public int? TyLe { get; set; }
     }
 }

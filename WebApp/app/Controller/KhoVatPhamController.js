@@ -7,6 +7,9 @@
     $scope.modelSearch.SortColumn = "kqslace_id";
 
     $scope.ListDuAn = [];
+    $scope.ListMaNhomTBH = [];
+    $scope.ListNhomTBH = [];
+
     var ChiTietPhieuXuatNhapTable = null;
     $scope.ParamIdSeleted = 0;
     angular.element(document).ready(function () {
@@ -59,7 +62,7 @@
             //    sPageButton: 'dt-paging-button page-item'
             //});
 
-            $('#ChiTietPhieuXuatNhapTable').DataTable({
+            ChiTietPhieuXuatNhapTable = $('#ChiTietPhieuXuatNhapTable').DataTable({
                 processing: true,
                 serverSide: true,
                 
@@ -192,8 +195,10 @@ app.controller('TonKhoVatPhamController', function ($scope, $http) {
     // Gán giá trị mặc định cho Từ Ngày và Đến Ngày
     $scope.fromDate = threeMonthsAgo; // Đối tượng Date
     $scope.toDate = today; // Đối tượng Date
+    $scope.MaNhomTBH = '';
 
     let dataTable = null; // Khai báo biến để quản lý DataTable
+    
 
     // Phương thức tìm kiếm tồn kho
     $scope.searchTonKho = function () {
@@ -203,11 +208,24 @@ app.controller('TonKhoVatPhamController', function ($scope, $http) {
             const fromDateFormatted = $scope.fromDate.toISOString().split('T')[0];
             const toDateFormatted = $scope.toDate.toISOString().split('T')[0];
 
+            $scope.MaNhomTBH = '';
+            if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+                for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                    if ($scope.MaNhomTBH == null || $scope.MaNhomTBH == '') {
+                        $scope.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                    } else {
+                        $scope.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                    }
+                }
+            }
+            console.log($scope.MaNhomTBH);
+
             // Gọi API trực tiếp trong hàm searchTonKho
             $http.get('/KhoVatPham/GetTonKhoData', {
                 params: {
                     fromDate: fromDateFormatted,
-                    toDate: toDateFormatted
+                    toDate: toDateFormatted,
+                    maNhomTBH: $scope.MaNhomTBH
                 }
             })
                 .then(function (response) {
@@ -266,11 +284,54 @@ app.controller('TonKhoVatPhamController', function ($scope, $http) {
         if ($scope.toDate == null || $scope.toDate == '') {
             toastr.error("Vui lòng chọn Đến ngày!");
             return;
-        }       
+        }     
+        $scope.MaNhomTBH = '';
+        if ($scope.ListMaNhomTBH != null && $scope.ListMaNhomTBH.length > 0) {
+            for (var i = 0; i < $scope.ListMaNhomTBH.length; i++) {
+                if ($scope.MaNhomTBH == null || $scope.MaNhomTBH == '') {
+                    $scope.MaNhomTBH = $scope.ListMaNhomTBH[i];
+                } else {
+                    $scope.MaNhomTBH += ',' + $scope.ListMaNhomTBH[i];
+                }
+            }
+        }
         const fromDateFormatted = $scope.fromDate.toISOString().split('T')[0];
         const toDateFormatted = $scope.toDate.toISOString().split('T')[0];
-
-        window.location.href = '/KhoVatPham/ExportData?fromDate=' + fromDateFormatted + '&toDate=' + toDateFormatted;
+        console.log('MaNhomTBH:');
+        console.log($scope.MaNhomTBH);
+        window.location.href = '/KhoVatPham/ExportData?fromDate=' + fromDateFormatted + '&toDate=' + toDateFormatted
+                            + '&maNhomTBHs=' + ($scope.MaNhomTBH == undefined ? '' : $scope.MaNhomTBH);
     }
+
+    $scope.Changecity = function () {
+
+        var CityCodes = '';
+        if ($scope.ListCityCode != null && $scope.ListCityCode.length > 0) {
+            for (var i = 0; i < $scope.ListCityCode.length; i++) {
+                if (CityCodes == null || CityCodes == '') {
+                    CityCodes = $scope.ListCityCode[i];
+                } else {
+                    CityCodes += ',' + $scope.ListCityCode[i];
+                }
+            }
+        }
+        $scope.ListNhomTBH = [];
+        $scope.ListMaNhomTBH = [];
+        $.ajax({
+            type: 'post',
+            url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
+            cache: false,
+            async: false,
+            data: {
+                CityCodes: CityCodes
+            },
+            success: function (respone) {
+                $scope.ListNhomTBH = respone.NhomTBHs;
+            }
+        });
+
+    };
+
+    $scope.Changecity();
 
 });

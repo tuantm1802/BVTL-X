@@ -26,6 +26,7 @@ namespace WebApp.Controllers
         IDuAnDA _DuAnDA = new DuAnDA();
         BaseController _helperController = new BaseController();
         private BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
 
         // GET: Kho Vat Pham        
         public ActionResult Index()
@@ -68,10 +69,17 @@ namespace WebApp.Controllers
         }
 
         // API endpoint để lấy dữ liệu tồn kho theo ngày
+        //[System.Web.Mvc.HttpGet]
+        //public JsonResult GetTonKhoData(string fromDate, string toDate)
+        //{
+        //    var result = _KhoVatPhamDA.GetTonKhoData(DateTime.Parse(fromDate), DateTime.Parse(toDate));
+        //    return Json(new { data = result }, JsonRequestBehavior.AllowGet);
+        //}
+
         [System.Web.Mvc.HttpGet]
-        public JsonResult GetTonKhoData(string fromDate, string toDate)
+        public JsonResult GetTonKhoData(string fromDate, string toDate, string maNhomTBH)
         {
-            var result = _KhoVatPhamDA.GetTonKhoData(DateTime.Parse(fromDate), DateTime.Parse(toDate));
+            var result = _KhoVatPhamDA.GetTonKhoData(DateTime.Parse(fromDate), DateTime.Parse(toDate), maNhomTBH);
             return Json(new { data = result }, JsonRequestBehavior.AllowGet);
         }
 
@@ -118,7 +126,7 @@ namespace WebApp.Controllers
 
         #region Xuất dữ liệu ra excel
         [System.Web.Mvc.HttpGet]
-        public ActionResult ExportData(string fromDate, string toDate)
+        public ActionResult ExportData(string fromDate, string toDate, string maNhomTBHs)
         {
             try
             {
@@ -137,7 +145,20 @@ namespace WebApp.Controllers
                 string sThoiGian = fromDate + " - " + toDate;
                 if (!string.IsNullOrEmpty(maDuAn))
                     tenDuAn = "Dự án: " + _DuAnDA.GetItemByCode(maDuAn);
-                
+
+                // Lấy danh sách nhóm TBH theo tỉnh
+                var nhomTBHs = new List<NhomTBHPageModel>();
+                if (string.IsNullOrEmpty(maNhomTBHs))
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByCityCodes("");
+                else
+                    nhomTBHs = _BVTL_NHOM_TBHDA.GetItemByMaNhomMap(maNhomTBHs);
+
+                var tenNhomTBHs = "";
+                if (nhomTBHs != null && nhomTBHs.Count > 0)
+                {
+                    tenNhomTBHs = string.Join("; ", nhomTBHs.Select(x => x.tennhom_tbh + "-" + x.CityName));
+                }
+
                 var file_name = maDuAn + "_" + "_BAO_CAO_TON_KHO_" + fromDate + "_" + toDate + ".xlsx";
 
                 using (XLWorkbook wb = new XLWorkbook())
@@ -145,7 +166,7 @@ namespace WebApp.Controllers
 
                     var ws = wb.Worksheets.Add("Báo cáo tồn kho");
                     
-                    CreateHeader(ws, maDuAn, user, "", sThoiGian);
+                    CreateHeader(ws, maDuAn, user, "", sThoiGian, tenNhomTBHs);
 
                     var columnName = "";
                     var columnNumber = 0;
@@ -284,7 +305,7 @@ namespace WebApp.Controllers
         /// Gán dữ liệu cho cell có gộp cell
         /// </summary>
         /// <param name="ws"></param>
-        private void CreateHeader(IXLWorksheet ws, string tileReport, UserLogin user, string tenNhomTBHs, string sThoiGian)
+        private void CreateHeader(IXLWorksheet ws, string tileReport, UserLogin user, string tenToChucCaNhan, string sThoiGian, string tenNhomTBHs)
         {
             #region header
             // 
@@ -309,7 +330,7 @@ namespace WebApp.Controllers
 
             // 
             ws.Cell("B3").Value = "Tên tổ chức/Cá nhân:";
-            ws.Cell("C3").Value = tenNhomTBHs;
+            ws.Cell("C3").Value = tenToChucCaNhan;
             //ws.Range("A3:J3").Row(1).Merge();
             ws.Cell("B3").Style.Font.Bold = true;
             ws.Cell("B3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -325,6 +346,15 @@ namespace WebApp.Controllers
             ws.Cell("B4").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             ws.Cell("B4").Style.Font.FontName = "Times New Roman";
             ws.Cell("B4").Style.Font.FontSize = 13;
+
+            ws.Cell("D4").Value = "Nhóm:";
+            ws.Cell("E4").Value = tenNhomTBHs;
+            //ws.Range("A3:J3").Row(1).Merge();
+            ws.Cell("D4").Style.Font.Bold = true;
+            ws.Cell("D4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            ws.Cell("D4").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Cell("D4").Style.Font.FontName = "Times New Roman";
+            ws.Cell("D4").Style.Font.FontSize = 13;
 
             var row = 6;
 
