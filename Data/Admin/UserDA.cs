@@ -79,19 +79,42 @@ namespace Data.Admin
 
             result.RoleName = db.BVTL_QT_QUYEN.FirstOrDefault(x => x.ID == result.GroupID).Name;
 
+            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
+               .Select(x => new BVTL_NHOM_TBH
+               {
+                   manhom_tbh = x.manhom_tbh,
+                   tennhom_tbh = x.tennhom_tbh,
+                   city_code = x.city_code
+               }).ToList();
+
             // Lấy danh sách nhóm thu thập dữ liệu
             result.TestGroups = new List<BVTL_NHOM_TBH>();
-            result.TestGroups = (from tg in db.BVTL_NHOM_TBH
+            result.TestGroups = (from tg in nhomTBHs
                                  join utg in db.BVTL_QT_NGUOI_DUNG_NHOM_TBH on tg.manhom_tbh equals utg.NhomTBHMa
                                  where utg.NguoiDungId == Id && utg.IsActive == true
                                  select tg).ToList();
+
+
 
             // Lấy danh sách tỉnh quản lý
             result.Citys = new List<BVTL_CITES>();
             if (!string.IsNullOrEmpty(result.CityCodes))
             {
+                var citys = db.BVTL_CITES.ToList()
+               .Select(x => new BVTL_CITES
+               {
+                   Code = x.Code,
+                   Name = x.Name,
+                   IsActive = x.IsActive,
+                   CreatedDate = x.CreatedDate,
+                   CreatedBy = x.CreatedBy,
+                   LastUpdateDate = x.LastUpdateDate,
+                   LastUpdateBy = x.LastUpdateBy
+               }).ToList();
+
+
                 var cityCodes = result.CityCodes.Split(',').ToList();
-                //result.Citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
+                result.Citys = citys.Where(x => cityCodes.Contains(x.Code)).ToList();
             }
 
             return result;

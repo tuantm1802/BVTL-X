@@ -17,7 +17,8 @@
 
     $scope.RoleBtnExportExcel = false;
     $scope.RoleBtnSearch = false;
-
+    var d = new Date();
+    var curr_datetime = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + '-' + d.getHours() + d.getMinutes();
     function GetBottomAction() {
         $.ajax({
             type: 'post',
@@ -249,7 +250,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'ChuyenGuiDichVu_' + curr_datetime
                     }
                 ]
                 ,

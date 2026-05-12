@@ -190,7 +190,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'TrainingDataCollection_' + curr_datetime
+                        title: null,
+                        sheetName: 'TrainingDataCollection_' + curr_datetime                        
                     }
                 ]
                 ,

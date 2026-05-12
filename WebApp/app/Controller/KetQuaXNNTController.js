@@ -168,7 +168,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'KetQuaXNNuocTieu_' + curr_datetime
+                        title: null,
+                        sheetName: 'KetQuaXNNT_' + curr_datetime
                     }
                 ]
                 ,

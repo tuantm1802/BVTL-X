@@ -9,6 +9,10 @@
     $scope.ListDuAn = [];
     var dataTableCustomer = null;
     $scope.ParamIdSeleted = 0;
+
+    var d = new Date();
+    var curr_datetime = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + '-' + d.getHours() + d.getMinutes();
+
     angular.element(document).ready(function () {
 
         $scope.ListDuAn = [];
@@ -307,7 +311,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'Xuất excel'
+                        title: null,
+                        sheetName: 'KhachHang_' + curr_datetime
                     }
                 ]
                 ,

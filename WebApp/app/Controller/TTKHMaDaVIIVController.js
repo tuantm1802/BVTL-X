@@ -167,7 +167,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        title: 'ThongtinKhMatdau_' + curr_datetime
+                        title: null,
+                        sheetName: 'ThongtinKhMatdau_' + curr_datetime                        
                     }
                 ]
                 ,
