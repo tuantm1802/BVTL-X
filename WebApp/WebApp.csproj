@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -204,6 +204,7 @@
     <Compile Include="Controllers\BaoCaoQuyController.cs" />
     <Compile Include="Controllers\BaoCao6ThangController.cs" />
     <Compile Include="Controllers\BaoCaoThangController.cs" />
+    <Compile Include="Controllers\BaoCaoTuanController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BaseNoRoleController.cs" />
     <Compile Include="Controllers\ChatGayNghien3THController.cs" />
@@ -281,6 +282,8 @@
     </Compile>
     <Compile Include="Service\ITokenService.cs" />
     <Compile Include="Service\TokenService.cs" />
+    <Compile Include="Service\IExcelReportService.cs" />
+    <Compile Include="Service\ExcelReportService.cs" />
     <Compile Include="WebAppDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -300,6 +303,7 @@
     <Content Include="app\Controller\BaoCaoQuyController.js" />
     <Content Include="app\Controller\BaoCao6ThangController.js" />
     <Content Include="app\Controller\BaoCaoThangController.js" />
+    <Content Include="app\Controller\BaoCaoTuanController.js" />
     <Content Include="app\Controller\ChatGayNghien3THController.js" />
     <Content Include="app\Controller\ChatGayNghienTX3THController.js" />
     <Content Include="app\Controller\CityController.js" />
@@ -4618,6 +4622,7 @@
     <Content Include="Views\BaoCaoNam\Index.cshtml" />
     <Content Include="Views\BaoCaoQuy\Index.cshtml" />
     <Content Include="Views\BaoCaoThang\Index.cshtml" />
+    <Content Include="Views\BaoCaoTuan\Index.cshtml" />
     <Content Include="Views\ChatGayNghien3TH\Index.cshtml" />
     <Content Include="Views\ChatGayNghienTX3TH\Index.cshtml" />
     <Content Include="Views\City\Index.cshtml" />

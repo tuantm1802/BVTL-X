@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.InterfaceDA.API;
@@ -48,7 +48,18 @@ namespace Data.API
             {
                 log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + " | CITY_CODE:" + cityCode + " | MADUAN:" + maDuAn);
                 // Xóa dữ liệu bảng
-                var data = _databaseSql.ExecuteNonQueryTran("DELETE FROM " + tableName + " WHERE CITY_CODE = '" + cityCode + "' AND MADUAN = '"  + maDuAn + "'", conn, transaction);
+                if (!System.Text.RegularExpressions.Regex.IsMatch(tableName, @"^[a-zA-Z0-9_]+$"))
+                {
+                    throw new ArgumentException("Invalid table name: " + tableName);
+                }
+                int data = 0;
+                string deleteSql = string.Format("DELETE FROM [{0}] WHERE CITY_CODE = @cityCode AND MADUAN = @maDuAn", tableName);
+                using (SqlCommand cmd = new SqlCommand(deleteSql, conn, transaction))
+                {
+                    cmd.Parameters.Add("@cityCode", SqlDbType.VarChar).Value = (object)cityCode ?? DBNull.Value;
+                    cmd.Parameters.Add("@maDuAn", SqlDbType.VarChar).Value = (object)maDuAn ?? DBNull.Value;
+                    data = cmd.ExecuteNonQuery();
+                }
                 log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
 
 
