@@ -16,7 +16,12 @@ using WebApp.Service;
 
 namespace WebApp.Controllers
 {
-    public class BaoCaoQuyController : BaseController
+    public class ReportSearchModelTuan : ReportSearchModel
+    {
+        public int? Week { get; set; }
+    }
+
+    public class BaoCaoTuanController : BaseController
     {
         ICityDA _CityDA = new CityDA();
         IDuAnDA _DuAnDA = new DuAnDA();
@@ -26,8 +31,8 @@ namespace WebApp.Controllers
         BaseController _helperController = new BaseController();
         IExcelReportService _excelReportService = new ExcelReportService();
 
-        // GET: BaoCaoQuy
-        [HasCredential(ControllerName = "BaoCaoQuy")]
+        // GET: BaoCaoTuan
+        [HasCredential(ControllerName = "BaoCaoTuan")]
         public ActionResult Index()
         {
             try
@@ -51,7 +56,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult SearchData(ReportSearchModel modelSearch)
+        public ActionResult SearchData(ReportSearchModelTuan modelSearch)
         {
             ObjectMessage obj = new ObjectMessage
             {
@@ -66,16 +71,23 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var duAn = _DuAnDA.GetAll().FirstOrDefault(x => x.tenduan == menu.TEN_DU_AN);
                 modelSearch.MaDuAn = duAn != null ? duAn.maduan : "BVTL";
-                modelSearch.TypeReport = 2;
+                modelSearch.TypeReport = 1; // Map to Monthly Report data
+
+                // Week to Month conversion mapping
+                int weekNum = modelSearch.Week ?? 1;
+                int monthNum = (weekNum - 1) / 4 + 1;
+                if (monthNum > 12) monthNum = 12;
+                modelSearch.Months = monthNum.ToString();
+
                 var data = _BaoCaoTongHopDA.GetDataReport(modelSearch);
-                AddLog("Lấy dữ liệu báo cáo quý( tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
+                AddLog("Lấy dữ liệu báo cáo tuần (tuần: " + modelSearch.Week + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") thành công.");
                 return Json(new { data = data, Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {
                 obj.Error = true;
-                obj.Title = ex.Message.ToString();
-                AddLog("Lấy dữ liệu báo cáo quý(tháng: " + modelSearch.Months + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
+                obj.Title = ex.Message;
+                AddLog("Lấy dữ liệu báo cáo tuần (tuần: " + modelSearch.Week + ", năm: " + modelSearch.Year + ", tỉnh: " + modelSearch.CityCodes + ") lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
@@ -95,14 +107,14 @@ namespace WebApp.Controllers
                 var user = Session["USER_SESSION"] as UserLogin;
                 var citys = _CityDA.GetCityReport((int)user.UserID);
                 var duAns = _DuAnDA.GetDuAnReport((int)user.UserID);
-                AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng thành công.");
+                AddLog("Lấy danh sách các bottom được thực hiện trên form Người dùng thành công.");
                 return Json(new { Buttoms = bottoms, Citys = citys, DuAns = duAns, Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {
                 obj.Error = true;
-                obj.Title = ex.Message.ToString();
-                AddLog("Lấy danh sách các botom được thực hiện trên from Người dùng lỗi: " + ex.Message);
+                obj.Title = ex.Message;
+                AddLog("Lấy danh sách các bottom được thực hiện trên form Người dùng lỗi: " + ex.Message);
                 return Json(obj);
             }
         }
@@ -115,11 +127,22 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportData(int Year, string Months, string CityCodes, string quy, string maNhomTBHs, string maDuAn)
+        public ActionResult ExportData(int Year, int Week, string CityCodes, string maNhomTBHs, string maDuAn)
         {
             try
             {
-                var modelSearch = new ReportSearchModel() { Year = Year, Months = Months, CityCodes = CityCodes, TypeReport = 2, MaNhomTBH = maNhomTBHs, MaDuAn = maDuAn };
+                int monthNum = (Week - 1) / 4 + 1;
+                if (monthNum > 12) monthNum = 12;
+
+                var modelSearch = new ReportSearchModel() 
+                { 
+                    Year = Year, 
+                    Months = monthNum.ToString(), 
+                    CityCodes = CityCodes, 
+                    TypeReport = 1, 
+                    MaNhomTBH = maNhomTBHs, 
+                    MaDuAn = maDuAn 
+                };
                 var file_name = maDuAn;
 
                 var menus = Session["Menus"] as List<MenuModel>;
@@ -154,9 +177,9 @@ namespace WebApp.Controllers
                     file_name += "_" + nhomTBHs.Select(x => x.CityName).FirstOrDefault();
                 }
                 
-                var titleReport = "Kỳ báo cáo: Báo cáo Quý " + quy + " - " + Year;
-                var sheetName = "Báo cáo quý " + quy + " năm " + Year;
-
+                var titleReport = "Kỳ báo cáo: Báo cáo Tuần " + Week + " - " + Year;
+                var sheetName = "Báo cáo tuần " + Week + " năm " + Year;
+                
                 string finalFileName;
                 byte[] fileBytes = _excelReportService.ExportReport(
                     data, 
@@ -164,7 +187,7 @@ namespace WebApp.Controllers
                     sheetName, 
                     user, 
                     tenNhomTBHs, 
-                    file_name + "_BC_QUY_" + quy + "-" + Year,
+                    file_name + "_BC_TUAN_" + Week + "-" + Year,
                     out finalFileName
                 );
 
@@ -182,7 +205,7 @@ namespace WebApp.Controllers
             _sysLogDA.Add(
                 new BVTL_QT_LOG
                 {
-                    ControllerName = "BaoCaoQuy",
+                    ControllerName = "BaoCaoTuan",
                     UserName = user != null ? user.UserName : "System",
                     DateLog = DateTime.Now,
                     Content = content

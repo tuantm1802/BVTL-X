@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.InterfaceDA.Admin;
@@ -29,18 +29,42 @@ namespace Data.Admin
             var result = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
             if (result == null)
                 return 0;
-            else
+
+            if (!result.Status)
+                return -1;
+
+            string savedHash = result.Password;
+            bool isCorrect = false;
+            bool isMd5 = (savedHash != null && savedHash.Length == 32 && System.Text.RegularExpressions.Regex.IsMatch(savedHash, @"^[a-fA-F0-9]+$"));
+
+            if (isMd5)
             {
-                if (!result.Status)
-                    return -1;
-                else
+                string md5Hash = _encryptor.MD5Hash(password);
+                if (savedHash.Equals(md5Hash, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (result.Password == password)
-                        return 1;
-                    else
-                        return -2;
+                    isCorrect = true;
+                    // Auto-migrate to secure PBKDF2 hash
+                    try
+                    {
+                        result.Password = _encryptor.HashPassword(password);
+                        db.SaveChanges();
+                        log.Info("Successfully auto-migrated password to PBKDF2 for user: " + userName);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Failed to auto-migrate password to PBKDF2 for user: " + userName + ". Error: " + ex.Message);
+                    }
                 }
             }
+            else
+            {
+                isCorrect = _encryptor.VerifyPassword(password, savedHash);
+            }
+
+            if (isCorrect)
+                return 1;
+            else
+                return -2;
         }
         public BVTL_QT_NGUOI_DUNG GetItemByUserName(string userName)
         {
@@ -188,9 +212,9 @@ namespace Data.Admin
                     {
                         // Thêm người dùng
                         if (!string.IsNullOrEmpty(model.Password))
-                            model.Password = _encryptor.MD5Hash(model.Password);
+                            model.Password = _encryptor.HashPassword(model.Password);
                         else
-                            model.Password = _encryptor.MD5Hash("123456789a@");
+                            model.Password = _encryptor.HashPassword("123456789a@");
                         model.IsActive = true;
                         model = context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
@@ -356,15 +380,28 @@ namespace Data.Admin
             {
                 var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
                 var passwordOldb = data.Password;
-                string passwordOd1 = _encryptor.MD5Hash(passwordOd);
-                if (passwordOldb != passwordOd1)
+                
+                bool isCorrect = false;
+                bool isMd5 = (passwordOldb != null && passwordOldb.Length == 32 && System.Text.RegularExpressions.Regex.IsMatch(passwordOldb, @"^[a-fA-F0-9]+$"));
+                
+                if (isMd5)
+                {
+                    string passwordOd1 = _encryptor.MD5Hash(passwordOd);
+                    isCorrect = passwordOldb.Equals(passwordOd1, StringComparison.OrdinalIgnoreCase);
+                }
+                else
+                {
+                    isCorrect = _encryptor.VerifyPassword(passwordOd, passwordOldb);
+                }
+
+                if (!isCorrect)
                 {
                     obj.Error = true;
                     obj.Title = "Bạn nhập mật khẩu cũ không đúng.";
                 }
                 else
                 {
-                    data.Password = _encryptor.MD5Hash(passwordNew);
+                    data.Password = _encryptor.HashPassword(passwordNew);
                     db.SaveChanges();
                     obj.Error = false;
                     obj.Title = "Thay đổi mật khẩu thành công!";
@@ -396,7 +433,7 @@ namespace Data.Admin
                 var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
                 var passwordOldb = data.Password;
                 obj.Email = data.Email;
-                data.Password = _encryptor.MD5Hash(passwordNew);
+                data.Password = _encryptor.HashPassword(passwordNew);
                 db.SaveChanges();
                 obj.Error = false;
                 obj.Title = "Reset mật khẩu thành công!";

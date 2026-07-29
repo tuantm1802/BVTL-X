@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.Admin;
@@ -34,7 +34,7 @@ namespace WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _userDA.Login(model.UserName, _encryptor.MD5Hash(model.Password));
+                var result = _userDA.Login(model.UserName, model.Password);
                 if (result == 1)
                 {
                     var userSession = new UserLogin();

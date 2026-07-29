@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
@@ -18,8 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncBVTL.Push", "SyncApp\Sy
 		{2FC54EFF-1E67-448F-8ECA-589C8E4C05BA} = {2FC54EFF-1E67-448F-8ECA-589C8E4C05BA}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBVTLAPI", "WebBVTLAPI\WebBVTLAPI.csproj", "{6BE9857F-7991-452D-8910-14C2499E57DE}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,12 +56,7 @@ Global
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.ViewCompilation|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.ViewCompilation|Any CPU.Build.0 = Debug|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.ViewCompilation|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BE9857F-7991-452D-8910-14C2499E57DE}.ViewCompilation|Any CPU.Build.0 = Debug|Any CPU
+
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
