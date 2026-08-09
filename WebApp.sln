@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncBVTL.Push", "SyncApp\Sy
 		{2FC54EFF-1E67-448F-8ECA-589C8E4C05BA} = {2FC54EFF-1E67-448F-8ECA-589C8E4C05BA}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BVTL.Tests", "BVTL.Tests\BVTL.Tests.csproj", "{B8E3D821-6541-4E61-A79B-89DF3A25C712}"
+EndProject
 
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,12 @@ Global
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.ViewCompilation|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB3BC51A-9BBD-458A-932F-215224995B94}.ViewCompilation|Any CPU.Build.0 = Debug|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.ViewCompilation|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E3D821-6541-4E61-A79B-89DF3A25C712}.ViewCompilation|Any CPU.Build.0 = Debug|Any CPU
 
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

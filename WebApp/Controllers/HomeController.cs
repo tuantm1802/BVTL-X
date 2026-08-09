@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using log4net;
@@ -16,8 +16,14 @@ namespace WebApp.Controllers
 {
     public class HomeController : BaseController
     {
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
+        readonly ISysLogDA _sysLogDA;
+        readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+
+        public HomeController(ISysLogDA sysLogDA, IBaoCaoTongHopDA BaoCaoTongHopDA)
+        {
+            _sysLogDA = sysLogDA;
+            _BaoCaoTongHopDA = BaoCaoTongHopDA;
+        }
 
         public ActionResult Index()
         {

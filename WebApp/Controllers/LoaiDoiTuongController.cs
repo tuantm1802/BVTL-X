@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -14,9 +14,15 @@ namespace WebApp.Controllers
 {
     public class LoaiDoiTuongController : BaseController
     {
-        ILoaiDoiTuongDA _LoaiDoiTuongDA = new LoaiDoiTuongDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ILoaiDoiTuongDA _LoaiDoiTuongDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public LoaiDoiTuongController(ILoaiDoiTuongDA loaiDoiTuongDA, ISysLogDA sysLogDA)
+        {
+            _LoaiDoiTuongDA = loaiDoiTuongDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: LoaiDoiTuong
         [HasCredential(ControllerName = "LoaiDoiTuong")]

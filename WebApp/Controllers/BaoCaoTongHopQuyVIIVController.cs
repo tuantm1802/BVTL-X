@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -19,12 +19,26 @@ namespace WebApp.Controllers
 {
     public class BaoCaoTongHopQuyVIIVController : BaseController
     {
-        ICityDA _CityDA = new CityDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
-        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
-        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ICityDA _CityDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+        readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public BaoCaoTongHopQuyVIIVController(
+            ICityDA cityDA,
+            IDuAnDA duAnDA,
+            IBaoCaoTongHopDA baoCaoTongHopDA,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
+            ISysLogDA sysLogDA)
+        {
+            _CityDA = cityDA;
+            _DuAnDA = duAnDA;
+            _BaoCaoTongHopDA = baoCaoTongHopDA;
+            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: BaoCaoTongHopQuyVIIV
         [HasCredential(ControllerName = "BaoCaoTongHopQuyVIIV")]

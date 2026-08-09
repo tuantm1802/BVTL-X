@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -17,11 +17,19 @@ namespace WebApp.Controllers
 {
     public class CustomerController : BaseController
     {
-        ICustomerDA _CustomerDA = new CustomerDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ICustomerDA _CustomerDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public CustomerController(ICustomerDA CustomerDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _CustomerDA = CustomerDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
         // GET: Customer
         [HasCredential(ControllerName = "Customer")]
         public ActionResult Index()

@@ -1,4 +1,4 @@
-﻿using Data.InterfaceDA.Admin;
+using Data.InterfaceDA.Admin;
 using Data.Admin;
 using System;
 using System.Collections.Generic;
@@ -17,11 +17,19 @@ namespace WebApp.Controllers
 {
     public class KetQuaXNNTController : Controller
     {
-        IKetQuaXNNTDA _KetQuaXNNTDA = new KetQuaXNNTDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IKetQuaXNNTDA _KetQuaXNNTDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public KetQuaXNNTController(IKetQuaXNNTDA ketQuaXNNTDA, ISysLogDA sysLogDA, IDuAnDA duAnDA, ICityDA cityDA)
+        {
+            _KetQuaXNNTDA = ketQuaXNNTDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = duAnDA;
+            _CityDA = cityDA;
+        }
 
         // GET: KetQuaXNNT
         [HasCredential(ControllerName = "KetQuaXNNT")]

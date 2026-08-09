@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,6 +14,7 @@ namespace WebApp
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            WebApp.App_Start.AutofacConfig.RegisterDependencies();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

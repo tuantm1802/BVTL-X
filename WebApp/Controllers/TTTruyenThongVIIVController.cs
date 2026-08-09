@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.Model;
@@ -16,11 +16,20 @@ namespace WebApp.Controllers
 {
     public class TTTruyenThongVIIVController : Controller
     {
-        ITTTruyenThongVIIVDA _TTTruyenThongVIIVDA = new TTTruyenThongVIIVDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ITTTruyenThongVIIVDA _TTTruyenThongVIIVDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public TTTruyenThongVIIVController(ITTTruyenThongVIIVDA TTTruyenThongVIIVDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _TTTruyenThongVIIVDA = TTTruyenThongVIIVDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
+
         // GET: TTTruyenThongVIIV
         public ActionResult Index()
         {

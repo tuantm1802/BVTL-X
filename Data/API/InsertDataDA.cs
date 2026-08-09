@@ -32,7 +32,6 @@ namespace Data.API
         /// <returns></returns>
         public BaseResult InsertDataFromApi(DataTable dattableInsert, string tableName, string cityCode, string maDuAn)
         {
-
             BaseResult obj = new BaseResult();
             DataTable dataTable = new DataTable();
 
@@ -46,49 +45,170 @@ namespace Data.API
 
             try
             {
-                log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu xóa dữ liệu bảng: " + tableName + " | CITY_CODE:" + cityCode + " | MADUAN:" + maDuAn);
-                // Xóa dữ liệu bảng
+                log.Info("!!!!!!!!!!!!!!!!!!!!!!Bắt đầu đồng bộ dữ liệu bảng: " + tableName + " | CITY_CODE:" + cityCode + " | MADUAN:" + maDuAn);
+
+                // Validate table name để tránh SQL Injection
                 if (!System.Text.RegularExpressions.Regex.IsMatch(tableName, @"^[a-zA-Z0-9_]+$"))
                 {
                     throw new ArgumentException("Invalid table name: " + tableName);
                 }
-                int data = 0;
-                string deleteSql = string.Format("DELETE FROM [{0}] WHERE CITY_CODE = @cityCode AND MADUAN = @maDuAn", tableName);
-                using (SqlCommand cmd = new SqlCommand(deleteSql, conn, transaction))
+
+                // Lấy tên cột IDENTITY của bảng (nếu có)
+                string identityColumn = GetIdentityColumn(tableName, conn, transaction);
+                log.Info("Identity column của bảng " + tableName + ": " + (identityColumn ?? "(không có)"));
+
+                // Loại bỏ cột IDENTITY khỏi DataTable trước khi bulk copy
+                // để tránh lỗi: Cannot insert explicit value for identity column when IDENTITY_INSERT is OFF
+                DataTable dttInsert = dattableInsert.Copy();
+                if (!string.IsNullOrEmpty(identityColumn) && dttInsert.Columns.Contains(identityColumn))
+                {
+                    dttInsert.Columns.Remove(identityColumn);
+                    log.Info("Đã loại bỏ cột identity '" + identityColumn + "' khỏi DataTable trước khi bulk copy.");
+                }
+
+                // Xác định merge key & partition columns cho MERGE deduplication
+                string mergeOnClause;
+                string partitionCols;
+                string pkColumn = GetPrimaryKeyColumn(tableName);
+
+                if (dttInsert.Columns.Contains("record_id"))
+                {
+                    // Ưu tiên dùng record_id làm merge key
+                    mergeOnClause = "Target.[record_id] = Source.[record_id]";
+                    partitionCols = "[record_id]";
+                    log.Info("Sử dụng record_id làm merge key cho bảng: " + tableName);
+                }
+                else if (tableName.Equals("ChiTietPhieuXuatNhap", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Composite key cho ChiTietPhieuXuatNhap
+                    mergeOnClause = "Target.[MaPhieu] = Source.[MaPhieu] AND Target.[MaSanPham] = Source.[MaSanPham]";
+                    partitionCols = "[MaPhieu], [MaSanPham]";
+                    log.Info("Sử dụng composite key (MaPhieu + MaSanPham) làm merge key cho bảng: " + tableName);
+                }
+                else if (!string.IsNullOrEmpty(pkColumn) && !pkColumn.Equals(identityColumn, StringComparison.OrdinalIgnoreCase))
+                {
+                    // PK không phải là identity column
+                    mergeOnClause = $"Target.[{pkColumn}] = Source.[{pkColumn}]";
+                    partitionCols = $"[{pkColumn}]";
+                    log.Info("Sử dụng PK non-identity '" + pkColumn + "' làm merge key cho bảng: " + tableName);
+                }
+                else
+                {
+                    // Fallback: không merge được, chỉ insert (xóa rồi chèn lại theo city_code + maduan)
+                    mergeOnClause = "1 = 0"; // Không bao giờ MATCHED → toàn bộ là INSERT mới
+                    partitionCols = null;
+                    log.Warn("Không tìm được merge key thích hợp cho bảng: " + tableName + " – sẽ thực hiện xóa và chèn lại.");
+                }
+
+                // Tạo bảng tạm (SELECT TOP 0 sẽ kế thừa cấu trúc bảng gốc, kể cả identity)
+                // Bảng tạm không có ràng buộc IDENTITY nên có thể bulk copy tự do
+                string tempTableName = "#Temp_" + tableName;
+                string createTempTableSql = $"SELECT TOP 0 * INTO [{tempTableName}] FROM [{tableName}]";
+                using (SqlCommand cmd = new SqlCommand(createTempTableSql, conn, transaction))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Nếu bảng gốc có IDENTITY, bảng tạm cũng kế thừa cột đó nhưng không có IDENTITY constraint
+                // → Vẫn cần loại bỏ cột identity khỏi dttInsert khi copy vào bảng tạm
+                // vì dttInsert không có giá trị hợp lệ cho cột này (mặc định = 0)
+
+                log.Info("*******************Bắt đầu insert dữ liệu bảng tạm: " + tempTableName + "*********************");
+
+                bulkcopy.DestinationTableName = tempTableName;
+                // Thêm column mapping rõ ràng để tránh mismatch cột
+                foreach (DataColumn col in dttInsert.Columns)
+                {
+                    bulkcopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                }
+                bulkcopy.WriteToServer(dttInsert);
+                bulkcopy.Close();
+
+                // Lấy danh sách cột (đã loại identity)
+                List<string> columns = new List<string>();
+                foreach (DataColumn column in dttInsert.Columns)
+                {
+                    columns.Add(column.ColumnName);
+                }
+
+                string columnsList = string.Join(", ", columns.Select(c => $"[{c}]"));
+                string sourceColumnsList = string.Join(", ", columns.Select(c => $"Source.[{c}]"));
+
+                // Tạo UPDATE SET: loại bỏ các cột trong merge key và cột identity
+                var mergeKeyColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(identityColumn)) mergeKeyColumns.Add(identityColumn);
+                if (dttInsert.Columns.Contains("record_id")) mergeKeyColumns.Add("record_id");
+                if (tableName.Equals("ChiTietPhieuXuatNhap", StringComparison.OrdinalIgnoreCase))
+                {
+                    mergeKeyColumns.Add("MaPhieu");
+                    mergeKeyColumns.Add("MaSanPham");
+                }
+                if (!string.IsNullOrEmpty(pkColumn)) mergeKeyColumns.Add(pkColumn);
+
+                string updateSetClause = string.Join(", ",
+                    columns.Where(c => !mergeKeyColumns.Contains(c))
+                           .Select(c => $"Target.[{c}] = Source.[{c}]"));
+
+                // Xây dựng nguồn dữ liệu cho MERGE (Deduplicate source bằng ROW_NUMBER để tránh lỗi:
+                // "The MERGE statement attempted to UPDATE or DELETE the same row more than once")
+                string sourceTableExpression;
+                if (!string.IsNullOrEmpty(partitionCols))
+                {
+                    sourceTableExpression = $@"(
+                        SELECT * FROM (
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY {partitionCols} ORDER BY (SELECT NULL)) AS _rn
+                            FROM [{tempTableName}]
+                        ) AS _srcTemp WHERE _srcTemp._rn = 1
+                    )";
+                }
+                else
+                {
+                    sourceTableExpression = $"[{tempTableName}]";
+                }
+
+                // Tạo câu lệnh MERGE
+                string mergeSql = $@"
+                    MERGE INTO [{tableName}] AS Target
+                    USING {sourceTableExpression} AS Source
+                    ON ({mergeOnClause})";
+
+                if (!string.IsNullOrEmpty(updateSetClause))
+                {
+                    mergeSql += $@"
+                    WHEN MATCHED THEN
+                        UPDATE SET {updateSetClause}";
+                }
+
+                mergeSql += $@"
+                    WHEN NOT MATCHED BY TARGET THEN
+                        INSERT ({columnsList}) VALUES ({sourceColumnsList})
+                    WHEN NOT MATCHED BY SOURCE AND Target.CITY_CODE = @cityCode AND Target.MADUAN = @maDuAn THEN
+                        DELETE;";
+
+                using (SqlCommand cmd = new SqlCommand(mergeSql, conn, transaction))
                 {
                     cmd.Parameters.Add("@cityCode", SqlDbType.VarChar).Value = (object)cityCode ?? DBNull.Value;
                     cmd.Parameters.Add("@maDuAn", SqlDbType.VarChar).Value = (object)maDuAn ?? DBNull.Value;
-                    data = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
                 }
-                log.Info("############!!!!!!!!!!Kết thúc xóa dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
 
+                log.Info("############!!!!!!!!!!Kết thúc đồng bộ dữ liệu bảng: " + tableName + "############!!!!!!!!!!");
 
-                log.Info("*******************Bắt đầu insert dữ liệu bảng: " + tableName + "*********************");
-                //long record_id_max = db.BVTL_PHIEU_TU_VAN.Where(x => x != null).DefaultIfEmpty().Max(x => x == null ? 0 : x.record_id);
-
-                //Bulk insert into table SKTTTest
-                //using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
-                //{
-                    bulkcopy.DestinationTableName = "dbo." + tableName;
-                    bulkcopy.WriteToServer(dattableInsert);
-                    bulkcopy.Close();
-                //}
                 transaction.Commit();
                 conn.Close();
 
                 obj.Success = true;
-                obj.Message = DateTime.Now.ToString() + ": Tổng record đã thêm: " + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn;
-                log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dattableInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
+                obj.Message = DateTime.Now.ToString() + ": Tổng record đã thêm: " + dttInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn;
+                log.Info("############*********KẾT THÚC insert bảng: " + tableName + " | Tổng record đã thêm:" + dttInsert.Rows.Count + " | TABLE: " + tableName + " | CITY_CODE: " + cityCode + " | MADUAN:" + maDuAn);
             }
-
             catch (Exception ex)
             {
                 transaction.Rollback();
                 conn.Close();
-                log.Error("Thêm dữ liệu bảng:" + tableName + " | CITY_CODE:"+ cityCode + " | MADUAN:" + maDuAn + " | Chi tiết lỗi: " + ex.Message);
+                log.Error("Thêm dữ liệu bảng:" + tableName + " | CITY_CODE:" + cityCode + " | MADUAN:" + maDuAn + " | Chi tiết lỗi: " + ex.Message);
                 obj.Success = false;
                 obj.Message = ex.Message;
-                
+
                 // loop through all inner exceptions to see if any relate to a constraint failure
                 bool dataExceptionFound = false;
                 Exception tmpException = ex;
@@ -111,7 +231,6 @@ namespace Data.API
                        bulkcopy.DestinationTableName,
                        dataTable.CreateDataReader());
                     throw new Exception(errorMessage, ex);
-                    log.Error("Thêm dữ liệu bảng - ERROR:" + errorMessage);
                 }
             }
             finally
@@ -428,6 +547,87 @@ namespace Data.API
                 }
             }
             return errorMessage.ToString();
+        }
+        public string GetPrimaryKeyColumn(string tableName)
+        {
+            string pkColumn = "";
+            string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
+            using (SqlConnection conn = new SqlConnection(stringConnect))
+            {
+                conn.Open();
+                string query = @"
+                    SELECT COLUMN_NAME
+                    FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                    WHERE OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + QUOTENAME(CONSTRAINT_NAME)), 'IsPrimaryKey') = 1
+                    AND TABLE_NAME = @TableName";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TableName", tableName);
+                    var result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        pkColumn = result.ToString();
+                    }
+                }
+            }
+            if (string.IsNullOrEmpty(pkColumn))
+            {
+                pkColumn = "record_id";
+            }
+            return pkColumn;
+        }
+
+        /// <summary>
+        /// Lấy tên cột IDENTITY của bảng (nếu có) từ sys.columns.
+        /// Sử dụng connection + transaction hiện tại để tránh tạo connection mới.
+        /// </summary>
+        public string GetIdentityColumn(string tableName, SqlConnection conn, SqlTransaction transaction)
+        {
+            string identityColumn = "";
+            string query = @"
+                SELECT c.name
+                FROM sys.columns c
+                INNER JOIN sys.tables t ON c.object_id = t.object_id
+                WHERE t.name = @TableName AND c.is_identity = 1";
+            using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@TableName", tableName);
+                var result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    identityColumn = result.ToString();
+                }
+            }
+            return identityColumn;
+        }
+
+        /// <summary>
+        /// Overload: Lấy tên cột IDENTITY dùng connection string (mở connection mới).
+        /// Dùng khi không có connection sẵn.
+        /// </summary>
+        public string GetIdentityColumn(string tableName)
+        {
+            string identityColumn = "";
+            string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
+            using (SqlConnection conn = new SqlConnection(stringConnect))
+            {
+                conn.Open();
+                string query = @"
+                    SELECT c.name
+                    FROM sys.columns c
+                    INNER JOIN sys.tables t ON c.object_id = t.object_id
+                    WHERE t.name = @TableName AND c.is_identity = 1";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TableName", tableName);
+                    var result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        identityColumn = result.ToString();
+                    }
+                }
+            }
+            return identityColumn;
         }
 
     }

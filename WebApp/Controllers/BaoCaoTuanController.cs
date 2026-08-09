@@ -23,13 +23,29 @@ namespace WebApp.Controllers
 
     public class BaoCaoTuanController : BaseController
     {
-        ICityDA _CityDA = new CityDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
-        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
-        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ICityDA _CityDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+        readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
-        IExcelReportService _excelReportService = new ExcelReportService();
+        readonly IExcelReportService _excelReportService;
+
+        public BaoCaoTuanController(
+            IExcelReportService excelReportService,
+            ICityDA cityDA,
+            IDuAnDA duAnDA,
+            IBaoCaoTongHopDA baoCaoTongHopDA,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
+            ISysLogDA sysLogDA)
+        {
+            _excelReportService = excelReportService;
+            _CityDA = cityDA;
+            _DuAnDA = duAnDA;
+            _BaoCaoTongHopDA = baoCaoTongHopDA;
+            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: BaoCaoTuan
         [HasCredential(ControllerName = "BaoCaoTuan")]

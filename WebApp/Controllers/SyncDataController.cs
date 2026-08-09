@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Model.Model;
 using Model.ModelExtend;
 
@@ -29,14 +29,21 @@ namespace WebApp.Controllers
     public class SyncDataController : BaseController
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        ISyncDataDA _syncDataDA = new SyncDataDA();
-        IInsertDataDA _insertDataDA = new InsertDataDA();
+        readonly ISyncDataDA _syncDataDA;
+        readonly IInsertDataDA _insertDataDA;
         ISyncDataFromApi_SaveToDB syncDataFromApi_SaveToDB = new SyncDataFromApi_SaveToDB();
         IApiBase _apiBase = new ApiBase();
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public SyncDataController(ISyncDataDA syncDataDA, IInsertDataDA insertDataDA, ISysLogDA sysLogDA)
+        {
+            _syncDataDA = syncDataDA;
+            _insertDataDA = insertDataDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: SyncData
         [HasCredential(ControllerName = "SyncData")]

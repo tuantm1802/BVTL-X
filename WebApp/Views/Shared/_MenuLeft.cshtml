@@ -1,4 +1,4 @@
-﻿@{
+@{
     var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
     var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
     var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
@@ -84,12 +84,12 @@
                 var menuChikd2 = menuLevel2.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == itemM1.ID).ToList();
                 var tenDuAns = menuChikd2.Where(x => !string.IsNullOrEmpty(x.TITLE_GROUP_MENU)).Select(x => x.TITLE_GROUP_MENU).Distinct().ToList();
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="@itemM1.HREF_URL" data-toggle="collapse" data-target="#collapseTwo@(itemM1.ID)"
+                    <a class="nav-link collapsed" href="@itemM1.HREF_URL" data-bs-toggle="collapse" data-bs-target="#collapseTwo@(itemM1.ID)"
                        aria-expanded="true" aria-controls="collapseTwo@(itemM1.ID)">
                         <i class="fas fa-fw fa-cog"></i>
                         <span>@itemM1.NAME</span>
                     </a>
-                    <div id="collapseTwo@(itemM1.ID)" class="collapse" aria-labelledby="headingTwo@(itemM1.ID)" data-parent="#accordionSidebar">
+                    <div id="collapseTwo@(itemM1.ID)" class="collapse" aria-labelledby="headingTwo@(itemM1.ID)" data-bs-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             @if (tenDuAns != null && tenDuAns.Count > 0)
                             {

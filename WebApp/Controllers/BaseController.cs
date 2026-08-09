@@ -1,4 +1,4 @@
-﻿using Data;
+using Data;
 using Data.Admin;
 using Model.ModelExtend;
 using Newtonsoft.Json;
@@ -22,10 +22,16 @@ namespace WebApp.Controllers
 {
     public class BaseController : Controller
     {
-        IPageMenuDA _pageMenuDA = new PageMenuDA();
-        IUserDA _userDA = new UserDA();
+        readonly IPageMenuDA _pageMenuDA;
+        readonly IUserDA _userDA;
         ITokenService _ITokenService = new TokenService();
         private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"].ToString();
+
+        public BaseController(IPageMenuDA pageMenuDA = null, IUserDA userDA = null)
+        {
+            _pageMenuDA = pageMenuDA ?? new PageMenuDA();
+            _userDA = userDA ?? new UserDA();
+        }
         // GET: Base
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {

@@ -1,4 +1,4 @@
-﻿using Model.Model;
+using Model.Model;
 using Model.ModelExtend.API;
 using Quartz;
 using Quartz.Impl;
@@ -55,7 +55,7 @@ namespace SyncBVTL.Push.Controllers
         }
 
 
-        public ActionResult UpdateProcess(ProcessModel model)
+        public async Task<ActionResult> UpdateProcess(ProcessModel model)
         {
             try
             {
@@ -73,18 +73,18 @@ namespace SyncBVTL.Push.Controllers
                 if (process == null)
                     throw new Exception("Lỗi file config!");
 
-                if (model.TimeLoop != process.TimeLoop)
+                bool timeChanged = (model.TimeLoop != process.TimeLoop);
+                bool activeChanged = (model.Active != process.Active);
+
+                process.TimeLoop = model.TimeLoop;
+                process.Active = model.Active;
+
+                if (timeChanged || activeChanged)
                 {
-                    _ = JobScheduleChangeTimeloop.ChangeTimeloop(model);
+                    await JobScheduleChangeTimeloop.ChangeTimeloop(process);
                 }
 
-                if (model.Active != process.Active)
-                {
-                    _ = JobScheduleSingle.StartSingle(model);
-                }
-                listProcess[listProcess.IndexOf(process)] = model;
-
-                processSrv.EditJobSync(new Model.Model.BVTL_API { Api_Code = model.Code, IsActive = model.Active, TimeReCall = model.TimeLoop});
+                processSrv.EditJobSync(new Model.Model.BVTL_API { Api_Code = model.Code, IsActive = model.Active, TimeReCall = model.TimeLoop });
 
                 var listProcessNew = processSrv.GetListProcess();
 
@@ -100,24 +100,28 @@ namespace SyncBVTL.Push.Controllers
         public ActionResult ShowConfig(string name)
         {
             var cErr = 0;
-            while (true)
+            while (cErr < 5)
             {
-                if (cErr == 5) { return Json(new ApiResult() { message = "Lỗi!", code = "500" }); }
                 try
                 {
-                    string filePath = Directory.GetCurrentDirectory() + "\\Log\\" + name + $"_{DateTime.Now:yyyyMMdd}" + ".log";
+                    string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
+                    if (!Directory.Exists(logDir))
+                    {
+                        Directory.CreateDirectory(logDir);
+                    }
+                    string filePath = Path.Combine(logDir, name + $"_{DateTime.Now:yyyyMMdd}.log");
                     if (!System.IO.File.Exists(filePath))
                     {
-                        System.IO.File.Create(filePath).Dispose();
+                        using (System.IO.File.Create(filePath)) { }
                     }
                     return Json(new ApiResult() { message = StringUtils.ReadNLineOfFile(filePath, 200), code = "200" });
                 }
                 catch (Exception)
                 {
                     cErr++;
-                    throw;
                 }
             }
+            return Json(new ApiResult() { message = "Lỗi đọc file log!", code = "500" });
         }
 
 

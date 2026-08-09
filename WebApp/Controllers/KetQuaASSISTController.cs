@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -19,11 +19,19 @@ namespace WebApp.Controllers
 {
     public class KetQuaASSISTController : BaseController
     {
-        IKetQuaASSISTDA _KetQuaASSISTDA = new KetQuaASSISTDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IKetQuaASSISTDA _KetQuaASSISTDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public KetQuaASSISTController(IKetQuaASSISTDA ketQuaASSISTDA, ISysLogDA sysLogDA, IDuAnDA duAnDA, ICityDA cityDA)
+        {
+            _KetQuaASSISTDA = ketQuaASSISTDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = duAnDA;
+            _CityDA = cityDA;
+        }
 
         // GET: KetQuaASSIST
         [HasCredential(ControllerName = "KetQuaASSIST")]

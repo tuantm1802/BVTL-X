@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.InterfaceDA;
@@ -44,7 +44,8 @@ namespace Data.API
                 }
                 else
                 {
-                    string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
+                    string contentString = await response.Content.ReadAsStringAsync();
+                    string responseString = JsonConvert.DeserializeObject(contentString).ToString();
                     if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
                     {
                         result = JsonConvert.DeserializeObject<List<T>>(responseString);
@@ -85,7 +86,8 @@ namespace Data.API
                 }
                 else
                 {
-                    string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
+                    string contentString = await response.Content.ReadAsStringAsync();
+                    string responseString = JsonConvert.DeserializeObject(contentString).ToString();
                     if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
                     {
                         result = responseString;
@@ -153,7 +155,8 @@ namespace Data.API
                 }
                 else
                 {
-                    string responseString = JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result).ToString();
+                    string contentString = await response.Content.ReadAsStringAsync();
+                    string responseString = JsonConvert.DeserializeObject(contentString).ToString();
                     if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
                     {
                         result = JsonConvert.DeserializeObject<List<UserSendReportModel>>(responseString); 

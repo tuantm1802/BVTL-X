@@ -46,7 +46,13 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="report-tabs">
+                <div class="report-tab-item" ng-class="{'active': activeTab == 'table'}" ng-click="setTab('table')">Bảng số liệu</div>
+                <div class="report-tab-item" ng-class="{'active': activeTab == 'chart'}" ng-click="setTab('chart')">Biểu đồ trực quan</div>
+            </div>
+
+            <!-- Table View -->
+            <div ng-show="activeTab == 'table'" class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -80,10 +86,18 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Chart View -->
+            <div ng-show="activeTab == 'chart'" class="py-4">
+                <div class="chart-container">
+                    <canvas id="weeklyReportChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
+    <script src="~/Scripts/chart.js"></script>
     <script src="~/app/Controller/BaoCaoTuanController.js"></script>
 }

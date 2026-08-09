@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -14,9 +14,17 @@ namespace WebApp.Controllers
 {
     public class ChatGayNghien3THController : BaseController
     {
-        IChatGayNghien3THDA _ChatGayNghien3THDA = new ChatGayNghien3THDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IChatGayNghien3THDA _ChatGayNghien3THDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public ChatGayNghien3THController(
+            IChatGayNghien3THDA chatGayNghien3THDA,
+            ISysLogDA sysLogDA)
+        {
+            _ChatGayNghien3THDA = chatGayNghien3THDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: ChatGayNghien3TH
         [HasCredential(ControllerName = "ChatGayNghien3TH")]

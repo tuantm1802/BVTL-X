@@ -149,3 +149,116 @@ Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phi
 - `WebApp/Controllers/BaoCaoTuanController.cs` (Modified)
 - `WebApp.sln` (Modified)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên 06: 29/07/2026 | Thực hiện bởi: Antigravity
+
+### Đã hoàn thành:
+- **Khôi phục các phân hệ bị thiếu (CH07, CD43, Kho Vật Phẩm, Hồ sơ khách hàng)**:
+  1. **Phân tích lỗi 404**: Lỗi 404 xảy ra khi truy cập `/BaoCaoThangCH07/Index` do mã nguồn hiện tại đang chạy trên nhánh `main` vốn chưa được tích hợp các tính năng nghiệp vụ nâng cao được phát triển riêng trên nhánh của người dùng (`TUANTM_BVTL_V1.0`).
+  2. **Chuyển nhánh công việc**: Thực hiện checkout và tạo nhánh local `TUANTM_BVTL_V1.0` tracking nhánh remote `origin/TUANTM_BVTL_V1.0` để phục hồi đầy đủ các tệp tin controller/view của phân hệ CH07, CD43, Kho Vật Phẩm...
+  3. **Gộp nhánh (Merge)**:
+     - Tiến hành gộp nhánh `main` vào `TUANTM_BVTL_V1.0` để tích hợp toàn bộ các vá lỗi bảo mật (PBKDF2, SQL Injection, bảo mật Connection String) và module Báo cáo tuần kèm theo lõi xuất Excel `ExcelReportService` dùng chung.
+     - Giải quyết các xung đột (merge conflicts) tại:
+       - `WebApp/Controllers/BaoCaoThangController.cs` (Giữ phiên bản tối ưu refactor gọi Service từ `main`).
+       - `WebApp/Web.config` & `SyncApp/Web.config` (Giữ cấu hình bảo mật tách thông tin credentials từ `main`).
+
+### Cần làm tiếp:
+- **Kiểm thử & Xác minh**:
+  1. Thực hiện Rebuild Solution để đảm bảo tất cả các phân hệ hoạt động bình thường trên nhánh gộp mới.
+  2. Chạy thử nghiệm các phân hệ CH07 (báo cáo tháng, quý, năm) để đảm bảo không còn lỗi 404.
+
+### Các tệp đã thay đổi/thêm mới:
+- `SyncApp/Web.config` (Merged & Conflict Resolved)
+- `WebApp/Controllers/BaoCaoThangController.cs` (Merged & Conflict Resolved)
+- `WebApp/Web.config` (Merged & Conflict Resolved)
+- `docs/session-log.md` (Modified)
+
+---
+
+## Phiên 07: 29/07/2026 | Thực hiện bởi: Antigravity
+
+### Đã hoàn thành:
+- **Hoàn thành Phase 3: Refactor UI/UX & Trực quan hóa Dữ liệu (Charts)**:
+  1. **Nâng cấp Hệ thống Style CSS**: Tạo mới `WebApp/Content/custom-style.css` định nghĩa các biến màu chuẩn Sleek Emerald & Dark Gray, thay thế nền xanh cũ của sidebar bằng màu xám tối và xanh ngọc bọc tinh tế, bo góc các Card & Table ở mức `radius-md: 8px` và `radius-lg: 12px`, áp dụng bóng mờ hiện đại và hiệu ứng hover hàng trên bảng dữ liệu.
+  2. **Liên kết CSS & Đăng ký dự án**: Nhúng tệp CSS mới vào `WebApp/Views/Shared/_Layout.cshtml` và đăng ký nó trong `WebApp/WebApp.csproj`.
+  3. **Tích hợp Biểu đồ vào Báo cáo Tuần**:
+     - `BaoCaoTuan/Index.cshtml`: Thiết kế giao diện chuyển đổi giữa "Bảng số liệu" và "Biểu đồ trực quan" thông qua tab controls và thêm thẻ `<canvas id="weeklyReportChart">`.
+     - `BaoCaoTuanController.js`: Nhúng Chart.js và lập trình hàm `$scope.renderChart()` để vẽ biểu đồ cột dạng nhóm (grouped bar chart) thể hiện số lượng MSM, PUD và SW của top 6 chỉ số báo cáo tuần quan trọng nhất.
+  4. **Tích hợp Biểu đồ vào Báo cáo Tháng**:
+     - `BaoCaoThang/Index.cshtml`: Tương tự như Báo cáo tuần, thêm tab controls chuyển đổi và thẻ `<canvas id="monthlyReportChart">`.
+     - `BaoCaoThangController.js`: Nhúng Chart.js và thêm logic `$scope.renderChart()` vẽ biểu đồ trực quan số liệu tháng.
+
+### Cần làm tiếp (Handoff cho người dùng):
+- **Kiểm thử & Xác minh**:
+  1. Rebuild Solution và chạy thử ứng dụng.
+  2. Vào trang Báo cáo Tuần hoặc Báo cáo Tháng, thực hiện lọc tìm kiếm và nhấn tab "Biểu đồ trực quan" để xem biểu đồ Chart.js nạp dữ liệu.
+
+### Các tệp đã thay đổi/thêm mới:
+- `WebApp/Content/custom-style.css` (New)
+- `WebApp/Views/Shared/_Layout.cshtml` (Modified)
+- `WebApp/Views/BaoCaoTuan/Index.cshtml` (Modified)
+- `WebApp/app/Controller/BaoCaoTuanController.js` (Modified)
+- `WebApp/Views/BaoCaoThang/Index.cshtml` (Modified)
+- `WebApp/app/Controller/BaoCaoThangController.js` (Modified)
+- `WebApp/WebApp.csproj` (Modified)
+- `docs/session-log.md` (Modified)
+
+---
+
+## Phiên 08: 29/07/2026 | Thực hiện bởi: Antigravity
+
+### Đã hoàn thành:
+- **Hoàn thành Phase 4: Refactor Module Đồng bộ Dữ liệu (SyncApp)**:
+  1. **Khắc phục Socket Exhaustion trong `ApiBase.cs`**:
+     - Khởi tạo đối tượng static `_httpClient` dùng chung duy nhất cho toàn ứng dụng với `HttpClientHandler` tự động giải nén `GZip/Deflate` và mở rộng kết nối `MaxConnectionsPerServer = 100`.
+     - Loại bỏ toàn bộ các khối `using (var client = new HttpClient())` trùng lặp ở tất cả các phương thức gọi API.
+  2. **Tự phục hồi kết nối (HttpRetryHelper - Self-contained Retry Policy)**:
+     - Tạo mới tệp `Common/Common/HttpRetryHelper.cs` triển khai chính sách Retry với lùi thời gian lũy thừa (Exponential Backoff: thử lại 3 lần sau 1s, 2s, 4s) khi gặp lỗi mạng tạm thời (Timeout, 5xx, 408/429).
+     - Nhúng `HttpRetryHelper.ExecuteWithRetryAsync` vào hàm `PostJsonAsyncRaw` trong `ApiBase.cs`.
+     - Đăng ký `HttpRetryHelper.cs` vào `Common/Common.csproj`.
+  3. **Xóa bỏ các lệnh nghẽn luồng (Blocking Calls)**:
+     - Refactor `Data/API/GetDataFromAPI.cs` thay thế tất cả các lệnh `.ReadAsStringAsync().Result` nghẽn luồng bằng `await response.Content.ReadAsStringAsync()`.
+
+### Cần làm tiếp (Handoff cho người dùng):
+- **Kiểm thử & Xác minh**:
+  1. Mở Visual Studio 2022 và Rebuild Solution.
+  2. Chạy ứng dụng `SyncApp` và xác nhận tiến trình đồng bộ dữ liệu `GetDataAPIJob` hoạt động ổn định.
+
+### Các tệp đã thay đổi/thêm mới:
+- `Common/Common/HttpRetryHelper.cs` (New)
+- `Common/Common.csproj` (Modified)
+- `Common/Common/ApiBase.cs` (Modified)
+- `Data/API/GetDataFromAPI.cs` (Modified)
+- `docs/session-log.md` (Modified)
+
+---
+
+## Phiên 09: 29/07/2026 | Thực hiện bởi: Antigravity
+
+### Đã hoàn thành:
+- **Hoàn thành Phase 5: Cải tiến Kiến trúc & Unit Tests (Hoàn tất Lộ trình Nâng cấp)**:
+  1. **Khởi tạo Dự án Kiểm thử `BVTL.Tests`**:
+     - Tạo tệp `BVTL.Tests/BVTL.Tests.csproj` cấu hình MSTest cho .NET Framework 4.7.2.
+     - Đăng ký dự án `BVTL.Tests` vào tệp Solution `WebApp.sln`.
+  2. **Viết các Bộ Unit Test Tự động**:
+     - `EncryptorTests.cs`: Kiểm thử băm mật khẩu PBKDF2 (10,000 vòng) và cơ chế tự động chuyển đổi Fallback từ chuỗi băm MD5 cũ.
+     - `BaoCaoTuanLogicTests.cs`: Kiểm thử thuật toán quy đổi tuần (1-53) sang tháng (1-12).
+     - `ExcelReportServiceTests.cs`: Kiểm thử dịch vụ sinh file Excel ClosedXML dạng mảng byte.
+     - `HttpRetryHelperTests.cs`: Kiểm thử chính sách lùi thời gian lũy thừa (Exponential Backoff) khi gọi API bị lỗi ngắt mạng tạm thời.
+
+### Cần làm tiếp (Handoff cho người dùng):
+- **Xác minh Chạy Unit Tests**:
+  1. Mở Visual Studio 2022 và Rebuild Solution.
+  2. Mở cửa sổ **Test Explorer** (`Test` -> `Test Explorer` hoặc phím tắt `Ctrl + R, A`).
+  3. Nhấn **Run All Tests** và xác minh 100% các Unit Test đều vượt qua thành công (Passed xanh).
+
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/BVTL.Tests.csproj` (New)
+- `BVTL.Tests/EncryptorTests.cs` (New)
+- `BVTL.Tests/BaoCaoTuanLogicTests.cs` (New)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (New)
+- `BVTL.Tests/HttpRetryHelperTests.cs` (New)
+- `WebApp.sln` (Modified)
+- `docs/session-log.md` (Modified)

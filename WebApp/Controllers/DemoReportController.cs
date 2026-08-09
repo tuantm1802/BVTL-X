@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -19,8 +19,13 @@ namespace WebApp.Controllers
 {
     public class DemoReportController : BaseController
     {
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public DemoReportController(ISysLogDA sysLogDA)
+        {
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: DemoReport
         [HasCredential(ControllerName = "DemoReport")]

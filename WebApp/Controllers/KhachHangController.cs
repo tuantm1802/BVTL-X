@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -20,11 +20,18 @@ namespace WebApp.Controllers
 {
     public class KhachHangController : BaseController
     {
-        ICustomerDA _CustomerDA = new CustomerDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ICustomerDA _CustomerDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
         private BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
+
+        public KhachHangController(ICustomerDA customerDA, ISysLogDA sysLogDA, IDuAnDA duAnDA)
+        {
+            _CustomerDA = customerDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = duAnDA;
+        }
 
         // GET: Customer
         [System.Web.Mvc.HttpPost]

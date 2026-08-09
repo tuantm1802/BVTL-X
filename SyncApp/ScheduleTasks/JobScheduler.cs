@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
@@ -25,20 +25,25 @@ namespace SyncBVTL.Push.ScheduleTasks
         static ISysLogDA _sysLogDA = new SysLogDA();
         static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static IScheduler Scheduler { get; set; }
+
         public static async Task StartAll()
         {
-            var directory = logDirectory + "\\Sync-log";
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-            if (Directory.GetCurrentDirectory() != directory)
+            if (!string.IsNullOrEmpty(logDirectory))
             {
-                Directory.SetCurrentDirectory(logDirectory);
-
-                if (!Directory.Exists("Sync-log"))
+                var directory = logDirectory + "\\Sync-log";
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+                if (Directory.GetCurrentDirectory() != directory)
                 {
-                    Directory.CreateDirectory("Sync-log");
+                    Directory.SetCurrentDirectory(logDirectory);
+
+                    if (!Directory.Exists("Sync-log"))
+                    {
+                        Directory.CreateDirectory("Sync-log");
+                    }
+                    Directory.SetCurrentDirectory(directory);
                 }
-                Directory.SetCurrentDirectory(directory);
             }
 
             ProcessService processService = new ProcessService();
@@ -48,41 +53,18 @@ namespace SyncBVTL.Push.ScheduleTasks
             properties["quartz.threadPool.threadCount"] = "100";
 
             ISchedulerFactory sf = new StdSchedulerFactory(properties);
-            IScheduler scheduler = sf.GetScheduler().Result;
-
-            //IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
+            Scheduler = sf.GetScheduler().Result;
 
             // Xóa hết các job cũ
-            var currentlyExecuting = scheduler.GetCurrentlyExecutingJobs().Result;
+            var currentlyExecuting = Scheduler.GetCurrentlyExecutingJobs().Result;
 
             foreach (var job in currentlyExecuting)
             {
-                await scheduler.UnscheduleJob(job.Trigger.Key);
-                await scheduler.DeleteJob(job.JobDetail.Key);
+                await Scheduler.UnscheduleJob(job.Trigger.Key);
+                await Scheduler.DeleteJob(job.JobDetail.Key);
             }
 
-            _ = scheduler.Start();
-            //Job tự động cập nhật các đầu api
-            /*
-            IJobDetail job_UpdateJob = JobBuilder.Create<UpdateAllApiJob>().WithIdentity("UpdateApiJob").Build();
-            job_UpdateJob.JobDataMap["Data"] = new ProcessModel { TableNames = new List<string>() { "UpdateApi" } };
-            ITrigger trigger_UpdateJob = TriggerBuilder.Create()
-                .WithIdentity("trigger_UpdateApiJob")
-                .StartNow()
-                .WithCronSchedule("0 0-1 * * * ?") //Tự động chạy sau mỗi 60 phút
-                .Build();
-            _ = scheduler.ScheduleJob(job_UpdateJob, trigger_UpdateJob).ConfigureAwait(true);
-            */
-
-            //Job tự động gửi email notification hàng ngày
-            //IJobDetail job_NotifiJob = JobBuilder.Create<SendNotificationJob>().WithIdentity("NotifiJob").Build();
-            //ITrigger trigger_NotifiJob = TriggerBuilder.Create()
-            //    .WithIdentity("trigger_NotifiJob")
-            //    .StartNow()
-            //   //.WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())// chạy khi 1 giờ đêm
-            //   .WithCronSchedule("0 0/1 * * * ?") //Tự động chạy sau mỗi 1 phút
-            //    .Build();
-            //_ = scheduler.ScheduleJob(job_NotifiJob, trigger_NotifiJob).ConfigureAwait(true);
+            await Scheduler.Start();
 
             var log = new BVTL_QT_LOG
             {
@@ -101,14 +83,28 @@ namespace SyncBVTL.Push.ScheduleTasks
                 {
                     IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId + "_Job").Build();
                     job_GetDataAPIJob.JobDataMap["Data"] = item;
-                    ITrigger trigger_GetDataAPIJob = TriggerBuilder.Create()
-                        .WithIdentity("trigger_" + item.ReportId + "Job")
-                        .StartNow()
-                        .WithSimpleSchedule(x => x
-                        .WithIntervalInSeconds(item.TimeLoop)
-                        .RepeatForever())
-                        .Build();
-                    _ = scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob).ConfigureAwait(true);
+                    ITrigger trigger_GetDataAPIJob;
+                    if (item.TimeLoop <= 23 && item.TimeLoop >= 0)
+                    {
+                        // Chạy theo giờ cố định mỗi ngày (ví dụ: TimeLoop = 23 -> chạy lúc 23:00)
+                        trigger_GetDataAPIJob = TriggerBuilder.Create()
+                            .WithIdentity("trigger_" + item.ReportId + "Job")
+                            .StartNow()
+                            .WithCronSchedule($"0 0 {item.TimeLoop} * * ?")
+                            .Build();
+                    }
+                    else
+                    {
+                        // Chạy lặp lại theo khoảng thời gian giây
+                        trigger_GetDataAPIJob = TriggerBuilder.Create()
+                            .WithIdentity("trigger_" + item.ReportId + "Job")
+                            .StartNow()
+                            .WithSimpleSchedule(x => x
+                            .WithIntervalInSeconds(item.TimeLoop)
+                            .RepeatForever())
+                            .Build();
+                    }
+                    await Scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
                 }
 
             }

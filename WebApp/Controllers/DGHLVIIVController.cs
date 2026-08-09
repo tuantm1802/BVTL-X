@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend.Base;
@@ -18,11 +18,19 @@ namespace WebApp.Controllers
     public class DGHLVIIVController : Controller
     {
         // GET: DGHLVIIV
-        IDGHLVIIVDA _DGHLVIIVDA = new DGHLVIIVDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IDGHLVIIVDA _DGHLVIIVDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public DGHLVIIVController(IDGHLVIIVDA DGHLVIIVDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _DGHLVIIVDA = DGHLVIIVDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
 
         public ActionResult Index()
         {

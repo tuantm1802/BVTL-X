@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -21,12 +21,24 @@ namespace WebApp.Controllers
 {
     public class KhoVatPhamController : BaseController
     {
-        IKhoVatPhamDA _KhoVatPhamDA = new KhoVatPhamDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IKhoVatPhamDA _KhoVatPhamDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
         BaseController _helperController = new BaseController();
         private BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
-        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
+
+        public KhoVatPhamController(
+            IKhoVatPhamDA khoVatPhamDA,
+            ISysLogDA sysLogDA,
+            IDuAnDA duAnDA,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA)
+        {
+            _KhoVatPhamDA = khoVatPhamDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = duAnDA;
+            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
+        }
 
         // GET: Kho Vat Pham        
         public ActionResult Index()

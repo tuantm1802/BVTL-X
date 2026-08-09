@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Model.Model;
 using Model.ModelExtend;
 
@@ -17,10 +17,17 @@ namespace WebApp.Controllers
 {
     public class TestGroupController : BaseController
     {
-        IBVTL_NHOM_TBHDA _testGroupDA = new BVTL_NHOM_TBHDA();
-        ICityDA _CityDA = new CityDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IBVTL_NHOM_TBHDA _testGroupDA;
+        readonly ICityDA _CityDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public TestGroupController(IBVTL_NHOM_TBHDA testGroupDA, ICityDA CityDA, ISysLogDA sysLogDA)
+        {
+            _testGroupDA = testGroupDA;
+            _CityDA = CityDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: TestGroup
         [HasCredential(ControllerName = "TestGroup")]

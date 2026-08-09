@@ -152,6 +152,12 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
@@ -187,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Common\ActionLogger.cs" />
@@ -299,6 +306,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
+    <Content Include="app\Controller\AlpineBaoCaoQuyCH07.js" />
+    <Content Include="app\Controller\AlpineBaoCaoThang.js" />
     <Content Include="app\Controller\ApiController.js" />
     <Content Include="app\Controller\BaoCao6ThangCH07Controller.js" />
     <Content Include="app\Controller\BaoCaoNamCH07Controller.js" />
@@ -4325,6 +4334,7 @@
     <Content Include="Content\select2\js\jquery.slim.min.js" />
     <Content Include="Content\select2\js\select2.min.js" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\custom-style.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\styleComboTree1.css" />
     <Content Include="Content\styleConboTree.css" />

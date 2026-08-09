@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -17,11 +17,19 @@ namespace WebApp.Controllers
 {
     public class KetQuaBHDGController : Controller
     {
-        IKetQuaBHDGDA _KetQuaBHDGDA = new KetQuaBHDGDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IKetQuaBHDGDA _KetQuaBHDGDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public KetQuaBHDGController(IKetQuaBHDGDA ketQuaBHDGDA, ISysLogDA sysLogDA, IDuAnDA duAnDA, ICityDA cityDA)
+        {
+            _KetQuaBHDGDA = ketQuaBHDGDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = duAnDA;
+            _CityDA = cityDA;
+        }
 
         [HasCredential(ControllerName = "KetQuaBHDG")]
         // GET: BangHoiDanhGia

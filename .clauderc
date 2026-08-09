@@ -1,0 +1,15 @@
+# BVTL-X Project AI Guidelines
+
+## 1. Context Initialization
+Always read the files in the `.ai-context/` directory (e.g., `current_plan.md`, `task_progress.md`, `walkthrough.md`) before starting any task to understand the current phase, completed tasks, and upcoming goals.
+
+## 2. Tech Stack & Architectural Decisions (Phase 6+)
+- **DO NOT** use AngularJS (1.x). The project is being migrated away from it.
+- **DO USE** `Alpine.js` for all frontend interactivity, data binding (`x-data`, `x-model`, `x-for`, `@click`, etc.).
+- **DO USE** `Bootstrap 5.3` for styling. Replace old `data-toggle`, `data-target` with `data-bs-toggle`, `data-bs-target`.
+- **Font**: Use Google Fonts (`Inter`).
+- **Styling**: Maintain the sleek Emerald/Dark aesthetic defined in `custom-style.css`.
+- Keep `.NET MVC` structures intact (Controllers, Views). Alpine.js components should reside in `WebApp/app/Controller/` as plain JS files.
+
+## 3. Multi-Agent Setup
+- If interacting with the `BVTL-X-agent-workspace`, do not overwrite the LangGraph architectures or agent definitions without explicit instruction.

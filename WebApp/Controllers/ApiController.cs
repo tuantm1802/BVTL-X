@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -14,9 +14,15 @@ namespace WebApp.Controllers
 {
     public class ApiController : BaseController
     {
-        IApiDA _ApiDA = new ApiDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IApiDA _ApiDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public ApiController(IApiDA apiDA, ISysLogDA sysLogDA)
+        {
+            _ApiDA = apiDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: Api
         [HasCredential(ControllerName = "Api")]

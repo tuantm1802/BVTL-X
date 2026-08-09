@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Data.Admin;
 using Model.Model;
 using Model.ModelExtend;
@@ -14,9 +14,15 @@ namespace WebApp.Controllers
 {
     public class SysParameterController : BaseController
     {
-        ISysParameterDA _sysParameterDA = new SysParameterDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ISysParameterDA _sysParameterDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public SysParameterController(ISysParameterDA sysParameterDA, ISysLogDA sysLogDA)
+        {
+            _sysParameterDA = sysParameterDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: SysParameter
         [HasCredential(ControllerName = "SysParameter")]

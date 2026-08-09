@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend.Base;
@@ -17,11 +17,19 @@ namespace WebApp.Controllers
     public class TTKHMaDaVIIVController : Controller
     {
         // GET: TTKHMaDaVIIV
-        ITTKHMaDaVIIVDA _TTKHMaDaVIIVDA = new TTKHMaDaVIIVDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ITTKHMaDaVIIVDA _TTKHMaDaVIIVDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public TTKHMaDaVIIVController(ITTKHMaDaVIIVDA TTKHMaDaVIIVDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _TTKHMaDaVIIVDA = TTKHMaDaVIIVDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
 
         public ActionResult Index()
         {

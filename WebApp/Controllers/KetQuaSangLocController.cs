@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Common.ICommon;
@@ -20,13 +20,22 @@ namespace WebApp.Controllers
 {
     public class KetQuaSangLocController : BaseController
     {
-        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
-        ICityDA _CityDA = new CityDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
-        IBVTL_NHOM_TBHDA _NhomTBHDA = new BVTL_NHOM_TBHDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+        readonly ICityDA _CityDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBVTL_NHOM_TBHDA _NhomTBHDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
         IUltil _Ultil = new Ultil();
+
+        public KetQuaSangLocController(IBaoCaoTongHopDA baoCaoTongHopDA, ICityDA cityDA, IDuAnDA duAnDA, IBVTL_NHOM_TBHDA nhomTBHDA, ISysLogDA sysLogDA)
+        {
+            _BaoCaoTongHopDA = baoCaoTongHopDA;
+            _CityDA = cityDA;
+            _DuAnDA = duAnDA;
+            _NhomTBHDA = nhomTBHDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: KetQuaSangLoc
         [HasCredential(ControllerName = "KetQuaSangLoc")]

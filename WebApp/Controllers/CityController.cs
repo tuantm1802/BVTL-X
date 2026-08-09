@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -14,10 +14,17 @@ namespace WebApp.Controllers
 {
     public class CityController : BaseController
     {
-        ICityDA _CityDA = new CityDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ICityDA _CityDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
+
+        public CityController(ICityDA CityDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA)
+        {
+            _CityDA = CityDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+        }
 
         // GET: City
         [HasCredential(ControllerName = "City")]

@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -14,9 +14,15 @@ namespace WebApp.Controllers
 {
     public class DuongSuDungController : BaseController
     {
-        IDuongSuDungDA _DuongSuDungDA = new DuongSuDungDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IDuongSuDungDA _DuongSuDungDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public DuongSuDungController(IDuongSuDungDA DuongSuDungDA, ISysLogDA sysLogDA)
+        {
+            _DuongSuDungDA = DuongSuDungDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: DuongSuDung
         [HasCredential(ControllerName = "DuongSuDung")]

@@ -1,5 +1,5 @@
-﻿using ClosedXML.Excel;
-using Common;
+
+using ClosedXML.Excel;
 using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA.Admin;
@@ -7,24 +7,36 @@ using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using Model.ModelExtend.Report;
-using OfficeOpenXml.Style;
+
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using WebApp.Service;
 
 namespace WebApp.Controllers
 {
     public class BaoCao6ThangController : BaseController
     {
-        ICityDA _CityDA = new CityDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
-        IBaoCaoTongHopDA _BaoCaoTongHopDA = new BaoCaoTongHopDA();
-        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ICityDA _CityDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+        readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+        IExcelReportService _excelReportService;
+
+        public BaoCao6ThangController(IExcelReportService excelReportService, ICityDA cityDA, IDuAnDA duAnDA, IBaoCaoTongHopDA baoCaoTongHopDA, IBVTL_NHOM_TBHDA bVTL_NHOM_TBHDA, ISysLogDA sysLogDA)
+        {
+            _excelReportService = excelReportService;
+            _CityDA = cityDA;
+            _DuAnDA = duAnDA;
+            _BaoCaoTongHopDA = baoCaoTongHopDA;
+            _BVTL_NHOM_TBHDA = bVTL_NHOM_TBHDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: BaoCao6Thang
         [HasCredential(ControllerName = "BaoCao6Thang")]

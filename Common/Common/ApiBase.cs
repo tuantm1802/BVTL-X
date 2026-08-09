@@ -1,10 +1,11 @@
-﻿using Common.ICommon;
+using Common.ICommon;
 using log4net;
 using Model.ModelExtend.API;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,189 +15,115 @@ namespace Common.Common
 {
     public class ApiBase : IApiBase
     {
-        private  readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //private  readonly string insideUrl = ConfigurationManager.AppSettings["insideUrl"].ToString();
-        private  readonly string insideUrl = "";
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly HttpClient _httpClient;
 
-        public  async Task<HttpResponseMessage> UPPostJsonAsync( string uri, string json)
+        static ApiBase()
+        {
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                MaxConnectionsPerServer = 100
+            };
+            _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = TimeSpan.FromMinutes(5);
+        }
+
+        public async Task<HttpResponseMessage> UPPostJsonAsync(string uri, string json)
         {
             try
             {
-                using (var client = new HttpClient())
+                var request = new HttpRequestMessage(HttpMethod.Post, uri)
                 {
-                    //Passing service base url  
-                    client.BaseAddress = new Uri(insideUrl);
-
-                    client.DefaultRequestHeaders.Clear();
-                    //Define request data format  
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    //client.Timeout = TimeSpan.FromSeconds(20);s
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await Task.FromResult(client.PostAsync(uri, content).Result);
-                    return response;
-                }
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+                return await _httpClient.SendAsync(request);
             }
             catch (Exception ex)
             {
-                log.Info("---ex End API");
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[UPPostJsonAsync] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
         }
 
-        public  async Task<HttpResponseMessage> PostJsonAsync( string uri, string json)
+        public async Task<HttpResponseMessage> PostJsonAsync(string uri, string json)
         {
-            HttpResponseMessage response = null;
             try
             {
-                using (var client = new HttpClient())
+                var request = new HttpRequestMessage(HttpMethod.Post, uri)
                 {
-                    //Passing service base url  
-                    client.BaseAddress = new Uri(insideUrl);
-
-                    client.DefaultRequestHeaders.Clear();
-                    //Define request data format  
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    client.Timeout = TimeSpan.FromSeconds(20);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    response = await client.PostAsync(uri, content);
-                    return response;
-                }
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+                return await _httpClient.SendAsync(request);
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[PostJsonAsync] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
         }
-        //TEST
-        public  async Task<HttpResponseMessage> ReCallPostJsonAsync( string uri, string json)
+
+        public async Task<HttpResponseMessage> ReCallPostJsonAsync(string uri, string json)
         {
             try
             {
-                string url = uri;
-                using (var client = new HttpClient())
+                var request = new HttpRequestMessage(HttpMethod.Post, uri)
                 {
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PostAsync(client.BaseAddress, content);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        response = await client.PostAsync(client.BaseAddress, content);
-
-                    }
-                    return response;
-                }
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+                return await _httpClient.SendAsync(request);
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[ReCallPostJsonAsync] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
         }
-        //TEST
-        public  async Task<string> GetJsonAsync( string url)
+
+        public async Task<string> GetJsonAsync(string url)
         {
-            HttpResponseMessage response = null;
             try
             {
-                using (var client = new HttpClient())
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
                 {
-                    client.BaseAddress = new Uri(insideUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    response = await client.GetAsync(url);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        response = await client.GetAsync(url);
-
-                    }
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseString = response.Content.ReadAsStringAsync().Result;
-                        return responseString;
-                    }
+                    return await response.Content.ReadAsStringAsync();
                 }
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[GetJsonAsync] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return ex.Message;
             }
             return null;
         }
 
-        public  async Task<HttpResponseMessage> GetJsonAsyncResponse( string url)
+        public async Task<HttpResponseMessage> GetJsonAsyncResponse(string url)
         {
-            HttpResponseMessage response = null;
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(insideUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    //client.Timeout = new TimeSpan(100);
-                    response = await client.GetAsync(url);
-                    log.Debug("Trạng thái của API " + client.BaseAddress + ": " + response.StatusCode);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        response = await (client.GetAsync(url));
-
-                    }
-                    return response;
-                }
+                var response = await _httpClient.GetAsync(url);
+                log.Debug("[GetJsonAsyncResponse] Trạng thái API " + url + ": " + response.StatusCode);
+                return response;
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[GetJsonAsyncResponse] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
@@ -204,149 +131,77 @@ namespace Common.Common
 
         public async Task<HttpResponseMessage> GetJsonAsyncResponseReport(string url)
         {
-            HttpResponseMessage response = null;
             try
             {
-                using (var client = new HttpClient())
-                {
-                    //client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    //client.Timeout = new TimeSpan(100);
-                    response = await client.GetAsync(url);
-                    log.Debug("Trạng thái của API " + client.BaseAddress + ": " + response.StatusCode);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        response = await (client.GetAsync(url));
-
-                    }
-                    return response;
-                }
+                var response = await _httpClient.GetAsync(url);
+                log.Debug("[GetJsonAsyncResponseReport] Trạng thái API " + url + ": " + response.StatusCode);
+                return response;
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[GetJsonAsyncResponseReport] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
         }
 
-
-        public async Task<string> GetBase64Async( string url)
+        public async Task<string> GetBase64Async(string url)
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(insideUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    var bytes = await client.GetByteArrayAsync(url);
-                    string base64 = Convert.ToBase64String(bytes);
-                    return base64;
-                }
+                var bytes = await _httpClient.GetByteArrayAsync(url);
+                return Convert.ToBase64String(bytes);
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[GetBase64Async] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return ex.Message;
             }
         }
 
-        // CuongHM add
-        public  async Task<string> PutJsonAsync( string url, string json)
+        public async Task<string> PutJsonAsync(string url, string json)
         {
             try
             {
-                using (var client = new HttpClient())
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync(url, content);
+                if (response.IsSuccessStatusCode)
                 {
-                    client.BaseAddress = new Uri(insideUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PutAsync(url, content);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        content = new StringContent(json, Encoding.UTF8, "application/json");
-                        response = await client.PutAsync(url, content);
-                    }
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseString = response.Content.ReadAsStringAsync().Result;
-                        return responseString;
-                    }
+                    return await response.Content.ReadAsStringAsync();
                 }
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[PutJsonAsync] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return ex.Message;
             }
             return null;
         }
 
-        public  async Task<HttpResponseMessage> PutJsonAsyncResponse( string url, string json)
+        public async Task<HttpResponseMessage> PutJsonAsyncResponse(string url, string json)
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(insideUrl);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //client.DefaultRequestHeaders.Add("token", Token);
-                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PutAsync(url, content);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        // Gọi lại khi token hết hạn
-                        // Lưu lại token
-                        Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        configuration.Save(ConfigurationSaveMode.Full, true);
-                        ConfigurationManager.RefreshSection("appSettings");
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //client.DefaultRequestHeaders.Add("token", Token);
-                        response = await client.PutAsync(url, content);
-                    }
-                }
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                return await _httpClient.PutAsync(url, content);
             }
             catch (Exception ex)
             {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
+                log.Error($"[PutJsonAsyncResponse] Lỗi: {ex.Message}\n {ex.StackTrace}");
                 return new HttpResponseMessage()
                 {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
+                    StatusCode = HttpStatusCode.NotImplemented,
                     Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
                 };
             }
-            return null;
         }
+
         public async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
         {
-            try
+            return await HttpRetryHelper.ExecuteWithRetryAsync(async () =>
             {
                 var data = new[]
                 {
@@ -363,76 +218,11 @@ namespace Common.Common
 
                 using (var content = new FormUrlEncodedContent(data))
                 {
-                    //_httpClient.Timeout = TimeSpan.FromSeconds(30); // Giới hạn thời gian chờ
-
                     content.Headers.Clear();
                     content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                     return await _httpClient.PostAsync(url, content);
                 }
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
-                return new HttpResponseMessage
-                {
-                    StatusCode = System.Net.HttpStatusCode.NotImplemented,
-                    Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
-                };
-            }
+            });
         }
-
-        //public  async Task<HttpResponseMessage> PostJsonAsyncRaw(string url, string token, string reportId, string rawOrLabel = "label")
-        //{
-        //    HttpResponseMessage response = null;
-        //    try
-        //    {
-        //        using (var client = new HttpClient())
-        //        {
-        //            // //Passing service base url  
-        //            // client.BaseAddress = new Uri(insideUrl);
-
-        //            // client.DefaultRequestHeaders.Clear();
-        //            // //Define request data format  
-        //            // client.Timeout = TimeSpan.FromSeconds(100);
-
-        //            var data = new[]
-        //            {
-        //                 new KeyValuePair<string, string>("token", token),
-        //                 new KeyValuePair<string, string>("content", "report"),
-        //                 new KeyValuePair<string, string>("format", "json"),
-        //                 new KeyValuePair<string, string>("report_id", reportId),
-        //                 new KeyValuePair<string, string>("csvDelimiter", ""),
-        //                 new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
-        //                 new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
-        //                 new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
-        //                 new KeyValuePair<string, string>("returnFormat", "json")
-        //             };
-        //            // client.DefaultRequestHeaders.Add("content-type", "application/x-www-form-urlencoded");
-
-        //            // var content = new FormUrlEncodedContent(data);
-        //            //// content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-        //            // response = await client.PostAsync(url, content);
-
-        //            using (var content = new FormUrlEncodedContent(data))
-        //            {
-        //                content.Headers.Clear();
-        //                content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
-        //                response = await client.PostAsync(url, content).ConfigureAwait(false);
-        //            }
-
-        //            return response;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.Error($"Failed: {ex.Message}\n {ex.StackTrace}");
-        //        return new HttpResponseMessage()
-        //        {
-        //            StatusCode = System.Net.HttpStatusCode.NotImplemented,
-        //            Content = new StringContent(JsonConvert.SerializeObject(new ApiResult { message = ex.Message }))
-        //        };
-        //    }
-        //}
     }
 }

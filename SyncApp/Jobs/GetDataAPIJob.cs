@@ -1,46 +1,60 @@
-﻿using Model.ModelExtend.API;
+using log4net;
+using Model.ModelExtend.API;
 using Quartz;
 using SyncBVTL.Push.Controllers.PA;
 using SyncBVTL.Push.Utils;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 using System.Web.Mvc;
 
 namespace SyncBVTL.Push.Jobs.PAJobs
 {
     public class GetDataAPIJob : IJob
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(GetDataAPIJob));
+
         public async Task Execute(IJobExecutionContext context)
         {
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
-            var controller = DependencyResolver.Current.GetService<SyncDataController>();
-
-            var data = (ProcessModel)dataMap["Data"];
-            if (data.Active)
+            try
             {
-                var result = await controller.GetDataFromAPI(data);
-                
-                var notifier = new TelegramNotifier();
+                JobDataMap dataMap = context.JobDetail.JobDataMap;
+                var controller = DependencyResolver.Current.GetService<SyncDataController>() ?? new SyncDataController();
 
-                await notifier.SendMessageAsync("🎉 API " + data.ReportId + " đã hoàn thành đồng bộ. KQ ["+ result.Success+"]["+result.Message+"]! [GetDataAPIJob:Execute]");
-
-                string logPath = "Log\\" + data.ReportId + "_" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + ".log";
-                if (!Directory.Exists("Log"))
+                var data = (ProcessModel)dataMap["Data"];
+                if (data != null && data.Active)
                 {
-                    Directory.CreateDirectory("Log");
-                }
+                    var result = await controller.GetDataFromAPI(data);
+                    
+                    var notifier = new TelegramNotifier();
 
-                if (!File.Exists(logPath))
-                {
-                    File.Create(logPath);
-                }
+                    await notifier.SendMessageAsync("🎉 API " + data.ReportId + " (" + data.Code + ") đã hoàn thành đồng bộ. KQ [" + result.Success + "][" + result.Message + "]! [GetDataAPIJob:Execute]");
 
-                using (var file = File.Open(logPath, FileMode.Open, FileAccess.ReadWrite))
-                {
-                    file.Prepend(result.Message + "\n");
+                    string logFileName = (string.IsNullOrEmpty(data.Code) ? "" : data.Code + "_") + data.ReportId + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+                    string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
+                    if (!Directory.Exists(logDir))
+                    {
+                        Directory.CreateDirectory(logDir);
+                    }
+                    string logPath = Path.Combine(logDir, logFileName);
+
+                    string logContent = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {(result.Success ? "SUCCESS" : "ERROR")}: {result.Message}\r\n";
+                    try
+                    {
+                        using (var file = new FileStream(logPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            file.Prepend(logContent);
+                        }
+                    }
+                    catch (Exception exFile)
+                    {
+                        log.Warn($"Không thể ghi log file {logPath}: {exFile.Message}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Exception [GetDataAPIJob:Execute]: {ex.Message}", ex);
             }
         }
     }

@@ -1,11 +1,11 @@
-﻿using DataTables;
+using DataTables;
 using Model.ModelExtend;
 using System.Configuration;
 using System.Web.Http;
 
 namespace WebApp.Controllers.Api
 {
-    public class ApiKhachHangController : ApiController
+    public class ApiKhachHangController : System.Web.Http.ApiController
     {
         private string stringConnect = ConfigurationManager.AppSettings["ConnectionString"];
         [Route("api/khachhang")]

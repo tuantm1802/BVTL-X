@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Common;
 using Common.Common;
 using Data.Admin;
@@ -17,11 +17,19 @@ namespace WebApp.Controllers
 {
     public class PhieuTuVanController : BaseController
     {
-        IPhieuTuVanDA _PhieuTuVanDA = new PhieuTuVanDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly IPhieuTuVanDA _PhieuTuVanDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public PhieuTuVanController(IPhieuTuVanDA PhieuTuVanDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _PhieuTuVanDA = PhieuTuVanDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
 
         // GET: PhieuTuVan
         [HasCredential(ControllerName = "PhieuTuVan")]

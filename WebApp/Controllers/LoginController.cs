@@ -18,11 +18,19 @@ namespace WebApp.Controllers
 {
     public class LoginController : Controller
     {
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IUserDA _userDA = new UserDA();
-        ISysParameterDA _sysParameterDA = new SysParameterDA();
-        IPageMenuDA _pageMenuDA = new PageMenuDA();
+        readonly ISysLogDA _sysLogDA;
+        readonly IUserDA _userDA;
+        readonly ISysParameterDA _sysParameterDA;
+        readonly IPageMenuDA _pageMenuDA;
         IEncryptor _encryptor = new Encryptor();
+
+        public LoginController(ISysLogDA sysLogDA, IUserDA userDA, ISysParameterDA sysParameterDA, IPageMenuDA pageMenuDA)
+        {
+            _sysLogDA = sysLogDA;
+            _userDA = userDA;
+            _sysParameterDA = sysParameterDA;
+            _pageMenuDA = pageMenuDA;
+        }
         // GET: Login
         public ActionResult Index()
         {

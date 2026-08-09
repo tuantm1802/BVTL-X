@@ -75,6 +75,14 @@ namespace Common.Common
             {
                 return false;
             }
+
+            // Kiểm tra nếu là chuỗi băm MD5 cũ 32 ký tự hexadecimal
+            if (hashedPassword.Length == 32 && System.Text.RegularExpressions.Regex.IsMatch(hashedPassword, @"^[a-fA-F0-9]+$"))
+            {
+                string md5 = MD5Hash(password);
+                return hashedPassword.Equals(md5, StringComparison.OrdinalIgnoreCase);
+            }
+
             try
             {
                 byte[] hashBytes = Convert.FromBase64String(hashedPassword);

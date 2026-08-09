@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Model.Model;
 using Model.ModelExtend;
 
@@ -17,12 +17,21 @@ namespace WebApp.Controllers
 {
     public class RoleController : BaseController
     {
-        IRoleDA _roleDA = new RoleDA();
-        IRolePageDA _rolePageDA = new RolePageDA();
-        IPageMenuDA _pageMenuDA = new PageMenuDA();
-        IPageActionDA _pageActionDA = new PageActionDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IRoleDA _roleDA;
+        readonly IRolePageDA _rolePageDA;
+        readonly IPageMenuDA _pageMenuDA;
+        readonly IPageActionDA _pageActionDA;
+        readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
+
+        public RoleController(IRoleDA roleDA, IRolePageDA rolePageDA, IPageMenuDA pageMenuDA, IPageActionDA pageActionDA, ISysLogDA sysLogDA)
+        {
+            _roleDA = roleDA;
+            _rolePageDA = rolePageDA;
+            _pageMenuDA = pageMenuDA;
+            _pageActionDA = pageActionDA;
+            _sysLogDA = sysLogDA;
+        }
 
         // GET: User
         [HasCredential(ControllerName = "Role")]

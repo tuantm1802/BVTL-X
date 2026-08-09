@@ -13,6 +13,19 @@ app.controller("BaoCaoTuanController", function ($scope, $uibModal, $ngConfirm, 
     $scope.ListDuAn = [];
     $scope.ListWeek = [];
     $scope.Week = 1;
+    
+    // Tab control and Charts
+    $scope.activeTab = 'table';
+    $scope.chartInstance = null;
+
+    $scope.setTab = function (tabName) {
+        $scope.activeTab = tabName;
+        if (tabName == 'chart') {
+            setTimeout(function () {
+                $scope.renderChart();
+            }, 100);
+        }
+    };
 
     angular.element(document).ready(function () {
         $scope.ListMaNhomTBH = [];
@@ -121,6 +134,10 @@ app.controller("BaoCaoTuanController", function ($scope, $uibModal, $ngConfirm, 
             success: function (response) {
                 if (response.Error == false) {
                     $scope.ListData = response.data;
+                    // If currently on chart tab, redraw chart
+                    if ($scope.activeTab === 'chart') {
+                        $scope.renderChart();
+                    }
                 } else {
                     toastr.error(response.Title);
                 }
@@ -193,5 +210,104 @@ app.controller("BaoCaoTuanController", function ($scope, $uibModal, $ngConfirm, 
             '&maNhomTBHs=' + $scope.modelSearch.MaNhomTBH +
             '&maDuAn=' + $scope.modelSearch.MaDuAn;
         window.location = url;
+    };
+
+    $scope.renderChart = function () {
+        if (!$scope.ListData || $scope.ListData.length === 0) {
+            return;
+        }
+
+        // Filter out headers or blank rows
+        var chartData = $scope.ListData.filter(function (item) {
+            return item.IsShow === 'Y' && item.ThongTinBC && item.ThongTinBC.trim() !== '' && item.STT;
+        });
+
+        // Limit to top 6 indicators
+        chartData = chartData.slice(0, 6);
+
+        var labels = chartData.map(function (item) {
+            var title = item.ThongTinBC.trim();
+            if (title.length > 35) {
+                title = title.substring(0, 32) + "...";
+            }
+            return title;
+        });
+
+        var msmData = chartData.map(function (item) { return item.MSM || 0; });
+        var pudData = chartData.map(function (item) { return item.PUD || 0; });
+        var swData = chartData.map(function (item) { return item.SW || 0; });
+
+        var ctx = document.getElementById('weeklyReportChart');
+        if (!ctx) return;
+
+        if ($scope.chartInstance) {
+            $scope.chartInstance.destroy();
+        }
+
+        $scope.chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'MSM (Nam quan hệ đồng tính)',
+                        data: msmData,
+                        backgroundColor: '#0d9488', // Emerald
+                        borderColor: '#0f766e',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'PUD (Người tiêm chích ma túy)',
+                        data: pudData,
+                        backgroundColor: '#374151', // Dark Gray
+                        borderColor: '#1f2937',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'SW (Người bán dâm)',
+                        data: swData,
+                        backgroundColor: '#14b8a6', // Emerald Accent
+                        borderColor: '#0d9488',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Times New Roman',
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Times New Roman',
+                                size: 11
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Times New Roman'
+                            }
+                        }
+                    }
+                }
+            }
+        });
     };
 });

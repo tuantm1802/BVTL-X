@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Data.Admin;
 using Model.Model;
 using Model.ModelExtend;
@@ -19,14 +19,32 @@ namespace WebApp.Controllers
 {
     public class UserController : BaseController
     {
-        IUserDA _userDA = new UserDA();
-        ICityDA _CityDA = new CityDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
-        IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA = new BVTL_NHOM_TBHDA();
-        IRoleDA _RoleDA = new RoleDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly IUserDA _userDA;
+        readonly ICityDA _CityDA;
+        readonly IDuAnDA _DuAnDA;
+        readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
+        readonly IRoleDA _RoleDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly ISysParameterDA _sysParameterDA;
         BaseController _helperController = new BaseController();
-        ISysParameterDA _sysParameterDA = new SysParameterDA();
+
+        public UserController(
+            IUserDA userDA,
+            ICityDA cityDA,
+            IDuAnDA duAnDA,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
+            IRoleDA roleDA,
+            ISysLogDA sysLogDA,
+            ISysParameterDA sysParameterDA)
+        {
+            _userDA = userDA;
+            _CityDA = cityDA;
+            _DuAnDA = duAnDA;
+            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
+            _RoleDA = roleDA;
+            _sysLogDA = sysLogDA;
+            _sysParameterDA = sysParameterDA;
+        }
         // GET: User
         [HasCredential(ControllerName = "User")]
         public ActionResult Index()

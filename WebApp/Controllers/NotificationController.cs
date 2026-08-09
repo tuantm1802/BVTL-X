@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.Admin;
@@ -19,7 +19,13 @@ namespace WebApp.Controllers
 {
     public class NotificationController : Controller
     {
-        ISysLogDA _sysLogDA = new SysLogDA();
+        readonly ISysLogDA _sysLogDA;
+
+        public NotificationController(ISysLogDA sysLogDA)
+        {
+            _sysLogDA = sysLogDA;
+        }
+
         // GET: Notification
         public ActionResult Index()
         {

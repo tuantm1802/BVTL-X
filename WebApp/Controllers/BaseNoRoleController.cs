@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
@@ -18,12 +18,18 @@ namespace WebApp.Controllers
 {
     public class BaseNoRoleController : Controller
     {
-        IPageMenuDA _pageMenuDA = new PageMenuDA();
-        IUserDA _userDA = new UserDA();
+        readonly IPageMenuDA _pageMenuDA;
+        readonly IUserDA _userDA;
         ITokenService _ITokenService = new TokenService();
         private static readonly string AppCode = ConfigurationManager.AppSettings["AppCode"];
         private static readonly string ApiUri = ConfigurationManager.AppSettings["ApiUri"];
         private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"].ToString();
+
+        public BaseNoRoleController(IPageMenuDA pageMenuDA = null, IUserDA userDA = null)
+        {
+            _pageMenuDA = pageMenuDA ?? new PageMenuDA();
+            _userDA = userDA ?? new UserDA();
+        }
         // GET: Base
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {

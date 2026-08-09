@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Data.InterfaceDA.Admin;
 using Model.Model;
 using Model.ModelExtend.Base;
@@ -17,11 +17,20 @@ namespace WebApp.Controllers
     public class TrainingDataCollVIIVController : Controller
     {
         // GET: TrainingDataColl
-        ITrainingDataCollVIIVDA _TrainingDataCollVIIVDA = new TrainingDataCollVIIVDA();
-        ISysLogDA _sysLogDA = new SysLogDA();
-        IDuAnDA _DuAnDA = new DuAnDA();
+        readonly ITrainingDataCollVIIVDA _TrainingDataCollVIIVDA;
+        readonly ISysLogDA _sysLogDA;
+        readonly IDuAnDA _DuAnDA;
         BaseController _helperController = new BaseController();
-        ICityDA _CityDA = new CityDA();
+        readonly ICityDA _CityDA;
+
+        public TrainingDataCollVIIVController(ITrainingDataCollVIIVDA TrainingDataCollVIIVDA, ISysLogDA sysLogDA, IDuAnDA DuAnDA, ICityDA CityDA)
+        {
+            _TrainingDataCollVIIVDA = TrainingDataCollVIIVDA;
+            _sysLogDA = sysLogDA;
+            _DuAnDA = DuAnDA;
+            _CityDA = CityDA;
+        }
+
         public ActionResult Index()
         {
             try
