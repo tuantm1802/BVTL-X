@@ -1,52 +1,56 @@
-﻿<div class="modal-header">
-    <h4 class="modal-title">Cập nhật tham số</h4>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
-    <form class=" col-md-12" id="formSubmit">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Mã<span class="error">*</span></label>
-                            <input type="text" class="form-control" ng-disabled="true" ng-model="model.ParamCode" name="ParamCode" required>
+<div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+    <div class="modal-header bg-gradient-info text-white py-3" style="background: linear-gradient(135deg, #36b9cc 0%, #1a8a99 100%);">
+        <h5 class="modal-title font-weight-bold d-flex align-items-center">
+            <i class="fas fa-sliders-h mr-2"></i> Cập nhật Tham số Hệ thống
+        </h5>
+        <button type="button" class="close text-white opacity-8" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-4" style="background-color: #f8f9fc;">
+        <form id="formSubmit">
+            <div class="card border-0 shadow-sm" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                    <div class="form-group mb-3">
+                        <label class="form-label font-weight-bold text-dark small">Mã tham số</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-secondary text-white border-right-0"><i class="fas fa-lock"></i></span>
+                            </div>
+                            <input type="text" class="form-control border-left-0 bg-light font-weight-bold text-dark" ng-disabled="true" ng-model="model.ParamCode" name="ParamCode" readonly required>
                         </div>
                     </div>
-                </div>
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Giá trị<span class="error">*</span></label>
-                            <input type="text" class="form-control" ng-model="model.ParamValue" name="ParamValue" required>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label font-weight-bold text-dark small">Giá trị tham số <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light border-right-0"><i class="fas fa-key text-gray-500"></i></span>
+                            </div>
+                            <input type="text" class="form-control border-left-0 bg-light font-weight-bold text-primary" ng-model="model.ParamValue" name="ParamValue" placeholder="Nhập giá trị cấu hình..." required>
                         </div>
                     </div>
-                </div>
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Kiểu dữ liệu<span class="error">*</span></label>
-                            <select style="width: 400px;" ui-select2 ng-model="model.ParamValueType" name="ParamValueType" required ng-options="item.value as item.text for item in ListValueType">
-                            </select>
-                        </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label font-weight-bold text-dark small">Kiểu dữ liệu <span class="text-danger">*</span></label>
+                        <select class="form-control bg-light" ui-select2 ng-model="model.ParamValueType" name="ParamValueType" required ng-options="item.value as item.text for item in ListValueType">
+                        </select>
                     </div>
-                </div>
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Mô tả</label>
-                            <textarea class="form-control" ng-model="model.Desctiption"></textarea>
-                        </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label font-weight-bold text-dark small">Mô tả tham số</label>
+                        <textarea class="form-control bg-light" ng-model="model.Desctiption" rows="3" placeholder="Nhập mô tả ý nghĩa sử dụng của tham số..."></textarea>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+    <div class="modal-footer bg-white py-3 border-top-0">
+        <button type="button" class="btn btn-secondary px-4 font-weight-bold" data-dismiss="modal" ng-click="cancel()">
+            <i class="fas fa-times mr-1"></i> Hủy bỏ
+        </button>
+        <button type="button" class="btn btn-info px-4 font-weight-bold shadow-sm text-white" ng-click="submit()">
+            <i class="fas fa-save mr-1"></i> Cập nhật tham số
+        </button>
+    </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" ng-click="submit()">Lưu</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Hủy</button>
-</div>
-

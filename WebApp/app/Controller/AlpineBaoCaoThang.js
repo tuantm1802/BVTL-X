@@ -1,242 +1,246 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.data('alpineBaoCaoThang', () => ({
-        modelSearch: {
-            totalItems: 0,
-            currentPage: 1,
-            maxSize: 5,
-            pageSize: 10,
-            SortColumn: "ParamCode DESC",
-            Year: 0,
-            Months: '',
-            CityCodes: '',
-            MaNhomTBH: '',
-            MaDuAn: ''
-        },
-        ListYear: [],
-        ListCity: [],
-        ListThang: [],
-        Thangs: [],
-        ListCityCode: [],
-        ListMaNhomTBH: [],
-        ListNhomTBH: [],
-        ListDuAn: [],
-        ListData: [],
-        
-        activeTab: 'table',
-        chartInstance: null,
-        RoleBtnUpdate: false,
-        RoleBtnSearch: false,
+document.addEventListener('alpine:init', function () {
+    Alpine.data('alpineBaoCaoThang', function () {
+        return {
+            modelSearch: {
+                totalItems: 0,
+                currentPage: 1,
+                maxSize: 5,
+                pageSize: 10,
+                SortColumn: "ParamCode DESC",
+                Year: new Date().getFullYear(),
+                Months: '',
+                CityCodes: '',
+                MaNhomTBH: '',
+                MaDuAn: ''
+            },
+            ListYear: [],
+            ListCity: [],
+            ListThang: [],
+            Thangs: [],
+            ListCityCode: [],
+            ListMaNhomTBH: [],
+            ListNhomTBH: [],
+            ListDuAn: [],
+            ListData: [],
+            
+            activeTab: 'table',
+            chartInstance: null,
+            RoleBtnUpdate: false,
+            RoleBtnSearch: false,
 
-        async init() {
-            const date = new Date();
-            for (let i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
-                this.ListYear.push({ Id: i, Name: i + '' });
-            }
-            for (let i = 1; i < 13; i++) {
-                this.ListThang.push({ Id: i, Name: i + '' });
-            }
-            this.modelSearch.Year = date.getFullYear();
+            init: function () {
+                var self = this;
+                var date = new Date();
+                self.ListYear = [];
+                for (var i = date.getFullYear() - 5; i <= date.getFullYear() + 5; i++) {
+                    self.ListYear.push({ Id: i, Name: i.toString() });
+                }
+                self.ListThang = [];
+                for (var j = 1; j <= 12; j++) {
+                    self.ListThang.push({ Id: j, Name: j.toString() });
+                }
+                self.modelSearch.Year = date.getFullYear();
 
-            if (!this.Thangs || this.Thangs.length === 0) {
-                this.Thangs = [date.getMonth() + 1];
-            }
+                if (!self.Thangs || self.Thangs.length === 0) {
+                    self.Thangs = [date.getMonth() + 1];
+                }
 
-            await this.GetBottomAction();
-            await this.Changecity();
+                self.GetBottomAction(function () {
+                    self.Changecity(function () {
+                        if (self.modelSearch.MaDuAn) {
+                            self.LoadPage(1);
+                        }
+                    });
+                });
+            },
 
-            if (this.modelSearch.MaDuAn) {
-                this.LoadPage(1);
-            }
-        },
+            setTab: function (tabName) {
+                var self = this;
+                self.activeTab = tabName;
+                if (tabName === 'chart') {
+                    setTimeout(function () {
+                        self.renderChart();
+                    }, 100);
+                }
+            },
 
-        setTab(tabName) {
-            this.activeTab = tabName;
-            if (tabName === 'chart') {
-                setTimeout(() => {
-                    this.renderChart();
-                }, 100);
-            }
-        },
+            formatNumber: function (value) {
+                if (value === null || value === undefined || value === "") return '';
+                return Number(value).toLocaleString('en-US');
+            },
 
-        formatNumber(value) {
-            if (value === null || value === undefined || value === "") return '';
-            return Number(value).toLocaleString('en-US');
-        },
-
-        async GetBottomAction() {
-            try {
-                const res = await fetch('/BaoCaoThang/GetBottomAction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+            GetBottomAction: function (callback) {
+                var self = this;
+                $.ajax({
+                    type: 'POST',
+                    url: '/BaoCaoThang/GetBottomAction',
+                    contentType: 'application/json',
+                    data: '{}',
+                    success: function (response) {
+                        if (response && response.Buttoms) {
+                            self.RoleBtnUpdate = response.Buttoms.indexOf('btnUpdate') !== -1;
+                            self.RoleBtnSearch = response.Buttoms.indexOf('btnSearch') !== -1;
+                        }
+                        self.ListCity = (response && response.Citys) ? response.Citys : [];
+                        self.ListDuAn = (response && response.DuAns) ? response.DuAns : [];
+                        if (!self.modelSearch.MaDuAn && self.ListDuAn.length > 0) {
+                            self.modelSearch.MaDuAn = self.ListDuAn[0].maduan;
+                        }
+                        if (typeof callback === 'function') callback();
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-                const response = await res.json();
+            },
 
-                if (response.Buttoms != null) {
-                    response.Buttoms.forEach(item => {
-                        if (item === 'btnUpdate') this.RoleBtnUpdate = true;
-                        if (item === 'btnSearch') this.RoleBtnSearch = true;
-                    });
+            LoadPage: function (genTable) {
+                var self = this;
+                if (!self.modelSearch.Year || self.modelSearch.Year == 0) {
+                    if (window.toastr) toastr.error("Vui lòng chọn năm!");
+                    return;
                 }
-                this.ListCity = response.Citys || [];
-                this.ListDuAn = response.DuAns || [];
-                if (!this.modelSearch.MaDuAn && this.ListDuAn.length > 0) {
-                    this.modelSearch.MaDuAn = this.ListDuAn[0].maduan;
+
+                if (!self.modelSearch.MaDuAn) {
+                    if (window.toastr) toastr.error("Vui lòng chọn dự án!");
+                    return;
                 }
-            } catch (err) {
-                console.error(err);
-            }
-        },
 
-        LoadPage(genTable) {
-            if (!this.modelSearch.Year || this.modelSearch.Year == 0) {
-                if(window.toastr) toastr.error("Vui lòng chọn năm!");
-                return;
-            }
-
-            if (!this.modelSearch.MaDuAn) {
-                if(window.toastr) toastr.error("Vui lòng chọn dự án!");
-                return;
-            }
-
-            if (this.Thangs && this.Thangs.length > 0) {
-                this.modelSearch.Months = this.Thangs.join(',');
-            } else {
-                if(window.toastr) toastr.error("Vui lòng chọn tháng!");
-                return;
-            }
-            
-            if (this.ListCityCode && this.ListCityCode.length > 0) {
-                this.modelSearch.CityCodes = this.ListCityCode.join(',');
-            } else {
-                this.modelSearch.CityCodes = '';
-            }
-
-            if (this.ListMaNhomTBH && this.ListMaNhomTBH.length > 0) {
-                this.modelSearch.MaNhomTBH = this.ListMaNhomTBH.join(',');
-            } else {
-                this.modelSearch.MaNhomTBH = '';
-            }
-
-            if(window.showToast) showToast();
-            this.ListData = [];
-            
-            $.ajax({
-                type: 'post',
-                url: '/BaoCaoThang/SearchData',
-                cache: false,
-                data: this.modelSearch,
-                success: (response) => {
-                    this.ListData = response.data;
-                    if (this.activeTab === 'chart') {
-                        this.renderChart();
-                    }
-                    if(window.hideLoading) hideLoading();
+                if (self.Thangs && self.Thangs.length > 0) {
+                    self.modelSearch.Months = self.Thangs.join(',');
+                } else {
+                    if (window.toastr) toastr.error("Vui lòng chọn tháng!");
+                    return;
                 }
-            });
-        },
+                
+                self.modelSearch.CityCodes = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.modelSearch.MaNhomTBH = (self.ListMaNhomTBH && self.ListMaNhomTBH.length > 0) ? self.ListMaNhomTBH.join(',') : '';
 
-        Refesh() {
-            this.LoadPage(0);
-        },
-
-        ExportExcel() {
-            if (!this.modelSearch.Year || this.modelSearch.Year == 0) {
-                if(window.toastr) toastr.error("Vui lòng chọn năm!");
-                return;
-            }
-
-            if (!this.modelSearch.MaDuAn) {
-                if(window.toastr) toastr.error("Vui lòng chọn dự án!");
-                return;
-            }
-
-            if (this.Thangs && this.Thangs.length > 0) {
-                this.modelSearch.Months = this.Thangs.join(',');
-            } else {
-                if(window.toastr) toastr.error("Vui lòng chọn tháng!");
-                return;
-            }
-
-            this.modelSearch.CityCodes = (this.ListCityCode && this.ListCityCode.length > 0) ? this.ListCityCode.join(',') : '';
-            this.modelSearch.MaNhomTBH = (this.ListMaNhomTBH && this.ListMaNhomTBH.length > 0) ? this.ListMaNhomTBH.join(',') : '';
-
-            const params = new URLSearchParams({
-                Year: this.modelSearch.Year || '',
-                Months: this.modelSearch.Months || '',
-                CityCodes: this.modelSearch.CityCodes || '',
-                maNhomTBHs: this.modelSearch.MaNhomTBH || '',
-                maDuAn: this.modelSearch.MaDuAn || ''
-            });
-
-            window.location.href = '/BaoCaoThang/ExportData?' + params.toString();
-        },
-
-        Changecity() {
-            let cityCodesStr = '';
-            if (this.ListCityCode && this.ListCityCode.length > 0) {
-                cityCodesStr = this.ListCityCode.join(',');
-            }
-            this.ListNhomTBH = [];
-            this.ListMaNhomTBH = [];
-
-            return new Promise((resolve) => {
+                if (window.showToast) showToast();
+                self.ListData = [];
+                
                 $.ajax({
-                    type: 'post',
+                    type: 'POST',
+                    url: '/BaoCaoThang/SearchData',
+                    cache: false,
+                    data: self.modelSearch,
+                    success: function (response) {
+                        self.ListData = (response && response.data) ? response.data : [];
+                        if (self.activeTab === 'chart') {
+                            self.renderChart();
+                        }
+                        if (window.hideLoading) hideLoading();
+                    },
+                    error: function (err) {
+                        if (window.hideLoading) hideLoading();
+                        console.error(err);
+                    }
+                });
+            },
+
+            Refesh: function () {
+                this.LoadPage(0);
+            },
+
+            ExportExcel: function () {
+                var self = this;
+                if (!self.modelSearch.Year || self.modelSearch.Year == 0) {
+                    if (window.toastr) toastr.error("Vui lòng chọn năm!");
+                    return;
+                }
+
+                if (!self.modelSearch.MaDuAn) {
+                    if (window.toastr) toastr.error("Vui lòng chọn dự án!");
+                    return;
+                }
+
+                if (self.Thangs && self.Thangs.length > 0) {
+                    self.modelSearch.Months = self.Thangs.join(',');
+                } else {
+                    if (window.toastr) toastr.error("Vui lòng chọn tháng!");
+                    return;
+                }
+
+                self.modelSearch.CityCodes = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.modelSearch.MaNhomTBH = (self.ListMaNhomTBH && self.ListMaNhomTBH.length > 0) ? self.ListMaNhomTBH.join(',') : '';
+
+                var params = new URLSearchParams({
+                    Year: self.modelSearch.Year || '',
+                    Months: self.modelSearch.Months || '',
+                    CityCodes: self.modelSearch.CityCodes || '',
+                    maNhomTBHs: self.modelSearch.MaNhomTBH || '',
+                    maDuAn: self.modelSearch.MaDuAn || ''
+                });
+
+                window.location.href = '/BaoCaoThang/ExportData?' + params.toString();
+            },
+
+            Changecity: function (callback) {
+                var self = this;
+                var cityCodesStr = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.ListNhomTBH = [];
+                self.ListMaNhomTBH = [];
+
+                $.ajax({
+                    type: 'POST',
                     url: '/BaoCaoThang/GetNhomTBHByCityCodes',
                     cache: false,
                     data: { CityCodes: cityCodesStr },
-                    success: (response) => {
-                        this.ListNhomTBH = response.NhomTBHs || [];
-                        resolve(response);
+                    success: function (response) {
+                        self.ListNhomTBH = (response && response.NhomTBHs) ? response.NhomTBHs : [];
+                        if (typeof callback === 'function') callback();
                     },
-                    error: (xhr, status, error) => {
-                        console.error(error || status);
-                        resolve(null);
+                    error: function (err) {
+                        console.error(err);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-            });
-        },
+            },
 
-        renderChart() {
-            if (!this.ListData || this.ListData.length === 0) return;
+            renderChart: function () {
+                var self = this;
+                if (!self.ListData || self.ListData.length === 0) return;
 
-            let chartData = this.ListData.filter(item => item.IsShow === 'Y' && item.ThongTinBC && item.ThongTinBC.trim() !== '' && item.STT);
-            chartData = chartData.slice(0, 6);
+                var chartData = self.ListData.filter(function (item) {
+                    return item.IsShow === 'Y' && item.ThongTinBC && item.ThongTinBC.trim() !== '' && item.STT;
+                }).slice(0, 6);
 
-            const labels = chartData.map(item => {
-                let title = item.ThongTinBC.trim();
-                if (title.length > 35) title = title.substring(0, 32) + "...";
-                return title;
-            });
+                var labels = chartData.map(function (item) {
+                    var title = item.ThongTinBC.trim();
+                    if (title.length > 35) title = title.substring(0, 32) + "...";
+                    return title;
+                });
 
-            const msmData = chartData.map(item => item.MSM || 0);
-            const pudData = chartData.map(item => item.PUD || 0);
-            const swData = chartData.map(item => item.SW || 0);
+                var msmData = chartData.map(function (item) { return item.MSM || 0; });
+                var pudData = chartData.map(function (item) { return item.PUD || 0; });
+                var swData = chartData.map(function (item) { return item.SW || 0; });
 
-            const ctx = document.getElementById('monthlyReportChart');
-            if (!ctx) return;
+                var ctx = document.getElementById('monthlyReportChart');
+                if (!ctx) return;
 
-            if (this.chartInstance) {
-                this.chartInstance.destroy();
-            }
-
-            this.chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'MSM', data: msmData, backgroundColor: '#0d9488', borderColor: '#0f766e', borderWidth: 1 },
-                        { label: 'PUD', data: pudData, backgroundColor: '#374151', borderColor: '#1f2937', borderWidth: 1 },
-                        { label: 'SW',  data: swData,  backgroundColor: '#14b8a6', borderColor: '#0d9488', borderWidth: 1 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+                if (self.chartInstance) {
+                    self.chartInstance.destroy();
                 }
-            });
-        }
-    }));
+
+                if (window.Chart) {
+                    self.chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                { label: 'MSM', data: msmData, backgroundColor: '#0d9488', borderColor: '#0f766e', borderWidth: 1 },
+                                { label: 'PUD', data: pudData, backgroundColor: '#374151', borderColor: '#1f2937', borderWidth: 1 },
+                                { label: 'SW',  data: swData,  backgroundColor: '#14b8a6', borderColor: '#0d9488', borderWidth: 1 }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+            }
+        };
+    });
 });

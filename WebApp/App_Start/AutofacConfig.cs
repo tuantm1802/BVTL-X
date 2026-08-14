@@ -50,6 +50,9 @@ namespace WebApp.App_Start
             builder.RegisterType<Data.Admin.TTKHMaDaVIIVDA>().As<Data.InterfaceDA.Admin.ITTKHMaDaVIIVDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.TTTruyenThongVIIVDA>().As<Data.InterfaceDA.Admin.ITTTruyenThongVIIVDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.UserDA>().As<Data.InterfaceDA.Admin.IUserDA>().InstancePerRequest();
+            builder.RegisterType<Data.API.InsertDataDA>().As<Data.InterfaceDA.API.IInsertDataDA>().InstancePerRequest();
+            builder.RegisterType<Data.API.GetDataFromAPI>().As<Data.InterfaceDA.API.IGetDataFromAPI>().InstancePerRequest();
+            builder.RegisterType<Data.API.SyncDataFromApi_SaveToDB>().As<Data.InterfaceDA.API.ISyncDataFromApi_SaveToDB>().InstancePerRequest();
 
             // Khởi tạo container
             var container = builder.Build();

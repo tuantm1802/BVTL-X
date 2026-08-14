@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Báo cáo sàng lọc";
 }
 <style type="text/css">
@@ -6,7 +6,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="KetQuaSangLocCD43Controller">
+<div class="container-fluid" x-data="ketQuaSangLocComponent()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">THÔNG TIN SÀNG LỌC KHÁCH HÀNG TUYỂN VÀO DỰ ÁN</h1>
@@ -16,30 +16,37 @@
 
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Từ ngày</label>
-            <input type="date" class="form-control" ng-model="modelSearch.FromDate" />
+            <input type="date" class="form-control" x-model="modelSearch.FromDate" />
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Đến ngày</label>
-            <input type="date" class="form-control" ng-model="modelSearch.ToDate" />
+            <input type="date" class="form-control" x-model="modelSearch.ToDate" />
         </div>
 
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Nhóm</label>
-            <select class="form-control" ui-select2 multiple ng-model="modelSearch.MaNhomTBH" style="height:24px;" name="MaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + item.CityName) for item in ListNhomTBH"></select>
+            <select class="form-control" multiple style="height:24px;" id="MaNhomTBH" name="MaNhomTBH">
+                <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
+                    <option :value="item.manhom_tbh" :selected="modelSearch.MaNhomTBH && modelSearch.MaNhomTBH.includes(item.manhom_tbh)" x-text="item.tennhom_tbh + ' (' + item.manhom_tbh + ') - ' + item.CityName"></option>
+                </template>
+            </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label class="form-label">Tỉnh</label>
-            <select class="form-control" placeholder="Chọn tỉnh" ui-select2 ng-model="modelSearch.CityCodes" style="height:24px;" id="CityCodes" name="CityCodes" ng-options="item.Code as item.Name for item in ListCity">
+            <select class="form-control" id="CityCodes" name="CityCodes">
                 <option></option>
+                <template x-for="item in ListCity" :key="item.Code">
+                    <option :value="item.Code" :selected="modelSearch.CityCodes == item.Code" x-text="item.Name"></option>
+                </template>
             </select>
         </div>
     </div>
     <div class="form-group row">
         <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
-            <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
+            <button type="button" x-on:click="LoadPage()" x-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                 <i class="fas fa-search"></i> Tìm kiếm
             </button>
-            <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-secondary" ng-click="ExportDataSangLoc()">
+            <button type="button" x-show="RoleBtnExportExcel == true" class="btn btn-secondary" x-on:click="ExportDataSangLoc()">
                 <i class="fas fa-pencil-alt"></i> Xuất Excel
             </button>
         </div>
@@ -64,21 +71,21 @@
                                     <th style="width:10%;" class="text-center">Tỷ lệ (%)</th>
                                 </tr>
                             </thead>
-                            <tr ng-repeat="item in KetQuaTTCBHanhViNguyCos">
-                                <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
-                                <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
-                                    <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
-                                    <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
-                                </td>
-                                <td class="text-left" ng-hide="item.SubRowspan ==1 || item.IsShow  == 'N'" rowspan="{{item.SubRowspan}}">{{item.ThongTinBC_Them }}</td>
+                            <template x-for="(item, index) in KetQuaTTCBHanhViNguyCos" :key="index">
+                                <tr>
+                                    <td class="text-center" x-show="item.IsShow == 'Y'" x-text="item.STT"></td>
+                                    <td class="text-left" x-show="!(item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null)" :colspan="item.Colpan" :rowspan="item.Rowpan">
+                                        <span x-show="item.BoldText == 'N'" x-text="item.ThongTinBC"></span>
+                                        <b x-show="item.BoldText == 'Y'" x-text="item.ThongTinBC"></b>
+                                    </td>
+                                    <td class="text-left" x-show="!(item.SubRowspan == 1 || item.IsShow == 'N')" :rowspan="item.SubRowspan" x-text="item.ThongTinBC_Them"></td>
 
-                                <td class="text-left">
-                                    {{item.SubThongTinBC_Them}}
-                                </td>
+                                    <td class="text-left" x-text="item.SubThongTinBC_Them"></td>
 
-                                <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
-                            </tr>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.SoLuong || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : item.TyLe.toFixed(2) + '%')"></td>
+                                </tr>
+                            </template>
                         </table>
                     </div>
                 </div>
@@ -109,21 +116,17 @@
                                     <th class="text-center">%</th>
                                 </tr>
                             </thead>
-                            <tr ng-repeat="item in CacLoaiChatGayNghienAssists">
-                                <td class="text-left">{{item.LoaiDiem}}</td>
-                                <td class="text-right">{{item.NguyCo_Thap | number}}</td>
-                                <td class="text-right">                                    
-                                    {{item.TyLe_NguyCo_Thap == null ? '' : (item.TyLe_NguyCo_Thap === 0 ? '0%' : (item.TyLe_NguyCo_Thap | number:2) + '%')}}
-                                </td>
-                                <td class="text-right">{{item.NguyCo_TrungBinh | number}}</td>
-                                <td class="text-right">
-                                    {{item.TyLe_NguyCo_TrungBinh == null ? '' : (item.TyLe_NguyCo_TrungBinh === 0 ? '0%' : (item.TyLe_NguyCo_TrungBinh | number:2) + '%')}}
-                                </td>
-                                <td class="text-right">{{item.NguyCo_Cao | number}}</td>
-                                <td class="text-right">
-                                    {{item.TyLe_NguyCo_Cao == null ? '' : (item.TyLe_NguyCo_Cao === 0 ? '0%' : (item.TyLe_NguyCo_Cao | number:2) + '%')}}
-                                </td>
-                            </tr>
+                            <template x-for="(item, index) in CacLoaiChatGayNghienAssists" :key="index">
+                                <tr>
+                                    <td class="text-left" x-text="item.LoaiDiem"></td>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.NguyCo_Thap || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe_NguyCo_Thap == null ? '' : (item.TyLe_NguyCo_Thap === 0 ? '0%' : item.TyLe_NguyCo_Thap.toFixed(2) + '%')"></td>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.NguyCo_TrungBinh || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe_NguyCo_TrungBinh == null ? '' : (item.TyLe_NguyCo_TrungBinh === 0 ? '0%' : item.TyLe_NguyCo_TrungBinh.toFixed(2) + '%')"></td>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.NguyCo_Cao || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe_NguyCo_Cao == null ? '' : (item.TyLe_NguyCo_Cao === 0 ? '0%' : item.TyLe_NguyCo_Cao.toFixed(2) + '%')"></td>
+                                </tr>
+                            </template>
                         </table>
                     </div>
                 </div>
@@ -146,12 +149,14 @@
                                 </tr>
 
                             </thead>
-                            <tr ng-repeat="item in KetQuaQSTs">
-                                <td class="text-left" rowspan="{{item.SubRowspan}}" ng-hide="item.IsShow == 'N'">{{item.KetQua}}</td>
-                                <td class="text-left">{{item.GhiChu}}</td>
-                                <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
-                            </tr>
+                            <template x-for="(item, index) in KetQuaQSTs" :key="index">
+                                <tr>
+                                    <td class="text-left" :rowspan="item.SubRowspan" x-show="item.IsShow != 'N'" x-text="item.KetQua"></td>
+                                    <td class="text-left" x-text="item.GhiChu"></td>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.SoLuong || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : item.TyLe.toFixed(2) + '%')"></td>
+                                </tr>
+                            </template>
                         </table>
                     </div>
                 </div>
@@ -174,11 +179,13 @@
                                 </tr>
 
                             </thead>
-                            <tr ng-repeat="item in KetQuaACEs">
-                                <td class="text-left" >{{item.KetQua}}</td>
-                                <td class="text-right">{{item.SoLuong | number}}</td>
-                                <td class="text-right">{{item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : (item.TyLe | number:2) + '%')}}</td>
-                            </tr>
+                            <template x-for="(item, index) in KetQuaACEs" :key="index">
+                                <tr>
+                                    <td class="text-left" x-text="item.KetQua"></td>
+                                    <td class="text-right" x-text="new Intl.NumberFormat('en-US').format(item.SoLuong || 0)"></td>
+                                    <td class="text-right" x-text="item.TyLe == null ? '' : (item.TyLe === 0 ? '0%' : item.TyLe.toFixed(2) + '%')"></td>
+                                </tr>
+                            </template>
                         </table>
                     </div>
                 </div>
@@ -188,5 +195,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/KetQuaSangLocCD43Controller.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoSangLoc.js?v=@DateTime.Now.Ticks"></script>
 }

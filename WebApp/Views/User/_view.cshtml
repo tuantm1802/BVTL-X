@@ -1,143 +1,112 @@
-﻿<div class="modal-header">
-    <h4 class="modal-title">Xem tài khoản</h4>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
-        <span aria-hidden="true">&times;</span>
+<style>
+    .modal-user-view-header {
+        background: linear-gradient(135deg, #36b9cc 0%, #1a8a99 100%);
+        color: #fff;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    .view-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #858796;
+        margin-bottom: 4px;
+    }
+    .view-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2e59d9;
+    }
+    .view-avatar-box {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        border: 3px solid #fff;
+    }
+</style>
+
+<div class="modal-header modal-user-view-header py-3 px-4">
+    <h5 class="modal-title font-weight-bold text-white mb-0">
+        <i class="fas fa-id-card mr-2"></i>Thông tin Chi tiết Tài khoản Người dùng
+    </h5>
+    <button type="button" class="close text-white opacity-80" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+        <span aria-hidden="true" style="font-size: 1.8rem;">&times;</span>
     </button>
 </div>
-<div class="modal-body">
-    <form class=" col-md-12" id="formSubmit">
-        <div class="row">
-            <div class="col-md-10">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="requiredInput">Tên truy cập</label>
-                            <input type="text" class="form-control" disabled ng-model="model.UserName" name="UserName" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="requiredInput">Nhóm quyền</label>
-                            <select class="form-control" ui-select2 disabled ng-model="model.GroupID" name="GroupID" required ng-options="item.ID as item.Name for item in ListUserGroup">
-                                <option value="">Chọn quyền</option>
-                            </select>
-                        </div>
-                    </div>
+
+<div class="modal-body p-4 bg-light">
+    <!-- Top Summary Banner -->
+    <div class="card border-0 shadow-sm rounded-lg mb-4 bg-white">
+        <div class="card-body p-3">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img class="view-avatar-box" id="pathPhoto" src="~/Assest/dist/img/avatar.png" alt="Avatar" />
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="requiredInput">Họ và tên</label>
-                            <input type="text" class="form-control" disabled ng-model="model.Name" name="Name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label title="Nhóm thu thập dữ liệu">Nhóm TTDL</label>
-                            <select class="form-control" ui-select2 multiple disabled ng-model="ListTestGroupId" name="ListTestGroupId" ng-options="item.Id as item.Name for item in ListTestGroup">
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div style="margin-bottom: 20px;">
-                    <img style="width:100%" id="pathPhoto" src="~/Assest/dist/img/avatar.png" />
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            @*<label>Ảnh đại diện</label>*@
-                            <div class="custom-file">
-                                <input type="text" hidden class="form-control" ng-model="model.Avartar">
-                                <input id="filePhoto" name="filePhoto" type="file" onchange="angular.element(this).scope().SelectFile(event)" class="custom-file-input">
-                                <label for="filePhoto" id="lableFile" class="custom-file-label text-truncate">Chọn file...</label>
-                            </div>
-                        </div>
+                <div class="col">
+                    <h5 class="font-weight-bold text-dark mb-1" ng-bind="model.Name || 'Chưa cập nhật tên'"></h5>
+                    <p class="text-muted small mb-2"><i class="fas fa-user-circle mr-1"></i>Username: <strong class="text-primary" ng-bind="model.UserName"></strong></p>
+                    <div>
+                        <span class="badge badge-pill badge-primary px-3 py-1 mr-2" ng-bind="model.RoleName || 'Quyền dùng'"></span>
+                        <span class="badge badge-pill px-3 py-1" ng-class="model.Status == 1 ? 'badge-success' : 'badge-danger'" ng-bind="model.Status == 1 ? '🟢 Hoạt động' : '🔴 Ngừng hoạt động'"></span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Data Fields Grid -->
+    <div class="card border-0 shadow-sm rounded-lg bg-white p-3">
         <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Số điện thoại</label>
-                    <input type="text" ng-pattern="ph_numbr" maxlength="10" disabled name="Phone" class="form-control" ng-model="model.Phone">
-                    <span ng-show="formDemo.Phone.$error.pattern">Hãy nhập số điện thoại đúng định dạng!</span>
-                </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Tên truy cập</div>
+                <div class="view-value" ng-bind="model.UserName || '—'"></div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" name="Email" disabled ng-model="model.Email">
-                    </div>
-                </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Họ và tên</div>
+                <div class="view-value" ng-bind="model.Name || '—'"></div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Trạng thái</label>
-                    <select class="form-control" ui-select2 ng-model="model.Status" disabled name="Status" ng-options="item.ID as item.Name for item in ListStatus">
-                    </select>
-                </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Giới tính</div>
+                <div class="view-value" ng-bind="model.Gender == 'M' ? 'Nam' : (model.Gender == 'F' ? 'Nữ' : '—')"></div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Giới tính</label>
-                    <select class="form-control" ui-select2 ng-model="model.Gender" disabled name="Gender">
-                        <option value="M">Nam</option>
-                        <option value="M">Nữ</option>
-                    </select>
-                </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Số điện thoại</div>
+                <div class="view-value" ng-bind="model.Phone || '—'"></div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Ngày sinh</label>
-                    <div class="input-group date" id="reDateOfBirth" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" disabled ng-model="model.DateOfBirth" data-target="#reDateOfBirth">
-                        <div class="input-group-append" data-target="#reDateOfBirth" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Email liên hệ</div>
+                <div class="view-value text-lowercase" ng-bind="model.Email || '—'"></div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Số CMND</label>
-                    <input type="text" class="form-control" disabled ng-model="model.IdNumber">
-                </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Số CMND / CCCD</div>
+                <div class="view-value" ng-bind="model.IdNumber || '—'"></div>
             </div>
-        </div>
-        @*<div class="row">
+
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Ngày sinh</div>
+                <div class="view-value" ng-bind="model.DateOfBirth || '—'"></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Dự án quản lý</div>
+                <div class="view-value" ng-bind="model.MaDuAn || '—'"></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="view-label">Trạng thái</div>
+                <div class="view-value" ng-bind="model.Status == 1 ? 'Đang hoạt động' : 'Tạm khóa'"></div>
+            </div>
+
             <div class="col-md-12">
-                <div class="form-group">
-                    <label title="Tỉnh quản lý">Tỉnh quản lý</label>
-                    <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCityCode" ng-options="item.Code as item.Name for item in ListCity">
-                    </select>
-                </div>
-            </div>
-        </div>*@
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="requiredInput" title="Dự án quản lý">Dự án quản lý</label>
-                    <select class="form-control" ui-select2 ng-model="model.MaDuAn" disabled name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                    </select>
-                </div>
+                <div class="view-label">Địa chỉ thường trú</div>
+                <div class="view-value text-dark" ng-bind="model.Address || '—'"></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Địa chỉ</label>
-                    <input type="text" class="form-control" disabled ng-model="model.Address">
-                </div>
-            </div>
-        </div>
-    </form>
+    </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Hủy</button>
+
+<div class="modal-footer bg-white py-3 px-4 border-top">
+    <button type="button" class="btn btn-secondary px-4 font-weight-bold" data-dismiss="modal" ng-click="cancel()">Đóng</button>
 </div>

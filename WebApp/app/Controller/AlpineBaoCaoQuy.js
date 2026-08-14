@@ -1,192 +1,196 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.data('alpineBaoCaoQuy', () => ({
-        modelSearch: {
-            totalItems: 0,
-            currentPage: 1,
-            maxSize: 5,
-            pageSize: 10,
-            SortColumn: "ParamCode DESC",
-            Year: 0,
-            Months: '',
-            CityCodes: '',
-            MaNhomTBH: '',
-            MaDuAn: ''
-        },
-        ListYear: [],
-        ListCity: [],
-        ListCityCode: [],
-        ListMaNhomTBH: [],
-        ListNhomTBH: [],
-        ListDuAn: [],
-        ListData: [],
-        Quy: 'I',
-        ParamIdSeleted: 0,
-        RoleBtnUpdate: false,
-        RoleBtnSearch: false,
+document.addEventListener('alpine:init', function () {
+    Alpine.data('alpineBaoCaoQuy', function () {
+        return {
+            modelSearch: {
+                totalItems: 0,
+                currentPage: 1,
+                maxSize: 5,
+                pageSize: 10,
+                SortColumn: "ParamCode DESC",
+                Year: new Date().getFullYear(),
+                Months: '',
+                CityCodes: '',
+                MaNhomTBH: '',
+                MaDuAn: ''
+            },
+            ListYear: [],
+            ListCity: [],
+            ListCityCode: [],
+            ListMaNhomTBH: [],
+            ListNhomTBH: [],
+            ListDuAn: [],
+            ListData: [],
+            Quy: 'I',
+            ParamIdSeleted: 0,
+            RoleBtnUpdate: false,
+            RoleBtnSearch: false,
 
-        async init() {
-            this.ListMaNhomTBH = [];
-            this.ListNhomTBH = [];
+            init: function () {
+                var self = this;
+                self.ListMaNhomTBH = [];
+                self.ListNhomTBH = [];
 
-            const date = new Date();
-            for (let i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
-                this.ListYear.push({ Id: i, Name: i + '' });
-            }
+                var date = new Date();
+                self.ListYear = [];
+                for (var i = date.getFullYear() - 5; i <= date.getFullYear() + 5; i++) {
+                    self.ListYear.push({ Id: i, Name: i.toString() });
+                }
 
-            const month = date.getMonth() + 1;
-            if (month >= 1 && month <= 3) {
-                this.Quy = 'I';
-            } else if (month >= 4 && month <= 6) {
-                this.Quy = 'II';
-            } else if (month >= 7 && month <= 9) {
-                this.Quy = 'III';
-            } else if (month >= 10 && month <= 12) {
-                this.Quy = 'IV';
-            }
+                var month = date.getMonth() + 1;
+                if (month >= 1 && month <= 3) {
+                    self.Quy = 'I';
+                } else if (month >= 4 && month <= 6) {
+                    self.Quy = 'II';
+                } else if (month >= 7 && month <= 9) {
+                    self.Quy = 'III';
+                } else if (month >= 10 && month <= 12) {
+                    self.Quy = 'IV';
+                }
 
-            this.modelSearch.Year = date.getFullYear();
+                self.modelSearch.Year = date.getFullYear();
 
-            await this.GetBottomAction();
-            await this.Changecity();
+                self.GetBottomAction(function () {
+                    self.Changecity(function () {
+                        if (self.modelSearch.MaDuAn) {
+                            self.LoadPage(1);
+                        }
+                    });
+                });
+            },
 
-            if (this.modelSearch.MaDuAn) {
-                this.LoadPage(1);
-            }
-        },
+            formatNumber: function (value) {
+                if (value === null || value === undefined || value === '') return '';
+                return Number(value).toLocaleString('en-US');
+            },
 
-        formatNumber(value) {
-            if (value === null || value === undefined || value === '') return '';
-            return Number(value).toLocaleString('en-US');
-        },
-
-        async GetBottomAction() {
-            try {
-                const res = await fetch('/BaoCaoQuy/GetBottomAction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+            GetBottomAction: function (callback) {
+                var self = this;
+                $.ajax({
+                    type: 'POST',
+                    url: '/BaoCaoQuy/GetBottomAction',
+                    contentType: 'application/json',
+                    data: '{}',
+                    success: function (response) {
+                        if (response && response.Buttoms) {
+                            self.RoleBtnUpdate = response.Buttoms.indexOf('btnUpdate') !== -1;
+                            self.RoleBtnSearch = response.Buttoms.indexOf('btnSearch') !== -1;
+                        }
+                        self.ListCity = (response && response.Citys) ? response.Citys : [];
+                        self.ListDuAn = (response && response.DuAns) ? response.DuAns : [];
+                        if (!self.modelSearch.MaDuAn && self.ListDuAn.length > 0) {
+                            self.modelSearch.MaDuAn = self.ListDuAn[0].maduan;
+                        }
+                        if (typeof callback === 'function') callback();
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-                const response = await res.json();
+            },
 
-                if (response.Buttoms != null) {
-                    response.Buttoms.forEach(item => {
-                        if (item === 'btnUpdate') this.RoleBtnUpdate = true;
-                        if (item === 'btnSearch') this.RoleBtnSearch = true;
-                    });
+            buildSearchModel: function () {
+                var self = this;
+                if (!self.modelSearch.Year || self.modelSearch.Year == 0) {
+                    if (window.toastr) toastr.error('Vui lòng chọn năm!');
+                    return false;
                 }
 
-                this.ListCity = response.Citys || [];
-                this.ListDuAn = response.DuAns || [];
-                if (!this.modelSearch.MaDuAn && this.ListDuAn.length > 0) {
-                    this.modelSearch.MaDuAn = this.ListDuAn[0].maduan;
+                if (!self.modelSearch.MaDuAn) {
+                    if (window.toastr) toastr.error('Vui lòng chọn dự án!');
+                    return false;
                 }
-            } catch (err) {
-                console.error(err);
-            }
-        },
 
-        buildSearchModel() {
-            if (!this.modelSearch.Year || this.modelSearch.Year == 0) {
-                if (window.toastr) toastr.error('Vui lòng chọn năm!');
-                return false;
-            }
-
-            if (!this.modelSearch.MaDuAn) {
-                if (window.toastr) toastr.error('Vui lòng chọn dự án!');
-                return false;
-            }
-
-            this.modelSearch.Months = '';
-            if (!this.Quy) {
-                if (window.toastr) toastr.error('Vui lòng chọn quý!');
-                return false;
-            }
-
-            if (this.Quy === 'I') {
-                this.modelSearch.Months = '1,2,3';
-            } else if (this.Quy === 'II') {
-                this.modelSearch.Months = '4,5,6';
-            } else if (this.Quy === 'III') {
-                this.modelSearch.Months = '7,8,9';
-            } else if (this.Quy === 'IV') {
-                this.modelSearch.Months = '10,11,12';
-            }
-
-            this.modelSearch.CityCodes = (this.ListCityCode && this.ListCityCode.length > 0) ? this.ListCityCode.join(',') : '';
-            this.modelSearch.MaNhomTBH = (this.ListMaNhomTBH && this.ListMaNhomTBH.length > 0) ? this.ListMaNhomTBH.join(',') : '';
-
-            return true;
-        },
-
-        LoadPage(genTable) {
-            if (!this.buildSearchModel()) {
-                return;
-            }
-
-            if (window.showToast) showToast();
-            this.ListData = [];
-
-            $.ajax({
-                type: 'post',
-                url: '/BaoCaoQuy/SearchData',
-                cache: false,
-                data: this.modelSearch,
-                success: (response) => {
-                    this.ListData = response.data || [];
-                    if (window.hideLoading) hideLoading();
-                },
-                error: (xhr, status, error) => {
-                    console.error(error || status);
-                    if (window.hideLoading) hideLoading();
+                self.modelSearch.Months = '';
+                if (!self.Quy) {
+                    if (window.toastr) toastr.error('Vui lòng chọn quý!');
+                    return false;
                 }
-            });
-        },
 
-        Refesh() {
-            this.LoadPage(0);
-        },
+                if (self.Quy === 'I') {
+                    self.modelSearch.Months = '1,2,3';
+                } else if (self.Quy === 'II') {
+                    self.modelSearch.Months = '4,5,6';
+                } else if (self.Quy === 'III') {
+                    self.modelSearch.Months = '7,8,9';
+                } else if (self.Quy === 'IV') {
+                    self.modelSearch.Months = '10,11,12';
+                }
 
-        ExportExcel() {
-            if (!this.buildSearchModel()) {
-                return;
-            }
+                self.modelSearch.CityCodes = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.modelSearch.MaNhomTBH = (self.ListMaNhomTBH && self.ListMaNhomTBH.length > 0) ? self.ListMaNhomTBH.join(',') : '';
 
-            const params = new URLSearchParams({
-                Months: this.modelSearch.Months || '',
-                Year: this.modelSearch.Year || '',
-                CityCodes: this.modelSearch.CityCodes || '',
-                quy: this.Quy || '',
-                maNhomTBHs: this.modelSearch.MaNhomTBH || '',
-                maDuAn: this.modelSearch.MaDuAn || ''
-            });
+                return true;
+            },
 
-            window.location.href = '/BaoCaoQuy/ExportData?' + params.toString();
-        },
+            LoadPage: function (genTable) {
+                var self = this;
+                if (!self.buildSearchModel()) {
+                    return;
+                }
 
-        Changecity() {
-            const cityCodesStr = (this.ListCityCode && this.ListCityCode.length > 0) ? this.ListCityCode.join(',') : '';
-            this.ListNhomTBH = [];
-            this.ListMaNhomTBH = [];
+                if (window.showToast) showToast();
+                self.ListData = [];
 
-            return new Promise((resolve) => {
                 $.ajax({
-                    type: 'post',
+                    type: 'POST',
+                    url: '/BaoCaoQuy/SearchData',
+                    cache: false,
+                    data: self.modelSearch,
+                    success: function (response) {
+                        self.ListData = (response && response.data) ? response.data : [];
+                        if (window.hideLoading) hideLoading();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error || status);
+                        if (window.hideLoading) hideLoading();
+                    }
+                });
+            },
+
+            Refesh: function () {
+                this.LoadPage(0);
+            },
+
+            ExportExcel: function () {
+                var self = this;
+                if (!self.buildSearchModel()) {
+                    return;
+                }
+
+                var params = new URLSearchParams({
+                    Months: self.modelSearch.Months || '',
+                    Year: self.modelSearch.Year || '',
+                    CityCodes: self.modelSearch.CityCodes || '',
+                    quy: self.Quy || '',
+                    maNhomTBHs: self.modelSearch.MaNhomTBH || '',
+                    maDuAn: self.modelSearch.MaDuAn || ''
+                });
+
+                window.location.href = '/BaoCaoQuy/ExportData?' + params.toString();
+            },
+
+            Changecity: function (callback) {
+                var self = this;
+                var cityCodesStr = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.ListNhomTBH = [];
+                self.ListMaNhomTBH = [];
+
+                $.ajax({
+                    type: 'POST',
                     url: '/BaoCaoQuy/GetNhomTBHByCityCodes',
                     cache: false,
-                    data: {
-                        CityCodes: cityCodesStr
+                    data: { CityCodes: cityCodesStr },
+                    success: function (response) {
+                        self.ListNhomTBH = (response && response.NhomTBHs) ? response.NhomTBHs : [];
+                        if (typeof callback === 'function') callback();
                     },
-                    success: (response) => {
-                        this.ListNhomTBH = response.NhomTBHs || [];
-                        resolve(response);
-                    },
-                    error: (xhr, status, error) => {
+                    error: function (xhr, status, error) {
                         console.error(error || status);
-                        resolve(null);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-            });
-        }
-    }));
+            }
+        };
+    });
 });

@@ -62,6 +62,14 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/home") || HttpContext.Current.Request.Url.AbsolutePath == "/" ? "active" : "")">
+        <a class="nav-link" href="/Home/Index">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
     @if (menuLevel1 != null && menuLevel1.Count > 0)
     {
         // lấy id menu đang active

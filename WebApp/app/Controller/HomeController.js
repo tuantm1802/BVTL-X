@@ -1,4 +1,4 @@
-﻿app.controller("HomeController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("HomeController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.xValuesHivGioiTinh = [];
     $scope.yValuesHivGioiTinh = [];
     $scope.hivGioiTinhDB = [];
@@ -75,12 +75,13 @@
 
     function fetchEndTimeSync(apiCode) {
         return fetchData('/SyncData/GetEndTimeSync', { apiCode }).then(response => {
-            if (response.success) {
+            if (response && response.success) {
                 $('#endTimeSyncDisplay').text('Dữ liệu được đồng bộ lần cuối vào lúc: ' + response.endTimeSync);
             } else {
-                $('#endTimeSyncDisplay').text(response.message);
+                $('#endTimeSyncDisplay').text(response ? response.message : 'Không tìm thấy thông tin');
             }
-        }).catch(() => {
+        }).catch((err) => {
+            console.error('fetchEndTimeSync error:', err);
             $('#endTimeSyncDisplay').text('Đã xảy ra lỗi khi lấy dữ liệu');
         });
     }

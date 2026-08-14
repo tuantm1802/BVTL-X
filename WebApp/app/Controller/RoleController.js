@@ -1,4 +1,4 @@
-﻿app.controller("RoleController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("RoleController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -207,14 +207,15 @@
             $scope.LoadPage(0);
         });
     };
-    $scope.edit = function () {
-        var seletedRow = dataTableRole.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.RoleIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.RoleIdSeleted = "";
+    $scope.edit = function (roleId) {
+        var targetId = roleId || $scope.RoleIdSeleted;
+        if (!targetId && dataTableRole && typeof dataTableRole.rows === 'function') {
+            var seletedRow = dataTableRole.rows({ selected: true });
+            if (seletedRow.count() > 0) {
+                targetId = seletedRow.data()[0].ID;
+            }
         }
+        $scope.RoleIdSeleted = targetId;
 
         if ($scope.RoleIdSeleted != null && $scope.RoleIdSeleted != '' && $scope.RoleIdSeleted != undefined) {
             var modalInstance = $uibModal.open({
@@ -232,7 +233,11 @@
 
             //kết quả trả về của modal
             modalInstance.result.then(function (response) {
-                $scope.LoadPage(0);
+                if (window.alpineRoleInstance) {
+                    window.alpineRoleInstance.LoadPage(window.alpineRoleInstance.modelSearch.currentPage);
+                } else {
+                    $scope.LoadPage(0);
+                }
             });
         } else {
             toastr.error("Bạn chưa chọn bản ghi nào.");
@@ -240,19 +245,21 @@
 
     };
 
-    $scope.delete = function () {
-        var seletedRow = dataTableRole.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.RoleIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.RoleIdSeleted = "";
+    $scope.delete = function (roleId) {
+        var targetId = roleId || $scope.RoleIdSeleted;
+        if (!targetId && dataTableRole && typeof dataTableRole.rows === 'function') {
+            var seletedRow = dataTableRole.rows({ selected: true });
+            if (seletedRow.count() > 0) {
+                targetId = seletedRow.data()[0].ID;
+            }
         }
+        $scope.RoleIdSeleted = targetId;
 
         if ($scope.RoleIdSeleted != null && $scope.RoleIdSeleted != '' && $scope.RoleIdSeleted != undefined) {
-            var name = $scope.ListRole.filter(function (item) {
+            var nameItem = ($scope.ListRole || []).filter(function (item) {
                 return item.ID === $scope.RoleIdSeleted;
-            })[0].Name;
+            })[0];
+            var name = nameItem ? nameItem.Name : 'nhóm quyền này';
 
             $ngConfirm({
                 title: 'Thông báo',
@@ -272,8 +279,11 @@
                                         toastr.error(data.Title);
                                     } else {
                                         toastr.success(data.Title);
-                                        //$scope.cancel();
-                                        $scope.LoadPage(0);
+                                        if (window.alpineRoleInstance) {
+                                            window.alpineRoleInstance.LoadPage(window.alpineRoleInstance.modelSearch.currentPage);
+                                        } else {
+                                            $scope.LoadPage(0);
+                                        }
                                     }
                                 }
                             });
@@ -341,6 +351,21 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.submit = function () {
         $scope.model.Status = $scope.model.StatusTemp === '1' ? true : false;
         $("#formSubmit").validate({
+            errorElement: 'span',
+            errorClass: 'error invalid-feedback',
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
             rules: {
                 ID: {
                     required: true,
@@ -454,6 +479,21 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     $scope.submit = function () {
         $scope.model.Status = $scope.model.StatusTemp === '1' ? true : false;
         $("#formSubmit").validate({
+            errorElement: 'span',
+            errorClass: 'error invalid-feedback',
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
             rules: {
                 ID: {
                     required: true,

@@ -1,545 +1,544 @@
-﻿
 @{
-    ViewBag.Title = "Trang chủ";
+    ViewBag.Title = "Dashboard - Báo cáo Tổng quan";
 }
-<style type="text/css">
-    body {
-        overflow: auto;
-    }
-    @@media (min-width: 768px){
-        .chart-bar {
-            height: 18rem;
-        }
-        .chart-pie {
-            height: 18rem !important;
-        }
-    }
-</style>
-<div class="container-fluid" ng-controller="HomeController">
-    
-    <div class="alert alert-info" role="alert">
 
-        <div class="d-flex justify-content-center" ng-show="isLoading">
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+<div class="container-fluid py-3 ng-scope" x-data="alpineHome()" ng-controller="HomeController">
+
+    <!-- Header Section & Quick Actions -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-tachometer-alt text-primary mr-2"></i> Dashboard Tổng quan Chemsex
+            </h1>
+            <p class="text-muted small mb-0">Hệ thống phân tích chuyên sâu về tần suất Chemsex, sử dụng đa chất và các chỉ số sức khỏe tâm thần (ASSIST, ACE, QST).</p>
         </div>
-        <div id="endTimeSyncDisplay"></div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-xl-12 col-lg-12 col-md-12">
-            <div class="btn-group">
-                <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                    {{ selectedTinhName || 'Chọn tỉnh' }}
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" ng-repeat="tinh in ListCity" ng-click="selectTinh(tinh.Code_Map, tinh.Name)">{{ tinh.Name }}</a>
-                </div>
-            </div>
-
-            <div class="btn-group">
-                <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                    {{ selectedNhomName || 'Chọn nhóm' }}
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" ng-repeat="nhom in ListNhomTBH" ng-click="selectNhom(nhom.manhom_tbh, nhom.tennhom_tbh)">{{ nhom.tennhom_tbh }}</a>
-                </div>
-            </div>
-
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-white shadow-sm px-3 py-2 font-weight-bold border mr-2" x-on:click="loadAllDashboardData()" style="border-radius: 8px; background: #fff;">
+                <i class="fas fa-sync-alt text-primary mr-1" :class="{'fa-spin': isLoading}"></i> Làm mới dữ liệu
+            </button>
         </div>
     </div>
 
+    <!-- Sync Notice Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 10px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 4px solid #1976d2 !important;">
+        <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center text-primary font-weight-bold my-1">
+                <i class="fas fa-info-circle fa-lg mr-2"></i>
+                <span>Dữ liệu được đồng bộ lần cuối vào lúc: <b class="text-dark ml-1" x-text="lastSyncTime"></b></span>
+            </div>
+            <div class="my-1">
+                <span class="badge badge-primary px-3 py-2 font-weight-bold shadow-xs">
+                    <i class="fas fa-database mr-1"></i> Nguồn API: CD43 Khách hàng TTCB
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metric Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số lượt đánh giá / Khảo sát</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="metrics.totalSurvey">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-users fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #f6c23e !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Ca Có sử dụng đa chất</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="metrics.highRiskCount">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(246, 194, 62, 0.15);">
+                                <i class="fas fa-pills fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-12">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #e74a3b !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tỷ lệ sử dụng đa chất trong Chemsex</div>
+                            <div class="h4 mb-0 font-weight-bold text-danger" x-text="metrics.multiSubstanceRate">0%</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(231, 74, 59, 0.1);">
+                                <i class="fas fa-chart-pie fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-md-5 mb-2 mb-md-0">
+                    <label class="small font-weight-bold text-dark mb-1"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Tỉnh / Thành phố:</label>
+                    <select class="form-control bg-light" x-model="selectedTinh" x-on:change="selectCity($event.target.value, $event.target.options[$event.target.selectedIndex].text)" style="border-radius: 8px;">
+                        <option value="">-- Toàn bộ Tỉnh / Thành --</option>
+                        <template x-for="t in ListCity" :key="t.Code_Map || t.Code">
+                            <option :value="t.Code_Map || t.Code" x-text="t.Name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-lg-5 col-md-5 mb-2 mb-md-0">
+                    <label class="small font-weight-bold text-dark mb-1"><i class="fas fa-users-cog text-primary mr-1"></i> Nhóm thu thập dữ liệu:</label>
+                    <select class="form-control bg-light" x-model="selectedNhom" x-on:change="selectNhom($event.target.value, $event.target.options[$event.target.selectedIndex].text)" style="border-radius: 8px;">
+                        <option value="">-- Toàn bộ Nhóm TTDL --</option>
+                        <template x-for="n in ListNhomTBH" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.tennhom_tbh"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-2 text-md-right mt-3 mt-md-0">
+                    <button type="button" class="btn btn-light font-weight-bold text-secondary border px-3 mt-md-3" x-on:click="resetFilters()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Đặt lại bộ lọc
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Theo Độ tuổi -->
     <div class="row">
-        <div class="col-xl-8 col-lg-8 col-md-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo độ tuổi</h6>
+        <div class="col-xl-8 col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-calendar-alt mr-2"></i> Tần suất Chemsex trong 3 tháng qua theo độ tuổi
+                    </h6>
+                    <span class="badge badge-light border text-muted">Phân bố tần suất</span>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-2">Độ tuổi</th>
-                                <th scope="col" class="col-md-2">1 - 2 lần</th>
-                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
-                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
-                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDoTuoi">
-                                <td class="text-center">{{dashboard.MucDoTuoi || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbTanSuatChemsex3ThangTheoDoTuoi || dbTanSuatChemsex3ThangTheoDoTuoi.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-4" style="font-size: 0.75rem;">Độ tuổi</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">1 - 2 lần</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tháng (3-9 lần)</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tuần (1-4 lần/tuần)</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="font-size: 0.75rem;">Mỗi ngày / gần mỗi ngày</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbTanSuatChemsex3ThangTheoDoTuoi" :key="d.MucDoTuoi">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-4" x-text="d.MucDoTuoi || '—'"></td>
+                                        <td class="text-center font-weight-bold text-gray-700" x-text="d.TanSuat1_2Lan || 0"></td>
+                                        <td class="text-center font-weight-bold text-info" x-text="d.TanSuatMoiThang || 0"></td>
+                                        <td class="text-center font-weight-bold text-warning" x-text="d.TanSuatMoiTuan || 0"></td>
+                                        <td class="text-center font-weight-bold text-danger pr-4" x-text="d.TanSuatMoiNgay || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbTanSuatChemsex3ThangTheoDoTuoi || dbTanSuatChemsex3ThangTheoDoTuoi.length === 0">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-
             </div>
         </div>
-        <div class="col-xl-4 col-lg-4 col-md-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo độ tuổi</h6>
+
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-layer-group mr-2"></i> Sử dụng đa chất theo độ tuổi
+                    </h6>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-4">Độ tuổi</th>
-                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
-                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDoTuoi">
-                                <td class="text-center">{{dashboard.MucDoTuoi || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDoTuoi || dbSuDungDaChatTrongChemsexTheoDoTuoi.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Độ tuổi</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoDoTuoi" :key="d.MucDoTuoi">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.MucDoTuoi || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoDoTuoi || dbSuDungDaChatTrongChemsexTheoDoTuoi.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <!-- Section 2: Theo Thang Điểm ASSIST Ma túy đá -->
     <div class="row">
-        <div class="col-xl-8 col-lg-8 col-md-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo điểm ASSIST ma túy đá</h6>
+        <div class="col-xl-8 col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-heartbeat mr-2"></i> Tần suất Chemsex trong 3 tháng qua theo điểm ASSIST Ma túy đá
+                    </h6>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-2">Mức độ</th>
-                                <th scope="col" class="col-md-2">1 - 2 lần</th>
-                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
-                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
-                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDiemAssist">
-                                <td class="text-center">{{dashboard.MucDoNguyCo || 'N/A'}}</td>
-                                <td class="text-center">
-                                    {{dashboard.TanSuat1_2Lan !== null && dashboard.TanSuat1_2Lan >= 0 ? dashboard.TanSuat1_2Lan : 'N/A'}}
-                                </td>
-                                <td class="text-center">
-                                    {{dashboard.TanSuatMoiThang !== null && dashboard.TanSuatMoiThang >= 0 ? dashboard.TanSuatMoiThang : 'N/A'}}
-                                </td>
-                                <td class="text-center">
-                                    {{dashboard.TanSuatMoiTuan !== null && dashboard.TanSuatMoiTuan >= 0 ? dashboard.TanSuatMoiTuan : 'N/A'}}                                    
-                                </td>
-                                <td class="text-center">
-                                    {{dashboard.TanSuatMoiNgay !== null && dashboard.TanSuatMoiNgay >= 0 ? dashboard.TanSuatMoiNgay : 'N/A'}}
-                                </td>
-                            </tr>
-
-                            <tr ng-if="!dbTanSuatChemsex3ThangTheoDiemAssist || dbTanSuatChemsex3ThangTheoDiemAssist.length === 0">
-                                <td colspan="5"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-
-
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-4" style="font-size: 0.75rem;">Mức độ nguy cơ</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">1 - 2 lần</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tháng</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tuần</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="font-size: 0.75rem;">Mỗi ngày</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbTanSuatChemsex3ThangTheoDiemAssist" :key="d.MucDoNguyCo">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-4" x-text="d.MucDoNguyCo || '—'"></td>
+                                        <td class="text-center font-weight-bold text-gray-700" x-text="d.TanSuat1_2Lan >= 0 ? d.TanSuat1_2Lan : 0"></td>
+                                        <td class="text-center font-weight-bold text-info" x-text="d.TanSuatMoiThang >= 0 ? d.TanSuatMoiThang : 0"></td>
+                                        <td class="text-center font-weight-bold text-warning" x-text="d.TanSuatMoiTuan >= 0 ? d.TanSuatMoiTuan : 0"></td>
+                                        <td class="text-center font-weight-bold text-danger pr-4" x-text="d.TanSuatMoiNgay >= 0 ? d.TanSuatMoiNgay : 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbTanSuatChemsex3ThangTheoDiemAssist || dbTanSuatChemsex3ThangTheoDiemAssist.length === 0">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-lg-4 col-md-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi quan hệ tình dục</h6>
+
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-prescription-bottle mr-2"></i> Đa chất theo ASSIST Ma túy đá
+                    </h6>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-4">Đối tượng QHTD</th>
-                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
-                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD">
-                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD || dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Điểm ASSIST</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa || dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Section 3: Theo Điểm ACE (Tổn thương tuổi thơ) -->
     <div class="row">
-        <div class="col-xl-8 col-lg-8 col-md-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tần suất Chemsex trong 3 tháng qua theo điểm ACE</h6>
+        <div class="col-xl-8 col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-child mr-2"></i> Tần suất Chemsex trong 3 tháng qua theo điểm ACE
+                    </h6>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-2">Điểm ACE</th>
-                                <th scope="col" class="col-md-2">1 - 2 lần</th>
-                                <th scope="col" class="col-md-2">Mỗi tháng (3 - 9 lần)</th>
-                                <th scope="col" class="col-md-2">Mỗi tuần (1 - 4 lần/tuần)</th>
-                                <th scope="col" class="col-md-4">Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbTanSuatChemsex3ThangTheoDiemACE">
-                                <td class="text-center">{{dashboard.MucDoNguyCo || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuat1_2Lan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiThang || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiTuan || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.TanSuatMoiNgay || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbTanSuatChemsex3ThangTheoDiemACE || dbTanSuatChemsex3ThangTheoDiemACE.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col-xl-6 col-lg-6 col-md-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo điểm ASSIST ma túy đá</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-4" style="font-size: 0.75rem;">Mức độ ACE</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">1 - 2 lần</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tháng</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mỗi tuần</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="font-size: 0.75rem;">Mỗi ngày</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbTanSuatChemsex3ThangTheoDiemACE" :key="d.MucDoNguyCo">
                                     <tr>
-                                        <th scope="col" class="col-md-5">Điểm ASSIST ma túy đá</th>
-                                        <th scope="col" class="col-md-3">Có sử dụng đa chất</th>
-                                        <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
+                                        <td class="font-weight-bold text-dark pl-4" x-text="d.MucDoNguyCo || '—'"></td>
+                                        <td class="text-center font-weight-bold text-gray-700" x-text="d.TanSuat1_2Lan >= 0 ? d.TanSuat1_2Lan : 0"></td>
+                                        <td class="text-center font-weight-bold text-info" x-text="d.TanSuatMoiThang >= 0 ? d.TanSuatMoiThang : 0"></td>
+                                        <td class="text-center font-weight-bold text-warning" x-text="d.TanSuatMoiTuan >= 0 ? d.TanSuatMoiTuan : 0"></td>
+                                        <td class="text-center font-weight-bold text-danger pr-4" x-text="d.TanSuatMoiNgay >= 0 ? d.TanSuatMoiNgay : 0"></td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa">
-                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                                    </tr>
-
-                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa || dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa.length === 0">
-                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Điểm QST theo tình trạng sử dụng đa chất trong Chemsex</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="col-md-4">Sử dụng đa chất</th>
-                                        <th scope="col" class="col-md-4">Dương tính</th>
-                                        <th scope="col" class="col-md-4">Âm tính</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemQST">
-                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.SoLuongDuongTinh || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.SoLuongAmTinh || 'N/A'}}</td>
-                                    </tr>
-
-                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemQST || dbSuDungDaChatTrongChemsexTheoDiemQST.length === 0">
-                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo điểm ACE</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="col-md-4">Điểm ACE</th>
-                                        <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
-                                        <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoDiemACE">
-                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                                    </tr>
-
-                                    <tr ng-if="!dbSuDungDaChatTrongChemsexTheoDiemACE || dbSuDungDaChatTrongChemsexTheoDiemACE.length === 0">
-                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Điểm QST theo tần suất Chemsex trong 3 tháng qua</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="col-md-6">Tần suất Chemsex</th>
-                                        <th scope="col" class="col-md-3">Dương tính</th>
-                                        <th scope="col" class="col-md-3">Âm tính</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="dashboard in dbTanSuatChemsexTrong3ThangTheoDiemQST">
-                                        <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.SoLuongDuongTinh || 'N/A'}}</td>
-                                        <td class="text-center">{{dashboard.SoLuongAmTinh || 'N/A'}}</td>
-                                    </tr>
-
-                                    <tr ng-if="!dbTanSuatChemsexTrong3ThangTheoDiemQST || dbTanSuatChemsexTrong3ThangTheoDiemQST.length === 0">
-                                        <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                </template>
+                                <template x-if="!dbTanSuatChemsex3ThangTheoDiemACE || dbTanSuatChemsex3ThangTheoDiemACE.length === 0">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-lg-4 col-md-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi quan hệ tình dục tập thể</h6>
+
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-shield-virus mr-2"></i> Đa chất theo điểm ACE
+                    </h6>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-4">QHTD tập thể</th>
-                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
-                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoQHTDTT">
-                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoQHTDTT || dbSuDungDaChatTrongChemsexTheoQHTDTT.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sử dụng đa chất trong Chemsex theo hành vi bán dâm</h6>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-md-4">Bán dâm</th>
-                                <th scope="col" class="col-md-4">Có sử dụng đa chất</th>
-                                <th scope="col" class="col-md-4">Không sử dụng đa chất</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dashboard in dbSuDungDaChatTrongChemsexTheoBanDam">
-                                <td class="text-center">{{dashboard.NoiDung || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.CoSuDungDaChat || 'N/A'}}</td>
-                                <td class="text-center">{{dashboard.KhongSuDungDaChat || 'N/A'}}</td>
-                            </tr>
-
-                            <tr ng-if="!dbSuDungDaChatTrongChemsexTheoBanDam || dbSuDungDaChatTrongChemsexTheoBanDam.length === 0">
-                                <td colspan="4"><p class="font-italic">Không có dữ liệu</p></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Điểm ACE</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoDiemACE" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoDiemACE || dbSuDungDaChatTrongChemsexTheoDiemACE.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @*
-        <div class="row">
-
-            <!-- Tình trạng HIV -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-pie pt-0">
-                            <canvas id="hivTinhTrangChart"></canvas>
-                        </div>
-                    </div>
+    <!-- Section 4: Theo Hành Vi Quan Hệ Tình Dục & Bán Dâm -->
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-venus-mars mr-2"></i> Đối tượng quan hệ tình dục
+                    </h6>
                 </div>
-            </div>
-            <!-- HIV Giới tính -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Giới tính</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-bar">
-                            <canvas id="hivGioiTinhChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Theo Đối tượng -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Đối tượng</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-bar">
-                            <canvas id="hivDoiTuongChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- HIV Độ tuổi -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Tình trạng HIV theo Độ tuổi</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-pie">
-                            <canvas id="hivDoTuoiChart"></canvas>
-                        </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Đối tượng</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD || dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row" style="display:none">
-            <!-- Donut Chart -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="chart-pie pt-4">
-                            <canvas id="myPieChart"></canvas>
-                        </div>
-                    </div>
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-users-slash mr-2"></i> QHTD tập thể
+                    </h6>
                 </div>
-            </div>
-            <!-- Donut Chart -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="chart-pie pt-4">
-                            <canvas id="myPieChart"></canvas>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Donut Chart -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="chart-pie pt-4">
-                            <canvas id="myPieChart"></canvas>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Donut Chart -->
-            <div class="col-xl-3 col-lg-5">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="chart-pie pt-4">
-                            <canvas id="myPieChart"></canvas>
-                        </div>
-
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">QHTD tập thể</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoQHTDTT" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoQHTDTT || dbSuDungDaChatTrongChemsexTheoQHTDTT.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-    *@
+        <div class="col-xl-4 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-hand-holding-usd mr-2"></i> Hành vi bán dâm
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Bán dâm</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Có đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Không đa chất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoBanDam" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.CoSuDungDaChat || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.KhongSuDungDaChat || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoBanDam || dbSuDungDaChatTrongChemsexTheoBanDam.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: Thang Điểm QST (Sang chấn tâm lý) -->
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-brain mr-2"></i> Điểm QST theo tình trạng sử dụng đa chất
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Sử dụng đa chất</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dương tính QST</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Âm tính QST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbSuDungDaChatTrongChemsexTheoDiemQST" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.SoLuongDuongTinh || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.SoLuongAmTinh || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbSuDungDaChatTrongChemsexTheoDiemQST || dbSuDungDaChatTrongChemsexTheoDiemQST.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                        <i class="fas fa-wave-square mr-2"></i> Điểm QST theo tần suất Chemsex 3 tháng qua
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                                <tr>
+                                    <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Tần suất Chemsex</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dương tính QST</th>
+                                    <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="font-size: 0.75rem;">Âm tính QST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="d in dbTanSuatChemsexTrong3ThangTheoDiemQST" :key="d.NoiDung">
+                                    <tr>
+                                        <td class="font-weight-bold text-dark pl-3" x-text="d.NoiDung || '—'"></td>
+                                        <td class="text-center font-weight-bold text-danger" x-text="d.SoLuongDuongTinh || 0"></td>
+                                        <td class="text-center font-weight-bold text-success pr-3" x-text="d.SoLuongAmTinh || 0"></td>
+                                    </tr>
+                                </template>
+                                <template x-if="!dbTanSuatChemsexTrong3ThangTheoDiemQST || dbTanSuatChemsexTrong3ThangTheoDiemQST.length === 0">
+                                    <tr><td colspan="3" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @section Scripts{
-    <script src="~/Scripts/chart.js"></script>
-    <script src="~/Scripts/chartjs-plugin-datalabels.js"></script>    
-    <script src="~/app/Controller/HomeController.js"></script>
+    <script src="~/app/Controller/AlpineHomeController.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/app/Controller/HomeController.js?v=@DateTime.Now.Ticks"></script>
 }

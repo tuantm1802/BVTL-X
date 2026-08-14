@@ -1,73 +1,240 @@
-﻿@{
-    ViewBag.Title = "Nhóm quyền";
+@{
+    ViewBag.Title = "Quản lý Nhóm quyền";
 }
 
-<!-- Begin Page Content -->
-<div class="container-fluid" ng-controller="RoleController">
+<div class="container-fluid py-3 ng-scope" x-data="alpineRole()" ng-controller="RoleController">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Nhóm quyền</h1>
-    <p class="mb-4">
+    <!-- Header Title Bar & Quick Stats Cards -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-user-shield text-primary mr-2"></i> Quản lý Nhóm quyền
+            </h1>
+            <p class="text-muted small mb-0">Quản lý phân quyền chức năng, phân cấp vai trò và kiểm soát truy cập của người dùng trong hệ thống.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-primary btn-lg shadow-sm px-4 font-weight-bold mr-2" x-on:click="add()" x-show="RoleBtnCreate" style="border-radius: 8px;">
+                <i class="fas fa-plus mr-2"></i> Thêm quyền mới
+            </button>
+            <button type="button" class="btn btn-white btn-lg shadow-sm px-3 font-weight-bold border" x-on:click="search()" style="border-radius: 8px; background: #fff;">
+                <i class="fas fa-sync-alt text-primary"></i>
+            </button>
+        </div>
+    </div>
 
-    </p>
-
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                <button type="button" class="btn btn-primary" ng-show="RoleBtnCreate == true" ng-click="add()">
-                    <i class="fas fa-plus"></i> Thêm mới
-                </button>
-                <button type="button" class="btn btn-primary" ng-show="RoleBtnSearch == true" ng-click="Refesh()">
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="edit()" ng-show="RoleBtnUpdate == true" title="Cập nhật">
-                    <i class="fas fa-pencil-alt"></i> Cập nhật
-                </button>
-                <button type="button" class="btn btn-danger" ng-click="delete()" ng-show="RoleBtnDelete == true" title="Xóa">
-                    <i class="fas fa-times"></i> Xóa
-                </button>
+    <!-- Stats Overview Widgets -->
+    <div class="row mb-4">
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số Nhóm quyền</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.totalRoles">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-shield-alt fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
+
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Quyền đang hoạt động</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.activeRoles">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-12">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Cơ chế Phân quyền</div>
+                            <div class="h6 mb-0 font-weight-bold text-gray-800 d-flex align-items-center">
+                                <span class="badge badge-info px-2 py-1 mr-2"><i class="fas fa-sitemap mr-1"></i> Cây phân quyền zTree</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-lock fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Data Table Container Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0">
+            <div class="row align-items-center">
+                <!-- Search Box -->
+                <div class="col-lg-5 col-md-6 mb-2 mb-md-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-right-0" style="border-radius: 8px 0 0 8px;"><i class="fas fa-search text-gray-400"></i></span>
+                        </div>
+                        <input type="text" class="form-control bg-light border-left-0" placeholder="Tìm theo Mã quyền, Tên quyền, Mô tả..." x-model="modelSearch.KeyWord" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
+                    </div>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="col-lg-4 col-md-4 mb-2 mb-md-0">
+                    <select class="form-control bg-light" x-model="modelSearch.Status" x-on:change="search()" style="border-radius: 8px;">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="true">Đang sử dụng</option>
+                        <option value="false">Không sử dụng</option>
+                    </select>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="col-lg-3 col-md-2 text-right">
+                    <button type="button" class="btn btn-light font-weight-bold text-secondary border px-3" x-on:click="resetSearch()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableRole" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" width="100%">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th style="width:5%;">STT </th>
-                            <th style="width:20%;">Mã </th>
-                            <th style="width:auto;">Tên quyền </th>
-                            <th style="width: auto;">Mô tả </th>
-                            <th style="width:15%;">Trạng thái</th>
-                            @*<th style="width:10%;">Thao tác</th>*@
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 5%; font-size: 0.75rem;">#</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 15%; font-size: 0.75rem;">Mã quyền</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 30%; font-size: 0.75rem;">Tên nhóm quyền</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 30%; font-size: 0.75rem;">Mô tả</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 10%; font-size: 0.75rem;">Trạng thái</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 10%; font-size: 0.75rem;">Thao tác</th>
                         </tr>
                     </thead>
-                    @*<tbody>
-                            <tr ng-repeat="item in ListRole1" ng-click="ViewDetail(item.ID, $index)" ng-class="{activerow:$index==selectedRow}">
-                                <td class="text-center">{{$index + 1}}</td>
-                                <td>{{item.ID}}</td>
-                                <td>{{item.Name}}</td>
-                                <td>{{item.Descripttion}}</td>
-                                <td>{{item.IsActive == true ? 'Sử dụng' : 'Không sử dụng'}}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary" ng-click="edit(item.ID)" ng-show="RoleBtnUpdate == true" title="Cập nhật">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-danger" ng-click="delete(item.ID)" ng-show="RoleBtnDelete == true" title="Xóa">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                    <tbody>
+                        <template x-for="(item, index) in ListRole" :key="item.ID || index">
+                            <tr style="cursor: pointer;" :class="{'table-active bg-light-primary': selectedRoleId === item.ID}" x-on:click="selectRow(item.ID)">
+                                <td class="text-center font-weight-bold text-gray-600 align-middle" x-text="(modelSearch.currentPage - 1) * modelSearch.pageSize + index + 1"></td>
+                                
+                                <td class="align-middle">
+                                    <span class="badge badge-primary px-3 py-2 font-weight-bold shadow-xs" style="border-radius: 6px; font-size: 0.85rem;" x-text="item.ID"></span>
+                                </td>
+
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle mr-3 d-flex align-items-center justify-content-center text-white font-weight-bold bg-gradient-primary" style="width: 38px; height: 38px; border-radius: 50%; font-size: 0.85rem; background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-bold text-gray-800" x-text="item.Name"></div>
+                                            <small class="text-muted">Nhóm quyền hệ thống</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="align-middle">
+                                    <span class="text-gray-600" x-text="item.Descripttion || '—'"></span>
+                                </td>
+
+                                <td class="text-center align-middle">
+                                    <span class="badge badge-success px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="item.IsActive === true || item.IsActive === 1 || item.IsActive === 'true' || item.IsActive === 'Sử dụng'">
+                                        <i class="fas fa-check-circle mr-1"></i> Sử dụng
+                                    </span>
+                                    <span class="badge badge-secondary px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="!(item.IsActive === true || item.IsActive === 1 || item.IsActive === 'true' || item.IsActive === 'Sử dụng')">
+                                        <i class="fas fa-ban mr-1"></i> Tạm ngừng
+                                    </span>
+                                </td>
+
+                                <td class="text-center align-middle">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary mr-1" x-on:click.stop="edit(item.ID)" title="Cập nhật" style="border-radius: 6px;">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" x-on:click.stop="deleteRole(item.ID, item.Name)" title="Xóa" style="border-radius: 6px;">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
-                        </tbody>*@
+                        </template>
+
+                        <template x-if="!ListRole || ListRole.length === 0">
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="py-4">
+                                        <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
+                                        <p class="text-gray-500 font-weight-bold mb-0">Không tìm thấy nhóm quyền nào phù hợp.</p>
+                                        <small class="text-muted">Vui lòng thử tìm kiếm lại với từ khóa khác.</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Footer & Responsive Pagination Bar -->
+        <div class="card-footer bg-white py-3 border-top" style="border-color: #e3e6f0 !important;">
+            <div class="row align-items-center">
+                <div class="col-md-5 mb-2 mb-md-0 text-center text-md-left">
+                    <span class="text-muted small">
+                        Hiển thị <b class="text-dark" x-text="ListRole.length > 0 ? (modelSearch.currentPage - 1) * modelSearch.pageSize + 1 : 0"></b> đến 
+                        <b class="text-dark" x-text="Math.min(modelSearch.currentPage * modelSearch.pageSize, modelSearch.totalItems)"></b> trong tổng số 
+                        <b class="text-primary" x-text="modelSearch.totalItems"></b> nhóm quyền
+                    </span>
+                    <span class="ml-3 text-muted small">
+                        Hiển thị
+                        <select class="custom-select custom-select-sm d-inline-block w-auto border bg-light ml-1" x-model="modelSearch.pageSize" x-on:change="changePageSize($event.target.value)">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        bản ghi
+                    </span>
+                </div>
+
+                <div class="col-md-7">
+                    <ul class="pagination pagination-sm justify-content-center justify-content-md-end mb-0">
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === 1}">
+                            <button class="page-item link-btn page-link rounded-left" x-on:click="LoadPage(modelSearch.currentPage - 1)"><i class="fas fa-chevron-left"></i></button>
+                        </li>
+
+                        <template x-for="p in pages" :key="p">
+                            <li class="page-item" :class="{'active': p === modelSearch.currentPage}">
+                                <button class="page-item link-btn page-link" x-on:click="LoadPage(p)" x-text="p"></button>
+                            </li>
+                        </template>
+
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage >= totalPages}">
+                            <button class="page-item link-btn page-link rounded-right" x-on:click="LoadPage(modelSearch.currentPage + 1)"><i class="fas fa-chevron-right"></i></button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- /.container-fluid -->
 
 @section Scripts{
-    <script src="~/app/Controller/RoleController.js"></script>
+    <script src="~/app/Controller/AlpineRoleController.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/app/Controller/RoleController.js?v=@DateTime.Now.Ticks"></script>
     <script src="~/Content/js/jquery.ztree.core.js"></script>
     <script src="~/Content/js/jquery.ztree.excheck.js"></script>
 }

@@ -306,8 +306,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
+    <Content Include="app\Controller\AlpineBaoCao6Thang.js" />
+    <Content Include="app\Controller\AlpineBaoCao6ThangCH07.js" />
+    <Content Include="app\Controller\AlpineBaoCaoCD43.js" />
+    <Content Include="app\Controller\AlpineBaoCaoNam.js" />
+    <Content Include="app\Controller\AlpineBaoCaoNamCH07.js" />
+    <Content Include="app\Controller\AlpineBaoCaoQuy.js" />
+    <Content Include="app\Controller\AlpineBaoCaoQuyCD43.js" />
     <Content Include="app\Controller\AlpineBaoCaoQuyCH07.js" />
+    <Content Include="app\Controller\AlpineBaoCaoSangLoc.js" />
     <Content Include="app\Controller\AlpineBaoCaoThang.js" />
+    <Content Include="app\Controller\AlpineBaoCaoThangCH07.js" />
+    <Content Include="app\Controller\AlpineBaoCaoTongHop.js" />
+    <Content Include="app\Controller\AlpineBaoCaoTongHopQuyCD43.js" />
+    <Content Include="app\Controller\AlpineBaoCaoTuan.js" />
     <Content Include="app\Controller\ApiController.js" />
     <Content Include="app\Controller\BaoCao6ThangCH07Controller.js" />
     <Content Include="app\Controller\BaoCaoNamCH07Controller.js" />

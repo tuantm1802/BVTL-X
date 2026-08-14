@@ -29,21 +29,21 @@ namespace WebApp.Controllers
         BaseController _helperController = new BaseController();
 
         public UserController(
-            IUserDA userDA,
-            ICityDA cityDA,
-            IDuAnDA duAnDA,
-            IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
-            IRoleDA roleDA,
-            ISysLogDA sysLogDA,
-            ISysParameterDA sysParameterDA)
+            IUserDA userDA = null,
+            ICityDA cityDA = null,
+            IDuAnDA duAnDA = null,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA = null,
+            IRoleDA roleDA = null,
+            ISysLogDA sysLogDA = null,
+            ISysParameterDA sysParameterDA = null)
         {
-            _userDA = userDA;
-            _CityDA = cityDA;
-            _DuAnDA = duAnDA;
-            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
-            _RoleDA = roleDA;
-            _sysLogDA = sysLogDA;
-            _sysParameterDA = sysParameterDA;
+            _userDA = userDA ?? new UserDA();
+            _CityDA = cityDA ?? new CityDA();
+            _DuAnDA = duAnDA ?? new DuAnDA();
+            _BVTL_NHOM_TBHDA = bvtlNhomTbhDA ?? new BVTL_NHOM_TBHDA();
+            _RoleDA = roleDA ?? new RoleDA();
+            _sysLogDA = sysLogDA ?? new SysLogDA();
+            _sysParameterDA = sysParameterDA ?? new SysParameterDA();
         }
         // GET: User
         [HasCredential(ControllerName = "User")]
@@ -99,9 +99,28 @@ namespace WebApp.Controllers
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
 
+                int systemTotalUsers = 0;
+                int systemActiveUsers = 0;
+                int systemInactiveUsers = 0;
+                using (var dbContext = new BVTL_REPORTINGEntities())
+                {
+                    var baseQuery = dbContext.BVTL_QT_NGUOI_DUNG.Where(x => (x.IsAdmin == null || x.IsAdmin == false) && (x.IsActive == null || x.IsActive == true));
+                    systemTotalUsers = baseQuery.Count();
+                    systemActiveUsers = baseQuery.Count(x => x.Status == true);
+                    systemInactiveUsers = systemTotalUsers - systemActiveUsers;
+                }
+
                 AddLog("Lấy dữ liệu theo trang bảng Người dùng( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
 
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { 
+                    data = data, 
+                    totalItems = totalItems, 
+                    systemTotalUsers = systemTotalUsers,
+                    systemActiveUsers = systemActiveUsers,
+                    systemInactiveUsers = systemInactiveUsers,
+                    Error = false, 
+                    Title = "Lấy dữ liệu thành công." 
+                });
             }
             catch (Exception ex)
             {
@@ -154,12 +173,27 @@ namespace WebApp.Controllers
                     Code = "ALL",
                     Name = "Tất cả"
                 });
+
+                int systemTotalUsers = 0;
+                int systemActiveUsers = 0;
+                int systemInactiveUsers = 0;
+                using (var dbContext = new BVTL_REPORTINGEntities())
+                {
+                    var baseQuery = dbContext.BVTL_QT_NGUOI_DUNG.Where(x => (x.IsAdmin == null || x.IsAdmin == false) && (x.IsActive == null || x.IsActive == true));
+                    systemTotalUsers = baseQuery.Count();
+                    systemActiveUsers = baseQuery.Count(x => x.Status == true);
+                    systemInactiveUsers = systemTotalUsers - systemActiveUsers;
+                }
+
                 return Json(new
                 {
                     DataRoles = dataRole,
                     DataTestGroup = dataTestGroup,
                     Citys = citys,
                     DuAns = duAns,
+                    systemTotalUsers = systemTotalUsers,
+                    systemActiveUsers = systemActiveUsers,
+                    systemInactiveUsers = systemInactiveUsers,
                     Error = false,
                     Title = "Lấy dữ liệu thành công."
                 });

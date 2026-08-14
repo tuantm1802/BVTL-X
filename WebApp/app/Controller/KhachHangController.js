@@ -1,4 +1,4 @@
-﻿app.controller("KhachHangController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("KhachHangController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -136,7 +136,8 @@
                         className: 'text-center',
                         render: function (d, type, row) {
                             return `
-                                    <a href="/KhachHang/Details/${row.Id}?recordid=${row.RecordId}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> Chi tiết</a>
+                                    <button type="button" onclick="openCustomerDetailModal(${row.Id}, '${row.RecordId}')" class="btn btn-sm btn-primary mr-1" title="Xem nhanh Modal"><i class="fa fa-eye"></i> Xem nhanh</button>
+                                    <a href="/KhachHang/Details/${row.Id}?recordid=${row.RecordId}" class="btn btn-sm btn-outline-success" title="Mở trang chi tiết"><i class="fa fa-external-link-alt"></i> Chi tiết</a>
                                     `;
                         }
                     }
@@ -183,18 +184,6 @@
 
 });
 app.controller('CustomerDetailsController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
-    // Get full URL
-    var path = $location.absUrl();
-    console.log("Full URL:", path);
-
-    // Extract Customer ID (only the number part)
-    var id = path.substring(path.lastIndexOf('/') + 1).split('?')[0];
-    console.log("Customer ID:", id);
-
-    // Manually parse the URL to get recordid
-    var recordid = path.includes('?recordid=') ? path.split('?recordid=')[1].split('&')[0] : undefined;
-    console.log("Record ID (manual extraction):", recordid);
-
     $scope.activeTab = 'basic-info';
 
     $scope.setTab = function (tab) {
@@ -212,34 +201,39 @@ app.controller('CustomerDetailsController', ['$scope', '$http', '$location', fun
     $scope.customerKhamVaDieuTri = {};
     
 
-    // Call API to get customer details
-    $http.get('/KhachHang/GetCustomerDetails/' + id)
-        .then(function (response) {
+    $scope.init = function(id, recordid) {
+        console.log("Init with ID:", id, "RecordID:", recordid);
+        
+        // Call API to get customer details
+        $http.get('/KhachHang/GetCustomerDetails/' + id)
+            .then(function (response) {
             console.log(response);
 
-            $scope.customer = response.data;
-            // Đảm bảo rằng moment.js được thêm vào dự án trước khi sử dụng
-            if ($scope.customer.NgayThangNamSinh) {
-                $scope.customer.NgayThangNamSinh = moment($scope.customer.NgayThangNamSinh).format('DD/MM/YYYY');
+            if (response.data) {
+                $scope.customer = response.data;
+                // Đảm bảo rằng moment.js được thêm vào dự án trước khi sử dụng
+                if ($scope.customer.NgayThangNamSinh) {
+                    $scope.customer.NgayThangNamSinh = moment($scope.customer.NgayThangNamSinh).format('DD/MM/YYYY');
+                }
+
+                $scope.customer.gioiTinhText = $scope.customer.GioiTinh === '1' ? 'Nam' :
+                    $scope.customer.GioiTinh === '2' ? 'Nữ' : 'Khác';
+
+                $scope.customer.capBacHocVanText = $scope.customer.CapBacHocVan === '1' ? 'Không đi học' :
+                    $scope.customer.CapBacHocVan === '2' ? 'Cấp I (Lớp 1 - lớp 5)' :
+                        $scope.customer.CapBacHocVan === '3' ? 'Cấp II (Lớp 6 - lớp 9)' :
+                            $scope.customer.CapBacHocVan === '4' ? 'Cấp III (Lớp 10 - lớp 12)' :
+                                $scope.customer.CapBacHocVan === '5' ? 'Trung cấp, cao đẳng, đại học' :
+                                    'Sau đại học (thạc sĩ, tiến sĩ...)';
+
+                $scope.customer.ngheNghiepText = $scope.customer.NgheNghiep === '1' ? 'Khu vực tư nhân' :
+                    $scope.customer.NgheNghiep === '2' ? 'Khu vực Nhà nước' :
+                        $scope.customer.NgheNghiep === '3' ? 'Kinh doanh' :
+                            $scope.customer.NgheNghiep === '4' ? 'Lao động tình dục' :
+                                $scope.customer.NgheNghiep === '5' ? 'Học sinh/sinh viên' :
+                                    $scope.customer.NgheNghiep === '6' ? 'Lao động tự do' :
+                                        $scope.customer.NgheNghiep === '7' ? 'Không có việc làm/ nội trợ' : 'Khác';
             }
-
-            $scope.customer.gioiTinhText = $scope.customer.GioiTinh === '1' ? 'Nam' :
-                $scope.customer.GioiTinh === '2' ? 'Nữ' : 'Khác';
-
-            $scope.customer.capBacHocVanText = $scope.customer.CapBacHocVan === '1' ? 'Không đi học' :
-                $scope.customer.CapBacHocVan === '2' ? 'Cấp I (Lớp 1 - lớp 5)' :
-                    $scope.customer.CapBacHocVan === '3' ? 'Cấp II (Lớp 6 - lớp 9)' :
-                        $scope.customer.CapBacHocVan === '4' ? 'Cấp III (Lớp 10 - lớp 12)' :
-                            $scope.customer.CapBacHocVan === '5' ? 'Trung cấp, cao đẳng, đại học' :
-                                'Sau đại học (thạc sĩ, tiến sĩ...)';
-
-            $scope.customer.ngheNghiepText = $scope.customer.NgheNghiep === '1' ? 'Khu vực tư nhân' :
-                $scope.customer.NgheNghiep === '2' ? 'Khu vực Nhà nước' :
-                    $scope.customer.NgheNghiep === '3' ? 'Kinh doanh' :
-                        $scope.customer.NgheNghiep === '4' ? 'Lao động tình dục' :
-                            $scope.customer.NgheNghiep === '5' ? 'Học sinh/sinh viên' :
-                                $scope.customer.NgheNghiep === '6' ? 'Lao động tự do' :
-                                    $scope.customer.NgheNghiep === '7' ? 'Không có việc làm/ nội trợ' : 'Khác';
 
         }, function (error) {
             console.error('Error fetching customer details:', error);
@@ -249,10 +243,12 @@ app.controller('CustomerDetailsController', ['$scope', '$http', '$location', fun
         .then(function (response) {
             console.log(response);
 
-            $scope.customerChuyenGui = response.data;
-            // Đảm bảo rằng moment.js được thêm vào dự án trước khi sử dụng
-            if ($scope.customerChuyenGui.NgayXNTLVR) {
-                $scope.customerChuyenGui.NgayXNTLVR = moment($scope.customerChuyenGui.NgayXNTLVR).format('DD/MM/YYYY');
+            if (response.data) {
+                $scope.customerChuyenGui = response.data;
+                // Đảm bảo rằng moment.js được thêm vào dự án trước khi sử dụng
+                if ($scope.customerChuyenGui.NgayXNTLVR) {
+                    $scope.customerChuyenGui.NgayXNTLVR = moment($scope.customerChuyenGui.NgayXNTLVR).format('DD/MM/YYYY');
+                }
             }
             
 
@@ -325,14 +321,15 @@ app.controller('CustomerDetailsController', ['$scope', '$http', '$location', fun
         });
 
 
-    $http.get('/KhachHang/GetListKhamVaDieuTriSKTTCustomerId/' + id + '?recordid=' + recordid)
-        .then(function (response) {
-            console.log(response);
-            $scope.customerListKhamVaDieuTriSKTT = response.data;
+        $http.get('/KhachHang/GetListKhamVaDieuTriSKTTCustomerId/' + id + '?recordid=' + recordid)
+            .then(function (response) {
+                console.log(response);
+                $scope.customerListKhamVaDieuTriSKTT = response.data;
 
-        }, function (error) {
-            console.error('Error fetching customer details:', error);
-        });
+            }, function (error) {
+                console.error('Error fetching customer details:', error);
+            });
+    };
 
     $scope.parseDate = function (dateString) {
         // Kiểm tra nếu dateString là null, undefined hoặc không phải chuỗi hợp lệ

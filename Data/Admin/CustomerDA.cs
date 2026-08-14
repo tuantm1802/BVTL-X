@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using System;
@@ -103,7 +103,7 @@ namespace Data.Admin
             //                    t.cap_bac_hoc_van AS CapBacHocVan,
             //                    t.nghe_nghiep AS NgheNghiep,
             //                    t.ngayhoi AS NgayHoi, 
-            //                    CASE WHEN hiv = 1 THEN CASE WHEN kqxn = 1 THEN N'Có phản ứng' WHEN kqxn = 2 THEN N'Âm tính'  ELSE 'Không xác định' END  WHEN hiv = 0 THEN N'Không tham gia xét nghiệm'  ELSE 'Không xác định' END AS [ketQuaXN]
+            //                    CASE WHEN hiv = '1' THEN CASE WHEN kqxn = '1' THEN N'Có phản ứng' WHEN kqxn = '2' THEN N'Âm tính'  ELSE 'Không xác định' END  WHEN hiv = '0' THEN N'Không tham gia xét nghiệm'  ELSE 'Không xác định' END AS [ketQuaXN]
             //                    FROM CD43_KHACH_HANG_THONG_TIN_CO_BAN t
             //                    INNER JOIN CD43_KHACH_HANG_SANG_LOC_HIV hiv ON t.record_id = hiv.record_id
             //                    WHERE t.Id = '{id}';
@@ -118,27 +118,27 @@ namespace Data.Admin
 	                                t.nghe_nghiep AS NgheNghiep,
 	                                t.ngayhoi AS NgayHoi,
 	                                CASE
-		                                WHEN hiv = 1 THEN -- Có làm xét nghiệm
+		                                WHEN hiv = '1' THEN -- Có làm xét nghiệm
 			                                CASE			
-				                                WHEN kqxn = 1 THEN N'Có phản ứng' 
-				                                WHEN kqxn = 2 THEN N'Âm tính' 
+				                                WHEN kqxn = '1' THEN N'Có phản ứng' 
+				                                WHEN kqxn = '2' THEN N'Âm tính' 
 				                                ELSE 'Không xác định' 
 			                                END 
-		                                WHEN hiv = 0 THEN N'Không tham gia xét nghiệm' 
+		                                WHEN hiv = '0' THEN N'Không tham gia xét nghiệm' 
 		                                ELSE 'Không xác định' 
 	                                END AS [KetQuaXN],
 	                                CASE
-		                                WHEN hiv = 1 AND kqxn = 1 THEN -- Có làm xét nghiệm
+		                                WHEN hiv = '1' AND kqxn = '1' THEN -- Có làm xét nghiệm
 			                                CASE 
-				                                WHEN chuyengui___2 = 1 THEN N'Đã Xét nghiệm khẳng định HIV và điều trị ARV'
+				                                WHEN chuyengui___2 = '1' THEN N'Đã Xét nghiệm khẳng định HIV và điều trị ARV'
 				                                ELSE 'Chưa Xét nghiệm khẳng định HIV và điều trị ARV'
 			                                END
 		                                ELSE 'N/A' 
 	                                END AS [KetQuaChuyenGuiDieuTriARV],
 	                                CASE
-		                                WHEN hiv = 0 THEN -- không xét nghiệm nhanh HIV (tức là đã điều trị ARV)
+		                                WHEN hiv = '0' THEN -- không xét nghiệm nhanh HIV (tức là đã điều trị ARV)
 			                                CASE 
-				                                WHEN chuyengui___3 = 1 THEN 
+				                                WHEN chuyengui___3 = '1' THEN 
 					                                CONCAT(N'Đã Xét nghiệm tải lượng virus HIV vào ngày: ', FORMAT(f2_q_3_1_d, 'dd/MM/yyyy'), N'; Tải lượng VR: ',f2_q_3_1_1)
 				                                ELSE N'Chưa Xét nghiệm tải lượng virus HIV'
 			                                END
@@ -150,12 +150,11 @@ namespace Data.Admin
 	                                CD43_KHACH_HANG_THONG_TIN_CO_BAN t
 	                                LEFT JOIN CD43_KHACH_HANG_SANG_LOC_HIV hiv ON t.record_id = hiv.record_id AND hiv.sng_lc_hiv_complete = 2
 	                                LEFT JOIN CD43_KHACH_HANG_CHUYEN_GUI cg ON cg.record_id = t.record_id  AND cg.chuyn_gi_complete = 2                               
-                                WHERE t.Id = '{id}'
-                                    AND t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2 ;	                               
+                                WHERE t.Id = '{id}';	                               
                             ";
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -185,7 +184,7 @@ namespace Data.Admin
                            " t.record_id AS RecordId,                                                          "+
                             " cg.f2_q_3_1_d AS NgayXNTLVR,                                                     " +
                            "                                                                                   "+
-                           " CASE WHEN cg.chuyengui___3 = 1 THEN N'Được chuyển gửi'                            "+
+                           " CASE WHEN cg.chuyengui___3 = '1' THEN N'Được chuyển gửi'                            "+
                            "      ELSE N'Chưa được chuyển gửi'                                                 "+
                            " END AS ChuyenGuiStatus,                                                           "+
                            "                                                                                   "+
@@ -195,11 +194,10 @@ namespace Data.Admin
                            "LEFT JOIN                                                       "+
                            "    CD43_KHACH_HANG_CHUYEN_GUI cg ON t.record_id = cg.record_id "+
                            "WHERE                                                           "+
-                           " t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2 "+
-                           " AND t.Id = " + id;
+                           " t.Id = " + id;
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -222,82 +220,72 @@ namespace Data.Admin
                                 t.record_id AS RecordId,                                                        
                                 STUFF((                                                                    
 		                                SELECT ', ' + 
-			                                CASE WHEN h.f1_q_b4___1 = 1 THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___2 = 1 THEN N', Ecstasy (kẹo, lắc)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___3 = 1 THEN N', Ketamin (ke)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___4 = 1 THEN N', Các chất hít hơi (Poppers)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___5 = 1 THEN N', Thuốc cương dương (Viagra)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___6 = 1 THEN N', Hồng phiến (ngựa, da)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___7 = 1 THEN N', Nước biển (nước G)' ELSE '' END +
-			                                CASE WHEN h.f1_q_b4___8 = 1 THEN N', Khác' ELSE '' END
+			                                CASE WHEN h.f1_q_b4___1 = '1' THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___2 = '1' THEN N', Ecstasy (kẹo, lắc)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___3 = '1' THEN N', Ketamin (ke)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___4 = '1' THEN N', Các chất hít hơi (Poppers)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___5 = '1' THEN N', Thuốc cương dương (Viagra)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___6 = '1' THEN N', Hồng phiến (ngựa, da)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___7 = '1' THEN N', Nước biển (nước G)' ELSE '' END +
+			                                CASE WHEN h.f1_q_b4___8 = '1' THEN N', Khác' ELSE '' END
 		                                FROM CD43_KHACH_HANG_HANH_VI_NGUY_CO h1                                  
 		                                WHERE h1.record_id = h.record_id                                         
 		                                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') 
 		                                AS ChatSuDungChemsex3Thang,                                                
                                 CASE                                                                       
-		                                WHEN h.f1_q_b5 = 1 THEN N'Methamphetamin (Ma túy đá)'                      
-		                                WHEN h.f1_q_b5 = 2 THEN N'Ecstasy (kẹo, lắc)'                              
-		                                WHEN h.f1_q_b5 = 3 THEN N'Ketamin (ke)'                                    
-		                                WHEN h.f1_q_b5 = 4 THEN N'Các chất hít hơi (Poppers)'                      
-		                                WHEN h.f1_q_b5 = 5 THEN N'Thuốc cương dương (Viagra)'                      
-		                                WHEN h.f1_q_b5 = 6 THEN N'Hồng phiến (ngựa, da)'                           
-		                                WHEN h.f1_q_b5 = 7 THEN N'Nước biển (nước G)'                              
-		                                WHEN h.f1_q_b5 = 8 THEN N'Khác'                                            
+		                                WHEN h.f1_q_b5 = '1' THEN N'Methamphetamin (Ma túy đá)'                      
+		                                WHEN h.f1_q_b5 = '2' THEN N'Ecstasy (kẹo, lắc)'                              
+		                                WHEN h.f1_q_b5 = '3' THEN N'Ketamin (ke)'                                    
+		                                WHEN h.f1_q_b5 = '4' THEN N'Các chất hít hơi (Poppers)'                      
+		                                WHEN h.f1_q_b5 = '5' THEN N'Thuốc cương dương (Viagra)'                      
+		                                WHEN h.f1_q_b5 = '6' THEN N'Hồng phiến (ngựa, da)'                           
+		                                WHEN h.f1_q_b5 = '7' THEN N'Nước biển (nước G)'                              
+		                                WHEN h.f1_q_b5 = '8' THEN N'Khác'                                            
 		                                ELSE NULL                                                                  
                                 END AS ChatSuDungThuongXuyenNhat,                                              
 																																					 
                                 CASE                                                                       
-		                                WHEN h.f1_q_b6 = 1 THEN N'1 - 2 lần'                                       
-		                                WHEN h.f1_q_b6 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                           
-		                                WHEN h.f1_q_b6 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                       
-		                                WHEN h.f1_q_b6 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)' 
+		                                WHEN h.f1_q_b6 = '1' THEN N'1 - 2 lần'                                       
+		                                WHEN h.f1_q_b6 = '2' THEN N'Mỗi tháng (3 - 9 lần)'                           
+		                                WHEN h.f1_q_b6 = '3' THEN N'Mỗi tuần (1 - 4 lần/tuần)'                       
+		                                WHEN h.f1_q_b6 = '4' THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)' 
 		                                ELSE NULL                                                                  
                                 END AS TanSuatSuDungMTDChemsex3Thang,                                          
                                 CASE                                                                       
-				                                WHEN h.f1_q_b7 = 1 THEN N'Đã từng' 																		 
-				                                WHEN h.f1_q_b7 = 2 THEN N'Chưa từng'   																	 
+				                                WHEN h.f1_q_b7 = '1' THEN N'Đã từng' 																		 
+				                                WHEN h.f1_q_b7 = '2' THEN N'Chưa từng'   																	 
 		                                END AS SuDungDaChat,                                                       
 																																					 
                                 STUFF((                                                                    
 		                                SELECT ', '  +                                                          
-				                                CASE WHEN h.f1_q_b8___1 = 1 THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___2 = 1 THEN N', Ecstasy (kẹo, lắc)'         ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___3 = 1 THEN N', Ketamin (ke)'               ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___4 = 1 THEN N', Các chất hít hơi (Poppers)' ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___5 = 1 THEN N', Thuốc cương dương (Viagra)' ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___6 = 1 THEN N', Hồng phiến (ngựa, da)'      ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___7 = 1 THEN N', Nước biển (nước G)'         ELSE '' END +             
-				                                CASE WHEN h.f1_q_b8___8 = 1 THEN N', Khác'                       ELSE '' END              
+				                                CASE WHEN h.f1_q_b8___1 = '1' THEN N'Methamphetamin (Ma túy đá)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___2 = '1' THEN N', Ecstasy (kẹo, lắc)'         ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___3 = '1' THEN N', Ketamin (ke)'               ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___4 = '1' THEN N', Các chất hít hơi (Poppers)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___5 = '1' THEN N', Thuốc cương dương (Viagra)' ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___6 = '1' THEN N', Hồng phiến (ngựa, da)'      ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___7 = '1' THEN N', Nước biển (nước G)'         ELSE '' END +             
+				                                CASE WHEN h.f1_q_b8___8 = '1' THEN N', Khác'                       ELSE '' END              
 	
 		                                FROM CD43_KHACH_HANG_HANH_VI_NGUY_CO h2                                    
 		                                WHERE h2.record_id = h.record_id                                           
 		                                FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 2, '') AS SuDungChatDaChat,
 		
                                 CASE                                                                           
-		                                    WHEN h.f1_q_b9 = 1 THEN N'1 - 2 lần'                                      
-		                                    WHEN h.f1_q_b9 = 2 THEN N'Mỗi tháng (3 - 9 lần)'                          
-		                                    WHEN h.f1_q_b9 = 3 THEN N'Mỗi tuần (1 - 4 lần/tuần)'                      
-		                                    WHEN h.f1_q_b9 = 4 THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'
-		                                    WHEN h.f1_q_b9 = 5 THEN N'Không lần nào'                                  
+		                                    WHEN h.f1_q_b9 = '1' THEN N'1 - 2 lần'                                      
+		                                    WHEN h.f1_q_b9 = '2' THEN N'Mỗi tháng (3 - 9 lần)'                          
+		                                    WHEN h.f1_q_b9 = '3' THEN N'Mỗi tuần (1 - 4 lần/tuần)'                      
+		                                    WHEN h.f1_q_b9 = '4' THEN N'Mỗi ngày hoặc gần như mỗi ngày (5 - 7 lần/tuần)'
+		                                    WHEN h.f1_q_b9 = '5' THEN N'Không lần nào'                                  
 		                                    ELSE NULL                                                                 
                                     END AS TanSuatSuDungDaChat3Thang                                              
                                 FROM                                                                               
 		                                CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                         
 		                                LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id   
-                                WHERE(                                                                            
-                                h.f1_q_b4___1 = 1                                                              
-                                OR h.f1_q_b4___2 = 1                                                           
-                                OR h.f1_q_b4___3 = 1                                                           
-                                OR h.f1_q_b4___4 = 1                                                           
-                                OR h.f1_q_b4___5 = 1                                                           
-                                OR h.f1_q_b4___6 = 1                                                           
-                                OR h.f1_q_b4___7 = 1                                                           
-                                OR h.f1_q_b4___8 = 1)                                                          
-                                AND t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2   
-                                AND t.Id =" + @id;
+                                WHERE t.Id =" + @id;
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -319,53 +307,53 @@ namespace Data.Admin
         public Customer GetCustomerQHTDById(int id)
         {
             Customer customer = null;
-            string query = @"												SELECT top 1                                                           
+            string query = @"			SELECT top 1                                                           
                             t.id AS Id,                                                           
                             t.record_id AS RecordId,                                              
                             CASE                                                                  
-                                WHEN h.f1_q_a3 = 1 THEN N'Quan hệ tình dục đồng giới'             
-                                WHEN h.f1_q_a3 = 2 THEN N'Quan hệ tình dục khác giới'             
-                                WHEN h.f1_q_a3 = 3 THEN N'Quan hệ tình dục đồng giới và khác giới'
-                                WHEN h.f1_q_a3 = 4 THEN N'Khác'                                   
+                                WHEN h.f1_q_a3 = '1' THEN N'Quan hệ tình dục đồng giới'             
+                                WHEN h.f1_q_a3 = '2' THEN N'Quan hệ tình dục khác giới'             
+                                WHEN h.f1_q_a3 = '3' THEN N'Quan hệ tình dục đồng giới và khác giới'
+                                WHEN h.f1_q_a3 = '4' THEN N'Khác'                                   
                                 ELSE NULL                                                         
                             END AS DoiTuongQuanHe,                                                  
 		                        CASE                                                              
-                                WHEN h.f1_q_a5___1 = 1 THEN N'Đang có bạn tình không thường xuyên'
-                                WHEN h.f1_q_a5___2 = 1 THEN N'Đang có bạn tình nam thường xuyên'  
-                                WHEN h.f1_q_a5___3 = 1 THEN N'Đang có bạn tình nữ thường xuyên'   
+                                WHEN h.f1_q_a5___1 = '1' THEN N'Đang có bạn tình không thường xuyên'
+                                WHEN h.f1_q_a5___2 = '1' THEN N'Đang có bạn tình nam thường xuyên'  
+                                WHEN h.f1_q_a5___3 = '1' THEN N'Đang có bạn tình nữ thường xuyên'   
                                 ELSE NULL                                                         
                             END AS TinhTrangMoiQHHT,                                              
 		                        CASE                                                              
-                                WHEN h.f1_q_b10 = 1 THEN N'Luôn luôn'                             
-                                WHEN h.f1_q_b10 = 2 THEN N'Thường xuyên'                          
-                                WHEN h.f1_q_b10 = 3 THEN N'Thỉnh thoảng'                          
-                                WHEN h.f1_q_b10 = 4 THEN N'Hiếm khi'                              
-                                WHEN h.f1_q_b10 = 5 THEN N'Không bao giờ'                         
+                                WHEN h.f1_q_b10 = '1' THEN N'Luôn luôn'                             
+                                WHEN h.f1_q_b10 = '2' THEN N'Thường xuyên'                          
+                                WHEN h.f1_q_b10 = '3' THEN N'Thỉnh thoảng'                          
+                                WHEN h.f1_q_b10 = '4' THEN N'Hiếm khi'                              
+                                WHEN h.f1_q_b10 = '5' THEN N'Không bao giờ'                         
                                 ELSE NULL                                                         
                             END AS TanSuatSuDungBCSChemsex3Thang,                                 
 		                    CASE                                                              
-                                WHEN h.f1_q_b11 = 1 THEN N'Có'                                
-                                WHEN h.f1_q_b11 = 2 THEN N'Không'                             
-                                WHEN h.f1_q_b11 = 3 THEN N'Không biết/Không trả lời'          
+                                WHEN h.f1_q_b11 = '1' THEN N'Có'                                
+                                WHEN h.f1_q_b11 = '2' THEN N'Không'                             
+                                WHEN h.f1_q_b11 = '3' THEN N'Không biết/Không trả lời'          
                             END AS QHTDTT3Thang,                                              
 		                    CASE                                                              
-                                WHEN h.f1_q_b12 = 1 THEN N'Có'                                    
-                                WHEN h.f1_q_b12 = 2 THEN N'Không'                                 
-                                WHEN h.f1_q_b12 = 3 THEN N'Không biết/Không trả lời'              
+                                WHEN h.f1_q_b12 = '1' THEN N'Có'                                    
+                                WHEN h.f1_q_b12 = '2' THEN N'Không'                                 
+                                WHEN h.f1_q_b12 = '3' THEN N'Không biết/Không trả lời'              
                                 ELSE NULL                                                         
                             END AS BanDam3Thang,                                                   
                             CASE                                                                   
-                                 WHEN h.f1_q_b13 = 1 THEN N'Có'                                    
-                                 WHEN h.f1_q_b13 = 2 THEN N'Không'                                 
-                                 WHEN h.f1_q_b13 = 3 THEN N'Không biết/Không trả lời'              
+                                 WHEN h.f1_q_b13 = '1' THEN N'Có'                                    
+                                 WHEN h.f1_q_b13 = '2' THEN N'Không'                                 
+                                 WHEN h.f1_q_b13 = '3' THEN N'Không biết/Không trả lời'              
                                  ELSE NULL                                                         
                              END AS STIs,		                                                    
 															CASE     																																																											
-                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 1 THEN N'Có biết - Không mắc viêm gan C'                  
-                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 2 THEN N'Có biết - Đã từng mắc viêm gan C và đã điều trị' 
-                                 WHEN h.f1_q_b15 = 1 AND h.f1_q_b16 = 3 THEN N'Có biết - Hiện tại mắc viêm gan C'               
-                                 WHEN h.f1_q_b15 = 2 THEN N'Không'
-                                 WHEN h.f1_q_b15 = 3 THEN N'Không biết/Không trả lời'																	
+                                 WHEN h.f1_q_b15 = '1' AND h.f1_q_b16 = '1' THEN N'Có biết - Không mắc viêm gan C'                  
+                                 WHEN h.f1_q_b15 = '1' AND h.f1_q_b16 = '2' THEN N'Có biết - Đã từng mắc viêm gan C và đã điều trị' 
+                                 WHEN h.f1_q_b15 = '1' AND h.f1_q_b16 = '3' THEN N'Có biết - Hiện tại mắc viêm gan C'               
+                                 WHEN h.f1_q_b15 = '2' THEN N'Không'
+                                 WHEN h.f1_q_b15 = '3' THEN N'Không biết/Không trả lời'																	
 																 ELSE NULL                                                         
                              END AS TinhTrangViemGanC,                                             
 		                         CASE                                                              
@@ -436,9 +424,9 @@ namespace Data.Admin
 				                     ELSE NULL                                                                                  
 		                     END AS MucDoNguyCoKhac, 
                                 CASE                                                                                        
-                                WHEN h.c_3 = 0 THEN N'Không'                                                                
-                                WHEN h.c_3 = 1 THEN N'Có'                                                                   
-                                WHEN h.c_3 = 2 THEN N'Không biết/Không trả lời'                                             
+                                WHEN h.c_3 = '0' THEN N'Không'                                                                
+                                WHEN h.c_3 = '1' THEN N'Có'                                                                   
+                                WHEN h.c_3 = '2' THEN N'Không biết/Không trả lời'                                             
                                 ELSE NULL                                                                                   
                             END AS QSTCoTuSat,                                                                              
 		                        h.tongdiem AS QSTTongDiem,                                                                  
@@ -446,12 +434,10 @@ namespace Data.Admin
                             FROM                                                                          
                                  CD43_KHACH_HANG_THONG_TIN_CO_BAN t                                       
                                  LEFT JOIN CD43_KHACH_HANG_HANH_VI_NGUY_CO h ON t.record_id = h.record_id 
-                           WHERE                                                                  
-                            t.thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete = 2            
-                            AND t.Id = " + id;
+                           WHERE t.Id = " + id;
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -532,7 +518,7 @@ namespace Data.Admin
  ";
             var result = _DatabaseSql.ExecuteTable(query);
 
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 customer = new Customer();
                 customer.DichVuChuyenGuiList = new List<DichVuChuyenGui>();
@@ -573,7 +559,7 @@ namespace Data.Admin
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -606,7 +592,7 @@ namespace Data.Admin
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -628,13 +614,13 @@ namespace Data.Admin
                                     NgayTuVan,		
                                     -- Nhóm I: Hành vi nguy cơ
                                     RTRIM(STUFF(CONCAT(
-																				COALESCE (CASE WHEN cau2___1 = 1 THEN N'; Sử dụng ma túy không an toàn' ELSE NULL END, ''),
-																						CASE WHEN cau2___2 = 1 THEN N'; Tiêm chích' ELSE NULL END,
-																						CASE WHEN cau2___3 = 1 THEN N'; QHTD không an toàn' ELSE NULL END,
-																						CASE WHEN cau2___4 = 1 THEN N'; QHTD và sử dụng ma túy' ELSE NULL END,
-																						CASE WHEN cau2___5 = 1 THEN N'; Sử dụng đa chất' ELSE NULL END,
-																						CASE WHEN cau2___6 = 1 THEN N'; Khác' ELSE NULL END,
-																						CASE WHEN cau2___7 = 1 THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END																						
+																				COALESCE (CASE WHEN cau2___1 = '1' THEN N'; Sử dụng ma túy không an toàn' ELSE NULL END, ''),
+																						CASE WHEN cau2___2 = '1' THEN N'; Tiêm chích' ELSE NULL END,
+																						CASE WHEN cau2___3 = '1' THEN N'; QHTD không an toàn' ELSE NULL END,
+																						CASE WHEN cau2___4 = '1' THEN N'; QHTD và sử dụng ma túy' ELSE NULL END,
+																						CASE WHEN cau2___5 = '1' THEN N'; Sử dụng đa chất' ELSE NULL END,
+																						CASE WHEN cau2___6 = '1' THEN N'; Khác' ELSE NULL END,
+																						CASE WHEN cau2___7 = '1' THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END																						
 																				),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -642,18 +628,18 @@ namespace Data.Admin
 
                                     -- Nhóm II: Sức khỏe thể chất
                                     RTRIM(STUFF(CONCAT(
-																				COALESCE(CASE WHEN cau3___1 = 1 THEN N'; Mệt mỏi' ELSE NULL END, ''),
-																						CASE WHEN cau3___2 = 1 THEN N'; Sụt cân' ELSE NULL END,
-																						CASE WHEN cau3___3 = 1 THEN N'; Nhiễm HIV' ELSE NULL END,
-																						CASE WHEN cau3___4 = 1 THEN N'; VGC' ELSE NULL END,
-																						CASE WHEN cau3___5 = 1 THEN N'; VGB' ELSE NULL END,
-																						CASE WHEN cau3___6 = 1 THEN N'; Lao' ELSE NULL END,
-																						CASE WHEN cau3___7 = 1 THEN N'; Mất ngủ' ELSE NULL END,
-																						CASE WHEN cau3___8 = 1 THEN N'; STIs' ELSE NULL END,
-																						CASE WHEN cau3___9 = 1 THEN N'; Khác' ELSE NULL END,
-																						CASE WHEN cau3___10 = 1 THEN N'; Sức khỏe sinh sản' ELSE NULL END,
-																						CASE WHEN cau3___11 = 1 THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END,
-																						CASE WHEN cau3___12 = 1 THEN N'; Không gặp vấn đề gì' ELSE NULL END
+																				COALESCE(CASE WHEN cau3___1 = '1' THEN N'; Mệt mỏi' ELSE NULL END, ''),
+																						CASE WHEN cau3___2 = '1' THEN N'; Sụt cân' ELSE NULL END,
+																						CASE WHEN cau3___3 = '1' THEN N'; Nhiễm HIV' ELSE NULL END,
+																						CASE WHEN cau3___4 = '1' THEN N'; VGC' ELSE NULL END,
+																						CASE WHEN cau3___5 = '1' THEN N'; VGB' ELSE NULL END,
+																						CASE WHEN cau3___6 = '1' THEN N'; Lao' ELSE NULL END,
+																						CASE WHEN cau3___7 = '1' THEN N'; Mất ngủ' ELSE NULL END,
+																						CASE WHEN cau3___8 = '1' THEN N'; STIs' ELSE NULL END,
+																						CASE WHEN cau3___9 = '1' THEN N'; Khác' ELSE NULL END,
+																						CASE WHEN cau3___10 = '1' THEN N'; Sức khỏe sinh sản' ELSE NULL END,
+																						CASE WHEN cau3___11 = '1' THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END,
+																						CASE WHEN cau3___12 = '1' THEN N'; Không gặp vấn đề gì' ELSE NULL END
 																			),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -662,18 +648,18 @@ namespace Data.Admin
 
                                     -- Nhóm III: Sức khỏe tâm thần
                                     RTRIM(STUFF(CONCAT(
-																				COALESCE(CASE WHEN cau4___1 = 1 THEN N'; Ảo giác' ELSE NULL END, ''),
-																						CASE WHEN cau4___2 = 1 THEN N'; Hoang tưởng' ELSE NULL END,
-																						CASE WHEN cau4___3 = 1 THEN N'; Rối loạn suy nghĩ' ELSE NULL END,
-																						CASE WHEN cau4___4 = 1 THEN N'; Trầm cảm' ELSE NULL END,
-																						CASE WHEN cau4___5 = 1 THEN N'; Lo âu' ELSE NULL END,
-																						CASE WHEN cau4___6 = 1 THEN N'; Ý định tự tử' ELSE NULL END,
-																						CASE WHEN cau4___7 = 1 THEN N'; Cơn hoảng loạn' ELSE NULL END,
-																						CASE WHEN cau4___8 = 1 THEN N'; Hành vi tự hại' ELSE NULL END,
-																						CASE WHEN cau4___9 = 1 THEN N'; Hội chứng cai' ELSE NULL END,
-																						CASE WHEN cau4___10 = 1 THEN N'; Khác' ELSE NULL END,
-																						CASE WHEN cau4___11 = 1 THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END,
-																						CASE WHEN cau4___12 = 1 THEN N'; Không gặp vấn đề gì' ELSE NULL END
+																				COALESCE(CASE WHEN cau4___1 = '1' THEN N'; Ảo giác' ELSE NULL END, ''),
+																						CASE WHEN cau4___2 = '1' THEN N'; Hoang tưởng' ELSE NULL END,
+																						CASE WHEN cau4___3 = '1' THEN N'; Rối loạn suy nghĩ' ELSE NULL END,
+																						CASE WHEN cau4___4 = '1' THEN N'; Trầm cảm' ELSE NULL END,
+																						CASE WHEN cau4___5 = '1' THEN N'; Lo âu' ELSE NULL END,
+																						CASE WHEN cau4___6 = '1' THEN N'; Ý định tự tử' ELSE NULL END,
+																						CASE WHEN cau4___7 = '1' THEN N'; Cơn hoảng loạn' ELSE NULL END,
+																						CASE WHEN cau4___8 = '1' THEN N'; Hành vi tự hại' ELSE NULL END,
+																						CASE WHEN cau4___9 = '1' THEN N'; Hội chứng cai' ELSE NULL END,
+																						CASE WHEN cau4___10 = '1' THEN N'; Khác' ELSE NULL END,
+																						CASE WHEN cau4___11 = '1' THEN N'; Chưa/không khai thác được hành vi nguy cơ gì' ELSE NULL END,
+																						CASE WHEN cau4___12 = '1' THEN N'; Không gặp vấn đề gì' ELSE NULL END
 																				),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -682,12 +668,12 @@ namespace Data.Admin
 
 		                                -- Nhóm IV: Sức khỏe tình dục
                                     RTRIM(STUFF(CONCAT(
-																				COALESCE(CASE WHEN cau_5___1 = 1 THEN N'; Lệ thuộc vào chất để QHTD' ELSE NULL END, ''),
-																						CASE WHEN cau_5___2 = 1 THEN N'; Hoang tưởng' ELSE NULL END,
-																						CASE WHEN cau_5___3 = 1 THEN N'; Phá vỡ các giới hạn' ELSE NULL END,
-																						CASE WHEN cau_5___4 = 1 THEN N'; Không có vấn đề' ELSE NULL END,
-																						CASE WHEN cau_5___6 = 1 THEN N'; Chưa/không khai thác được vấn đề gì trong lần tư vấn này' ELSE NULL END,
-																						CASE WHEN cau_5___5 = 1 THEN N'; Khác' ELSE NULL END
+																				COALESCE(CASE WHEN cau_5___1 = '1' THEN N'; Lệ thuộc vào chất để QHTD' ELSE NULL END, ''),
+																						CASE WHEN cau_5___2 = '1' THEN N'; Hoang tưởng' ELSE NULL END,
+																						CASE WHEN cau_5___3 = '1' THEN N'; Phá vỡ các giới hạn' ELSE NULL END,
+																						CASE WHEN cau_5___4 = '1' THEN N'; Không có vấn đề' ELSE NULL END,
+																						CASE WHEN cau_5___6 = '1' THEN N'; Chưa/không khai thác được vấn đề gì trong lần tư vấn này' ELSE NULL END,
+																						CASE WHEN cau_5___5 = '1' THEN N'; Khác' ELSE NULL END
 																			),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -696,12 +682,12 @@ namespace Data.Admin
 		                                -- Nhóm V: Tư vấn giảm hại
 																		RTRIM(
 																				STUFF(CONCAT(
-																						COALESCE(CASE WHEN cau6_1___1 = 1 THEN N'; Ăn, uống, ngủ, lặp lại' ELSE NULL END, ''),
-																						CASE WHEN cau6_1___2 = 1 THEN N'; Giảm hại về cách thức sử dụng, đường sử dụng' ELSE NULL END,
-																						CASE WHEN cau6_1___3 = 1 THEN N'; Tình dục an toàn (sử dụng bao cao su, gel bôi trơn, dung dịch vệ sinh đồ chơi tình dục ...)' ELSE NULL END,
-																						CASE WHEN cau6_1___4 = 1 THEN N'; Vệ sinh cá nhân răng miệng' ELSE NULL END,
-																						CASE WHEN cau6_1___5 = 1 THEN N'; Khác' ELSE NULL END,
-																						CASE WHEN cau6_1___6 = 1 THEN N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END
+																						COALESCE(CASE WHEN cau6_1___1 = '1' THEN N'; Ăn, uống, ngủ, lặp lại' ELSE NULL END, ''),
+																						CASE WHEN cau6_1___2 = '1' THEN N'; Giảm hại về cách thức sử dụng, đường sử dụng' ELSE NULL END,
+																						CASE WHEN cau6_1___3 = '1' THEN N'; Tình dục an toàn (sử dụng bao cao su, gel bôi trơn, dung dịch vệ sinh đồ chơi tình dục ...)' ELSE NULL END,
+																						CASE WHEN cau6_1___4 = '1' THEN N'; Vệ sinh cá nhân răng miệng' ELSE NULL END,
+																						CASE WHEN cau6_1___5 = '1' THEN N'; Khác' ELSE NULL END,
+																						CASE WHEN cau6_1___6 = '1' THEN N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END
 																				),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -710,16 +696,16 @@ namespace Data.Admin
 		
 		                                -- Nhóm VI: Hỗ trợ về SKTT
                                     RTRIM(STUFF(CONCAT(
-                                        COALESCE (CASE WHEN cau6_2___6	 = 1 THEN N'; Can thiệp cơ bản về SKTT (giải thích về SKTT, giảm sự kỳ thị hoặc nhận diện các vấn đề SKTT ...)' ELSE NULL END, ''),
-																						CASE WHEN cau6_2___7	 = 1 THEN N'; Tự làm dịu' ELSE NULL END,
-						                                CASE WHEN cau6_2___8	 = 1 THEN N'; Lòng biết ơn' ELSE NULL END,
-						                                CASE WHEN cau6_2___9	 = 1 THEN N'; Nhóm tự lực' ELSE NULL END,
-						                                CASE WHEN cau6_2___10 = 1 THEN N'; Thiền' ELSE NULL END,
-						                                CASE WHEN cau6_2___11 = 1 THEN N'; Tái định hình nhận thức' ELSE NULL END,
-						                                CASE WHEN cau6_2___12 = 1 THEN N'; Thang đo mức độ tồi tệ' ELSE NULL END,
-						                                CASE WHEN cau6_2___15 = 1 THEN N'; Nhu cầu dài hạn chung' ELSE NULL END,
-						                                CASE WHEN cau6_2___13 = 1 THEN N'; Khác' ELSE NULL END,
-						                                CASE WHEN cau6_2___14 = 1 THEN N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END                                        
+                                        COALESCE (CASE WHEN cau6_2___6	 = '1' THEN N'; Can thiệp cơ bản về SKTT (giải thích về SKTT, giảm sự kỳ thị hoặc nhận diện các vấn đề SKTT ...)' ELSE NULL END, ''),
+																						CASE WHEN cau6_2___7	 = '1' THEN N'; Tự làm dịu' ELSE NULL END,
+						                                CASE WHEN cau6_2___8	 = '1' THEN N'; Lòng biết ơn' ELSE NULL END,
+						                                CASE WHEN cau6_2___9	 = '1' THEN N'; Nhóm tự lực' ELSE NULL END,
+						                                CASE WHEN cau6_2___10 = '1' THEN N'; Thiền' ELSE NULL END,
+						                                CASE WHEN cau6_2___11 = '1' THEN N'; Tái định hình nhận thức' ELSE NULL END,
+						                                CASE WHEN cau6_2___12 = '1' THEN N'; Thang đo mức độ tồi tệ' ELSE NULL END,
+						                                CASE WHEN cau6_2___15 = '1' THEN N'; Nhu cầu dài hạn chung' ELSE NULL END,
+						                                CASE WHEN cau6_2___13 = '1' THEN N'; Khác' ELSE NULL END,
+						                                CASE WHEN cau6_2___14 = '1' THEN N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END                                        
 																				) ,
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
 																			)
@@ -727,12 +713,12 @@ namespace Data.Admin
 																		
 		                                -- Nhóm VII: Hỗ trợ về SKTD
                                     RTRIM(STUFF(CONCAT(
-                                        COALESCE (CASE WHEN cau6_3_bs___1 = 1 THEN	N'; Can thiệp cơ bản về SKTD (giải thích về Chemsex, các nguy cơ liên quan Chemsex,...)' ELSE NULL END, ''),
-						                            CASE WHEN cau6_3_bs___2 = 1 THEN	N'; Can thiệp trước Chemsex' ELSE NULL END,
-						                            CASE WHEN cau6_3_bs___3 = 1 THEN	N'; Can thiệp trong Chemsex' ELSE NULL END,
-						                            CASE WHEN cau6_3_bs___4 = 1 THEN	N'; Can thiệp sau Chemsex' ELSE NULL END,
-						                            CASE WHEN cau6_3_bs___5 = 1 THEN	N'; Khác' ELSE NULL END,
-						                            CASE WHEN cau6_3_bs___6 = 1 THEN	N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END
+                                        COALESCE (CASE WHEN cau6_3_bs___1 = '1' THEN	N'; Can thiệp cơ bản về SKTD (giải thích về Chemsex, các nguy cơ liên quan Chemsex,...)' ELSE NULL END, ''),
+						                            CASE WHEN cau6_3_bs___2 = '1' THEN	N'; Can thiệp trước Chemsex' ELSE NULL END,
+						                            CASE WHEN cau6_3_bs___3 = '1' THEN	N'; Can thiệp trong Chemsex' ELSE NULL END,
+						                            CASE WHEN cau6_3_bs___4 = '1' THEN	N'; Can thiệp sau Chemsex' ELSE NULL END,
+						                            CASE WHEN cau6_3_bs___5 = '1' THEN	N'; Khác' ELSE NULL END,
+						                            CASE WHEN cau6_3_bs___6 = '1' THEN	N'; Không cung cấp can thiệp nào (trong buổi tư vấn này)' ELSE NULL END
                                        
 																			),
 																					1, 2, '' -- Xóa dấu phân cách ""; "" đầu tiên nếu nó tồn tại
@@ -749,7 +735,7 @@ namespace Data.Admin
 
             var result = _DatabaseSql.ExecuteTable(query);
 
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 
                 foreach (DataRow row in result.Rows)
@@ -780,10 +766,10 @@ namespace Data.Admin
                                     f2_q_1_1 as NgayKham,		
                                     f2_q_1_3_1 AS TrieuChung,
 		                            f2_q_1_4 AS ChanDoan,
-		                            CASE WHEN f2_q_1_5 = 1 THEN N'Có'
+		                            CASE WHEN f2_q_1_5 = '1' THEN N'Có'
 				                            ELSE N'Không'
 		                            END AS KeDon,		
-		                            CASE WHEN f2_q_1_6 = 1 THEN N'Có'
+		                            CASE WHEN f2_q_1_6 = '1' THEN N'Có'
 				                            ELSE N'Không'
 		                            END AS DungTheoDon,
 		                            f2_q_1_8_1 AS NgayHenTaiKham
@@ -796,7 +782,7 @@ namespace Data.Admin
 
             var result = _DatabaseSql.ExecuteTable(query);
 
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
 
                 foreach (DataRow row in result.Rows)
@@ -832,7 +818,7 @@ namespace Data.Admin
                              ";
 
             var result = _DatabaseSql.ExecuteTable(query);
-            if (result.Rows.Count > 0)
+            if (result != null && result.Rows.Count > 0)
             {
                 // Tạo đối tượng Customer và gán các giá trị từ DataTable
                 DataRow row = result.Rows[0];
@@ -924,3 +910,6 @@ namespace Data.Admin
         }
     }
 }
+
+
+

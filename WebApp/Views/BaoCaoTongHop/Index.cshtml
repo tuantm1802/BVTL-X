@@ -1,4 +1,4 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.BaoCaoTongHopPageModel>
+@model  System.Collections.Generic.List<Model.ModelExtend.BaoCaoTongHopPageModel>
 @{
     ViewBag.Title = "Báo cáo tổng hợp";
 }
@@ -7,7 +7,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="BaoCaoTongHopController">
+<div class="container-fluid" x-data="baoCaoTongHopComponent()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Báo cáo tổng hợp</h1>
@@ -93,7 +93,7 @@
                             <th> HIV có thể lây nhiễm qua việc dùng chung các dụng cụ không sử dụng bao cao su </th>
                             <th> HIV có thể lây nhiễm qua giao tiếp thông thường như ôm, hôn, bắt tay </th>
                             <th> Xét nghiệm máu có thể phát hiện một người có bị nhiễm HIV hay không </th>
-                            <th> Khám bệnh thông thường hoặc nhìn bề ngoài (gầy g� ... ó bị nhiễm HIV hay không </th>
+                            <th> Khám bệnh thông thường hoặc nhìn bề ngoài (gầy g ... ó bị nhiễm HIV hay không </th>
                             <th> Nên đi xét nghiệm HIV sau ít nhất 14 ngày kể từ khi ...  toàn, tiêm chích chung...) </th>
                             <th> Vi rút HIV tồn tại 5 - 10 năm trong cơ thể người nhi ... ây nhiễm cho người khác </th>
                             <th> Hiện nay, HIV có thể được điều trị bằng thuốc  ... à điều trị suốt đời </th>
@@ -101,14 +101,14 @@
                             <th> Sử dụng ma túy đá một mình là an toàn nhất </th>
                             <th> Sử dụng ma túy đá trong một thời gian dài có thể dẫn đến trầm cảm </th>
                             <th> Người bị tăng thân nhiệt do sử dụng ma túy đá n ... uống nước điện giải) </th>
-                            <th> Ăn uống và nghỉ ngơi đầy đủ sau mỗi lần chơi  ... �ời sử dụng ma túy đá </th>
-                            <th> Sử dụng ma túy đá kèm với các loại ma túy khác l ... �� an toàn cho người chơi </th>
+                            <th> Ăn uống và nghỉ ngơi đầy đủ sau mỗi lần chơi  ... ời sử dụng ma túy đá </th>
+                            <th> Sử dụng ma túy đá kèm với các loại ma túy khác l ...  an toàn cho người chơi </th>
                             <th> Cơn hoảng loạn, ảo giác và nôn mửa là các triệu ... ) khi sử dụng ma túy đá </th>
-                            <th> Sử dụng ma túy đá làm tăng nguy cơ lây nhiễm HIV d ... �� tình dục không an toàn </th>
+                            <th> Sử dụng ma túy đá làm tăng nguy cơ lây nhiễm HIV d ...  tình dục không an toàn </th>
                             <th> Sử dụng ma túy đá có khả năng ảnh hưởng tới v ... trị ở người nhiễm HIV </th>
                             <th> Sử dụng ma túy đá không có nguy cơ lây nhiễm HIV n ...  mà không tiêm chích chung </th>
                             <th> Sức khỏe tâm thần là tình trạng khỏe mạnh về t ... g có rối loạn tâm thần </th>
-                            <th> Lo âu, mất ngủ, buồn chán, mất động lực trong m� ...  về sức khỏe tâm thần </th>
+                            <th> Lo âu, mất ngủ, buồn chán, mất động lực trong m ...  về sức khỏe tâm thần </th>
                             <th> Nghe thấy tiếng kêu/ tiếng nói mà người khác khôn ...  về sức khỏe tâm thần </th>
                             <th> Sử dụng ma túy có thể gây ra hoặc làm nặng thêm các rối loạn tâm thần </th>
                             <th> Các vấn đề về sức khỏe tâm thần có thể dẫn tới việc sử dụng ma túy </th>
@@ -386,5 +386,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/BaoCaoTongHopController.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoTongHop.js?v=@DateTime.Now.Ticks"></script>
 }

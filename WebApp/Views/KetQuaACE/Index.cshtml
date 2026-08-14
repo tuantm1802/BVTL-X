@@ -1,4 +1,4 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaACEPageModel>
+@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaACEPageModel>
 @{
     ViewBag.Title = "Kết quả ACE";
 }
@@ -7,7 +7,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="KetQuaACEController">
+<div class="container-fluid" x-data="alpineKetQuaACE()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Kết quả ACE</h1>
@@ -91,5 +91,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/KetQuaACEController.js"></script>
+    <script src="~/app/Controller/AlpineKetQuaACE.js?v=@DateTime.Now.Ticks"></script>
 }

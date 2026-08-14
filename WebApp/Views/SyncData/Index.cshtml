@@ -1,56 +1,255 @@
-﻿@{
-    ViewBag.Title = "Đồng bộ dữ liệu";
+@{
+    ViewBag.Title = "Đồng bộ dữ liệu API";
 }
 
-<div class="container-fluid" ng-controller="SyncDataController">
+<div class="container-fluid py-3 ng-scope" x-data="alpineSyncData()" ng-controller="SyncDataController">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Đồng bộ dữ liệu thủ công</h1>
-    <p class="mb-4">
-    </p>
+    <!-- Header Title Bar & Action Buttons -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-sync-alt text-primary mr-2"></i> Đồng bộ dữ liệu API
+            </h1>
+            <p class="text-muted small mb-0">Quản lý các tiến trình nạp dữ liệu tự động và thực hiện đồng bộ thủ công từ các cổng API hệ thống.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-white btn-lg shadow-sm px-4 font-weight-bold border" x-on:click="search()" style="border-radius: 8px; background: #fff;">
+                <i class="fas fa-sync-alt text-primary mr-2"></i> Làm mới danh sách
+            </button>
+        </div>
+    </div>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                <button type="button" class="btn btn-primary" ng-show="RoleBtnSearch == true" ng-click="Refesh()">
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                </button>
-                @*<button type="button" class="btn btn-primary" ng-show="RoleBtnSyncData == true" ng-click="SyncDataAPI()" data-bs-toggle="tooltip" data-bs-placement="top" title="Chọn một dòng API cần đồng bộ">
-                    <i class="fas fa-pencil-alt"></i> Đồng bộ
-                </button>*@
+    <!-- Stats Overview Widgets -->
+    <div class="row mb-4">
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số Tiến trình API</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.totalApis">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-network-wired fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
+
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tiến trình Đang kích hoạt</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.activeApis">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-check-double fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-12">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Lần đồng bộ gần nhất</div>
+                            <div class="h6 mb-0 font-weight-bold text-gray-800" x-text="stats.lastSyncTime">—</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-clock fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Data Table Container Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0">
+            <div class="row align-items-center">
+                <!-- Search Box -->
+                <div class="col-lg-5 col-md-6 mb-2 mb-md-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-right-0" style="border-radius: 8px 0 0 8px;"><i class="fas fa-search text-gray-400"></i></span>
+                        </div>
+                        <input type="text" class="form-control bg-light border-left-0" placeholder="Tìm theo Mã tiến trình, Tên, ReportId, URL API..." x-model="modelSearch.KeyWord" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
+                    </div>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="col-lg-4 col-md-4 mb-2 mb-md-0">
+                    <select class="form-control bg-light" x-model="modelSearch.Status" x-on:change="search()" style="border-radius: 8px;">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="true">Đang kích hoạt (Active)</option>
+                        <option value="false">Tạm ngừng (InActive)</option>
+                    </select>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="col-lg-3 col-md-2 text-right">
+                    <button type="button" class="btn btn-light font-weight-bold text-secondary border px-3" x-on:click="resetSearch()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered" id="dataTableApiSync" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" width="100%">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th>STT </th>
-                            <th>Mã tiến trình </th>
-                            <th>Tên tiến trình </th>
-                            <th>Đường dẫn API </th>
-                            <th>Report ID </th>
-                            <th>Chu kỳ lặp(s) </th>
-                            <th>Trạng thái </th>
-                            <th>Bắt đầu Sync</th>
-                            <th>Kế thúc Sync</th>
-                            <th>Thông tin</th>
-                            <th>Kiểu DL</th>
-                            <th>Thao tác</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 4%; font-size: 0.75rem;">#</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 20%; font-size: 0.75rem;">Tiến trình đồng bộ</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 25%; font-size: 0.75rem;">Cấu hình API & Kiểu DL</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 10%; font-size: 0.75rem;">Trạng thái</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 26%; font-size: 0.75rem;">Thời gian đồng bộ & Kết quả</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 15%; font-size: 0.75rem;">Thao tác</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <template x-for="(item, index) in ListData" :key="item.Api_Id || index">
+                            <tr style="cursor: pointer;" :class="{'table-active bg-light-primary': selectedApiId === item.Api_Id}" x-on:click="selectRow(item.Api_Id)">
+                                <td class="text-center font-weight-bold text-gray-600 align-middle" x-text="(modelSearch.currentPage - 1) * modelSearch.pageSize + index + 1"></td>
+                                
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-start">
+                                        <div class="avatar-circle mr-3 mt-1 d-flex align-items-center justify-content-center text-white font-weight-bold bg-primary shadow-xs" style="min-width: 38px; width: 38px; height: 38px; border-radius: 50%; font-size: 0.85rem;">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-bold text-gray-900" x-text="item.NameSyncdata"></div>
+                                            <div class="mt-1 d-flex align-items-center flex-wrap gap-1">
+                                                <span class="badge badge-primary px-2 py-1 font-weight-bold mr-1" style="font-size: 0.75rem;" x-text="item.Api_Code"></span>
+                                                <span class="badge badge-light border text-muted px-2 py-1" style="font-size: 0.75rem;" title="Report ID">
+                                                    <i class="fas fa-file-alt mr-1"></i><span x-text="item.ReportId || 'N/A'"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="align-middle">
+                                    <div class="small text-truncate mb-1" style="max-width: 320px;" :title="item.HrefApi">
+                                        <i class="fas fa-link text-info mr-1"></i>
+                                        <a :href="item.HrefApi" target="_blank" class="text-primary font-weight-bold" x-text="item.HrefApi"></a>
+                                    </div>
+                                    <div class="d-flex align-items-center small text-muted">
+                                        <span class="mr-3"><i class="fas fa-history text-secondary mr-1"></i> Chu kỳ: <b class="text-dark" x-text="(item.TimeReCall || 0) + 's'"></b></span>
+                                        <span><i class="fas fa-database text-secondary mr-1"></i> Kiểu: <span class="badge badge-secondary px-2" x-text="item.RawOrLabel || 'Raw'"></span></span>
+                                    </div>
+                                </td>
+
+                                <td class="text-center align-middle">
+                                    <span class="badge badge-success px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="item.IsActive === true || item.IsActive === 1 || item.IsActive === 'Active'">
+                                        <i class="fas fa-check-circle mr-1"></i> Active
+                                    </span>
+                                    <span class="badge badge-secondary px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="!(item.IsActive === true || item.IsActive === 1 || item.IsActive === 'Active')">
+                                        <i class="fas fa-ban mr-1"></i> InActive
+                                    </span>
+                                </td>
+
+                                <td class="align-middle">
+                                    <div class="small mb-1">
+                                        <span class="text-muted"><i class="far fa-play-circle text-primary mr-1"></i> Bắt đầu:</span> 
+                                        <span class="text-dark font-weight-bold" x-text="formatDate(item.Start_Time_Sync)"></span>
+                                    </div>
+                                    <div class="small mb-1">
+                                        <span class="text-muted"><i class="far fa-check-circle text-success mr-1"></i> Hoàn tất:</span> 
+                                        <span class="text-dark font-weight-bold" x-text="formatDate(item.End_Time_Sync)"></span>
+                                    </div>
+                                    <div class="small text-truncate" style="max-width: 320px;" :title="item.Message" x-show="item.Message">
+                                        <span class="badge badge-light border text-secondary font-weight-normal px-2 py-1">
+                                            <i class="fas fa-info-circle mr-1"></i> <span x-text="item.Message"></span>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="text-center align-middle">
+                                    <button type="button" class="btn btn-sm btn-primary font-weight-bold px-3 shadow-sm" x-show="!syncingIds[item.Api_Id]" x-on:click.stop="syncDataRow(item)" style="border-radius: 6px;">
+                                        <i class="fas fa-sync-alt mr-1"></i> Đồng bộ ngay
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-warning text-dark font-weight-bold px-3" x-show="syncingIds[item.Api_Id]" disabled style="border-radius: 6px;">
+                                        <i class="fas fa-spinner fa-spin mr-1"></i> Đang nạp...
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+
+                        <template x-if="!ListData || ListData.length === 0">
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="py-4">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-gray-300 mb-3"></i>
+                                        <p class="text-gray-500 font-weight-bold mb-0">Không tìm thấy tiến trình đồng bộ dữ liệu nào phù hợp.</p>
+                                        <small class="text-muted">Vui lòng thử tìm kiếm lại với từ khóa khác.</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Footer & Responsive Pagination Bar -->
+        <div class="card-footer bg-white py-3 border-top" style="border-color: #e3e6f0 !important;">
+            <div class="row align-items-center">
+                <div class="col-md-5 mb-2 mb-md-0 text-center text-md-left">
+                    <span class="text-muted small">
+                        Hiển thị <b class="text-dark" x-text="ListData.length > 0 ? (modelSearch.currentPage - 1) * modelSearch.pageSize + 1 : 0"></b> đến 
+                        <b class="text-dark" x-text="Math.min(modelSearch.currentPage * modelSearch.pageSize, modelSearch.totalItems)"></b> trong tổng số 
+                        <b class="text-primary" x-text="modelSearch.totalItems"></b> tiến trình API
+                    </span>
+                    <span class="ml-3 text-muted small">
+                        Hiển thị
+                        <select class="custom-select custom-select-sm d-inline-block w-auto border bg-light ml-1" x-model="modelSearch.pageSize" x-on:change="changePageSize($event.target.value)">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        bản ghi
+                    </span>
+                </div>
+
+                <div class="col-md-7">
+                    <ul class="pagination pagination-sm justify-content-center justify-content-md-end mb-0">
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === 1}">
+                            <button class="page-item link-btn page-link rounded-left" x-on:click="LoadPage(modelSearch.currentPage - 1)"><i class="fas fa-chevron-left"></i></button>
+                        </li>
+
+                        <template x-for="p in pages" :key="p">
+                            <li class="page-item" :class="{'active': p === modelSearch.currentPage}">
+                                <button class="page-item link-btn page-link" x-on:click="LoadPage(p)" x-text="p"></button>
+                            </li>
+                        </template>
+
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage >= totalPages}">
+                            <button class="page-item link-btn page-link rounded-right" x-on:click="LoadPage(modelSearch.currentPage + 1)"><i class="fas fa-chevron-right"></i></button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts{
-    <script src="~/app/Controller/SyncDataController.js"></script>
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
+    <script src="~/app/Controller/AlpineSyncDataController.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/app/Controller/SyncDataController.js?v=@DateTime.Now.Ticks"></script>
 }

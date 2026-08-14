@@ -1,84 +1,403 @@
-﻿
 @{
-    ViewBag.Title = "Người dùng";
+    ViewBag.Title = "Quản lý Người dùng";
 }
 
-<div class="container-fluid" ng-controller="UserController">
+<style>
+    .user-stat-card {
+        border: none;
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .user-stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+    }
+    .user-avatar-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .status-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .status-badge-active {
+        background-color: #e6f4ea;
+        color: #137333;
+        border: 1px solid #ceebd5;
+    }
+    .status-badge-inactive {
+        background-color: #fce8e6;
+        color: #c5221f;
+        border: 1px solid #f7c6c4;
+    }
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .status-dot-active {
+        background-color: #1e8e3e;
+        box-shadow: 0 0 6px #34a853;
+    }
+    .status-dot-inactive {
+        background-color: #d93025;
+    }
+    .role-soft-tag {
+        background-color: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #e0e7ff;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .modern-table-header th {
+        background-color: #f8fafc !important;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0 !important;
+        vertical-align: middle;
+    }
+    .action-btn-circle {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+        border: none;
+    }
+    .action-btn-circle:hover {
+        transform: scale(1.1);
+    }
+    .table-row-hover {
+        transition: background-color 0.15s ease;
+    }
+    .table-row-hover:hover {
+        background-color: #f1f5f9 !important;
+    }
+</style>
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Người dùng</h1>
-    <p class="mb-4">
-    </p>
+<div class="container-fluid py-2" x-data="alpineUser()" ng-controller="UserController">
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                <button type="button" class="btn btn-primary" ng-click="add()">
-                    <i class="fas fa-plus"></i> Thêm mới
-                </button>
-                <button type="button" ng-click="LoadPage(0)" class="btn btn-primary">
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="edit()">
-                    <i class="fas fa-pencil-alt"></i> Cập nhật
-                </button>
-                <button type="button" class="btn btn-danger" ng-click="delete()">
-                    <i class="fas fa-times"></i> In Active
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="activeUser()">
-                    <i class="fas fa-pencil-alt"></i> Active
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="ViewDetail()">
-                    <i class="fas fa-eye"></i> Xem
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="resetPassword()">
-                    <i class="fas fa-pencil-alt"></i> Đặt lại mật khẩu
-                </button>
+    <!-- Page Title & Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 font-weight-bold text-gray-800 mb-1">
+                <i class="fas fa-users-cog text-primary mr-2"></i>Quản lý Người dùng
+            </h1>
+            <p class="text-muted small mb-0">Quản lý danh sách tài khoản, phân quyền và trạng thái hoạt động hệ thống</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-lg shadow-sm px-4 font-weight-bold" x-on:click="add()" x-show="RoleBtnCreate">
+                <i class="fas fa-plus-circle mr-2"></i>Thêm người dùng mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Stat Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card shadow-sm user-stat-card border-left-primary h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng người dùng</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.total">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 bg-light-primary rounded-circle text-primary">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableUser" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style="width:5%;">STT </th>
-                            <th style="width:20%;">Tên đăng nhập </th>
-                            <th style="width:auto;">Họ và tên </th>
-                            <th style="width:10%;">Số CMND </th>
-                            <th style="width:15%;">Nhóm quyền</th>
-                            <th style="width:15%;">Trạng thái</th>
-                            @*<th style="width:8%;">Thao tác</th>*@
-                        </tr>
-                    </thead>
-                    @*<tbody>
-                            <tr ng-repeat="item in ListUser" ng-class="{activerow:$index==selectedRow}">
-                                <td class="text-center">{{(10 * (modelSearch.currentPage-1)) + $index + 1}}</td>
-                                <td>{{item.UserName}}</td>
-                                <td>{{item.Name}}</td>
-                                <td>{{item.IdNumber}}</td>
-                                <td>{{item.Role}}</td>
-                                <td class="text-center">{{item.Status == true ? 'Sử dụng' : 'Không sử dụng'}}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary" ng-click="edit(item.ID)">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-danger" ng-click="delete(item.ID, item.UserName)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-primary" ng-click="ViewDetail(item.ID, $index)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>*@
-                </table>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card shadow-sm user-stat-card border-left-success h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đang hoạt động (Active)</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.active">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 bg-light-success rounded-circle text-success">
+                                <i class="fas fa-user-check fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card shadow-sm user-stat-card border-left-danger h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Tạm ngừng (Inactive)</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.inactive">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 bg-light-danger rounded-circle text-danger">
+                                <i class="fas fa-user-slash fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card shadow-sm user-stat-card border-left-info h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Danh mục Nhóm quyền</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.rolesCount">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 bg-light-info rounded-circle text-info">
+                                <i class="fas fa-shield-alt fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Filter & Search Toolbar Card -->
+    <div class="card shadow-sm mb-4 border-0 rounded-lg">
+        <div class="card-body bg-white p-3">
+            <div class="form-row align-items-center">
+                <!-- Search Box -->
+                <div class="col-lg-5 col-md-6 mb-2 mb-lg-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-right-0 text-muted"><i class="fas fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control bg-light border-left-0" 
+                               placeholder="Tìm theo Tên đăng nhập, Họ tên, CMND..." 
+                               x-model="modelSearch.KeyWord"
+                               x-on:keyup.enter="search()">
+                    </div>
+                </div>
+
+                <!-- Role Filter Dropdown -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <select class="form-control bg-light" x-model="modelSearch.RoleID" x-on:change="search()">
+                        <option value="">-- Tất cả nhóm quyền --</option>
+                        <template x-for="role in ListRoles" :key="role.ID">
+                            <option :value="role.ID" x-text="role.Name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Status Filter Dropdown -->
+                <div class="col-lg-2 col-md-6 mb-2 mb-lg-0">
+                    <select class="form-control bg-light" x-model="modelSearch.Status" x-on:change="search()">
+                        <option value="">-- Trạng thái --</option>
+                        <option value="true">Active (Đang dùng)</option>
+                        <option value="false">In Active (Khóa)</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-lg-2 col-md-6 d-flex align-items-center justify-content-end">
+                    <button type="button" class="btn btn-primary mr-2" x-on:click="search()" title="Tìm kiếm">
+                        <i class="fas fa-search"></i> Tìm
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" x-on:click="resetSearch()" title="Đặt lại bộ lọc">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary ml-2" x-on:click="LoadPage(modelSearch.currentPage)" title="Tải lại">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card shadow-sm border-0 rounded-lg mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle" width="100%">
+                    <thead class="modern-table-header">
+                        <tr>
+                            <th class="text-center" style="width: 50px;">STT</th>
+                            <th>Họ và Tên / Người dùng</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Số CMND / CCCD</th>
+                            <th>Nhóm quyền</th>
+                            <th class="text-center" style="width: 140px;">Trạng thái</th>
+                            <th class="text-center" style="width: 160px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(user, index) in ListUser" :key="user.ID">
+                            <tr class="table-row-hover" :class="{'table-active': selectedUserId === user.ID}" x-on:click="selectRow(user.ID)">
+                                <td class="text-center font-weight-bold text-muted" x-text="((modelSearch.currentPage - 1) * modelSearch.pageSize) + index + 1"></td>
+                                
+                                <!-- Avatar & Full Name -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar-circle mr-3" :class="getRandomColorClass(user.Name)" x-text="getInitials(user.Name)"></div>
+                                        <div>
+                                            <div class="font-weight-bold text-dark" x-text="user.Name"></div>
+                                            <div class="small text-muted" x-text="'ID: ' + user.ID"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Username -->
+                                <td>
+                                    <span class="font-weight-bold text-primary" x-text="user.UserName"></span>
+                                </td>
+
+                                <!-- CMND -->
+                                <td>
+                                    <span class="text-secondary" x-text="user.IdNumber || '—'"></span>
+                                </td>
+
+                                <!-- Role -->
+                                <td>
+                                    <span class="role-soft-tag" x-text="user.RoleName || 'Chưa phân quyền'"></span>
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td class="text-center">
+                                    <template x-if="user.Status === true || user.Status === 1 || user.Status === 'Active'">
+                                        <span class="status-badge-pill status-badge-active">
+                                            <span class="status-dot status-dot-active"></span>Active
+                                        </span>
+                                    </template>
+                                    <template x-if="!(user.Status === true || user.Status === 1 || user.Status === 'Active')">
+                                        <span class="status-badge-pill status-badge-inactive">
+                                            <span class="status-dot status-dot-inactive"></span>In Active
+                                        </span>
+                                    </template>
+                                </td>
+
+                                <!-- Action Buttons -->
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-1">
+                                        <!-- View -->
+                                        <button type="button" class="btn btn-light action-btn-circle text-info mr-1" 
+                                                title="Xem chi tiết" x-on:click.stop="viewDetail(user.ID)" x-show="RoleBtnView">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <!-- Edit -->
+                                        <button type="button" class="btn btn-light action-btn-circle text-primary mr-1" 
+                                                title="Chỉnh sửa" x-on:click.stop="edit(user.ID)" x-show="RoleBtnUpdate">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <!-- Reset Password -->
+                                        <button type="button" class="btn btn-light action-btn-circle text-warning mr-1" 
+                                                title="Đặt lại mật khẩu" x-on:click.stop="resetPassword(user.ID)">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <!-- Toggle Active / Inactive -->
+                                        <template x-if="user.Status === true || user.Status === 1 || user.Status === 'Active'">
+                                            <button type="button" class="btn btn-light action-btn-circle text-danger" 
+                                                    title="Bỏ hiệu lực (In Active)" x-on:click.stop="deleteUser(user.ID, user.UserName)" x-show="RoleBtnDelete">
+                                                <i class="fas fa-user-slash"></i>
+                                            </button>
+                                        </template>
+                                        <template x-if="!(user.Status === true || user.Status === 1 || user.Status === 'Active')">
+                                            <button type="button" class="btn btn-light action-btn-circle text-success" 
+                                                    title="Kích hoạt lại (Active)" x-on:click.stop="activeUser(user.ID, user.UserName)">
+                                                <i class="fas fa-user-check"></i>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+
+                        <!-- Empty State -->
+                        <template x-if="!ListUser || ListUser.length === 0">
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="fas fa-user-cog fa-3x text-muted mb-3 opacity-50"></i>
+                                    <p class="text-muted mb-0">Không tìm thấy người dùng nào phù hợp</p>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modern Footer Pagination -->
+        <div class="card-footer bg-white py-3 border-top">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="d-flex align-items-center mb-2 mb-md-0">
+                    <span class="text-muted small mr-2">Hiển thị</span>
+                    <select class="form-control form-control-sm mr-2" style="width: 70px;" 
+                            x-model="modelSearch.pageSize" 
+                            x-on:change="changePageSize($event.target.value)">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span class="text-muted small" 
+                          x-text="'bản ghi (Tổng số ' + modelSearch.totalItems + ' người dùng)'"></span>
+                </div>
+
+                <!-- Page Navigation -->
+                <nav aria-label="Page navigation" x-show="totalPages > 1">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === 1}">
+                            <a class="page-link" href="javascript:void(0)" x-on:click="LoadPage(1)">&laquo;</a>
+                        </li>
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === 1}">
+                            <a class="page-link" href="javascript:void(0)" x-on:click="LoadPage(modelSearch.currentPage - 1)">&lsaquo;</a>
+                        </li>
+                        <template x-for="p in pages" :key="p">
+                            <li class="page-item" :class="{'active': p === modelSearch.currentPage}">
+                                <a class="page-link" href="javascript:void(0)" x-on:click="LoadPage(p)" x-text="p"></a>
+                            </li>
+                        </template>
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === totalPages}">
+                            <a class="page-link" href="javascript:void(0)" x-on:click="LoadPage(modelSearch.currentPage + 1)">&rsaquo;</a>
+                        </li>
+                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === totalPages}">
+                            <a class="page-link" href="javascript:void(0)" x-on:click="LoadPage(totalPages)">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section scripts{
-    
-    <script src="~/app/Controller/UserController.js"></script>
+    <script src="~/app/Controller/AlpineUserController.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/app/Controller/UserController.js?v=@DateTime.Now.Ticks"></script>
 }

@@ -14,45 +14,81 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 <div class="form-group row">
-                    <label class="col-sm-1 col-form-label">Tháng</label>
-                    <div class="col-sm-1">
-                        <select class="form-control" x-model="Thangs" name="ListThang" multiple>
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Tháng</label>
+                        <select class="form-control" multiple name="ListThang"
+                            x-init="
+                                $nextTick(() => { $($el).select2({ placeholder: 'Chọn tháng...' }); });
+                                $watch('ListThang', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn tháng...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    Thangs = $(e.target).val() || []; 
+                                });
+                            ">
                             <template x-for="item in ListThang" :key="item.Id">
-                                <option :value="item.Id" x-text="item.Name"></option>
+                                <option :value="item.Id" x-text="item.Name" :selected="Thangs.includes(item.Id) || Thangs.includes(item.Id.toString())"></option>
                             </template>
                         </select>
                     </div>  
                     
-                    <label class="col-sm-1 col-form-label">Năm</label>
-                    <div class="col-sm-1">
-                        <select class="form-control" x-model="modelSearch.Year" name="Year">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Năm</label>
+                        <select class="form-control" name="Year"
+                            x-init="
+                                $nextTick(() => { $($el).select2(); });
+                                $watch('ListYear', () => { 
+                                    $nextTick(() => { $($el).select2(); }); 
+                                });
+                                $($el).on('change', (e) => { modelSearch.Year = $(e.target).val(); });
+                            ">
                             <template x-for="item in ListYear" :key="item.Id">
-                                <option :value="item.Id" x-text="item.Name"></option>
+                                <option :value="item.Id" x-text="item.Name" :selected="modelSearch.Year == item.Id"></option>
                             </template>
                         </select>
                     </div>                    
 
-                    <label class="col-sm-1 col-form-label">Tỉnh</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" x-model="ListCityCode" name="ListCity" @change="Changecity()" multiple>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Tỉnh</label>
+                        <select class="form-control" multiple name="ListCity"
+                            x-init="
+                                $watch('ListCity', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn tỉnh...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListCityCode = $(e.target).val() || []; 
+                                    Changecity(); 
+                                });
+                            ">
                             <template x-for="item in ListCity" :key="item.Code">
-                                <option :value="item.Code" x-text="item.Name"></option>
+                                <option :value="item.Code" x-text="item.Name" :selected="ListCityCode.includes(item.Code)"></option>
                             </template>
                         </select>
                     </div>                    
-                    <label class="col-sm-1 col-form-label">Nhóm</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" x-model="ListMaNhomTBH" name="ListMaNhomTBH" multiple>
+
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Nhóm</label>
+                        <select class="form-control" multiple name="ListMaNhomTBH"
+                            x-init="
+                                $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); });
+                                $watch('ListNhomTBH', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListMaNhomTBH = $(e.target).val() || []; 
+                                });
+                            ">
                             <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
-                                <option :value="item.manhom_tbh" x-text="item.tennhom_tbh"></option>
+                                <option :value="item.manhom_tbh" x-text="item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + (item.CityName || '')" :selected="ListMaNhomTBH.includes(item.manhom_tbh)"></option>
                             </template>
                         </select>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="button" @click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary">
+
+                    <div class="col-sm-2 mb-3 mb-sm-0 d-flex align-items-end">
+                        <button type="button" x-on:click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                             <i class="fas fa-search"></i> Tìm kiếm
                         </button>
-                        <button type="button" class="btn btn-primary" @click="ExportExcel()">
+                        <button type="button" class="btn btn-secondary" x-on:click="ExportExcel()">
                             <i class="fas fa-pencil-alt"></i> Xuất Excel
                         </button>
                     </div>

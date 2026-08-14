@@ -1,4 +1,4 @@
-﻿app.controller("UserController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("UserController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -55,14 +55,15 @@
         $scope.LoadPage(0);
     };
 
-    $scope.ViewDetail = function () {
-
-        var seletedRow = dataTableUser.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.UserIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.UserIdSeleted = 0;
+    $scope.ViewDetail = function (itemId) {
+        if (itemId) {
+            $scope.UserIdSeleted = itemId;
+        } else if (dataTableUser) {
+            var seletedRow = dataTableUser.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.UserIdSeleted = seletedRow.data()[0].ID;
+            }
         }
 
         if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
@@ -231,14 +232,15 @@
             $scope.LoadPage(0);
         });
     };
-    $scope.edit = function () {
-        var seletedRow = dataTableUser.rows({ selected: true });
-
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.UserIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.UserIdSeleted = 0;
+    $scope.edit = function (itemId) {
+        if (itemId) {
+            $scope.UserIdSeleted = itemId;
+        } else if (dataTableUser) {
+            var seletedRow = dataTableUser.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.UserIdSeleted = seletedRow.data()[0].ID;
+            }
         }
 
         if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
@@ -264,13 +266,15 @@
         }
     };
 
-    $scope.resetPassword = function () {
-        var seletedRow = dataTableUser.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.UserIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.UserIdSeleted = 0;
+    $scope.resetPassword = function (itemId) {
+        if (itemId) {
+            $scope.UserIdSeleted = itemId;
+        } else if (dataTableUser) {
+            var seletedRow = dataTableUser.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.UserIdSeleted = seletedRow.data()[0].ID;
+            }
         }
 
         if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
@@ -301,18 +305,21 @@
     };
 
     $scope.delete = function (itemId) {
-        var seletedRow = dataTableUser.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.UserIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.UserIdSeleted = 0;
+        if (itemId) {
+            $scope.UserIdSeleted = itemId;
+        } else if (dataTableUser) {
+            var seletedRow = dataTableUser.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.UserIdSeleted = seletedRow.data()[0].ID;
+            }
         }
 
         if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
-            var Username = $scope.ListUser.filter(function (item) {
+            var userItem = ($scope.ListUser || []).filter(function (item) {
                 return item.ID === $scope.UserIdSeleted;
-            })[0].UserName;
+            })[0];
+            var Username = userItem ? userItem.UserName : 'người dùng này';
 
             $ngConfirm({
                 title: 'Thông báo',
@@ -355,18 +362,21 @@
     };
 
     $scope.activeUser = function (itemId) {
-        var seletedRow = dataTableUser.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.UserIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.UserIdSeleted = 0;
+        if (itemId) {
+            $scope.UserIdSeleted = itemId;
+        } else if (dataTableUser) {
+            var seletedRow = dataTableUser.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.UserIdSeleted = seletedRow.data()[0].ID;
+            }
         }
 
         if ($scope.UserIdSeleted > 0 && $scope.UserIdSeleted != undefined) {
-            var Username = $scope.ListUser.filter(function (item) {
+            var userItem = ($scope.ListUser || []).filter(function (item) {
                 return item.ID === $scope.UserIdSeleted;
-            })[0].UserName;
+            })[0];
+            var Username = userItem ? userItem.UserName : 'người dùng này';
 
             $ngConfirm({
                 title: 'Thông báo',

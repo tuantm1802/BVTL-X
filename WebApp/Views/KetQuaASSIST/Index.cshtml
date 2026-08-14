@@ -1,4 +1,4 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaASSISTPageModel>
+@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaASSISTPageModel>
 @{
     ViewBag.Title = "Kết quả ASSIST";
 }
@@ -7,7 +7,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="KetQuaASSISTController">
+<div class="container-fluid" x-data="alpineKetQuaASSIST()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Kết quả ASSIST</h1>
@@ -140,5 +140,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/KetQuaASSISTController.js"></script>
+    <script src="~/app/Controller/AlpineKetQuaASSIST.js?v=@DateTime.Now.Ticks"></script>
 }

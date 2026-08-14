@@ -1,53 +1,83 @@
-﻿<div class="modal-header">
-    <h4 class="modal-title">Thêm mới nhóm quyền</h4>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
-    <form class=" col-md-12" id="formSubmit">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <label class="requiredInput">Mã</label>
-                            <input type="text" class="form-control" ng-model="model.ID" name="ID" required>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <label class="requiredInput">Tên quyền</label>
-                            <input type="text" class="form-control" ng-model="model.Name" name="Name" required>
-                        </div>
-                    </div>
+<style>
+    label.error, span.error, .invalid-feedback {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 0.35rem !important;
+        font-size: 0.825rem !important;
+        font-weight: 600 !important;
+        color: #e74a3b !important;
+        position: relative !important;
+        float: none !important;
+        clear: both !important;
+        background: transparent !important;
+        border: none !important;
+    }
+</style>
+
+<div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+    <div class="modal-header bg-gradient-primary text-white py-3" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+        <h5 class="modal-title font-weight-bold d-flex align-items-center">
+            <i class="fas fa-user-shield mr-2"></i> Thêm mới Nhóm quyền
+        </h5>
+        <button type="button" class="close text-white opacity-8" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-4" style="background-color: #f8f9fc;">
+        <form id="formSubmit">
+            <!-- Card 1: Thông tin chung -->
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 10px;">
+                <div class="card-header bg-white font-weight-bold text-primary border-bottom-0 py-3">
+                    <i class="fas fa-info-circle mr-1"></i> 1. Thông tin chung nhóm quyền
                 </div>
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Mô tả</label>
-                            <textarea class="form-control" ng-model="model.Descripttion" name="Descripttion"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="col-lg-12">
-                        <fieldset class="scheduler-border">
-                            <legend class="scheduler-border requiredInput" style="margin-bottom:0px;">Chức năng nhóm quyền</legend>
-                            <div style="height:250px; overflow: auto;">
-                                <div class="ztreeRoleBackground left" style="overflow-x:hidden;overflow-y:auto ;height: 100%;">
-                                    <ul id="treeRole" class="ztree"></ul>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label font-weight-bold text-dark small">Mã nhóm quyền <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-right-0"><i class="fas fa-barcode text-gray-500"></i></span>
                                 </div>
+                                <input type="text" class="form-control border-left-0 bg-light" ng-model="model.ID" name="ID" placeholder="Ví dụ: ADMIN, CBO..." required>
                             </div>
-                        </fieldset>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label font-weight-bold text-dark small">Tên quyền <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-right-0"><i class="fas fa-tag text-gray-500"></i></span>
+                                </div>
+                                <input type="text" class="form-control border-left-0 bg-light" ng-model="model.Name" name="Name" placeholder="Ví dụ: Quản trị viên hệ thống" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label font-weight-bold text-dark small">Mô tả chức năng</label>
+                            <textarea class="form-control bg-light" ng-model="model.Descripttion" name="Descripttion" rows="2" placeholder="Nhập mô tả ngắn gọn về nhóm quyền này..."></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" ng-click="submit()">Lưu</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Hủy</button>
-</div>
 
+            <!-- Card 2: Chức năng nhóm quyền (zTree) -->
+            <div class="card border-0 shadow-sm" style="border-radius: 10px;">
+                <div class="card-header bg-white font-weight-bold text-primary border-bottom-0 py-3 d-flex align-items-center justify-content-between">
+                    <span><i class="fas fa-sitemap mr-1"></i> 2. Phân quyền chức năng hệ thống</span>
+                    <span class="badge badge-info px-2 py-1 small">Chọn chức năng cho phép truy cập</span>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="p-3 bg-light rounded border" style="max-height: 280px; overflow-y: auto;">
+                        <ul id="treeRole" class="ztree"></ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer bg-white py-3 border-top-0">
+        <button type="button" class="btn btn-secondary px-4 font-weight-bold" data-dismiss="modal" ng-click="cancel()">
+            <i class="fas fa-times mr-1"></i> Hủy bỏ
+        </button>
+        <button type="button" class="btn btn-primary px-4 font-weight-bold shadow-sm" ng-click="submit()">
+            <i class="fas fa-save mr-1"></i> Lưu thông tin
+        </button>
+    </div>
+</div>

@@ -1,9 +1,9 @@
-﻿@model Model.ModelExtend.Customer
+@model Model.ModelExtend.Customer
 
 @{
     ViewBag.Title = "Chi tiết Khách hàng";
 }
-<div class="container-fluid" ng-controller="CustomerDetailsController">
+<div class="container-fluid" ng-controller="CustomerDetailsController" ng-init="init('@Model.Id', '@Model.RecordId')">
 
     <h2>Chi tiết khách hàng</h2>
     <ul class="nav nav-tabs">
@@ -325,5 +325,5 @@
 </div>
 
         @section Scripts{
-            <script src="~/app/Controller/KhachHangController.js"></script>
+            <script src="~/app/Controller/KhachHangController.js?v=2"></script>
         }

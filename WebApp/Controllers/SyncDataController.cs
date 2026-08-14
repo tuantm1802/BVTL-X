@@ -38,11 +38,11 @@ namespace WebApp.Controllers
         readonly ISysLogDA _sysLogDA;
         BaseController _helperController = new BaseController();
 
-        public SyncDataController(ISyncDataDA syncDataDA, IInsertDataDA insertDataDA, ISysLogDA sysLogDA)
+        public SyncDataController(ISyncDataDA syncDataDA = null, IInsertDataDA insertDataDA = null, ISysLogDA sysLogDA = null)
         {
-            _syncDataDA = syncDataDA;
-            _insertDataDA = insertDataDA;
-            _sysLogDA = sysLogDA;
+            _syncDataDA = syncDataDA ?? new SyncDataDA();
+            _insertDataDA = insertDataDA ?? new Data.API.InsertDataDA();
+            _sysLogDA = sysLogDA ?? new SysLogDA();
         }
 
         // GET: SyncData
@@ -176,19 +176,53 @@ namespace WebApp.Controllers
         [HttpPost]
         public JsonResult GetEndTimeSync(string apiCode)
         {
-            var endTimeSync = db.BVTL_API
-                .Where(x => x.Api_Code == apiCode)
-                .Select(x => x.End_Time_Sync)
-                .FirstOrDefault();
+            try
+            {
+                using (var dbContext = new BVTL_REPORTINGEntities())
+                {
+                    var endTimeSync = dbContext.BVTL_API
+                        .Where(x => x.Api_Code == apiCode)
+                        .Select(x => x.End_Time_Sync)
+                        .FirstOrDefault();
 
-            if (endTimeSync.HasValue)
-            {
-                return Json(new { success = true, endTimeSync = endTimeSync.Value.ToString("dd/MM/yyyy HH:mm") }, JsonRequestBehavior.AllowGet);
+                    if (endTimeSync.HasValue)
+                    {
+                        return Json(new { success = true, endTimeSync = endTimeSync.Value.ToString("dd/MM/yyyy HH:mm") }, JsonRequestBehavior.AllowGet);
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "Không tìm thấy thông tin" }, JsonRequestBehavior.AllowGet);
+                log.Error("GetEndTimeSync EF Error: " + ex.Message, ex);
             }
+
+            // Fallback via ADO.NET DatabaseSql
+            try
+            {
+                DatabaseSql dbSql = new DatabaseSql();
+                string sql = "SELECT TOP 1 End_Time_Sync FROM BVTL_API WHERE Api_Code = @Api_Code";
+                var parameters = new List<System.Data.SqlClient.SqlParameter>
+                {
+                    new System.Data.SqlClient.SqlParameter("@Api_Code", (object)apiCode ?? DBNull.Value)
+                };
+                var dt = dbSql.ExecuteTable(sql, parameters);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    var row = dt.Rows[0];
+                    if (row["End_Time_Sync"] != DBNull.Value && row["End_Time_Sync"] != null)
+                    {
+                        DateTime dtValue = Convert.ToDateTime(row["End_Time_Sync"]);
+                        return Json(new { success = true, endTimeSync = dtValue.ToString("dd/MM/yyyy HH:mm") }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception ex2)
+            {
+                log.Error("GetEndTimeSync ADO Error: " + ex2.Message, ex2);
+            }
+
+            return Json(new { success = false, message = "Không tìm thấy thông tin đồng bộ" }, JsonRequestBehavior.AllowGet);
         }
 
 

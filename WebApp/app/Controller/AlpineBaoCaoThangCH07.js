@@ -1,179 +1,172 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.data('alpineBaoCaoThangCH07', () => ({
-        modelSearch: {
-            totalItems: 0,
-            currentPage: 1,
-            maxSize: 5,
-            pageSize: 10,
-            SortColumn: "ParamCode DESC",
-            Year: 0,
-            Months: '',
-            CityCodes: '',
-            MaNhomTBH: ''
-        },
-        ListYear: [],
-        ListCity: [],
-        ListThang: [],
-        Thangs: [],
-        ListCityCode: [],
-        ListMaNhomTBH: [],
-        ListNhomTBH: [],
-        ListDuAn: [],
-        ListData: [],
-        
-        RoleBtnUpdate: false,
-        RoleBtnSearch: false,
-
-        async init() {
-            const date = new Date();
-            for (let i = date.getFullYear() - 5; i < date.getFullYear() + 5; i++) {
-                this.ListYear.push({ Id: i, Name: i + '' });
-            }
-            for (let i = 1; i < 13; i++) {
-                this.ListThang.push({ Id: i, Name: i + '' });
-            }
-            this.modelSearch.Year = date.getFullYear();
-
-            await this.GetBottomAction();
-            await this.Changecity();
+document.addEventListener('alpine:init', function () {
+    Alpine.data('alpineBaoCaoThangCH07', function () {
+        return {
+            modelSearch: {
+                totalItems: 0,
+                currentPage: 1,
+                maxSize: 5,
+                pageSize: 10,
+                SortColumn: "ParamCode DESC",
+                Year: new Date().getFullYear(),
+                Months: '',
+                CityCodes: '',
+                MaNhomTBH: '',
+                MaDuAn: 'CH07'
+            },
+            ListYear: [],
+            ListCity: [],
+            ListThang: [],
+            Thangs: [],
+            ListCityCode: [],
+            ListMaNhomTBH: [],
+            ListNhomTBH: [],
+            ListDuAn: [],
+            ListData: [],
             
-            // Allow select2 jQuery bindings to initialize
-            this.$nextTick(() => {
-                // Initialize manual jQuery listeners if needed
-            });
-            
-            this.LoadPage(1);
-        },
+            RoleBtnUpdate: false,
+            RoleBtnSearch: false,
 
-        formatNumber(value) {
-            if (value === null || value === undefined || value === "") return '';
-            return Number(value).toLocaleString('en-US');
-        },
+            init: function () {
+                var self = this;
+                var date = new Date();
+                self.ListYear = [];
+                for (var i = date.getFullYear() - 5; i <= date.getFullYear() + 5; i++) {
+                    self.ListYear.push({ Id: i, Name: i.toString() });
+                }
+                self.ListThang = [];
+                for (var j = 1; j <= 12; j++) {
+                    self.ListThang.push({ Id: j, Name: j.toString() });
+                }
+                self.modelSearch.Year = date.getFullYear();
 
-        async GetBottomAction() {
-            try {
-                const res = await fetch('/BaoCaoThangCH07/GetBottomAction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+                if (!self.Thangs || self.Thangs.length === 0) {
+                    self.Thangs = [date.getMonth() + 1];
+                }
+
+                self.GetBottomAction(function () {
+                    self.Changecity(function () {
+                        self.LoadPage(1);
+                    });
+                });
+            },
+
+            formatNumber: function (value) {
+                if (value === null || value === undefined || value === "") return '';
+                return Number(value).toLocaleString('en-US');
+            },
+
+            GetBottomAction: function (callback) {
+                var self = this;
+                $.ajax({
+                    type: 'POST',
+                    url: '/BaoCaoThangCH07/GetBottomAction',
+                    contentType: 'application/json',
+                    data: '{}',
+                    success: function (response) {
+                        if (response && response.Buttoms) {
+                            self.RoleBtnUpdate = response.Buttoms.indexOf('btnUpdate') !== -1;
+                            self.RoleBtnSearch = response.Buttoms.indexOf('btnSearch') !== -1;
+                        }
+                        self.ListCity = (response && response.Citys) ? response.Citys : [];
+                        self.ListDuAn = (response && response.DuAns) ? response.DuAns : [];
+                        if (typeof callback === 'function') callback();
+                    },
+                    error: function (err) {
+                        console.error(err);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-                const response = await res.json();
+            },
 
-                if (response.Buttoms != null) {
-                    response.Buttoms.forEach(item => {
-                        if (item === 'btnUpdate') this.RoleBtnUpdate = true;
-                        if (item === 'btnSearch') this.RoleBtnSearch = true;
-                    });
+            LoadPage: function (genTable) {
+                var self = this;
+                if (!self.modelSearch.Year || self.modelSearch.Year == 0) {
+                    if (window.toastr) toastr.error("Vui lòng chọn năm!");
+                    return;
                 }
-                this.ListCity = response.Citys || [];
-                this.ListDuAn = response.DuAns || [];
-                if (!this.modelSearch.MaDuAn && this.ListDuAn.length > 0) {
-                    this.modelSearch.MaDuAn = this.ListDuAn[0].maduan;
+
+                if (self.Thangs && self.Thangs.length > 0) {
+                    self.modelSearch.Months = self.Thangs.join(',');
+                } else {
+                    if (window.toastr) toastr.error("Vui lòng chọn tháng!");
+                    return;
                 }
-            } catch (err) {
-                console.error(err);
-            }
-        },
+                
+                self.modelSearch.CityCodes = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.modelSearch.MaNhomTBH = (self.ListMaNhomTBH && self.ListMaNhomTBH.length > 0) ? self.ListMaNhomTBH.join(',') : '';
 
-        LoadPage(genTable) {
-            if (!this.modelSearch.Year || this.modelSearch.Year == 0) {
-                if(window.toastr) toastr.error("Vui lòng chọn năm!");
-                return;
-            }
-
-            if (this.Thangs && this.Thangs.length > 0) {
-                this.modelSearch.Months = this.Thangs.join(',');
-            } else {
-                if(window.toastr) toastr.error("Vui lòng chọn tháng!");
-                return;
-            }
-            
-            if (this.ListCityCode && this.ListCityCode.length > 0) {
-                this.modelSearch.CityCodes = this.ListCityCode.join(',');
-            } else {
-                this.modelSearch.CityCodes = '';
-            }
-
-            if (this.ListMaNhomTBH && this.ListMaNhomTBH.length > 0) {
-                this.modelSearch.MaNhomTBH = this.ListMaNhomTBH.join(',');
-            } else {
-                this.modelSearch.MaNhomTBH = '';
-            }
-
-            if(window.showToast) showToast();
-            this.ListData = [];
-            
-            $.ajax({
-                type: 'post',
-                url: '/BaoCaoThangCH07/SearchData',
-                cache: false,
-                data: this.modelSearch,
-                success: (response) => {
-                    this.ListData = response.data;
-                    if(window.hideLoading) hideLoading();
-                },
-                error: () => {
-                    if(window.hideLoading) hideLoading();
-                }
-            });
-        },
-
-        Refesh() {
-            this.LoadPage(0);
-        },
-
-        ExportExcel() {
-            if (!this.modelSearch.Year || this.modelSearch.Year == 0) {
-                if(window.toastr) toastr.error("Vui lòng chọn năm!");
-                return;
-            }
-
-            if (this.Thangs && this.Thangs.length > 0) {
-                this.modelSearch.Months = this.Thangs.join(',');
-            } else {
-                if(window.toastr) toastr.error("Vui lòng chọn tháng!");
-                return;
-            }
-
-            this.modelSearch.CityCodes = (this.ListCityCode && this.ListCityCode.length > 0) ? this.ListCityCode.join(',') : '';
-            this.modelSearch.MaNhomTBH = (this.ListMaNhomTBH && this.ListMaNhomTBH.length > 0) ? this.ListMaNhomTBH.join(',') : '';
-
-            const params = new URLSearchParams({
-                Year: this.modelSearch.Year || '',
-                Months: this.modelSearch.Months || '',
-                CityCodes: this.modelSearch.CityCodes || '',
-                maNhomTBHs: this.modelSearch.MaNhomTBH || '',
-                maDuAn: this.modelSearch.MaDuAn || ''
-            });
-
-            window.location.href = '/BaoCaoThangCH07/ExportData?' + params.toString();
-        },
-
-        Changecity() {
-            let cityCodesStr = '';
-            if (this.ListCityCode && this.ListCityCode.length > 0) {
-                cityCodesStr = this.ListCityCode.join(',');
-            }
-            this.ListNhomTBH = [];
-            this.ListMaNhomTBH = [];
-
-            return new Promise((resolve) => {
+                if (window.showToast) showToast();
+                self.ListData = [];
+                
                 $.ajax({
-                    type: 'post',
+                    type: 'POST',
+                    url: '/BaoCaoThangCH07/SearchData',
+                    cache: false,
+                    data: self.modelSearch,
+                    success: function (response) {
+                        self.ListData = (response && response.data) ? response.data : [];
+                        if (window.hideLoading) hideLoading();
+                    },
+                    error: function (err) {
+                        if (window.hideLoading) hideLoading();
+                        console.error(err);
+                    }
+                });
+            },
+
+            Refesh: function () {
+                this.LoadPage(0);
+            },
+
+            ExportExcel: function () {
+                var self = this;
+                if (!self.modelSearch.Year || self.modelSearch.Year == 0) {
+                    if (window.toastr) toastr.error("Vui lòng chọn năm!");
+                    return;
+                }
+
+                if (self.Thangs && self.Thangs.length > 0) {
+                    self.modelSearch.Months = self.Thangs.join(',');
+                } else {
+                    if (window.toastr) toastr.error("Vui lòng chọn tháng!");
+                    return;
+                }
+
+                self.modelSearch.CityCodes = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.modelSearch.MaNhomTBH = (self.ListMaNhomTBH && self.ListMaNhomTBH.length > 0) ? self.ListMaNhomTBH.join(',') : '';
+
+                var params = new URLSearchParams({
+                    Year: self.modelSearch.Year || '',
+                    Months: self.modelSearch.Months || '',
+                    CityCodes: self.modelSearch.CityCodes || '',
+                    maNhomTBHs: self.modelSearch.MaNhomTBH || '',
+                    maDuAn: self.modelSearch.MaDuAn || 'CH07'
+                });
+
+                window.location.href = '/BaoCaoThangCH07/ExportData?' + params.toString();
+            },
+
+            Changecity: function (callback) {
+                var self = this;
+                var cityCodesStr = (self.ListCityCode && self.ListCityCode.length > 0) ? self.ListCityCode.join(',') : '';
+                self.ListNhomTBH = [];
+                self.ListMaNhomTBH = [];
+
+                $.ajax({
+                    type: 'POST',
                     url: '/BaoCaoThangCH07/GetNhomTBHByCityCodes',
                     cache: false,
                     data: { CityCodes: cityCodesStr },
-                    success: (response) => {
-                        this.ListNhomTBH = response.NhomTBHs || [];
-                        resolve(response);
+                    success: function (response) {
+                        self.ListNhomTBH = (response && response.NhomTBHs) ? response.NhomTBHs : [];
+                        if (typeof callback === 'function') callback();
                     },
-                    error: (xhr, status, error) => {
-                        console.error(error || status);
-                        resolve(null);
+                    error: function (err) {
+                        console.error(err);
+                        if (typeof callback === 'function') callback();
                     }
                 });
-            });
-        }
-    }));
+            }
+        };
+    });
 });

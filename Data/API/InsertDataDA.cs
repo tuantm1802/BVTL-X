@@ -145,6 +145,27 @@ namespace Data.API
                 }
                 if (!string.IsNullOrEmpty(pkColumn)) mergeKeyColumns.Add(pkColumn);
 
+                // Khởi tạo danh sách các cột bị bỏ qua (không cập nhật) dựa theo tên bảng
+                var ignoredUpdateColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                if (tableName.Equals("CD43_KHACH_HANG_THONG_TIN_CO_BAN", StringComparison.OrdinalIgnoreCase))
+                {
+                    ignoredUpdateColumns.Add("sng_lc_nc_tiu_complete");
+                    ignoredUpdateColumns.Add("sng_lc_hiv_complete");
+                    ignoredUpdateColumns.Add("thng_tin_c_bn_v_hnh_vi_nguy_c_assist_qst_ace_complete");
+                    ignoredUpdateColumns.Add("chuyn_gi_complete");
+                    ignoredUpdateColumns.Add("phiu_t_vn_complete");
+                    ignoredUpdateColumns.Add("sinh_hot_nhm_complete");
+                    ignoredUpdateColumns.Add("nh_gi_mc_hi_lng_ca_kh_complete");
+                }
+
+                // Bổ sung các cột ignored này vào tập hợp mergeKeyColumns
+                // để chúng KHÔNG được sinh ra trong câu UPDATE SET
+                foreach (var col in ignoredUpdateColumns)
+                {
+                    mergeKeyColumns.Add(col);
+                }
+
                 string updateSetClause = string.Join(", ",
                     columns.Where(c => !mergeKeyColumns.Contains(c))
                            .Select(c => $"Target.[{c}] = Source.[{c}]"));

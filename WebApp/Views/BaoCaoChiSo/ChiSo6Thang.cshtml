@@ -1,8 +1,8 @@
-﻿@{
-    ViewBag.Title = "Báo cáo Chỉ số";
+@{
+    ViewBag.Title = "Báo cáo Chỉ số 6 Tháng";
 }
 
-<div class="container-fluid" ng-controller="BaoCaoChiSo6ThangController">
+<div class="container-fluid" x-data="alpineBaoCaoChiSo6Thang()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Báo cáo Chỉ số 6 Tháng</h1>
@@ -14,44 +14,82 @@
         <div class="card-header py-3">
             <div class="card-tools">
                 <div class="form-group row">
-                    <label class="col-sm-1 col-form-label">Kỳ báo cáo</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" ng-model="SauThang" name="SauThang" ng-options="item.Id as item.Name for item in List6Thang"></select>
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Kỳ báo cáo</label>
+                        <select class="form-control" name="SauThang"
+                            x-init="
+                                $nextTick(() => { $($el).select2(); });
+                                $($el).on('change', (e) => { SauThang = $(e.target).val(); });
+                            ">
+                            <template x-for="item in List6Thang" :key="item.Id">
+                                <option :value="item.Id" x-text="item.Name" :selected="SauThang == item.Id"></option>
+                            </template>
+                        </select>
                     </div>
 
-                    <label class="col-sm-1 col-form-label">Năm</label>
-                    <div class="col-sm-1">
-                        <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear"></select>
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Năm</label>
+                        <select class="form-control" name="Year"
+                            x-init="
+                                $nextTick(() => { $($el).select2(); });
+                                $watch('ListYear', () => { 
+                                    $nextTick(() => { $($el).select2(); }); 
+                                });
+                                $($el).on('change', (e) => { modelSearch.Year = $(e.target).val(); });
+                            ">
+                            <template x-for="item in ListYear" :key="item.Id">
+                                <option :value="item.Id" x-text="item.Name" :selected="modelSearch.Year == item.Id"></option>
+                            </template>
+                        </select>
                     </div>
 
-                    @*<label class="col-sm-2 col-form-label">Dự án</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.maduan as item.tenduan for item in ListDuAn"></select>
-                    </div>*@
-                    
-                @*</div>
-                <div class="form-group row">*@
-                    <label class="col-sm-1 col-form-label">Tỉnh</label>
-
-                    <div class="col-sm-1">
-                        <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity"></select>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Tỉnh</label>
+                        <select class="form-control" multiple name="ListCity"
+                            x-init="
+                                $watch('ListCity', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn tỉnh...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListCityCode = $(e.target).val() || []; 
+                                    Changecity(); 
+                                });
+                            ">
+                            <template x-for="item in ListCity" :key="item.Code">
+                                <option :value="item.Code" x-text="item.Name" :selected="ListCityCode.includes(item.Code)"></option>
+                            </template>
+                        </select>
                     </div>
-                    <label class="col-sm-1 col-form-label">Nhóm</label>
 
-                    <div class="col-sm-2">
-                        <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Nhóm</label>
+                        <select class="form-control" multiple name="ListMaNhomTBH"
+                            x-init="
+                                $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); });
+                                $watch('ListNhomTBH', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListMaNhomTBH = $(e.target).val() || []; 
+                                });
+                            ">
+                            <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
+                                <option :value="item.manhom_tbh" x-text="item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + (item.CityName || '')" :selected="ListMaNhomTBH.includes(item.manhom_tbh)"></option>
+                            </template>
+                        </select>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+
+                    <div class="col-sm-2 mb-3 mb-sm-0 d-flex align-items-end">
+                        <button type="button" x-on:click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                             <i class="fas fa-search"></i> Tìm kiếm
                         </button>
-                        <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
+                        <button type="button" class="btn btn-secondary" x-on:click="ExportExcel()">
                             <i class="fas fa-pencil-alt"></i> Xuất Excel
                         </button>
                     </div>
                 </div>
-                </div>
             </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
@@ -63,32 +101,29 @@
                             <th style="width: 8%; ">Disaggregated data 1 (Women)</th>
                             <th style="width: 8%; ">Disaggregated data 2 (men)</th>
                             <th style="width: 8%; ">Disaggregated data 3 (TG: Transgender)</th>
-
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="item in ListData">
-                            <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
-                            <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
-                                <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
-                                <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
-                            </td>
-                            <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
-
-                        </tr>
+                        <template x-for="(item, index) in ListData" :key="index">
+                            <tr>
+                                <td class="text-center" x-show="item.IsShow == 'Y'" x-text="item.STT"></td>
+                                <td class="text-left" x-show="!(item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null)" :colspan="item.Colpan" :rowspan="item.Rowpan">
+                                    <span x-show="item.BoldText == 'N'" x-text="item.ThongTinBC"></span>
+                                    <b x-show="item.BoldText == 'Y'" x-text="item.ThongTinBC"></b>
+                                </td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="formatNumber(item.Tong)"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="formatNumber(item.Nam)"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="formatNumber(item.Nu)"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="formatNumber(item.ChuyenGioi)"></td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
-
-                
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/BaoCaoChiSo6ThangController.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoChiSo6Thang.js?v=@DateTime.Now.Ticks"></script>
 }

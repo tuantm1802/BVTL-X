@@ -455,8 +455,12 @@ namespace Data.Admin
             try
             {
                 var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
-                data.IsActive = false;
-                db.SaveChanges();
+                if (data != null)
+                {
+                    data.Status = false;
+                    data.IsActive = true;
+                    db.SaveChanges();
+                }
                 obj.Error = false;
                 obj.Title = "Bỏ hiệu lực thành công!";
                 return obj;
@@ -476,8 +480,12 @@ namespace Data.Admin
             try
             {
                 var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
-                data.IsActive = true;
-                db.SaveChanges();
+                if (data != null)
+                {
+                    data.Status = true;
+                    data.IsActive = true;
+                    db.SaveChanges();
+                }
                 obj.Error = false;
                 obj.Title = "Cập nhật hiệu lực thành công!";
                 return obj;

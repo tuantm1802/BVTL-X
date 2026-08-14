@@ -2,7 +2,7 @@
     ViewBag.Title = "Báo cáo tuần";
 }
 
-<div class="container-fluid" ng-controller="BaoCaoTuanController">
+<div class="container-fluid" x-data="baoCaoTuanComponent()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Báo cáo tuần</h1>
@@ -16,29 +16,69 @@
                 <div class="form-group row">
                     <label class="col-sm-1 col-form-label">Tuần</label>
                     <div class="col-sm-1">
-                        <select class="form-control" ng-model="Week" name="Week" ng-options="item.Id as item.Name for item in ListWeek"></select>
+                        <select class="form-control" name="Week" x-model="Week">
+                            <template x-for="item in ListWeek" :key="item.Id">
+                                <option :value="item.Id" x-text="item.Name"></option>
+                            </template>
+                        </select>
                     </div>
 
                     <label class="col-sm-1 col-form-label">Năm</label>
                     <div class="col-sm-1">
-                        <select class="form-control" ui-select2 ng-model="modelSearch.Year" name="Year" ng-options="item.Id as item.Name for item in ListYear"></select>
+                        <select class="form-control" name="Year"
+                            x-init="
+                                $watch('ListYear', () => { 
+                                    $nextTick(() => { $($el).select2(); }); 
+                                });
+                                $($el).on('change', (e) => { modelSearch.Year = $(e.target).val(); });
+                            ">
+                            <template x-for="item in ListYear" :key="item.Id">
+                                <option :value="item.Id" x-text="item.Name" :selected="modelSearch.Year == item.Id"></option>
+                            </template>
+                        </select>
                     </div>
 
                     <label class="col-sm-1 col-form-label">Tỉnh</label>
                     <div class="col-sm-2">
-                        <select class="form-control" ui-select2 multiple ng-model="ListCityCode" name="ListCity" ng-change="Changecity()" ng-options="item.Code as item.Name for item in ListCity"></select>
+                        <select class="form-control" multiple name="ListCity"
+                            x-init="
+                                $watch('ListCity', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn tỉnh...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListCityCode = $(e.target).val() || []; 
+                                    changeCity(); 
+                                });
+                            ">
+                            <template x-for="item in ListCity" :key="item.Code">
+                                <option :value="item.Code" x-text="item.Name" :selected="ListCityCode.includes(item.Code)"></option>
+                            </template>
+                        </select>
                     </div>
                     
                     <label class="col-sm-1 col-form-label">Nhóm</label>
                     <div class="col-sm-2">
-                        <select class="form-control" ui-select2 multiple ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as item.tennhom_tbh for item in ListNhomTBH"></select>
+                        <select class="form-control" multiple name="ListMaNhomTBH"
+                            x-init="
+                                $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); });
+                                $watch('ListNhomTBH', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListMaNhomTBH = $(e.target).val() || []; 
+                                });
+                            ">
+                            <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
+                                <option :value="item.manhom_tbh" x-text="item.tennhom_tbh" :selected="ListMaNhomTBH.includes(item.manhom_tbh)"></option>
+                            </template>
+                        </select>
                     </div>
 
                     <div class="col-sm-2">
-                        <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
+                        <button type="button" x-on:click="loadPage(0)" x-show="RoleBtnSearch" class="btn btn-primary" style="display: none;">
                             <i class="fas fa-search"></i> Tìm kiếm
                         </button>
-                        <button type="button" class="btn btn-primary" ng-click="ExportExcel()">
+                        <button type="button" class="btn btn-primary" x-on:click="exportExcel()">
                             <i class="fas fa-pencil-alt"></i> Xuất Excel
                         </button>
                     </div>
@@ -47,12 +87,12 @@
         </div>
         <div class="card-body">
             <div class="report-tabs">
-                <div class="report-tab-item" ng-class="{'active': activeTab == 'table'}" ng-click="setTab('table')">Bảng số liệu</div>
-                <div class="report-tab-item" ng-class="{'active': activeTab == 'chart'}" ng-click="setTab('chart')">Biểu đồ trực quan</div>
+                <div class="report-tab-item" :class="{'active': activeTab == 'table'}" x-on:click="setTab('table')">Bảng số liệu</div>
+                <div class="report-tab-item" :class="{'active': activeTab == 'chart'}" x-on:click="setTab('chart')">Biểu đồ trực quan</div>
             </div>
 
             <!-- Table View -->
-            <div ng-show="activeTab == 'table'" class="table-responsive">
+            <div x-show="activeTab == 'table'" class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -68,27 +108,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="item in ListData">
-                            <td class="text-center" ng-show="item.IsShow == 'Y'">{{item.STT}}</td>
-                            <td class="text-left" ng-hide="item.IsShow == 'N' || item.ThongTinBC == '' || item.ThongTinBC == null" colspan="{{item.Colpan}}" rowspan="{{item.Rowpan}}">
-                                <span ng-show="item.BoldText == 'N'">{{item.ThongTinBC}}</span>
-                                <b ng-show="item.BoldText == 'Y'">{{item.ThongTinBC}}</b>
-                            </td>
-                            <td class="text-left" ng-hide="item.Colpan >1 || item.IsShow  == 'N'">{{item.ThongTinBC_Them }}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Tong | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.MSM | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.PUD | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.SW | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nam | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.Nu | number:0}}</td>
-                            <td class="text-right" ng-show="item.IsShow  == 'Y'">{{item.ChuyenGioi | number:0}}</td>
-                        </tr>
+                        <template x-for="item in ListData">
+                            <tr>
+                                <td class="text-center" x-show="item.IsShow == 'Y'" x-text="item.STT"></td>
+                                
+                                <td class="text-left" x-show="item.IsShow != 'N' && item.ThongTinBC != '' && item.ThongTinBC != null" :colspan="item.Colpan" :rowspan="item.Rowpan">
+                                    <span x-show="item.BoldText == 'N'" x-text="item.ThongTinBC"></span>
+                                    <b x-show="item.BoldText == 'Y'" x-text="item.ThongTinBC"></b>
+                                </td>
+                                
+                                <td class="text-left" x-show="item.Colpan <= 1 && item.IsShow != 'N'" x-text="item.ThongTinBC_Them"></td>
+                                
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.Tong ? item.Tong.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.MSM ? item.MSM.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.PUD ? item.PUD.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.SW ? item.SW.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.Nam ? item.Nam.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.Nu ? item.Nu.toLocaleString() : 0"></td>
+                                <td class="text-right" x-show="item.IsShow == 'Y'" x-text="item.ChuyenGioi ? item.ChuyenGioi.toLocaleString() : 0"></td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>
 
             <!-- Chart View -->
-            <div ng-show="activeTab == 'chart'" class="py-4">
+            <div x-show="activeTab == 'chart'" class="py-4" style="display: none;">
                 <div class="chart-container">
                     <canvas id="weeklyReportChart"></canvas>
                 </div>
@@ -99,5 +144,5 @@
 
 @section Scripts{
     <script src="~/Scripts/chart.js"></script>
-    <script src="~/app/Controller/BaoCaoTuanController.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoTuan.js?v=@DateTime.Now.Ticks"></script>
 }

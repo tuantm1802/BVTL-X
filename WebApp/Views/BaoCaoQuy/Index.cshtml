@@ -12,67 +12,84 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-                <div class="card-tools">
-                    <div class="form-group row">
-                        <label class="col-sm-1 col-form-label">Quý</label>
-                        <div class="col-sm-1">
-                            <select class="form-control" x-model="Quy" name="Quy">
-                                <option value="I">I</option>
-                                <option value="II">II</option>
-                                <option value="III">III</option>
-                                <option value="IV">IV</option>
-                            </select>
-                        </div>
-
-                        <label class="col-sm-1 col-form-label">Năm</label>
-                        <div class="col-sm-1">
-                            <select class="form-control" x-model="modelSearch.Year" name="Year">
-                                <template x-for="item in ListYear" :key="item.Id">
-                                    <option :value="item.Id" x-text="item.Name"></option>
-                                </template>
-                            </select>
-                        </div>
-
-                        @*<label class="col-sm-2 col-form-label">Dự án</label>
-                        <div class="col-sm-2">
-                            <select class="form-control" x-model="modelSearch.MaDuAn" name="MaDuAn">
-                                <template x-for="item in ListDuAn" :key="item.maduan">
-                                    <option :value="item.maduan" x-text="item.tenduan"></option>
-                                </template>
-                            </select>
-                        </div>*@
-                        
-                    @*</div>
-                    <div class="form-group row">*@
-                        <label class="col-sm-1 col-form-label">Tỉnh</label>
-
-                        <div class="col-sm-2">
-                            <select class="form-control" x-model="ListCityCode" name="ListCity" x-on:change="Changecity()" multiple>
-                                <template x-for="item in ListCity" :key="item.Code">
-                                    <option :value="item.Code" x-text="item.Name"></option>
-                                </template>
-                            </select>
-                        </div>
-                        <label class="col-sm-1 col-form-label">Nhóm</label>
-
-                        <div class="col-sm-2">
-                            <select class="form-control" x-model="ListMaNhomTBH" name="ListMaNhomTBH" multiple>
-                                <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
-                                    <option :value="item.manhom_tbh" x-text="item.tennhom_tbh"></option>
-                                </template>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" x-on:click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Tìm kiếm
-                            </button>
-                            <button type="button" class="btn btn-primary" x-on:click="ExportExcel()">
-                                <i class="fas fa-pencil-alt"></i> Xuất Excel
-                            </button>
-                        </div>
+            <div class="card-tools">
+                <div class="form-group row">
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Quý</label>
+                        <select class="form-control" name="Quy"
+                            x-init="
+                                $nextTick(() => { $($el).select2(); });
+                                $($el).on('change', (e) => { Quy = $(e.target).val(); });
+                            ">
+                            <option value="I" :selected="Quy == 'I'">I</option>
+                            <option value="II" :selected="Quy == 'II'">II</option>
+                            <option value="III" :selected="Quy == 'III'">III</option>
+                            <option value="IV" :selected="Quy == 'IV'">IV</option>
+                        </select>
                     </div>
+
+                    <div class="col-sm-2 mb-3 mb-sm-0">
+                        <label class="form-label">Năm</label>
+                        <select class="form-control" name="Year"
+                            x-init="
+                                $nextTick(() => { $($el).select2(); });
+                                $watch('ListYear', () => { 
+                                    $nextTick(() => { $($el).select2(); }); 
+                                });
+                                $($el).on('change', (e) => { modelSearch.Year = $(e.target).val(); });
+                            ">
+                            <template x-for="item in ListYear" :key="item.Id">
+                                <option :value="item.Id" x-text="item.Name" :selected="modelSearch.Year == item.Id"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Tỉnh</label>
+                        <select class="form-control" multiple name="ListCity"
+                            x-init="
+                                $watch('ListCity', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn tỉnh...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListCityCode = $(e.target).val() || []; 
+                                    Changecity(); 
+                                });
+                            ">
+                            <template x-for="item in ListCity" :key="item.Code">
+                                <option :value="item.Code" x-text="item.Name" :selected="ListCityCode.includes(item.Code)"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <label class="form-label">Nhóm</label>
+                        <select class="form-control" multiple name="ListMaNhomTBH"
+                            x-init="
+                                $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); });
+                                $watch('ListNhomTBH', () => { 
+                                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm...' }); }); 
+                                });
+                                $($el).on('change', (e) => { 
+                                    ListMaNhomTBH = $(e.target).val() || []; 
+                                });
+                            ">
+                            <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
+                                <option :value="item.manhom_tbh" x-text="item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + (item.CityName || '')" :selected="ListMaNhomTBH.includes(item.manhom_tbh)"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2 mb-3 mb-sm-0 d-flex align-items-end">
+                        <button type="button" x-on:click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                        <button type="button" class="btn btn-secondary" x-on:click="ExportExcel()">
+                            <i class="fas fa-pencil-alt"></i> Xuất Excel
+                        </button>
                 </div>
             </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered"  width="100%" cellspacing="0">

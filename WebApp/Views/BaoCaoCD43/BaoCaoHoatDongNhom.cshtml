@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewBag.Title = "TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU THEO NHÓM";
 }
 
-<div class="container-fluid" ng-controller="BaoCaoCD43Controller">
+<div class="container-fluid" x-data="alpineBaoCaoTongHopQuyCD43">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">TỔNG HỢP BÁO CÁO THEO CHỈ TIÊU THEO NHÓM</h1>
@@ -12,7 +12,7 @@
 
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label>Từ quý</label>
-            <select class="form-control" ng-model="TuQuy" name="TuQuy">
+            <select class="form-control" x-model="TuQuy" name="TuQuy">
                 <option value="I">I</option>
                 <option value="II">II</option>
                 <option value="III">III</option>
@@ -20,13 +20,22 @@
             </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
-            <label>năm</label>
-            <select class="form-control" ui-select2 ng-model="modelSearch.TuNam" name="TuNam" ng-options="item.Id as item.Name for item in ListYear">
+            <label>Năm</label>
+            <select class="form-control" name="TuNam"
+                x-init="
+                    $watch('ListYear', () => { 
+                        $nextTick(() => { $($el).select2(); }); 
+                    });
+                    $($el).on('change', (e) => { modelSearch.TuNam = $(e.target).val(); });
+                ">
+                <template x-for="item in ListYear" :key="item.Id">
+                    <option :value="item.Id" x-text="item.Name" :selected="modelSearch.TuNam == item.Id"></option>
+                </template>
             </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label>Đến quý</label>
-            <select class="form-control" ng-model="DenQuy" name="DenQuy">
+            <select class="form-control" x-model="DenQuy" name="DenQuy">
                 <option value="I">I</option>
                 <option value="II">II</option>
                 <option value="III">III</option>
@@ -34,8 +43,17 @@
             </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0">
-            <label>năm</label>
-            <select class="form-control" ui-select2 ng-model="modelSearch.DenNam" name="DenNam" ng-options="item.Id as item.Name for item in ListYear">
+            <label>Năm</label>
+            <select class="form-control" name="DenNam"
+                x-init="
+                    $watch('ListYear', () => { 
+                        $nextTick(() => { $($el).select2(); }); 
+                    });
+                    $($el).on('change', (e) => { modelSearch.DenNam = $(e.target).val(); });
+                ">
+                <template x-for="item in ListYear" :key="item.Id">
+                    <option :value="item.Id" x-text="item.Name" :selected="modelSearch.DenNam == item.Id"></option>
+                </template>
             </select>
         </div>
     </div>
@@ -43,13 +61,26 @@
     <div class="form-group row">
         <div class="col-sm-3 mb-3 mb-sm-0">
             <label>Nhóm</label>
-            <select class="form-control" ui-select2 ng-model="ListMaNhomTBH" name="ListMaNhomTBH" ng-options="item.manhom_tbh as (item.tennhom_tbh + ' ('+ item.manhom_tbh +') - ' + item.CityName) for item in ListNhomTBH"></select>
+            <select class="form-control" multiple name="ListMaNhomTBH"
+                x-init="
+                    $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm', allowClear: true }); });
+                    $watch('ListNhomTBH', () => { 
+                        $nextTick(() => { $($el).select2({ placeholder: 'Chọn nhóm', allowClear: true }); }); 
+                    });
+                    $($el).on('change', (e) => { 
+                        ListMaNhomTBH = $(e.target).val() || []; 
+                    });
+                ">
+                <template x-for="item in ListNhomTBH" :key="item.manhom_tbh">
+                    <option :value="item.manhom_tbh" x-text="item.tennhom_tbh + ' (' + item.manhom_tbh + ') - ' + item.CityName" :selected="ListMaNhomTBH.includes(item.manhom_tbh)"></option>
+                </template>
+            </select>
         </div>
         <div class="col-sm-3 mb-3 mb-sm-0 d-flex align-items-end">
-            <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
+            <button type="button" x-on:click="Refesh()" x-show="RoleBtnSearch == true" class="btn btn-primary mr-2">
                 <i class="fas fa-search"></i> Tìm kiếm
             </button>
-            <button type="button" class="btn btn-secondary" ng-click="ExportExcel()">
+            <button type="button" class="btn btn-secondary" x-on:click="ExportExcel()">
                 <i class="fas fa-pencil-alt"></i> Xuất Excel
             </button>
         </div>
@@ -65,28 +96,34 @@
                             <th style="width: 39%;">Hoạt động </th>
                             <th style="width: 8%; ">Chỉ tiêu</th>
                             <th style="width: 8%;">Đơn vị </th>
-                            <th ng-repeat="item in ListQuy">{{item.Quy}}</th>
+                            <template x-for="item in ListQuy">
+                                <th x-text="item.Quy"></th>
+                            </template>
                             <th>Số lượng từ đầu DA</th>
                             <th>Tỷ lệ (%)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="item in ListData">
-                            <td class="text-center">{{item.STT}}</td>
-                            <td class="text-left">
-                                <span ng-show="item.BoldText == false">{{item.HoatDong}}</span>
-                                <b ng-show="item.BoldText == true">{{item.HoatDong}}</b>
-                            </td>
-                            <td class="text-left">
-                                <span>{{item.ChiTieu}}</span>
-                            </td>
-                            <td class="text-left">
-                                <span>{{item.DonVi}}</span>
-                            </td>
-                            <td ng-repeat="itemQ in item.ListQuy" class="text-right">{{itemQ.SoLuong | number:0}}</td>
-                            <td class="text-right">{{item.SoLuongTuDauDA | number:0}}</td>
-                            <td class="text-right">{{item.TyLe | number:0}}</td>
-                        </tr>
+                        <template x-for="item in ListData">
+                            <tr>
+                                <td class="text-center" x-text="item.STT"></td>
+                                <td class="text-left">
+                                    <span x-show="item.BoldText == false" x-text="item.HoatDong"></span>
+                                    <b x-show="item.BoldText == true" x-text="item.HoatDong"></b>
+                                </td>
+                                <td class="text-left">
+                                    <span x-text="item.ChiTieu"></span>
+                                </td>
+                                <td class="text-left">
+                                    <span x-text="item.DonVi"></span>
+                                </td>
+                                <template x-for="itemQ in item.ListQuy">
+                                    <td class="text-right" x-text="formatNumber(itemQ.SoLuong)"></td>
+                                </template>
+                                <td class="text-right" x-text="formatNumber(item.SoLuongTuDauDA)"></td>
+                                <td class="text-right" x-text="formatNumber(item.TyLe)"></td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
 
@@ -96,6 +133,6 @@
     </div>
 </div>
 
-    @section Scripts{
-        <script src="~/app/Controller/BaoCaoTongHopQuyCD43Controller.js"></script>
-    }
+@section Scripts{
+    <script src="~/app/Controller/AlpineBaoCaoTongHopQuyCD43.js"></script>
+}

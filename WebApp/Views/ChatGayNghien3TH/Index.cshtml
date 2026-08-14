@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewBag.Title = "Chất gây nghiện 3TH";
 }
 
-<div class="container-fluid" ng-controller="ChatGayNghien3THController">
+<div class="container-fluid" x-data="alpineChatGayNghien3TH()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Chất gây nghiện 3TH</h1>
@@ -45,5 +45,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/ChatGayNghien3THController.js"></script>
+    <script src="~/app/Controller/AlpineChatGayNghien3TH.js?v=@DateTime.Now.Ticks"></script>
 }

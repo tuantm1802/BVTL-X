@@ -1,4 +1,4 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaXNNTPageModel>
+@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaXNNTPageModel>
 @{
     ViewBag.Title = "Kết quả XNNT";
 }
@@ -7,7 +7,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="KetQuaXNNTController">
+<div class="container-fluid" x-data="alpineKetQuaXNNT()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Kết quả XNNT</h1>
@@ -90,5 +90,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/KetQuaXNNTController.js"></script>
+    <script src="~/app/Controller/AlpineKetQuaXNNT.js?v=@DateTime.Now.Ticks"></script>
 }

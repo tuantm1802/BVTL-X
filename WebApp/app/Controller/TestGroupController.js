@@ -1,4 +1,4 @@
-﻿app.controller("TestGroupController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("TestGroupController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -176,16 +176,17 @@
             $scope.LoadPage(0);
         });
     };
-    $scope.edit = function () {
-        var seletedRow = dataTableNhomTTDL.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Code;
-        } else {
-            $scope.NhomTTDLIdSeleted ="";
+    $scope.edit = function (maNhomCode) {
+        var targetCode = maNhomCode || $scope.NhomTTDLIdSeleted;
+        if (!targetCode && dataTableNhomTTDL && typeof dataTableNhomTTDL.rows === 'function') {
+            var seletedRow = dataTableNhomTTDL.rows({ selected: true });
+            if (seletedRow.count() > 0) {
+                targetCode = seletedRow.data()[0].Code;
+            }
         }
+        $scope.NhomTTDLIdSeleted = targetCode;
 
-        if ($scope.NhomTTDLIdSeleted != null && $scope.NhomTTDLIdSeleted != ''  && $scope.NhomTTDLIdSeleted != undefined) {
+        if ($scope.NhomTTDLIdSeleted != null && $scope.NhomTTDLIdSeleted != '' && $scope.NhomTTDLIdSeleted != undefined) {
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
                 templateUrl: '/TestGroup/_Edit',
@@ -201,26 +202,32 @@
 
             //kết quả trả về của modal
             modalInstance.result.then(function (response) {
-                $scope.LoadPage(0);
+                if (window.alpineTestGroupInstance) {
+                    window.alpineTestGroupInstance.LoadPage(window.alpineTestGroupInstance.modelSearch.currentPage);
+                } else {
+                    $scope.LoadPage(0);
+                }
             });
         } else {
             toastr.error("Bạn chưa chọn bản ghi nào.");
         }
     };
-    $scope.delete = function () {
-        var seletedRow = dataTableNhomTTDL.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.NhomTTDLIdSeleted = seletedRow.data()[0].Code;
-        } else {
-            $scope.NhomTTDLIdSeleted = "";
+    $scope.delete = function (maNhomCode) {
+        var targetCode = maNhomCode || $scope.NhomTTDLIdSeleted;
+        if (!targetCode && dataTableNhomTTDL && typeof dataTableNhomTTDL.rows === 'function') {
+            var seletedRow = dataTableNhomTTDL.rows({ selected: true });
+            if (seletedRow.count() > 0) {
+                targetCode = seletedRow.data()[0].Code;
+            }
         }
+        $scope.NhomTTDLIdSeleted = targetCode;
 
         if ($scope.NhomTTDLIdSeleted != null && $scope.NhomTTDLIdSeleted != '' && $scope.NhomTTDLIdSeleted != undefined) {
 
-            var name = $scope.ListData.filter(function (item) {
+            var nameItem = ($scope.ListData || []).filter(function (item) {
                 return item.manhom_tbh === $scope.NhomTTDLIdSeleted;
-            })[0].tennhom_tbh;
+            })[0];
+            var name = nameItem ? nameItem.tennhom_tbh : 'nhóm này';
 
             $ngConfirm({
                 title: 'Thông báo',
@@ -240,7 +247,11 @@
                                         toastr.error(data.Title);
                                     } else {
                                         toastr.success(data.Title);
-                                        $scope.LoadPage(0);
+                                        if (window.alpineTestGroupInstance) {
+                                            window.alpineTestGroupInstance.LoadPage(window.alpineTestGroupInstance.modelSearch.currentPage);
+                                        } else {
+                                            $scope.LoadPage(0);
+                                        }
                                     }
                                 }
                             });
@@ -292,12 +303,29 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.model = {};
     $scope.submit = function () {
         $("#formSubmit").validate({
+            errorElement: 'span',
+            errorClass: 'error invalid-feedback',
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
             rules: {
-                Code: {
+                manhom_tbh: {
                     required: true,
                     maxlength: 50
                 },
-                Name: {
+                tennhom_tbh: {
                     required: true,
                     maxlength: 250
                 },
@@ -306,11 +334,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                 }
             },
             messages: {
-                Code: {
+                manhom_tbh: {
                     required: "Vui lòng nhập mã nhóm",
                     maxlength: "Mã nhóm không được vượt quá 50 ký tự"
                 },
-                Name: {
+                tennhom_tbh: {
                     required: "Vui lòng nhập tên nhóm",
                     maxlength: "Tên nhóm không được vượt quá 250 ký tự"
                 },
@@ -388,12 +416,29 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
 
     $scope.submit = function () {
         $("#formSubmit").validate({
+            errorElement: 'span',
+            errorClass: 'error invalid-feedback',
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
             rules: {
-                Code: {
+                manhom_tbh: {
                     required: true,
                     maxlength: 50
                 },
-                Name: {
+                tennhom_tbh: {
                     required: true,
                     maxlength: 250
                 },
@@ -402,11 +447,11 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 }
             },
             messages: {
-                Code: {
+                manhom_tbh: {
                     required: "Vui lòng nhập mã nhóm",
                     maxlength: "Mã nhóm không được vượt quá 50 ký tự"
                 },
-                Name: {
+                tennhom_tbh: {
                     required: "Vui lòng nhập tên nhóm",
                     maxlength: "Tên nhóm không được vượt quá 250 ký tự"
                 },

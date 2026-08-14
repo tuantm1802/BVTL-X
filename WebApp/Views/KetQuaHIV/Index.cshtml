@@ -1,4 +1,4 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaHIVPageModel>
+@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaHIVPageModel>
 @{
     ViewBag.Title = "Kết quả HIV";
 }
@@ -7,7 +7,7 @@
         width: 70px !important;
     }
 </style>
-<div class="container-fluid" ng-controller="KetQuaHIVController">
+<div class="container-fluid" x-data="alpineKetQuaHIV()">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Kết quả HIV</h1>
@@ -100,5 +100,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/KetQuaHIVController.js"></script>
+    <script src="~/app/Controller/AlpineKetQuaHIV.js?v=@DateTime.Now.Ticks"></script>
 }
