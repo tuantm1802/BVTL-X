@@ -1,5 +1,5 @@
 document.addEventListener('alpine:init', function () {
-    Alpine.data('alpineChatGayNghienTX3TH', function () {
+    Alpine.data('alpineLoaiDoiTuong', function () {
         return {
             items: [],
             totalItems: 0,
@@ -18,7 +18,7 @@ document.addEventListener('alpine:init', function () {
 
                 $.ajax({
                     type: 'POST',
-                    url: '/ChatGayNghienTX3TH/GetAll',
+                    url: '/LoaiDoiTuong/GetAll',
                     data: {
                         KeyWord: self.keyword || '',
                         currentPage: self.currentPage,

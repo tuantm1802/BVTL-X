@@ -1,165 +1,177 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.PhieuTuVanPageModel>
+@model System.Collections.Generic.List<Model.ModelExtend.PhieuTuVanPageModel>
 @{
-    ViewBag.Title = "Phiếu tư vấn";
+    ViewBag.Title = "Báo cáo Phiếu tư vấn Khách hàng";
+    var totalRecords = Model != null ? Model.Count : 0;
+    var totalGroups = Model != null ? Model.Select(x => x.manhom_tbh).Distinct().Count() : 0;
+    var totalCities = Model != null ? Model.Select(x => x.CityName).Distinct().Count() : 0;
+    var totalTCV = Model != null ? Model.Select(x => x.matcv).Distinct().Count() : 0;
 }
-<style type="text/css">
-    div.dataTables_length select {
-        width: 70px !important;
-    }
-</style>
-<div class="container-fluid" ng-controller="PhieuTuVanController">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Phiếu tư vấn</h1>
-    <p class="mb-4">
-    </p>
+<div class="container-fluid py-3" x-data="alpinePhieuTuVan()">
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                @*<div class="row">
-            <div class="col-sm-1">
-                <label>Từ khóa</label>
-            </div>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
-            </div>
-            <div class="col-sm-1">
-                <label>Dự án</label>s
-            </div>
-            <div class="col-sm-4">
-                <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                    </select>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Tìm kiếm
-                </button>
-                <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                    <i class="fas fa-pencil-alt"></i> Xuất Excel
-                </button>
-            </div>
-        </div>*@
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-comments text-primary mr-2"></i> Báo cáo Phiếu tư vấn Khách hàng
+            </h1>
+            <p class="text-muted small mb-0">Theo dõi chi tiết các buổi tư vấn giảm hại, hỗ trợ sức khỏe tâm thần, phát vật phẩm (BCS, Gel) và chuyển gửi dịch vụ.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-success shadow-sm px-3 py-2 font-weight-bold" x-on:click="exportExcel()" style="border-radius: 8px;">
+                <i class="fas fa-file-excel mr-1"></i> Xuất dữ liệu Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng lượt tư vấn</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@totalRecords</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-user-friends fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Số Nhóm TTDL</div>
+                            <div class="h4 mb-0 font-weight-bold text-success">@totalGroups</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-users-cog fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Số Tỉnh / Thành phố</div>
+                            <div class="h4 mb-0 font-weight-bold text-info">@totalCities</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-map-marked-alt fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #f6c23e !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Số TCV thực hiện</div>
+                            <div class="h4 mb-0 font-weight-bold text-warning">@totalTCV</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(246, 194, 62, 0.15);">
+                                <i class="fas fa-user-tie fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-table mr-2"></i> Danh sách Chi tiết Phiếu Tư vấn
+            </h6>
+            <span class="badge badge-light border text-muted">Dữ liệu tổng hợp</span>
+        </div>
+        <div class="card-body p-3">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTablePhieuTuVan" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" id="dataTablePhieuTuVan" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th style="width: auto;">Dự án </th>
-                            <th style="width: auto;">Tỉnh </th>
-                            <th style="width: auto;">Record ID</th>
-                            <th style="width:9%;">Mã nhóm</th>
-                            <th style="width:auto;">Tên nhóm</th>
-                            <th style="width:9%;">Mã KH</th>
-                            @*<th style="width:auto;">Họ tên KH </th>*@
-                            <th>Ngày nhập số liệu</th>
-                            <th>Ngày tư vấn </th>
-                            <th>Đại điểm</th>
-                            <th>Mã TCV thực hiện tư vấn</th>
-                            <th>Tư vấn cho KH lần thứ </th>
-                            <th>Loại chất gây nghiện sử dụng trong 3 tháng gần đây</th>
-                            <th>Loại khác</th>
-                            <th>Tần suất sử dụng đá trong 3 tháng gần đây</th>
-                            <th>Đường dùng ma túy đá</th>
-                            <th>Cảm giác khi dùng ma túy đá </th>
-                            <th>Thói quen sử dụng ma túy đá (liều lượng, thời gian, với ai, ở đâu)</th>
-                            <th>Hành vi nguy cơ (mô tả cụ thể) </th>
-                            <th>Khác</th>
-                            <th>Mô tả cụ thể</th>
-                            <th>Sức khỏe thể chất (mô tả cụ thể)</th>
-                            <th>Khác </th>
-                            <th>Mô tả cụ thể</th>
-                            <th>Sức khỏe tâm thần (mô tả cụ thể) </th>
-                            <th>Khác </th>
-                            <th>Mô tả cụ thể</th>
-                            <th>Tư vấn giảm hại </th>
-                            <th>Khác </th>
-                            <th>Ghi rõ nội dung tư vấn</th>
-                            <th>Hỗ trợ về SKTT (ghi rõ nội dung tư vấn) </th>
-                            <th>Khác</th>
-                            <th>Ghi rõ nội dung tư vấn</th>
-                            <th>Phát tài liệu truyền thông </th>
-                            <th>Tên tài liệu đã phát</th>
-                            <th>Phát bao cao su</th>
-                            <th>Số lượng đã phát</th>
-                            <th>Phát gel bôi trơn</th>
-                            <th>Số lượng đã phát</th>
-                            <th>Hỗ trợ KH tiếp cận dịch vụ thành công - chuyển gửi (nhiều lựa chọn)</th>
-                            <th>Khác </th>
-                            <th>Mô tả cụ thể</th>
-                            <th>Hỗ trợ xã hội thành công (nhiều lựa chọn)</th>
-                            <th>Khác</th>
-                            <th>Mô tả cụ thể</th>
-                            <th>Hỗ trợ chi phí khám xét nghiệm/điều trị (nhiều lựa chọn)</th>
-                            <th>Khác (mô tả cụ thể)</th>
-                            <th>Nội dung chính trong buổi tư vấn</th>
-                            <th>Hẹn KH tư vấn buổi tiếp theo?</th>
-                            <th>Vấn đề/nội dung dự kiến sẽ tư vấn</th>
-                            <th>Thời gian dự kiến</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dự án</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tỉnh</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Record ID</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã & Tên nhóm</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã KH</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ngày tư vấn</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Địa điểm</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã TCV</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Lần TV</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Chất sử dụng 3 tháng</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tần suất sử dụng đá</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Đường dùng đá</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tư vấn giảm hại</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Hỗ trợ SKTT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">BCS phát</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Gel phát</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Hẹn TV tiếp?</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Thời gian hẹn</th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id_api</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    @*<td class="text-center">@(item.ngaynhap != null ? item.ngaynhap.Value.ToString("yyyy-MM-dd") : string.Empty )</td>
-        <td class="text-center">@(item.ngaytuvan != null ? item.ngaytuvan.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaynhap)) </td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaytuvan)) </td>
-                    <td class="text-left">@item.diadiem</td>
-                    <td class="text-left">@item.matcv</td>
-                    <td class="text-left">@item.lantuvan</td>
-                    <td class="text-left">@item.cau1_1</td>
-                    <td class="text-left">@item.cau1_1k</td>
-                    <td class="text-left">@item.cau1_2</td>
-                    <td class="text-left">@item.cau1_3</td>
-                    <td class="text-left">@item.cau1_4</td>
-                    <td class="text-left">@item.cau1_5</td>
-                    <td class="text-left">@item.cau2</td>
-                    <td class="text-left">@item.cau2_1k</td>
-                    <td class="text-left">@item.cau2_2</td>
-                    <td class="text-left">@item.cau3</td>
-                    <td class="text-left">@item.cau3_1k</td>
-                    <td class="text-left">@item.cau3_1k_2</td>
-                    <td class="text-left">@item.cau4</td>
-                    <td class="text-left">@item.cau4_1k</td>
-                    <td class="text-left">@item.cau4_1k_2</td>
-                    <td class="text-left">@item.cau5_1</td>
-                    <td class="text-left">@item.cau5_1k</td>
-                    <td class="text-left">@item.cau5_1_2</td>
-                    <td class="text-left">@item.cau5_2</td>
-                    <td class="text-left">@item.cau5_2k</td>
-                    <td class="text-left">@item.cau5_2k_2</td>
-                    <td class="text-left">@item.cau5_3</td>
-                    <td class="text-left">@item.cau5_3_1</td>
-                    <td class="text-left">@item.cau5_4</td>
-                    <td class="text-left">@item.cau5_4_1</td>
-                    <td class="text-left">@item.cau5_5</td>
-                    <td class="text-left">@item.cau5_4_2</td>
-                    <td class="text-left">@item.cau5_6</td>
-                    <td class="text-left">@item.cau5_6k</td>
-                    <td class="text-left">@item.cau5_6k_2</td>
-                    <td class="text-left">@item.cau5_7</td>
-                    <td class="text-left">@item.cau5_7k</td>
-                    <td class="text-left">@item.cau5_7k_3</td>
-                    <td class="text-left">@item.cau5_8</td>
-                    <td class="text-left">@item.cau5_7k_2</td>
-                    <td class="text-left">@item.tongket</td>
-                    <td class="text-left">@item.tuvantiep</td>
-                    <td class="text-left">@item.vande</td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.thoigian)) </td>
-                    @*<td class="text-center">@(item.thoigian != null ? item.thoigian.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
-                </tr>
-                    }
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="badge badge-light border font-weight-bold text-dark">@(item.maduan ?? "BVTL")</span></td>
+                                    <td><i class="fas fa-map-marker-alt text-danger mr-1 small"></i>@item.CityName</td>
+                                    <td><span class="badge badge-light font-weight-bold text-primary">#@item.record_id_api</span></td>
+                                    <td>
+                                        <div class="font-weight-bold text-dark">@item.tennhom_tbh</div>
+                                        <small class="text-muted">(@item.manhom_tbh)</small>
+                                    </td>
+                                    <td><span class="badge badge-light font-weight-bold text-secondary">@item.makh</span></td>
+                                    <td class="text-center font-weight-bold text-gray-700">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaytuvan))</td>
+                                    <td class="text-dark small">@(item.diadiem ?? "—")</td>
+                                    <td><span class="badge badge-light font-weight-bold text-info">@(item.matcv ?? "—")</span></td>
+                                    <td class="text-center font-weight-bold">@(item.lantuvan ?? 1)</td>
+                                    <td class="text-dark small">@(item.cau1_1 ?? "—")</td>
+                                    <td class="text-dark small">@(item.cau1_2 ?? "—")</td>
+                                    <td class="text-dark small">@(item.cau1_3 ?? "—")</td>
+                                    <td class="text-dark small">@(item.cau5_1 ?? "—")</td>
+                                    <td class="text-dark small">@(item.cau5_2 ?? "—")</td>
+                                    <td class="text-center font-weight-bold text-primary">@(item.cau5_4 ?? "0")</td>
+                                    <td class="text-center font-weight-bold text-info">@(item.cau5_5 ?? "0")</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.tuvantiep) && item.tuvantiep.ToLower().Contains("có"))
+                                        {
+                                            <span class="badge badge-success px-2 py-1"><i class="fas fa-check mr-1"></i> Có</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Không</span>
+                                        }
+                                    </td>
+                                    <td class="text-center small text-muted">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.thoigian))</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -167,5 +179,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/PhieuTuVanController.js"></script>
+    <script src="~/app/Controller/AlpinePhieuTuVan.js?v=@DateTime.Now.Ticks"></script>
 }

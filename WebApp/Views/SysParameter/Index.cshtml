@@ -1,55 +1,183 @@
-﻿@{
-    ViewBag.Title = "Tham số";
+@{
+    ViewBag.Title = "Quản lý Tham số Hệ thống";
 }
 
-<div class="container-fluid" ng-controller="SysParameterController">
+<div class="container-fluid py-3 ng-scope" x-data="alpineSysParameter()" ng-controller="SysParameterController">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tham số</h1>
-    <p class="mb-4">
-    </p>
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-sliders-h text-primary mr-2"></i> Quản lý Tham số Hệ thống
+            </h1>
+            <p class="text-muted small mb-0">Cấu hình các tham số hoạt động, giá trị mặc định và thiết lập kỹ thuật trên toàn hệ thống.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-white shadow-sm px-3 py-2 font-weight-bold border mr-2" x-on:click="loadData()" style="border-radius: 8px; background: #fff;">
+                <i class="fas fa-sync-alt text-primary mr-1" :class="{'fa-spin': isLoading}"></i> Làm mới
+            </button>
+        </div>
+    </div>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                <button type="button" ng-click="Refesh()" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="edit()" ng-show="RoleBtnUpdate == true">
-                    <i class="fas fa-pencil-alt"></i> Cập nhật
-                </button>
+    <!-- Statistics Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số tham số</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.total">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-cogs fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đang sử dụng</div>
+                            <div class="h4 mb-0 font-weight-bold text-success" x-text="stats.activeCount">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Kiểu Chuỗi (STRING)</div>
+                            <div class="h4 mb-0 font-weight-bold text-info" x-text="stats.stringTypeCount">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-font fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #f6c23e !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Kiểu Số (NUMBER)</div>
+                            <div class="h4 mb-0 font-weight-bold text-warning" x-text="stats.numberTypeCount">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(246, 194, 62, 0.15);">
+                                <i class="fas fa-hashtag fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Toolbar -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-2 mb-md-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                        </div>
+                        <input type="text" class="form-control bg-light border-0" placeholder="Tìm theo Mã tham số, Giá trị hoặc Mô tả..." x-model="keyword" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-right">
+                    <button type="button" class="btn btn-primary px-3 font-weight-bold mr-2" x-on:click="search()" style="border-radius: 8px;">
+                        <i class="fas fa-search mr-1"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn btn-light border px-3 font-weight-bold text-secondary" x-on:click="resetSearch()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-table mr-2"></i> Danh sách Tham số Cấu hình
+            </h6>
+            <span class="badge badge-light border text-muted">Hệ thống</span>
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableParam" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th style="width:5%;">STT </th>
-                            <th style="width:10%;">Mã </th>
-                            <th style="width:10%;">Giá trị </th>
-                            <th style="width:10%;">Kiểu dữ liệu </th>
-                            <th style="width:auto;">Mô tả </th>
-                            <th style="width:9%;">Trạng thái</th>
-                            @*<th style="width:8%;">Thao tác</th>*@
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pl-4" style="width: 70px; font-size: 0.75rem;">STT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã tham số</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Giá trị cấu hình</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Kiểu dữ liệu</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mô tả / Ý nghĩa</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Trạng thái</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="width: 120px; font-size: 0.75rem;">Thao tác</th>
                         </tr>
                     </thead>
-                    @*<tbody>
-                           <tr ng-repeat="item in ListSysParameter" ng-click="ViewDetail(item.ID, $index)" ng-class="{activerow:$index==selectedRow}">
-                            <td class="text-center">{{$index + 1}}</td>
-                            <td class="text-left">{{item.ParamCode}}</td>
-                            <td class="text-left">{{item.ParamValue}}</td>
-                            <td class="text-left">{{item.ParamValueType == 'STRING' ? 'Kiểu chữ' : 'Kiểu số'}}</td>
-                            <td class="text-left">{{item.Desctiption}}</td>
-                            <td class="text-center">{{item.IsActive == true ? 'Sử dụng' : 'Không sử dụng'}}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary" ng-click="edit(item.ID)" ng-show="RoleBtnUpdate == true" title="Cập nhật">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>*@
+                    <tbody>
+                        <template x-for="(item, index) in items" :key="item.ID || index">
+                            <tr>
+                                <td class="text-center font-weight-bold text-muted pl-4" x-text="index + 1"></td>
+                                <td>
+                                    <span class="badge badge-light border font-weight-bold text-primary font-monospace px-2 py-1" style="font-size: 0.85rem;" x-text="item.ParamCode"></span>
+                                </td>
+                                <td>
+                                    <span class="font-weight-bold text-dark" x-text="item.ParamValue"></span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge" :class="item.ParamValueType === 'STRING' ? 'badge-info' : 'badge-warning'" x-text="item.ParamValueType === 'STRING' ? 'Kiểu chữ (STRING)' : 'Kiểu số (NUMBER)'"></span>
+                                </td>
+                                <td class="text-muted small" x-text="item.Desctiption || '—'"></td>
+                                <td class="text-center">
+                                    <span class="badge" :class="item.IsActive ? 'badge-success' : 'badge-secondary'" x-text="item.IsActive ? 'Sử dụng' : 'Không sử dụng'"></span>
+                                </td>
+                                <td class="text-center pr-4">
+                                    <button type="button" class="btn btn-sm btn-outline-primary shadow-xs" x-on:click="openEditModal(item.ID)" title="Cập nhật tham số" style="border-radius: 6px;">
+                                        <i class="fas fa-pencil-alt mr-1"></i> Sửa
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="isLoading">
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    <p class="mt-2 mb-0 font-weight-bold">Đang tải dữ liệu...</p>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="!isLoading && (!items || items.length === 0)">
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted font-italic">Không tìm thấy bản ghi nào</td>
+                            </tr>
+                        </template>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -57,5 +185,6 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/SysparameterController.js"></script>
+    <script src="~/app/Controller/AlpineSysParameterController.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/app/Controller/SysparameterController.js?v=@DateTime.Now.Ticks"></script>
 }

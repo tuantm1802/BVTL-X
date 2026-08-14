@@ -1,141 +1,183 @@
-@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaBHDGPageModel>
+@model System.Collections.Generic.List<Model.ModelExtend.KetQuaBHDGPageModel>
 @{
-    ViewBag.Title = "Kết quả BHDG";
+    ViewBag.Title = "Báo cáo Đánh giá Hành vi (BHDG)";
+    var totalRecords = Model != null ? Model.Count : 0;
+    var totalGroups = Model != null ? Model.Select(x => x.manhom_tbh).Distinct().Count() : 0;
+    var totalCities = Model != null ? Model.Select(x => x.CityName).Distinct().Count() : 0;
 }
-<style type="text/css">
-    div.dataTables_length select {
-        width: 70px !important;
-    }
-</style>
-<div class="container-fluid" x-data="alpineKetQuaBHDG()">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Kết quả BHDG</h1>
-    <p class="mb-4">
-    </p>
+<div class="container-fluid py-3" x-data="alpineKetQuaBHDG()">
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                @*<div class="row">
-                <div class="col-sm-1">
-            <label>Từ khóa</label>
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-tasks text-primary mr-2"></i> Báo cáo Đánh giá Hành vi (BHDG)
+            </h1>
+            <p class="text-muted small mb-0">Theo dõi 27 câu hỏi khảo sát nhận thức, thái độ và hành vi liên quan đến HIV, Chemsex và sức khỏe tâm thần.</p>
         </div>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-success shadow-sm px-3 py-2 font-weight-bold" x-on:click="exportExcel()" style="border-radius: 8px;">
+                <i class="fas fa-file-excel mr-1"></i> Xuất dữ liệu Excel
+            </button>
         </div>
-        <div class="col-sm-1">
-            <label>Dự án</label>s
-        </div>
-        <div class="col-sm-4">
-            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                </select>
-        </div>
-                <div class="col-sm-2">
-                    <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Tìm kiếm
-                    </button>
-                    <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                        <i class="fas fa-pencil-alt"></i> Xuất Excel
-                    </button>
+    </div>
+
+    <!-- Statistics Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số phiếu khảo sát BHDG</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@totalRecords</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-clipboard-check fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>*@
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableKetQuaBHDG" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style="width: auto;">Dự án </th>
-                            <th style="width: auto;">Tỉnh </th>
-                            <th style="width: auto;">Record ID</th>
-                            <th style="width:9%;">Mã nhóm</th>
-                            <th style="width:auto;">Tên nhóm</th>
-                            <th style="width:9%;">Mã KH</th>
-                            @*<th style="width:auto;">Họ tên KH </th>*@
-                            <th style="width:9%;">Ngày xét nghiệm</th>
-                            <th>1. HIV là các nhiễm trùng lây truyền qua đường tình dục</th>
-                            <th>2. HIV là vi rút gây suy giảm miễn dịch ở người</th>
-                            <th>3. HIV có thể lây nhiễm qua việc dùng chung các dụng cụ tiêm chích, xăm mình hoặc quan hệ tình dục không sử dụng bao cao su</th>
-                            <th>4. HIV có thể lây nhiễm qua giao tiếp thông thường như ôm, hôn, bắt tay	</th>
-                            <th>5. Xét nghiệm máu có thể phát hiện một người có bị nhiễm HIV hay không</th>
-                            <th>6. Khám bệnh thông thường hoặc nhìn bề ngoài (gầy gò, các bệnh về da) có thể phát hiện một người có bị nhiễm HIV hay không</th>
-                            <th>7. Nên đi xét nghiệm HIV sau ít nhất 14 ngày kể từ khi có hành vi nguy cơ (quan hệ tình dục không an toàn, tiêm chích chung...)</th>
-                            <th>8. Vi rút HIV tồn tại 5 - 10 năm trong cơ thể người nhiễm và không thể lây nhiễm cho người khác</th>
-                            <th>9. Hiện nay, HIV có thể được điều trị bằng thuốc kháng vi rút và điều trị suốt đời</th>
-                            <th>10. Người nhiễm HIV mà có tải lượng virut dưới ngưỡng phát hiện thì không còn khả năng lây cho người khác</th>
-                            <th>11. Sử dụng ma túy đá một mình là an toàn nhất</th>
-                            <th>12. Sử dụng ma túy đá trong một thời gian dài có thể dẫn đến trầm cảm</th>
-                            <th>13. Người bị tăng thân nhiệt do sử dụng ma túy đá nên uống nhiều nước (có thể uống nước điện giải)</th>
-                            <th>14. Ăn uống và nghỉ ngơi đầy đủ sau mỗi lần chơi là một trong những cách giảm hại cho người sử dụng ma túy đá</th>
-                            <th>15. Sử dụng ma túy đá kèm với các loại ma túy khác luôn tạo độ phê và sự an toàn cho người chơi</th>
-                            <th>16. Cơn hoảng loạn, ảo giác và nôn mửa là các triệu chứng của quá liều (sốc thuốc) khi sử dụng ma túy đá</th>
-                            <th>17. Sử dụng ma túy đá làm tăng nguy cơ lây nhiễm HIV do quan hệ tình dục không an toàn</th>
-                            <th>18. Sử dụng ma túy đá có khả năng ảnh hưởng tới việc tuân thủ điều trị và hiệu quả điều trị ở người nhiễm HIV</th>
-                            <th>19. Sử dụng ma túy đá không có nguy cơ lây nhiễm HIV nếu chỉ hút mà không tiêm chích chung</th>
-                            <th>20. Sức khỏe tâm thần là tình trạng khỏe mạnh về tinh thần và không có rối loạn tâm thần</th>
-                            <th>21. Lo âu, mất ngủ, buồn chán, mất động lực trong một thời gian dài không phải là các dấu hiệu của vấn đề về sức khỏe tâm thần</th>
-                            <th>22. Nghe thấy tiếng kêu/ tiếng nói mà người khác không nghe thấy là dấu hiệu của vấn đề về sức khỏe tâm thần</th>
-                            <th>23. Sử dụng ma túy có thể gây ra hoặc làm nặng thêm các rối loạn tâm thần</th>
-                            <th>24. Các vấn đề về sức khỏe tâm thần có thể dẫn tới việc sử dụng ma túy</th>
-                            <th>25. Để cải thiện sức khỏe tâm thần cần thực hiện cả việc giảm hại và điều trị nghiện ma túy</th>
-                            <th>26. Các vấn đề sức khỏe tâm thần là các bệnh tâm thần do di truyền, không điều trị, không chữa khỏi được</th>
-                            <th>27. Dùng chung popper và ma túy đá khi quan hệ tình dục thì không có nguy cơ về sức khỏe</th>
 
+        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Số Nhóm TTDL tham gia</div>
+                            <div class="h4 mb-0 font-weight-bold text-success">@totalGroups</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-users-cog fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-12">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Số Tỉnh / Thành phố</div>
+                            <div class="h4 mb-0 font-weight-bold text-info">@totalCities</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-map-marked-alt fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-table mr-2"></i> Chi tiết Kết quả Khảo sát 27 Tiêu chí BHDG
+            </h6>
+            <span class="badge badge-light border text-muted">Bảng chi tiết</span>
+        </div>
+        <div class="card-body p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="dataTableKetQuaBHDG" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                        <tr>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dự án</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tỉnh</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Record ID</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã & Tên nhóm</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã KH</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ngày xét nghiệm</th>
+                            <th title="HIV là các nhiễm trùng lây truyền qua đường tình dục">C1</th>
+                            <th title="HIV là vi rút gây suy giảm miễn dịch ở người">C2</th>
+                            <th title="HIV có thể lây nhiễm qua dùng chung dụng cụ tiêm chích, quan hệ không BCS">C3</th>
+                            <th title="HIV có thể lây nhiễm qua giao tiếp thông thường">C4</th>
+                            <th title="Xét nghiệm máu có thể phát hiện HIV">C5</th>
+                            <th title="Khám bệnh thông thường có thể phát hiện HIV">C6</th>
+                            <th title="Nên đi xét nghiệm sau 14 ngày kể từ hành vi nguy cơ">C7</th>
+                            <th title="Vi rút HIV tồn tại 5-10 năm và không lây nhiễm">C8</th>
+                            <th title="Hiện nay HIV có thể điều trị bằng ARV suốt đời">C9</th>
+                            <th title="Tải lượng virut dưới ngưỡng phát hiện thì không lây cho người khác">C10</th>
+                            <th title="Sử dụng ma túy đá một mình là an toàn nhất">C11</th>
+                            <th title="Sử dụng ma túy đá thời gian dài có thể dẫn đến trầm cảm">C12</th>
+                            <th title="Người bị tăng thân nhiệt nên uống nhiều nước">C13</th>
+                            <th title="Ăn uống nghỉ ngơi đầy đủ sau mỗi lần chơi">C14</th>
+                            <th title="Sử dụng kèm ma túy khác tạo độ phê và an toàn">C15</th>
+                            <th title="Hoảng loạn, ảo giác, nôn mửa là sốc thuốc">C16</th>
+                            <th title="Ma túy đá làm tăng nguy cơ lây HIV do QHTD không an toàn">C17</th>
+                            <th title="Ma túy đá ảnh hưởng tuân thủ điều trị ở người nhiễm">C18</th>
+                            <th title="Hút ma túy đá không có nguy cơ lây HIV">C19</th>
+                            <th title="Sức khỏe tâm thần là khỏe mạnh về tinh thần">C20</th>
+                            <th title="Lo âu, mất ngủ, buồn chán không phải dấu hiệu SKTT">C21</th>
+                            <th title="Nghe tiếng kêu lạ là dấu hiệu SKTT">C22</th>
+                            <th title="Ma túy gây hoặc làm nặng thêm rối loạn tâm thần">C23</th>
+                            <th title="Vấn đề SKTT dẫn đến sử dụng ma túy">C24</th>
+                            <th title="Cần cả giảm hại và điều trị nghiện">C25</th>
+                            <th title="Bệnh tâm thần là do di truyền không chữa được">C26</th>
+                            <th title="Dùng chung popper và ma túy đá không có nguy cơ">C27</th>
                         </tr>
                     </thead>
-                    @{
-                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-
-                        foreach (var item in Model)
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
                         {
-                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngaysl, cstZone);
+                            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-                        <tr>
-                            <td class="text-left">@item.maduan</td>
-                            <td class="text-left">@item.CityName</td>
-                            <td class="text-left">@item.record_id_api</td>
-                            <td class="text-left">@item.manhom_tbh</td>
-                            <td class="text-left">@item.tennhom_tbh</td>
-                            <td class="text-left">@item.makh</td>
-                            @*<td class="text-left">@item.hoten</td>*@
-                            @*<td class="text-center">@(item.ngaysl != null ? item.ngaysl.ToString("yyyy-MM-dd") : string.Empty)</td>*@
-                            <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+                            foreach (var item in Model)
+                            {
+                                DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngaysl, cstZone);
 
-                            @*<td class="text-left">@item.ngayxntext</td>*@
-                            <td>@item.cau1</td>
-                            <td>@item.cau2</td>
-                            <td>@item.cau3</td>
-                            <td>@item.cau4</td>
-                            <td>@item.cau5</td>
-                            <td>@item.cau6</td>
-                            <td>@item.cau7</td>
-                            <td>@item.cau8</td>
-                            <td>@item.cau9</td>
-                            <td>@item.cau10</td>
-                            <td>@item.cau11</td>
-                            <td>@item.cau12</td>
-                            <td>@item.cau13</td>
-                            <td>@item.cau14</td>
-                            <td>@item.cau15</td>
-                            <td>@item.cau16</td>
-                            <td>@item.cau17</td>
-                            <td>@item.cau18</td>
-                            <td>@item.cau19</td>
-                            <td>@item.cau20</td>
-                            <td>@item.cau21</td>
-                            <td>@item.cau22</td>
-                            <td>@item.cau23</td>
-                            <td>@item.cau24</td>
-                            <td>@item.cau25</td>
-                            <td>@item.cau26</td>
-                            <td>@item.cau27</td>
-
-                        </tr>
+                                <tr>
+                                    <td><span class="badge badge-light border font-weight-bold text-dark">@(item.maduan ?? "BVTL")</span></td>
+                                    <td>@item.CityName</td>
+                                    <td><span class="badge badge-light font-weight-bold text-primary">#@item.record_id_api</span></td>
+                                    <td>
+                                        <div class="font-weight-bold text-dark">@item.tennhom_tbh</div>
+                                        <small class="text-muted">(@item.manhom_tbh)</small>
+                                    </td>
+                                    <td><span class="badge badge-light font-weight-bold text-secondary">@item.makh</span></td>
+                                    <td class="text-center font-weight-bold text-gray-700">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+                                    <td class="text-center small">@item.cau1</td>
+                                    <td class="text-center small">@item.cau2</td>
+                                    <td class="text-center small">@item.cau3</td>
+                                    <td class="text-center small">@item.cau4</td>
+                                    <td class="text-center small">@item.cau5</td>
+                                    <td class="text-center small">@item.cau6</td>
+                                    <td class="text-center small">@item.cau7</td>
+                                    <td class="text-center small">@item.cau8</td>
+                                    <td class="text-center small">@item.cau9</td>
+                                    <td class="text-center small">@item.cau10</td>
+                                    <td class="text-center small">@item.cau11</td>
+                                    <td class="text-center small">@item.cau12</td>
+                                    <td class="text-center small">@item.cau13</td>
+                                    <td class="text-center small">@item.cau14</td>
+                                    <td class="text-center small">@item.cau15</td>
+                                    <td class="text-center small">@item.cau16</td>
+                                    <td class="text-center small">@item.cau17</td>
+                                    <td class="text-center small">@item.cau18</td>
+                                    <td class="text-center small">@item.cau19</td>
+                                    <td class="text-center small">@item.cau20</td>
+                                    <td class="text-center small">@item.cau21</td>
+                                    <td class="text-center small">@item.cau22</td>
+                                    <td class="text-center small">@item.cau23</td>
+                                    <td class="text-center small">@item.cau24</td>
+                                    <td class="text-center small">@item.cau25</td>
+                                    <td class="text-center small">@item.cau26</td>
+                                    <td class="text-center small">@item.cau27</td>
+                                </tr>
                             }
                         }
+                    </tbody>
                 </table>
             </div>
         </div>

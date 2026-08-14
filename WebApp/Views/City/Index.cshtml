@@ -1,44 +1,95 @@
-﻿@{
-    ViewBag.Title = "Tỉnh";
+@{
+    ViewBag.Title = "Danh mục Tỉnh / Thành phố";
 }
 
-<div class="container-fluid" ng-controller="CityController">
+<div class="container-fluid py-3" x-data="alpineCity()">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tỉnh</h1>
-    <p class="mb-4">
-    </p>
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-city text-primary mr-2"></i> Danh mục Tỉnh / Thành phố
+            </h1>
+            <p class="text-muted small mb-0">Quản lý và tra cứu danh sách các địa bàn Tỉnh/Thành phố triển khai dự án.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <span class="badge badge-light border px-3 py-2 text-dark font-weight-bold">
+                Tổng số: <span class="text-primary ml-1" x-text="totalItems">0</span> Tỉnh/Thành
+            </span>
+        </div>
+    </div>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                <div class="row">
-                    <div class="col-sm-1">
-                        <label>Từ khóa</label>
+    <!-- Search & Filter Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-2 mb-md-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                        </div>
+                        <input type="text" class="form-control bg-light border-0" placeholder="Nhập Mã hoặc Tên Tỉnh/Thành phố cần tìm..." x-model="keyword" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
                     </div>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
-                    </div>
-                    <div class="col-sm-1">
-                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Tìm kiếm
-                        </button>
-                    </div>
+                </div>
+                <div class="col-md-4 text-md-right">
+                    <button type="button" class="btn btn-primary px-3 font-weight-bold mr-2" x-on:click="search()" style="border-radius: 8px;">
+                        <i class="fas fa-search mr-1"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn btn-light border px-3 font-weight-bold text-secondary" x-on:click="resetSearch()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Làm mới
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="card-body">
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableCity" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th style="width: auto;">STT </th>
-                            <th style="width: auto;">Mã </th>
-                            <th style="width: auto;">Tên </th>
-                            <th style="width: auto;">Trạng thái </th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pl-4" style="width: 80px; font-size: 0.75rem;">STT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 160px; font-size: 0.75rem;">Mã Tỉnh/Thành</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tên Tỉnh / Thành phố</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="width: 160px; font-size: 0.75rem;">Trạng thái</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <template x-for="(item, index) in items" :key="item.Code || index">
+                            <tr>
+                                <td class="text-center font-weight-bold text-muted pl-4" x-text="index + 1"></td>
+                                <td>
+                                    <span class="badge badge-light border font-weight-bold text-primary font-monospace px-2 py-1" x-text="item.Code || item.Code_Map || '—'"></span>
+                                </td>
+                                <td>
+                                    <div class="font-weight-bold text-dark d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt text-danger mr-2"></i>
+                                        <span x-text="item.Name || item.CityName || '—'"></span>
+                                    </div>
+                                </td>
+                                <td class="text-center pr-4">
+                                    <span class="badge badge-success px-3 py-1 font-weight-bold">
+                                        <i class="fas fa-check mr-1"></i> Hoạt động
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="isLoading">
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    <p class="mt-2 mb-0 font-weight-bold">Đang tải dữ liệu...</p>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="!isLoading && (!items || items.length === 0)">
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted font-italic">Không tìm thấy bản ghi nào</td>
+                            </tr>
+                        </template>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -46,5 +97,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/CityController.js"></script>
+    <script src="~/app/Controller/AlpineCityController.js?v=@DateTime.Now.Ticks"></script>
 }

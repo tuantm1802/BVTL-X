@@ -1,139 +1,200 @@
-﻿@model  System.Collections.Generic.List<Model.ModelExtend.ChuyenGuiDichVuPageModel>
+@model System.Collections.Generic.List<Model.ModelExtend.ChuyenGuiDichVuPageModel>
 @{
-    ViewBag.Title = "Chuyển gửi dịch vụ";
+    ViewBag.Title = "Báo cáo Chuyển gửi Dịch vụ";
+    var totalRecords = Model != null ? Model.Count : 0;
+    var chuyenGuiARV = Model != null ? Model.Count(x => !string.IsNullOrEmpty(x.dieutri) && (x.dieutri.ToLower().Contains("có") || x.dieutri.ToLower().Contains("đồng ý"))) : 0;
+    var hoTroKham = Model != null ? Model.Count(x => !string.IsNullOrEmpty(x.hotro) && x.hotro.ToLower().Contains("có")) : 0;
+    var hoTroBHYT = Model != null ? Model.Count(x => !string.IsNullOrEmpty(x.hotro_bhyt) && x.hotro_bhyt.ToLower().Contains("có")) : 0;
 }
-<style type="text/css">
-    div.dataTables_length select {
-        width: 70px !important;
-    }
-</style>
-<div class="container-fluid" ng-controller="ChuyenGuiDichVuController">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Chuyển gửi dịch vụ</h1>
-    <p class="mb-4">
-    </p>
+<div class="container-fluid py-3" x-data="alpineChuyenGuiDichVu()">
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                @*<div class="row">
-                   <div class="col-sm-1">
-            <label>Từ khóa</label>
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-ambulance text-danger mr-2"></i> Báo cáo Chuyển gửi Dịch vụ Y tế
+            </h1>
+            <p class="text-muted small mb-0">Theo dõi quá trình chuyển gửi xét nghiệm khẳng định HIV, điều trị ARV, khám chữa bệnh STI, hỗ trợ chi phí và thẻ BHYT.</p>
         </div>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-success shadow-sm px-3 py-2 font-weight-bold" x-on:click="exportExcel()" style="border-radius: 8px;">
+                <i class="fas fa-file-excel mr-1"></i> Xuất dữ liệu Excel
+            </button>
         </div>
-        <div class="col-sm-1">
-            <label>Dự án</label>s
-        </div>
-        <div class="col-sm-4">
-            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                </select>
-        </div>
-                    <div class="col-sm-2">
-                        <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Tìm kiếm
-                        </button>
-                        <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                            <i class="fas fa-pencil-alt"></i> Xuất Excel
-                        </button>
+    </div>
+
+    <!-- Statistics Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng ca chuyển gửi dịch vụ</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@totalRecords</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-share-square fa-2x text-primary"></i>
+                            </div>
+                        </div>
                     </div>
-                </div>*@
+                </div>
             </div>
         </div>
-        <div class="card-body">
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đồng ý Điều trị ARV</div>
+                            <div class="h4 mb-0 font-weight-bold text-success">@chuyenGuiARV</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-prescription-bottle-alt fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Dự án hỗ trợ Khám/XN</div>
+                            <div class="h4 mb-0 font-weight-bold text-info">@hoTroKham</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-hand-holding-medical fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #f6c23e !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Hỗ trợ Chi phí BHYT</div>
+                            <div class="h4 mb-0 font-weight-bold text-warning">@hoTroBHYT</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(246, 194, 62, 0.15);">
+                                <i class="fas fa-id-card-alt fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-table mr-2"></i> Chi tiết Ca Chuyển gửi Dịch vụ
+            </h6>
+            <span class="badge badge-light border text-muted">Dữ liệu theo dõi</span>
+        </div>
+        <div class="card-body p-3">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableChuyenGuiDichVu" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" id="dataTableChuyenGuiDichVu" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th style="width: auto;">Dự án </th>
-                            <th style="width: auto;">Tỉnh </th>
-                            <th style="width: auto;">Record ID</th>
-                            <th style="width:9%;">Mã nhóm</th>
-                            <th style="width:auto;">Tên nhóm</th>
-                            <th style="width:9%;">Mã KH</th>
-                            @*<th style="width:auto;">Họ tên KH </th>*@
-                            <th>Loại hình chuyển gửi</th>
-                            <th>Ngày xét nghiệm khẳng định HIV</th>
-                            <th>Địa chỉ xét nghiệm khẳng định</th>
-                            <th>Kết quả xét nghiệm khẳng định</th>
-                            <th>KH có đồng ý điều trị ARV</th>
-                            <th>Địa chỉ chuyển gửi điều trị</th>
-                            <th>Ngày bắt đầu điều trị</th>
-                            <th>Tải lượng virus tại thời điểm bắt đầu điều trị </th>
-                            <th>Tải lượng virus tại thời điểm sau 6 tháng</th>
-                            <th>Tải lượng virus tại thời điểm sau 12 tháng</th>
-                            <th>3 tháng </th>
-                            <th>6 tháng</th>
-                            <th>9 tháng</th>
-                            <th>12 tháng </th>
-                            <th>Ngày khám</th>
-                            <th>Địa chỉ khám</th>
-                            <th>Lần khám </th>
-                            <th>Chẩn đoán của bác sỹ</th>
-                            <th>Khác (ghi rõ)</th>
-                            <th>Được bác sỹ kê đơn</th>
-                            <th>Dùng thuốc theo đơn của Bác sỹ kê</th>
-                            <th>Dự án hỗ trợ chi phí khám và điều trị</th>
-                            <th>Ngày xét nghiệm/khám </th>
-                            <th>Địa chỉ xét nghiệm/khám</th>
-                            <th>Lần xét nghiệm/khám</th>
-                            <th>Chẩn đoán của bác sỹ</th>
-                            <th>Khác (ghi rõ)</th>
-                            <th>Điều trị theo chẩn đoán của bác sỹ</th>
-                            <th>Dự án hỗ trợ chi phí khám/xét nghiệm và điều trị</th>
-                            <th>Dự án hỗ trợ chi phí mua BHYT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dự án</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tỉnh</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Record ID</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã & Tên nhóm</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã KH</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Loại hình chuyển gửi</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ngày XN Khẳng định</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Địa chỉ XN</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Kết quả XN</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Đồng ý ARV</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Địa chỉ chuyển gửi ARV</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ngày bắt đầu ARV</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Hỗ trợ khám</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Hỗ trợ BHYT</th>
                         </tr>
                     </thead>
-                    @foreach (var item in Model)
-                    {
-                <tr>
-                    <td class="text-left">@item.maduan</td>
-                    <td class="text-left">@item.CityName</td>
-                    <td class="text-left">@item.record_id</td>
-                    <td class="text-left">@item.manhom_tbh</td>
-                    <td class="text-left">@item.tennhom_tbh</td>
-                    <td class="text-left">@item.makh</td>
-                    @*<td class="text-left">@item.hoten</td>*@
-                    <td class="text-right">@item.loaihinh </td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_xn)) </td>
-                    @*<td class="text-center">@(item.ngay_xn != null ? item.ngay_xn.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
-                    <td class="text-left">@item.diachi_xn </td>
-                    <td class="text-left">@item.kq_xn </td>
-                    <td class="text-left">@item.dieutri </td>
-                    <td class="text-left">@item.diachi_cg </td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_bddt)) </td>
-                    @*<td class="text-center">@(item.ngay_bddt != null ? item.ngay_bddt.Value.ToString("yyyy-MM-dd") : string.Empty )</td>*@
-                    <td class="text-left">@item.taiuong_bd </td>
-                    <td class="text-left">@item.taiuong_bd_2 </td>
-                    <td class="text-left">@item.taiuong_bd_21 </td>
-                    <td class="text-left">@item.s3t </td>
-                    <td class="text-left">@item.s6t </td>
-                    <td class="text-left">@item.s9t </td>
-                    <td class="text-left">@item.s12t </td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaykham)) </td>
-                    @*<td class="text-center">@(item.ngaykham != null ? item.ngaykham.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>*@
-                    <td class="text-left">@item.diachikham </td>
-                    <td class="text-left">@item.lankham </td>
-                    <td class="text-left">@item.chandoan </td>
-                    <td class="text-left">@item.khac </td>
-                    <td class="text-left">@item.kedon </td>
-                    <td class="text-left">@item.dungthuoc </td>
-                    <td class="text-left">@item.hotro </td>
-                    <td class="text-center">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngaykxn)) </td>
-                    @*<td class="text-center">@(item.ngaykxn != null ? item.ngaykxn.Value.ToString("yyyy-MM-dd") : string.Empty ) </td>*@
-                    <td class="text-left">@item.diachi_kxn </td>
-                    <td class="text-left">@item.lan_xnk </td>
-                    <td class="text-left">@item.chandoan1 </td>
-                    <td class="text-left">@item.khac_sti </td>
-                    <td class="text-left">@item.dieutri_sti </td>
-                    <td class="text-left">@item.hotro_sti </td>
-                    <td class="text-left">@item.hotro_bhyt </td>
-
-                </tr>
-                    }
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="badge badge-light border font-weight-bold text-dark">@(item.maduan ?? "BVTL")</span></td>
+                                    <td><i class="fas fa-map-marker-alt text-danger mr-1 small"></i>@item.CityName</td>
+                                    <td><span class="badge badge-light font-weight-bold text-primary">#@item.record_id</span></td>
+                                    <td>
+                                        <div class="font-weight-bold text-dark">@item.tennhom_tbh</div>
+                                        <small class="text-muted">(@item.manhom_tbh)</small>
+                                    </td>
+                                    <td><span class="badge badge-light font-weight-bold text-secondary">@item.makh</span></td>
+                                    <td class="text-dark small">@(item.loaihinh ?? "—")</td>
+                                    <td class="text-center small font-weight-bold text-gray-700">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_xn))</td>
+                                    <td class="text-dark small">@(item.diachi_xn ?? "—")</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.kq_xn) && item.kq_xn.ToLower().Contains("dương"))
+                                        {
+                                            <span class="badge badge-danger">Dương tính</span>
+                                        }
+                                        else if (!string.IsNullOrEmpty(item.kq_xn) && item.kq_xn.ToLower().Contains("âm"))
+                                        {
+                                            <span class="badge badge-success">Âm tính</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-light text-muted">@(item.kq_xn ?? "—")</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.dieutri) && (item.dieutri.ToLower().Contains("có") || item.dieutri.ToLower().Contains("đồng ý")))
+                                        {
+                                            <span class="badge badge-success px-2 py-1"><i class="fas fa-check mr-1"></i> Có</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Không</span>
+                                        }
+                                    </td>
+                                    <td class="text-dark small">@(item.diachi_cg ?? "—")</td>
+                                    <td class="text-center small text-muted">@String.Format("{0:dd/MM/yyyy}", new Common.Common.Ultil().ConvertDateFromUtc(item.ngay_bddt))</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.hotro) && item.hotro.ToLower().Contains("có"))
+                                        {
+                                            <span class="badge badge-info px-2 py-1"><i class="fas fa-check mr-1"></i> Có</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.hotro_bhyt) && item.hotro_bhyt.ToLower().Contains("có"))
+                                        {
+                                            <span class="badge badge-warning px-2 py-1 text-dark"><i class="fas fa-check mr-1"></i> Có</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -141,5 +202,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/ChuyenGuiDichVuController.js"></script>
+    <script src="~/app/Controller/AlpineChuyenGuiDichVu.js?v=@DateTime.Now.Ticks"></script>
 }

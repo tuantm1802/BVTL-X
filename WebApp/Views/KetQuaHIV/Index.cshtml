@@ -1,98 +1,184 @@
-@model  System.Collections.Generic.List<Model.ModelExtend.KetQuaHIVPageModel>
+@model System.Collections.Generic.List<Model.ModelExtend.KetQuaHIVPageModel>
 @{
-    ViewBag.Title = "Kết quả HIV";
+    ViewBag.Title = "Báo cáo Kết quả Xét nghiệm HIV";
+    var totalRecords = Model != null ? Model.Count : 0;
+    var duongTinh = Model != null ? Model.Count(x => x.ketqua == 1) : 0;
+    var amTinh = Model != null ? Model.Count(x => x.ketqua == -1) : 0;
+    var dangARV = Model != null ? Model.Count(x => x.dangdieutri_hiv == 1) : 0;
 }
-<style type="text/css">
-    div.dataTables_length select {
-        width: 70px !important;
-    }
-</style>
-<div class="container-fluid" x-data="alpineKetQuaHIV()">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Kết quả HIV</h1>
-    <p class="mb-4">
-    </p>
+<div class="container-fluid py-3" x-data="alpineKetQuaHIV()">
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <div class="card-tools">
-                @*<div class="row">
-                <div class="col-sm-1">
-            <label>Từ khóa</label>
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
+                <i class="fas fa-virus text-danger mr-2"></i> Báo cáo Kết quả Xét nghiệm HIV
+            </h1>
+            <p class="text-muted small mb-0">Theo dõi toàn bộ kết quả xét nghiệm HIV, tình trạng điều trị ARV và cơ sở điều trị theo nhóm thu thập dữ liệu.</p>
         </div>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" ng-model="modelSearch.KeyWord" />
+        <div class="mt-3 mt-md-0 d-flex align-items-center">
+            <button type="button" class="btn btn-success shadow-sm px-3 py-2 font-weight-bold" x-on:click="exportExcel()" style="border-radius: 8px;">
+                <i class="fas fa-file-excel mr-1"></i> Xuất dữ liệu Excel
+            </button>
         </div>
-        <div class="col-sm-1">
-            <label>Dự án</label>s
-        </div>
-        <div class="col-sm-4">
-            <select class="form-control" ui-select2 ng-model="modelSearch.MaDuAn" name="MaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
-                </select>
-        </div>
-                <div class="col-sm-2">
-                    <button type="button" ng-click="LoadPage(2)" ng-show="RoleBtnSearch == true" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Tìm kiếm
-                    </button>
-                    <button type="button" ng-show="RoleBtnExportExcel == true" class="btn btn-primary" ng-click="ExportExcel()">
-                        <i class="fas fa-pencil-alt"></i> Xuất Excel
-                    </button>
+    </div>
+
+    <!-- Statistics Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số lượt XN HIV</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@totalRecords</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
+                                <i class="fas fa-vial fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>*@
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTableKetQuaHIV" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style="width: auto;">Dự án </th>
-                            <th style="width: auto;">Tỉnh </th>
-                            <th style="width: auto;">Record ID </th>
-                            <th style="width:9%;">Mã nhóm</th>
-                            <th style="width:auto;">Tên nhóm </th>
-                            <th style="width:9%;">Mã KH</th>
-                            @*<th style="width:auto;">Họ tên KH </th>*@
-                            <th style="width:9%;">Tình trạng</th>
-                            <th style="width:9%;">ARV</th>
-                            <th style="width:9%;">Cơ sở điều trị</th>
-                            <th style="width:9%;">Khách hàng có tham gia xét nghiệm HIV?</th>
-                            <th style="width:9%;">Ngày xét nghiệm</th>
-                            <th style="width:9%;">Kết quả xét nghiệm</th>
-                            <th style="width:9%;">Lý do không xét nghiệm</th>
 
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #e74a3b !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Dương tính (+)</div>
+                            <div class="h4 mb-0 font-weight-bold text-danger">@duongTinh</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(231, 74, 59, 0.1);">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Âm tính (-)</div>
+                            <div class="h4 mb-0 font-weight-bold text-success">@amTinh</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
+                                <i class="fas fa-shield-alt fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Đang điều trị ARV</div>
+                            <div class="h4 mb-0 font-weight-bold text-info">@dangARV</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
+                                <i class="fas fa-capsules fa-2x text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-table mr-2"></i> Danh sách Chi tiết Kết quả Xét nghiệm
+            </h6>
+            <span class="badge badge-light border text-muted">Cập nhật theo dữ liệu hệ thống</span>
+        </div>
+        <div class="card-body p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="dataTableKetQuaHIV" width="100%" cellspacing="0">
+                    <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
+                        <tr>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Dự án</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tỉnh / Thành</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Record ID</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã & Tên nhóm</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Mã KH</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ngày xét nghiệm</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Kết quả xét nghiệm</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Điều trị ARV</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Cơ sở điều trị</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Lý do không XN</th>
                         </tr>
                     </thead>
-                    @{
-                        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-
-                        foreach (var item in Model)
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
                         {
-                            DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngayxn, cstZone);
+                            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-                            <tr>
-                                <td class="text-left">@item.maduan</td>
-                                <td class="text-left">@item.CityName</td>
-                                <td class="text-left">@item.record_id</td>
-                                <td class="text-left">@item.manhom_tbh</td>
-                                <td class="text-left">@item.tennhom_tbh</td>
-                                <td class="text-left">@item.makh</td>
-                                @*<td class="text-left">@item.hoten</td>*@
-                                <td class="text-left">@item.tinhtrang</td>
-                                <td class="text-left">@item.arv</td>
-                                <td class="text-left">@item.cs_dieutri</td>
-                                <td class="text-center">@(item.dangdieutri_hiv == 1?"Có":(item.dangdieutri_hiv == 0?"Không":""))</td>
-                                <td class="text-center">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
-                                @*<td class="text-center">@(item.ngayxn != null ? item.ngayxn.ToString("yyyy-MM-dd") : string.Empty )</td>*@
-                                @*<td class="text-left">@item.ngayxntext</td>*@
-                                <td class="text-right">@(item.ketqua ==-1 ? "Âm tính": (item.ketqua == 1 ? "Dương tính":"Không xác định"))</td>
-                                <td class="text-left">@item.lydo</td>
+                            foreach (var item in Model)
+                            {
+                                DateTime dNgayTiepCan = TimeZoneInfo.ConvertTimeFromUtc(item.ngayxn, cstZone);
 
-                            </tr>
+                                <tr>
+                                    <td><span class="badge badge-light border font-weight-bold text-dark">@(item.maduan ?? "BVTL")</span></td>
+                                    <td><i class="fas fa-map-marker-alt text-danger mr-1 small"></i>@item.CityName</td>
+                                    <td><span class="badge badge-light font-weight-bold text-primary">#@item.record_id</span></td>
+                                    <td>
+                                        <div class="font-weight-bold text-dark">@item.tennhom_tbh</div>
+                                        <small class="text-muted">(@item.manhom_tbh)</small>
+                                    </td>
+                                    <td><span class="badge badge-light font-weight-bold text-secondary">@item.makh</span></td>
+                                    <td class="text-center font-weight-bold text-gray-700">@String.Format("{0:dd/MM/yyyy}", dNgayTiepCan)</td>
+                                    <td class="text-center">
+                                        @if (item.ketqua == 1)
+                                        {
+                                            <span class="badge badge-danger px-3 py-2 font-weight-bold shadow-xs">
+                                                <i class="fas fa-plus mr-1"></i> Dương tính
+                                            </span>
+                                        }
+                                        else if (item.ketqua == -1)
+                                        {
+                                            <span class="badge badge-success px-3 py-2 font-weight-bold shadow-xs">
+                                                <i class="fas fa-minus mr-1"></i> Âm tính
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary px-3 py-2 font-weight-bold">
+                                                Không xác định
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.dangdieutri_hiv == 1)
+                                        {
+                                            <span class="badge badge-info px-2 py-1"><i class="fas fa-check mr-1"></i> Có</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Không</span>
+                                        }
+                                    </td>
+                                    <td class="text-dark small">@(string.IsNullOrEmpty(item.cs_dieutri) ? "—" : item.cs_dieutri)</td>
+                                    <td class="text-muted small">@(string.IsNullOrEmpty(item.lydo) ? "—" : item.lydo)</td>
+                                </tr>
+                            }
                         }
-                    }
+                    </tbody>
                 </table>
             </div>
         </div>

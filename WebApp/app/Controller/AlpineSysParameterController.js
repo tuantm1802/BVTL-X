@@ -1,5 +1,5 @@
 document.addEventListener('alpine:init', function () {
-    Alpine.data('alpineChatGayNghienTX3TH', function () {
+    Alpine.data('alpineSysParameter', function () {
         return {
             items: [],
             totalItems: 0,
@@ -8,7 +8,16 @@ document.addEventListener('alpine:init', function () {
             currentPage: 1,
             pageSize: 20,
 
+            // Stats
+            stats: {
+                total: 0,
+                activeCount: 0,
+                stringTypeCount: 0,
+                numberTypeCount: 0
+            },
+
             init: function () {
+                window.alpineSysParameterInstance = this;
                 this.loadData();
             },
 
@@ -18,7 +27,7 @@ document.addEventListener('alpine:init', function () {
 
                 $.ajax({
                     type: 'POST',
-                    url: '/ChatGayNghienTX3TH/GetAll',
+                    url: '/SysParameter/GetAll',
                     data: {
                         KeyWord: self.keyword || '',
                         currentPage: self.currentPage,
@@ -28,6 +37,7 @@ document.addEventListener('alpine:init', function () {
                         if (response && !response.Error) {
                             self.items = response.data || [];
                             self.totalItems = response.totalItems || self.items.length;
+                            self.calculateStats();
                         } else {
                             self.items = [];
                             self.totalItems = 0;
@@ -43,6 +53,14 @@ document.addEventListener('alpine:init', function () {
                 });
             },
 
+            calculateStats: function () {
+                var self = this;
+                self.stats.total = self.totalItems;
+                self.stats.activeCount = self.items.filter(function (x) { return x.IsActive === true; }).length;
+                self.stats.stringTypeCount = self.items.filter(function (x) { return x.ParamValueType === 'STRING'; }).length;
+                self.stats.numberTypeCount = self.items.filter(function (x) { return x.ParamValueType === 'NUMBER'; }).length;
+            },
+
             search: function () {
                 this.currentPage = 1;
                 this.loadData();
@@ -52,6 +70,16 @@ document.addEventListener('alpine:init', function () {
                 this.keyword = '';
                 this.currentPage = 1;
                 this.loadData();
+            },
+
+            openEditModal: function (itemId) {
+                var angularScope = angular.element(document.querySelector('[ng-controller="SysParameterController"]')).scope();
+                if (angularScope && typeof angularScope.editDirect === 'function') {
+                    angularScope.editDirect(itemId);
+                } else if (angularScope && typeof angularScope.edit === 'function') {
+                    angularScope.ParamIdSeleted = itemId;
+                    angularScope.edit();
+                }
             }
         };
     });

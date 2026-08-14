@@ -1,18 +1,19 @@
 document.addEventListener('alpine:init', function () {
-    Alpine.data('alpineKetQuaHIV', function () {
+    Alpine.data('alpinePhieuTuVan', function () {
         return {
             dataTable: null,
             keyword: '',
             init: function () {
                 var self = this;
                 this.$nextTick(function () {
-                    if ($('#dataTableKetQuaHIV').length) {
-                        self.dataTable = $('#dataTableKetQuaHIV').DataTable({
+                    if ($('#dataTablePhieuTuVan').length) {
+                        self.dataTable = $('#dataTablePhieuTuVan').DataTable({
                             lengthMenu: [15, 25, 50, 100],
                             pageLength: 25,
                             ordering: true,
                             searching: true,
                             processing: true,
+                            scrollX: true,
                             language: {
                                 emptyTable: "Không có dữ liệu trong bảng",
                                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
@@ -40,7 +41,7 @@ document.addEventListener('alpine:init', function () {
             },
             exportExcel: function () {
                 var searchVal = this.keyword ? encodeURIComponent(this.keyword) : '';
-                window.location.href = '/KetQuaHIV/ExportData?keyword=' + searchVal;
+                window.location.href = '/PhieuTuVan/ExportData?keyword=' + searchVal;
             }
         };
     });

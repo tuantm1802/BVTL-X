@@ -1,4 +1,4 @@
-﻿app.controller("SysParameterController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+app.controller("SysParameterController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -163,13 +163,17 @@
         $scope.LoadPage(0);
     };
    
-    $scope.edit = function () {
-        var seletedRow = dataTableParam.rows({ selected: true });
-        var count = seletedRow.count();
-        if (count > 0) {
-            $scope.ParamIdSeleted = seletedRow.data()[0].ID;
-        } else {
-            $scope.ParamIdSeleted = 0;
+    $scope.edit = function (targetId) {
+        if (targetId) {
+            $scope.ParamIdSeleted = targetId;
+        } else if (dataTableParam) {
+            var seletedRow = dataTableParam.rows({ selected: true });
+            var count = seletedRow.count();
+            if (count > 0) {
+                $scope.ParamIdSeleted = seletedRow.data()[0].ID;
+            } else {
+                $scope.ParamIdSeleted = 0;
+            }
         }
 
         if ($scope.ParamIdSeleted > 0 && $scope.ParamIdSeleted != undefined) {
@@ -188,12 +192,16 @@
 
             //kết quả trả về của modal
             modalInstance.result.then(function (response) {
-                $scope.LoadPage(0);
+                if (dataTableParam) $scope.LoadPage(0);
+                if (window.alpineSysParameterInstance) window.alpineSysParameterInstance.loadData();
             });
         } else {
             toastr.error("Bạn chưa chọn bản ghi nào.");
         }
-        
+    };
+
+    $scope.editDirect = function (itemId) {
+        $scope.edit(itemId);
     };
    
 });
