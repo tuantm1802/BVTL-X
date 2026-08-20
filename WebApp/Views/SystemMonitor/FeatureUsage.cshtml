@@ -1,0 +1,414 @@
+@{
+    ViewBag.Title = "Thống Kê Khai Thác Chức Năng & Module";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-3" x-data="featureUsageApp">
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-chart-pie text-primary me-2"></i>Thống Kê Khai Thác Chức Năng & Module
+            </h1>
+            <p class="text-muted small mb-0 mt-1">Đo lường mức độ sử dụng các phân hệ nghiệp vụ, nhận diện chức năng trọng tâm và chức năng ít tương tác</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" :class="{ 'active': rankDays === 7 }" @@click="rankDays = 7; loadTopFeatures(); loadUnderutilizedFeatures(); loadRoleUsage();">7 ngày qua</button>
+                <button class="btn btn-outline-primary" :class="{ 'active': rankDays === 30 }" @@click="rankDays = 30; loadTopFeatures(); loadUnderutilizedFeatures(); loadRoleUsage();">30 ngày qua</button>
+                <button class="btn btn-outline-primary" :class="{ 'active': rankDays === 90 }" @@click="rankDays = 90; loadTopFeatures(); loadUnderutilizedFeatures(); loadRoleUsage();">90 ngày qua</button>
+            </div>
+            <button class="btn btn-sm btn-primary shadow-sm" @@click="loadKPIs(); loadTopFeatures(); loadUnderutilizedFeatures(); loadUsageDetails();" :disabled="loading">
+                <i class="fas fa-sync-alt fa-sm" :class="{ 'fa-spin': loading }"></i> Làm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards Row -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Top Feature -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-primary shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Chức Năng Dùng Nhiều Nhất
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800 text-truncate" style="max-width: 180px;" x-text="kpis.topFeatureName || kpis.TopFeatureName || 'Chưa có dữ liệu'" :title="kpis.topFeatureName || kpis.TopFeatureName || ''">Đang tải...</div>
+                            <div class="small text-muted mt-1" x-text="(kpis.topFeatureHits !== undefined ? kpis.topFeatureHits : (kpis.TopFeatureHits || 0)) + ' lượt tương tác'"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-trophy fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Tổng Thao Tác Nghiệp Vụ -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-success shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Thao Tác Nghiệp Vụ (30 ngày)
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.totalMonthlyMutations !== undefined ? kpis.totalMonthlyMutations : (kpis.TotalMonthlyMutations || 0)">0</div>
+                            <div class="small text-muted mt-1">Lượt Thêm, Sửa, Xóa dữ liệu</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-edit fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Lượt Xuất File / Báo Cáo -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-info shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Xuất Báo Cáo / Excel (30 ngày)
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.totalMonthlyExports !== undefined ? kpis.totalMonthlyExports : (kpis.TotalMonthlyExports || 0)">0</div>
+                            <div class="small text-muted mt-1">Lượt xuất dữ liệu báo cáo</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-export fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Thời Gian Phản Hồi Trung Bình -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-warning shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Tốc Độ Phản Hồi Trung Bình
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="(kpis.systemAvgResponseTimeMs !== undefined ? kpis.systemAvgResponseTimeMs : (kpis.SystemAvgResponseTimeMs || 0)) + ' ms'">0 ms</div>
+                            <div class="small text-muted mt-1">Thời gian xử lý yêu cầu trung bình</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tachometer-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-white border-bottom-0 pb-0 pt-3">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'rankings' }" 
+                       href="#" @@click.prevent="activeTab = 'rankings'; $nextTick(() => renderTopChart())">
+                        <i class="fas fa-medal text-warning me-1"></i> Bảng Xếp Hạng & Khai Thác
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'details' }" 
+                       href="#" @@click.prevent="activeTab = 'details'">
+                        <i class="fas fa-list-alt text-primary me-1"></i> Chi Tiết Khai Thác Theo Chức Năng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'roles' }" 
+                       href="#" @@click.prevent="activeTab = 'roles'; $nextTick(() => renderRoleChart())">
+                        <i class="fas fa-user-tag text-success me-1"></i> Phân Bổ Theo Nhóm Quyền
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+
+            <!-- TAB 1: RANKINGS & TOP FEATURES -->
+            <div x-show="activeTab === 'rankings'" x-transition>
+                
+                <!-- Chart: Top Features -->
+                <div class="card border mb-4">
+                    <div class="card-header bg-light py-2">
+                        <h6 class="font-weight-bold text-gray-800 mb-0 small">
+                            <i class="fas fa-chart-bar text-primary me-1"></i> Top 10 Chức Năng Được Khai Thác Nhiều Nhất
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="topFeaturesBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top 10 Table -->
+                <h6 class="font-weight-bold text-gray-800 mb-2 mt-4">Chi tiết Top chức năng</h6>
+                <div class="table-responsive mb-4">
+                    <table class="table table-hover align-middle border mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">Hạng</th>
+                                <th>Chức Năng</th>
+                                <th>Phân Nhóm</th>
+                                <th class="text-center">Tổng Lượt Tương Tác</th>
+                                <th class="text-center">Số User Sử Dụng</th>
+                                <th class="text-center">Xem Trang</th>
+                                <th class="text-center">Thêm / Sửa / Xóa</th>
+                                <th class="text-center">Xuất File</th>
+                                <th class="text-center">Tốc Độ Xử Lý TB</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-if="loading && topFeatures.length === 0">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Đang tải dữ liệu xếp hạng...
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-if="!loading && topFeatures.length === 0">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Chưa có dữ liệu tương tác trong khoảng thời gian này
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-for="(item, idx) in topFeatures" :key="item.ControllerName">
+                                <tr>
+                                    <td class="text-center">
+                                        <span class="badge rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                              :class="idx === 0 ? 'bg-warning text-dark' : idx === 1 ? 'bg-secondary text-white' : idx === 2 ? 'bg-danger text-white' : 'bg-light text-dark border'" 
+                                              style="width: 26px; height: 26px;" x-text="idx + 1"></span>
+                                    </td>
+                                    <td>
+                                        <div class="font-weight-bold text-gray-900" x-text="item.FeatureName"></div>
+                                        <div class="small text-muted font-monospace" x-text="item.ControllerName"></div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border font-weight-normal" x-text="item.Category"></span>
+                                    </td>
+                                    <td class="text-center font-weight-bold text-primary" x-text="item.TotalHits"></td>
+                                    <td class="text-center" x-text="item.TotalUsers"></td>
+                                    <td class="text-center text-muted" x-text="item.ViewCount"></td>
+                                    <td class="text-center font-weight-semibold text-success" x-text="item.MutationCount"></td>
+                                    <td class="text-center font-weight-semibold text-info" x-text="item.ExportCount"></td>
+                                    <td class="text-center font-monospace small" x-text="item.AvgDurationMs + ' ms'"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Underutilized Features Section -->
+                <div class="card border border-warning bg-light">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-exclamation-circle text-warning fa-lg me-2"></i>
+                            <h6 class="font-weight-bold text-gray-800 mb-0">Các Chức Năng "Ngủ Đông" (Ít hoặc không có lượt sử dụng)</h6>
+                        </div>
+                        <p class="small text-muted mb-3">Danh sách các chức năng trong menu có &le; 5 lượt tương tác trong khoảng thời gian đã chọn, giúp quản trị viên lên kế hoạch đào tạo hoặc tinh giản quy trình:</p>
+                        
+                        <div class="row g-2">
+                            <template x-for="item in underutilizedFeatures" :key="item.ControllerName">
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card border bg-white shadow-none p-2 h-100">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="font-weight-bold small text-gray-900" x-text="item.FeatureName"></div>
+                                                <div class="small text-muted font-monospace" x-text="item.ControllerName"></div>
+                                            </div>
+                                            <span class="badge bg-warning text-dark" x-text="item.TotalHits + ' lượt'"></span>
+                                        </div>
+                                        <div class="small text-muted mt-2">
+                                            Hoạt động cuối: <span class="font-weight-semibold" x-text="item.LastUsedDateText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: DETAILS -->
+            <div x-show="activeTab === 'details'" x-transition>
+                <!-- Filters -->
+                <div class="row g-2 mb-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small font-weight-bold">Từ khóa:</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Chức năng, action, người dùng..." 
+                               x-model="detailSearch.keyword" @@keyup.enter="detailSearch.currentPage = 1; loadUsageDetails();">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small font-weight-bold">Loại thao tác:</label>
+                        <select class="form-select form-select-sm" x-model="detailSearch.actionType" @@change="detailSearch.currentPage = 1; loadUsageDetails();">
+                            <option value="all">Tất cả loại thao tác</option>
+                            <option value="View">Xem trang (View)</option>
+                            <option value="Search">Tìm kiếm / Tải dữ liệu</option>
+                            <option value="Create">Thêm mới (Create)</option>
+                            <option value="Update">Chỉnh sửa (Update)</option>
+                            <option value="Delete">Xóa dữ liệu (Delete)</option>
+                            <option value="ExportExcel">Xuất Excel / Báo cáo</option>
+                            <option value="Sync">Đồng bộ (Sync)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-weight-bold">Từ ngày:</label>
+                        <input type="date" class="form-control form-control-sm" x-model="detailSearch.fromDate">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-weight-bold">Đến ngày:</label>
+                        <input type="date" class="form-control form-control-sm" x-model="detailSearch.toDate">
+                    </div>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button class="btn btn-sm btn-primary flex-fill" @@click="detailSearch.currentPage = 1; loadUsageDetails();">
+                            <i class="fas fa-filter me-1"></i> Lọc
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" @@click="resetDetailFilter();">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Details Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle border mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">STT</th>
+                                <th>Chức Năng (Controller)</th>
+                                <th>Hành Động (Action)</th>
+                                <th class="text-center">Loại Thao Tác</th>
+                                <th class="text-center">Tổng Lượt Gọi</th>
+                                <th class="text-center">Tốc Độ Xử Lý TB</th>
+                                <th class="text-center">Lượt Lỗi</th>
+                                <th>Tương Tác Gần Nhất</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-if="loading && usageDetails.length === 0">
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Đang tải dữ liệu chi tiết...
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-if="!loading && usageDetails.length === 0">
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Không có dữ liệu khai thác phù hợp
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-for="(item, idx) in usageDetails" :key="item.ControllerName + '_' + item.ActionName + '_' + item.ActionType">
+                                <tr>
+                                    <td class="text-muted small" x-text="(detailSearch.currentPage - 1) * detailSearch.pageSize + idx + 1"></td>
+                                    <td>
+                                        <div class="font-weight-bold text-primary" x-text="item.ControllerName"></div>
+                                    </td>
+                                    <td>
+                                        <span class="font-monospace small text-dark" x-text="item.ActionName || 'Index'"></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span :class="getActionTypeBadge(item.ActionType)" x-text="getActionTypeText(item.ActionType)"></span>
+                                    </td>
+                                    <td class="text-center font-weight-bold text-gray-900" x-text="item.HitCount"></td>
+                                    <td class="text-center font-monospace small" x-text="item.AvgExecutionTimeMs + ' ms'"></td>
+                                    <td class="text-center">
+                                        <span class="badge" :class="item.ErrorCount > 0 ? 'bg-danger text-white' : 'bg-light text-muted border'" x-text="item.ErrorCount"></span>
+                                    </td>
+                                    <td class="small text-muted" x-text="item.LastAccessedTimeText"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination for Details -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2" x-show="usageTotal > 0">
+                    <div class="small text-muted">
+                        Hiển thị <span class="font-weight-bold" x-text="usageDetails.length"></span> trên tổng số <span class="font-weight-bold" x-text="usageTotal"></span> mục
+                    </div>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" :class="{ 'disabled': detailSearch.currentPage <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeDetailPage(1)">&laquo; Đầu</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': detailSearch.currentPage <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeDetailPage(detailSearch.currentPage - 1)">&lsaquo; Trước</a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link" x-text="detailSearch.currentPage + ' / ' + usageTotalPages"></span>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': detailSearch.currentPage >= usageTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeDetailPage(detailSearch.currentPage + 1)">Sau &rsaquo;</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': detailSearch.currentPage >= usageTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeDetailPage(usageTotalPages)">Cuối &raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 3: ROLES -->
+            <div x-show="activeTab === 'roles'" x-transition>
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-5">
+                        <div class="card border">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="font-weight-bold text-gray-800 mb-0 small">Cơ cấu Sử dụng theo Nhóm Quyền</h6>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 260px; position: relative;">
+                                    <canvas id="roleUsageChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="font-weight-bold text-gray-800 mb-3">Thống kê số lượng thao tác theo Nhóm quyền</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nhóm Quyền / Vai Trò</th>
+                                        <th class="text-center" style="width: 150px;">Tổng Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(count, role) in roleDistribution" :key="role">
+                                        <tr>
+                                            <td>
+                                                <i class="fas fa-shield-alt text-primary me-2"></i>
+                                                <span class="font-weight-semibold" x-text="role"></span>
+                                            </td>
+                                            <td class="text-center font-weight-bold text-primary" x-text="count"></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/app/Controller/AlpineFeatureUsageController.js"></script>
+}

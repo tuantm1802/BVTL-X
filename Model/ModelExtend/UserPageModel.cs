@@ -1,4 +1,4 @@
-﻿using Model.Model;
+using Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,12 +57,11 @@ namespace Model.ModelExtend
         {
             get
             {
-                var date = "";
-                if (CreatedDate != null)
+                if (DateOfBirth.HasValue && DateOfBirth.Value > new DateTime(1900, 1, 1))
                 {
-                    date = Convert.ToDateTime(DateOfBirth).ToString("dd/MM/yyyy");
+                    return DateOfBirth.Value.ToString("dd/MM/yyyy");
                 }
-                return date;
+                return string.Empty;
             }
         }
         public string UserGroupID { get; set; }

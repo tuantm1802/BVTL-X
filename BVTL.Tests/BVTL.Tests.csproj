@@ -50,6 +50,7 @@
     <Compile Include="ExcelReportServiceTests.cs" />
     <Compile Include="AuthorizationTests.cs" />
     <Compile Include="HttpRetryHelperTests.cs" />
+    <Compile Include="SystemMonitorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

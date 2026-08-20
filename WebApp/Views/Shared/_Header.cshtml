@@ -1,4 +1,4 @@
-﻿@using Common
+@using Common
 @{
     var userSession = (Model.ModelExtend.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
     string avatar = string.Empty;
@@ -65,170 +65,84 @@
         <!-- Nav Item - Alerts -->
         <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <span class="badge badge-danger badge-counter">@(notifications != null ? notifications.Count:0)</span>
+                <span class="badge bg-danger text-white badge-counter" style="position: absolute; transform: scale(.7); transform-origin: top right; right: .25rem; margin-top: -.25rem;">@(notifications != null ? notifications.Count : 0)</span>
             </a>
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            <div class="dropdown-list dropdown-menu dropdown-menu-end dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                    Thông báo
+                <h6 class="dropdown-header bg-primary text-white py-2">
+                    <i class="fas fa-bell me-1"></i> Thông báo hệ thống
                 </h6>
-                @*<a class="dropdown-item d-flex align-items-center" href="#">
-            <div class="mr-3">
-                <div class="icon-circle bg-primary">
-                    <i class="fas fa-file-alt text-white"></i>
-                </div>
-            </div>
-            <div>
-                <div class="small text-gray-500">December 12, 2019</div>
-                <span class="font-weight-bold">A new monthly report is ready to download!</span>
-            </div>
-        </a>
-        <a class="dropdown-item d-flex align-items-center" href="#">
-            <div class="mr-3">
-                <div class="icon-circle bg-success">
-                    <i class="fas fa-donate text-white"></i>
-                </div>
-            </div>
-            <div>
-                <div class="small text-gray-500">December 7, 2019</div>
-                $290.29 has been deposited into your account!
-            </div>
-        </a>*@
                 @if (notifications != null && notifications.Any())
                 {
                     foreach (var item in notifications)
                     {
-                        <a class="dropdown-item d-flex align-items-center" href="#">
-                            <div class="mr-3">
-                                <div class="icon-circle bg-warning">
-                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                        <a class="dropdown-item d-flex align-items-center py-2" href="#">
+                            <div class="mr-3 me-2">
+                                <div class="icon-circle bg-warning text-white p-2 rounded-circle">
+                                    <i class="fas fa-exclamation-triangle"></i>
                                 </div>
                             </div>
                             <div>
-                                <div class="small text-gray-500"></div>
-                                @item.NoiDung
+                                <span class="font-weight-bold small">@item.NoiDung</span>
                             </div>
                         </a>
                     }
                 }
-
-                <a class="dropdown-item text-center small text-gray-500" href="/Notification/Index">Xem tất cả</a>
-            </div>
-        </li>
-
-        <!-- Nav Item - Messages -->
-        <!--<li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>-->
-        <!-- Counter - Messages -->
-        <!--<span class="badge badge-danger badge-counter">7</span>
-        </a>-->
-        <!-- Dropdown - Messages -->
-        <!--<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                    Message Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="~/Assest/img/undraw_profile_1.svg"
-                        alt="...">
-                        <div class="status-indicator bg-success"></div>
-                    </div>
-                    <div class="font-weight-bold">
-                        <div class="text-truncate">
-                            Hi there! I am wondering if you can help me with a
-                            problem I've been having.
-                        </div>
-                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="~/Assest/img/undraw_profile_2.svg"
-                             alt="...">
-                        <div class="status-indicator"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">
-                            I have the photos that you ordered last month, how
-                            would you like them sent to you?
-                        </div>
-                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="~/Assest/img/undraw_profile_3.svg"
-                             alt="...">
-                        <div class="status-indicator bg-warning"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">
-                            Last month's report looks great, I am very happy with
-                            the progress so far, keep up the good work!
-                        </div>
-                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
-                             alt="...">
-                        <div class="status-indicator bg-success"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">
-                            Am I a good boy? The reason I ask is because someone
-                            told me that people say this to all dogs, even if they aren't good...
-                        </div>
-                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
-                    </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-            </div>
-        </li>-->
-        @*<div class="topbar-divider d-none d-sm-block"></div>*@
-
-        <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@userSession.Name</span>
-                @if (string.IsNullOrEmpty(avatar))
-                {
-                    <img class="img-profile rounded-circle" src="~/Assest/img/undraw_profile.svg">
-                }
                 else
                 {
-                    <img class="img-profile rounded-circle" src="@avatar">
+                    <div class="dropdown-item text-center small text-muted py-3">Không có thông báo mới</div>
                 }
-            </a>
-            <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/User/GetProfile?Id=@userSession.UserID">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Thông tin
-                </a>
-                <a class="dropdown-item" href="/User/ChangePassword?Id=@userSession.UserID">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Đổi mật khẩu
-                </a>
-                @*<a class="dropdown-item" href="#">
-                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Activity Log
-                    </a>*@
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/Login/Logout">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Đăng xuất
-                </a>
+
+                <a class="dropdown-item text-center small text-gray-500 py-2 border-top" href="/Notification/Index">Xem tất cả thông báo</a>
             </div>
         </li>
+
+        <div class="topbar-divider d-none d-sm-block mx-2" style="width: 0; border-right: 1px solid #e3e6f0; height: calc(4.375rem - 2rem); margin: auto 1rem;"></div>
+
+        <!-- Nav Item - User Information -->
+        @if (userSession != null)
+        {
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
+                   data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                    <span class="mr-2 me-2 d-none d-lg-inline text-gray-600 font-weight-semibold small">@userSession.Name</span>
+                    @if (string.IsNullOrEmpty(avatar))
+                    {
+                        <div class="avatar-circle bg-light text-primary font-weight-bold d-flex align-items-center justify-content-center rounded-circle shadow-sm" 
+                             style="width: 36px; height: 36px; border: 1px solid #e3e6f0;">
+                            <span>@(string.IsNullOrEmpty(userSession.UserName) ? "US" : (userSession.UserName.Length >= 2 ? userSession.UserName.Substring(0, 2).ToUpper() : userSession.UserName.ToUpper()))</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <img class="img-profile rounded-circle shadow-sm" src="@avatar" style="width: 36px; height: 36px; object-fit: cover; border: 1px solid #e3e6f0;">
+                    }
+                </a>
+                <!-- Dropdown - User Information -->
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-right shadow border-0 animated--grow-in py-2"
+                     aria-labelledby="userDropdown" style="min-width: 220px; z-index: 1050;">
+                    <div class="px-3 py-2 border-bottom bg-light">
+                        <div class="font-weight-bold text-gray-900">@userSession.Name</div>
+                        <div class="small text-muted font-monospace">@userSession.UserName</div>
+                    </div>
+                    <a class="dropdown-item py-2" href="/User/GetProfile?Id=@userSession.UserID">
+                        <i class="fas fa-user-circle fa-sm fa-fw mr-2 me-2 text-primary"></i>
+                        <span>Thông tin tài khoản (Profile)</span>
+                    </a>
+                    <a class="dropdown-item py-2" href="/User/ChangePassword?Id=@userSession.UserID">
+                        <i class="fas fa-key fa-sm fa-fw mr-2 me-2 text-warning"></i>
+                        <span>Đổi mật khẩu</span>
+                    </a>
+                    <div class="dropdown-divider my-1"></div>
+                    <a class="dropdown-item py-2 text-danger font-weight-bold" href="/Login/Logout">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 me-2 text-danger"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+            </li>
+        }
 
     </ul>
 

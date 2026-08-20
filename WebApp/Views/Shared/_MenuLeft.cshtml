@@ -136,6 +136,37 @@
         }
     }
 
+    @if (userSession != null && userSession.IsAdmin)
+    {
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading" style="color: rgba(255,255,255,0.7); font-size: 0.75rem; text-transform: uppercase; padding: 0 1rem; font-weight: 700;">
+            Giám sát Hệ thống
+        </div>
+        <li class="nav-item @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/systemmonitor") || HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/dataquality") ? "active" : "")">
+            <a class="nav-link @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/systemmonitor") || HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/dataquality") ? "" : "collapsed")" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSystemMonitor" aria-expanded="true" aria-controls="collapseSystemMonitor">
+                <i class="fas fa-fw fa-chart-line"></i>
+                <span>Giám sát & Thống kê</span>
+            </a>
+            <div id="collapseSystemMonitor" class="collapse @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/systemmonitor") || HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/dataquality") ? "show" : "")" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Giám sát Truy cập:</h6>
+                    <a class="collapse-item @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/systemmonitor/useraccess") ? "active" : "")" href="/SystemMonitor/UserAccess">
+                        <i class="fas fa-users-cog me-1"></i> Truy cập & Online
+                    </a>
+                    <h6 class="collapse-header">Phân tích Khai thác:</h6>
+                    <a class="collapse-item @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/systemmonitor/featureusage") ? "active" : "")" href="/SystemMonitor/FeatureUsage">
+                        <i class="fas fa-chart-pie me-1"></i> Thống kê Chức năng
+                    </a>
+                    <h6 class="collapse-header">Chất lượng Dữ liệu:</h6>
+                    <a class="collapse-item @(HttpContext.Current.Request.Url.AbsolutePath.ToLower().Contains("/dataquality") ? "active" : "")" href="/DataQuality/Index">
+                        <i class="fas fa-database me-1"></i> Chuẩn hóa & Cảnh báo
+                    </a>
+                </div>
+            </div>
+        </li>
+    }
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

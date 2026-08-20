@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Báo cáo Tiếp cận viên (CD45 - DREAMH)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineBaoCaoTCVCD45">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-user-check text-primary mr-2"></i>BÁO CÁO HOẠT ĐỘNG TIẾP CẬN VIÊN (DỰ ÁN CD45)
+        </h1>
+        <div>
+            <button class="btn btn-outline-primary btn-sm shadow-sm mr-2" @@click="exportSingle()">
+                <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel TCV đang xem
+            </button>
+            <button class="btn btn-danger btn-sm shadow-sm" @@click="exportBatchZip()">
+                <i class="fas fa-file-archive fa-sm mr-1"></i> XUẤT HÀNG LOẠT (.ZIP)
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc & Chọn Tiếp Cận Viên</h6>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Tháng báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="thang" @@change="updateDateRange()">
+                        <template x-for="m in 12" :key="m">
+                            <option :value="m" x-text="'Tháng ' + m"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2">
+                    <label class="font-weight-bold small">Năm</label>
+                    <input type="number" class="form-control form-control-sm" x-model="nam" @@change="updateDateRange()" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Từ ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Đến ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" x-model="toDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <select class="form-control form-control-sm" x-model="selectedCity" @@change="onCityChange()">
+                        <option value="">-- Tất cả tỉnh --</option>
+                        <template x-for="c in listCities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Nhóm (CBO)</label>
+                    <select class="form-control form-control-sm" x-model="selectedNhom" @@change="onNhomChange()">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TCV Selection and Batch Actions -->
+            <div class="row pt-2 border-top">
+                <div class="col-md-6 mb-2">
+                    <label class="font-weight-bold small text-primary">
+                        <i class="fas fa-eye mr-1"></i> Chọn TCV để xem trước báo cáo:
+                    </label>
+                    <select class="form-control form-control-sm" x-model="selectedTCV" @@change="onTCVSelectChange()">
+                        <template x-for="t in filteredTCVs" :key="t.ID">
+                            <option :value="t.MA_TCV" x-text="'[' + t.MA_TCV + '] ' + t.TEN_TCV + ' - ' + t.TEN_NHOM + ' (' + t.CITY_CODE + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end">
+                    <button class="btn btn-primary btn-sm shadow-sm mr-2" @@click="previewData()">
+                        <i class="fas fa-search fa-sm mr-1"></i> Tải lại số liệu
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm" @@click="exportSingle()">
+                        <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel TCV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Multi-select Checklist for Batch ZIP Export -->
+            <div class="row pt-2">
+                <div class="col-12">
+                    <div class="card bg-light border-0">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="font-weight-bold small m-0 text-danger">
+                                    <i class="fas fa-tasks mr-1"></i> Danh sách TCV xuất file ZIP hàng loạt (<span x-text="checkedTCVs.length + '/' + filteredTCVs.length"></span> được chọn):
+                                </label>
+                                <div>
+                                    <label class="small m-0 text-muted cursor-pointer">
+                                        <input type="checkbox" x-model="isSelectAll" @@change="toggleSelectAll()" />
+                                        <span class="font-weight-bold">Chọn tất cả</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="border rounded p-2 bg-white" style="max-height: 120px; overflow-y: auto;">
+                                <div class="row">
+                                    <template x-for="t in filteredTCVs" :key="t.ID">
+                                        <div class="col-md-3 col-sm-6 mb-1">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input type="checkbox" class="custom-control-input" :id="'chk_tcv_' + t.ID" :value="t.ID" x-model="checkedTCVs" />
+                                                <label class="custom-control-label" :for="'chk_tcv_' + t.ID" x-text="t.TEN_TCV + ' (' + t.MA_TCV + ' - ' + t.TEN_NHOM + ')'"></label>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Sheet Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-file-alt mr-1"></i> Xem trước Báo cáo Hoạt động TCV</h6>
+            <div>
+                <span class="badge badge-success px-2 py-1" x-show="selectedTCVObj" x-text="'TCV: ' + (selectedTCVObj ? selectedTCVObj.TEN_TCV : '')"></span>
+                <span class="badge badge-info px-2 py-1 ml-1" x-show="selectedTCVObj" x-text="'Nhóm: ' + (selectedTCVObj ? selectedTCVObj.TEN_NHOM : '')"></span>
+            </div>
+        </div>
+        <div class="card-body p-4 bg-white">
+            <!-- Sheet Header Banner -->
+            <div class="text-center mb-3">
+                <h4 class="font-weight-bold text-dark mb-1">BÁO CÁO HOẠT ĐỘNG - DỰ ÁN CD45</h4>
+                <p class="text-muted font-italic mb-1" x-text="'Kỳ báo cáo: tháng ' + thang + '/' + nam + ' (từ ' + fromDate + ' đến ' + toDate + ')'"></p>
+                <p class="font-weight-bold text-primary mb-0" x-text="'Nhóm: ' + (selectedTCVObj ? selectedTCVObj.TEN_NHOM : '---') + '  |  Tiếp cận viên: ' + (selectedTCVObj ? selectedTCVObj.TEN_TCV : '---')"></p>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm mb-4" style="font-size: 13px;">
+                    <thead class="bg-light text-center">
+                        <tr>
+                            <th style="width: 45px;">#</th>
+                            <th>Thông tin báo cáo</th>
+                            <th style="width: 80px;" class="bg-dark text-white">Tổng</th>
+                            <th style="width: 70px;">PUD</th>
+                            <th style="width: 70px;">PLHIV</th>
+                            <th style="width: 70px;">TG</th>
+                            <th style="width: 70px;">SW</th>
+                            <th style="width: 70px;">MSM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, index) in items" :key="index">
+                            <tr :class="item.IsBold ? 'bg-warning font-weight-bold text-dark' : ''">
+                                <td class="text-center font-weight-bold" x-text="item.STT"></td>
+                                <td :class="item.IndentLevel === 1 ? 'pl-4 text-muted' : ''">
+                                    <span x-text="item.ChiTieu"></span>
+                                </td>
+                                <td class="text-right font-weight-bold text-primary" x-text="formatNumber(item.Tong)"></td>
+                                <td class="text-right" x-text="formatNumber(item.PUD)"></td>
+                                <td class="text-right" x-text="formatNumber(item.PLHIV)"></td>
+                                <td class="text-right" x-text="formatNumber(item.TG)"></td>
+                                <td class="text-right" x-text="formatNumber(item.SW)"></td>
+                                <td class="text-right" x-text="formatNumber(item.MSM)"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="items.length === 0 && !isLoading">
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có phát sinh số liệu trong kỳ này
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="8" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tổng hợp số liệu của Tiếp cận viên...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Signature Footer -->
+            <div class="row pt-4 text-center">
+                <div class="col-4">
+                    <h6 class="font-weight-bold mb-5">Tiếp cận viên</h6>
+                    <p class="text-muted mb-0" x-text="selectedTCVObj ? selectedTCVObj.TEN_TCV : ''"></p>
+                </div>
+                <div class="col-4">
+                    <h6 class="font-weight-bold mb-5">Cán bộ dự án</h6>
+                    <p class="text-muted mb-0">(Ký, ghi rõ họ tên)</p>
+                </div>
+                <div class="col-4">
+                    <h6 class="font-weight-bold mb-5">MnE</h6>
+                    <p class="text-muted mb-0">(Ký, ghi rõ họ tên)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/app/Controller/AlpineBaoCaoTCVCD45Controller.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                var modelName = $(this).attr('x-model');
+                var val = $(this).val();
+                if (modelName === 'fromDate') {
+                    document.querySelector('[x-data=alpineBaoCaoTCVCD45]')._x_dataStack[0].fromDate = val;
+                } else if (modelName === 'toDate') {
+                    document.querySelector('[x-data=alpineBaoCaoTCVCD45]')._x_dataStack[0].toDate = val;
+                }
+            });
+        });
+    </script>
+}

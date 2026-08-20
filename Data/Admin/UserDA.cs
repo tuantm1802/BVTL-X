@@ -26,45 +26,27 @@ namespace Data.Admin
         IEncryptor _encryptor = new Encryptor();
         public int Login(string userName, string password)
         {
-            var result = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
-            if (result == null)
-                return 0;
-
-            if (!result.Status)
-                return -1;
-
-            string savedHash = result.Password;
-            bool isCorrect = false;
-            bool isMd5 = (savedHash != null && savedHash.Length == 32 && System.Text.RegularExpressions.Regex.IsMatch(savedHash, @"^[a-fA-F0-9]+$"));
-
-            if (isMd5)
+            using (var context = new BVTL_REPORTINGEntities())
             {
+                var result = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.UserName == userName);
+                if (result == null)
+                    return 0;
+
+                if (!result.Status)
+                    return -1;
+
+                string savedHash = result.Password;
                 string md5Hash = _encryptor.MD5Hash(password);
-                if (savedHash.Equals(md5Hash, StringComparison.OrdinalIgnoreCase))
+
+                if (savedHash != null && (savedHash.Equals(md5Hash, StringComparison.OrdinalIgnoreCase) || _encryptor.VerifyPassword(password, savedHash)))
                 {
-                    isCorrect = true;
-                    // Auto-migrate to secure PBKDF2 hash
-                    try
-                    {
-                        result.Password = _encryptor.HashPassword(password);
-                        db.SaveChanges();
-                        log.Info("Successfully auto-migrated password to PBKDF2 for user: " + userName);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("Failed to auto-migrate password to PBKDF2 for user: " + userName + ". Error: " + ex.Message);
-                    }
+                    return 1;
+                }
+                else
+                {
+                    return -2;
                 }
             }
-            else
-            {
-                isCorrect = _encryptor.VerifyPassword(password, savedHash);
-            }
-
-            if (isCorrect)
-                return 1;
-            else
-                return -2;
         }
         public BVTL_QT_NGUOI_DUNG GetItemByUserName(string userName)
         {
@@ -212,9 +194,9 @@ namespace Data.Admin
                     {
                         // Thêm người dùng
                         if (!string.IsNullOrEmpty(model.Password))
-                            model.Password = _encryptor.HashPassword(model.Password);
+                            model.Password = _encryptor.MD5Hash(model.Password);
                         else
-                            model.Password = _encryptor.HashPassword("123456789a@");
+                            model.Password = _encryptor.MD5Hash("123456789a@");
                         model.IsActive = true;
                         model = context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
@@ -378,51 +360,60 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
-                var passwordOldb = data.Password;
-                
-                bool isCorrect = false;
-                bool isMd5 = (passwordOldb != null && passwordOldb.Length == 32 && System.Text.RegularExpressions.Regex.IsMatch(passwordOldb, @"^[a-fA-F0-9]+$"));
-                
-                if (isMd5)
+                using (var context = new BVTL_REPORTINGEntities())
                 {
-                    string passwordOd1 = _encryptor.MD5Hash(passwordOd);
-                    isCorrect = passwordOldb.Equals(passwordOd1, StringComparison.OrdinalIgnoreCase);
-                }
-                else
-                {
-                    isCorrect = _encryptor.VerifyPassword(passwordOd, passwordOldb);
-                }
+                    var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
+                    if (data == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy thông tin người dùng.";
+                        return obj;
+                    }
 
-                if (!isCorrect)
-                {
-                    obj.Error = true;
-                    obj.Title = "Bạn nhập mật khẩu cũ không đúng.";
-                }
-                else
-                {
-                    data.Password = _encryptor.HashPassword(passwordNew);
-                    db.SaveChanges();
-                    obj.Error = false;
-                    obj.Title = "Thay đổi mật khẩu thành công!";
-                }
+                    var passwordOldb = data.Password;
+                    string md5Old = _encryptor.MD5Hash(passwordOd);
+                    bool isCorrect = (passwordOldb != null && (passwordOldb.Equals(md5Old, StringComparison.OrdinalIgnoreCase) || _encryptor.VerifyPassword(passwordOd, passwordOldb)));
 
+                    if (!isCorrect)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Bạn nhập mật khẩu cũ không đúng.";
+                    }
+                    else
+                    {
+                        data.Password = _encryptor.MD5Hash(passwordNew);
+                        context.SaveChanges();
+                        obj.Error = false;
+                        obj.Title = "Thay đổi mật khẩu thành công!";
+                    }
+
+                    return obj;
+                }
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => x.PropertyName + ": " + x.ErrorMessage);
+                var fullError = string.Join("; ", errorMessages);
+                log.Error("ChangePassword validation error: " + fullError);
+                obj.Error = true;
+                obj.Title = "Lỗi xác thực dữ liệu: " + fullError;
                 return obj;
             }
             catch (Exception ex)
             {
+                log.Error("ChangePassword error: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
             }
-
         }
 
         /// <summary>
         /// đặt lại mật khẩu mới
         /// </summary>
         /// <param name="nguoiDungId"></param>
-        /// <param name="passwordOd"></param>
         /// <param name="passwordNew"></param>
         /// <returns></returns>
         public ObjectMessage ResetPassword(long nguoiDungId, string passwordNew)
@@ -430,23 +421,43 @@ namespace Data.Admin
             ObjectMessage obj = new ObjectMessage();
             try
             {
-                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
-                var passwordOldb = data.Password;
-                obj.Email = data.Email;
-                data.Password = _encryptor.HashPassword(passwordNew);
-                db.SaveChanges();
-                obj.Error = false;
-                obj.Title = "Reset mật khẩu thành công!";
+                using (var context = new BVTL_REPORTINGEntities())
+                {
+                    var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == nguoiDungId);
+                    if (data == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy thông tin người dùng.";
+                        return obj;
+                    }
 
+                    obj.Email = data.Email;
+                    data.Password = _encryptor.MD5Hash(passwordNew);
+                    context.SaveChanges();
+                    obj.Error = false;
+                    obj.Title = "Reset mật khẩu thành công!";
+
+                    return obj;
+                }
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => x.PropertyName + ": " + x.ErrorMessage);
+                var fullError = string.Join("; ", errorMessages);
+                log.Error("ResetPassword validation error: " + fullError);
+                obj.Error = true;
+                obj.Title = "Lỗi xác thực dữ liệu: " + fullError;
                 return obj;
             }
             catch (Exception ex)
             {
+                log.Error("ResetPassword error: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
             }
-
         }
 
         public ObjectMessage Delete(int Id)

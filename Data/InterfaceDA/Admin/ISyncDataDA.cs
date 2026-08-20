@@ -1,4 +1,4 @@
-﻿using Model.Model;
+using Model.Model;
 using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Data.InterfaceDA.Admin
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-         List<BVTL_API> GetAllByPage(ModelSearch modelSearch, ref int totalRow);
+         List<BVTL_API> GetAllByPage(ModelSearch modelSearch, ref int totalRow, string status = "1");
 
 
         /// <summary>

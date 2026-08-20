@@ -15,6 +15,7 @@ D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Microsoft.IdentityModel.Tokens.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\System.IdentityModel.Tokens.Jwt.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\ClosedXML.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\System.Web.Http.dll
+D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Quartz.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\DataTables-Editor-Server.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Autofac.dll
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Autofac.Integration.Mvc.dll
@@ -42,6 +43,7 @@ D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\EntityFramework.xml
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\System.Web.Optimization.xml
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\ClosedXML.xml
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\System.Web.Http.xml
+D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Quartz.xml
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Autofac.pdb
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Autofac.xml
 D:\Projects\BVTL-X\BVTL.Tests\bin\Debug\Autofac.Integration.Mvc.xml

@@ -68,6 +68,8 @@
   <ItemGroup>
     <Compile Include="Admin\ApiDA.cs" />
     <Compile Include="Admin\BaoCaoTongHopDA.cs" />
+    <Compile Include="Admin\BaoCaoCD45DA.cs" />
+    <Compile Include="Admin\DataQualityDA.cs" />
     <Compile Include="Admin\BVTL_NHOM_TBHDA.cs" />
     <Compile Include="Admin\ChatGayNghien3THDA.cs" />
     <Compile Include="Admin\ChatGayNghienTX3THDA.cs" />
@@ -96,12 +98,16 @@
     <Compile Include="Admin\SyncDataDA.cs" />
     <Compile Include="Admin\SysLogDA.cs" />
     <Compile Include="Admin\SysParameterDA.cs" />
+    <Compile Include="Admin\SystemMonitorDA.cs" />
     <Compile Include="Admin\UserDA.cs" />
     <Compile Include="API\GetDataFromAPI.cs" />
     <Compile Include="API\InsertDataDA.cs" />
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
     <Compile Include="InterfaceDA\Admin\IApiDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ISystemMonitorDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBaoCaoTongHopDA.cs" />
+    <Compile Include="InterfaceDA\IBaoCaoCD45DA.cs" />
+    <Compile Include="InterfaceDA\IDataQualityDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghien3THDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghienTX3THDA.cs" />
@@ -149,3 +155,4 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
+

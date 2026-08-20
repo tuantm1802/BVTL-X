@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Data.InterfaceDA.Admin;
 using log4net;
 using Model.Model;
@@ -25,26 +25,36 @@ namespace Data.Admin
         /// </summary>
         /// <param name="modelSearch"></param>
         /// <returns></returns>
-        public List<BVTL_API> GetAllByPage(ModelSearch modelSearch, ref int totalRow)
+        public List<BVTL_API> GetAllByPage(ModelSearch modelSearch, ref int totalRow, string status = "1")
         {
             db.Configuration.ProxyCreationEnabled = false;
-            int skipRows = (modelSearch.currentPage - 1) * modelSearch.pageSize;
-            if (string.IsNullOrEmpty(modelSearch.KeyWord))
-            {
-                var queryResultPage = db.BVTL_API.Where(x => x.IsActive == true).ToList();
+            int pageSize = modelSearch.pageSize > 0 ? modelSearch.pageSize : 10;
+            int skipRows = (modelSearch.currentPage - 1) * pageSize;
 
-                totalRow = queryResultPage.Count();
-                queryResultPage = queryResultPage.Skip(skipRows) .Take(modelSearch.pageSize).ToList();
-                return queryResultPage.ToList();
-            }
-            else
-            {
-                var queryResultPage = db.BVTL_API.Where(x => x.IsActive == true && x.NameSyncdata.Contains(modelSearch.KeyWord)).ToList();
+            var query = db.BVTL_API.AsQueryable();
 
-                totalRow = queryResultPage.Count();
-                queryResultPage = queryResultPage.Skip(skipRows) .Take(modelSearch.pageSize).ToList();
-                return queryResultPage.ToList();
+            // Lọc theo trạng thái Kích hoạt / Hủy
+            if (status == "1" || status == "active")
+            {
+                query = query.Where(x => x.IsActive == true);
             }
+            else if (status == "0" || status == "inactive")
+            {
+                query = query.Where(x => x.IsActive == false);
+            }
+            // Nếu status == "all" hoặc "-1" -> lấy tất cả
+
+            if (!string.IsNullOrEmpty(modelSearch.KeyWord))
+            {
+                string kw = modelSearch.KeyWord.Trim().ToLower();
+                query = query.Where(x => (x.NameSyncdata != null && x.NameSyncdata.ToLower().Contains(kw))
+                                      || (x.Api_Code != null && x.Api_Code.ToLower().Contains(kw))
+                                      || (x.ReportId != null && x.ReportId.ToLower().Contains(kw)));
+            }
+
+            totalRow = query.Count();
+            var queryResultPage = query.OrderBy(x => x.Api_Id).Skip(skipRows).Take(pageSize).ToList();
+            return queryResultPage;
         }
 
 

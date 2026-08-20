@@ -1,0 +1,578 @@
+@{
+    ViewBag.Title = "Giám Sát Truy Cập & Phiên Người Dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-3" x-data="userAccessApp">
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+                <i class="fas fa-users-cog text-primary me-2"></i>Giám Sát Truy Cập & Phiên Hoạt Động
+            </h1>
+            <p class="text-muted small mb-0 mt-1">Theo dõi thời gian thực người dùng trực tuyến, lịch sử đăng nhập và lưu lượng truy cập hệ thống</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="form-check form-switch me-2">
+                <input class="form-check-input" type="checkbox" id="autoRefreshSwitch" x-model="autoRefresh">
+                <label class="form-check-label small fw-semibold text-gray-700" for="autoRefreshSwitch">
+                    Tự làm mới (20s)
+                </label>
+            </div>
+            <button class="btn btn-sm btn-primary shadow-sm" @@click="loadDashboardKPIs(); loadOnlineUsers(); loadLoginHistory();" :disabled="loading">
+                <i class="fas fa-sync-alt fa-sm" :class="{ 'fa-spin': loading }"></i> Làm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards Row -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Đang Online -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-success shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Đang Trực Tuyến (Real-time)
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.onlineUsersCount !== undefined ? kpis.onlineUsersCount : (kpis.OnlineUsersCount || 0)">0</div>
+                            <div class="small text-muted mt-1">
+                                <span class="badge bg-warning text-dark font-weight-normal" x-text="(kpis.idleUsersCount !== undefined ? kpis.idleUsersCount : (kpis.IdleUsersCount || 0)) + ' tạm rời'"></span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DAU (Daily Active Users) -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-primary shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Người Dùng Trong Ngày (DAU)
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.dailyActiveUsers !== undefined ? kpis.dailyActiveUsers : (kpis.DailyActiveUsers || 0)">0</div>
+                            <div class="small text-muted mt-1">Số tài khoản đăng nhập hôm nay</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Lượt Truy Cập Hôm Nay -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-info shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Lượt Truy Cập Hôm Nay
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.todayPageViews !== undefined ? kpis.todayPageViews : (kpis.TodayPageViews || 0)">0</div>
+                            <div class="small text-muted mt-1">Tổng lượt tải trang / thao tác</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Đăng Nhập Thất Bại -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-danger shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Đăng Nhập Thất Bại Hôm Nay
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="kpis.todayFailedLogins !== undefined ? kpis.todayFailedLogins : (kpis.TodayFailedLogins || 0)">0</div>
+                            <div class="small text-muted mt-1">Sai mật khẩu / Khóa / Không tồn tại</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-white border-bottom-0 pb-0 pt-3">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'online' }" 
+                       href="#" @@click.prevent="activeTab = 'online'">
+                        <i class="fas fa-circle text-success me-1 fa-xs"></i> Đang Trực Tuyến
+                        <span class="badge bg-primary text-white rounded-pill ms-1" x-text="onlineTotal"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'history' }" 
+                       href="#" @@click.prevent="activeTab = 'history'">
+                        <i class="fas fa-history text-muted me-1"></i> Lịch Sử Đăng Nhập
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bold" :class="{ 'active text-primary': activeTab === 'charts' }" 
+                       href="#" @@click.prevent="activeTab = 'charts'; $nextTick(() => renderTrafficCharts())">
+                        <i class="fas fa-chart-pie text-info me-1"></i> Biểu Đồ Lưu Lượng & Thiết Bị
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+
+            <!-- TAB 1: ONLINE USERS -->
+            <div x-show="activeTab === 'online'" x-transition>
+                <!-- Search Bar -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Tìm theo tài khoản, họ tên, vai trò, IP..." 
+                                   x-model="onlineSearch.keyword" @@keyup.enter="onlineSearch.page = 1; loadOnlineUsers();">
+                            <button class="btn btn-outline-secondary" type="button" @@click="onlineSearch.page = 1; loadOnlineUsers();">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-7 text-md-end text-muted small mt-2 mt-md-0">
+                        <span class="badge bg-success me-1">● Online: Tương tác &le; 2 phút</span>
+                        <span class="badge bg-warning text-dark">● Tạm rời: 2 - 10 phút</span>
+                    </div>
+                </div>
+
+                <!-- Online Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle border mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">STT</th>
+                                <th>Người Dùng</th>
+                                <th>Vai Trò & Đơn Vị</th>
+                                <th>Địa Chỉ IP</th>
+                                <th>Thiết Bị / Trình Duyệt</th>
+                                <th>Trang Đang Xem</th>
+                                <th>Đăng Nhập Lúc</th>
+                                <th>Hoạt Động Gần Nhất</th>
+                                <th class="text-center" style="width: 120px;">Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-if="loading && onlineUsers.length === 0">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Đang tải danh sách người dùng...
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-if="!loading && onlineUsers.length === 0">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Không có người dùng nào đang trực tuyến
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-for="(user, idx) in onlineUsers" :key="user.SessionId">
+                                <tr>
+                                    <td class="text-muted small" x-text="(onlineSearch.page - 1) * onlineSearch.pageSize + idx + 1"></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <!-- Avatar Dropdown Trigger -->
+                                            <div class="dropdown me-2">
+                                                <button class="btn btn-sm p-0 rounded-circle border shadow-sm position-relative avatar-btn" 
+                                                        type="button" 
+                                                        data-bs-toggle="dropdown" 
+                                                        aria-expanded="false" 
+                                                        title="Click để chọn Đăng xuất hoặc xem Hồ sơ người dùng"
+                                                        style="width: 38px; height: 38px; background-color: #f8f9fc; border-color: #e3e6f0;">
+                                                    <span class="font-weight-bold text-primary" x-text="user.UserName ? user.UserName.substring(0,2).toUpperCase() : 'US'"></span>
+                                                    <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" style="width: 10px; height: 10px;"></span>
+                                                </button>
+                                                <ul class="dropdown-menu shadow border-0 py-2" style="font-size: 0.875rem; min-width: 210px; z-index: 1050;">
+                                                    <li class="px-3 py-1 text-muted small border-bottom mb-1 bg-light">
+                                                        <div class="font-weight-bold text-gray-900" x-text="user.FullName || user.UserName"></div>
+                                                        <div class="small text-muted" x-text="user.UserName"></div>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item py-2" href="#" @@click.prevent="viewUserProfile(user)">
+                                                            <i class="fas fa-id-card text-primary me-2 fa-fw"></i> Thông tin user (Profile)
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider my-1"></li>
+                                                    <li>
+                                                        <a class="dropdown-item py-2 text-danger" href="#" @@click.prevent="confirmForceLogout(user)">
+                                                            <i class="fas fa-sign-out-alt me-2 fa-fw"></i> Đăng xuất (Ngắt phiên)
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <div class="font-weight-bold text-gray-900" x-text="user.FullName || user.UserName"></div>
+                                                <div class="small text-muted" x-text="user.UserName"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="badge bg-light text-dark border font-weight-normal" x-text="user.RoleName || 'Người dùng'"></div>
+                                        <div class="small text-muted mt-1" x-show="user.MaDuAn" x-text="'Dự án: ' + user.MaDuAn"></div>
+                                    </td>
+                                    <td>
+                                        <span class="font-monospace small text-dark" x-text="user.IpAddress || '—'"></span>
+                                    </td>
+                                    <td>
+                                        <div class="small">
+                                            <i class="fas me-1" :class="user.DeviceType === 'Mobile' ? 'fa-mobile-alt text-success' : 'fa-desktop text-primary'"></i>
+                                            <span x-text="user.Browser"></span>
+                                        </div>
+                                        <div class="small text-muted" x-text="user.OperatingSystem"></div>
+                                    </td>
+                                    <td>
+                                        <div class="small text-truncate" style="max-width: 200px;" :title="user.CurrentUrl" x-text="user.CurrentUrl || '—'"></div>
+                                        <div class="small text-muted font-monospace" x-show="user.CurrentController" x-text="user.CurrentController + '/' + user.CurrentAction"></div>
+                                    </td>
+                                    <td class="small text-muted" x-text="user.LoginTimeText"></td>
+                                    <td>
+                                        <div class="small font-weight-semibold text-gray-800" x-text="user.LastActiveTimeText"></div>
+                                        <div class="small text-muted" x-text="user.InactiveMinutes + ' phút trước'"></div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span :class="getStatusBadgeClass(user.Status)" x-text="getStatusText(user.Status)"></span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination for Online Users -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2" x-show="onlineTotal > 0">
+                    <div class="small text-muted">
+                        Hiển thị <span class="font-weight-bold" x-text="onlineUsers.length"></span> trên tổng số <span class="font-weight-bold" x-text="onlineTotal"></span> người dùng
+                    </div>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" :class="{ 'disabled': onlineSearch.page <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeOnlinePage(1)">&laquo; Đầu</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': onlineSearch.page <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeOnlinePage(onlineSearch.page - 1)">&lsaquo; Trước</a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link" x-text="onlineSearch.page + ' / ' + onlineTotalPages"></span>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': onlineSearch.page >= onlineTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeOnlinePage(onlineSearch.page + 1)">Sau &rsaquo;</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': onlineSearch.page >= onlineTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeOnlinePage(onlineTotalPages)">Cuối &raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 2: LOGIN HISTORY -->
+            <div x-show="activeTab === 'history'" x-transition>
+                <!-- Filters -->
+                <div class="row g-2 mb-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small font-weight-bold">Từ khóa:</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Tài khoản, họ tên, IP..." 
+                               x-model="historySearch.keyword" @@keyup.enter="historySearch.currentPage = 1; loadLoginHistory();">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-weight-bold">Trạng thái:</label>
+                        <select class="form-select form-select-sm" x-model="historySearch.status" @@change="historySearch.currentPage = 1; loadLoginHistory();">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="Success">Thành công</option>
+                            <option value="WrongPassword">Sai mật khẩu</option>
+                            <option value="AccountLocked">Tài khoản bị khóa</option>
+                            <option value="UserNotFound">Không tồn tại</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-weight-bold">Từ ngày:</label>
+                        <input type="date" class="form-control form-control-sm" x-model="historySearch.fromDate">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-weight-bold">Đến ngày:</label>
+                        <input type="date" class="form-control form-control-sm" x-model="historySearch.toDate">
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button class="btn btn-sm btn-primary flex-fill" @@click="historySearch.currentPage = 1; loadLoginHistory();">
+                            <i class="fas fa-filter me-1"></i> Lọc
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" @@click="resetHistoryFilter();">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle border mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">STT</th>
+                                <th>Thời Gian Đăng Nhập</th>
+                                <th>Tài Khoản / Họ Tên</th>
+                                <th>Địa Chỉ IP</th>
+                                <th>Thiết Bị / Trình Duyệt / HĐH</th>
+                                <th>Thời Gian Đăng Xuất</th>
+                                <th>Thời Lượng Phiên</th>
+                                <th class="text-center" style="width: 130px;">Kết Quả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-if="loading && historyList.length === 0">
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Đang tải lịch sử đăng nhập...
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-if="!loading && historyList.length === 0">
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Không có bản ghi lịch sử nào phù hợp
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-for="(item, idx) in historyList" :key="item.Id">
+                                <tr>
+                                    <td class="text-muted small" x-text="(historySearch.currentPage - 1) * historySearch.pageSize + idx + 1"></td>
+                                    <td>
+                                        <div class="font-weight-semibold text-gray-900" x-text="item.LoginTimeText"></div>
+                                    </td>
+                                    <td>
+                                        <div class="font-weight-bold text-primary" x-text="item.UserName"></div>
+                                        <div class="small text-muted" x-show="item.FullName" x-text="item.FullName"></div>
+                                    </td>
+                                    <td>
+                                        <span class="font-monospace small" x-text="item.IpAddress || '—'"></span>
+                                    </td>
+                                    <td>
+                                        <div class="small">
+                                            <i class="fas me-1" :class="item.DeviceType === 'Mobile' ? 'fa-mobile-alt text-success' : 'fa-desktop text-primary'"></i>
+                                            <span x-text="item.Browser"></span>
+                                        </div>
+                                        <div class="small text-muted" x-text="item.OperatingSystem"></div>
+                                    </td>
+                                    <td class="small text-muted" x-text="item.LogoutTimeText"></td>
+                                    <td class="small font-monospace" x-text="item.SessionDurationText"></td>
+                                    <td class="text-center">
+                                        <span :class="getStatusBadgeClass(item.Status)" x-text="getStatusText(item.Status)"></span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination for Login History -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2" x-show="historyTotal > 0">
+                    <div class="small text-muted">
+                        Hiển thị <span class="font-weight-bold" x-text="historyList.length"></span> trên tổng số <span class="font-weight-bold" x-text="historyTotal"></span> lượt đăng nhập
+                    </div>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" :class="{ 'disabled': historySearch.currentPage <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeHistoryPage(1)">&laquo; Đầu</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': historySearch.currentPage <= 1 }">
+                            <a class="page-link" href="#" @@click.prevent="changeHistoryPage(historySearch.currentPage - 1)">&lsaquo; Trước</a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link" x-text="historySearch.currentPage + ' / ' + historyTotalPages"></span>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': historySearch.currentPage >= historyTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeHistoryPage(historySearch.currentPage + 1)">Sau &rsaquo;</a>
+                        </li>
+                        <li class="page-item" :class="{ 'disabled': historySearch.currentPage >= historyTotalPages }">
+                            <a class="page-link" href="#" @@click.prevent="changeHistoryPage(historyTotalPages)">Cuối &raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 3: CHARTS -->
+            <div x-show="activeTab === 'charts'" x-transition>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="font-weight-bold text-gray-800 mb-0">Biến động lưu lượng truy cập hệ thống</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" :class="{ 'active': trafficDays === 7 }" @@click="trafficDays = 7; loadTrafficStats();">7 ngày qua</button>
+                        <button class="btn btn-outline-primary" :class="{ 'active': trafficDays === 14 }" @@click="trafficDays = 14; loadTrafficStats();">14 ngày qua</button>
+                        <button class="btn btn-outline-primary" :class="{ 'active': trafficDays === 30 }" @@click="trafficDays = 30; loadTrafficStats();">30 ngày qua</button>
+                    </div>
+                </div>
+
+                <!-- Line Chart: Traffic -->
+                <div class="card border mb-4">
+                    <div class="card-body">
+                        <div style="height: 320px; position: relative;">
+                            <canvas id="trafficLineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doughnut Charts Row: Device & Browser -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card border h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="font-weight-bold text-gray-800 mb-0 small">Cơ cấu Thiết Bị (Device Breakdown)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 220px; position: relative;">
+                                    <canvas id="deviceDoughnutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border h-100">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="font-weight-bold text-gray-800 mb-0 small">Cơ cấu Trình Duyệt (Browser Breakdown)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 220px; position: relative;">
+                                    <canvas id="browserDoughnutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Thông tin Người Dùng (Profile Modal) -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title font-weight-bold" id="userProfileModalLabel">
+                        <i class="fas fa-user-circle me-2"></i>Thông Tin Người Dùng (Profile)
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <template x-if="profileLoading">
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-spinner fa-spin fa-2x mb-3 text-primary"></i>
+                            <div>Đang tải thông tin hồ sơ...</div>
+                        </div>
+                    </template>
+
+                    <template x-if="!profileLoading && userProfile">
+                        <div>
+                            <!-- User Header Card -->
+                            <div class="d-flex align-items-center mb-4 p-3 bg-light rounded border">
+                                <div class="avatar-lg bg-primary text-white font-weight-bold d-flex align-items-center justify-content-center rounded-circle me-3 shadow-sm" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                    <span x-text="userProfile.UserName ? userProfile.UserName.substring(0,2).toUpperCase() : 'US'"></span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="font-weight-bold text-gray-900 mb-1" x-text="userProfile.Name || userProfile.UserName"></h5>
+                                    <div class="text-muted small">
+                                        <span class="me-3"><i class="fas fa-user text-primary me-1"></i> <span x-text="userProfile.UserName"></span></span>
+                                        <span><i class="fas fa-shield-alt text-success me-1"></i> <span x-text="userProfile.RoleName || 'Người dùng'"></span></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="badge" :class="userProfile.Status ? 'bg-success text-white' : 'bg-danger text-white'" x-text="userProfile.Status ? 'Đang hoạt động' : 'Đã khóa'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Details Grid -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Số điện thoại</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="userProfile.Phone || '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Email</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="userProfile.Email || '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Chức vụ / Vị trí</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="userProfile.Possition || '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Số CCCD / CMND</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="userProfile.IdNumber || '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Địa chỉ</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="userProfile.Address || '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Địa bàn (Tỉnh/Thành)</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="selectedUser ? selectedUser.CityCodes || '—' : '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Dự án phụ trách</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="selectedUser ? selectedUser.MaDuAn || '—' : '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Địa chỉ IP hiện tại</label>
+                                        <div class="font-monospace small text-primary" x-text="selectedUser ? selectedUser.IpAddress || '—' : '—'"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded bg-white">
+                                        <label class="text-muted small text-uppercase font-weight-bold mb-1 d-block">Thiết bị & Trình duyệt</label>
+                                        <div class="font-weight-semibold text-gray-800" x-text="selectedUser ? selectedUser.Browser + ' / ' + selectedUser.OperatingSystem : '—'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <template x-if="selectedUser">
+                        <button type="button" class="btn btn-outline-danger btn-sm me-auto" @@click="confirmForceLogout(selectedUser); bootstrap.Modal.getInstance(document.getElementById('userProfileModal')).hide();">
+                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất người dùng này
+                        </button>
+                    </template>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/app/Controller/AlpineUserAccessController.js"></script>
+}

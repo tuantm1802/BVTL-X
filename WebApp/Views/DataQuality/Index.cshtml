@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "Giám sát & Chuẩn hóa Dữ liệu (Data Quality)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineDataQuality">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-shield-alt text-primary mr-2"></i>GIÁM SÁT & CHUẨN HÓA DỮ LIỆU REDCAP
+        </h1>
+        <div>
+            <button class="btn btn-danger btn-sm shadow-sm" @@click="exportWarnings()">
+                <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel Cảnh báo cho M&E
+            </button>
+        </div>
+    </div>
+
+    <!-- Stat Metric Cards -->
+    <div class="row mb-4">
+        <!-- Auto Cleaned Card -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tự động chuẩn hóa an toàn</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" x-text="stats.TotalAutoCleaned ? stats.TotalAutoCleaned.toLocaleString('vi-VN') : '0'"></div>
+                            <small class="text-muted">Viết hoa, trim khoảng trắng, chuẩn DAG</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Warnings Card -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Cảnh báo nguồn chưa xử lý</div>
+                            <div class="h5 mb-0 font-weight-bold text-warning" x-text="stats.TotalPendingAction ? stats.TotalPendingAction.toLocaleString('vi-VN') : '0'"></div>
+                            <small class="text-muted">Cần M&E / TCV sửa lại trên REDCap</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolved Card -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Cảnh báo đã xử lý</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" x-text="stats.TotalResolved ? stats.TotalResolved.toLocaleString('vi-VN') : '0'"></div>
+                            <small class="text-muted">Đã kiểm tra và cập nhật nguồn</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Logs Card -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng sự kiện lưu vết</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" x-text="stats.TotalLogs ? stats.TotalLogs.toLocaleString('vi-VN') : '0'"></div>
+                            <small class="text-muted">Dự án CD45 (DREAMH)</small>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-history fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc tra cứu nhật ký</h6>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">API / Biểu mẫu</label>
+                    <select class="form-control form-control-sm" x-model="filterApiCode">
+                        <option value="">-- Tất cả Form (F1-F10) --</option>
+                        <option value="API_CD45_F1">F1 - Khách hàng</option>
+                        <option value="API_CD45_F2">F2 - Truyền thông / Nhóm</option>
+                        <option value="API_CD45_F3">F3 - Sàng lọc QST</option>
+                        <option value="API_CD45_F4">F4 - Hỗ trợ XH khác</option>
+                        <option value="API_CD45_F5">F5 - Tuân thủ điều trị</option>
+                        <option value="API_CD45_F6">F6 - Chẩn đoán & Điều trị</option>
+                        <option value="API_CD45_F7">F7 - Tư vấn tâm lý L1</option>
+                        <option value="API_CD45_F8">F8 - Tư vấn tâm lý L2+</option>
+                        <option value="API_CD45_F10">F10 - Vân tay KH</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Mức độ (Severity)</label>
+                    <select class="form-control form-control-sm" x-model="filterSeverity">
+                        <option value="">-- Tất cả mức độ --</option>
+                        <option value="INFO">INFO (Tự động chuẩn hóa)</option>
+                        <option value="WARNING">WARNING (Cảnh báo bất thường)</option>
+                        <option value="ERROR">ERROR (Lỗi nghiêm trọng)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Trạng thái xử lý</label>
+                    <select class="form-control form-control-sm" x-model="filterIsResolved">
+                        <option value="">-- Tất cả --</option>
+                        <option value="false">Chưa xử lý (Pending)</option>
+                        <option value="true">Đã xử lý (Resolved)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <label class="font-weight-bold small">Tìm kiếm (Mã KH / Nội dung)</label>
+                    <input type="text" class="form-control form-control-sm" x-model="filterKeyword" placeholder="Nhập mã KH (DHN01...), từ khóa lỗi..." @@keyup.enter="loadLogs(1)" />
+                </div>
+
+                <div class="col-md-2 mb-2 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm btn-block shadow-sm" @@click="loadLogs(1)">
+                        <i class="fas fa-search fa-sm mr-1"></i> Tra cứu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-alt mr-1"></i> Danh sách sự kiện Chuẩn hóa & Cảnh báo Dữ liệu</h6>
+            <span class="badge badge-secondary" x-text="'Tổng cộng: ' + totalRows.toLocaleString('vi-VN') + ' bản ghi'"></span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0" style="font-size: 13px;">
+                    <thead class="bg-primary text-white text-center">
+                        <tr>
+                            <th style="width: 45px;">#</th>
+                            <th style="width: 130px;">Thời gian</th>
+                            <th style="width: 100px;">Form / API</th>
+                            <th style="width: 110px;">Mã KH</th>
+                            <th style="width: 130px;">Trường dữ liệu</th>
+                            <th style="width: 150px;">Giá trị REDCap</th>
+                            <th style="width: 150px;">Sau chuẩn hóa</th>
+                            <th style="width: 90px;">Mức độ</th>
+                            <th>Nội dung cảnh báo & Quy tắc</th>
+                            <th style="width: 110px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, index) in logs" :key="item.ID">
+                            <tr :class="item.SEVERITY === 'WARNING' ? 'table-warning' : (item.SEVERITY === 'ERROR' ? 'table-danger' : '')">
+                                <td class="text-center" x-text="(pageIndex - 1) * pageSize + index + 1"></td>
+                                <td class="text-center small" x-text="formatDate(item.CREATED_DATE)"></td>
+                                <td class="text-center font-weight-bold" x-text="item.API_CODE"></td>
+                                <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID || '-'"></td>
+                                <td class="font-italic" x-text="item.FIELD_NAME"></td>
+                                <td class="text-break" x-text="item.OLD_VALUE || '(trống)'"></td>
+                                <td class="text-break text-success font-weight-bold" x-text="item.NEW_VALUE || '-'"></td>
+                                <td class="text-center">
+                                    <span class="badge" 
+                                          :class="item.SEVERITY === 'INFO' ? 'badge-success' : (item.SEVERITY === 'WARNING' ? 'badge-warning text-dark' : 'badge-danger')"
+                                          x-text="item.SEVERITY"></span>
+                                </td>
+                                <td>
+                                    <div><strong class="text-dark" x-text="item.RULE_CODE"></strong></div>
+                                    <div class="small text-muted" x-text="item.MESSAGE"></div>
+                                    <div x-show="item.IS_RESOLVED" class="small text-success mt-1">
+                                        <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (item.RESOLVED_NOTE || '')"></span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <template x-if="item.SEVERITY === 'WARNING' || item.SEVERITY === 'ERROR'">
+                                        <div>
+                                            <button x-show="!item.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolved(item)">
+                                                <i class="fas fa-check fa-xs"></i> Đã sửa
+                                            </button>
+                                            <span x-show="item.IS_RESOLVED" class="badge badge-success">
+                                                <i class="fas fa-check"></i> Xong
+                                            </span>
+                                        </div>
+                                    </template>
+                                    <template x-if="item.SEVERITY === 'INFO'">
+                                        <span class="text-muted small"><i class="fas fa-magic"></i> Auto</span>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="logs.length === 0 && !isLoading">
+                            <td colspan="10" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không tìm thấy dữ liệu nhật ký phù hợp
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="10" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tải danh sách nhật ký...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer bg-white py-2 d-flex justify-content-between align-items-center" x-show="totalPages > 1">
+                <span class="small text-muted" x-text="'Trang ' + pageIndex + ' / ' + totalPages"></span>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm mr-1" :disabled="pageIndex <= 1" @@click="loadLogs(pageIndex - 1)">
+                        <i class="fas fa-chevron-left fa-sm"></i> Trước
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" :disabled="pageIndex >= totalPages" @@click="loadLogs(pageIndex + 1)">
+                        Sau <i class="fas fa-chevron-right fa-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/app/Controller/AlpineDataQualityController.js"></script>
+}

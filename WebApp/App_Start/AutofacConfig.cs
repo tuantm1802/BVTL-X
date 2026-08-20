@@ -1,4 +1,4 @@
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.Mvc;
 using System.Reflection;
 using System.Web.Mvc;
@@ -12,14 +12,15 @@ namespace WebApp.App_Start
         {
             var builder = new ContainerBuilder();
 
-            // Đăng ký tất cả các Controllers
+            // ÄÄƒng kĂ½ táº¥t cáº£ cĂ¡c Controllers
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
-            // Đăng ký Services
+            // ÄÄƒng kĂ½ Services
             builder.RegisterType<ExcelReportService>().As<IExcelReportService>().InstancePerRequest();
 
-            // Đăng ký thủ công toàn bộ Data Access (DA) để tránh lỗi Assembly Load Context
+            // ÄÄƒng kĂ½ thá»§ cĂ´ng toĂ n bá»™ Data Access (DA) Ä‘á»ƒ trĂ¡nh lá»—i Assembly Load Context
             builder.RegisterType<Data.Admin.ApiDA>().As<Data.InterfaceDA.Admin.IApiDA>().InstancePerRequest();
+            builder.RegisterType<Data.Admin.BaoCaoCD45DA>().As<Data.InterfaceDA.IBaoCaoCD45DA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoTongHopDA>().As<Data.InterfaceDA.Admin.IBaoCaoTongHopDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BVTL_NHOM_TBHDA>().As<Data.InterfaceDA.Admin.IBVTL_NHOM_TBHDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.ChatGayNghien3THDA>().As<Data.InterfaceDA.Admin.IChatGayNghien3THDA>().InstancePerRequest();
@@ -54,11 +55,12 @@ namespace WebApp.App_Start
             builder.RegisterType<Data.API.GetDataFromAPI>().As<Data.InterfaceDA.API.IGetDataFromAPI>().InstancePerRequest();
             builder.RegisterType<Data.API.SyncDataFromApi_SaveToDB>().As<Data.InterfaceDA.API.ISyncDataFromApi_SaveToDB>().InstancePerRequest();
 
-            // Khởi tạo container
+            // Khá»Ÿi táº¡o container
             var container = builder.Build();
 
-            // Gán container cho MVC Dependency Resolver
+            // GĂ¡n container cho MVC Dependency Resolver
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
     }
 }
+

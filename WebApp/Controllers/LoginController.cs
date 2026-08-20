@@ -22,14 +22,16 @@ namespace WebApp.Controllers
         readonly IUserDA _userDA;
         readonly ISysParameterDA _sysParameterDA;
         readonly IPageMenuDA _pageMenuDA;
+        readonly ISystemMonitorDA _systemMonitorDA;
         IEncryptor _encryptor = new Encryptor();
 
-        public LoginController(ISysLogDA sysLogDA, IUserDA userDA, ISysParameterDA sysParameterDA, IPageMenuDA pageMenuDA)
+        public LoginController(ISysLogDA sysLogDA = null, IUserDA userDA = null, ISysParameterDA sysParameterDA = null, IPageMenuDA pageMenuDA = null, ISystemMonitorDA systemMonitorDA = null)
         {
-            _sysLogDA = sysLogDA;
-            _userDA = userDA;
-            _sysParameterDA = sysParameterDA;
-            _pageMenuDA = pageMenuDA;
+            _sysLogDA = sysLogDA ?? new SysLogDA();
+            _userDA = userDA ?? new UserDA();
+            _sysParameterDA = sysParameterDA ?? new SysParameterDA();
+            _pageMenuDA = pageMenuDA ?? new PageMenuDA();
+            _systemMonitorDA = systemMonitorDA ?? new SystemMonitorDA();
         }
         // GET: Login
         public ActionResult Index()
@@ -42,6 +44,9 @@ namespace WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                string ip = (Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? Request.ServerVariables["REMOTE_ADDR"] ?? "").Split(',')[0].Trim();
+                string userAgent = Request.UserAgent;
+
                 var result = _userDA.Login(model.UserName, model.Password);
                 if (result == 1)
                 {
@@ -57,7 +62,6 @@ namespace WebApp.Controllers
                     userSession.MaDuAn = user.MaDuAn;
 
                     var listPermission = _userDA.GetListCredentials(model.UserName);
-
                     var menus = _pageMenuDA.GetMenuByUser((int)user.ID);
 
                     // Lấy thông báo
@@ -73,30 +77,36 @@ namespace WebApp.Controllers
                     Session.Add("USER_SESSION", userSession);
                     Session.Add("Notifications", notifications);
                     AddLog("Đăng nhập( UserName: " + user.UserName + ") thành công.");
-                    return RedirectToAction("Index", "Home");
 
+                    // Ghi nhận phiên đăng nhập & trực tuyến vào Giám sát Hệ thống
+                    _systemMonitorDA.RecordLogin(userSession, ip, userAgent, "Success", Session.SessionID);
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else if (result == 0)
                 {
+                    _systemMonitorDA.RecordLogin(new UserLogin { UserName = model.UserName }, ip, userAgent, "UserNotFound", Session.SessionID);
                     AddLog("Đăng nhập( UserName: " + model.UserName + ") lỗi: Tài khoản không tồn tại.");
                     ModelState.AddModelError("", "Tài khoản không tồn tại.");
                 }
                 else if (result == -1)
                 {
+                    _systemMonitorDA.RecordLogin(new UserLogin { UserName = model.UserName }, ip, userAgent, "AccountLocked", Session.SessionID);
                     AddLog("Đăng nhập( UserName: " + model.UserName + ") lỗi: Tài khoản đang bị khóa.");
                     ModelState.AddModelError("", "Tài khoản đang bị khóa.");
                 }
                 else if (result == -2)
                 {
+                    _systemMonitorDA.RecordLogin(new UserLogin { UserName = model.UserName }, ip, userAgent, "WrongPassword", Session.SessionID);
                     AddLog("Đăng nhập( UserName: " + model.UserName + ") lỗi: Mật khẩu không đúng.");
                     ModelState.AddModelError("", "Mật khẩu không đúng.");
                 }
                 else
                 {
+                    _systemMonitorDA.RecordLogin(new UserLogin { UserName = model.UserName }, ip, userAgent, "Failed", Session.SessionID);
                     AddLog("Đăng nhập( UserName: " + model.UserName + ") lỗi: Đăng nhập không thành công.");
                     ModelState.AddModelError("", "Đăng nhập không thành công.");
                 }
-
             }
             return View("Index");
         }
@@ -110,7 +120,6 @@ namespace WebApp.Controllers
             string pathGet = path.Substring(0, arrayPath) + "FileUpload";
             string patttt = path.Replace(pathGet, pathRoot);
 
-
             try
             {
                 if (!string.IsNullOrEmpty(path))
@@ -121,9 +130,7 @@ namespace WebApp.Controllers
                         {
                             image.Save(m, image.RawFormat);
                             byte[] imageBytes = m.ToArray();
-
-                            // Convert byte[] to Base64 String
-                            base64String = "data:image/jpeg;base64," + Convert.ToBase64String(imageBytes);
+                            base64String = Convert.ToBase64String(imageBytes);
                         }
                     }
                 }
@@ -150,7 +157,11 @@ namespace WebApp.Controllers
         public ActionResult Logout()
         {
             var user = Session["USER_SESSION"] as UserLogin;
-            AddLog("Đăng xuất( UserName: " + user.UserName + ") thành công.");
+            if (user != null)
+            {
+                AddLog("Đăng xuất( UserName: " + user.UserName + ") thành công.");
+                _systemMonitorDA.RecordLogout(Session.SessionID);
+            }
             Session["USER_SESSION"] = null;
             Session["Menus"] = null;
             Session["Notifications"] = null;

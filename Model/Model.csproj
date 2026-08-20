@@ -47,10 +47,18 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModelExtend\API\CD45\DreamhBaseApiModel.cs" />
+    <Compile Include="ModelExtend\API\CD45\DreamhDbEntities.cs" />
+    <Compile Include="ModelExtend\API\CD45\CD45Helper.cs" />
+    <Compile Include="ModelExtend\SystemMonitor\SystemMonitorModels.cs" />
     <Compile Include="ModelExtend\ApiPageModel.cs" />
     <Compile Include="ModelExtend\API\ApiResult.cs" />
     <Compile Include="ModelExtend\API\ProcessModel.cs" />
@@ -73,6 +81,7 @@
     <Compile Include="ModelExtend\API\TableNameModel.cs" />
     <Compile Include="ModelExtend\AuditModel.cs" />
     <Compile Include="ModelExtend\BaoCaoTongHopPageModel.cs" />
+    <Compile Include="ModelExtend\BaoCaoCD45Model.cs" />
     <Compile Include="ModelExtend\BaseResult.cs" />
     <Compile Include="ModelExtend\Base\LoginModel.cs" />
     <Compile Include="ModelExtend\Base\ModelSearch.cs" />
@@ -342,3 +351,5 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
+
+

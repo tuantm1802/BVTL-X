@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,16 @@ namespace Common.Common
     public static class Constants
     {
         public const string Cache_DM_DonviKey = "Cache_DM_DonviKey";
-        public static readonly string[] ActionsAllowAcess = { "MyProfile", "GetUserInfo", "UpdateMyProfile"};
+        public static readonly string[] ActionsAllowAcess = { 
+            "MyProfile", 
+            "GetProfile", 
+            "GetUserInfo", 
+            "UpdateMyProfile", 
+            "ChangePassword", 
+            "PostChangePassword", 
+            "ChangePassWord",
+            "GetItemByID" 
+        };
         public const string GetDataFromAPI = "GetDataFromAPI";
 
         #region Tên các store procedures

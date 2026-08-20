@@ -1,204 +1,218 @@
 @{
-    ViewBag.Title = "Đồng bộ dữ liệu API";
+    ViewBag.Title = "Quản lý Đồng bộ Dữ liệu Tự động (Auto-Sync)";
 }
 
-<div class="container-fluid py-3 ng-scope" x-data="alpineSyncData()" ng-controller="SyncDataController">
+<div class="container-fluid py-3" x-data="alpineSyncData()">
 
-    <!-- Header Title Bar & Action Buttons -->
+    <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
         <div>
             <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
-                <i class="fas fa-sync-alt text-primary mr-2"></i> Đồng bộ dữ liệu API
+                <i class="fas fa-sync-alt text-primary mr-2" :class="{'fa-spin': scheduler.isRunning && scheduler.isAutoSyncEnabled}"></i> Quản lý Đồng bộ Dữ liệu Tự động
             </h1>
-            <p class="text-muted small mb-0">Quản lý các tiến trình nạp dữ liệu tự động và thực hiện đồng bộ thủ công từ các cổng API hệ thống.</p>
+            <p class="text-muted small mb-0">Hệ thống lập lịch Quartz.NET tự động kéo dữ liệu từ API SCDI/CD43 theo chu kỳ thời gian thực và quản lý tập trung.</p>
         </div>
-        <div class="mt-3 mt-md-0 d-flex align-items-center">
-            <button type="button" class="btn btn-white btn-lg shadow-sm px-4 font-weight-bold border" x-on:click="search()" style="border-radius: 8px; background: #fff;">
-                <i class="fas fa-sync-alt text-primary mr-2"></i> Làm mới danh sách
+        <div class="mt-3 mt-md-0 d-flex align-items-center flex-wrap">
+            <template x-if="scheduler.isAdmin">
+                <button type="button" class="btn btn-outline-danger btn-sm shadow-sm px-3 py-2 font-weight-bold mr-2" x-on:click="triggerAllNow()" style="border-radius: 8px;">
+                    <i class="fas fa-bolt mr-1"></i> Chạy tất cả ngầm ngay
+                </button>
+            </template>
+            <template x-if="scheduler.isAdmin">
+                <button type="button" class="btn btn-outline-secondary btn-sm shadow-sm px-3 py-2 font-weight-bold mr-2" x-on:click="restartScheduler()" style="border-radius: 8px;">
+                    <i class="fas fa-redo-alt mr-1"></i> Khởi động lại Scheduler
+                </button>
+            </template>
+            <button type="button" class="btn btn-white shadow-sm px-3 py-2 font-weight-bold border" x-on:click="loadData(); loadSchedulerStatus();" style="border-radius: 8px; background: #fff;">
+                <i class="fas fa-sync-alt text-primary mr-1" :class="{'fa-spin': isLoading}"></i> Làm mới
             </button>
         </div>
     </div>
 
-    <!-- Stats Overview Widgets -->
-    <div class="row mb-4">
-        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
-            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #4e73df !important; background: #ffffff;">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng số Tiến trình API</div>
-                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.totalApis">0</div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="p-3 rounded-circle" style="background: rgba(78, 115, 223, 0.1);">
-                                <i class="fas fa-network-wired fa-2x text-primary"></i>
-                            </div>
-                        </div>
+    <!-- Master Auto-Sync Scheduler Status Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff;">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-3 mb-lg-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge px-3 py-2 font-weight-bold mr-2"
+                              :class="scheduler.isRunning && scheduler.isAutoSyncEnabled ? 'badge-success' : 'badge-warning'"
+                              style="font-size: 0.85rem; border-radius: 20px;">
+                            <i class="fas mr-1" :class="scheduler.isRunning && scheduler.isAutoSyncEnabled ? 'fa-check-circle' : 'fa-pause-circle'"></i>
+                            <span x-text="scheduler.isRunning && scheduler.isAutoSyncEnabled ? 'SCHEDULER ĐANG HOẠT ĐỘNG' : 'SCHEDULER ĐANG TẠM DỪNG'"></span>
+                        </span>
+                        <span class="text-white-50 small">Khởi động lúc: <strong class="text-white" x-text="scheduler.lastStartedTime"></strong></span>
                     </div>
+                    <h5 class="font-weight-bold text-white mb-1">Cơ chế Tự động Đồng bộ (Quartz.NET Background Engine)</h5>
+                    <p class="text-white-50 small mb-0">Các API có trạng thái Kích hoạt sẽ tự động thực thi định kỳ theo chu kỳ (TimeLoop) mà không cần thao tác thủ công.</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-md-6 mb-3 mb-xl-0">
-            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #1cc88a !important; background: #ffffff;">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tiến trình Đang kích hoạt</div>
-                            <div class="h4 mb-0 font-weight-bold text-gray-800" x-text="stats.activeApis">0</div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="p-3 rounded-circle" style="background: rgba(28, 200, 138, 0.1);">
-                                <i class="fas fa-check-double fa-2x text-success"></i>
-                            </div>
-                        </div>
+                <div class="col-lg-6 text-lg-right d-flex align-items-center justify-content-lg-end">
+                    <div class="mr-4 text-center">
+                        <div class="text-xs text-white-50 text-uppercase font-weight-bold">Tiến trình ngầm</div>
+                        <div class="h3 font-weight-bold text-white mb-0" x-text="scheduler.jobCount">0</div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-md-12">
-            <div class="card border-0 shadow-sm h-100 py-2" style="border-radius: 12px; border-left: 4px solid #36b9cc !important; background: #ffffff;">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Lần đồng bộ gần nhất</div>
-                            <div class="h6 mb-0 font-weight-bold text-gray-800" x-text="stats.lastSyncTime">—</div>
+                    <template x-if="scheduler.isAdmin">
+                        <div class="d-flex align-items-center bg-dark p-2 rounded border border-secondary">
+                            <span class="text-white small font-weight-bold mr-3" x-text="scheduler.isAutoSyncEnabled ? 'Tự động: ĐANG BẬT' : 'Tự động: ĐÃ TẮT'"></span>
+                            <button type="button" class="btn btn-sm font-weight-bold"
+                                    :class="scheduler.isAutoSyncEnabled ? 'btn-danger' : 'btn-success'"
+                                    x-on:click="toggleAutoSync()"
+                                    style="border-radius: 6px;">
+                                <i class="fas mr-1" :class="scheduler.isAutoSyncEnabled ? 'fa-pause' : 'fa-play'"></i>
+                                <span x-text="scheduler.isAutoSyncEnabled ? 'Tạm dừng Auto-Sync' : 'Kích hoạt Auto-Sync'"></span>
+                            </button>
                         </div>
-                        <div class="col-auto">
-                            <div class="p-3 rounded-circle" style="background: rgba(54, 185, 204, 0.1);">
-                                <i class="fas fa-clock fa-2x text-info"></i>
-                            </div>
-                        </div>
-                    </div>
+                    </template>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Data Table Container Card -->
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
-        <div class="card-header bg-white py-3 border-0">
+    <!-- Search & Filter Bar -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body py-3">
             <div class="row align-items-center">
-                <!-- Search Box -->
-                <div class="col-lg-5 col-md-6 mb-2 mb-md-0">
+                <!-- Keyword search -->
+                <div class="col-lg-5 col-md-6 mb-2 mb-lg-0">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text bg-light border-right-0" style="border-radius: 8px 0 0 8px;"><i class="fas fa-search text-gray-400"></i></span>
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
                         </div>
-                        <input type="text" class="form-control bg-light border-left-0" placeholder="Tìm theo Mã tiến trình, Tên, ReportId, URL API..." x-model="modelSearch.KeyWord" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
+                        <input type="text" class="form-control bg-light border-0" placeholder="Tìm theo Mã API, Tên tiến trình hoặc Bảng lưu trữ..." x-model="keyword" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
                     </div>
                 </div>
 
-                <!-- Status Filter -->
-                <div class="col-lg-4 col-md-4 mb-2 mb-md-0">
-                    <select class="form-control bg-light" x-model="modelSearch.Status" x-on:change="search()" style="border-radius: 8px;">
-                        <option value="">-- Tất cả trạng thái --</option>
-                        <option value="true">Đang kích hoạt (Active)</option>
-                        <option value="false">Tạm ngừng (InActive)</option>
-                    </select>
+                <!-- Status Filter Dropdown -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-filter text-muted"></i></span>
+                        </div>
+                        <select class="form-control bg-light border-0" x-model="statusFilter" x-on:change="changeStatusFilter($event.target.value)" style="border-radius: 0 8px 8px 0;">
+                            <option value="1">Đang kích hoạt (Mặc định)</option>
+                            <option value="0">Đã hủy / Tắt</option>
+                            <option value="all">Tất cả trạng thái</option>
+                        </select>
+                    </div>
                 </div>
 
-                <!-- Action Controls -->
-                <div class="col-lg-3 col-md-2 text-right">
-                    <button type="button" class="btn btn-light font-weight-bold text-secondary border px-3" x-on:click="resetSearch()" style="border-radius: 8px;">
-                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                <!-- Buttons -->
+                <div class="col-lg-4 col-md-12 text-lg-right">
+                    <button type="button" class="btn btn-primary px-3 font-weight-bold mr-2" x-on:click="search()" style="border-radius: 8px;">
+                        <i class="fas fa-search mr-1"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn btn-light border px-3 font-weight-bold text-secondary" x-on:click="resetSearch()" style="border-radius: 8px;">
+                        <i class="fas fa-undo mr-1"></i> Làm mới
                     </button>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Data Table Card -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                <i class="fas fa-network-wired mr-2"></i> Danh sách Tiến trình API Đồng bộ
+            </h6>
+            <span class="badge badge-light border text-muted">Tổng số: <strong class="text-primary" x-text="totalItems">0</strong> API</span>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" width="100%">
+                <table class="table table-hover align-middle mb-0" width="100%" cellspacing="0">
                     <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 4%; font-size: 0.75rem;">#</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 20%; font-size: 0.75rem;">Tiến trình đồng bộ</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 25%; font-size: 0.75rem;">Cấu hình API & Kiểu DL</th>
-                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 10%; font-size: 0.75rem;">Trạng thái</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 26%; font-size: 0.75rem;">Thời gian đồng bộ & Kết quả</th>
-                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 15%; font-size: 0.75rem;">Thao tác</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pl-3" style="width: 50px; font-size: 0.75rem;">STT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="min-width: 180px; font-size: 0.75rem;">Tiến trình API</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 120px; font-size: 0.75rem;">Tự động (Auto)</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="min-width: 150px; font-size: 0.75rem;">Chu kỳ đồng bộ</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="min-width: 160px; font-size: 0.75rem;">Đồng bộ gần nhất</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="min-width: 180px; font-size: 0.75rem;">Kết quả đồng bộ</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="min-width: 150px; font-size: 0.75rem;">Lịch chạy kế tiếp</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-3" style="min-width: 200px; font-size: 0.75rem;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template x-for="(item, index) in ListData" :key="item.Api_Id || index">
-                            <tr style="cursor: pointer;" :class="{'table-active bg-light-primary': selectedApiId === item.Api_Id}" x-on:click="selectRow(item.Api_Id)">
-                                <td class="text-center font-weight-bold text-gray-600 align-middle" x-text="(modelSearch.currentPage - 1) * modelSearch.pageSize + index + 1"></td>
-                                
-                                <td class="align-middle">
-                                    <div class="d-flex align-items-start">
-                                        <div class="avatar-circle mr-3 mt-1 d-flex align-items-center justify-content-center text-white font-weight-bold bg-primary shadow-xs" style="min-width: 38px; width: 38px; height: 38px; border-radius: 50%; font-size: 0.85rem;">
-                                            <i class="fas fa-cloud-download-alt"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold text-gray-900" x-text="item.NameSyncdata"></div>
-                                            <div class="mt-1 d-flex align-items-center flex-wrap gap-1">
-                                                <span class="badge badge-primary px-2 py-1 font-weight-bold mr-1" style="font-size: 0.75rem;" x-text="item.Api_Code"></span>
-                                                <span class="badge badge-light border text-muted px-2 py-1" style="font-size: 0.75rem;" title="Report ID">
-                                                    <i class="fas fa-file-alt mr-1"></i><span x-text="item.ReportId || 'N/A'"></span>
-                                                </span>
-                                            </div>
-                                        </div>
+                        <template x-for="(item, index) in items" :key="item.Api_Id || item.ID || index">
+                            <tr>
+                                <td class="text-center font-weight-bold text-muted pl-3" x-text="(currentPage - 1) * pageSize + index + 1"></td>
+                                <td>
+                                    <div class="font-weight-bold text-dark" x-text="item.NameSyncdata || item.ReportId || '—'"></div>
+                                    <div class="d-flex align-items-center mt-1">
+                                        <span class="badge badge-light border text-primary font-monospace mr-2" x-text="item.Api_Code"></span>
+                                        <small class="text-muted" x-text="item.ReportId ? '#' + item.ReportId : ''"></small>
                                     </div>
                                 </td>
-
-                                <td class="align-middle">
-                                    <div class="small text-truncate mb-1" style="max-width: 320px;" :title="item.HrefApi">
-                                        <i class="fas fa-link text-info mr-1"></i>
-                                        <a :href="item.HrefApi" target="_blank" class="text-primary font-weight-bold" x-text="item.HrefApi"></a>
-                                    </div>
-                                    <div class="d-flex align-items-center small text-muted">
-                                        <span class="mr-3"><i class="fas fa-history text-secondary mr-1"></i> Chu kỳ: <b class="text-dark" x-text="(item.TimeReCall || 0) + 's'"></b></span>
-                                        <span><i class="fas fa-database text-secondary mr-1"></i> Kiểu: <span class="badge badge-secondary px-2" x-text="item.RawOrLabel || 'Raw'"></span></span>
-                                    </div>
-                                </td>
-
-                                <td class="text-center align-middle">
-                                    <span class="badge badge-success px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="item.IsActive === true || item.IsActive === 1 || item.IsActive === 'Active'">
-                                        <i class="fas fa-check-circle mr-1"></i> Active
-                                    </span>
-                                    <span class="badge badge-secondary px-3 py-1 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;" x-show="!(item.IsActive === true || item.IsActive === 1 || item.IsActive === 'Active')">
-                                        <i class="fas fa-ban mr-1"></i> InActive
+                                <td class="text-center">
+                                    <span class="badge" :class="item.IsActive ? 'badge-success' : 'badge-secondary'" style="font-size: 0.8rem;">
+                                        <i class="fas mr-1" :class="item.IsActive ? 'fa-check-circle' : 'fa-ban'"></i>
+                                        <span x-text="item.IsActive ? 'Đang Bật' : 'Đang Tắt'"></span>
                                     </span>
                                 </td>
-
-                                <td class="align-middle">
-                                    <div class="small mb-1">
-                                        <span class="text-muted"><i class="far fa-play-circle text-primary mr-1"></i> Bắt đầu:</span> 
-                                        <span class="text-dark font-weight-bold" x-text="formatDate(item.Start_Time_Sync)"></span>
-                                    </div>
-                                    <div class="small mb-1">
-                                        <span class="text-muted"><i class="far fa-check-circle text-success mr-1"></i> Hoàn tất:</span> 
-                                        <span class="text-dark font-weight-bold" x-text="formatDate(item.End_Time_Sync)"></span>
-                                    </div>
-                                    <div class="small text-truncate" style="max-width: 320px;" :title="item.Message" x-show="item.Message">
-                                        <span class="badge badge-light border text-secondary font-weight-normal px-2 py-1">
-                                            <i class="fas fa-info-circle mr-1"></i> <span x-text="item.Message"></span>
+                                <td>
+                                    <div class="font-weight-bold text-dark small" x-text="formatTimeLoop(item.TimeReCall)"></div>
+                                    <small class="text-muted" x-text="'TimeLoop: ' + (item.TimeReCall || 0)"></small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="font-weight-bold text-dark small" x-text="formatDateTime(item.End_Time_Sync)"></span>
+                                </td>
+                                <td>
+                                    <template x-if="item.Message && (item.Message.toLowerCase().includes('thành công') || item.Message.toLowerCase().includes('success'))">
+                                        <span class="badge badge-success px-2 py-1" style="white-space: normal; text-align: left; font-size: 0.75rem;">
+                                            <i class="fas fa-check-circle mr-1"></i><span x-text="item.Message"></span>
                                         </span>
-                                    </div>
+                                    </template>
+                                    <template x-if="item.Message && (item.Message.toLowerCase().includes('lỗi') || item.Message.toLowerCase().includes('error') || item.Message.toLowerCase().includes('fail'))">
+                                        <span class="badge badge-danger px-2 py-1" style="white-space: normal; text-align: left; font-size: 0.75rem;">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i><span x-text="item.Message"></span>
+                                        </span>
+                                    </template>
+                                    <template x-if="!item.Message || (!item.Message.toLowerCase().includes('thành công') && !item.Message.toLowerCase().includes('success') && !item.Message.toLowerCase().includes('lỗi') && !item.Message.toLowerCase().includes('error') && !item.Message.toLowerCase().includes('fail'))">
+                                        <span class="text-muted small" x-text="item.Message || '—'"></span>
+                                    </template>
                                 </td>
+                                <td class="text-center">
+                                    <span class="badge badge-light border text-info font-weight-bold" x-text="getNextRunTime(item.ReportId)"></span>
+                                </td>
+                                <td class="text-center pr-3">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <!-- Nút Đồng bộ thủ công -->
+                                        <button type="button" class="btn btn-outline-primary font-weight-bold"
+                                                x-on:click="manualSync(item.Api_Id || item.ID, item.NameSyncdata || item.ReportId, $event)"
+                                                title="Đồng bộ trực tiếp ngay lập tức">
+                                            <i class="fas fa-play mr-1"></i> Đồng bộ
+                                        </button>
 
-                                <td class="text-center align-middle">
-                                    <button type="button" class="btn btn-sm btn-primary font-weight-bold px-3 shadow-sm" x-show="!syncingIds[item.Api_Id]" x-on:click.stop="syncDataRow(item)" style="border-radius: 6px;">
-                                        <i class="fas fa-sync-alt mr-1"></i> Đồng bộ ngay
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-warning text-dark font-weight-bold px-3" x-show="syncingIds[item.Api_Id]" disabled style="border-radius: 6px;">
-                                        <i class="fas fa-spinner fa-spin mr-1"></i> Đang nạp...
-                                    </button>
+                                        <!-- Nút Kích hoạt ngầm -->
+                                        <button type="button" class="btn btn-outline-warning text-dark font-weight-bold"
+                                                x-on:click="triggerJobNow(item.ReportId, item.NameSyncdata)"
+                                                title="Kích hoạt chạy luồng ngầm">
+                                            <i class="fas fa-bolt mr-1"></i> Chạy ngầm
+                                        </button>
+
+                                        <!-- Nút Cài đặt Chu kỳ (Admin) -->
+                                        <template x-if="scheduler.isAdmin">
+                                            <button type="button" class="btn btn-outline-secondary font-weight-bold"
+                                                    x-on:click="openScheduleModal(item)"
+                                                    title="Cấu hình chu kỳ tự động">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                        </template>
+                                    </div>
                                 </td>
                             </tr>
                         </template>
-
-                        <template x-if="!ListData || ListData.length === 0">
+                        <template x-if="isLoading">
                             <tr>
-                                <td colspan="6" class="text-center py-5">
-                                    <div class="py-4">
-                                        <i class="fas fa-cloud-upload-alt fa-3x text-gray-300 mb-3"></i>
-                                        <p class="text-gray-500 font-weight-bold mb-0">Không tìm thấy tiến trình đồng bộ dữ liệu nào phù hợp.</p>
-                                        <small class="text-muted">Vui lòng thử tìm kiếm lại với từ khóa khác.</small>
-                                    </div>
+                                <td colspan="8" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    <p class="mt-2 mb-0 font-weight-bold">Đang tải danh sách tiến trình...</p>
                                 </td>
+                            </tr>
+                        </template>
+                        <template x-if="!isLoading && (!items || items.length === 0)">
+                            <tr>
+                                <td colspan="8" class="text-center py-4 text-muted font-italic">Không tìm thấy tiến trình nào phù hợp</td>
                             </tr>
                         </template>
                     </tbody>
@@ -206,43 +220,133 @@
             </div>
         </div>
 
-        <!-- Footer & Responsive Pagination Bar -->
+        <!-- Footer & Full Responsive Pagination Bar -->
         <div class="card-footer bg-white py-3 border-top" style="border-color: #e3e6f0 !important;">
             <div class="row align-items-center">
                 <div class="col-md-5 mb-2 mb-md-0 text-center text-md-left">
                     <span class="text-muted small">
-                        Hiển thị <b class="text-dark" x-text="ListData.length > 0 ? (modelSearch.currentPage - 1) * modelSearch.pageSize + 1 : 0"></b> đến 
-                        <b class="text-dark" x-text="Math.min(modelSearch.currentPage * modelSearch.pageSize, modelSearch.totalItems)"></b> trong tổng số 
-                        <b class="text-primary" x-text="modelSearch.totalItems"></b> tiến trình API
+                        Hiển thị <b class="text-dark" x-text="items.length > 0 ? (currentPage - 1) * pageSize + 1 : 0"></b> đến 
+                        <b class="text-dark" x-text="Math.min(currentPage * pageSize, totalItems)"></b> trong tổng số 
+                        <b class="text-primary" x-text="totalItems"></b> API
                     </span>
                     <span class="ml-3 text-muted small">
                         Hiển thị
-                        <select class="custom-select custom-select-sm d-inline-block w-auto border bg-light ml-1" x-model="modelSearch.pageSize" x-on:change="changePageSize($event.target.value)">
+                        <select class="custom-select custom-select-sm d-inline-block w-auto border bg-light ml-1" x-model="pageSize" x-on:change="changePageSize($event.target.value)">
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
-                        bản ghi
+                        bản ghi / trang
                     </span>
                 </div>
 
                 <div class="col-md-7">
                     <ul class="pagination pagination-sm justify-content-center justify-content-md-end mb-0">
-                        <li class="page-item" :class="{'disabled': modelSearch.currentPage === 1}">
-                            <button class="page-item link-btn page-link rounded-left" x-on:click="LoadPage(modelSearch.currentPage - 1)"><i class="fas fa-chevron-left"></i></button>
+                        <li class="page-item" :class="{'disabled': currentPage === 1}">
+                            <button class="page-link rounded-left" x-on:click="goToPage(1)" title="Trang đầu"><i class="fas fa-angle-double-left"></i></button>
+                        </li>
+                        <li class="page-item" :class="{'disabled': currentPage === 1}">
+                            <button class="page-link" x-on:click="goToPage(currentPage - 1)" title="Trang trước"><i class="fas fa-chevron-left"></i></button>
                         </li>
 
                         <template x-for="p in pages" :key="p">
-                            <li class="page-item" :class="{'active': p === modelSearch.currentPage}">
-                                <button class="page-item link-btn page-link" x-on:click="LoadPage(p)" x-text="p"></button>
+                            <li class="page-item" :class="{'active': p === currentPage}">
+                                <button class="page-link" x-on:click="goToPage(p)" x-text="p"></button>
                             </li>
                         </template>
 
-                        <li class="page-item" :class="{'disabled': modelSearch.currentPage >= totalPages}">
-                            <button class="page-item link-btn page-link rounded-right" x-on:click="LoadPage(modelSearch.currentPage + 1)"><i class="fas fa-chevron-right"></i></button>
+                        <li class="page-item" :class="{'disabled': currentPage >= totalPages}">
+                            <button class="page-link" x-on:click="goToPage(currentPage + 1)" title="Trang sau"><i class="fas fa-chevron-right"></i></button>
+                        </li>
+                        <li class="page-item" :class="{'disabled': currentPage >= totalPages}">
+                            <button class="page-link rounded-right" x-on:click="goToPage(totalPages)" title="Trang cuối"><i class="fas fa-angle-double-right"></i></button>
                         </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cấu hình Lịch Tự động Đồng bộ (Admin) -->
+    <div class="modal fade" id="scheduleConfigModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header bg-light border-0 py-3">
+                    <h5 class="modal-title font-weight-bold text-gray-800">
+                        <i class="fas fa-clock text-primary mr-2"></i> Cấu hình Chu kỳ Tự động Đồng bộ
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-muted small text-uppercase">Tiến trình API</label>
+                        <div class="p-3 bg-light rounded">
+                            <div class="font-weight-bold text-dark" x-text="editScheduleModal.apiName"></div>
+                            <div class="text-muted small" x-text="'Mã: ' + editScheduleModal.apiCode + ' | ReportId: ' + editScheduleModal.reportId"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-muted small text-uppercase">Trạng thái Tự động</label>
+                        <div class="custom-control custom-switch mt-1">
+                            <input type="checkbox" class="custom-control-input" id="switchActiveApi" x-model="editScheduleModal.isActive">
+                            <label class="custom-control-label font-weight-bold text-dark" for="switchActiveApi" x-text="editScheduleModal.isActive ? 'Bật tự động đồng bộ theo lịch' : 'Tắt tự động đồng bộ'"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-muted small text-uppercase">Kiểu Chu kỳ Lặp lại</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="typeInterval" name="loopType" value="interval" class="custom-control-input" x-model="editScheduleModal.timeLoopType">
+                                    <label class="custom-control-label font-weight-bold" for="typeInterval">Khoảng thời gian (giây)</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="typeDaily" name="loopType" value="daily" class="custom-control-input" x-model="editScheduleModal.timeLoopType">
+                                    <label class="custom-control-label font-weight-bold" for="typeDaily">Hàng ngày (Giờ cố định)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input cho Interval -->
+                    <template x-if="editScheduleModal.timeLoopType === 'interval'">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-muted small text-uppercase">Khoảng thời gian lặp (Giây)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" min="30" step="10" x-model="editScheduleModal.intervalValue" placeholder="Nhập số giây (ví dụ: 60, 300, 3600)">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">giây</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Gợi ý: 60s = 1 phút | 300s = 5 phút | 1800s = 30 phút | 3600s = 1 giờ.</small>
+                        </div>
+                    </template>
+
+                    <!-- Input cho Daily -->
+                    <template x-if="editScheduleModal.timeLoopType === 'daily'">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-muted small text-uppercase">Khung giờ chạy mỗi ngày (0 - 23h)</label>
+                            <select class="form-control" x-model="editScheduleModal.dailyHour">
+                                <template x-for="h in 24" :key="h - 1">
+                                    <option :value="h - 1" x-text="(h - 1 < 10 ? '0' + (h - 1) : (h - 1)) + ':00 hàng ngày'"></option>
+                                </template>
+                            </select>
+                            <small class="form-text text-muted">Tiến trình sẽ tự động kích hoạt vào đúng giờ đã chọn mỗi ngày.</small>
+                        </div>
+                    </template>
+                </div>
+                <div class="modal-footer bg-light border-0 py-3">
+                    <button type="button" class="btn btn-secondary font-weight-bold px-3" data-dismiss="modal" style="border-radius: 8px;">Hủy bỏ</button>
+                    <button type="button" class="btn btn-primary font-weight-bold px-4" x-on:click="saveScheduleConfig()" :disabled="editScheduleModal.isSaving" style="border-radius: 8px;">
+                        <i class="fas fa-save mr-1" :class="{'fa-spin fa-spinner': editScheduleModal.isSaving}"></i> Lưu Cấu Hình
+                    </button>
                 </div>
             </div>
         </div>
@@ -251,5 +355,4 @@
 
 @section Scripts{
     <script src="~/app/Controller/AlpineSyncDataController.js?v=@DateTime.Now.Ticks"></script>
-    <script src="~/app/Controller/SyncDataController.js?v=@DateTime.Now.Ticks"></script>
 }

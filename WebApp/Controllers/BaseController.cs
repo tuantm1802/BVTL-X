@@ -24,6 +24,7 @@ namespace WebApp.Controllers
     {
         readonly IPageMenuDA _pageMenuDA;
         readonly IUserDA _userDA;
+        private static readonly ISystemMonitorDA _systemMonitorDA = new SystemMonitorDA();
         ITokenService _ITokenService = new TokenService();
         private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"].ToString();
 
@@ -35,6 +36,7 @@ namespace WebApp.Controllers
         // GET: Base
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            filterContext.HttpContext.Items["_ActionStartTime"] = DateTime.UtcNow;
             if (Session["USER_SESSION"] == null)
             {
                 var token = Request.Cookies["UserToken"].Value.ToString();
@@ -101,23 +103,84 @@ namespace WebApp.Controllers
             }
 
             // Kiểm tra xem người dùng có quyền truy cập menu không
-            var pageMenu = (List<MenuModel>)filterContext.HttpContext.Session.Contents["Menus"];
+            var pageMenu = filterContext.HttpContext.Session.Contents["Menus"] as List<MenuModel>;
             Controller controller = filterContext.Controller as Controller;
             string controllerName = controller.RouteData.Values["controller"].ToString();
             string actionName = controller.RouteData.Values["action"].ToString();
-            //Bỏ qua và cho phép truy cập cac Actions cập thông tin của tài khoản
-            if (controllerName == "User" && !Constants.ActionsAllowAcess.Any(s => s == actionName))
+            // Bỏ qua và cho phép truy cập các Actions cập nhật thông tin của tài khoản cá nhân
+            if (controllerName.Equals("User", StringComparison.OrdinalIgnoreCase) && 
+                !Constants.ActionsAllowAcess.Any(s => s.Equals(actionName, StringComparison.OrdinalIgnoreCase)))
             {
-                var data = pageMenu.FirstOrDefault(x => !string.IsNullOrEmpty(x.HREF_URL) && x.HREF_URL.ToUpper().Contains(controllerName.ToUpper()));
+                var data = pageMenu != null 
+                    ? pageMenu.FirstOrDefault(x => !string.IsNullOrEmpty(x.HREF_URL) && x.HREF_URL.ToUpper().Contains(controllerName.ToUpper())) 
+                    : null;
                 if (data == null)
                 {
-                    resetSession();
                     filterContext.Result = new RedirectResult("/ErrorPage/Error404");
                     return;
                 }
             }
 
             base.OnActionExecuting(filterContext);
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            base.OnActionExecuted(filterContext);
+            try
+            {
+                var session = Session["USER_SESSION"] as UserLogin;
+                string userName = session != null ? session.UserName : "Anonymous";
+                string fullName = session != null ? session.Name : "";
+                string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
+                string actionName = filterContext.ActionDescriptor.ActionName;
+
+                // Không log chính các API heartbeat hoặc polling ngầm để tránh rác DB
+                if (controllerName.Equals("SystemMonitor", StringComparison.OrdinalIgnoreCase) && 
+                    (actionName.Equals("Heartbeat", StringComparison.OrdinalIgnoreCase) || actionName.Equals("GetOnlineUsers", StringComparison.OrdinalIgnoreCase)))
+                {
+                    return;
+                }
+
+                int executionTimeMs = 0;
+                if (filterContext.HttpContext.Items["_ActionStartTime"] is DateTime startTime)
+                {
+                    executionTimeMs = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                }
+
+                bool isError = filterContext.Exception != null;
+                string errorMsg = filterContext.Exception != null ? filterContext.Exception.Message : null;
+
+                string actionType = "View";
+                string actLower = actionName.ToLower();
+                if (actLower.StartsWith("export") || actLower.Contains("excel") || actLower.Contains("pdf")) actionType = "ExportExcel";
+                else if (actLower.StartsWith("create") || actLower.StartsWith("add") || actLower.StartsWith("themMoi") || actLower.StartsWith("insert")) actionType = "Create";
+                else if (actLower.StartsWith("edit") || actLower.StartsWith("update") || actLower.StartsWith("capnhat") || actLower.StartsWith("toggle") || actLower.StartsWith("reset")) actionType = "Update";
+                else if (actLower.StartsWith("delete") || actLower.StartsWith("xoa") || actLower.StartsWith("remove")) actionType = "Delete";
+                else if (actLower.StartsWith("search") || actLower.StartsWith("get") || actLower.StartsWith("find") || actLower.StartsWith("load")) actionType = "Search";
+                else if (actLower.Contains("sync") || actLower.Contains("trigger")) actionType = "Sync";
+
+                // Cập nhật vị trí trang hiện tại vào session online
+                if (session != null && Session != null && !string.IsNullOrEmpty(Session.SessionID))
+                {
+                    string sessionId = Session.SessionID;
+                    string rawUrl = filterContext.HttpContext?.Request?.RawUrl;
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        _systemMonitorDA.UpdateHeartbeat(sessionId, rawUrl, controllerName, actionName);
+                    });
+                }
+
+                // Ghi log sử dụng tính năng bất đồng bộ
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    _systemMonitorDA.RecordFeatureUsage(userName, fullName, controllerName, actionName, actionType, executionTimeMs, isError, errorMsg);
+                });
+            }
+            catch
+            {
+                // Bỏ qua lỗi logging để không ảnh hưởng luồng chính
+            }
         }
 
         public List<string> GetBottomRoleByController(string controllerName, List<MenuModel> menu)

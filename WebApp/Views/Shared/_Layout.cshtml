@@ -198,6 +198,23 @@
                 angular.element(document.getElementById('thongbao-container')).scope().LoadThongBaoHeader();
             }
         }
+
+        // Heartbeat định kỳ 60s cập nhật trạng thái Online
+        (function() {
+            function sendHeartbeat() {
+                if (document.visibilityState !== 'hidden') {
+                    $.ajax({
+                        url: '/SystemMonitor/Heartbeat',
+                        type: 'POST',
+                        data: { currentUrl: window.location.pathname + window.location.search },
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        success: function () { },
+                        error: function () { }
+                    });
+                }
+            }
+            setInterval(sendHeartbeat, 60000);
+        })();
     </script>
     @RenderSection("scripts", required: false)
 </body>

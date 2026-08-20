@@ -1,96 +1,316 @@
-﻿
+
 @{
-    ViewBag.Title = "GetProfile";
+    ViewBag.Title = "Thông tin tài khoản";
+    var userSession = (Model.ModelExtend.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
 }
 @model Model.ModelExtend.UserPageModel
 
-<div class="content-wrapper" style="        min-height: 1419.6px; margin-left: 0px;">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>Thông tin tài khoản</h1>
+<div class="container-fluid py-4">
+    <!-- Header & Breadcrumb -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h4 class="font-weight-bold text-gray-900 mb-1">
+                <i class="fas fa-id-card text-primary me-2"></i>Thông Tin Tài Khoản
+            </h4>
+            <p class="text-muted small mb-0">Hồ sơ cá nhân, thông tin công tác, phân quyền và bảo mật tài khoản</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/User/ChangePassword?Id=@Model.ID" class="btn btn-sm btn-outline-warning shadow-sm">
+                <i class="fas fa-key me-1"></i> Đổi mật khẩu
+            </a>
+            @if (userSession != null && userSession.IsAdmin == true)
+            {
+                <a href="/User/Index" class="btn btn-sm btn-outline-primary shadow-sm">
+                    <i class="fas fa-users-cog me-1"></i> Quản lý người dùng
+                </a>
+            }
+            <a href="/Home/Index" class="btn btn-sm btn-light border shadow-sm">
+                <i class="fas fa-home me-1"></i> Trang chủ
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Cột Trái: Thẻ Định Danh Cá Nhân (Profile Identity Card) -->
+        <div class="col-lg-4 col-xl-3">
+            <div class="card border-0 shadow-sm overflow-hidden h-100">
+                <!-- Card Header Gradient Banner -->
+                <div class="bg-primary py-4 text-center position-relative" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                    <div class="position-relative d-inline-block mt-2">
+                        @if (!string.IsNullOrEmpty(Model.Avartar))
+                        {
+                            <img class="rounded-circle shadow border border-3 border-white" 
+                                 src="@Model.Avartar" 
+                                 alt="@Model.Name" 
+                                 style="width: 100px; height: 100px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="rounded-circle shadow border border-3 border-white bg-white text-primary font-weight-bold d-flex align-items-center justify-content-center mx-auto" 
+                                 style="width: 100px; height: 100px; font-size: 2.2rem;">
+                                <span>@(string.IsNullOrEmpty(Model.UserName) ? "US" : (Model.UserName.Length >= 2 ? Model.UserName.Substring(0, 2).ToUpper() : Model.UserName.ToUpper()))</span>
+                            </div>
+                        }
+                        <span class="position-absolute bottom-0 end-0 p-2 @(Model.Status ? "bg-success" : "bg-danger") border border-2 border-white rounded-circle" 
+                              style="width: 16px; height: 16px;" 
+                              title="@(Model.Status ? "Tài khoản đang hoạt động" : "Tài khoản tạm khóa")"></span>
+                    </div>
+                </div>
+
+                <div class="card-body text-center pt-3 pb-4">
+                    <h5 class="font-weight-bold text-gray-900 mb-1">@Model.Name</h5>
+                    <div class="text-muted font-monospace small mb-3">@@@Model.UserName</div>
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap mb-4">
+                        <span class="badge bg-primary text-white font-weight-normal px-2 py-1">
+                            <i class="fas fa-shield-alt me-1"></i>@(string.IsNullOrEmpty(Model.RoleName) ? "Người dùng" : Model.RoleName)
+                        </span>
+                        @if (Model.Status)
+                        {
+                            <span class="badge bg-success text-white font-weight-normal px-2 py-1">
+                                <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger text-white font-weight-normal px-2 py-1">
+                                <i class="fas fa-lock me-1"></i>Tài khoản bị khóa
+                            </span>
+                        }
+                    </div>
+
+                    <hr class="text-muted opacity-25 my-3">
+
+                    <!-- Quick Metadata -->
+                    <div class="text-start small">
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted"><i class="fas fa-briefcase fa-fw text-primary me-1"></i> Chức vụ:</span>
+                            <span class="font-weight-semibold text-gray-800">@(string.IsNullOrEmpty(Model.Possition) ? "Cán bộ chuyên môn" : Model.Possition)</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted"><i class="fas fa-project-diagram fa-fw text-info me-1"></i> Dự án:</span>
+                            <span class="font-weight-semibold text-gray-800">@(string.IsNullOrEmpty(Model.MaDuAn) ? "—" : Model.MaDuAn)</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted"><i class="fas fa-calendar-plus fa-fw text-success me-1"></i> Ngày tạo:</span>
+                            <span class="font-weight-semibold text-gray-800">@(string.IsNullOrEmpty(Model.CreatedDate_Text) ? "—" : Model.CreatedDate_Text)</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-2">
+                            <span class="text-muted"><i class="fas fa-clock fa-fw text-secondary me-1"></i> Cập nhật:</span>
+                            <span class="font-weight-semibold text-gray-800">@(string.IsNullOrEmpty(Model.ModifiedDate_Text) ? "Chưa cập nhật" : Model.ModifiedDate_Text)</span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <a href="/User/ChangePassword?Id=@Model.ID" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-key me-1"></i> Thiết lập mật khẩu mới
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
-    </section>
+        </div>
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-
-                    <!-- Profile Image -->
-                    <div class="card card-primary card-outline">
-                        <div class="card-body box-profile">
-                            <div class="text-center">
-                                @if (!string.IsNullOrEmpty(Model.Avartar))
-                                {
-                                    <img class="profile-user-img img-fluid img-circle" src="@Model.Avartar" alt="" class="card-widget-a__user-image rounded-circle">
-                                }
-                                else
-                                {
-                                    <img class="profile-user-img img-fluid img-circle" src="~/Content/Images/noimg.png" alt="" class="card-widget-a__user-image rounded-circle">
-                                }
+        <!-- Cột Phải: Thông Tin Chi Tiết (Personal, Contact & Roles) -->
+        <div class="col-lg-8 col-xl-9">
+            <div class="d-flex flex-column gap-4">
+                
+                <!-- CARD 1: THÔNG TIN CÁ NHÂN & LIÊN HỆ -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                        <h6 class="font-weight-bold text-primary mb-0">
+                            <i class="fas fa-user-check me-2"></i>Thông Tin Cá Nhân & Liên Hệ
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <!-- Họ và tên -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-user text-primary me-1"></i> Họ và Tên
+                                    </div>
+                                    <div class="font-weight-bold text-gray-900 fs-6">@Model.Name</div>
+                                </div>
                             </div>
 
-                            <h3 class="profile-username text-center">@Model.Name</h3>
+                            <!-- Tên đăng nhập -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-id-badge text-primary me-1"></i> Tên Đăng Nhập
+                                    </div>
+                                    <div class="font-weight-bold font-monospace text-primary fs-6">@Model.UserName</div>
+                                </div>
+                            </div>
 
-                            <p class="text-muted text-center">@Model.UserName</p>
+                            <!-- Số điện thoại -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-phone-alt text-success me-1"></i> Số Điện Thoại
+                                    </div>
+                                    <div class="font-weight-semibold text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.Phone) ? "Chưa cập nhật" : Model.Phone)
+                                    </div>
+                                </div>
+                            </div>
 
-                            <ul class="list-group list-group-unbordered mb-3">
-                                <li class="list-group-item">
-                                    <b>Nhóm quyền</b> <a class="float-right">@Model.RoleName</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Nhóm TBH</b> <a class="float-right">@((Model.TestGroups != null && Model.TestGroups.Count >0) ? string.Join(", ", Model.TestGroups.Select(x=>x.tennhom_tbh)) :"" )</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Ngày sinh</b> <a class="float-right">@Model.DateOfBirth_Text</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Số CMND</b> <a class="float-right">@Model.IdNumber</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Giới tính</b> <a class="float-right">@Model.GanderName</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>SĐT</b> <a class="float-right">@Model.Phone</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Email</b> <a class="float-right">@Model.Email</a>
-                                </li>
-                                @*<li class="list-group-item">
-                                    <b>Tỉnh quản lý</b> <a class="float-right">@((Model.Citys != null && Model.Citys.Count >0) ? string.Join(", ", Model.Citys.Select(x=>x.Name)) :"" )</a>
-                                </li>*@
-                                <li class="list-group-item">
-                                    <b>Trạng thái</b> <a class="float-right">
-                                        @{
-                                            var status = "Sử dụng";
-                                            status = Model.Status ? "Sử dụng" : "Không sử dụng";
-                                        }
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-envelope text-danger me-1"></i> Địa Chỉ Email
+                                    </div>
+                                    <div class="font-weight-semibold text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.Email) ? "Chưa cập nhật" : Model.Email)
+                                    </div>
+                                </div>
+                            </div>
 
-                                        @status
-                                    </a>
-                                </li>
-                                <li class="list-group-item">
-                                    <b>Ngày tạo</b> <a class="float-right">@Model.CreatedDate_Text</a>
-                                </li>
-                            </ul>
+                            <!-- Giới tính -->
+                            <div class="col-md-6 col-xl-3">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-venus-mars text-info me-1"></i> Giới Tính
+                                    </div>
+                                    <div class="font-weight-semibold text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.GanderName) ? "Chưa xác định" : Model.GanderName)
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Ngày sinh -->
+                            <div class="col-md-6 col-xl-3">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-birthday-cake text-warning me-1"></i> Ngày Sinh
+                                    </div>
+                                    <div class="font-weight-semibold text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.DateOfBirth_Text) ? "Chưa cập nhật" : Model.DateOfBirth_Text)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Số CMND / CCCD -->
+                            <div class="col-md-12 col-xl-6">
+                                <div class="p-3 border rounded bg-light bg-opacity-50 h-100">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-address-card text-secondary me-1"></i> Số CCCD / CMND
+                                    </div>
+                                    <div class="font-weight-semibold font-monospace text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.IdNumber) ? "Chưa cập nhật" : Model.IdNumber)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Địa chỉ thường trú -->
+                            <div class="col-12">
+                                <div class="p-3 border rounded bg-light bg-opacity-50">
+                                    <div class="text-xs text-muted text-uppercase font-weight-bold mb-1">
+                                        <i class="fas fa-map-marker-alt text-danger me-1"></i> Địa Chỉ Thường Trú / Liên Hệ
+                                    </div>
+                                    <div class="font-weight-semibold text-gray-800">
+                                        @(string.IsNullOrEmpty(Model.Address) ? "Chưa cập nhật địa chỉ liên hệ" : Model.Address)
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
+                </div>
 
+                <!-- CARD 2: PHÂN QUYỀN & ĐỊA BÀN CÔNG TÁC -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="font-weight-bold text-primary mb-0">
+                            <i class="fas fa-network-wired me-2"></i>Phân Quyền & Địa Bàn Quản Lý
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <!-- Nhóm quyền -->
+                            <div class="col-md-6">
+                                <label class="text-xs text-muted text-uppercase font-weight-bold mb-2 d-block">
+                                    <i class="fas fa-shield-alt text-primary me-1"></i> Nhóm Quyền Hệ Thống
+                                </label>
+                                <div class="p-3 bg-light rounded border d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="font-weight-bold text-gray-900">@(string.IsNullOrEmpty(Model.RoleName) ? "Người dùng" : Model.RoleName)</div>
+                                        <div class="small text-muted">Phân quyền thao tác theo cấu hình nhóm</div>
+                                    </div>
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                            </div>
+
+                            <!-- Dự án phụ trách -->
+                            <div class="col-md-6">
+                                <label class="text-xs text-muted text-uppercase font-weight-bold mb-2 d-block">
+                                    <i class="fas fa-project-diagram text-info me-1"></i> Dự Án Phụ Trách
+                                </label>
+                                <div class="p-3 bg-light rounded border">
+                                    <div class="font-weight-bold text-gray-900">@(string.IsNullOrEmpty(Model.MaDuAn) ? "Chưa gán dự án cụ thể" : Model.MaDuAn)</div>
+                                    <div class="small text-muted">Phạm vi dữ liệu dự án được phân công</div>
+                                </div>
+                            </div>
+
+                            <!-- Địa bàn Tỉnh / Thành phố quản lý -->
+                            <div class="col-md-6">
+                                <label class="text-xs text-muted text-uppercase font-weight-bold mb-2 d-block">
+                                    <i class="fas fa-map-marked-alt text-success me-1"></i> Tỉnh / Thành Phố Quản Lý
+                                </label>
+                                <div class="p-3 bg-light rounded border min-h-100">
+                                    @if (Model.Citys != null && Model.Citys.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var city in Model.Citys)
+                                            {
+                                                <span class="badge bg-white text-dark border px-2 py-1 font-weight-normal shadow-xs">
+                                                    <i class="fas fa-map-pin text-danger me-1"></i>@city.Name
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else if (!string.IsNullOrEmpty(Model.CityCodes))
+                                    {
+                                        <span class="badge bg-white text-dark border px-2 py-1 font-weight-normal">
+                                            <i class="fas fa-map-pin text-danger me-1"></i>Mã tỉnh: @Model.CityCodes
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted small fst-italic">Toàn quốc / Chưa phân vùng quản lý</div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Nhóm thu thập dữ liệu TBH -->
+                            <div class="col-md-6">
+                                <label class="text-xs text-muted text-uppercase font-weight-bold mb-2 d-block">
+                                    <i class="fas fa-users text-warning me-1"></i> Nhóm Thu Thập Dữ Liệu (TBH)
+                                </label>
+                                <div class="p-3 bg-light rounded border min-h-100">
+                                    @if (Model.TestGroups != null && Model.TestGroups.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var tg in Model.TestGroups)
+                                            {
+                                                <span class="badge bg-white text-primary border px-2 py-1 font-weight-normal shadow-xs">
+                                                    <i class="fas fa-user-friends text-primary me-1"></i>@tg.tennhom_tbh
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted small fst-italic">Chưa được gán vào nhóm thu thập nào</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+        </div>
+    </div>
 </div>
 

@@ -1,0 +1,180 @@
+@{
+    ViewBag.Title = "Báo cáo Hoạt động & Chỉ số (CD45 - DREAMH)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineBaoCaoCD45">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-chart-line text-primary mr-2"></i>BÁO CÁO HOẠT ĐỘNG & CHỈ SỐ - DỰ ÁN CD45 (DREAMH)
+        </h1>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc báo cáo</h6>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Kỳ báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="loaiKy" @@change="updateDateRange()">
+                        <option value="Thang">Theo Tháng (26-25)</option>
+                        <option value="Quy">Theo Quý</option>
+                        <option value="6Thang">6 Tháng</option>
+                        <option value="12Thang">12 Tháng / Năm</option>
+                        <option value="TuyChon">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Thang'">
+                    <label class="font-weight-bold small">Tháng</label>
+                    <select class="form-control form-control-sm" x-model="thang" @@change="updateDateRange()">
+                        <template x-for="m in 12" :key="m">
+                            <option :value="m" x-text="'Tháng ' + m"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Quy'">
+                    <label class="font-weight-bold small">Quý</label>
+                    <select class="form-control form-control-sm" x-model="quy" @@change="updateDateRange()">
+                        <option value="I">Quý I</option>
+                        <option value="II">Quý II</option>
+                        <option value="III">Quý III</option>
+                        <option value="IV">Quý IV</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === '6Thang'">
+                    <label class="font-weight-bold small">Kỳ 6 Tháng</label>
+                    <select class="form-control form-control-sm" x-model="ky6Thang" @@change="updateDateRange()">
+                        <option value="1">6 Tháng đầu năm</option>
+                        <option value="2">6 Tháng cuối năm</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2" x-show="loaiKy !== 'TuyChon'">
+                    <label class="font-weight-bold small">Năm</label>
+                    <input type="number" class="form-control form-control-sm" x-model="nam" @@change="updateDateRange()" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Từ ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Đến ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" x-model="toDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <select class="form-control form-control-sm" x-model="selectedCity" @@change="onCityChange()">
+                        <option value="">-- Toàn dự án --</option>
+                        <template x-for="c in listCities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Nhóm (CBO)</label>
+                    <select class="form-control form-control-sm" x-model="selectedNhom">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm" @@click="loadData()">
+                        <i class="fas fa-search fa-sm"></i> Tìm kiếm
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm" @@click="exportExcel()">
+                        <i class="fas fa-file-excel fa-sm"></i> Xuất Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-table mr-1"></i> Bảng số liệu Báo cáo kết quả hoạt động</h6>
+            <span class="badge badge-info" x-text="'Kỳ: ' + fromDate + ' - ' + toDate"></span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0" style="font-size: 13.5px;">
+                    <thead class="bg-primary text-white text-center">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Thông tin báo cáo</th>
+                            <th style="width: 85px;" class="bg-dark text-white">Tổng</th>
+                            <th style="width: 75px;">PUD</th>
+                            <th style="width: 75px;">PLHIV</th>
+                            <th style="width: 75px;">TG</th>
+                            <th style="width: 75px;">SW</th>
+                            <th style="width: 75px;">MSM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, index) in items" :key="index">
+                            <tr :class="item.IsBold ? 'bg-warning font-weight-bold text-dark' : ''">
+                                <td class="text-center font-weight-bold" x-text="item.STT"></td>
+                                <td :class="item.IndentLevel === 1 ? 'pl-4 text-muted' : ''">
+                                    <span x-text="item.ChiTieu"></span>
+                                </td>
+                                <td class="text-right font-weight-bold text-primary" x-text="formatNumber(item.Tong)"></td>
+                                <td class="text-right" x-text="formatNumber(item.PUD)"></td>
+                                <td class="text-right" x-text="formatNumber(item.PLHIV)"></td>
+                                <td class="text-right" x-text="formatNumber(item.TG)"></td>
+                                <td class="text-right" x-text="formatNumber(item.SW)"></td>
+                                <td class="text-right" x-text="formatNumber(item.MSM)"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="items.length === 0 && !isLoading">
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có dữ liệu trong khoảng thời gian này
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="8" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tổng hợp số liệu báo cáo...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/app/Controller/AlpineBaoCaoCD45Controller.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                var modelName = $(this).attr('x-model');
+                var val = $(this).val();
+                if (modelName === 'fromDate') {
+                    document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0].fromDate = val;
+                } else if (modelName === 'toDate') {
+                    document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0].toDate = val;
+                }
+            });
+        });
+    </script>
+}

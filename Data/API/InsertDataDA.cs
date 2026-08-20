@@ -71,7 +71,18 @@ namespace Data.API
                 string partitionCols;
                 string pkColumn = GetPrimaryKeyColumn(tableName);
 
-                if (dttInsert.Columns.Contains("record_id"))
+                if (tableName.Equals("BVTL_DATA_STANDARDIZATION_LOG", StringComparison.OrdinalIgnoreCase))
+                {
+                    // MERGE thông minh cho bảng Log (deduplicate theo MADUAN, TABLE_NAME, RECORD_ID, FIELD_NAME, RULE_CODE)
+                    mergeOnClause = @"Target.[MADUAN] = Source.[MADUAN] 
+                                  AND Target.[TABLE_NAME] = Source.[TABLE_NAME] 
+                                  AND ISNULL(Target.[RECORD_ID], '') = ISNULL(Source.[RECORD_ID], '') 
+                                  AND Target.[FIELD_NAME] = Source.[FIELD_NAME] 
+                                  AND Target.[RULE_CODE] = Source.[RULE_CODE]";
+                    partitionCols = "[MADUAN], [TABLE_NAME], [RECORD_ID], [FIELD_NAME], [RULE_CODE]";
+                    log.Info("Sử dụng composite rule key làm merge key cho bảng log: " + tableName);
+                }
+                else if (dttInsert.Columns.Contains("record_id"))
                 {
                     // Ưu tiên dùng record_id làm merge key
                     mergeOnClause = "Target.[record_id] = Source.[record_id]";
@@ -187,30 +198,82 @@ namespace Data.API
                     sourceTableExpression = $"[{tempTableName}]";
                 }
 
-                // Tạo câu lệnh MERGE
-                string mergeSql = $@"
-                    MERGE INTO [{tableName}] AS Target
-                    USING {sourceTableExpression} AS Source
-                    ON ({mergeOnClause})";
-
-                if (!string.IsNullOrEmpty(updateSetClause))
+                if (tableName.Equals("BVTL_DATA_STANDARDIZATION_LOG", StringComparison.OrdinalIgnoreCase))
                 {
-                    mergeSql += $@"
-                    WHEN MATCHED THEN
-                        UPDATE SET {updateSetClause}";
+                    // 1. Thực hiện MERGE UPSERT cho bảng Log: cập nhật trạng thái mới nhất, tránh nhân bản lặp dòng
+                    string mergeLogSql = $@"
+                        MERGE INTO [{tableName}] AS Target
+                        USING {sourceTableExpression} AS Source
+                        ON ({mergeOnClause})
+                        WHEN MATCHED THEN
+                            UPDATE SET 
+                                Target.[OLD_VALUE] = Source.[OLD_VALUE],
+                                Target.[NEW_VALUE] = Source.[NEW_VALUE],
+                                Target.[REPORT_ID] = Source.[REPORT_ID],
+                                Target.[API_CODE] = Source.[API_CODE],
+                                Target.[SEVERITY] = Source.[SEVERITY],
+                                Target.[ACTION_TAKEN] = Source.[ACTION_TAKEN],
+                                Target.[MESSAGE] = Source.[MESSAGE],
+                                Target.[CREATED_DATE] = Source.[CREATED_DATE]
+                        WHEN NOT MATCHED BY TARGET THEN
+                            INSERT ({columnsList}) VALUES ({sourceColumnsList});";
+
+                    using (SqlCommand cmd = new SqlCommand(mergeLogSql, conn, transaction))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 2. Tự động giải quyết (Auto-Resolve) các CẢNH BÁO cũ đã được sửa/hợp lệ trên REDCap
+                    string autoResolveSql = $@"
+                        UPDATE [{tableName}]
+                        SET IS_RESOLVED = 1,
+                            RESOLVED_NOTE = N'Tự động đóng: Lỗi dữ liệu nguồn đã được sửa đổi / xử lý trên REDCap.'
+                        WHERE MADUAN = @maDuAn
+                          AND API_CODE IN (SELECT DISTINCT API_CODE FROM [{tempTableName}])
+                          AND (SEVERITY = 'WARNING' OR SEVERITY = 'ERROR')
+                          AND (IS_RESOLVED IS NULL OR IS_RESOLVED = 0)
+                          AND NOT EXISTS (
+                              SELECT 1 FROM [{tempTableName}] t 
+                              WHERE t.MADUAN = [{tableName}].MADUAN
+                                AND t.TABLE_NAME = [{tableName}].TABLE_NAME
+                                AND ISNULL(t.RECORD_ID, '') = ISNULL([{tableName}].RECORD_ID, '')
+                                AND t.FIELD_NAME = [{tableName}].FIELD_NAME
+                                AND t.RULE_CODE = [{tableName}].RULE_CODE
+                          )";
+
+                    using (SqlCommand cmd = new SqlCommand(autoResolveSql, conn, transaction))
+                    {
+                        cmd.Parameters.Add("@maDuAn", SqlDbType.VarChar).Value = (object)maDuAn ?? DBNull.Value;
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-
-                mergeSql += $@"
-                    WHEN NOT MATCHED BY TARGET THEN
-                        INSERT ({columnsList}) VALUES ({sourceColumnsList})
-                    WHEN NOT MATCHED BY SOURCE AND Target.CITY_CODE = @cityCode AND Target.MADUAN = @maDuAn THEN
-                        DELETE;";
-
-                using (SqlCommand cmd = new SqlCommand(mergeSql, conn, transaction))
+                else
                 {
-                    cmd.Parameters.Add("@cityCode", SqlDbType.VarChar).Value = (object)cityCode ?? DBNull.Value;
-                    cmd.Parameters.Add("@maDuAn", SqlDbType.VarChar).Value = (object)maDuAn ?? DBNull.Value;
-                    cmd.ExecuteNonQuery();
+                    // Tạo câu lệnh MERGE
+                    string mergeSql = $@"
+                        MERGE INTO [{tableName}] AS Target
+                        USING {sourceTableExpression} AS Source
+                        ON ({mergeOnClause})";
+
+                    if (!string.IsNullOrEmpty(updateSetClause))
+                    {
+                        mergeSql += $@"
+                        WHEN MATCHED THEN
+                            UPDATE SET {updateSetClause}";
+                    }
+
+                    mergeSql += $@"
+                        WHEN NOT MATCHED BY TARGET THEN
+                            INSERT ({columnsList}) VALUES ({sourceColumnsList})
+                        WHEN NOT MATCHED BY SOURCE AND Target.CITY_CODE = @cityCode AND Target.MADUAN = @maDuAn THEN
+                            DELETE;";
+
+                    using (SqlCommand cmd = new SqlCommand(mergeSql, conn, transaction))
+                    {
+                        cmd.Parameters.Add("@cityCode", SqlDbType.VarChar).Value = (object)cityCode ?? DBNull.Value;
+                        cmd.Parameters.Add("@maDuAn", SqlDbType.VarChar).Value = (object)maDuAn ?? DBNull.Value;
+                        cmd.ExecuteNonQuery();
+                    }
                 }
 
                 log.Info("############!!!!!!!!!!Kết thúc đồng bộ dữ liệu bảng: " + tableName + "############!!!!!!!!!!");

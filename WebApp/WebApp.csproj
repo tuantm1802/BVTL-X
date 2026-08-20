@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -98,6 +98,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Quartz, Version=3.0.7.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.3.0.7\lib\net452\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="ReportViewerForMvc, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ReportViewerForMvc4.1.1.2\lib\net40\ReportViewerForMvc.dll</HintPath>
     </Reference>
@@ -128,6 +131,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
@@ -198,6 +202,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Common\ActionLogger.cs" />
     <Compile Include="Common\QLTBAuthorizeAttribute.cs" />
+    <Compile Include="Services\ProcessService.cs" />
+    <Compile Include="Services\TelegramNotifier.cs" />
+    <Compile Include="Services\Jobs\GetDataAPIJob.cs" />
+    <Compile Include="Services\ScheduleTasks\JobScheduler.cs" />
+    <Compile Include="Services\ScheduleTasks\JobScheduleChangeTimeloop.cs" />
+    <Compile Include="Controllers\SystemMonitorController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
     <Compile Include="Controllers\BaoCao6ThangCH07Controller.cs" />
@@ -208,6 +218,9 @@
     <Compile Include="Controllers\BaoCaoQuyCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoThangCH07Controller.cs" />
+    <Compile Include="Controllers\BaoCaoCD45Controller.cs" />
+    <Compile Include="Controllers\BaoCaoTCVCD45Controller.cs" />
+    <Compile Include="Controllers\DataQualityController.cs" />
     <Compile Include="Controllers\KhoVatPhamController.cs" />
     <Compile Include="Controllers\KhachHangController.cs" />
     <Compile Include="Controllers\DGHLVIIVController.cs" />
@@ -309,6 +322,8 @@
     <Content Include="app\Controller\AlpineBaoCao6Thang.js" />
     <Content Include="app\Controller\AlpineBaoCao6ThangCH07.js" />
     <Content Include="app\Controller\AlpineBaoCaoCD43.js" />
+    <Content Include="app\Controller\AlpineBaoCaoChiSo.js" />
+    <Content Include="app\Controller\AlpineBaoCaoChiSo6Thang.js" />
     <Content Include="app\Controller\AlpineBaoCaoNam.js" />
     <Content Include="app\Controller\AlpineBaoCaoNamCH07.js" />
     <Content Include="app\Controller\AlpineBaoCaoQuy.js" />
@@ -320,48 +335,49 @@
     <Content Include="app\Controller\AlpineBaoCaoTongHop.js" />
     <Content Include="app\Controller\AlpineBaoCaoTongHopQuyCD43.js" />
     <Content Include="app\Controller\AlpineBaoCaoTuan.js" />
+    <Content Include="app\Controller\AlpineChatGayNghien3TH.js" />
+    <Content Include="app\Controller\AlpineChatGayNghienTX3TH.js" />
+    <Content Include="app\Controller\AlpineChuyenGuiDichVu.js" />
+    <Content Include="app\Controller\AlpineCityController.js" />
+    <Content Include="app\Controller\AlpineBaoCaoCD45Controller.js" />
+    <Content Include="app\Controller\AlpineBaoCaoTCVCD45Controller.js" />
+    <Content Include="app\Controller\AlpineDataQualityController.js" />
+    <Content Include="app\Controller\AlpineCustomerDetailModal.js" />
+    <Content Include="app\Controller\AlpineDuongSuDungController.js" />
+    <Content Include="app\Controller\AlpineHomeController.js" />
+    <Content Include="app\Controller\AlpineKetQuaACE.js" />
+    <Content Include="app\Controller\AlpineKetQuaASSIST.js" />
+    <Content Include="app\Controller\AlpineKetQuaBHDG.js" />
+    <Content Include="app\Controller\AlpineKetQuaHIV.js" />
+    <Content Include="app\Controller\AlpineKetQuaSKTT.js" />
+    <Content Include="app\Controller\AlpineKetQuaXNNT.js" />
+    <Content Include="app\Controller\AlpineLoaiDoiTuongController.js" />
+    <Content Include="app\Controller\AlpinePhieuTuVan.js" />
+    <Content Include="app\Controller\AlpineRoleController.js" />
+    <Content Include="app\Controller\AlpineSyncDataController.js" />
+    <Content Include="app\Controller\AlpineSysParameterController.js" />
+    <Content Include="app\Controller\AlpineTestGroupController.js" />
+    <Content Include="app\Controller\AlpineUserAccessController.js" />
+    <Content Include="app\Controller\AlpineFeatureUsageController.js" />
+    <Content Include="app\Controller\AlpineUserController.js" />
     <Content Include="app\Controller\ApiController.js" />
-    <Content Include="app\Controller\BaoCao6ThangCH07Controller.js" />
-    <Content Include="app\Controller\BaoCaoNamCH07Controller.js" />
-    <Content Include="app\Controller\BaoCaoCD43Controller.js" />
-    <Content Include="app\Controller\BaoCaoQuyCH07Controller.js" />
-    <Content Include="app\Controller\BaoCaoQuyCD43Controller.js" />
-    <Content Include="app\Controller\BaoCaoThangCH07Controller.js" />
-    <Content Include="app\Controller\BaoCaoTongHopQuyCD43Controller.js" />
     <Content Include="app\Controller\HomeController.js" />
-    <Content Include="app\Controller\BaoCaoChiSo6ThangController.js" />
-    <Content Include="app\Controller\BaoCaoChiSoController.js" />
-    <Content Include="app\Controller\BaoCaoNamController.js" />
     <Content Include="app\Controller\BaoCaoNamVIIVController.js" />
     <Content Include="app\Controller\BaoCaoTongHopQuyVIIVController.js" />
     <Content Include="app\Controller\BaoCaoQuyVIIVController.js" />
-    <Content Include="app\Controller\BaoCaoQuyController.js" />
-    <Content Include="app\Controller\BaoCao6ThangController.js" />
-    <Content Include="app\Controller\BaoCaoThangController.js" />
-    <Content Include="app\Controller\BaoCaoTuanController.js" />
-    <Content Include="app\Controller\ChatGayNghien3THController.js" />
-    <Content Include="app\Controller\ChatGayNghienTX3THController.js" />
     <Content Include="app\Controller\CityController.js" />
     <Content Include="app\Controller\CustomerController.js" />
     <Content Include="app\Controller\DemoReportController.js" />
     <Content Include="app\Controller\DuongSuDungController.js" />
-    <Content Include="app\Controller\BaoCaoTongHopController.js" />
     <Content Include="app\Controller\ChuyenGuiDichVuController.js" />
     <Content Include="app\Controller\KhoVatPhamController.js" />
     <Content Include="app\Controller\KhachHangController.js" />
-    <Content Include="app\Controller\KetQuaBHDGController.js" />
-    <Content Include="app\Controller\KetQuaSangLocCD43Controller.js" />
     <Content Include="app\Controller\KetQuaSangLocController.js" />
     <Content Include="app\Controller\DGHLVIIVController.js" />
     <Content Include="app\Controller\TTKHMaDaVIIVController.js" />
     <Content Include="app\Controller\TrainingDataCollVIIVController.js" />
     <Content Include="app\Controller\TTTruyenThongVIIVController.js" />
-    <Content Include="app\Controller\KetQuaXNNTController.js" />
     <Content Include="app\Controller\PhieuTuVanController.js" />
-    <Content Include="app\Controller\KetQuaACEController.js" />
-    <Content Include="app\Controller\KetQuaASSISTController.js" />
-    <Content Include="app\Controller\KetQuaHIVController.js" />
-    <Content Include="app\Controller\KetQuaSKTTController.js" />
     <Content Include="app\Controller\LoaiDoiTuongController.js" />
     <Content Include="app\Controller\RoleController.js" />
     <Content Include="app\Controller\SyncDataController.js" />
@@ -4459,6 +4475,8 @@
     <Content Include="Views\Shared\_MenuLeft.cshtml" />
     <Content Include="Views\Shared\_MenuLeft1.cshtml" />
     <Content Include="Views\SyncData\Index.cshtml" />
+    <Content Include="Views\SystemMonitor\UserAccess.cshtml" />
+    <Content Include="Views\SystemMonitor\FeatureUsage.cshtml" />
     <Content Include="Views\SysParameter\Index.cshtml" />
     <Content Include="Views\SysParameter\_edit.cshtml" />
     <Content Include="Views\TestGroup\Index.cshtml" />
@@ -4635,6 +4653,8 @@
     <Content Include="Content\sb-theme\fontawesome-free\webfonts\fa-solid-900.woff2" />
     <Content Include="Content\sb-theme\jquery\jquery.min.map" />
     <Content Include="Content\sb-theme\jquery\jquery.slim.min.map" />
+    <Content Include="appSettings.config" />
+    <Content Include="connectionStrings.config" />
     <None Include="Report\DataSet\ChuyenTienDiaPhuongDataSet.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
@@ -4812,3 +4832,7 @@
   <Target Name="AfterBuild">
   </Target> -->
 </Project>
+
+
+
+
