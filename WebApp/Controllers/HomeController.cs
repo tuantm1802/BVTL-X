@@ -18,17 +18,67 @@ namespace WebApp.Controllers
     {
         readonly ISysLogDA _sysLogDA;
         readonly IBaoCaoTongHopDA _BaoCaoTongHopDA;
+        readonly IDashboardCD45DA _dashboardCD45DA;
+        readonly ICityDA _cityDA;
+        readonly IBVTL_NHOM_TBHDA _nhomDA;
 
-        public HomeController(ISysLogDA sysLogDA, IBaoCaoTongHopDA BaoCaoTongHopDA)
+        public HomeController(
+            ISysLogDA sysLogDA, 
+            IBaoCaoTongHopDA BaoCaoTongHopDA,
+            IDashboardCD45DA dashboardCD45DA,
+            ICityDA cityDA,
+            IBVTL_NHOM_TBHDA nhomDA)
         {
             _sysLogDA = sysLogDA;
             _BaoCaoTongHopDA = BaoCaoTongHopDA;
+            _dashboardCD45DA = dashboardCD45DA;
+            _cityDA = cityDA;
+            _nhomDA = nhomDA;
         }
 
         public ActionResult Index()
         {
-            AddLog("Redireact vào home.");
+            AddLog("Truy cập trang chủ Dashboard CD45.");
             return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetFilterData()
+        {
+            try
+            {
+                var cities = _cityDA.GetAll()
+                                    .Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code))
+                                    .Select(x => new { CityCode = x.Code, CityName = x.Name })
+                                    .ToList();
+
+                var nhoms = _nhomDA.GetAll()
+                                   .Where(x => x.maduan == "CD45")
+                                   .Select(x => new { MaNhom = x.manhom_tbh, TenNhom = x.tennhom_tbh, CityCode = x.city_code })
+                                   .ToList();
+
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate)
+        {
+            try
+            {
+                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate);
+                var jsonResult = Json(new { Success = true, Data = data, Error = false, Title = "Lấy dữ liệu thành công." });
+                jsonResult.MaxJsonLength = int.MaxValue;
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message, Error = true });
+            }
         }
 
         public ActionResult About()

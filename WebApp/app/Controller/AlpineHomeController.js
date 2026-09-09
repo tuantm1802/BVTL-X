@@ -1,84 +1,71 @@
-document.addEventListener('alpine:init', function () {
+﻿document.addEventListener('alpine:init', function () {
     Alpine.data('alpineHome', function () {
         return {
+            activeTab: 'visual', // 'visual' | 'tables'
             selectedTinh: '',
             selectedTinhName: 'Toàn bộ Tỉnh/Thành',
             selectedNhom: '',
             selectedNhomName: 'Toàn bộ Nhóm',
+            fromDate: '',
+            toDate: '',
             ListCity: [],
-            ListNhomTBH: [],
+            ListNhomAll: [],
+            ListNhom: [],
             lastSyncTime: 'Đang tải...',
             isLoading: false,
 
             // Dashboard Data Stores
-            dbTanSuatChemsex3ThangTheoDoTuoi: [],
-            dbSuDungDaChatTrongChemsexTheoDoTuoi: [],
-            dbTanSuatChemsex3ThangTheoDiemAssist: [],
-            dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD: [],
-            dbTanSuatChemsex3ThangTheoDiemACE: [],
-            dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa: [],
-            dbSuDungDaChatTrongChemsexTheoDiemACE: [],
-            dbSuDungDaChatTrongChemsexTheoDiemQST: [],
-            dbTanSuatChemsexTrong3ThangTheoDiemQST: [],
-            dbSuDungDaChatTrongChemsexTheoQHTDTT: [],
-            dbSuDungDaChatTrongChemsexTheoBanDam: [],
-
-            // Summary metrics
-            metrics: {
-                totalSurvey: 0,
-                highRiskCount: 0,
-                multiSubstanceRate: '0%'
+            overview: {
+                TongKhachHang: 0,
+                TongSangLocQST: 0,
+                QSTNguyCoCao: 0,
+                TyLeQSTNguyCoCao: 0,
+                TongKhamSKTT: 0,
+                TongLuotKhamSKTT: 0,
+                TongTuVanL1: 0,
+                TongHoTroXH: 0,
+                TongTaiLieuPhat: 0
             },
+            byTargetGroup: [],
+            byAgeGroup: [],
+            mentalHealth: [],
+            byProvince: [],
+            cascadeFunnel: {
+                Step1_TiepCanTruyenThong: 0,
+                Step2_SangLocQST: 0,
+                Step3_NguyCoCaoQST: 0,
+                Step4_TuVanTamLy: 0,
+                Step5_KhamChuyenKhoa: 0,
+                Step6_TaiKhamSKTT: 0
+            },
+            socialSupport: {
+                TongNhanHoTro: 0,
+                HoTroBHYT: 0,
+                HoTroMethadone: 0,
+                XetNghiemHIV: 0,
+                STIs: 0,
+                ViemGan: 0
+            },
+
+            // Chart references
+            chartInstances: {},
 
             init: function () {
                 window.alpineHomeInstance = this;
-                this.loadCities();
-                this.loadNhoms();
-                this.fetchEndTimeSync();
-                this.loadAllDashboardData();
+                this.loadFilterData();
+                this.loadDashboardData();
             },
 
-            fetchEndTimeSync: function () {
+            loadFilterData: function () {
                 var self = this;
                 $.ajax({
                     type: 'POST',
-                    url: '/SyncData/GetEndTimeSync',
-                    data: { apiCode: 'API_ALL_CD43_KHACH_HANG_TTCB' },
+                    url: '/Home/GetFilterData',
                     success: function (response) {
-                        if (response && response.success && response.endTimeSync) {
-                            self.lastSyncTime = response.endTimeSync;
-                        } else {
-                            self.lastSyncTime = 'Mới cập nhật';
-                        }
-                    },
-                    error: function () {
-                        self.lastSyncTime = 'Chưa xác định';
-                    }
-                });
-            },
-
-            loadCities: function () {
-                var self = this;
-                $.ajax({
-                    type: 'POST',
-                    url: '/BaoCaoCD43/GetBottomAction',
-                    success: function (response) {
-                        if (response && response.Citys) {
-                            self.ListCity = response.Citys;
-                        }
-                    }
-                });
-            },
-
-            loadNhoms: function (cityCode) {
-                var self = this;
-                $.ajax({
-                    type: 'POST',
-                    url: '/BaoCaoCD43/GetNhomTBHByMaNhomMap',
-                    data: { CityCodes: cityCode || '' },
-                    success: function (response) {
-                        if (response && response.NhomTBHs) {
-                            self.ListNhomTBH = response.NhomTBHs;
+                        if (response && response.Success) {
+                            self.ListCity = response.Cities || [];
+                            self.ListNhomAll = response.Nhoms || [];
+                            self.ListNhom = self.ListNhomAll;
                         }
                     }
                 });
@@ -89,14 +76,22 @@ document.addEventListener('alpine:init', function () {
                 this.selectedTinhName = name || 'Toàn bộ Tỉnh/Thành';
                 this.selectedNhom = '';
                 this.selectedNhomName = 'Toàn bộ Nhóm';
-                this.loadNhoms(this.selectedTinh);
-                this.loadAllDashboardData();
+
+                if (this.selectedTinh) {
+                    this.ListNhom = this.ListNhomAll.filter(function (n) {
+                        return !n.CityCode || n.CityCode === code;
+                    });
+                } else {
+                    this.ListNhom = this.ListNhomAll;
+                }
+
+                this.loadDashboardData();
             },
 
             selectNhom: function (code, name) {
                 this.selectedNhom = code || '';
                 this.selectedNhomName = name || 'Toàn bộ Nhóm';
-                this.loadAllDashboardData();
+                this.loadDashboardData();
             },
 
             resetFilters: function () {
@@ -104,71 +99,350 @@ document.addEventListener('alpine:init', function () {
                 this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
                 this.selectedNhom = '';
                 this.selectedNhomName = 'Toàn bộ Nhóm';
-                this.loadNhoms('');
-                this.loadAllDashboardData();
+                this.fromDate = '';
+                this.toDate = '';
+                this.ListNhom = this.ListNhomAll;
+                this.loadDashboardData();
             },
 
-            loadAllDashboardData: function () {
+            loadDashboardData: function () {
                 var self = this;
                 self.isLoading = true;
                 if (window.showToast) showToast();
 
                 var params = {
+                    cityCode: self.selectedTinh || null,
                     maNhom: self.selectedNhom || null,
-                    maTinh: self.selectedTinh || null
+                    fromDate: self.fromDate || null,
+                    toDate: self.toDate || null
                 };
 
-                var requests = [
-                    $.post('/Home/GetTanSuatChemsex3ThangTheoDoTuoi', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoDoTuoi', params),
-                    $.post('/Home/GetTanSuatChemsex3ThangTheoDiemAssist', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoDoiTuongQHTD', params),
-                    $.post('/Home/GetTanSuatChemsex3ThangTheoDiemACE', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoDiemACE', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoDiemQST', params),
-                    $.post('/Home/GetTanSuatChemsexTrong3ThangTheoDiemQST', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoQHTDTT', params),
-                    $.post('/Home/GetSuDungDaChatTrongChemsexTheoBanDam', params)
-                ];
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/GetDashboardCD45Data',
+                    data: params,
+                    success: function (response) {
+                        if (response && response.Success && response.Data) {
+                            var d = response.Data;
+                            self.overview = d.Overview || self.overview;
+                            self.byTargetGroup = d.ByTargetGroup || [];
+                            self.byAgeGroup = d.ByAgeGroup || [];
+                            self.mentalHealth = d.MentalHealth || [];
+                            self.byProvince = d.ByProvince || [];
+                            self.cascadeFunnel = d.CascadeFunnel || self.cascadeFunnel;
+                            self.socialSupport = d.SocialSupport || self.socialSupport;
 
-                $.when.apply($, requests).done(function (
-                    r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11
-                ) {
-                    self.dbTanSuatChemsex3ThangTheoDoTuoi = (r1[0] && r1[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoDoTuoi = (r2[0] && r2[0].data) || [];
-                    self.dbTanSuatChemsex3ThangTheoDiemAssist = (r3[0] && r3[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoDoiTuongQHTD = (r4[0] && r4[0].data) || [];
-                    self.dbTanSuatChemsex3ThangTheoDiemACE = (r5[0] && r5[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoDiemAssistMaTuyDa = (r6[0] && r6[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoDiemACE = (r7[0] && r7[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoDiemQST = (r8[0] && r8[0].data) || [];
-                    self.dbTanSuatChemsexTrong3ThangTheoDiemQST = (r9[0] && r9[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoQHTDTT = (r10[0] && r10[0].data) || [];
-                    self.dbSuDungDaChatTrongChemsexTheoBanDam = (r11[0] && r11[0].data) || [];
+                            if (d.Overview && d.Overview.LastSyncTimeString) {
+                                self.lastSyncTime = d.Overview.LastSyncTimeString;
+                            } else {
+                                self.lastSyncTime = 'Mới cập nhật';
+                            }
 
-                    self.calculateMetrics();
-                }).always(function () {
-                    self.isLoading = false;
-                    if (window.hideLoading) hideLoading();
+                            self.$nextTick(function () {
+                                self.renderAllCharts();
+                            });
+                        }
+                    },
+                    error: function () {
+                        self.lastSyncTime = 'Chưa xác định';
+                    },
+                    complete: function () {
+                        self.isLoading = false;
+                        if (window.hideLoading) hideLoading();
+                    }
                 });
             },
 
-            calculateMetrics: function () {
-                var self = this;
-                var total = 0;
-                var multiSubstance = 0;
+            switchTab: function (tab) {
+                this.activeTab = tab;
+                if (tab === 'visual') {
+                    var self = this;
+                    setTimeout(function () {
+                        self.renderAllCharts();
+                    }, 100);
+                }
+            },
 
-                (self.dbSuDungDaChatTrongChemsexTheoDoTuoi || []).forEach(function (item) {
-                    var co = parseInt(item.CoSuDungDaChat) || 0;
-                    var khong = parseInt(item.KhongSuDungDaChat) || 0;
-                    multiSubstance += co;
-                    total += (co + khong);
+            destroyChart: function (key) {
+                if (this.chartInstances[key]) {
+                    this.chartInstances[key].destroy();
+                    delete this.chartInstances[key];
+                }
+            },
+
+            renderAllCharts: function () {
+                if (typeof Chart === 'undefined') return;
+                this.renderFunnelChart();
+                this.renderQstTargetGroupChart();
+                this.renderQstAgeGroupChart();
+                this.renderProvinceDonutChart();
+                this.renderPcl5Chart();
+            },
+
+            // 1. Phễu dịch vụ chăm sóc SKTT
+            renderFunnelChart: function () {
+                var el = document.getElementById('chartFunnel');
+                if (!el) return;
+                this.destroyChart('funnel');
+
+                var f = this.cascadeFunnel;
+                var labels = [
+                    '1. Tiếp cận TT',
+                    '2. Sàng lọc QST',
+                    '3. QST Nguy cơ cao',
+                    '4. Tư vấn L1',
+                    '5. Khám SKTT',
+                    '6. Tái khám'
+                ];
+                var dataVals = [
+                    f.Step1_TiepCanTruyenThong || 0,
+                    f.Step2_SangLocQST || 0,
+                    f.Step3_NguyCoCaoQST || 0,
+                    f.Step4_TuVanTamLy || 0,
+                    f.Step5_KhamChuyenKhoa || 0,
+                    f.Step6_TaiKhamSKTT || 0
+                ];
+
+                var ctx = el.getContext('2d');
+                this.chartInstances['funnel'] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số khách hàng',
+                            data: dataVals,
+                            backgroundColor: [
+                                '#3b82f6', // Blue
+                                '#06b6d4', // Cyan
+                                '#f59e0b', // Amber
+                                '#8b5cf6', // Violet
+                                '#10b981', // Emerald
+                                '#ec4899'  // Pink
+                            ],
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    afterLabel: function (context) {
+                                        var total = dataVals[0];
+                                        if (total > 0) {
+                                            var pct = ((context.parsed.y / total) * 100).toFixed(1);
+                                            return 'Tỷ lệ so với tiếp cận: ' + pct + '%';
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            },
+
+            // 2. QST theo nhóm đối tượng
+            renderQstTargetGroupChart: function () {
+                var el = document.getElementById('chartQstTargetGroup');
+                if (!el) return;
+                this.destroyChart('qstTarget');
+
+                var labels = [];
+                var m1 = [], m2 = [], m3 = [], m4 = [];
+
+                this.byTargetGroup.forEach(function (g) {
+                    labels.push(g.TenDoiTuong ? g.TenDoiTuong.split(' ')[0] : 'Khác');
+                    m1.push(g.Muc1_RatCao || 0);
+                    m2.push(g.Muc2_Cao || 0);
+                    m3.push(g.Muc3_TrungBinh || 0);
+                    m4.push(g.Muc4_Thap || 0);
                 });
 
-                self.metrics.totalSurvey = total;
-                self.metrics.highRiskCount = multiSubstance;
-                self.metrics.multiSubstanceRate = total > 0 ? ((multiSubstance / total) * 100).toFixed(1) + '%' : '0%';
+                var ctx = el.getContext('2d');
+                this.chartInstances['qstTarget'] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Mức 1: Rất cao (>=8)',
+                                data: m1,
+                                backgroundColor: '#ef4444', // Red
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Mức 2: Cao (6-7)',
+                                data: m2,
+                                backgroundColor: '#f97316', // Orange
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Mức 3: Trung bình (4-5)',
+                                data: m3,
+                                backgroundColor: '#3b82f6', // Blue
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Mức 4: Thấp (<4)',
+                                data: m4,
+                                backgroundColor: '#10b981', // Emerald
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+            },
+
+            // 3. QST theo nhóm tuổi
+            renderQstAgeGroupChart: function () {
+                var el = document.getElementById('chartQstAgeGroup');
+                if (!el) return;
+                this.destroyChart('qstAge');
+
+                var labels = [];
+                var m1 = [], m2 = [], m3 = [], m4 = [];
+
+                this.byAgeGroup.forEach(function (a) {
+                    labels.push(a.NhomTuoi);
+                    m1.push(a.Muc1 || 0);
+                    m2.push(a.Muc2 || 0);
+                    m3.push(a.Muc3 || 0);
+                    m4.push(a.Muc4 || 0);
+                });
+
+                var ctx = el.getContext('2d');
+                this.chartInstances['qstAge'] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Mức 1 (>=8)', data: m1, backgroundColor: '#ef4444' },
+                            { label: 'Mức 2 (6-7)', data: m2, backgroundColor: '#f97316' },
+                            { label: 'Mức 3 (4-5)', data: m3, backgroundColor: '#3b82f6' },
+                            { label: 'Mức 4 (<4)', data: m4, backgroundColor: '#10b981' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true, grid: { display: false } },
+                            y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+            },
+
+            // 4. Phân bố theo tỉnh thành
+            renderProvinceDonutChart: function () {
+                var el = document.getElementById('chartProvince');
+                if (!el) return;
+                this.destroyChart('province');
+
+                var labels = [];
+                var dataVals = [];
+                this.byProvince.forEach(function (p) {
+                    labels.push(p.CityName || p.CityCode);
+                    dataVals.push(p.TongKH || 0);
+                });
+
+                var ctx = el.getContext('2d');
+                this.chartInstances['province'] = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: dataVals,
+                            backgroundColor: [
+                                '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            },
+
+            // 5. Sang chấn PTSD (PCL-5)
+            renderPcl5Chart: function () {
+                var el = document.getElementById('chartPcl5');
+                if (!el) return;
+                this.destroyChart('pcl5');
+
+                var labels = [];
+                var pos = [];
+                var neg = [];
+
+                this.mentalHealth.forEach(function (m) {
+                    labels.push(m.TenDoiTuong || 'Khác');
+                    pos.push(m.PCL5_DuongTinh || 0);
+                    neg.push(m.PCL5_AmTinh || 0);
+                });
+
+                var ctx = el.getContext('2d');
+                this.chartInstances['pcl5'] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'PTSD Dương tính (Nguy cơ)',
+                                data: pos,
+                                backgroundColor: '#ef4444',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'PTSD Âm tính',
+                                data: neg,
+                                backgroundColor: '#10b981',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' }
+                        },
+                        scales: {
+                            x: { stacked: true, grid: { display: false } },
+                            y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
             }
         };
     });

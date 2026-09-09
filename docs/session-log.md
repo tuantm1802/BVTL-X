@@ -262,3 +262,53 @@ Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phi
 - `BVTL.Tests/HttpRetryHelperTests.cs` (New)
 - `WebApp.sln` (Modified)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên 10: 09/09/2026 | Thực hiện bởi: Antigravity
+
+### Đã hoàn thành:
+- **Nâng cấp Toàn diện Dashboard Trang chủ "Home" sang Dự án CD45 (DREAMH)**:
+  1. **Nghiên cứu CSDL & Thiết kế Stored Procedure**:
+     - Phân tích 10 bảng dữ liệu thực tế của Dự án CD45 (`CD45_KH`, `CD45_HOAT_DONG`, `CD45_QST`, `CD45_CHAN_DOAN`, `CD45_TU_VAN_L1`, `CD45_TU_VAN_L2`, `CD45_HO_TRO_XH`, `CD45_TUAN_THU`, `CD45_VAN_TAY`) với 3.379 khách hàng, 3.665 lượt tiếp cận, 2.450 lượt sàng lọc QST.
+     - Xây dựng và triển khai Stored Procedure `SP_CD45_Dashboard` tối ưu, xử lý 7 tập kết quả đa chiều (KPIs, QST theo nhóm đích, QST theo nhóm tuổi, lâm sàng PTSD/PCL-5 & AUDIT-C & Kỳ thị, phân bố tỉnh thành, Phễu can thiệp Cascade Funnel, Dịch vụ chuyển gửi xã hội) chỉ trong ~40ms.
+     - Cập nhật lưu trữ script vào `SQL_CD45_SP.sql`.
+  2. **Xây dựng Data Transfer Models (DTO)**:
+     - Tạo mới `Model/ModelExtend/DashboardCD45Model.cs` định nghĩa trọn bộ DTO models phục vụ dashboard.
+     - Đăng ký vào `Model/Model.csproj`.
+  3. **Xây dựng Tầng Truy xuất Dữ liệu (Data Access Layer)**:
+     - Tạo mới interface `Data/InterfaceDA/Admin/IDashboardCD45DA.cs` và lớp triển khai `Data/Admin/DashboardCD45DA.cs`.
+     - Sử dụng `SqlCommand` và `SqlDataAdapter` có tham số hóa chuẩn mực (`@CityCode`, `@MaNhom`, `@FromDate`, `@ToDate`) ngăn chặn SQL Injection tuyệt đối.
+     - Đăng ký vào `Data/Data.csproj` và Autofac DI container trong `WebApp/App_Start/AutofacConfig.cs`.
+  4. **Nâng cấp Controller & Client Frontend**:
+     - `HomeController.cs`: Inject `IDashboardCD45DA`, `ICityDA`, `IBVTL_NHOM_TBHDA`. Bổ sung API `GetFilterData()` và `GetDashboardCD45Data()`.
+     - `AlpineHomeController.js`: Quản lý reactive state các bộ lọc (Tỉnh, Nhóm CBO, Từ ngày, Đến ngày) và vẽ 5 biểu đồ Chart.js (Phễu chăm sóc Cascade, Cột phân bố 4 mức QST theo nhóm đích, Cột chồng QST theo nhóm tuổi, Donut chart phân bố 6 tỉnh thành, Cột chồng PTSD PCL-5).
+     - `Views/Home/Index.cshtml`: Thiết kế lại toàn diện giao diện trang chủ với phong cách hiện đại: 4 Thẻ KPI nổi bật, thanh công cụ bộ lọc tương tác, tab chuyển đổi giữa "Biểu đồ trực quan" và "Bảng số liệu chi tiết".
+  5. **Khắc phục Lỗi Hiển thị Tiếng Việt (Unicode/Mojibake)**:
+     - Biên dịch lại `SP_CD45_Dashboard` trên SQL Server với luồng UTF-8 chuẩn xác.
+     - Bổ sung cơ chế chuẩn hóa dữ liệu phòng vệ (defensive normalization) trong `DashboardCD45DA.cs` (`GetTenDoiTuong`, `GetTenDoiTuongNgan`, `GetTenTinh`, `GetTenNhomTuoi`).
+     - Chuẩn hóa toàn bộ các tệp `Index.cshtml` và `AlpineHomeController.js` sang UTF-8 BOM.
+  6. **Cập nhật Page Footer Bản quyền**:
+     - Cập nhật `Views/Shared/_Layout.cshtml`: đổi `Copyright &copy; 2024 SCDI` thành `Copyright &copy; @DateTime.Now.Year SCDI`.
+  7. **Kiểm thử Tự động & Xác minh**:
+     - Thêm 2 Unit/Integration Tests trong `BVTL.Tests/DashboardCD45Tests.cs`.
+     - Toàn bộ Solution biên dịch thành công 0 errors với MSBuild VS 2022 Professional.
+     - Toàn bộ 21/21 Unit Tests đều Passed 100%.
+
+### Các tệp đã thay đổi/thêm mới:
+- `SQL_CD45_SP.sql` (Modified)
+- `Model/ModelExtend/DashboardCD45Model.cs` (New)
+- `Model/Model.csproj` (Modified)
+- `Data/InterfaceDA/Admin/IDashboardCD45DA.cs` (New)
+- `Data/Admin/DashboardCD45DA.cs` (New)
+- `Data/Data.csproj` (Modified)
+- `WebApp/App_Start/AutofacConfig.cs` (Modified)
+- `WebApp/Controllers/HomeController.cs` (Modified)
+- `WebApp/app/Controller/AlpineHomeController.js` (Modified)
+- `WebApp/Views/Home/Index.cshtml` (Modified)
+- `WebApp/Views/Shared/_Layout.cshtml` (Modified)
+- `BVTL.Tests/DashboardCD45Tests.cs` (New)
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `docs/session-log.md` (Modified)
+
+

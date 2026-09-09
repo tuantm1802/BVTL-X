@@ -771,3 +771,170 @@ BEGIN
 
     DROP TABLE #TmpKH;
 END
+GO
+
+-- =========================================================================
+-- SP_CD45_Dashboard: Phục vụ Dashboard Tổng quan Trang chủ Dự án CD45
+-- =========================================================================
+CREATE OR ALTER PROC SP_CD45_Dashboard
+    @CityCode VARCHAR(50) = NULL,
+    @MaNhom VARCHAR(50) = NULL,
+    @FromDate DATE = NULL,
+    @ToDate DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Lọc danh sách KH cơ bản theo Tỉnh, Nhóm và Thời gian tham gia (nếu có)
+    SELECT 
+        kh.RECORD_ID,
+        kh.CITY_CODE,
+        kh.MA_NHOM,
+        kh.REDCAP_DAG,
+        kh.DOI_TUONG,
+        kh.NAM_SINH,
+        kh.GIOI_TINH_TU_XD,
+        kh.CO_BHYT,
+        kh.CO_CCCD,
+        kh.NGAY_THAM_GIA
+    INTO #TmpKH
+    FROM CD45_KH kh
+    WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE = @CityCode)
+      AND (@MaNhom IS NULL OR @MaNhom = '' OR kh.MA_NHOM = @MaNhom OR kh.REDCAP_DAG = @MaNhom)
+      AND (@FromDate IS NULL OR kh.NGAY_THAM_GIA >= @FromDate)
+      AND (@ToDate IS NULL OR kh.NGAY_THAM_GIA <= @ToDate);
+
+    CREATE CLUSTERED INDEX IX_TmpKH_Rec ON #TmpKH(RECORD_ID);
+
+    -- 1. TỔNG QUAN KPI CARDS
+    SELECT 
+        COUNT(DISTINCT kh.RECORD_ID) AS TongKhachHang,
+        COUNT(DISTINCT qst.RECORD_ID) AS TongSangLocQST,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST IN (1, 2) THEN qst.RECORD_ID END) AS QSTNguyCoCao,
+        COUNT(DISTINCT cd.RECORD_ID) AS TongKhamSKTT,
+        COUNT(cd.RECORD_ID) AS TongLuotKhamSKTT,
+        COUNT(DISTINCT tv.RECORD_ID) AS TongTuVanL1,
+        COUNT(DISTINCT htxh.RECORD_ID) AS TongHoTroXH,
+        ISNULL((SELECT SUM(hd.SO_TAI_LIEU) FROM CD45_HOAT_DONG hd INNER JOIN #TmpKH k ON hd.RECORD_ID = k.RECORD_ID), 0) AS TongTaiLieuPhat,
+        ISNULL((SELECT MAX(NGAY_SYNC) FROM CD45_KH), GETDATE()) AS LastSyncTime
+    FROM #TmpKH kh
+    LEFT JOIN CD45_QST qst ON kh.RECORD_ID = qst.RECORD_ID
+    LEFT JOIN CD45_CHAN_DOAN cd ON kh.RECORD_ID = cd.RECORD_ID
+    LEFT JOIN CD45_TU_VAN_L1 tv ON kh.RECORD_ID = tv.RECORD_ID
+    LEFT JOIN CD45_HO_TRO_XH htxh ON kh.RECORD_ID = htxh.RECORD_ID;
+
+    -- 2. PHÂN TÍCH QST THEO NHÓM ĐÍCH (DOI_TUONG)
+    SELECT 
+        kh.DOI_TUONG AS DoiTuongId,
+        CASE 
+            WHEN kh.DOI_TUONG = 1 THEN N'PUD (Sử dụng ma túy)'
+            WHEN kh.DOI_TUONG = 2 THEN N'PLHIV (Sống với HIV)'
+            WHEN kh.DOI_TUONG = 3 THEN N'TG (Người chuyển giới)'
+            WHEN kh.DOI_TUONG = 4 THEN N'MSM (Nam QHTD đồng giới)'
+            WHEN kh.DOI_TUONG = 5 THEN N'SW (Người bán dâm)'
+            ELSE N'Khác'
+        END AS TenDoiTuong,
+        COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
+        COUNT(DISTINCT qst.RECORD_ID) AS SoKHSangLoc,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 1 THEN qst.RECORD_ID END) AS Muc1_RatCao,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 2 THEN qst.RECORD_ID END) AS Muc2_Cao,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 3 THEN qst.RECORD_ID END) AS Muc3_TrungBinh,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 4 THEN qst.RECORD_ID END) AS Muc4_Thap
+    FROM #TmpKH kh
+    LEFT JOIN CD45_QST qst ON kh.RECORD_ID = qst.RECORD_ID
+    GROUP BY kh.DOI_TUONG
+    ORDER BY kh.DOI_TUONG;
+
+    -- 3. PHÂN TÍCH QST THEO NHÓM ĐỘ TUỔI
+    SELECT 
+        CASE 
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
+            ELSE N'Chưa xác định'
+        END AS NhomTuoi,
+        COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
+        COUNT(DISTINCT qst.RECORD_ID) AS SoKHSangLoc,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 1 THEN qst.RECORD_ID END) AS Muc1,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 2 THEN qst.RECORD_ID END) AS Muc2,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 3 THEN qst.RECORD_ID END) AS Muc3,
+        COUNT(DISTINCT CASE WHEN qst.MUC_QST = 4 THEN qst.RECORD_ID END) AS Muc4
+    FROM #TmpKH kh
+    LEFT JOIN CD45_QST qst ON kh.RECORD_ID = qst.RECORD_ID
+    GROUP BY 
+        CASE 
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
+            ELSE N'Chưa xác định'
+        END
+    ORDER BY NhomTuoi;
+
+    -- 4. ĐÁNH GIÁ SANG CHẤN PTSD (PCL-5), RƯỢU (AUDIT-C) & KỲ THỊ (STIGMA)
+    SELECT 
+        kh.DOI_TUONG AS DoiTuongId,
+        CASE 
+            WHEN kh.DOI_TUONG = 1 THEN N'PUD'
+            WHEN kh.DOI_TUONG = 2 THEN N'PLHIV'
+            WHEN kh.DOI_TUONG = 3 THEN N'TG'
+            WHEN kh.DOI_TUONG = 4 THEN N'MSM'
+            WHEN kh.DOI_TUONG = 5 THEN N'SW'
+            ELSE N'Khác'
+        END AS TenDoiTuong,
+        COUNT(tv.RECORD_ID) AS SoCaTuVan,
+        SUM(CASE WHEN tv.PCL5_POSITIVE = 1 THEN 1 ELSE 0 END) AS PCL5_DuongTinh,
+        SUM(CASE WHEN tv.PCL5_POSITIVE = 0 THEN 1 ELSE 0 END) AS PCL5_AmTinh,
+        ROUND(ISNULL(AVG(CAST(tv.AUDIT_C_SCORE AS FLOAT)), 0), 1) AS DiemAuditCTB,
+        ROUND(ISNULL(AVG(CAST(tv.STIGMA_SCORE AS FLOAT)), 0), 1) AS DiemKyThiTB
+    FROM #TmpKH kh
+    INNER JOIN CD45_TU_VAN_L1 tv ON kh.RECORD_ID = tv.RECORD_ID
+    GROUP BY kh.DOI_TUONG
+    ORDER BY kh.DOI_TUONG;
+
+    -- 5. PHÂN BỐ THEO TỈNH THÀNH
+    SELECT 
+        kh.CITY_CODE AS CityCode,
+        CASE 
+            WHEN kh.CITY_CODE = 'HNO' THEN N'Hà Nội'
+            WHEN kh.CITY_CODE = 'HPG' THEN N'Hải Phòng'
+            WHEN kh.CITY_CODE = 'NAN' THEN N'Nghệ An'
+            WHEN kh.CITY_CODE = 'HCM' THEN N'TP. Hồ Chí Minh'
+            WHEN kh.CITY_CODE = 'HYE' THEN N'Hưng Yên'
+            WHEN kh.CITY_CODE = 'NBI' THEN N'Ninh Bình'
+            ELSE kh.CITY_CODE
+        END AS CityName,
+        COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
+        COUNT(DISTINCT qst.RECORD_ID) AS SangLocQST,
+        COUNT(DISTINCT cd.RECORD_ID) AS KhamSKTT,
+        COUNT(DISTINCT tv.RECORD_ID) AS TuVanL1
+    FROM #TmpKH kh
+    LEFT JOIN CD45_QST qst ON kh.RECORD_ID = qst.RECORD_ID
+    LEFT JOIN CD45_CHAN_DOAN cd ON kh.RECORD_ID = cd.RECORD_ID
+    LEFT JOIN CD45_TU_VAN_L1 tv ON kh.RECORD_ID = tv.RECORD_ID
+    GROUP BY kh.CITY_CODE
+    ORDER BY TongKH DESC;
+
+    -- 6. PHỄU DỊCH VỤ CHĂM SÓC SKTT (CASCADE FUNNEL)
+    SELECT 
+        (SELECT COUNT(DISTINCT hd.RECORD_ID) FROM CD45_HOAT_DONG hd INNER JOIN #TmpKH k ON hd.RECORD_ID = k.RECORD_ID) AS Step1_TiepCanTruyenThong,
+        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID) AS Step2_SangLocQST,
+        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE qst.MUC_QST IN (1, 2)) AS Step3_NguyCoCaoQST,
+        (SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID) AS Step4_TuVanTamLy,
+        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID) AS Step5_KhamChuyenKhoa,
+        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE cd.LAN_KHAM > 1) AS Step6_TaiKhamSKTT;
+
+    -- 7. DỊCH VỤ HỖ TRỢ CHUYỂN GỬI XÃ HỘI (CD45_HO_TRO_XH)
+    SELECT 
+        COUNT(DISTINCT htxh.RECORD_ID) AS TongNhanHoTro,
+        COUNT(DISTINCT CASE WHEN CHARINDEX('1', ISNULL(htxh.DICH_VU, '')) > 0 OR htxh.DICH_VU LIKE '%BHYT%' THEN htxh.RECORD_ID END) AS HoTroBHYT,
+        COUNT(DISTINCT CASE WHEN CHARINDEX('2', ISNULL(htxh.DICH_VU, '')) > 0 OR htxh.DICH_VU LIKE '%Methadone%' THEN htxh.RECORD_ID END) AS HoTroMethadone,
+        COUNT(DISTINCT CASE WHEN CHARINDEX('10', ISNULL(htxh.DICH_VU, '')) > 0 OR htxh.DICH_VU LIKE '%HIV%' THEN htxh.RECORD_ID END) AS XetNghiemHIV,
+        COUNT(DISTINCT CASE WHEN htxh.DICH_VU LIKE '%STIs%' THEN htxh.RECORD_ID END) AS STIs,
+        COUNT(DISTINCT CASE WHEN htxh.DICH_VU LIKE '%gan%' THEN htxh.RECORD_ID END) AS ViemGan
+    FROM CD45_HO_TRO_XH htxh
+    INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID;
+
+    DROP TABLE #TmpKH;
+END
+GO
+

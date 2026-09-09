@@ -51,6 +51,15 @@
     <Compile Include="AuthorizationTests.cs" />
     <Compile Include="HttpRetryHelperTests.cs" />
     <Compile Include="SystemMonitorTests.cs" />
+    <Compile Include="DashboardCD45Tests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
