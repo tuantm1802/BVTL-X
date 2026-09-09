@@ -40,5 +40,21 @@ namespace Data.Admin
             sql += " ORDER BY CITY_CODE, MA_NHOM, TRY_CAST(MA_TCV AS INT), TEN_TCV";
             return db.Database.SqlQuery<CD45_TCV_ItemModel>(sql).ToList();
         }
+
+        public List<CD45_DrillDown_ItemModel> GetDrillDown(string chiTieuCode, string fromDate, string toDate, string cityCode, string maNhom, string maTCV, int? doiTuong)
+        {
+            var pChiTieu = new SqlParameter("@ChiTieuCode", chiTieuCode ?? "");
+            var pFromDate = string.IsNullOrEmpty(fromDate) ? new SqlParameter("@FromDate", System.DBNull.Value) : new SqlParameter("@FromDate", System.DateTime.ParseExact(fromDate, "dd/MM/yyyy", null));
+            var pToDate = string.IsNullOrEmpty(toDate) ? new SqlParameter("@ToDate", System.DBNull.Value) : new SqlParameter("@ToDate", System.DateTime.ParseExact(toDate, "dd/MM/yyyy", null));
+            var pCityCode = string.IsNullOrEmpty(cityCode) ? new SqlParameter("@CityCode", System.DBNull.Value) : new SqlParameter("@CityCode", cityCode);
+            var pMaNhom = string.IsNullOrEmpty(maNhom) ? new SqlParameter("@MaNhom", System.DBNull.Value) : new SqlParameter("@MaNhom", maNhom);
+            var pMaTCV = string.IsNullOrEmpty(maTCV) ? new SqlParameter("@MaTCV", System.DBNull.Value) : new SqlParameter("@MaTCV", maTCV);
+            var pDoiTuong = !doiTuong.HasValue ? new SqlParameter("@DoiTuong", System.DBNull.Value) : new SqlParameter("@DoiTuong", doiTuong.Value);
+
+            return db.Database.SqlQuery<CD45_DrillDown_ItemModel>(
+                "EXEC SP_CD45_GetDrillDown @ChiTieuCode, @FromDate, @ToDate, @CityCode, @MaNhom, @MaTCV, @DoiTuong",
+                pChiTieu, pFromDate, pToDate, pCityCode, pMaNhom, pMaTCV, pDoiTuong
+            ).ToList();
+        }
     }
 }

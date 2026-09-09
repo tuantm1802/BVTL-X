@@ -1,0 +1,1027 @@
+@{
+    ViewBag.Title = "Danh mục Khách hàng CD45 (DREAMH)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Modal Customer Detail 360° Styling */
+    .modal-customer-detail .modal-content {
+        border-radius: 1.25rem !important;
+        border: none !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+        overflow: hidden;
+    }
+
+    .customer-hero-header {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+        color: #fff;
+        padding: 1.5rem 1.75rem;
+        position: relative;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .avatar-circle {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge-fingerprint {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        border: 2px solid #1e293b;
+    }
+    .badge-fingerprint.verified {
+        background-color: #10b981;
+        color: #ffffff;
+    }
+    .badge-fingerprint.unverified {
+        background-color: #64748b;
+        color: #ffffff;
+    }
+
+    .metric-card {
+        border-radius: 0.85rem !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px -4px rgba(15, 23, 42, 0.1) !important;
+    }
+
+    .custom-profile-tabs .nav-link {
+        color: #475569;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border-radius: 0.65rem;
+        padding: 0.55rem 1rem;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    .custom-profile-tabs .nav-link:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    .custom-profile-tabs .nav-link.active {
+        background: #0d6efd;
+        color: #ffffff;
+        border-color: #0d6efd;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+    .custom-profile-tabs .nav-link.active .badge {
+        background-color: #ffffff !important;
+        color: #0d6efd !important;
+    }
+
+    .info-profile-card {
+        border-radius: 0.85rem;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    .info-profile-card .card-header-clean {
+        padding: 0.85rem 1.25rem;
+        border-bottom: 1px solid #f1f5f9;
+        background: #f8fafc;
+        border-top-left-radius: 0.85rem;
+        border-top-right-radius: 0.85rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    .info-row {
+        padding: 0.65rem 1.25rem;
+        border-bottom: 1px solid #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.875rem;
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    .info-row .label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    .info-row .value {
+        font-weight: 600;
+        color: #1e293b;
+        text-align: right;
+    }
+
+    .table-modern thead th {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap;
+    }
+    .table-modern tbody td {
+        vertical-align: middle;
+        font-size: 0.85rem;
+        border-color: #f1f5f9;
+    }
+</style>
+
+<div class="container-fluid py-3" x-data="alpineKhachHangCD45" x-cloak>
+    <!-- Tiêu đề trang & Thanh công cụ -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-1 text-primary fw-bold">
+                <i class="fas fa-users me-2"></i>Danh mục Khách hàng - Dự án CD45 (DREAMH)
+            </h4>
+            <div class="text-muted small">
+                Quản lý hồ sơ cơ sở F1 và tích hợp lịch sử chăm sóc, can thiệp 360° khách hàng
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" x-on:click="resetFilters()">
+                <i class="fas fa-sync-alt me-1"></i>Đặt lại
+            </button>
+            <button class="btn btn-success" x-on:click="exportExcel()">
+                <i class="fas fa-file-excel me-1"></i>Xuất Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- Khối Bộ lọc Tìm kiếm -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body p-3">
+            <div class="row g-2">
+                <!-- Từ khóa tìm kiếm -->
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold mb-1">Mã Record / Mã NC</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Nhập Record ID hoặc Mã nghiên cứu..."
+                               x-model="filter.Keyword" x-on:keyup.enter="searchCustomers(1)">
+                    </div>
+                </div>
+
+                <!-- Tỉnh / Thành phố -->
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Tỉnh/Thành phố</label>
+                    <select class="form-select form-select-sm" x-model="filter.CityCode" x-on:change="onCityChange()">
+                        <option value="">-- Tất cả tỉnh thành --</option>
+                        <template x-for="c in listCities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Nhóm CBO -->
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Nhóm CBO</label>
+                    <select class="form-select form-select-sm" x-model="filter.MaNhom" x-on:change="searchCustomers(1)">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.MaNhom">
+                            <option :value="n.MaNhom" x-text="n.TenNhom"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Đối tượng đích -->
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Đối tượng đích</label>
+                    <select class="form-select form-select-sm" x-model="filter.DoiTuong" x-on:change="searchCustomers(1)">
+                        <option value="">-- Tất cả đối tượng --</option>
+                        <option value="1">PUD (Sử dụng ma túy)</option>
+                        <option value="2">PLHIV (Nhiễm HIV)</option>
+                        <option value="3">TG (Chuyển giới)</option>
+                        <option value="4">MSM (Quan hệ đồng giới nam)</option>
+                        <option value="5">SW (Phụ nữ bán dâm)</option>
+                    </select>
+                </div>
+
+                <!-- Thẻ BHYT -->
+                <div class="col-md-1">
+                    <label class="form-label small fw-semibold mb-1">BHYT</label>
+                    <select class="form-select form-select-sm" x-model="filter.CoBHYT" x-on:change="searchCustomers(1)">
+                        <option value="">Tất cả</option>
+                        <option value="true">Có</option>
+                        <option value="false">Không</option>
+                    </select>
+                </div>
+
+                <!-- Thẻ CCCD -->
+                <div class="col-md-1">
+                    <label class="form-label small fw-semibold mb-1">CCCD</label>
+                    <select class="form-select form-select-sm" x-model="filter.CoCCCD" x-on:change="searchCustomers(1)">
+                        <option value="">Tất cả</option>
+                        <option value="true">Có</option>
+                        <option value="false">Không</option>
+                    </select>
+                </div>
+
+                <!-- Nút Lọc -->
+                <div class="col-md-1 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm w-100" x-on:click="searchCustomers(1)" :disabled="isLoading">
+                        <i class="fas fa-filter me-1"></i>Lọc
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách Khách hàng -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+            <div class="fw-semibold text-secondary small">
+                <i class="fas fa-list me-1"></i>Kết quả tìm kiếm: 
+                <span class="text-primary fw-bold" x-text="Number(totalRecords).toLocaleString('vi-VN')"></span> khách hàng
+            </div>
+            <div class="d-flex align-items-center gap-2 small">
+                <span>Hiển thị:</span>
+                <select class="form-select form-select-sm py-0" style="width: 75px;" x-model="filter.PageSize" x-on:change="searchCustomers(1)">
+                    <option value="15">15</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span>dòng/trang</span>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0 small">
+                    <thead class="table-light text-nowrap">
+                        <tr>
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th>Mã Record ID</th>
+                            <th>Mã KH Nghiên cứu</th>
+                            <th>Tỉnh/Thành</th>
+                            <th>Nhóm CBO</th>
+                            <th>Ngày tham gia</th>
+                            <th>Đối tượng đích</th>
+                            <th>Giới tính</th>
+                            <th class="text-center">Năm sinh / Tuổi</th>
+                            <th class="text-center">CCCD</th>
+                            <th class="text-center">BHYT</th>
+                            <th class="text-center" style="width: 100px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr x-show="isLoading">
+                            <td colspan="12" class="text-center py-5 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                <span class="fw-semibold">Đang tải dữ liệu khách hàng...</span>
+                            </td>
+                        </tr>
+                        <template x-for="(item, idx) in items" :key="item.ID">
+                            <tr>
+                                <td class="text-center text-muted" x-text="(filter.PageIndex - 1) * filter.PageSize + idx + 1"></td>
+                                <td class="fw-bold text-primary" x-text="item.RECORD_ID"></td>
+                                <td>
+                                    <span x-text="item.MA_KH_NGHIEN_CUU || '-'" class="font-monospace text-secondary"></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border" x-text="item.CityName"></span>
+                                </td>
+                                <td x-text="item.TenNhom"></td>
+                                <td x-text="formatDate(item.NGAY_THAM_GIA)"></td>
+                                <td>
+                                    <span :class="getBadgeClassDoiTuong(item.DOI_TUONG)" x-text="item.TenDoiTuong"></span>
+                                </td>
+                                <td x-text="item.TenGioiTinh"></td>
+                                <td class="text-center">
+                                    <span x-text="item.NAM_SINH || '-'"></span>
+                                    <span x-show="item.Tuoi" class="text-muted" x-text="' (' + item.Tuoi + 't)'"></span>
+                                </td>
+                                <td class="text-center">
+                                    <i x-show="item.CO_CCCD === true" class="fas fa-check-circle text-success" title="Có CCCD"></i>
+                                    <i x-show="item.CO_CCCD === false" class="fas fa-times-circle text-muted" title="Không có CCCD"></i>
+                                    <span x-show="item.CO_CCCD === null" class="text-muted">-</span>
+                                </td>
+                                <td class="text-center">
+                                    <i x-show="item.CO_BHYT === true" class="fas fa-check-circle text-success" title="Có BHYT"></i>
+                                    <i x-show="item.CO_BHYT === false" class="fas fa-times-circle text-danger" title="Chưa có BHYT"></i>
+                                    <span x-show="item.CO_BHYT === null" class="text-muted">-</span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-primary btn-sm py-0 px-2" x-on:click="openDetailModal(item.RECORD_ID)">
+                                        <i class="fas fa-id-card me-1"></i>Hồ sơ
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="!isLoading && items.length === 0">
+                            <td colspan="12" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                Không tìm thấy khách hàng nào phù hợp với bộ lọc!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Phân trang (Pagination) -->
+        <div class="card-footer bg-white py-2 justify-content-between align-items-center" :class="totalPages > 1 ? 'd-flex' : 'd-none'">
+            <div class="text-muted small">
+                Trang <span class="fw-bold" x-text="filter.PageIndex"></span> / <span x-text="totalPages"></span>
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" :class="{ 'disabled': filter.PageIndex <= 1 }">
+                        <a class="page-link" href="javascript:void(0)" x-on:click="searchCustomers(1)">Đầu</a>
+                    </li>
+                    <li class="page-item" :class="{ 'disabled': filter.PageIndex <= 1 }">
+                        <a class="page-link" href="javascript:void(0)" x-on:click="searchCustomers(filter.PageIndex - 1)">Trước</a>
+                    </li>
+                    <template x-for="p in visiblePages" :key="p">
+                        <li class="page-item" :class="{ 'active': p === filter.PageIndex }">
+                            <a class="page-link" href="javascript:void(0)" x-on:click="searchCustomers(p)" x-text="p"></a>
+                        </li>
+                    </template>
+                    <li class="page-item" :class="{ 'disabled': filter.PageIndex >= totalPages }">
+                        <a class="page-link" href="javascript:void(0)" x-on:click="searchCustomers(filter.PageIndex + 1)">Sau</a>
+                    </li>
+                    <li class="page-item" :class="{ 'disabled': filter.PageIndex >= totalPages }">
+                        <a class="page-link" href="javascript:void(0)" x-on:click="searchCustomers(totalPages)">Cuối</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- MODAL HỒ SƠ KHÁCH HÀNG 360° HIỆN ĐẠI -->
+    <div class="modal fade modal-customer-detail" id="modalCustomerDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                
+                <!-- 1. Trạng thái Đang tải dữ liệu (Loading Skeleton & Pulse) -->
+                <div x-show="isDetailLoading" class="p-5 text-center bg-white">
+                    <div class="spinner-border text-primary mb-3" style="width: 3.2rem; height: 3.2rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Đang tổng hợp Hồ sơ 360°...</h5>
+                    <p class="text-muted small mb-0">Đang đối soát và liên kết dữ liệu từ 8 biểu mẫu can thiệp CD45 (DREAMH)</p>
+                </div>
+
+                <!-- 2. Trạng thái Đã tải xong Hồ sơ -->
+                <div x-show="!isDetailLoading && selectedCustomer" x-cloak>
+                    <!-- HERO HEADER BANNER -->
+                    <div class="customer-hero-header">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center gap-3">
+                                <!-- Avatar kèm huy hiệu Vân tay -->
+                                <div class="position-relative">
+                                    <div class="avatar-circle">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <span x-show="selectedCustomer?.CoVanTay" class="badge-fingerprint verified" title="Đã có vân tay xác thực">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </span>
+                                    <span x-show="!selectedCustomer?.CoVanTay" class="badge-fingerprint unverified" title="Chưa thu thập vân tay">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </span>
+                                </div>
+
+                                <!-- Tiêu đề & Thông tin định danh -->
+                                <div>
+                                    <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+                                        <span class="font-monospace fw-bold fs-4 text-white" x-text="selectedCustomer?.ThongTinChung?.RECORD_ID"></span>
+                                        <button type="button" class="btn btn-outline-light btn-sm py-0 px-2 rounded-pill font-monospace" 
+                                                x-on:click="copyRecordId(selectedCustomer?.ThongTinChung?.RECORD_ID)" title="Sao chép Record ID">
+                                            <i class="fas fa-copy me-1"></i>Copy
+                                        </button>
+                                        <span class="badge bg-info-subtle text-info border border-info px-2 py-1" 
+                                              x-text="'Mã NC: ' + (selectedCustomer?.ThongTinChung?.MA_KH_NGHIEN_CUU || 'Chưa gán')"></span>
+                                        <span :class="getBadgeClassDoiTuong(selectedCustomer?.ThongTinChung?.DOI_TUONG)" 
+                                              class="px-2 py-1" x-text="selectedCustomer?.ThongTinChung?.TenDoiTuong"></span>
+                                    </div>
+
+                                    <div class="d-flex align-items-center flex-wrap gap-3 text-white-50 small">
+                                        <span>
+                                            <i class="fas fa-map-marker-alt text-warning me-1"></i>
+                                            <strong class="text-white" x-text="selectedCustomer?.ThongTinChung?.CityName"></strong>
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-users text-info me-1"></i>
+                                            <strong class="text-white" x-text="selectedCustomer?.ThongTinChung?.TenNhom"></strong>
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-venus-mars text-light me-1"></i>
+                                            <span x-text="selectedCustomer?.ThongTinChung?.TenGioiTinh"></span> 
+                                            (<span x-text="selectedCustomer?.ThongTinChung?.Tuoi ? (selectedCustomer?.ThongTinChung?.Tuoi + ' tuổi') : '-'"></span>)
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-calendar-check text-success me-1"></i>Ngày vào: 
+                                            <span class="text-white" x-text="formatDate(selectedCustomer?.ThongTinChung?.NGAY_THAM_GIA)"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nút đóng Header -->
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <!-- MODAL BODY -->
+                    <div class="modal-body p-3 bg-light-subtle">
+                        <!-- KPI MICRO-METRIC CARDS (7 CỘT) -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-primary">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-calendar-alt text-primary me-1"></i>Hoạt động
+                                    </div>
+                                    <div class="fw-bold fs-4 text-primary mt-1" x-text="selectedCustomer?.TongHoatDong || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-info">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-brain text-info me-1"></i>Sàng lọc QST
+                                    </div>
+                                    <div class="fw-bold fs-4 text-info mt-1" x-text="selectedCustomer?.TongQst || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-danger">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-stethoscope text-danger me-1"></i>Khám SKTT
+                                    </div>
+                                    <div class="fw-bold fs-4 text-danger mt-1" x-text="selectedCustomer?.TongChanDoan || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-warning">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-heart text-warning me-1"></i>Hỗ trợ XH
+                                    </div>
+                                    <div class="fw-bold fs-4 text-warning-emphasis mt-1" x-text="selectedCustomer?.TongHoTroXh || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-success">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-comments text-success me-1"></i>Tư vấn L1-L2
+                                    </div>
+                                    <div class="fw-bold fs-4 text-success mt-1" x-text="selectedCustomer?.TongTuVan || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3 border-secondary">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-pills text-secondary me-1"></i>Tuân thủ ĐT
+                                    </div>
+                                    <div class="fw-bold fs-4 text-secondary mt-1" x-text="selectedCustomer?.TongTuanThu || 0"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl">
+                                <div class="card h-100 border-0 shadow-sm metric-card p-2 text-center bg-white border-top border-3"
+                                     :class="selectedCustomer?.CoVanTay ? 'border-success' : 'border-secondary'">
+                                    <div class="text-muted text-uppercase small fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fas fa-fingerprint me-1" :class="selectedCustomer?.CoVanTay ? 'text-success' : 'text-muted'"></i>Vân tay
+                                    </div>
+                                    <div class="mt-1">
+                                        <span x-show="selectedCustomer?.CoVanTay" class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                                            <i class="fas fa-check-circle me-1"></i>Đã có
+                                        </span>
+                                        <span x-show="!selectedCustomer?.CoVanTay" class="badge bg-secondary-subtle text-secondary border px-2 py-1">
+                                            Chưa có
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NAVIGATION TABS THANH LỊCH -->
+                        <div class="bg-white p-2 rounded-3 shadow-sm mb-3">
+                            <ul class="nav nav-pills custom-profile-tabs gap-2" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-thongtin" type="button">
+                                        <i class="fas fa-id-card me-1"></i>Thông tin cơ bản & An sinh
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-hoatdong" type="button">
+                                        <i class="fas fa-calendar-check me-1"></i>Lịch sử Can thiệp 
+                                        <span class="badge rounded-pill bg-primary ms-1" x-text="selectedCustomer?.TongHoatDong || 0"></span>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-qst" type="button">
+                                        <i class="fas fa-brain me-1"></i>Sàng lọc QST 
+                                        <span class="badge rounded-pill bg-info text-dark ms-1" x-text="selectedCustomer?.TongQst || 0"></span>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-chandoan" type="button">
+                                        <i class="fas fa-stethoscope me-1"></i>Khám SKTT & Y tế 
+                                        <span class="badge rounded-pill bg-danger ms-1" x-text="selectedCustomer?.TongChanDoan || 0"></span>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-hotro" type="button">
+                                        <i class="fas fa-shield-alt me-1"></i>Hỗ trợ Xã hội 
+                                        <span class="badge rounded-pill bg-warning text-dark ms-1" x-text="selectedCustomer?.TongHoTroXh || 0"></span>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-tuvan" type="button">
+                                        <i class="fas fa-user-md me-1"></i>Tư vấn & Tuân thủ 
+                                        <span class="badge rounded-pill bg-success ms-1" x-text="(selectedCustomer?.TongTuVan || 0) + (selectedCustomer?.TongTuanThu || 0)"></span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- NỘI DUNG CÁC TAB -->
+                        <div class="tab-content">
+                            <!-- TAB 1: THÔNG TIN CƠ BẢN & XÃ HỘI -->
+                            <div class="tab-pane fade show active" id="tab-thongtin">
+                                <div class="row g-3">
+                                    <!-- Cột Trái: Nhân khẩu học -->
+                                    <div class="col-md-6">
+                                        <div class="info-profile-card h-100">
+                                            <div class="card-header-clean text-primary">
+                                                <i class="fas fa-user-tag me-2"></i>Hồ sơ Nhân khẩu học & Gia đình
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="info-row">
+                                                    <span class="label">Đối tượng đích nguy cơ:</span>
+                                                    <span class="value">
+                                                        <span :class="getBadgeClassDoiTuong(selectedCustomer?.ThongTinChung?.DOI_TUONG)" x-text="selectedCustomer?.ThongTinChung?.TenDoiTuong"></span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Giới tính tự xác định:</span>
+                                                    <span class="value" x-text="selectedCustomer?.ThongTinChung?.TenGioiTinh"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Năm sinh / Độ tuổi:</span>
+                                                    <span class="value" x-text="(selectedCustomer?.ThongTinChung?.NAM_SINH || '-') + ' (' + (selectedCustomer?.ThongTinChung?.Tuoi || '-') + ' tuổi)'"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Tình trạng hôn nhân:</span>
+                                                    <span class="value" x-text="selectedCustomer?.TenHonNhan || '-'"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Số lượng con cái:</span>
+                                                    <span class="value" x-text="selectedCustomer?.SO_CON !== null ? (selectedCustomer?.SO_CON + ' con') : '-'"></span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Tham gia Nghiên cứu DREAMH:</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.THAM_GIA_NGHIEN_CUU" class="badge bg-success-subtle text-success border border-success">
+                                                            <i class="fas fa-check-circle me-1"></i>Đồng ý tham gia
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.THAM_GIA_NGHIEN_CUU" class="badge bg-secondary-subtle text-secondary border">
+                                                            Không tham gia
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row" x-show="selectedCustomer?.DOI_TUONG_KHAC">
+                                                    <span class="label">Ghi chú đối tượng khác:</span>
+                                                    <span class="value text-muted" x-text="selectedCustomer?.DOI_TUONG_KHAC"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cột Phải: An sinh xã hội & Hoàn cảnh -->
+                                    <div class="col-md-6">
+                                        <div class="info-profile-card h-100">
+                                            <div class="card-header-clean text-primary">
+                                                <i class="fas fa-shield-alt me-2"></i>An sinh Xã hội & Điều kiện Sinh sống
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="info-row">
+                                                    <span class="label">Thẻ Căn cước công dân / Định danh:</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.ThongTinChung?.CO_CCCD" class="badge bg-success-subtle text-success border border-success">
+                                                            <i class="fas fa-check-circle me-1"></i>Đã có CCCD
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.ThongTinChung?.CO_CCCD" class="badge bg-danger-subtle text-danger border border-danger">
+                                                            <i class="fas fa-times-circle me-1"></i>Chưa có CCCD
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Thẻ Bảo hiểm y tế (BHYT):</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.ThongTinChung?.CO_BHYT" class="badge bg-success-subtle text-success border border-success">
+                                                            <i class="fas fa-check-circle me-1"></i>Đã có thẻ BHYT
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.ThongTinChung?.CO_BHYT" class="badge bg-danger-subtle text-danger border border-danger">
+                                                            <i class="fas fa-times-circle me-1"></i>Chưa có BHYT
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Nơi cư trú (Thường trú / Tạm trú):</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.ThongTinChung?.CO_THUONG_TRU" class="text-success fw-semibold">
+                                                            <i class="fas fa-home me-1"></i>Có nơi ở cố định
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.ThongTinChung?.CO_THUONG_TRU" class="text-danger fw-semibold">
+                                                            <i class="fas fa-ban me-1"></i>Không có nơi ở cố định
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Tình trạng vô gia cư hiện tại:</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.ThongTinChung?.DANG_VO_GIA_CU" class="badge bg-danger-subtle text-danger border border-danger">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>Đang vô gia cư
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.ThongTinChung?.DANG_VO_GIA_CU" class="text-muted">
+                                                            Không
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Từng vô gia cư trong 6 tháng:</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.VO_GIA_CU_6T" class="badge bg-warning-subtle text-warning-emphasis border border-warning">
+                                                            <i class="fas fa-exclamation-circle me-1"></i>Có
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.VO_GIA_CU_6T" class="text-muted">Không</span>
+                                                    </span>
+                                                </div>
+                                                <div class="info-row">
+                                                    <span class="label">Bị tạm giữ / bắt giam trong 6 tháng:</span>
+                                                    <span class="value">
+                                                        <span x-show="selectedCustomer?.ThongTinChung?.BI_TAM_GIU_6T" class="badge bg-danger-subtle text-danger border border-danger">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>Có
+                                                        </span>
+                                                        <span x-show="!selectedCustomer?.ThongTinChung?.BI_TAM_GIU_6T" class="text-muted">Không</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: HOẠT ĐỘNG & CAN THIỆP -->
+                            <div class="tab-pane fade" id="tab-hoatdong">
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 50px;">Lần</th>
+                                                    <th style="width: 110px;">Ngày hoạt động</th>
+                                                    <th>Loại dịch vụ</th>
+                                                    <th>Tiếp cận viên</th>
+                                                    <th>Địa điểm</th>
+                                                    <th>Chủ đề</th>
+                                                    <th class="text-center">Tài liệu</th>
+                                                    <th class="text-center">BCS</th>
+                                                    <th class="text-center">Bôi trơn</th>
+                                                    <th class="text-center">Bơm kim</th>
+                                                    <th>Ghi chú</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="hd in selectedCustomer?.ListHoatDong" :key="hd.REPEAT_INSTANCE + '_' + hd.NGAY_HOAT_DONG">
+                                                    <tr>
+                                                        <td class="text-center fw-bold text-primary" x-text="hd.REPEAT_INSTANCE"></td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(hd.NGAY_HOAT_DONG)"></td>
+                                                        <td>
+                                                            <span class="badge bg-primary-subtle text-primary border border-primary" x-text="hd.TenLoaiDv"></span>
+                                                        </td>
+                                                        <td class="fw-semibold" x-text="hd.TenTCV"></td>
+                                                        <td class="text-muted" x-text="hd.DIA_DIEM || '-'"></td>
+                                                        <td class="text-dark" x-text="hd.CHU_DE || '-'"></td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="hd.SO_TAI_LIEU || 0"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="hd.SO_BAO_CAO_SU || 0"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="hd.SO_CHAT_BOI_TRAN || 0"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="hd.SO_BOM_KIM || 0"></span>
+                                                        </td>
+                                                        <td class="text-muted small" x-text="hd.GHI_CHU || '-'"></td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListHoatDong?.length">
+                                                    <td colspan="11" class="text-center py-5 text-muted">
+                                                        <i class="fas fa-calendar-times fa-3x mb-2 d-block text-black-50"></i>
+                                                        Chưa có ghi nhận hoạt động can thiệp nào cho khách hàng này.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: SÀNG LỌC QST -->
+                            <div class="tab-pane fade" id="tab-qst">
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 50px;">Lần</th>
+                                                    <th style="width: 110px;">Ngày sàng lọc</th>
+                                                    <th>Tiếp cận viên</th>
+                                                    <th class="text-center" style="width: 130px;">Tổng điểm QST</th>
+                                                    <th>Mức độ nguy cơ</th>
+                                                    <th class="text-center">Tự hại (Q2)</th>
+                                                    <th class="text-center">Ảo giác (Q3)</th>
+                                                    <th>Lý do đánh giá lại</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="qst in selectedCustomer?.ListQst" :key="qst.REPEAT_INSTANCE + '_' + qst.NGAY_SANG_LOC">
+                                                    <tr>
+                                                        <td class="text-center fw-bold text-info" x-text="qst.REPEAT_INSTANCE"></td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(qst.NGAY_SANG_LOC)"></td>
+                                                        <td class="fw-semibold" x-text="qst.TenTCV"></td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-primary fs-6 px-3 py-1 font-monospace" x-text="qst.DIEM_QST !== null ? qst.DIEM_QST : '-'"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span :class="getBadgeClassQst(qst.MUC_QST)" class="px-2 py-1" x-text="qst.TenMucQst"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span x-show="qst.Q2_TU_HARM === 1 || qst.Q2_TU_HARM === '1'" class="badge bg-danger text-white">
+                                                                <i class="fas fa-exclamation-triangle me-1"></i>Có nguy cơ
+                                                            </span>
+                                                            <span x-show="qst.Q2_TU_HARM === 0 || qst.Q2_TU_HARM === '0'" class="text-success">
+                                                                <i class="fas fa-check-circle me-1"></i>Không
+                                                            </span>
+                                                            <span x-show="qst.Q2_TU_HARM === null || qst.Q2_TU_HARM === ''" class="text-muted">-</span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span x-show="qst.Q3_NGHE === 1 || qst.Q3_NGHE === '1'" class="badge bg-danger text-white">
+                                                                <i class="fas fa-exclamation-triangle me-1"></i>Có ảo giác
+                                                            </span>
+                                                            <span x-show="qst.Q3_NGHE === 0 || qst.Q3_NGHE === '0'" class="text-success">
+                                                                <i class="fas fa-check-circle me-1"></i>Không
+                                                            </span>
+                                                            <span x-show="qst.Q3_NGHE === null || qst.Q3_NGHE === ''" class="text-muted">-</span>
+                                                        </td>
+                                                        <td class="text-muted small" x-text="qst.LY_DO_DANH_GIA_LAI || '-'"></td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListQst?.length">
+                                                    <td colspan="8" class="text-center py-5 text-muted">
+                                                        <i class="fas fa-brain fa-3x mb-2 d-block text-black-50"></i>
+                                                        Chưa có lượt sàng lọc tâm lý QST nào.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 4: KHÁM SKTT & CHẨN ĐOÁN -->
+                            <div class="tab-pane fade" id="tab-chandoan">
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 50px;">Lần</th>
+                                                    <th style="width: 110px;">Ngày khám</th>
+                                                    <th>Cơ sở y tế</th>
+                                                    <th>Bác sĩ chuyên khoa</th>
+                                                    <th>Hình thức điều trị</th>
+                                                    <th>Chẩn đoán chính</th>
+                                                    <th>Triệu chứng ghi nhận</th>
+                                                    <th>Hẹn tái khám</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="cd in selectedCustomer?.ListChanDoan" :key="cd.REPEAT_INSTANCE + '_' + cd.NGAY_KHAM">
+                                                    <tr>
+                                                        <td class="text-center fw-bold text-danger" x-text="cd.REPEAT_INSTANCE"></td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(cd.NGAY_KHAM)"></td>
+                                                        <td class="fw-semibold text-dark">
+                                                            <i class="fas fa-hospital text-danger me-1"></i>
+                                                            <span x-text="cd.CO_SO_Y_TE || '-'"></span>
+                                                        </td>
+                                                        <td>
+                                                            <i class="fas fa-user-md text-primary me-1"></i>
+                                                            <span x-text="cd.BAC_SI || '-'"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" :class="cd.HINH_THUC_DIEU_TRI?.toLowerCase().includes('nội trú') ? 'bg-danger-subtle text-danger border border-danger' : 'bg-info-subtle text-info border border-info'"
+                                                                  x-text="cd.HINH_THUC_DIEU_TRI || '-'"></span>
+                                                        </td>
+                                                        <td class="fw-bold text-primary" x-text="cd.CHAN_DOAN_CHINH || '-'"></td>
+                                                        <td class="text-muted small" x-text="cd.TRIEU_CHUNG || '-'"></td>
+                                                        <td>
+                                                            <span class="badge bg-light text-dark border" x-text="formatDate(cd.NGAY_HEN_TAI_KHAM)"></span>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListChanDoan?.length">
+                                                    <td colspan="8" class="text-center py-5 text-muted">
+                                                        <i class="fas fa-stethoscope fa-3x mb-2 d-block text-black-50"></i>
+                                                        Chưa có lượt khám SKTT hoặc kết quả chẩn đoán y tế nào.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 5: HỖ TRỢ XÃ HỘI -->
+                            <div class="tab-pane fade" id="tab-hotro">
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 50px;">Lần</th>
+                                                    <th style="width: 110px;">Ngày hỗ trợ</th>
+                                                    <th>Tiếp cận viên</th>
+                                                    <th>Dịch vụ hỗ trợ xã hội</th>
+                                                    <th class="text-center" style="width: 180px;">Kết quả xét nghiệm HIV</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="ht in selectedCustomer?.ListHoTroXh" :key="ht.REPEAT_INSTANCE + '_' + ht.NGAY_HO_TRO">
+                                                    <tr>
+                                                        <td class="text-center fw-bold text-warning-emphasis" x-text="ht.REPEAT_INSTANCE"></td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(ht.NGAY_HO_TRO)"></td>
+                                                        <td class="fw-semibold" x-text="ht.TenTCV"></td>
+                                                        <td class="fw-semibold text-primary" x-text="ht.DICH_VU || '-'"></td>
+                                                        <td class="text-center">
+                                                            <span :class="getBadgeClassHiv(ht.KET_QUA_HIV)" class="px-2 py-1" x-text="formatKetQuaHivText(ht.KET_QUA_HIV)"></span>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListHoTroXh?.length">
+                                                    <td colspan="5" class="text-center py-5 text-muted">
+                                                        <i class="fas fa-hands-helping fa-3x mb-2 d-block text-black-50"></i>
+                                                        Chưa có dịch vụ hỗ trợ an sinh xã hội nào được ghi nhận.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 6: TƯ VẤN & TUÂN THỦ -->
+                            <div class="tab-pane fade" id="tab-tuvan">
+                                <!-- 1. Tư vấn cá nhân -->
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-3">
+                                    <div class="card-header bg-white py-2 border-bottom">
+                                        <h6 class="fw-bold text-primary mb-0">
+                                            <i class="fas fa-comments me-2"></i>1. Lịch sử Tư vấn Cá nhân (Lần 1 & Lần 2+)
+                                        </h6>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 90px;">Giai đoạn</th>
+                                                    <th style="width: 110px;">Ngày tư vấn</th>
+                                                    <th>Tiếp cận viên</th>
+                                                    <th>Địa điểm</th>
+                                                    <th class="text-center">AUDIT-C</th>
+                                                    <th class="text-center">PCL-5</th>
+                                                    <th class="text-center">Kỳ thị (Stigma)</th>
+                                                    <th>Đánh giá / Can thiệp áp dụng</th>
+                                                    <th>Hẹn tiếp</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="tv in selectedCustomer?.ListTuVan" :key="tv.LanTuVan + '_' + tv.REPEAT_INSTANCE + '_' + tv.NGAY_TU_VAN">
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge" :class="tv.LanTuVan === 1 ? 'bg-primary-subtle text-primary border border-primary' : 'bg-success-subtle text-success border border-success'"
+                                                                  x-text="tv.LanTuVan === 1 ? 'Lần 1' : ('Lần ' + tv.REPEAT_INSTANCE)"></span>
+                                                        </td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(tv.NGAY_TU_VAN)"></td>
+                                                        <td class="fw-semibold" x-text="tv.TenTCV"></td>
+                                                        <td class="text-muted" x-text="tv.DIA_DIEM || '-'"></td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="tv.AUDIT_C_SCORE !== null ? tv.AUDIT_C_SCORE : '-'"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="tv.PCL5_SCORE !== null ? tv.PCL5_SCORE : '-'"></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border px-2" x-text="tv.STIGMA_SCORE !== null ? tv.STIGMA_SCORE : '-'"></span>
+                                                        </td>
+                                                        <td class="text-dark small" x-text="tv.DANH_GIA_HIEN_TAI || tv.TINH_TRANG_SKTT || tv.CAN_THIEP_AP_DUNG || '-'"></td>
+                                                        <td>
+                                                            <span class="badge bg-light text-dark border" x-text="formatDate(tv.NGAY_HEN_TIEP)"></span>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListTuVan?.length">
+                                                    <td colspan="9" class="text-center py-4 text-muted">
+                                                        Chưa có lượt tư vấn cá nhân nào.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Tuân thủ điều trị -->
+                                <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                                    <div class="card-header bg-white py-2 border-bottom">
+                                        <h6 class="fw-bold text-success mb-0">
+                                            <i class="fas fa-pills me-2"></i>2. Quản lý Tuân thủ Điều trị (ARV / PrEP / MMT)
+                                        </h6>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-modern table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 50px;">Lần</th>
+                                                    <th style="width: 110px;">Ngày hỗ trợ</th>
+                                                    <th>Tiếp cận viên</th>
+                                                    <th>Hình thức điều trị</th>
+                                                    <th class="text-center">Kê đơn thuốc</th>
+                                                    <th>Đánh giá tuân thủ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="tt in selectedCustomer?.ListTuanThu" :key="tt.REPEAT_INSTANCE + '_' + tt.NGAY_HO_TRO">
+                                                    <tr>
+                                                        <td class="text-center fw-bold text-success" x-text="tt.REPEAT_INSTANCE"></td>
+                                                        <td class="fw-semibold text-secondary" x-text="formatDate(tt.NGAY_HO_TRO)"></td>
+                                                        <td class="fw-semibold" x-text="tt.TenTCV"></td>
+                                                        <td class="fw-semibold text-primary" x-text="tt.HINH_THUC_DIEU_TRI || '-'"></td>
+                                                        <td class="text-center">
+                                                            <span x-show="tt.CO_KE_DON_THUOC === true" class="badge bg-success-subtle text-success border border-success">
+                                                                <i class="fas fa-check-circle me-1"></i>Có đơn thuốc
+                                                            </span>
+                                                            <span x-show="tt.CO_KE_DON_THUOC === false" class="badge bg-secondary-subtle text-secondary border">
+                                                                Không
+                                                            </span>
+                                                            <span x-show="tt.CO_KE_DON_THUOC === null" class="text-muted">-</span>
+                                                        </td>
+                                                        <td class="fw-semibold" x-text="tt.TUAN_THU || '-'"></td>
+                                                    </tr>
+                                                </template>
+                                                <tr x-show="!selectedCustomer?.ListTuanThu?.length">
+                                                    <td colspan="6" class="text-center py-4 text-muted">
+                                                        Chưa có dữ liệu tuân thủ điều trị.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODAL FOOTER -->
+                    <div class="modal-footer bg-white py-2 px-3 justify-content-between border-top">
+                        <div class="text-muted small">
+                            <i class="fas fa-shield-alt text-primary me-1"></i>Hồ sơ Khách hàng 360° - Dự án CD45 (DREAMH)
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill" 
+                                    x-on:click="copyRecordId(selectedCustomer?.ThongTinChung?.RECORD_ID)">
+                                <i class="fas fa-copy me-1"></i>Sao chép Record ID
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm px-4 rounded-pill" data-bs-dismiss="modal">
+                                <i class="fas fa-check me-1"></i>Đóng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/app/Controller/AlpineKhachHangCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+}

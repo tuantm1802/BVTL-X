@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Autofac.Integration.Mvc;
 using System.Reflection;
 using System.Web.Mvc;
@@ -21,6 +21,8 @@ namespace WebApp.App_Start
             // ÄÄƒng kĂ½ thá»§ cĂ´ng toĂ n bá»™ Data Access (DA) Ä‘á»ƒ trĂ¡nh lá»—i Assembly Load Context
             builder.RegisterType<Data.Admin.ApiDA>().As<Data.InterfaceDA.Admin.IApiDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoCD45DA>().As<Data.InterfaceDA.IBaoCaoCD45DA>().InstancePerRequest();
+            builder.RegisterType<Data.Admin.CD45KhachHangDA>().As<Data.InterfaceDA.Admin.ICD45KhachHangDA>().InstancePerRequest();
+            builder.RegisterType<Data.Admin.CD45NhomTcvDA>().As<Data.InterfaceDA.Admin.ICD45NhomTcvDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoTongHopDA>().As<Data.InterfaceDA.Admin.IBaoCaoTongHopDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BVTL_NHOM_TBHDA>().As<Data.InterfaceDA.Admin.IBVTL_NHOM_TBHDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.ChatGayNghien3THDA>().As<Data.InterfaceDA.Admin.IChatGayNghien3THDA>().InstancePerRequest();

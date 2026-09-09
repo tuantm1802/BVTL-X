@@ -62,11 +62,30 @@ namespace WebApp.Controllers
             try
             {
                 var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null);
-                return Json(new { Success = true, Data = data });
+                var jsonResult = Json(new { Success = true, Data = data });
+                jsonResult.MaxJsonLength = int.MaxValue;
+                return jsonResult;
             }
             catch (Exception ex)
             {
                 // TODO: Log error
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetDrillDownData(string ChiTieuCode, string FromDate, string ToDate, string MaTinh, string MaNhom, int? DoiTuong)
+        {
+            try
+            {
+                var list = _BaoCaoCD45DA.GetDrillDown(ChiTieuCode, FromDate, ToDate, MaTinh, MaNhom, null, DoiTuong);
+                var jsonResult = Json(new { Success = true, Data = list, Total = list.Count });
+                jsonResult.MaxJsonLength = int.MaxValue;
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
             }
@@ -101,12 +120,12 @@ namespace WebApp.Controllers
                 {
                     ws.Cell(row, 1).Value = item.STT;
                     ws.Cell(row, 2).Value = item.ChiTieu;
-                    ws.Cell(row, 3).Value = item.Tong;
-                    ws.Cell(row, 4).Value = item.PUD;
-                    ws.Cell(row, 5).Value = item.PLHIV;
-                    ws.Cell(row, 6).Value = item.TG;
-                    ws.Cell(row, 7).Value = item.SW;
-                    ws.Cell(row, 8).Value = item.MSM;
+                    ws.Cell(row, 3).Value = item.Tong ?? 0;
+                    ws.Cell(row, 4).Value = item.PUD ?? 0;
+                    ws.Cell(row, 5).Value = item.PLHIV ?? 0;
+                    ws.Cell(row, 6).Value = item.TG ?? 0;
+                    ws.Cell(row, 7).Value = item.SW ?? 0;
+                    ws.Cell(row, 8).Value = item.MSM ?? 0;
 
                     if (item.IsBold)
                     {

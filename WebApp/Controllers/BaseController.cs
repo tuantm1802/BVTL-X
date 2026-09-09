@@ -39,6 +39,13 @@ namespace WebApp.Controllers
             filterContext.HttpContext.Items["_ActionStartTime"] = DateTime.UtcNow;
             if (Session["USER_SESSION"] == null)
             {
+                if (Request.Cookies["UserToken"] == null || string.IsNullOrEmpty(Request.Cookies["UserToken"].Value))
+                {
+                    resetSession();
+                    filterContext.Result = new RedirectResult("/Login/Index");
+                    return;
+                }
+
                 var token = Request.Cookies["UserToken"].Value.ToString();
                 // kiểm tra xem token còn hạn không
                 var userName = _ITokenService.ValidateToken(token);

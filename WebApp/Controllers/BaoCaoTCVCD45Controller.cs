@@ -186,12 +186,12 @@ namespace WebApp.Controllers
                 var prefix = item.IndentLevel == 1 ? "      " : "";
                 ws.Cell(row, 2).Value = prefix + item.ChiTieu;
 
-                ws.Cell(row, 3).Value = item.Tong;
-                ws.Cell(row, 4).Value = item.PUD;
-                ws.Cell(row, 5).Value = item.PLHIV;
-                ws.Cell(row, 6).Value = item.TG;
-                ws.Cell(row, 7).Value = item.SW;
-                ws.Cell(row, 8).Value = item.MSM;
+                ws.Cell(row, 3).Value = item.Tong ?? 0;
+                ws.Cell(row, 4).Value = item.PUD ?? 0;
+                ws.Cell(row, 5).Value = item.PLHIV ?? 0;
+                ws.Cell(row, 6).Value = item.TG ?? 0;
+                ws.Cell(row, 7).Value = item.SW ?? 0;
+                ws.Cell(row, 8).Value = item.MSM ?? 0;
 
                 for (int c = 3; c <= 8; c++)
                 {

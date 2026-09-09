@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -69,6 +69,8 @@
     <Compile Include="Admin\ApiDA.cs" />
     <Compile Include="Admin\BaoCaoTongHopDA.cs" />
     <Compile Include="Admin\BaoCaoCD45DA.cs" />
+    <Compile Include="Admin\CD45KhachHangDA.cs" />
+    <Compile Include="Admin\CD45NhomTcvDA.cs" />
     <Compile Include="Admin\DataQualityDA.cs" />
     <Compile Include="Admin\BVTL_NHOM_TBHDA.cs" />
     <Compile Include="Admin\ChatGayNghien3THDA.cs" />
@@ -108,6 +110,8 @@
     <Compile Include="InterfaceDA\Admin\IBaoCaoTongHopDA.cs" />
     <Compile Include="InterfaceDA\IBaoCaoCD45DA.cs" />
     <Compile Include="InterfaceDA\IDataQualityDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ICD45KhachHangDA.cs" />
+    <Compile Include="InterfaceDA\Admin\ICD45NhomTcvDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBVTL_NHOM_TBHDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghien3THDA.cs" />
     <Compile Include="InterfaceDA\Admin\IChatGayNghienTX3THDA.cs" />

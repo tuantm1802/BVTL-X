@@ -17,7 +17,12 @@ namespace Model.ModelExtend.API.CD45
         [JsonExtensionData]
         public IDictionary<string, JToken> AdditionalData { get; set; }
 
+        public int? RepeatInstance => int.TryParse(redcap_repeat_instance, out int r) ? (int?)r : null;
+
         public string GetString(string key) {
+            if (string.Equals(key, "record_id", StringComparison.OrdinalIgnoreCase)) return record_id;
+            if (string.Equals(key, "redcap_repeat_instance", StringComparison.OrdinalIgnoreCase)) return redcap_repeat_instance;
+            if (string.Equals(key, "redcap_data_access_group", StringComparison.OrdinalIgnoreCase)) return redcap_data_access_group;
             if (AdditionalData != null && AdditionalData.ContainsKey(key)) {
                 var val = AdditionalData[key];
                 return val != null ? val.ToString() : null;

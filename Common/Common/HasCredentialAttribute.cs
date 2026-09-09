@@ -1,4 +1,4 @@
-﻿using Model.ModelExtend;
+using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using Newtonsoft.Json;
 using System;
@@ -24,11 +24,11 @@ namespace Common.Common
                 return false;
 
             // kiểm tra xem có quyền vào menu không
-            List<string> privilegeLevels = sesion.Where(x=> !string.IsNullOrEmpty(x.HREF_URL)).Select(x=>x.HREF_URL).ToList();
-            if (privilegeLevels.Contains(ControllerName))
-                return true;
-            else
-                return false;
+            bool hasPermission = sesion.Any(x =>
+                (!string.IsNullOrEmpty(x.CONTROLLER_NAME) && x.CONTROLLER_NAME.Equals(ControllerName, StringComparison.OrdinalIgnoreCase))
+                || (!string.IsNullOrEmpty(x.HREF_URL) && (x.HREF_URL.Equals(ControllerName, StringComparison.OrdinalIgnoreCase) || x.HREF_URL.IndexOf("/" + ControllerName, StringComparison.OrdinalIgnoreCase) >= 0))
+            );
+            return hasPermission;
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)

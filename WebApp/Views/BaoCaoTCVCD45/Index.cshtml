@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Báo cáo Tiếp cận viên (CD45 - DREAMH)";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -28,16 +28,25 @@
             <div class="row">
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Tháng báo cáo</label>
-                    <select class="form-control form-control-sm" x-model="thang" @@change="updateDateRange()">
-                        <template x-for="m in 12" :key="m">
-                            <option :value="m" x-text="'Tháng ' + m"></option>
-                        </template>
+                    <select class="form-control form-control-sm" x-model="thang" x-on:change="updateDateRange()">
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
                     </select>
                 </div>
 
                 <div class="col-md-1 mb-2">
                     <label class="font-weight-bold small">Năm</label>
-                    <input type="number" class="form-control form-control-sm" x-model="nam" @@change="updateDateRange()" />
+                    <input type="number" class="form-control form-control-sm" x-model="nam" x-on:change="updateDateRange()" />
                 </div>
 
                 <div class="col-md-2 mb-2">
@@ -211,7 +220,7 @@
 </div>
 
 @section scripts {
-    <script src="~/app/Controller/AlpineBaoCaoTCVCD45Controller.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoTCVCD45Controller.js?v=@DateTime.Now.Ticks"></script>
     <script>
         $(document).ready(function () {
             $('.datepicker').datepicker({

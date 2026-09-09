@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -158,9 +158,9 @@ namespace Common.Common
         }
 
         /// <summary>
-        /// R4. Chuẩn hóa ngày tháng & kiểm tra ngày tương lai
+        /// R4. Chuẩn hóa ngày tháng & kiểm tra ngày tương lai (bỏ qua kiểm tra tương lai với ngày hẹn tái khám/lịch hẹn)
         /// </summary>
-        public static DateTime? CleanDate(string rawDateStr, string fieldName, string recordId, string apiCode, string tableName, string reportId, string maDuAn, ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+        public static DateTime? CleanDate(string rawDateStr, string fieldName, string recordId, string apiCode, string tableName, string reportId, string maDuAn, ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs, bool allowFutureDate = false)
         {
             if (string.IsNullOrWhiteSpace(rawDateStr)) return null;
 
@@ -191,8 +191,14 @@ namespace Common.Common
                 }
             }
 
-            // Kiểm tra ngày trong tương lai
-            if (parsed.Date > DateTime.Today)
+            // Danh sách các trường ngày hẹn/tái khám trong tương lai hợp lệ (không kiểm tra lỗi ngày tương lai)
+            bool isFutureAllowed = allowFutureDate ||
+                                  "f6_followup_visit".Equals(fieldName, StringComparison.OrdinalIgnoreCase) ||
+                                  "f7_q61".Equals(fieldName, StringComparison.OrdinalIgnoreCase) ||
+                                  "f8_q61".Equals(fieldName, StringComparison.OrdinalIgnoreCase);
+
+            // Kiểm tra ngày trong tương lai (chỉ cảnh báo cho các trường ngày phát sinh sự kiện trong quá khứ)
+            if (!isFutureAllowed && parsed.Date > DateTime.Today)
             {
                 logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                 {

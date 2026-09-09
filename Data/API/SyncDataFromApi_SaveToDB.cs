@@ -894,7 +894,7 @@ namespace Data.API
                             converter.ConvertF1(dataResultApi, maDuAn, apiCode, reportId, ref listF1, ref stdLogs);
                             if (listF1.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF1);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_KH", listF1.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_KH", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_HOAT_DONG")) {
@@ -902,63 +902,63 @@ namespace Data.API
                             converter.ConvertF2(dataResultApi, maDuAn, apiCode, reportId, ref listF2, ref stdLogs);
                             if (listF2.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF2);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_HOAT_DONG", listF2.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_HOAT_DONG", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_QST")) {
                             var listF3 = new List<Model.ModelExtend.API.CD45.CD45_QST_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_QST", "f3", "f3_date", "bng_c_c_sng_lc_sktt_qst_complete", ref listF3, ref stdLogs);
+                            converter.ConvertF3(dataResultApi, maDuAn, apiCode, reportId, ref listF3, ref stdLogs);
                             if (listF3.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF3);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_QST", listF3.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_QST", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_HO_TRO_XH")) {
                             var listF4 = new List<Model.ModelExtend.API.CD45.CD45_HO_TRO_XH_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_HO_TRO_XH", "f4", "f4_time", "phiu_h_tr_x_hi_khc_complete", ref listF4, ref stdLogs);
+                            converter.ConvertF4(dataResultApi, maDuAn, apiCode, reportId, ref listF4, ref stdLogs);
                             if (listF4.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF4);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_HO_TRO_XH", listF4.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_HO_TRO_XH", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_TUAN_THU")) {
                             var listF5 = new List<Model.ModelExtend.API.CD45.CD45_TUAN_THU_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_TUAN_THU", "f5", "f5_date", "phiu_h_tr_tun_th_iu_tr_complete", ref listF5, ref stdLogs);
+                            converter.ConvertF5(dataResultApi, maDuAn, apiCode, reportId, ref listF5, ref stdLogs);
                             if (listF5.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF5);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TUAN_THU", listF5.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TUAN_THU", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_CHAN_DOAN")) {
                             var listF6 = new List<Model.ModelExtend.API.CD45.CD45_CHAN_DOAN_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_CHAN_DOAN", "f6", "f6_date", "thng_tin_chn_on_v_iu_tr_complete", ref listF6, ref stdLogs);
+                            converter.ConvertF6(dataResultApi, maDuAn, apiCode, reportId, ref listF6, ref stdLogs);
                             if (listF6.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF6);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_CHAN_DOAN", listF6.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_CHAN_DOAN", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_TU_VAN_L1")) {
                             var listF7 = new List<Model.ModelExtend.API.CD45.CD45_TU_VAN_L1_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_TU_VAN_L1", "f7", "f7_date", "phiu_t_vn_t_ln_1_complete", ref listF7, ref stdLogs);
+                            converter.ConvertF7(dataResultApi, maDuAn, apiCode, reportId, ref listF7, ref stdLogs);
                             if (listF7.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF7);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L1", listF7.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L1", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_TU_VAN_L2")) {
                             var listF8 = new List<Model.ModelExtend.API.CD45.CD45_TU_VAN_L2_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_TU_VAN_L2", "f8", "f8_date", "phiu_t_vn_t_ln_2_complete", ref listF8, ref stdLogs);
+                            converter.ConvertF8(dataResultApi, maDuAn, apiCode, reportId, ref listF8, ref stdLogs);
                             if (listF8.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF8);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L2", listF8.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L2", "", maDuAn);
                             }
                         }
                         else if (tableNames.Contains("CD45_VAN_TAY")) {
                             var listF10 = new List<Model.ModelExtend.API.CD45.CD45_VAN_TAY_Entity>();
-                            converter.ConvertGeneric(dataResultApi, maDuAn, apiCode, reportId, "CD45_VAN_TAY", "f10", "f10_ngay", "vn_tay_khch_hng_complete", ref listF10, ref stdLogs);
+                            converter.ConvertF10(dataResultApi, maDuAn, apiCode, reportId, ref listF10, ref stdLogs);
                             if (listF10.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF10);
-                                result = insertDataDA.InsertDataFromApi(dt, "CD45_VAN_TAY", listF10.FirstOrDefault().CITY_CODE, maDuAn);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_VAN_TAY", "", maDuAn);
                             }
                         }
 

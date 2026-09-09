@@ -14,6 +14,24 @@
 
     if (menus != null && menus.Count > 0)
     {
+        var hiddenReportUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "/BaoCaoTuan/Index",
+            "/BaoCaoThangCH07/Index",
+            "/BaoCaoQuyCH07/Index",
+            "/BaoCao6ThangCH07/Index",
+            "/BaoCaoNamCH07/Index",
+            "/BaoCaoCD43/BaoCaoQuy",
+            "/BaoCaoCD43/BaoCaoNam",
+            "/BaoCaoCD43/BaoCaoHoatDongNhom",
+            "/BaoCaoCD43/BaoCaoHoatDong",
+            "/KetQuaSangLoc/BaoCaoSangLoc",
+            "/KhachHang/Index",
+            "/KhoVatPham/Index",
+            "/KhoVatPham/BaoCaoTonKho"
+        };
+        menus = menus.Where(x => x.IS_ACTIVE != false && (string.IsNullOrEmpty(x.HREF_URL) || !hiddenReportUrls.Contains(x.HREF_URL))).ToList();
+
         menuLevel1 = menus.Where(x => x.PARENT_PAGE_ID == null || x.PARENT_PAGE_ID == 0).OrderBy(x => x.ORDER_BY).ToList();
 
         if (menuLevel1 != null && menuLevel1.Count > 0)
@@ -106,6 +124,15 @@
                                     <h6 class="collapse-header">@tenDuAn:</h6>
                                     //foreach (var itemM2 in menuChikd2.Where(x=>x.TEN_DU_AN == tenDuAn))
                                     foreach (var itemM2 in menuChikd2.Where(x=>x.TITLE_GROUP_MENU == tenDuAn))
+                                    {
+                                        <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
+                                    }
+                                }
+                                var itemsNoGroup = menuChikd2.Where(x => string.IsNullOrEmpty(x.TITLE_GROUP_MENU)).ToList();
+                                if (itemsNoGroup.Count > 0)
+                                {
+                                    <h6 class="collapse-header">Chung:</h6>
+                                    foreach (var itemM2 in itemsNoGroup)
                                     {
                                         <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
                                     }

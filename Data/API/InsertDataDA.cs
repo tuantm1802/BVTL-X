@@ -82,12 +82,20 @@ namespace Data.API
                     partitionCols = "[MADUAN], [TABLE_NAME], [RECORD_ID], [FIELD_NAME], [RULE_CODE]";
                     log.Info("Sử dụng composite rule key làm merge key cho bảng log: " + tableName);
                 }
+                else if (dttInsert.Columns.Contains("record_id") && dttInsert.Columns.Contains("repeat_instance"))
+                {
+                    string recCol = dttInsert.Columns["record_id"].ColumnName;
+                    string repCol = dttInsert.Columns["repeat_instance"].ColumnName;
+                    mergeOnClause = $"Target.[{recCol}] = Source.[{recCol}] AND ISNULL(Target.[{repCol}], 1) = ISNULL(Source.[{repCol}], 1)";
+                    partitionCols = $"[{recCol}], [{repCol}]";
+                    log.Info($"Sử dụng composite key ({recCol} + {repCol}) làm merge key cho bảng: " + tableName);
+                }
                 else if (dttInsert.Columns.Contains("record_id"))
                 {
-                    // Ưu tiên dùng record_id làm merge key
-                    mergeOnClause = "Target.[record_id] = Source.[record_id]";
-                    partitionCols = "[record_id]";
-                    log.Info("Sử dụng record_id làm merge key cho bảng: " + tableName);
+                    string recCol = dttInsert.Columns["record_id"].ColumnName;
+                    mergeOnClause = $"Target.[{recCol}] = Source.[{recCol}]";
+                    partitionCols = $"[{recCol}]";
+                    log.Info("Sử dụng " + recCol + " làm merge key cho bảng: " + tableName);
                 }
                 else if (tableName.Equals("ChiTietPhieuXuatNhap", StringComparison.OrdinalIgnoreCase))
                 {
@@ -149,6 +157,7 @@ namespace Data.API
                 var mergeKeyColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 if (!string.IsNullOrEmpty(identityColumn)) mergeKeyColumns.Add(identityColumn);
                 if (dttInsert.Columns.Contains("record_id")) mergeKeyColumns.Add("record_id");
+                if (dttInsert.Columns.Contains("repeat_instance")) mergeKeyColumns.Add("repeat_instance");
                 if (tableName.Equals("ChiTietPhieuXuatNhap", StringComparison.OrdinalIgnoreCase))
                 {
                     mergeKeyColumns.Add("MaPhieu");
@@ -265,7 +274,7 @@ namespace Data.API
                     mergeSql += $@"
                         WHEN NOT MATCHED BY TARGET THEN
                             INSERT ({columnsList}) VALUES ({sourceColumnsList})
-                        WHEN NOT MATCHED BY SOURCE AND Target.CITY_CODE = @cityCode AND Target.MADUAN = @maDuAn THEN
+                        WHEN NOT MATCHED BY SOURCE AND (NULLIF(@cityCode, '') IS NULL OR Target.CITY_CODE = @cityCode) AND Target.MADUAN = @maDuAn THEN
                             DELETE;";
 
                     using (SqlCommand cmd = new SqlCommand(mergeSql, conn, transaction))

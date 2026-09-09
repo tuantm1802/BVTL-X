@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Kỳ báo cáo</label>
-                    <select class="form-control form-control-sm" x-model="loaiKy" @@change="updateDateRange()">
+                    <select class="form-control form-control-sm" x-model="loaiKy" x-on:change="updateDateRange()">
                         <option value="Thang">Theo Tháng (26-25)</option>
                         <option value="Quy">Theo Quý</option>
                         <option value="6Thang">6 Tháng</option>
@@ -31,16 +31,25 @@
 
                 <div class="col-md-2 mb-2" x-show="loaiKy === 'Thang'">
                     <label class="font-weight-bold small">Tháng</label>
-                    <select class="form-control form-control-sm" x-model="thang" @@change="updateDateRange()">
-                        <template x-for="m in 12" :key="m">
-                            <option :value="m" x-text="'Tháng ' + m"></option>
-                        </template>
+                    <select class="form-control form-control-sm" x-model="thang" x-on:change="updateDateRange()">
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
                     </select>
                 </div>
 
                 <div class="col-md-2 mb-2" x-show="loaiKy === 'Quy'">
                     <label class="font-weight-bold small">Quý</label>
-                    <select class="form-control form-control-sm" x-model="quy" @@change="updateDateRange()">
+                    <select class="form-control form-control-sm" x-model="quy" x-on:change="updateDateRange()">
                         <option value="I">Quý I</option>
                         <option value="II">Quý II</option>
                         <option value="III">Quý III</option>
@@ -50,7 +59,7 @@
 
                 <div class="col-md-2 mb-2" x-show="loaiKy === '6Thang'">
                     <label class="font-weight-bold small">Kỳ 6 Tháng</label>
-                    <select class="form-control form-control-sm" x-model="ky6Thang" @@change="updateDateRange()">
+                    <select class="form-control form-control-sm" x-model="ky6Thang" x-on:change="updateDateRange()">
                         <option value="1">6 Tháng đầu năm</option>
                         <option value="2">6 Tháng cuối năm</option>
                     </select>
@@ -58,7 +67,7 @@
 
                 <div class="col-md-1 mb-2" x-show="loaiKy !== 'TuyChon'">
                     <label class="font-weight-bold small">Năm</label>
-                    <input type="number" class="form-control form-control-sm" x-model="nam" @@change="updateDateRange()" />
+                    <input type="number" class="form-control form-control-sm" x-model="nam" x-on:change="updateDateRange()" />
                 </div>
 
                 <div class="col-md-2 mb-2">
@@ -73,7 +82,7 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Tỉnh / Thành phố</label>
-                    <select class="form-control form-control-sm" x-model="selectedCity" @@change="onCityChange()">
+                    <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
                         <option value="">-- Toàn dự án --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
                             <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
@@ -92,10 +101,10 @@
                 </div>
 
                 <div class="col-md-3 mb-2 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm mr-2 shadow-sm" @@click="loadData()">
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm" x-on:click="loadData()">
                         <i class="fas fa-search fa-sm"></i> Tìm kiếm
                     </button>
-                    <button class="btn btn-success btn-sm shadow-sm" @@click="exportExcel()">
+                    <button class="btn btn-success btn-sm shadow-sm" x-on:click="exportExcel()">
                         <i class="fas fa-file-excel fa-sm"></i> Xuất Excel
                     </button>
                 </div>
@@ -131,12 +140,30 @@
                                 <td :class="item.IndentLevel === 1 ? 'pl-4 text-muted' : ''">
                                     <span x-text="item.ChiTieu"></span>
                                 </td>
-                                <td class="text-right font-weight-bold text-primary" x-text="formatNumber(item.Tong)"></td>
-                                <td class="text-right" x-text="formatNumber(item.PUD)"></td>
-                                <td class="text-right" x-text="formatNumber(item.PLHIV)"></td>
-                                <td class="text-right" x-text="formatNumber(item.TG)"></td>
-                                <td class="text-right" x-text="formatNumber(item.SW)"></td>
-                                <td class="text-right" x-text="formatNumber(item.MSM)"></td>
+                                <td class="text-right font-weight-bold text-primary" 
+                                    :style="item.Tong > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'Tong', 'Tổng')" 
+                                    x-text="formatNumber(item.Tong)"></td>
+                                <td class="text-right" 
+                                    :style="item.PUD > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'PUD', 'PUD')" 
+                                    x-text="formatNumber(item.PUD)"></td>
+                                <td class="text-right" 
+                                    :style="item.PLHIV > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'PLHIV', 'PLHIV')" 
+                                    x-text="formatNumber(item.PLHIV)"></td>
+                                <td class="text-right" 
+                                    :style="item.TG > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'TG', 'TG')" 
+                                    x-text="formatNumber(item.TG)"></td>
+                                <td class="text-right" 
+                                    :style="item.SW > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'SW', 'SW')" 
+                                    x-text="formatNumber(item.SW)"></td>
+                                <td class="text-right" 
+                                    :style="item.MSM > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                    x-on:click="openDrillDown(item, 'MSM', 'MSM')" 
+                                    x-text="formatNumber(item.MSM)"></td>
                             </tr>
                         </template>
                         <tr x-show="items.length === 0 && !isLoading">
@@ -156,10 +183,83 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Drill-down xem danh sách khách hàng -->
+    <div class="modal fade" id="modalDrillDown" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-gradient-primary text-white py-2">
+                    <h6 class="modal-title font-weight-bold" style="font-size: 15px;">
+                        <i class="fas fa-list-ul mr-2"></i><span x-text="drillModalTitle"></span>
+                    </h6>
+                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" x-on:click="closeDrillDown()" style="background:none; border:none; font-size:1.5rem; line-height:1; color:#fff; opacity:0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="w-50">
+                            <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh mã KH, tỉnh, nhóm, TCV..." x-model="drillSearchText" x-on:input="filterDrill()" />
+                        </div>
+                        <div>
+                            <span class="badge badge-success" x-text="'Tổng số: ' + filteredDrillItems.length + ' bản ghi'"></span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                        <table class="table table-bordered table-sm table-striped table-hover mb-0" style="font-size: 13px;">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th style="width: 40px;" class="text-center">#</th>
+                                    <th style="width: 120px;">Mã Khách hàng</th>
+                                    <th style="width: 70px;" class="text-center">Tỉnh</th>
+                                    <th style="width: 90px;" class="text-center">Nhóm</th>
+                                    <th style="width: 80px;" class="text-center">TCV</th>
+                                    <th style="width: 90px;" class="text-center">Quần thể</th>
+                                    <th style="width: 100px;" class="text-center">Ngày</th>
+                                    <th>Thông tin chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(d, idx) in filteredDrillItems" :key="idx">
+                                    <tr>
+                                        <td class="text-center text-muted" x-text="idx + 1"></td>
+                                        <td class="font-weight-bold text-primary" x-text="d.RECORD_ID"></td>
+                                        <td class="text-center" x-text="d.CITY_CODE"></td>
+                                        <td class="text-center" x-text="d.MA_NHOM"></td>
+                                        <td class="text-center" x-text="d.MA_TCV || '-'"></td>
+                                        <td class="text-center">
+                                            <span class="badge badge-info" x-text="d.DOI_TUONG_TEXT"></span>
+                                        </td>
+                                        <td class="text-center" x-text="d.NGAY_THUC_HIEN"></td>
+                                        <td x-text="d.CHI_TIET"></td>
+                                    </tr>
+                                </template>
+                                <tr x-show="filteredDrillItems.length === 0 && !isDrillLoading">
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        Không tìm thấy bản ghi nào phù hợp
+                                    </td>
+                                </tr>
+                                <tr x-show="isDrillLoading">
+                                    <td colspan="8" class="text-center py-4 text-primary">
+                                        <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                        Đang trích xuất danh sách khách hàng...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeDrillDown()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section scripts {
-    <script src="~/app/Controller/AlpineBaoCaoCD45Controller.js"></script>
+    <script src="~/app/Controller/AlpineBaoCaoCD45Controller.js?v=@DateTime.Now.Ticks"></script>
     <script>
         $(document).ready(function () {
             $('.datepicker').datepicker({

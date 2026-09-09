@@ -1,9 +1,9 @@
-﻿document.addEventListener('alpine:init', function () {
+document.addEventListener('alpine:init', function () {
     Alpine.data('alpineBaoCaoTCVCD45', function () {
         return {
             items: [],
             isLoading: false,
-            thang: new Date().getMonth() + 1,
+            thang: (new Date().getMonth() + 1).toString(),
             nam: new Date().getFullYear(),
             fromDate: '',
             toDate: '',
@@ -21,6 +21,9 @@
 
             init: function () {
                 var self = this;
+                var now = new Date();
+                self.thang = (now.getMonth() + 1).toString();
+                self.nam = now.getFullYear();
                 self.updateDateRange();
                 self.loadDanhMuc();
             },
