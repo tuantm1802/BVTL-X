@@ -24,3 +24,18 @@
 # Secret/Configuration files
 *connectionStrings.config
 *appSettings.config
+
+# Test build artifacts & test results
+/BVTL.Tests/bin
+/BVTL.Tests/obj
+TestResults/
+[Tt]est[Rr]esult*
+
+# Logs & AutoSync logs
+*.log
+/WebApp/Log/
+
+# User-specific files
+*.csproj.user
+*.user
+
