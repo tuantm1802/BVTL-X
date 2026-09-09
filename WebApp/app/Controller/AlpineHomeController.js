@@ -73,15 +73,17 @@
 
             selectCity: function (code, name) {
                 this.selectedTinh = code || '';
-                this.selectedTinhName = name || 'Toàn bộ Tỉnh/Thành';
                 this.selectedNhom = '';
                 this.selectedNhomName = 'Toàn bộ Nhóm';
 
                 if (this.selectedTinh) {
+                    var foundCity = this.ListCity.find(function (c) { return c.CityCode === code; });
+                    this.selectedTinhName = foundCity ? foundCity.CityName : (name || code);
                     this.ListNhom = this.ListNhomAll.filter(function (n) {
                         return !n.CityCode || n.CityCode === code;
                     });
                 } else {
+                    this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
                     this.ListNhom = this.ListNhomAll;
                 }
 
@@ -90,7 +92,12 @@
 
             selectNhom: function (code, name) {
                 this.selectedNhom = code || '';
-                this.selectedNhomName = name || 'Toàn bộ Nhóm';
+                if (!this.selectedNhom) {
+                    this.selectedNhomName = 'Toàn bộ Nhóm';
+                } else {
+                    var found = this.ListNhomAll.find(function (n) { return n.MaNhom === code; });
+                    this.selectedNhomName = found ? (found.TenNhom + ' (' + (found.CityCode || '') + ')') : (name || 'Toàn bộ Nhóm');
+                }
                 this.loadDashboardData();
             },
 

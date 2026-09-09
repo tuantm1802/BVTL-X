@@ -45,7 +45,13 @@ namespace WebApp.Controllers
             try
             {
                 var cities = _CityDA.GetAll().Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code)).Select(x => new { CityCode = x.Code, CityName = x.Name }).ToList();
-                var nhoms = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45").ToList();
+                var nhoms = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45")
+                    .Select(x => new {
+                        manhom_tbh = (x.manhom_tbh ?? "").Trim(),
+                        tennhom_tbh = (x.tennhom_tbh ?? "").Trim(),
+                        city_code = (x.city_code ?? "").Trim(),
+                        manhom_tbh_map = (x.manhom_tbh_map ?? "").Trim()
+                    }).ToList();
                 var tcvs = _BaoCaoCD45DA.GetListTCV(null, null);
                 return Json(new { Success = true, Cities = cities, Nhoms = nhoms, TCVs = tcvs });
             }
@@ -84,7 +90,7 @@ namespace WebApp.Controllers
             }
         }
 
-        [HttpPost]
+        [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
         public ActionResult ExportSingleExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom)
         {
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV);

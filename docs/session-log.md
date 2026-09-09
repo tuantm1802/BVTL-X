@@ -290,10 +290,16 @@ Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phi
      - Chuẩn hóa toàn bộ các tệp `Index.cshtml` và `AlpineHomeController.js` sang UTF-8 BOM.
   6. **Cập nhật Page Footer Bản quyền**:
      - Cập nhật `Views/Shared/_Layout.cshtml`: đổi `Copyright &copy; 2024 SCDI` thành `Copyright &copy; @DateTime.Now.Year SCDI`.
-  7. **Kiểm thử Tự động & Xác minh**:
-     - Thêm 2 Unit/Integration Tests trong `BVTL.Tests/DashboardCD45Tests.cs`.
+  7. **Khắc phục Lỗi Bộ lọc Nhóm Tiếp cận (CBO) Không Hiển thị Dữ liệu**:
+     - **Nguyên nhân**: Bảng `CD45_KH` lưu mã nhóm ngắn `MA_NHOM` (`tt`, `bm`, `alo`...) tương ứng với `manhom_tbh_map`, trong khi bảng quản trị `BVTL_NHOM_TBH` và dropdown trên giao diện gửi mã chuẩn `manhom_tbh` (`HN_TT`, `HP_BM`, `HC_ALO`...). Khi Stored Procedure `SP_CD45_Dashboard` so sánh trực tiếp `kh.MA_NHOM = @MaNhom` đã không khớp dẫn đến kết quả trả về 0 dòng.
+     - **Khắc phục**:
+       - Cập nhật `SP_CD45_Dashboard` tự động phân giải hai chiều giữa `manhom_tbh` và `manhom_tbh_map` qua bảng `BVTL_NHOM_TBH`, đồng thời khớp cả `kh.MA_NHOM` lẫn `kh.REDCAP_DAG`.
+       - Cập nhật `HomeController.cs` trả về danh sách nhóm sắp xếp theo tỉnh thành và tên nhóm.
+       - Tối ưu `AlpineHomeController.js` và `Index.cshtml` xử lý an toàn sự kiện chọn nhóm và tỉnh thành.
+  8. **Kiểm thử Tự động & Xác minh**:
+     - Bổ sung 2 Unit Tests chuyên biệt trong `BVTL.Tests/DashboardCD45Tests.cs` kiểm tra lọc theo nhóm (`HN_TT` - The Times: 385 KH) và kết hợp tỉnh/nhóm (`HPG` + `HP_HD` - Hải Đăng: 248 KH).
      - Toàn bộ Solution biên dịch thành công 0 errors với MSBuild VS 2022 Professional.
-     - Toàn bộ 21/21 Unit Tests đều Passed 100%.
+     - Toàn bộ 23/23 Unit Tests đều Passed 100%.
 
 ### Các tệp đã thay đổi/thêm mới:
 - `SQL_CD45_SP.sql` (Modified)
@@ -310,5 +316,48 @@ Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phi
 - `BVTL.Tests/DashboardCD45Tests.cs` (New)
 - `BVTL.Tests/BVTL.Tests.csproj` (Modified)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên làm việc 11 (10/09/2026): Tối ưu hóa & Sửa lỗi Báo cáo Tiếp cận viên (TCV) Dự án CD45
+
+### Mục tiêu:
+Khắc phục triệt để các lỗi phát sinh trong phân hệ Báo cáo Tiếp cận viên (`BaoCaoTCVCD45`), cải thiện trải nghiệm người dùng với Select2 tìm kiếm TCV, tối ưu hóa bộ lọc nhóm đa chiều và cơ chế xuất báo cáo Excel.
+
+### Các công việc đã hoàn thành:
+1. **Khắc phục Lỗi Bộ lọc và Ánh xạ TCV theo Tỉnh & Nhóm**:
+   - **Vấn đề**: Khi chọn Nhóm CBO, danh sách TCV không khớp do dữ liệu nhóm lưu mã chuẩn (`HN_TT`), mã ánh xạ (`tt`), hoặc có khoảng trắng thừa cuối chuỗi.
+   - **Giải pháp**:
+     - Cập nhật `BaoCaoCD45DA.cs`: Sử dụng `RTRIM(MA_NHOM)`, `RTRIM(CITY_CODE)`, `RTRIM(MA_TCV)` trong truy vấn SQL `GetListTCV`.
+     - Cập nhật `BaoCaoTCVCD45Controller.cs`: Chuẩn hóa `Trim()` các thuộc tính nhóm (`manhom_tbh`, `tennhom_tbh`, `city_code`, `manhom_tbh_map`).
+     - Cập nhật `AlpineBaoCaoTCVCD45Controller.js`: Lọc danh sách TCV theo cả `manhom_tbh` và `manhom_tbh_map` tương ứng.
+2. **Tích hợp Thư viện Select2 cho Dropdown Chọn TCV**:
+   - Cung cấp ô tìm kiếm nhanh TCV hỗ trợ gõ tiếng Việt có dấu và không dấu (`removeVietnameseTones`).
+   - Tự động đồng bộ giữa trạng thái Alpine.js và Select2 khi thay đổi Tỉnh thành hoặc Nhóm CBO.
+   - Cải tiến giao diện hiển thị thông tin TCV: `[Mã TCV] Tên TCV - Tên Nhóm (Tỉnh)`.
+3. **Cải tiến Cơ chế Xuất Báo cáo Excel Đơn lẻ (`ExportSingleExcel`)**:
+   - Chuyển phương thức từ gọi GET thông thường qua URL sang submit form POST động, tránh rủi ro vượt quá độ dài URL hoặc lỗi mã hóa ký tự tên TCV/Nhóm.
+   - Cập nhật controller `[AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]` để hỗ trợ linh hoạt cả hai phương thức.
+4. **Kiểm thử Tự động & Xác minh**:
+   - Biên dịch toàn bộ Solution `WebApp.sln` bằng MSBuild VS 2022 Professional ở chế độ Release: 0 lỗi.
+   - Chạy toàn bộ 23 Unit Tests qua `vstest.console.exe`: 23/23 tests Passed 100%.
+5. **Publish & Deploy**:
+   - Đóng gói Release qua `FolderProfile1.pubxml` vào `D:\Deploy\WebApp_Publish`.
+   - Deploy tự động lên máy chủ Host IIS (`103.77.167.206:8090`) bằng `deploy-ftp.ps1 -Mode Patch` trong 16.4 giây.
+   - Xác minh Healthcheck: phản hồi `HTTP 200 OK`.
+
+### Các tệp đã thay đổi:
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
+- `SQL_CD45_SP.sql` (Modified)
+- `WebApp/Controllers/HomeController.cs` (Modified)
+- `WebApp/Views/Home/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineHomeController.js` (Modified)
+- `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
+- `docs/session-log.md` (Modified)
+
+
 
 

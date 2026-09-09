@@ -53,7 +53,7 @@
             <div class="row align-items-end">
                 <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
                     <label class="small font-weight-bold text-dark mb-1"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Tỉnh / Thành phố:</label>
-                    <select class="form-control bg-light" x-model="selectedTinh" x-on:change="selectCity($event.target.value, $event.target.options[$event.target.selectedIndex].text)" style="border-radius: 8px;">
+                    <select class="form-control bg-light" x-model="selectedTinh" x-on:change="selectCity($event.target.value)" style="border-radius: 8px;">
                         <option value="">-- Toàn bộ Tỉnh / Thành --</option>
                         <template x-for="t in ListCity" :key="t.CityCode">
                             <option :value="t.CityCode" x-text="t.CityName"></option>
@@ -63,7 +63,7 @@
 
                 <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
                     <label class="small font-weight-bold text-dark mb-1"><i class="fas fa-users text-primary mr-1"></i> Nhóm Tiếp cận (CBO):</label>
-                    <select class="form-control bg-light" x-model="selectedNhom" x-on:change="selectNhom($event.target.value, $event.target.options[$event.target.selectedIndex].text)" style="border-radius: 8px;">
+                    <select class="form-control bg-light" x-model="selectedNhom" x-on:change="selectNhom($event.target.value)" style="border-radius: 8px;">
                         <option value="">-- Toàn bộ Nhóm CBO --</option>
                         <template x-for="n in ListNhom" :key="n.MaNhom">
                             <option :value="n.MaNhom" x-text="n.TenNhom + ' (' + (n.CityCode || '') + ')'"></option>

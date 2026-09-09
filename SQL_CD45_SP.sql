@@ -785,6 +785,19 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Resolve biến thể mã nhóm CBO (chuẩn hóa manhom_tbh và manhom_tbh_map)
+    DECLARE @Var_MaNhomStd VARCHAR(50) = @MaNhom;
+    DECLARE @Var_MaNhomMap VARCHAR(50) = @MaNhom;
+
+    IF @MaNhom IS NOT NULL AND @MaNhom <> ''
+    BEGIN
+        SELECT TOP 1 
+            @Var_MaNhomStd = ISNULL(manhom_tbh, @MaNhom), 
+            @Var_MaNhomMap = ISNULL(manhom_tbh_map, @MaNhom)
+        FROM BVTL_NHOM_TBH
+        WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom;
+    END
+
     -- Lọc danh sách KH cơ bản theo Tỉnh, Nhóm và Thời gian tham gia (nếu có)
     SELECT 
         kh.RECORD_ID,
@@ -800,7 +813,11 @@ BEGIN
     INTO #TmpKH
     FROM CD45_KH kh
     WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE = @CityCode)
-      AND (@MaNhom IS NULL OR @MaNhom = '' OR kh.MA_NHOM = @MaNhom OR kh.REDCAP_DAG = @MaNhom)
+      AND (
+          @MaNhom IS NULL OR @MaNhom = '' 
+          OR kh.MA_NHOM IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom)
+          OR kh.REDCAP_DAG IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom)
+      )
       AND (@FromDate IS NULL OR kh.NGAY_THAM_GIA >= @FromDate)
       AND (@ToDate IS NULL OR kh.NGAY_THAM_GIA <= @ToDate);
 

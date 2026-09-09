@@ -3,6 +3,47 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .select2-container--bootstrap4 .select2-selection--single,
+    .select2-container--default .select2-selection--single {
+        height: 31px !important;
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        border-radius: 0.2rem !important;
+        border: 1px solid #d1d3e2 !important;
+    }
+    .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered,
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 29px !important;
+        padding-left: 8px !important;
+        color: #495057 !important;
+    }
+    .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow,
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 29px !important;
+        right: 6px !important;
+    }
+    .select2-dropdown {
+        font-size: 0.875rem !important;
+        border-color: #d1d3e2 !important;
+        z-index: 9999 !important;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 120, 0.15) !important;
+    }
+    .select2-search--dropdown .select2-search__field {
+        padding: 5px 8px !important;
+        font-size: 0.875rem !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.2rem !important;
+    }
+    .select2-results__option {
+        padding: 6px 10px !important;
+    }
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #0d9488 !important;
+        color: white !important;
+    }
+</style>
+
 <div class="container-fluid" x-data="alpineBaoCaoTCVCD45">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-3">
@@ -84,12 +125,9 @@
             <div class="row pt-2 border-top">
                 <div class="col-md-6 mb-2">
                     <label class="font-weight-bold small text-primary">
-                        <i class="fas fa-eye mr-1"></i> Chọn TCV để xem trước báo cáo:
+                        <i class="fas fa-eye mr-1"></i> Chọn TCV để xem trước báo cáo: <span class="font-weight-normal text-muted font-italic">(Gõ để tìm theo tên, nhóm, mã...)</span>
                     </label>
-                    <select class="form-control form-control-sm" x-model="selectedTCV" @@change="onTCVSelectChange()">
-                        <template x-for="t in filteredTCVs" :key="t.ID">
-                            <option :value="t.MA_TCV" x-text="'[' + t.MA_TCV + '] ' + t.TEN_TCV + ' - ' + t.TEN_NHOM + ' (' + t.CITY_CODE + ')'"></option>
-                        </template>
+                    <select id="cboSelectedTCV" class="form-control form-control-sm select2" style="width: 100%;">
                     </select>
                 </div>
                 <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end">
@@ -230,11 +268,25 @@
             }).on('changeDate', function (e) {
                 var modelName = $(this).attr('x-model');
                 var val = $(this).val();
+                var comp = document.querySelector('[x-data=alpineBaoCaoTCVCD45]')._x_dataStack[0];
                 if (modelName === 'fromDate') {
-                    document.querySelector('[x-data=alpineBaoCaoTCVCD45]')._x_dataStack[0].fromDate = val;
+                    comp.fromDate = val;
                 } else if (modelName === 'toDate') {
-                    document.querySelector('[x-data=alpineBaoCaoTCVCD45]')._x_dataStack[0].toDate = val;
+                    comp.toDate = val;
                 }
+                if (comp && comp.selectedTCVObj) {
+                    comp.previewData();
+                }
+            });
+
+            // Tự động focus vào ô tìm kiếm khi mở Select2
+            $(document).on('select2:open', function () {
+                setTimeout(function () {
+                    var searchInput = document.querySelector('.select2-container--open .select2-search__field');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }, 50);
             });
         });
     </script>

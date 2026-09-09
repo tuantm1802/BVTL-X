@@ -42,5 +42,33 @@ namespace BVTL.Tests
             Assert.IsNotNull(hno, "Should have HNO province record");
             Assert.AreEqual(result.Overview.TongKhachHang, hno.TongKH, "Total KH should match Hanoi KH");
         }
+
+        [TestMethod]
+        public void GetDashboardData_WithNhomFilter_ShouldFilterProperly()
+        {
+            var da = new DashboardCD45DA();
+            // Test with group standard code "HN_TT" (The Times)
+            var result = da.GetDashboardData(null, "HN_TT", null, null);
+
+            Assert.IsNotNull(result, "Result must not be null");
+            Assert.AreEqual(385, result.Overview.TongKhachHang, "The Times group must have 385 customers");
+            Assert.AreEqual(385, result.Overview.TongSangLocQST, "The Times group must have 385 QST screenings");
+            Assert.AreEqual(192, result.Overview.QSTNguyCoCao, "The Times group must have 192 high risk QST");
+            Assert.IsTrue(result.ByTargetGroup.Count > 0, "ByTargetGroup should have rows");
+            Assert.AreEqual(373, result.CascadeFunnel.Step1_TiepCanTruyenThong, "Step1 should match");
+        }
+
+        [TestMethod]
+        public void GetDashboardData_WithCityAndNhomFilter_ShouldFilterProperly()
+        {
+            var da = new DashboardCD45DA();
+            // Test with City HPG and group standard code "HP_HD" (Hải Đăng - Hải Phòng)
+            var result = da.GetDashboardData("HPG", "HP_HD", null, null);
+
+            Assert.IsNotNull(result, "Result must not be null");
+            Assert.AreEqual(248, result.Overview.TongKhachHang, "Hải Đăng must have 248 customers");
+            Assert.AreEqual(155, result.Overview.TongSangLocQST, "Hải Đăng must have 155 QST screenings");
+            Assert.AreEqual(65, result.Overview.QSTNguyCoCao, "Hải Đăng must have 65 high risk QST");
+        }
     }
 }

@@ -1,3 +1,18 @@
+function removeVietnameseTones(str) {
+    if (!str) return '';
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "");
+    str = str.replace(/\u02C6|\u0306|\u031B/g, "");
+    return str.trim();
+}
+
 document.addEventListener('alpine:init', function () {
     Alpine.data('alpineBaoCaoTCVCD45', function () {
         return {
@@ -46,6 +61,10 @@ document.addEventListener('alpine:init', function () {
 
                 self.fromDate = '26/' + strPrevMonth + '/' + prevYear;
                 self.toDate = '25/' + strM + '/' + y;
+
+                if (self.selectedTCVObj) {
+                    self.previewData();
+                }
             },
 
             loadDanhMuc: function () {
@@ -62,11 +81,14 @@ document.addEventListener('alpine:init', function () {
                             self.filteredTCVs = self.listTCVs;
 
                             if (self.filteredTCVs.length > 0) {
-                                self.selectedTCV = self.filteredTCVs[0].MA_TCV;
+                                self.selectedTCV = self.filteredTCVs[0].ID;
                                 self.selectedTCVObj = self.filteredTCVs[0];
                                 self.checkedTCVs = self.filteredTCVs.map(function (x) { return x.ID; });
                                 self.isSelectAll = true;
+                                self.syncSelect2();
                                 self.previewData();
+                            } else {
+                                self.syncSelect2();
                             }
                         }
                     }
@@ -75,11 +97,12 @@ document.addEventListener('alpine:init', function () {
 
             onCityChange: function () {
                 var self = this;
-                if (!self.selectedCity) {
+                var selCity = (self.selectedCity || '').trim().toUpperCase();
+                if (!selCity) {
                     self.filteredNhoms = self.listNhoms;
                 } else {
                     self.filteredNhoms = self.listNhoms.filter(function (x) {
-                        return x.city_code === self.selectedCity;
+                        return (x.city_code || '').trim().toUpperCase() === selCity;
                     });
                 }
                 self.selectedNhom = '';
@@ -92,21 +115,107 @@ document.addEventListener('alpine:init', function () {
 
             filterTCVs: function () {
                 var self = this;
+                var selCity = (self.selectedCity || '').trim().toUpperCase();
+                var selNhom = (self.selectedNhom || '').trim().toLowerCase();
+
+                var selectedNhomObj = null;
+                if (selNhom) {
+                    selectedNhomObj = self.listNhoms.find(function (n) {
+                        var std = (n.manhom_tbh || '').trim().toLowerCase();
+                        var map = (n.manhom_tbh_map || '').trim().toLowerCase();
+                        return std === selNhom || map === selNhom;
+                    });
+                }
+
                 self.filteredTCVs = self.listTCVs.filter(function (x) {
-                    var matchCity = !self.selectedCity || x.CITY_CODE === self.selectedCity;
-                    var matchNhom = !self.selectedNhom || x.MA_NHOM === self.selectedNhom;
+                    var tcvCity = (x.CITY_CODE || '').trim().toUpperCase();
+                    var matchCity = !selCity || tcvCity === selCity;
+
+                    var matchNhom = true;
+                    if (selNhom) {
+                        var tcvNhom = (x.MA_NHOM || '').trim().toLowerCase();
+                        if (selectedNhomObj) {
+                            var codeStd = (selectedNhomObj.manhom_tbh || '').trim().toLowerCase();
+                            var codeMap = (selectedNhomObj.manhom_tbh_map || '').trim().toLowerCase();
+                            matchNhom = (tcvNhom === codeStd || tcvNhom === codeMap || tcvNhom === selNhom);
+                        } else {
+                            matchNhom = (tcvNhom === selNhom);
+                        }
+                    }
                     return matchCity && matchNhom;
                 });
 
-                if (self.filteredTCVs.length > 0) {
-                    self.selectedTCV = self.filteredTCVs[0].MA_TCV;
-                    self.selectedTCVObj = self.filteredTCVs[0];
-                } else {
-                    self.selectedTCV = '';
-                    self.selectedTCVObj = null;
+                var stillExists = self.selectedTCVObj && self.filteredTCVs.some(function (x) {
+                    return String(x.ID) === String(self.selectedTCVObj.ID);
+                });
+
+                if (!stillExists) {
+                    if (self.filteredTCVs.length > 0) {
+                        self.selectedTCV = self.filteredTCVs[0].ID;
+                        self.selectedTCVObj = self.filteredTCVs[0];
+                        self.previewData();
+                    } else {
+                        self.selectedTCV = '';
+                        self.selectedTCVObj = null;
+                        self.items = [];
+                    }
+                } else if (self.selectedTCVObj) {
+                    self.previewData();
                 }
+
                 self.checkedTCVs = self.filteredTCVs.map(function (x) { return x.ID; });
                 self.isSelectAll = true;
+                self.syncSelect2();
+            },
+
+            syncSelect2: function () {
+                var self = this;
+                setTimeout(function () {
+                    var $select = $('#cboSelectedTCV');
+                    if (!$select.length) return;
+
+                    if ($select.hasClass('select2-hidden-accessible')) {
+                        $select.select2('destroy');
+                    }
+
+                    $select.empty();
+                    if (self.filteredTCVs.length === 0) {
+                        $select.append(new Option('-- Không có TCV nào --', '', true, true));
+                    } else {
+                        self.filteredTCVs.forEach(function (t) {
+                            var text = '[' + t.MA_TCV + '] ' + t.TEN_TCV + ' - ' + t.TEN_NHOM + ' (' + t.CITY_CODE + ')';
+                            var isSelected = String(t.ID) === String(self.selectedTCV);
+                            var opt = new Option(text, t.ID, isSelected, isSelected);
+                            $select.append(opt);
+                        });
+                    }
+
+                    $select.select2({
+                        theme: 'bootstrap4',
+                        width: '100%',
+                        placeholder: '-- Gõ họ tên TCV để tìm kiếm --',
+                        allowClear: false,
+                        matcher: function (params, data) {
+                            if ($.trim(params.term) === '') return data;
+                            if (typeof data.text === 'undefined') return null;
+                            var term = removeVietnameseTones(params.term);
+                            var text = removeVietnameseTones(data.text);
+                            if (text.indexOf(term) > -1) return data;
+                            return null;
+                        }
+                    });
+
+                    if (self.selectedTCV) {
+                        $select.val(self.selectedTCV).trigger('change.select2');
+                    }
+
+                    $select.off('change').on('change', function () {
+                        var val = $(this).val();
+                        if (val && String(val) !== String(self.selectedTCV)) {
+                            self.onTCVSelectChange(val);
+                        }
+                    });
+                }, 20);
             },
 
             toggleSelectAll: function () {
@@ -118,11 +227,20 @@ document.addEventListener('alpine:init', function () {
                 }
             },
 
-            onTCVSelectChange: function () {
+            onTCVSelectChange: function (newVal) {
                 var self = this;
-                var found = self.filteredTCVs.find(function (x) { return x.MA_TCV === self.selectedTCV; });
+                if (newVal !== undefined && newVal !== null && newVal !== '') {
+                    self.selectedTCV = newVal;
+                }
+                var found = self.filteredTCVs.find(function (x) {
+                    return String(x.ID) === String(self.selectedTCV);
+                });
                 self.selectedTCVObj = found || null;
-                self.previewData();
+                if (self.selectedTCVObj) {
+                    self.previewData();
+                } else {
+                    self.items = [];
+                }
             },
 
             previewData: function () {
@@ -163,13 +281,31 @@ document.addEventListener('alpine:init', function () {
                     if (window.toastr) toastr.warning("Vui lòng chọn 1 Tiếp cận viên.");
                     return;
                 }
-                var url = '/BaoCaoTCVCD45/ExportSingleExcel?FromDate=' + encodeURIComponent(self.fromDate) +
-                    '&ToDate=' + encodeURIComponent(self.toDate) +
-                    '&MaNhom=' + encodeURIComponent(self.selectedTCVObj.MA_NHOM) +
-                    '&MaTCV=' + encodeURIComponent(self.selectedTCVObj.MA_TCV) +
-                    '&TenTCV=' + encodeURIComponent(self.selectedTCVObj.TEN_TCV) +
-                    '&TenNhom=' + encodeURIComponent(self.selectedTCVObj.TEN_NHOM);
-                window.location.href = url;
+
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "/BaoCaoTCVCD45/ExportSingleExcel";
+
+                var fields = {
+                    FromDate: self.fromDate,
+                    ToDate: self.toDate,
+                    MaNhom: self.selectedTCVObj.MA_NHOM,
+                    MaTCV: self.selectedTCVObj.MA_TCV,
+                    TenTCV: self.selectedTCVObj.TEN_TCV,
+                    TenNhom: self.selectedTCVObj.TEN_NHOM
+                };
+
+                for (var key in fields) {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = key;
+                    input.value = fields[key] || "";
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
             },
 
             exportBatchZip: function () {
