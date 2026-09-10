@@ -59,7 +59,7 @@ namespace Data.Admin
             return nt;
         }
 
-        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate)
+        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null)
         {
             var model = new DashboardCD45FullDataModel
             {
@@ -121,6 +121,8 @@ namespace Data.Admin
                     {
                         cmd.Parameters.Add(new SqlParameter("@ToDate", DBNull.Value));
                     }
+
+                    cmd.Parameters.Add(new SqlParameter("@NhomTuoiTable1", string.IsNullOrEmpty(nhomTuoiTable1) ? (object)DBNull.Value : nhomTuoiTable1));
 
                     using (var adapter = new SqlDataAdapter(cmd))
                     {

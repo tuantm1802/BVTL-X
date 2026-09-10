@@ -3,6 +3,7 @@ using Autofac.Integration.Mvc;
 using System.Reflection;
 using System.Web.Mvc;
 using WebApp.Service;
+using WebApp.Services;
 
 namespace WebApp.App_Start
 {
@@ -12,14 +13,16 @@ namespace WebApp.App_Start
         {
             var builder = new ContainerBuilder();
 
-            // ÄÄƒng kĂ½ táº¥t cáº£ cĂ¡c Controllers
+            // Ä Äƒng kĂ½ táº¥t cáº£ cĂ¡c Controllers
             // Ä Äƒng kĂ½ táº¥t cáº£ cĂ¡c Controllers
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
             // Ä Äƒng kĂ½ Services
             builder.RegisterType<ExcelReportService>().As<IExcelReportService>().InstancePerRequest();
+            builder.RegisterType<ReportExportService>().As<IReportExportService>().InstancePerRequest();
 
             // Ä Äƒng kĂ½ thá»§ cĂ´ng toĂ n bá»™ Data Access (DA) Ä‘á»ƒ trĂ¡nh lá»—i Assembly Load Context
+            builder.RegisterType<Data.Admin.ScheduledReportDA>().As<Data.InterfaceDA.Admin.IScheduledReportDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.ApiDA>().As<Data.InterfaceDA.Admin.IApiDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.DashboardCD45DA>().As<Data.InterfaceDA.Admin.IDashboardCD45DA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoCD45DA>().As<Data.InterfaceDA.IBaoCaoCD45DA>().InstancePerRequest();

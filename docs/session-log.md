@@ -358,6 +358,32 @@ Khắc phục triệt để các lỗi phát sinh trong phân hệ Báo cáo Ti�
 - `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
 - `docs/session-log.md` (Modified)
 
+---
+
+## Phiên làm việc 12 (11/09/2026): Tích hợp DrillDown Chi tiết Khách hàng, Hoàn thiện Quản lý CD45 & Hệ thống Xuất Báo cáo Tự động Định kỳ
+
+### Mục tiêu:
+Khắc phục các vấn đề phát sinh sau đợt kiểm thử thực tế từ file chẩn đoán lỗi (`List_Bugs.xlsx`): tối ưu xem chi tiết thông tin lâm sàng/xã hội của Khách hàng CD45, kích hoạt tính năng DrillDown từ Dashboard sang danh sách khách hàng chi tiết, và phát triển hệ thống tự động xuất/lưu trữ báo cáo định kỳ (`ScheduledReport`).
+
+### Các công việc đã hoàn thành:
+1. **Phát triển & Tích hợp Stored Procedure DrillDown (`SP_CD45_DrillDown`)**:
+   - Viết tệp `SQL_CD45_SP_DrillDown.sql` hỗ trợ truy vấn lọc đa chiều danh sách khách hàng từ các thẻ KPI và biểu đồ trên Dashboard (theo tình trạng HIV, mức nguy cơ QST, chuyển gửi điều trị, tiếp cận truyền thông...).
+   - Bổ sung phương thức `GetDrillDownData` trong `DashboardCD45DA` và API trong `HomeController.cs`.
+   - Kết nối tương tác trực tiếp trên giao diện Dashboard (`Views/Home/Index.cshtml`, `AlpineHomeController.js`) cho phép người dùng click vào các chỉ số để mở ngay danh sách khách hàng tương ứng.
+2. **Nâng cấp Modal Xem Chi tiết Khách hàng CD45 (`KhachHangCD45`)**:
+   - Cải tiến `AlpineKhachHangCD45Controller.js` và `Views/KhachHangCD45/Index.cshtml`: Bổ sung modal chi tiết đầy đủ thông tin hành chính, kết quả sàng lọc QST/HIV, dữ liệu Chẩn đoán F6 và Hỗ trợ xã hội F4 lấy từ cấu trúc REDCap.
+   - Xử lý chuẩn hóa ánh xạ mã nhóm (`MA_NHOM`), mã TCV (`MA_TCV`), và chuẩn hóa dữ liệu ngày tham gia.
+3. **Phát triển Hệ thống Tự động Xuất Báo cáo Định kỳ (`ScheduledReport`)**:
+   - Xây dựng tầng Data Access: `IScheduledReportDA` và `ScheduledReportDA` quản lý cấu hình và lịch sử xuất file.
+   - Triển khai dịch vụ background `ReportExportService` và job Quartz `PeriodicReportExportJob` trong `JobScheduler.cs`.
+   - Thiết kế giao diện quản lý cấu hình tự động xuất báo cáo tại `Views/ScheduledReport/Index.cshtml` và `AlpineScheduledReportController.js`.
+   - Bổ sung trọn bộ Unit Tests `ScheduledReportTests.cs` kiểm tra đọc cấu hình, kiểm tra tính sẵn sàng của dữ liệu và xuất file ZIP (28/28 tests passed).
+4. **Biên dịch, Đóng gói & Triển khai**:
+   - MSBuild Release toàn bộ Solution `WebApp.sln` đạt 0 errors.
+   - Đóng gói Publish vào `D:\Deploy\WebApp_Publish` và Deploy Patch qua `deploy-ftp.ps1` (26 files trong 16.3s).
+   - Xác minh Host `103.77.167.206:8090/Login/Index` phản hồi `HTTP 200 OK`.
+
+
 
 
 

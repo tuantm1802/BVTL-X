@@ -73,11 +73,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate)
+        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null)
         {
             try
             {
-                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate);
+                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate, nhomTuoiTable1);
                 var jsonResult = Json(new { Success = true, Data = data, Error = false, Title = "Lấy dữ liệu thành công." });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;

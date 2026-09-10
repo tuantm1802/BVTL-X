@@ -37,8 +37,13 @@ namespace Data.Admin
             }
             if (!string.IsNullOrEmpty(maNhom))
             {
-                sql += " AND tcv.MA_NHOM = @MaNhom";
+                var nhom = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom || x.manhom_tbh_map == maNhom);
+                string map = nhom != null && !string.IsNullOrEmpty(nhom.manhom_tbh_map) ? nhom.manhom_tbh_map : maNhom;
+                string std = nhom != null && !string.IsNullOrEmpty(nhom.manhom_tbh) ? nhom.manhom_tbh : maNhom;
+                sql += " AND tcv.MA_NHOM IN (@MaNhom, @MaNhomMap, @MaNhomStd)";
                 pList.Add(new SqlParameter("@MaNhom", maNhom));
+                pList.Add(new SqlParameter("@MaNhomMap", map));
+                pList.Add(new SqlParameter("@MaNhomStd", std));
             }
             if (!string.IsNullOrEmpty(keyword))
             {

@@ -205,8 +205,12 @@
     <Compile Include="Services\ProcessService.cs" />
     <Compile Include="Services\TelegramNotifier.cs" />
     <Compile Include="Services\Jobs\GetDataAPIJob.cs" />
+    <Compile Include="Services\Jobs\PeriodicReportExportJob.cs" />
     <Compile Include="Services\ScheduleTasks\JobScheduler.cs" />
     <Compile Include="Services\ScheduleTasks\JobScheduleChangeTimeloop.cs" />
+    <Compile Include="Services\IReportExportService.cs" />
+    <Compile Include="Services\ReportExportService.cs" />
+    <Compile Include="Controllers\ScheduledReportController.cs" />
     <Compile Include="Controllers\SystemMonitorController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\Api\ApiKhachHangController.cs" />
@@ -4751,8 +4755,10 @@
     <Content Include="Views\BaoCaoCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoTCVCD45\Index.cshtml" />
     <Content Include="Views\DataQuality\Index.cshtml" />
+    <Content Include="Views\ScheduledReport\Index.cshtml" />
     <Content Include="app\Controller\AlpineKhachHangCD45Controller.js" />
     <Content Include="app\Controller\AlpineNhomTCVCD45Controller.js" />
+    <Content Include="app\Controller\AlpineScheduledReportController.js" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

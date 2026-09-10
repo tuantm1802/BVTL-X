@@ -44,8 +44,13 @@ namespace Data.Admin
 
             if (!string.IsNullOrEmpty(filter.MaNhom))
             {
-                baseWhere += " AND (kh.MA_NHOM = @MaNhom OR kh.REDCAP_DAG = @MaNhom) ";
+                var nhom = db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == filter.MaNhom || x.manhom_tbh_map == filter.MaNhom);
+                string map = nhom != null && !string.IsNullOrEmpty(nhom.manhom_tbh_map) ? nhom.manhom_tbh_map : filter.MaNhom;
+                string std = nhom != null && !string.IsNullOrEmpty(nhom.manhom_tbh) ? nhom.manhom_tbh : filter.MaNhom;
+                baseWhere += " AND (kh.MA_NHOM IN (@MaNhom, @MaNhomMap, @MaNhomStd) OR kh.REDCAP_DAG = @MaNhom) ";
                 pList.Add(new SqlParameter("@MaNhom", filter.MaNhom));
+                pList.Add(new SqlParameter("@MaNhomMap", map));
+                pList.Add(new SqlParameter("@MaNhomStd", std));
             }
 
             if (filter.DoiTuong.HasValue)
@@ -148,11 +153,11 @@ namespace Data.Admin
                 FROM CD45_KH kh
                 LEFT JOIN BVTL_CITES c ON kh.CITY_CODE = c.Code
                 LEFT JOIN (
-                    SELECT manhom_tbh, MAX(tennhom_tbh) AS tennhom_tbh
+                    SELECT ISNULL(manhom_tbh_map, manhom_tbh) AS manhom_key, MAX(tennhom_tbh) AS tennhom_tbh
                     FROM BVTL_NHOM_TBH
                     WHERE maduan = 'CD45'
-                    GROUP BY manhom_tbh
-                ) n ON kh.MA_NHOM = n.manhom_tbh
+                    GROUP BY ISNULL(manhom_tbh_map, manhom_tbh)
+                ) n ON kh.MA_NHOM = n.manhom_key
                 " + baseWhere + @"
                 ORDER BY kh.NGAY_THAM_GIA DESC, kh.RECORD_ID
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
@@ -210,11 +215,11 @@ namespace Data.Admin
                 FROM CD45_KH kh
                 LEFT JOIN BVTL_CITES c ON kh.CITY_CODE = c.Code
                 LEFT JOIN (
-                    SELECT manhom_tbh, MAX(tennhom_tbh) AS tennhom_tbh
+                    SELECT ISNULL(manhom_tbh_map, manhom_tbh) AS manhom_key, MAX(tennhom_tbh) AS tennhom_tbh
                     FROM BVTL_NHOM_TBH
                     WHERE maduan = 'CD45'
-                    GROUP BY manhom_tbh
-                ) n ON kh.MA_NHOM = n.manhom_tbh
+                    GROUP BY ISNULL(manhom_tbh_map, manhom_tbh)
+                ) n ON kh.MA_NHOM = n.manhom_key
                 WHERE kh.RECORD_ID = @RecordId";
 
             var vm = db.Database.SqlQuery<CD45KhachHangViewModel>(sqlInfo, new SqlParameter("@RecordId", recordId)).FirstOrDefault();
@@ -443,11 +448,11 @@ namespace Data.Admin
                 FROM CD45_KH kh
                 LEFT JOIN BVTL_CITES c ON kh.CITY_CODE = c.Code
                 LEFT JOIN (
-                    SELECT manhom_tbh, MAX(tennhom_tbh) AS tennhom_tbh
+                    SELECT ISNULL(manhom_tbh_map, manhom_tbh) AS manhom_key, MAX(tennhom_tbh) AS tennhom_tbh
                     FROM BVTL_NHOM_TBH
                     WHERE maduan = 'CD45'
-                    GROUP BY manhom_tbh
-                ) n ON kh.MA_NHOM = n.manhom_tbh
+                    GROUP BY ISNULL(manhom_tbh_map, manhom_tbh)
+                ) n ON kh.MA_NHOM = n.manhom_key
                 " + baseWhere + @"
                 ORDER BY kh.NGAY_THAM_GIA DESC, kh.RECORD_ID";
 

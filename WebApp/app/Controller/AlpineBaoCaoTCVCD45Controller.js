@@ -95,8 +95,9 @@ document.addEventListener('alpine:init', function () {
                 });
             },
 
-            onCityChange: function () {
+            onCityChange: function (city) {
                 var self = this;
+                if (city !== undefined) self.selectedCity = city;
                 var selCity = (self.selectedCity || '').trim().toUpperCase();
                 if (!selCity) {
                     self.filteredNhoms = self.listNhoms;
@@ -109,8 +110,10 @@ document.addEventListener('alpine:init', function () {
                 self.filterTCVs();
             },
 
-            onNhomChange: function () {
-                this.filterTCVs();
+            onNhomChange: function (nhom) {
+                var self = this;
+                if (nhom !== undefined) self.selectedNhom = nhom;
+                self.filterTCVs();
             },
 
             filterTCVs: function () {
@@ -209,7 +212,15 @@ document.addEventListener('alpine:init', function () {
                         $select.val(self.selectedTCV).trigger('change.select2');
                     }
 
-                    $select.off('change').on('change', function () {
+                    // Dùng namespaced events để tránh hủy mất internal listeners của Select2
+                    $select.off('.tcvSync');
+                    $select.on('select2:select.tcvSync', function (e) {
+                        var val = e.params && e.params.data ? e.params.data.id : $(this).val();
+                        if (val && String(val) !== String(self.selectedTCV)) {
+                            self.onTCVSelectChange(val);
+                        }
+                    });
+                    $select.on('change.tcvSync', function () {
                         var val = $(this).val();
                         if (val && String(val) !== String(self.selectedTCV)) {
                             self.onTCVSelectChange(val);
@@ -224,6 +235,25 @@ document.addEventListener('alpine:init', function () {
                     self.checkedTCVs = self.filteredTCVs.map(function (x) { return x.ID; });
                 } else {
                     self.checkedTCVs = [];
+                }
+            },
+
+            selectTCVForPreview: function (id) {
+                var self = this;
+                if (!id) return;
+                self.selectedTCV = id;
+                var found = self.filteredTCVs.find(function (x) {
+                    return String(x.ID) === String(id);
+                });
+                self.selectedTCVObj = found || null;
+                var $select = $('#cboSelectedTCV');
+                if ($select.length) {
+                    $select.val(id).trigger('change.select2');
+                }
+                if (self.selectedTCVObj) {
+                    self.previewData();
+                } else {
+                    self.items = [];
                 }
             },
 

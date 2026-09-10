@@ -39,3 +39,5 @@ TestResults/
 *.csproj.user
 *.user
 
+# Local diagnostic / test datasets
+/TESTING/

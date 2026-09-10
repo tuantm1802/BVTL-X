@@ -107,6 +107,8 @@
     <Compile Include="API\InsertDataDA.cs" />
     <Compile Include="API\SyncDataFromApi_SaveToDB.cs" />
     <Compile Include="InterfaceDA\Admin\IApiDA.cs" />
+    <Compile Include="Admin\ScheduledReportDA.cs" />
+    <Compile Include="InterfaceDA\Admin\IScheduledReportDA.cs" />
     <Compile Include="InterfaceDA\Admin\ISystemMonitorDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBaoCaoTongHopDA.cs" />
     <Compile Include="InterfaceDA\IBaoCaoCD45DA.cs" />

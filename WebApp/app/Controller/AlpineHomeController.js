@@ -1,4 +1,4 @@
-﻿document.addEventListener('alpine:init', function () {
+document.addEventListener('alpine:init', function () {
     Alpine.data('alpineHome', function () {
         return {
             activeTab: 'visual', // 'visual' | 'tables'
@@ -6,6 +6,7 @@
             selectedTinhName: 'Toàn bộ Tỉnh/Thành',
             selectedNhom: '',
             selectedNhomName: 'Toàn bộ Nhóm',
+            selectedAgeTable1: '',
             fromDate: '',
             toDate: '',
             ListCity: [],
@@ -106,6 +107,7 @@
                 this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
                 this.selectedNhom = '';
                 this.selectedNhomName = 'Toàn bộ Nhóm';
+                this.selectedAgeTable1 = '';
                 this.fromDate = '';
                 this.toDate = '';
                 this.ListNhom = this.ListNhomAll;
@@ -121,7 +123,8 @@
                     cityCode: self.selectedTinh || null,
                     maNhom: self.selectedNhom || null,
                     fromDate: self.fromDate || null,
-                    toDate: self.toDate || null
+                    toDate: self.toDate || null,
+                    nhomTuoiTable1: self.selectedAgeTable1 || null
                 };
 
                 $.ajax({
@@ -356,11 +359,61 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    footer: function (tooltipItems) {
+                                        var sum = 0;
+                                        tooltipItems.forEach(function (ti) {
+                                            sum += ti.parsed.y;
+                                        });
+                                        return 'Tổng cộng: ' + sum.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
                         scales: {
                             x: { stacked: true, grid: { display: false } },
-                            y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' } }
+                            y: { 
+                                stacked: true, 
+                                beginAtZero: true, 
+                                grid: { color: '#f1f5f9' },
+                                grace: '8%'
+                            }
                         }
-                    }
+                    },
+                    plugins: [{
+                        id: 'stackedBarTotals',
+                        afterDatasetsDraw: function (chart) {
+                            var ctx = chart.ctx;
+                            chart.data.labels.forEach(function (label, index) {
+                                var total = 0;
+                                var barX = null;
+                                var minY = null;
+                                chart.data.datasets.forEach(function (dataset, dIdx) {
+                                    var val = dataset.data[index] || 0;
+                                    total += val;
+                                    var meta = chart.getDatasetMeta(dIdx);
+                                    if (meta && meta.data[index] && !meta.hidden && val > 0) {
+                                        var el = meta.data[index];
+                                        barX = el.x;
+                                        if (minY === null || el.y < minY) {
+                                            minY = el.y;
+                                        }
+                                    }
+                                });
+                                if (total > 0 && barX !== null && minY !== null) {
+                                    ctx.save();
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'bottom';
+                                    ctx.font = 'bold 11px "Segoe UI", sans-serif';
+                                    ctx.fillStyle = '#1e293b';
+                                    ctx.fillText(total.toLocaleString(), barX, minY - 3);
+                                    ctx.restore();
+                                }
+                            });
+                        }
+                    }]
                 });
             },
 
@@ -450,6 +503,21 @@
                         }
                     }
                 });
+            },
+
+            // Helper tính tổng Bảng 1
+            getTotalTable1: function (key) {
+                if (!this.byTargetGroup || this.byTargetGroup.length === 0) return 0;
+                return this.byTargetGroup.reduce(function (sum, item) {
+                    return sum + (item[key] || 0);
+                }, 0);
+            },
+
+            getTotalTable1NguyCoCaoPct: function () {
+                var screened = this.getTotalTable1('SoKHSangLoc');
+                if (!screened) return '0%';
+                var risk = this.getTotalTable1('Muc1_RatCao') + this.getTotalTable1('Muc2_Cao');
+                return (risk / screened * 100).toFixed(1) + '%';
             }
         };
     });

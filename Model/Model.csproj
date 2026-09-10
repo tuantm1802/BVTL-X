@@ -58,6 +58,7 @@
     <Compile Include="ModelExtend\API\CD45\DreamhBaseApiModel.cs" />
     <Compile Include="ModelExtend\API\CD45\DreamhDbEntities.cs" />
     <Compile Include="ModelExtend\API\CD45\CD45Helper.cs" />
+    <Compile Include="ModelExtend\Report\ExportedReportLogModel.cs" />
     <Compile Include="ModelExtend\SystemMonitor\SystemMonitorModels.cs" />
     <Compile Include="ModelExtend\ApiPageModel.cs" />
     <Compile Include="ModelExtend\API\ApiResult.cs" />

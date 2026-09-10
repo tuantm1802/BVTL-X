@@ -100,12 +100,40 @@ namespace WebApp.Services.ScheduleTasks
                     }
                 }
 
+                // Đăng ký Job tự động xuất báo cáo định kỳ (mùng 5 hàng tháng)
+                try
+                {
+                    var scheduledReportDA = new ScheduledReportDA();
+                    var settings = scheduledReportDA.GetSettings();
+
+                    IJobDetail job_ExportReport = JobBuilder.Create<PeriodicReportExportJob>()
+                        .WithIdentity("Job_PeriodicReportExport", "ReportingGroup")
+                        .Build();
+
+                    int day = settings.RunDay > 0 && settings.RunDay <= 28 ? settings.RunDay : 5;
+                    int hour = settings.RunHour >= 0 && settings.RunHour <= 23 ? settings.RunHour : 8;
+                    string cronExpr = $"0 0 {hour} {day} * ?";
+
+                    ITrigger trigger_ExportReport = TriggerBuilder.Create()
+                        .WithIdentity("Trigger_PeriodicReportExport", "ReportingGroup")
+                        .WithCronSchedule(cronExpr)
+                        .Build();
+
+                    await Scheduler.ScheduleJob(job_ExportReport, trigger_ExportReport);
+                    scheduledCount++;
+                    log.Info($"Đăng ký PeriodicReportExportJob thành công với Cron: {cronExpr}");
+                }
+                catch (Exception exReport)
+                {
+                    log.Error("Lỗi đăng ký PeriodicReportExportJob: " + exReport.Message, exReport);
+                }
+
                 var sysLog = new BVTL_QT_LOG
                 {
                     ControllerName = "JobScheduler",
                     UserName = "SYSTEM",
                     DateLog = DateTime.Now,
-                    Content = $"Khởi động Quartz.NET Scheduler thành công với {scheduledCount} tiến trình tự động."
+                    Content = $"Khởi động Quartz.NET Scheduler thành công với {scheduledCount} tiến trình tự động (bao gồm xuất báo cáo định kỳ)."
                 };
                 _sysLogDA.Add(sysLog);
                 log.Info($"Quartz Scheduler started with {scheduledCount} jobs.");
@@ -184,6 +212,63 @@ namespace WebApp.Services.ScheduleTasks
 
                         await Scheduler.ScheduleJob(job, trigger);
                     }
+                }
+            }
+        }
+
+        public static async Task ReschedulePeriodicReportJob(int runDay, int runHour)
+        {
+            if (Scheduler != null)
+            {
+                TriggerKey triggerKey = new TriggerKey("Trigger_PeriodicReportExport", "ReportingGroup");
+                JobKey jobKey = new JobKey("Job_PeriodicReportExport", "ReportingGroup");
+
+                int day = runDay > 0 && runDay <= 28 ? runDay : 5;
+                int hour = runHour >= 0 && runHour <= 23 ? runHour : 8;
+                string cronExpr = $"0 0 {hour} {day} * ?";
+
+                ITrigger newTrigger = TriggerBuilder.Create()
+                    .WithIdentity(triggerKey)
+                    .WithCronSchedule(cronExpr)
+                    .Build();
+
+                if (await Scheduler.CheckExists(triggerKey))
+                {
+                    await Scheduler.RescheduleJob(triggerKey, newTrigger);
+                    log.Info($"Rescheduled PeriodicReportExportJob to Cron: {cronExpr}");
+                }
+                else
+                {
+                    IJobDetail job = JobBuilder.Create<PeriodicReportExportJob>()
+                        .WithIdentity(jobKey)
+                        .Build();
+                    await Scheduler.ScheduleJob(job, newTrigger);
+                    log.Info($"Created & Scheduled PeriodicReportExportJob to Cron: {cronExpr}");
+                }
+            }
+        }
+
+        public static async Task TriggerExportReportNow()
+        {
+            if (Scheduler != null)
+            {
+                JobKey jobKey = new JobKey("Job_PeriodicReportExport", "ReportingGroup");
+                if (await Scheduler.CheckExists(jobKey))
+                {
+                    await Scheduler.TriggerJob(jobKey);
+                }
+                else
+                {
+                    IJobDetail job = JobBuilder.Create<PeriodicReportExportJob>()
+                        .WithIdentity(jobKey)
+                        .Build();
+
+                    ITrigger tempTrigger = TriggerBuilder.Create()
+                        .WithIdentity("Temp_Trigger_PeriodicReportExport", "ReportingGroup")
+                        .StartNow()
+                        .Build();
+
+                    await Scheduler.ScheduleJob(job, tempTrigger);
                 }
             }
         }

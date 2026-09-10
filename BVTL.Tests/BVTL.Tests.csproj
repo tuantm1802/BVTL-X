@@ -43,6 +43,12 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc" />
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncryptorTests.cs" />
@@ -52,6 +58,7 @@
     <Compile Include="HttpRetryHelperTests.cs" />
     <Compile Include="SystemMonitorTests.cs" />
     <Compile Include="DashboardCD45Tests.cs" />
+    <Compile Include="ScheduledReportTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

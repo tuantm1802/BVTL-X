@@ -346,10 +346,26 @@
 
         <!-- Table 1: Sàng lọc QST theo Nhóm đích -->
         <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
-            <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+            <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
                 <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
                     <i class="fas fa-table mr-2"></i> Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Nhóm Đối tượng Đích
                 </h6>
+                <div class="d-flex align-items-center">
+                    <label class="small text-muted font-weight-bold mb-0 mr-2" style="white-space: nowrap;">
+                        <i class="fas fa-filter text-primary mr-1"></i> Lọc độ tuổi:
+                    </label>
+                    <select class="form-control form-control-sm shadow-none" 
+                            style="width: 170px; font-weight: 600; border-color: #cbd5e1; border-radius: 6px;"
+                            x-model="selectedAgeTable1"
+                            x-on:change="loadDashboardData()">
+                        <option value="">-- Tất cả độ tuổi --</option>
+                        <option value="< 18">&lt; 18 tuổi</option>
+                        <option value="18 - 25">18 - 25 tuổi</option>
+                        <option value="26 - 35">26 - 35 tuổi</option>
+                        <option value=">= 36">&gt;= 36 tuổi</option>
+                        <option value="Chưa xác định">Chưa xác định</option>
+                    </select>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -387,6 +403,20 @@
                                 <tr><td colspan="8" class="text-center py-4 text-muted font-italic">Không có dữ liệu</td></tr>
                             </template>
                         </tbody>
+                        <tfoot style="background-color: #f1f5f9; font-weight: bold; border-top: 2px solid #cbd5e1;">
+                            <tr>
+                                <td class="pl-4 text-primary font-weight-bold">TỔNG CỘNG</td>
+                                <td class="text-center font-weight-bold text-dark" x-text="getTotalTable1('TongKH')"></td>
+                                <td class="text-center font-weight-bold text-info" x-text="getTotalTable1('SoKHSangLoc')"></td>
+                                <td class="text-center font-weight-bold text-danger" x-text="getTotalTable1('Muc1_RatCao')"></td>
+                                <td class="text-center font-weight-bold" style="color: #f97316;" x-text="getTotalTable1('Muc2_Cao')"></td>
+                                <td class="text-center font-weight-bold text-primary" x-text="getTotalTable1('Muc3_TrungBinh')"></td>
+                                <td class="text-center font-weight-bold text-success" x-text="getTotalTable1('Muc4_Thap')"></td>
+                                <td class="text-center font-weight-bold pr-4">
+                                    <span class="badge badge-primary px-2 py-1" x-text="getTotalTable1NguyCoCaoPct()"></span>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

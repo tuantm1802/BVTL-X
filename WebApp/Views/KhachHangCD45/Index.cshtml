@@ -1,15 +1,24 @@
-@{
+﻿@{
     ViewBag.Title = "Danh mục Khách hàng CD45 (DREAMH)";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
     /* Modal Customer Detail 360° Styling */
+    .modal-customer-detail .modal-dialog {
+        max-height: 92vh;
+        height: 92vh;
+        margin: 4vh auto;
+    }
     .modal-customer-detail .modal-content {
         border-radius: 1.25rem !important;
         border: none !important;
         box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
         overflow: hidden;
+        height: 92vh;
+        max-height: 92vh;
+        display: flex;
+        flex-direction: column;
     }
 
     .customer-hero-header {
@@ -368,11 +377,11 @@
 
     <!-- MODAL HỒ SƠ KHÁCH HÀNG 360° HIỆN ĐẠI -->
     <div class="modal fade modal-customer-detail" id="modalCustomerDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
                 
                 <!-- 1. Trạng thái Đang tải dữ liệu (Loading Skeleton & Pulse) -->
-                <div x-show="isDetailLoading" class="p-5 text-center bg-white">
+                <div x-show="isDetailLoading" class="p-5 text-center bg-white my-auto">
                     <div class="spinner-border text-primary mb-3" style="width: 3.2rem; height: 3.2rem;" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -381,9 +390,9 @@
                 </div>
 
                 <!-- 2. Trạng thái Đã tải xong Hồ sơ -->
-                <div x-show="!isDetailLoading && selectedCustomer" x-cloak>
+                <div x-show="!isDetailLoading && selectedCustomer" x-cloak class="d-flex flex-column h-100 overflow-hidden" style="min-height: 0;">
                     <!-- HERO HEADER BANNER -->
-                    <div class="customer-hero-header">
+                    <div class="customer-hero-header flex-shrink-0">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="d-flex align-items-center gap-3">
                                 <!-- Avatar kèm huy hiệu Vân tay -->
@@ -441,7 +450,7 @@
                     </div>
 
                     <!-- MODAL BODY -->
-                    <div class="modal-body p-3 bg-light-subtle">
+                    <div class="modal-body p-3 bg-light-subtle flex-grow-1 overflow-auto" style="min-height: 0;">
                         <!-- KPI MICRO-METRIC CARDS (7 CỘT) -->
                         <div class="row g-2 mb-3">
                             <div class="col-6 col-md-3 col-xl">
@@ -708,7 +717,7 @@
                                                             <span class="badge bg-primary-subtle text-primary border border-primary" x-text="hd.TenLoaiDv"></span>
                                                         </td>
                                                         <td class="fw-semibold" x-text="hd.TenTCV"></td>
-                                                        <td class="text-muted" x-text="hd.DIA_DIEM || '-'"></td>
+                                                        <td class="text-muted" x-text="formatLocation(hd.DIA_DIEM)"></td>
                                                         <td class="text-dark" x-text="hd.CHU_DE || '-'"></td>
                                                         <td class="text-center">
                                                             <span class="badge bg-light text-dark border px-2" x-text="hd.SO_TAI_LIEU || 0"></span>
@@ -819,22 +828,22 @@
                                             <tbody>
                                                 <template x-for="cd in selectedCustomer?.ListChanDoan" :key="cd.REPEAT_INSTANCE + '_' + cd.NGAY_KHAM">
                                                     <tr>
-                                                        <td class="text-center fw-bold text-danger" x-text="cd.REPEAT_INSTANCE"></td>
+                                                        <td class="text-center fw-bold text-danger" x-text="cd.LAN_KHAM === 1 ? 'Khám đầu' : ('Tái khám L' + cd.REPEAT_INSTANCE)"></td>
                                                         <td class="fw-semibold text-secondary" x-text="formatDate(cd.NGAY_KHAM)"></td>
                                                         <td class="fw-semibold text-dark">
                                                             <i class="fas fa-hospital text-danger me-1"></i>
-                                                            <span x-text="cd.CO_SO_Y_TE || '-'"></span>
+                                                            <span x-text="formatHospital(cd.CO_SO_Y_TE)"></span>
                                                         </td>
                                                         <td>
                                                             <i class="fas fa-user-md text-primary me-1"></i>
-                                                            <span x-text="cd.BAC_SI || '-'"></span>
+                                                            <span x-text="formatDoctor(cd.BAC_SI)"></span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge" :class="cd.HINH_THUC_DIEU_TRI?.toLowerCase().includes('nội trú') ? 'bg-danger-subtle text-danger border border-danger' : 'bg-info-subtle text-info border border-info'"
-                                                                  x-text="cd.HINH_THUC_DIEU_TRI || '-'"></span>
+                                                            <span class="badge bg-primary-subtle text-primary border border-primary"
+                                                                  x-text="formatTreatmentF6(cd.HINH_THUC_DIEU_TRI)"></span>
                                                         </td>
-                                                        <td class="fw-bold text-primary" x-text="cd.CHAN_DOAN_CHINH || '-'"></td>
-                                                        <td class="text-muted small" x-text="cd.TRIEU_CHUNG || '-'"></td>
+                                                        <td class="fw-bold text-danger small" x-text="formatDiagnoseF6(cd.CHAN_DOAN_CHINH)"></td>
+                                                        <td class="text-secondary small" x-text="formatSymptomF6(cd.TRIEU_CHUNG)"></td>
                                                         <td>
                                                             <span class="badge bg-light text-dark border" x-text="formatDate(cd.NGAY_HEN_TAI_KHAM)"></span>
                                                         </td>
@@ -923,7 +932,7 @@
                                                         </td>
                                                         <td class="fw-semibold text-secondary" x-text="formatDate(tv.NGAY_TU_VAN)"></td>
                                                         <td class="fw-semibold" x-text="tv.TenTCV"></td>
-                                                        <td class="text-muted" x-text="tv.DIA_DIEM || '-'"></td>
+                                                        <td class="text-muted" x-text="formatLocation(tv.DIA_DIEM)"></td>
                                                         <td class="text-center">
                                                             <span class="badge bg-light text-dark border px-2" x-text="tv.AUDIT_C_SCORE !== null ? tv.AUDIT_C_SCORE : '-'"></span>
                                                         </td>
@@ -933,7 +942,7 @@
                                                         <td class="text-center">
                                                             <span class="badge bg-light text-dark border px-2" x-text="tv.STIGMA_SCORE !== null ? tv.STIGMA_SCORE : '-'"></span>
                                                         </td>
-                                                        <td class="text-dark small" x-text="tv.DANH_GIA_HIEN_TAI || tv.TINH_TRANG_SKTT || tv.CAN_THIEP_AP_DUNG || '-'"></td>
+                                                        <td class="text-dark small" x-text="formatTuVanContent(tv)"></td>
                                                         <td>
                                                             <span class="badge bg-light text-dark border" x-text="formatDate(tv.NGAY_HEN_TIEP)"></span>
                                                         </td>
@@ -974,7 +983,7 @@
                                                         <td class="text-center fw-bold text-success" x-text="tt.REPEAT_INSTANCE"></td>
                                                         <td class="fw-semibold text-secondary" x-text="formatDate(tt.NGAY_HO_TRO)"></td>
                                                         <td class="fw-semibold" x-text="tt.TenTCV"></td>
-                                                        <td class="fw-semibold text-primary" x-text="tt.HINH_THUC_DIEU_TRI || '-'"></td>
+                                                        <td class="fw-semibold text-primary" x-text="formatTreatmentF5(tt.HINH_THUC_DIEU_TRI)"></td>
                                                         <td class="text-center">
                                                             <span x-show="tt.CO_KE_DON_THUOC === true" class="badge bg-success-subtle text-success border border-success">
                                                                 <i class="fas fa-check-circle me-1"></i>Có đơn thuốc
@@ -984,7 +993,10 @@
                                                             </span>
                                                             <span x-show="tt.CO_KE_DON_THUOC === null" class="text-muted">-</span>
                                                         </td>
-                                                        <td class="fw-semibold" x-text="tt.TUAN_THU || '-'"></td>
+                                                        <td>
+                                                            <span :class="String(tt.TUAN_THU).trim() === '1' ? 'badge bg-success-subtle text-success border border-success px-2 py-1' : 'badge bg-danger-subtle text-danger border border-danger px-2 py-1'"
+                                                                  x-text="formatAdherenceF5(tt.TUAN_THU)"></span>
+                                                        </td>
                                                     </tr>
                                                 </template>
                                                 <tr x-show="!selectedCustomer?.ListTuanThu?.length">
@@ -1001,7 +1013,7 @@
                     </div>
 
                     <!-- MODAL FOOTER -->
-                    <div class="modal-footer bg-white py-2 px-3 justify-content-between border-top">
+                    <div class="modal-footer bg-white py-2 px-3 justify-content-between border-top flex-shrink-0">
                         <div class="text-muted small">
                             <i class="fas fa-shield-alt text-primary me-1"></i>Hồ sơ Khách hàng 360° - Dự án CD45 (DREAMH)
                         </div>

@@ -45,7 +45,11 @@ namespace WebApp.Controllers
 
                 var nhoms = _nhomDA.GetAll()
                                    .Where(x => x.maduan == "CD45")
-                                   .Select(x => new { MaNhom = x.manhom_tbh, TenNhom = x.tennhom_tbh, CityCode = x.city_code })
+                                   .Select(x => new { 
+                                       MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
+                                       TenNhom = x.tennhom_tbh, 
+                                       CityCode = x.city_code 
+                                   })
                                    .ToList();
 
                 return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
