@@ -380,8 +380,42 @@ Khắc phục các vấn đề phát sinh sau đợt kiểm thử thực tế t�
    - Bổ sung trọn bộ Unit Tests `ScheduledReportTests.cs` kiểm tra đọc cấu hình, kiểm tra tính sẵn sàng của dữ liệu và xuất file ZIP (28/28 tests passed).
 4. **Biên dịch, Đóng gói & Triển khai**:
    - MSBuild Release toàn bộ Solution `WebApp.sln` đạt 0 errors.
-   - Đóng gói Publish vào `D:\Deploy\WebApp_Publish` và Deploy Patch qua `deploy-ftp.ps1` (26 files trong 16.3s).
+   - Đóng gói Publish vào `D:\Deploy\WebApp_Publish` và Deploy Patch qua `deploy-ftp.ps1` (26 files trong 17.2s).
    - Xác minh Host `103.77.167.206:8090/Login/Index` phản hồi `HTTP 200 OK`.
+5. **Kiểm tra Tinh chỉnh & Sửa lỗi Cú pháp JS (11/09/2026 - Tối)**:
+   - Sửa lỗi cú pháp dấu phẩy trong đối tượng Alpine `AlpineKhachHangCD45Controller.js` (`getBadgeClassHiv`).
+   - Kiểm thử tự động: toàn bộ 28/28 Unit Tests Passed 100%.
+   - Deploy Patch lên Host và phát hành Tag Git `v1.3.1`.
+
+### Các tệp đã thay đổi:
+- `SQL_CD45_SP_DrillDown.sql` (New)
+- `SQL_CD45_SP.sql` (Modified)
+- `Data/Admin/CD45KhachHangDA.cs` (Modified)
+- `Data/Admin/CD45NhomTcvDA.cs` (Modified)
+- `Data/Admin/DashboardCD45DA.cs` (Modified)
+- `Data/InterfaceDA/Admin/IDashboardCD45DA.cs` (Modified)
+- `Data/Admin/ScheduledReportDA.cs` (New)
+- `Data/InterfaceDA/Admin/IScheduledReportDA.cs` (New)
+- `Model/ModelExtend/Report/ExportedReportLogModel.cs` (New)
+- `WebApp/Controllers/HomeController.cs` (Modified)
+- `WebApp/Controllers/KhachHangCD45Controller.cs` (Modified)
+- `WebApp/Controllers/NhomTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (New)
+- `WebApp/Services/IReportExportService.cs` (New)
+- `WebApp/Services/ReportExportService.cs` (New)
+- `WebApp/Services/Jobs/PeriodicReportExportJob.cs` (New)
+- `WebApp/Services/ScheduleTasks/JobScheduler.cs` (Modified)
+- `WebApp/Views/Home/Index.cshtml` (Modified)
+- `WebApp/Views/KhachHangCD45/Index.cshtml` (Modified)
+- `WebApp/Views/ScheduledReport/Index.cshtml` (New)
+- `WebApp/app/Controller/AlpineHomeController.js` (Modified)
+- `WebApp/app/Controller/AlpineKhachHangCD45Controller.js` (Modified)
+- `WebApp/app/Controller/AlpineScheduledReportController.js` (New)
+- `BVTL.Tests/ScheduledReportTests.cs` (New)
+- `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
+- `.gitignore` (Modified - ignore `/TESTING/`)
+- `docs/session-log.md` (Modified)
+
 
 
 

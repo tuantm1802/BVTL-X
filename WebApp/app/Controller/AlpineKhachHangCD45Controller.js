@@ -507,7 +507,7 @@
                     if (val === 2 || val === '2') return 'badge bg-danger-subtle text-danger border border-danger fw-bold';
                     if (val === 3 || val === '3') return 'badge bg-warning-subtle text-warning-emphasis border border-warning';
                     return 'badge bg-secondary-subtle text-secondary border';
-                }
+                },
 
                 formatHospital: function (val) {
                     if (!val) return '-';
