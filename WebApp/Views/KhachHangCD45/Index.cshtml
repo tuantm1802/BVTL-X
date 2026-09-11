@@ -881,7 +881,7 @@
                                                         <td class="text-center fw-bold text-warning-emphasis" x-text="ht.REPEAT_INSTANCE"></td>
                                                         <td class="fw-semibold text-secondary" x-text="formatDate(ht.NGAY_HO_TRO)"></td>
                                                         <td class="fw-semibold" x-text="ht.TenTCV"></td>
-                                                        <td class="fw-semibold text-primary" x-text="ht.DICH_VU || '-'"></td>
+                                                        <td class="fw-semibold text-primary" x-text="formatF4Services(ht.DICH_VU || ht.TenDichVu)"></td>
                                                         <td class="text-center">
                                                             <span :class="getBadgeClassHiv(ht.KET_QUA_HIV)" class="px-2 py-1" x-text="formatKetQuaHivText(ht.KET_QUA_HIV)"></span>
                                                         </td>

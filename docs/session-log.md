@@ -416,6 +416,37 @@ Khắc phục các vấn đề phát sinh sau đợt kiểm thử thực tế t�
 - `.gitignore` (Modified - ignore `/TESTING/`)
 - `docs/session-log.md` (Modified)
 
+---
+
+## Phiên làm việc 13 (11/09/2026 - Đêm): Ánh xạ Nhãn Dịch vụ Hỗ trợ Xã hội (F4) Khách hàng CD45
+
+### Mục tiêu:
+Hoàn thiện hiển thị nhãn tiếng Việt rõ ràng cho các Dịch vụ Hỗ trợ Xã hội (form F4) trên modal chi tiết hồ sơ Khách hàng CD45 thay vì hiển thị mã số thô (1, 2, 3... 10).
+
+### Các công việc đã hoàn thành:
+1. **Mở rộng DTO Model**:
+   - `Model/ModelExtend/CD45KhachHangModel.cs`: Bổ sung thuộc tính `TenDichVu` trong `CD45_HoTroXhItemModel`.
+2. **Xử lý Ánh xạ tại Tầng Data Access**:
+   - `Data/Admin/CD45KhachHangDA.cs`: Thêm bảng ánh xạ tĩnh `DictF4Services` (1: Thẻ BHYT, 2: Methadone, 3: Giấy tờ tùy thân, 4: Cư trú, 5: Trợ cấp xã hội, 6: Việc làm, 7: Giáo dục, 8: Pháp lý, 9: Khác, 10: TV & XN HIV) và phương thức `FormatF4Services`.
+   - Tự động map giá trị `TenDichVu` cho danh sách `ListHoTroXh` khi lấy chi tiết khách hàng.
+3. **Cập nhật Giao diện & Alpine.js**:
+   - `WebApp/app/Controller/AlpineKhachHangCD45Controller.js`: Thêm `DICT_F4_SERVICES` và hàm hỗ trợ hiển thị `formatF4Services(val)`.
+   - `WebApp/Views/KhachHangCD45/Index.cshtml`: Cập nhật bảng Lịch sử Hỗ trợ xã hội (F4) hiển thị `formatF4Services(ht.DICH_VU || ht.TenDichVu)`.
+4. **Kiểm thử & Triển khai**:
+   - Biên dịch Release: 0 errors.
+   - Chạy 28/28 Unit Tests: 100% Passed.
+   - Đóng gói Publish & Deploy FTP: 26 files trong 16.9s.
+   - Xác minh Healthcheck: `HTTP 200 OK`.
+   - Cập nhật Git Tag: `v1.3.2`.
+
+### Các tệp đã thay đổi:
+- `Data/Admin/CD45KhachHangDA.cs` (Modified)
+- `Model/ModelExtend/CD45KhachHangModel.cs` (Modified)
+- `WebApp/Views/KhachHangCD45/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineKhachHangCD45Controller.js` (Modified)
+- `docs/session-log.md` (Modified)
+
+
 
 
 

@@ -127,6 +127,7 @@ namespace Model.ModelExtend
         public string MA_TCV { get; set; }
         public string TenTCV { get; set; }
         public string DICH_VU { get; set; }
+        public string TenDichVu { get; set; }
         public byte? KET_QUA_HIV { get; set; }
     }
 

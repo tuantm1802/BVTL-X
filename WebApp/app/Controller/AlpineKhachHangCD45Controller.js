@@ -1,5 +1,18 @@
 (function () {
 
+    var DICT_F4_SERVICES = {
+        "1": "Thẻ bảo hiểm y tế",
+        "2": "Hỗ trợ chi phí điều trị Methadone",
+        "3": "Hỗ trợ giấy tờ tùy thân",
+        "4": "Hỗ trợ đăng ký cư trú",
+        "5": "Hỗ trợ tiếp cận trợ cấp xã hội",
+        "6": "Hỗ trợ việc làm",
+        "7": "Hỗ trợ giáo dục",
+        "8": "Hỗ trợ pháp lý",
+        "9": "Khác",
+        "10": "Tư vấn và xét nghiệm nhanh HIV"
+    };
+
     var DICT_HOSPITAL = {
         "1": "Hà Nội - Bệnh viện Lão khoa",
         "2": "Hưng Yên - BV SKTT Thái Bình",
@@ -563,6 +576,14 @@
                     if (!val) return '-';
                     var k = String(val).trim();
                     return DICT_LOCATION[k] || val;
+                },
+
+                formatF4Services: function (val) {
+                    if (!val) return '-';
+                    return String(val).split(',').map(function (s) {
+                        var k = s.trim();
+                        return DICT_F4_SERVICES[k] || k;
+                    }).join(', ');
                 },
 
                 formatMentalStatusF7: function (val) {

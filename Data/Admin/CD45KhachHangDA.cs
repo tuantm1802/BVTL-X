@@ -13,6 +13,32 @@ namespace Data.Admin
     {
         private BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
+        private static readonly Dictionary<string, string> DictF4Services = new Dictionary<string, string>
+        {
+            { "1", "Thẻ bảo hiểm y tế" },
+            { "2", "Hỗ trợ chi phí điều trị Methadone" },
+            { "3", "Hỗ trợ giấy tờ tùy thân" },
+            { "4", "Hỗ trợ đăng ký cư trú" },
+            { "5", "Hỗ trợ tiếp cận trợ cấp xã hội" },
+            { "6", "Hỗ trợ việc làm" },
+            { "7", "Hỗ trợ giáo dục" },
+            { "8", "Hỗ trợ pháp lý" },
+            { "9", "Khác" },
+            { "10", "Tư vấn và xét nghiệm nhanh HIV" }
+        };
+
+        public static string FormatF4Services(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return null;
+            var parts = raw.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var mapped = parts.Select(p =>
+            {
+                var k = p.Trim();
+                return DictF4Services.TryGetValue(k, out var name) ? name : k;
+            });
+            return string.Join(", ", mapped);
+        }
+
         private static string GetTenHonNhan(byte? hn)
         {
             switch (hn)
@@ -328,6 +354,10 @@ namespace Data.Admin
                 WHERE ht.RECORD_ID = @RecordId
                 ORDER BY ht.NGAY_HO_TRO";
             detail.ListHoTroXh = db.Database.SqlQuery<CD45_HoTroXhItemModel>(sqlHt, new SqlParameter("@RecordId", recordId)).ToList();
+            foreach (var ht in detail.ListHoTroXh)
+            {
+                ht.TenDichVu = FormatF4Services(ht.DICH_VU);
+            }
             detail.TongHoTroXh = detail.ListHoTroXh.Count;
 
             // 5. Tuân thủ điều trị
