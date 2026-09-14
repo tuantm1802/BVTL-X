@@ -41,3 +41,6 @@ TestResults/
 
 # Local diagnostic / test datasets
 /TESTING/
+
+# Dynamically generated build metadata
+/WebApp/version.json
