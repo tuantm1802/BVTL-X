@@ -46,7 +46,11 @@ namespace WebApp.Services
         private string GetStorageDirectory(int year, int month)
         {
             string baseDir;
-            if (HttpContext.Current != null && HttpContext.Current.Server != null)
+            if (System.Web.Hosting.HostingEnvironment.IsHosted)
+            {
+                baseDir = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/ExportedReports/");
+            }
+            else if (HttpContext.Current != null && HttpContext.Current.Server != null)
             {
                 baseDir = HttpContext.Current.Server.MapPath("~/App_Data/ExportedReports/");
             }
@@ -210,29 +214,32 @@ namespace WebApp.Services
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
                 result.Message = $"Báo cáo TCV CD45: Đóng gói thành công {totalTcvExported} TCV vào file ZIP ({sizeKb} KB).";
 
-                // Ghi log CSDL
-                _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                // Ghi log CSDL (bỏ qua khi chạy UnitTest để không làm bẩn dữ liệu thật)
+                if (triggerType != "UnitTest")
                 {
-                    ReportType = "TCV_CD45",
-                    ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
-                    PeriodType = "Month",
-                    PeriodValue = $"Tháng {month:D2}/{year}",
-                    Year = year,
-                    Month = month,
-                    MaDuAn = "CD45",
-                    CityCode = cityCode,
-                    MaNhom = maNhom,
-                    FileName = zipFileName,
-                    FilePath = zipFilePath,
-                    FileSizeKb = sizeKb,
-                    TotalRecords = totalTcvExported,
-                    Status = "Success",
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    TelegramSent = true,
-                    TriggerType = triggerType,
-                    CreatedBy = createdBy,
-                    CreatedDate = DateTime.Now
-                });
+                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    {
+                        ReportType = "TCV_CD45",
+                        ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
+                        PeriodType = "Month",
+                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        Year = year,
+                        Month = month,
+                        MaDuAn = "CD45",
+                        CityCode = cityCode,
+                        MaNhom = maNhom,
+                        FileName = zipFileName,
+                        FilePath = zipFilePath,
+                        FileSizeKb = sizeKb,
+                        TotalRecords = totalTcvExported,
+                        Status = "Success",
+                        ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                        TelegramSent = true,
+                        TriggerType = triggerType,
+                        CreatedBy = createdBy,
+                        CreatedDate = DateTime.Now
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -241,24 +248,27 @@ namespace WebApp.Services
                 result.Success = false;
                 result.Message = "Lỗi xuất file ZIP TCV CD45: " + ex.Message;
 
-                _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                if (triggerType != "UnitTest")
                 {
-                    ReportType = "TCV_CD45",
-                    ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
-                    PeriodType = "Month",
-                    PeriodValue = $"Tháng {month:D2}/{year}",
-                    Year = year,
-                    Month = month,
-                    MaDuAn = "CD45",
-                    FileName = "ERROR",
-                    FilePath = "ERROR",
-                    Status = "Failed",
-                    ErrorMessage = ex.Message,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    TriggerType = triggerType,
-                    CreatedBy = createdBy,
-                    CreatedDate = DateTime.Now
-                });
+                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    {
+                        ReportType = "TCV_CD45",
+                        ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
+                        PeriodType = "Month",
+                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        Year = year,
+                        Month = month,
+                        MaDuAn = "CD45",
+                        FileName = "ERROR",
+                        FilePath = "ERROR",
+                        Status = "Failed",
+                        ErrorMessage = ex.Message,
+                        ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                        TriggerType = triggerType,
+                        CreatedBy = createdBy,
+                        CreatedDate = DateTime.Now
+                    });
+                }
             }
 
             return await Task.FromResult(result);
@@ -301,28 +311,31 @@ namespace WebApp.Services
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
                 result.Message = $"Báo cáo Hoạt động CD45: Xuất thành công file Excel ({sizeKb} KB).";
 
-                _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                if (triggerType != "UnitTest")
                 {
-                    ReportType = "HOATDONG_CD45",
-                    ReportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45",
-                    PeriodType = "Month",
-                    PeriodValue = $"Tháng {month:D2}/{year}",
-                    Year = year,
-                    Month = month,
-                    MaDuAn = "CD45",
-                    CityCode = cityCode,
-                    MaNhom = maNhom,
-                    FileName = fileName,
-                    FilePath = filePath,
-                    FileSizeKb = sizeKb,
-                    TotalRecords = result.TotalItems,
-                    Status = "Success",
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    TelegramSent = true,
-                    TriggerType = triggerType,
-                    CreatedBy = createdBy,
-                    CreatedDate = DateTime.Now
-                });
+                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    {
+                        ReportType = "HOATDONG_CD45",
+                        ReportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45",
+                        PeriodType = "Month",
+                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        Year = year,
+                        Month = month,
+                        MaDuAn = "CD45",
+                        CityCode = cityCode,
+                        MaNhom = maNhom,
+                        FileName = fileName,
+                        FilePath = filePath,
+                        FileSizeKb = sizeKb,
+                        TotalRecords = result.TotalItems,
+                        Status = "Success",
+                        ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                        TelegramSent = true,
+                        TriggerType = triggerType,
+                        CreatedBy = createdBy,
+                        CreatedDate = DateTime.Now
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -383,26 +396,29 @@ namespace WebApp.Services
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
                 result.Message = $"Báo cáo Tổng hợp BVTL: Xuất thành công file Excel ({sizeKb} KB).";
 
-                _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                if (triggerType != "UnitTest")
                 {
-                    ReportType = "TONGHOP_BVTL",
-                    ReportName = "Báo cáo Tổng hợp Số liệu Bảo vệ Tương lai (BVTL)",
-                    PeriodType = "Month",
-                    PeriodValue = $"Tháng {month:D2}/{year}",
-                    Year = year,
-                    Month = month,
-                    MaDuAn = "BVTL",
-                    FileName = fileName,
-                    FilePath = filePath,
-                    FileSizeKb = sizeKb,
-                    TotalRecords = result.TotalItems,
-                    Status = "Success",
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    TelegramSent = true,
-                    TriggerType = triggerType,
-                    CreatedBy = createdBy,
-                    CreatedDate = DateTime.Now
-                });
+                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    {
+                        ReportType = "TONGHOP_BVTL",
+                        ReportName = "Báo cáo Tổng hợp Số liệu Bảo vệ Tương lai (BVTL)",
+                        PeriodType = "Month",
+                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        Year = year,
+                        Month = month,
+                        MaDuAn = "BVTL",
+                        FileName = fileName,
+                        FilePath = filePath,
+                        FileSizeKb = sizeKb,
+                        TotalRecords = result.TotalItems,
+                        Status = "Success",
+                        ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                        TelegramSent = true,
+                        TriggerType = triggerType,
+                        CreatedBy = createdBy,
+                        CreatedDate = DateTime.Now
+                    });
+                }
             }
             catch (Exception ex)
             {

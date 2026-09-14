@@ -1,4 +1,4 @@
-﻿using Data.Admin;
+using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend.Report;
 using System;
@@ -62,15 +62,27 @@ namespace BVTL.Tests
         public void ReportExportService_ExportTCVCD45ZipAsync_ShouldCreateValidZip()
         {
             var service = new ReportExportService();
-            // Test export for The Times group (HNO - tt)
-            var task = service.ExportTCVCD45ZipAsync(2026, 8, "HNO", "tt", "UnitTest", "Tester");
-            var result = task.GetAwaiter().GetResult();
+            string generatedFilePath = null;
+            try
+            {
+                // Test export for The Times group (HNO - tt)
+                var task = service.ExportTCVCD45ZipAsync(2026, 8, "HNO", "tt", "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
 
-            Assert.IsNotNull(result, "Result must not be null");
-            Assert.IsTrue(result.Success, "Export should succeed: " + result.Message);
-            Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
-            Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file should have size > 0");
-            Assert.IsTrue(result.TotalItems > 0, "Should have exported at least 1 TCV");
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file should have size > 0");
+                Assert.IsTrue(result.TotalItems > 0, "Should have exported at least 1 TCV");
+                generatedFilePath = result.FilePath;
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
         }
     }
 }

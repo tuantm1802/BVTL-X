@@ -4787,6 +4787,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="App_Data\ExportedReports\" />
     <Folder Include="Assest\font-awesome\4.5.0\css\" />
     <Folder Include="Assest\font-awesome\4.5.0\fonts\" />
     <Folder Include="Assest\fonts\" />

@@ -155,17 +155,43 @@ namespace WebApp.Controllers
             try
             {
                 var logItem = _scheduledReportDA.GetById(id);
-                if (logItem == null || string.IsNullOrEmpty(logItem.FilePath))
+                if (logItem == null || string.IsNullOrEmpty(logItem.FileName))
                 {
                     return Content("<script>alert('Không tìm thấy bản ghi báo cáo!'); window.history.back();</script>");
                 }
 
-                if (!System.IO.File.Exists(logItem.FilePath))
+                string resolvedPath = logItem.FilePath;
+
+                // 1. Kiểm tra nếu đường dẫn lưu trong DB tồn tại trên máy chủ hiện tại
+                if (string.IsNullOrEmpty(resolvedPath) || !System.IO.File.Exists(resolvedPath))
+                {
+                    // 2. Thử tìm theo cấu trúc thư mục chuẩn trong App_Data của WebApp
+                    if (logItem.Year > 0 && logItem.Month.HasValue && !string.IsNullOrEmpty(logItem.FileName))
+                    {
+                        string candidate = Server.MapPath($"~/App_Data/ExportedReports/{logItem.Year}/{logItem.Month.Value:D2}/{logItem.FileName}");
+                        if (System.IO.File.Exists(candidate))
+                        {
+                            resolvedPath = candidate;
+                        }
+                    }
+
+                    // 3. Thử tìm trực tiếp theo tên file trong App_Data/ExportedReports
+                    if ((string.IsNullOrEmpty(resolvedPath) || !System.IO.File.Exists(resolvedPath)) && !string.IsNullOrEmpty(logItem.FileName))
+                    {
+                        string candidateFlat = Server.MapPath($"~/App_Data/ExportedReports/{logItem.FileName}");
+                        if (System.IO.File.Exists(candidateFlat))
+                        {
+                            resolvedPath = candidateFlat;
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(resolvedPath) || !System.IO.File.Exists(resolvedPath))
                 {
                     return Content("<script>alert('File vật lý không còn tồn tại trên máy chủ!'); window.history.back();</script>");
                 }
 
-                byte[] fileBytes = System.IO.File.ReadAllBytes(logItem.FilePath);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(resolvedPath);
                 string contentType = "application/octet-stream";
                 if (logItem.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                 {

@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Báo cáo định kỳ & Kho lưu trữ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -300,7 +300,8 @@
                                             <td class="small text-muted font-monospace" x-text="formatDateTime(item.CreatedDate)"></td>
                                             <td class="text-center small">
                                                 <span x-show="item.TriggerType === 'AutoSchedule'" class="badge bg-light text-primary border">Tự động</span>
-                                                <span x-show="item.TriggerType !== 'AutoSchedule'" class="badge bg-light text-secondary border">Thủ công</span>
+                                                <span x-show="item.TriggerType === 'Manual'" class="badge bg-light text-secondary border">Thủ công</span>
+                                                <span x-show="item.TriggerType !== 'AutoSchedule' && item.TriggerType !== 'Manual'" class="badge bg-light text-muted border" x-text="item.TriggerType"></span>
                                             </td>
                                             <td class="text-center">
                                                 <span x-show="item.Status === 'Success'" class="badge bg-success text-white">Thành công</span>

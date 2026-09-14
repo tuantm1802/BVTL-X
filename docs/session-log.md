@@ -1,4 +1,4 @@
-# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -485,10 +485,36 @@ Xây dựng giải pháp toàn diện giúp người phát triển, quản trị
 - `manage-version.ps1` (Modified)
 - `docs/session-log.md` (Modified)
 
+---
 
+## Phiên làm việc 15 (14/09/2026): Tối ưu Hệ thống Xuất Báo cáo ScheduledReport & Lưu trữ App_Data
 
+### Mục tiêu:
+Khắc phục các lỗi liên quan đến xuất báo cáo tự động ScheduledReport, tối ưu việc lọc log trong Unit Test, xử lý giải phóng tệp tạm, đồng bộ đường dẫn tải file báo cáo và tạo cấu trúc lưu trữ `App_Data/ExportedReports`.
 
+### Các công việc đã hoàn thành:
+1. **Tối ưu ReportExportService & ScheduledReportDA**:
+   - Thêm điều kiện bỏ qua việc ghi log vào database khi chạy `UnitTest` (`triggerType != "UnitTest"`) để không làm ảnh hưởng đến dữ liệu thực tế.
+   - Thêm bộ lọc `TriggerType IS NULL OR TriggerType <> 'UnitTest'` trong truy vấn danh sách log báo cáo `ScheduledReportDA`.
+2. **Xử lý dọn dẹp file tạm trong Unit Test**:
+   - Cập nhật `ScheduledReportTests.cs` bổ sung khối `try/finally` tự động xóa tệp ZIP tạm thời sau khi hoàn tất kiểm thử.
+3. **Cải thiện tính năng tải báo cáo (`ScheduledReportController`)**:
+   - Nâng cấp action `DownloadExportedReport`: linh hoạt phân giải đường dẫn file vật lý qua nhiều cấp fallback (`App_Data/ExportedReports/{Year}/{Month}/{FileName}` hoặc `App_Data/ExportedReports/{FileName}`) thay vì chỉ phụ thuộc vào đường dẫn tuyệt đối tĩnh trong DB.
+4. **Cập nhật Giao diện ScheduledReport**:
+   - Cập nhật badge hiển thị phương thức kích hoạt (`item.TriggerType`) phân biệt rõ `AutoSchedule` (Tự động), `Manual` (Thủ công) và các loại khác.
+5. **Cấu hình Thư mục Lưu trữ**:
+   - Bổ sung định nghĩa `Folder Include="App_Data\ExportedReports\"` vào `WebApp.csproj` cùng tệp `.gitkeep` để đảm bảo cấu trúc thư mục lưu trữ báo cáo luôn sẵn sàng trên IIS.
+6. **Kiểm thử, Đóng gói & Triển khai**:
+   - Rebuild Release thành công, vượt qua toàn bộ 32/32 unit tests.
+   - Đóng gói Publish, cập nhật version lên `v1.4.1` và đẩy bản vá lên Host IIS qua FTP.
+   - Cập nhật Git Repository và đối chiếu đồng bộ hoàn toàn giữa Local và Host.
 
-
-
-
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `Data/Admin/ScheduledReportDA.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
+- `WebApp/WebApp.csproj` (Modified)
+- `WebApp/App_Data/ExportedReports/.gitkeep` (New)
+- `docs/session-log.md` (Modified)

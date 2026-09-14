@@ -104,8 +104,8 @@ namespace Data.Admin
                 {
                     conn.Open();
 
-                    string countSql = "SELECT COUNT(*) FROM [BVTL_EXPORTED_REPORT_LOG] WHERE 1=1";
-                    string dataSql = "SELECT * FROM [BVTL_EXPORTED_REPORT_LOG] WHERE 1=1";
+                    string countSql = "SELECT COUNT(*) FROM [BVTL_EXPORTED_REPORT_LOG] WHERE (TriggerType IS NULL OR TriggerType <> 'UnitTest')";
+                    string dataSql = "SELECT * FROM [BVTL_EXPORTED_REPORT_LOG] WHERE (TriggerType IS NULL OR TriggerType <> 'UnitTest')";
 
                     string filter = "";
                     var parameters = new List<SqlParameter>();
