@@ -83,10 +83,21 @@
             </div>
             <!-- End of Main Content -->
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
+            <footer class="sticky-footer bg-white py-2">
                 <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
+                    @{
+                        var appVer = global::Common.Common.AppVersionHelper.GetVersionInfo();
+                    }
+                    <div class="copyright text-center my-auto d-flex justify-content-center align-items-center flex-wrap" style="font-size: 12px;">
                         <span>Copyright &copy; @DateTime.Now.Year SCDI</span>
+                        <span class="text-muted mx-2">|</span>
+                        <span class="text-secondary" title="Commit: @appVer.Commit - Nhánh: @appVer.Branch">
+                            Phiên bản: <strong class="text-primary">@appVer.DisplayVersion</strong>
+                        </span>
+                        @if (!string.IsNullOrEmpty(appVer.BuildDate))
+                        {
+                            <span class="badge badge-light border ml-2 text-muted" title="Thời điểm đóng gói">@appVer.BuildDate</span>
+                        }
                     </div>
                 </div>
             </footer>

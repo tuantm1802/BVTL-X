@@ -154,6 +154,13 @@ namespace WebApp.Controllers
                     );
         }
 
+        [HttpGet]
+        public JsonResult GetSystemVersion()
+        {
+            var info = global::Common.Common.AppVersionHelper.GetVersionInfo();
+            return Json(new { Success = true, Data = info }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Logout()
         {
             var user = Session["USER_SESSION"] as UserLogin;

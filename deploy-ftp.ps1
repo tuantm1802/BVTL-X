@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Script tu dong hoa Deploy/Publish ma nguon BVTL-X len may chu IIS qua FTP.
 .DESCRIPTION
@@ -219,6 +219,12 @@ if (-not $IncludeConfig) {
     $filesToDeploy = $filesToDeploy | Where-Object {
         $_.Name -notin @("connectionStrings.config", "appSettings.config")
     }
+}
+
+# Luon dam bao version.json duoc upload len host de kiem chung phien ban
+$verFile = Get-Item (Join-Path $SourceDir "version.json") -ErrorAction SilentlyContinue
+if ($verFile -and ($filesToDeploy.FullName -notcontains $verFile.FullName)) {
+    $filesToDeploy = @($verFile) + $filesToDeploy
 }
 
 if ($filesToDeploy.Count -eq 0) {

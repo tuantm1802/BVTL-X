@@ -182,6 +182,14 @@ namespace WebApp.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public JsonResult GetSystemVersion()
+        {
+            var info = global::Common.Common.AppVersionHelper.GetVersionInfo();
+            return Json(new { Success = true, Data = info }, JsonRequestBehavior.AllowGet);
+        }
+
         private void AddLog(string content)
         {
             _sysLogDA.Add(

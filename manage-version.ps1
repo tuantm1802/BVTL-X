@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Script quan ly version, dieu phoi ban va va tu dong hoa publish/deploy len host BVTL-X.
 .DESCRIPTION
@@ -23,7 +23,7 @@
 [CmdletBinding()]
 param (
     [Parameter(Position = 0)]
-    [ValidateSet("status", "list-tags", "new-release", "list-patches", "apply-patch", "publish", "deploy", "deploy-full", "deploy-package")]
+    [ValidateSet("status", "list-tags", "new-release", "list-patches", "apply-patch", "publish", "deploy", "deploy-full", "deploy-package", "compare")]
     [string]$Command = "status",
 
     [Parameter()]
@@ -203,20 +203,49 @@ function Invoke-PublishApp {
     Write-Host "=== DONG GOI PUBLISH BVTL-X ===" -ForegroundColor Cyan
     $msBuild = "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
     $projPath = Join-Path $BvtlRoot "WebApp\WebApp.csproj"
-    $pubProfile = Join-Path $BvtlRoot "WebApp\Properties\PublishProfiles\FolderProfile1.pubxml"
+    $pubProfile = "FolderProfile1"
     $deployFolder = "D:\Deploy\WebApp_Publish"
 
-    Write-Host "[1/2] Dang bien dich va publish bang MSBuild..." -ForegroundColor Yellow
+    # 1. Tu dong dong dau version.json truoc khi publish
+    Write-Host "[1/3] Dang dong dau Metadata phien ban (version.json)..." -ForegroundColor Yellow
+    Push-Location $BvtlRoot
+    try {
+        $branch = (git rev-parse --abbrev-ref HEAD 2>$null).Trim()
+        $commit = (git rev-parse --short HEAD 2>$null).Trim()
+        $tag = (git describe --tags --abbrev=0 2>$null)
+        if (-not $tag) { $tag = "v1.0.0" }
+        $buildDate = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    } finally {
+        Pop-Location
+    }
+
+    $verInfo = [ordered]@{
+        Version     = $tag
+        Commit      = $commit
+        Branch      = $branch
+        BuildDate   = $buildDate
+        Environment = "Production"
+    }
+    $jsonText = $verInfo | ConvertTo-Json -Depth 3
+
+    $webappVerPath = Join-Path $BvtlRoot "WebApp\version.json"
+    [System.IO.File]::WriteAllText($webappVerPath, $jsonText, [System.Text.Encoding]::UTF8)
+
+    Write-Host "[2/3] Dang bien dich va publish bang MSBuild..." -ForegroundColor Yellow
     & $msBuild $projPath /p:DeployOnBuild=true /p:PublishProfile=$pubProfile /p:Configuration=Release /verbosity:minimal
 
     if ($LASTEXITCODE -ne 0) {
         throw "Loi bien dich MSBuild khi publish!"
     }
 
-    Write-Host "[2/2] Dang nen file goi release .rar..." -ForegroundColor Yellow
+    # Sao chep version.json vao thu muc deploy
+    $deployVerPath = Join-Path $deployFolder "version.json"
+    [System.IO.File]::WriteAllText($deployVerPath, $jsonText, [System.Text.Encoding]::UTF8)
+
+    Write-Host "[3/3] Dang nen file goi release .rar..." -ForegroundColor Yellow
     $rarExe = "C:\Program Files\WinRAR\Rar.exe"
     if (Test-Path $rarExe) {
-        $rarTarget = "D:\Deploy\BVTL_WebApp_Publish_v1.1.0.rar"
+        $rarTarget = Join-Path (Split-Path $deployFolder -Parent) "BVTL_WebApp_Publish_$tag.rar"
         & $rarExe a -r -y $rarTarget "$deployFolder\*" | Out-Null
         Write-Host "[OK] Da tao file nen release: $rarTarget" -ForegroundColor Green
     }
@@ -234,6 +263,117 @@ function Invoke-DeployApp {
     & $DeployScript -Mode $DeployMode
 }
 
+function Compare-HostVersion {
+    Write-Host "============================================================" -ForegroundColor Cyan
+    Write-Host "         DOI CHIEU PHIEN BAN: LOCAL vs HOST IIS            " -ForegroundColor Cyan
+    Write-Host "============================================================" -ForegroundColor Cyan
+
+    # 1. Local info
+    Push-Location $BvtlRoot
+    try {
+        $localBranch = (git rev-parse --abbrev-ref HEAD 2>$null).Trim()
+        $localCommit = (git rev-parse --short HEAD 2>$null).Trim()
+        $localTag = (git describe --tags --abbrev=0 2>$null)
+        if (-not $localTag) { $localTag = "Chua co tag" }
+        $dirtyFiles = (git status -s 2>$null | Measure-Object).Count
+    } finally {
+        Pop-Location
+    }
+
+    $localVersionFile = Join-Path $BvtlRoot "WebApp\version.json"
+    $localBuildDate = "Chua publish"
+    if (Test-Path $localVersionFile) {
+        try {
+            $lvJson = [System.IO.File]::ReadAllText($localVersionFile, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
+            if ($lvJson.BuildDate) { $localBuildDate = $lvJson.BuildDate }
+        } catch { }
+    }
+
+    # 2. Host info
+    $hostUrl = "http://103.77.167.206:8090"
+    Write-Host "`n[*] Dang gui yeu cau kiem tra phien ban tren Host ($hostUrl)..." -ForegroundColor Yellow
+
+    $hostInfo = $null
+    $endpoints = @(
+        "$hostUrl/Login/GetSystemVersion",
+        "$hostUrl/Home/GetSystemVersion",
+        "$hostUrl/version.json"
+    )
+
+    foreach ($ep in $endpoints) {
+        try {
+            $resp = Invoke-WebRequest -Uri $ep -UseBasicParsing -TimeoutSec 7 -ErrorAction Stop
+            if ($resp.StatusCode -eq 200 -and $resp.Content) {
+                $parsed = $resp.Content | ConvertFrom-Json
+                if ($parsed.Data) {
+                    $hostInfo = $parsed.Data
+                    break
+                } elseif ($parsed.Version -or $parsed.version) {
+                    $hostInfo = $parsed
+                    break
+                }
+            }
+        } catch {
+            # Thu endpoint tiep theo
+        }
+    }
+
+    if (-not $hostInfo) {
+        Write-Host "[CANH BAO] Khong the lay du lieu phien ban tu Host qua HTTP! (Co the do IIS dang khoi dong hoac chua deploy version moi)" -ForegroundColor Red
+        Write-Host "  - Local Commit : $localCommit ($localTag) [$localBranch]"
+        Write-Host "  - Local Build  : $localBuildDate"
+        return
+    }
+
+    $hVersion = if ($hostInfo.Version) { $hostInfo.Version } else { $hostInfo.version }
+    $hCommit  = if ($hostInfo.Commit) { $hostInfo.Commit } else { $hostInfo.commit }
+    $hBranch  = if ($hostInfo.Branch) { $hostInfo.Branch } else { $hostInfo.branch }
+    $hBuild   = if ($hostInfo.BuildDate) { $hostInfo.BuildDate } else { $hostInfo.buildDate }
+
+    $commitMatch = ($localCommit -eq $hCommit)
+    $tagMatch    = ($localTag -eq $hVersion)
+
+    Write-Host "`nBang doi chieu chi tiet:" -ForegroundColor Cyan
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Tieu chi", "Local (Dang phat trien)", "Host IIS (Da Deploy)", "Trang thai")
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "-------------------", "-------------------------", "-------------------------", "------------")
+
+    $commitStatus = if ($commitMatch) { "[KHOP]" } else { "[LECH]" }
+    $tagStatus    = if ($tagMatch) { "[KHOP]" } else { "[LECH]" }
+    $branchStatus = if ($localBranch -eq $hBranch) { "[KHOP]" } else { "[KHAC NHANH]" }
+    $buildStatus  = if ($localBuildDate -eq $hBuild) { "[KHOP]" } else { "[KHAC NGAY]" }
+    $workingStatus = if ($dirtyFiles -eq 0) { "[SACH SE]" } else { "[CHUA COMMIT]" }
+    $workingText   = if ($dirtyFiles -eq 0) { "Clean (Sach se)" } else { "Co $dirtyFiles file sua" }
+
+    $commitColor = if ($commitMatch) { "Green" } else { "Red" }
+    $tagColor    = if ($tagMatch) { "Green" } else { "Red" }
+    $branchColor = if ($localBranch -eq $hBranch) { "Green" } else { "Yellow" }
+    $buildColor  = if ($localBuildDate -eq $hBuild) { "Green" } else { "Yellow" }
+    $workingColor = if ($dirtyFiles -eq 0) { "Green" } else { "Yellow" }
+
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Git Commit", $localCommit, $hCommit, $commitStatus) -ForegroundColor $commitColor
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Git Tag", $localTag, $hVersion, $tagStatus) -ForegroundColor $tagColor
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Git Branch", $localBranch, $hBranch, $branchStatus) -ForegroundColor $branchColor
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Ngay gio Build", $localBuildDate, $hBuild, $buildStatus) -ForegroundColor $buildColor
+    Write-Host ("{0,-20} {1,-25} {2,-25} {3,-12}" -f "Working Tree", $workingText, "N/A", $workingStatus) -ForegroundColor $workingColor
+
+    Write-Host "`n" -NoNewline
+    if ($commitMatch -and $tagMatch -and $dirtyFiles -eq 0) {
+        Write-Host "============================================================" -ForegroundColor Green
+        Write-Host " [DONG BO 100%] Phien ban tren Host va Local hoan toan KHOP!" -ForegroundColor Green
+        Write-Host "============================================================" -ForegroundColor Green
+    } else {
+        Write-Host "============================================================" -ForegroundColor Yellow
+        Write-Host " [CANH BAO LECH PHIEN BAN]:" -ForegroundColor Yellow
+        if (-not $commitMatch) {
+            Write-Host "  - Commit khac nhau: Local=$localCommit vs Host=$hCommit. Can build & deploy patch len host." -ForegroundColor Yellow
+        }
+        if ($dirtyFiles -gt 0) {
+            Write-Host "  - Local dang co $dirtyFiles file sua chua commit vao Git." -ForegroundColor Yellow
+        }
+        Write-Host "============================================================" -ForegroundColor Yellow
+    }
+}
+
 switch ($Command) {
     "status"         { Show-Status }
     "list-tags"      { Show-Tags }
@@ -244,4 +384,5 @@ switch ($Command) {
     "deploy"         { Invoke-DeployApp -DeployMode "Patch" }
     "deploy-full"    { Invoke-DeployApp -DeployMode "Full" }
     "deploy-package" { Invoke-DeployApp -DeployMode "Package" }
+    "compare"        { Compare-HostVersion }
 }

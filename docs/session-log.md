@@ -446,6 +446,46 @@ Hoàn thiện hiển thị nhãn tiếng Việt rõ ràng cho các Dịch vụ H
 - `WebApp/app/Controller/AlpineKhachHangCD45Controller.js` (Modified)
 - `docs/session-log.md` (Modified)
 
+---
+
+## Phiên làm việc 14 (14/09/2026): Thiết lập Hệ thống Đóng dấu Phiên bản & Đối chiếu Tự động Local vs Host
+
+### Mục tiêu:
+Xây dựng giải pháp toàn diện giúp người phát triển, quản trị viên và người kiểm thử nhận biết tức thì phiên bản đang chạy trên Host IIS có khớp với phiên bản mã nguồn tại Local hay không.
+
+### Các công việc đã hoàn thành:
+1. **Xây dựng Lớp Quản lý Phiên bản (`AppVersionHelper`)**:
+   - Thêm `Common/Common/AppVersionHelper.cs` và DTO `AppVersionInfo` quản lý đọc tệp `version.json` từ thư mục gốc website với cơ chế fallback đọc Assembly version khi chưa có tệp JSON.
+2. **Tự động Đóng dấu Metadata khi Publish**:
+   - Cập nhật hàm `Invoke-PublishApp` trong `manage-version.ps1`: tự động trích xuất Git Commit SHA, Git Tag, Nhánh hiện tại và Thời điểm đóng gói, ghi vào `version.json` ở cả thư mục nguồn `WebApp/version.json` và thư mục xuất bản `D:\Deploy\WebApp_Publish/version.json`.
+3. **Mở API & Hiển thị Trực quan trên Giao diện**:
+   - Bổ sung Action `GetSystemVersion` trả về JSON thông tin phiên bản tại `LoginController` (cho phép truy cập không cần đăng nhập) và `HomeController`.
+   - Cấu hình thẻ MIME `.json` trong `WebApp/Web.config` để IIS cho phép truy cập tệp tĩnh `http://host:8090/version.json`.
+   - Hiển thị huy hiệu phiên bản kèm thời gian đóng gói dưới chân trang `Views/Shared/_Layout.cshtml` và màn hình đăng nhập `Views/Login/Index.cshtml`.
+4. **Tích hợp Lệnh CLI Tự động Đối chiếu (`manage-version.ps1 compare`)**:
+   - Bổ sung lệnh `.\manage-version.ps1 compare`: tự động gửi request HTTP lên Host, lấy metadata phiên bản Host và đối chiếu với commit/tag/branch/working tree của Local Git.
+   - Xuất bảng so sánh màu sắc trực quan (Xanh: Khớp, Đỏ: Lệch).
+5. **Kiểm thử Tự động & Triển khai**:
+   - Viết 4 unit tests trong `BVTL.Tests/AppVersionHelperTests.cs` kiểm tra đọc dữ liệu, format nhãn và parse JSON (toàn bộ 32/32 tests passed 100%).
+   - Rebuild Release 0 errors, publish và deploy Patch lên Host IIS (`103.77.167.206:8090`).
+   - Kiểm tra trực tiếp API Host và lệnh compare: xác nhận Host và Local hoàn toàn đồng bộ.
+
+### Các tệp đã thay đổi/thêm mới:
+- `Common/Common/AppVersionHelper.cs` (New)
+- `Common/Common.csproj` (Modified)
+- `WebApp/Controllers/LoginController.cs` (Modified)
+- `WebApp/Controllers/HomeController.cs` (Modified)
+- `WebApp/Web.config` (Modified)
+- `WebApp/Views/Shared/_Layout.cshtml` (Modified)
+- `WebApp/Views/Login/Index.cshtml` (Modified)
+- `WebApp/version.json` (New)
+- `BVTL.Tests/AppVersionHelperTests.cs` (New)
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `deploy-ftp.ps1` (Modified)
+- `manage-version.ps1` (Modified)
+- `docs/session-log.md` (Modified)
+
+
 
 
 

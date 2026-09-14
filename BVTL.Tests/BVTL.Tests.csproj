@@ -59,6 +59,7 @@
     <Compile Include="SystemMonitorTests.cs" />
     <Compile Include="DashboardCD45Tests.cs" />
     <Compile Include="ScheduledReportTests.cs" />
+    <Compile Include="AppVersionHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

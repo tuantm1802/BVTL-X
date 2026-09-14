@@ -65,11 +65,21 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12">
-                                        <button type="submit" class="btn-login">Đăng nhập</button>
-                                    </div>
-                                </div>
-                            </div>
+                                     <div class="col-12">
+                                         <button type="submit" class="btn-login">Đăng nhập</button>
+                                     </div>
+                                     <div class="col-12 text-center mt-3 text-muted" style="font-size: 11px;">
+                                         @{
+                                             var loginVer = global::Common.Common.AppVersionHelper.GetVersionInfo();
+                                         }
+                                         <span>Phiên bản: <strong class="text-primary">@loginVer.DisplayVersion</strong></span>
+                                         @if (!string.IsNullOrEmpty(loginVer.BuildDate))
+                                         {
+                                             <span class="ms-1" title="Thời gian đóng gói">(@loginVer.BuildDate)</span>
+                                         }
+                                     </div>
+                                 </div>
+                             </div>
                         }
 
                     </div>
