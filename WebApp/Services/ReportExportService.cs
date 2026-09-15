@@ -67,20 +67,68 @@ namespace WebApp.Services
             return targetDir;
         }
 
+        public static void CalculatePeriodDateRange(string periodType, int year, int periodNumber, out string fromDate, out string toDate, out string periodValue)
+        {
+            if (periodType == "Quarter" || periodType == "Quy")
+            {
+                switch (periodNumber)
+                {
+                    case 1:
+                        fromDate = $"26/12/{year - 1}";
+                        toDate = $"25/03/{year}";
+                        periodValue = $"Quý I/{year}";
+                        break;
+                    case 2:
+                        fromDate = $"26/03/{year}";
+                        toDate = $"25/06/{year}";
+                        periodValue = $"Quý II/{year}";
+                        break;
+                    case 3:
+                        fromDate = $"26/06/{year}";
+                        toDate = $"25/09/{year}";
+                        periodValue = $"Quý III/{year}";
+                        break;
+                    case 4:
+                    default:
+                        fromDate = $"26/09/{year}";
+                        toDate = $"25/12/{year}";
+                        periodValue = $"Quý IV/{year}";
+                        break;
+                }
+            }
+            else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+            {
+                fromDate = $"26/12/{year - 1}";
+                toDate = $"25/12/{year}";
+                periodValue = $"Năm {year}";
+            }
+            else // Default: Month (Tháng: từ 26 tháng trước đến 25 tháng này)
+            {
+                int prevMonth = periodNumber == 1 ? 12 : periodNumber - 1;
+                int prevYear = periodNumber == 1 ? year - 1 : year;
+                fromDate = $"26/{prevMonth:D2}/{prevYear}";
+                toDate = $"25/{periodNumber:D2}/{year}";
+                periodValue = $"Tháng {periodNumber:D2}/{year}";
+            }
+        }
+
         public async Task<List<ReportExportResult>> ExecuteAllMonthlyReportsAsync(int year, int month, string triggerType = "AutoSchedule", string createdBy = "QuartzScheduler")
         {
             var results = new List<ReportExportResult>();
             var settings = _scheduledReportDA.GetSettings();
             var telegram = new TelegramNotifier(chatId: settings.TelegramChatId);
 
-            log.Info($"[PeriodicReportExportJob] Bắt đầu xử lý xuất báo cáo tự động tháng {month}/{year} ({triggerType})...");
+            string fromDate, toDate, pValue;
+            CalculatePeriodDateRange("Month", year, month, out fromDate, out toDate, out pValue);
 
-            // 1. Pre-flight Check: Kiểm tra dữ liệu tháng
-            bool hasCd45Data = _scheduledReportDA.CheckDataAvailability("TCV_CD45", year, month);
+            log.Info($"[PeriodicReportExportJob] Bắt đầu xử lý xuất báo cáo tự động {pValue} (Từ {fromDate} đến {toDate}) ({triggerType})...");
+
+            // 1. Pre-flight Check: Kiểm tra dữ liệu tháng theo chu kỳ 26-25
+            bool hasCd45Data = _scheduledReportDA.CheckDataAvailability("TCV_CD45", year, month, "Month");
 
             if (!hasCd45Data)
             {
-                string warnMsg = $"⚠️ [HỆ THỐNG BVTL] Tạm hoãn xuất tự động báo cáo tháng {month:D2}/{year}: Chưa phát hiện dữ liệu nhập từ các tỉnh trong CSDL. Hệ thống sẽ giữ nguyên và thử lại vào chu kỳ tiếp theo.";
+                string warnMsg = $"⚠️ [HỆ THỐNG BVTL] Tạm hoãn xuất tự động báo cáo {pValue} (Từ {fromDate} đến {toDate}): Chưa phát hiện dữ liệu nhập từ các tỉnh trong CSDL. Hệ thống sẽ giữ nguyên và thử lại vào chu kỳ tiếp theo.";
                 log.Warn(warnMsg);
                 await telegram.SendMessageAsync(warnMsg);
 
@@ -88,9 +136,9 @@ namespace WebApp.Services
                 _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                 {
                     ReportType = "ALL",
-                    ReportName = $"Tự động xuất báo cáo tháng {month:D2}/{year}",
+                    ReportName = $"Tự động xuất báo cáo {pValue}",
                     PeriodType = "Month",
-                    PeriodValue = $"Tháng {month:D2}/{year}",
+                    PeriodValue = pValue,
                     Year = year,
                     Month = month,
                     FileName = "NONE",
@@ -107,15 +155,15 @@ namespace WebApp.Services
             }
 
             // 2. Xuất Báo cáo TCV CD45 & Báo cáo Hoạt động CD45
-            var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy);
+            var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
             results.Add(resTCV);
 
-            var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy);
+            var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
             results.Add(resHD);
 
             // 3. Bắn thông báo Telegram tổng kết
             int successCount = results.Count(r => r.Success);
-            string summaryMsg = $"🎉 [HỆ THỐNG BVTL] Đã hoàn tất xuất báo cáo định kỳ tháng {month:D2}/{year} ({triggerType}):\n" +
+            string summaryMsg = $"🎉 [HỆ THỐNG BVTL] Đã hoàn tất xuất báo cáo định kỳ {pValue} (Từ {fromDate} đến {toDate}) ({triggerType}):\n" +
                                 string.Join("\n", results.Select(r => (r.Success ? "✅ " : "❌ ") + r.Message)) +
                                 $"\n👉 Quản trị viên và cán bộ dự án có thể tra cứu và tải trực tiếp tại menu: Báo Cáo Định Kỳ.";
 
@@ -125,16 +173,21 @@ namespace WebApp.Services
             return results;
         }
 
-        public async Task<ReportExportResult> ExportTCVCD45ZipAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User")
+        public async Task<ReportExportResult> ExportTCVCD45ZipAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null)
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
 
             try
             {
-                var daysInMonth = DateTime.DaysInMonth(year, month);
-                string fromDate = $"01/{month:D2}/{year}";
-                string toDate = $"{daysInMonth:D2}/{month:D2}/{year}";
+                string fromDate = customFromDate;
+                string toDate = customToDate;
+                string pValue = periodValue;
+
+                if (string.IsNullOrEmpty(fromDate) || string.IsNullOrEmpty(toDate))
+                {
+                    CalculatePeriodDateRange(periodType ?? "Month", year, month, out fromDate, out toDate, out pValue);
+                }
 
                 var listTCV = _baoCaoCD45DA.GetListTCV(cityCode, maNhom);
                 if (listTCV == null || listTCV.Count == 0)
@@ -148,7 +201,15 @@ namespace WebApp.Services
                 string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_ALL";
                 if (!string.IsNullOrEmpty(maNhom)) suffix += $"_{maNhom}";
 
-                string zipFileName = $"BaoCao_TCV_CD45_Thang{month:D2}_{year}{suffix}.zip";
+                string periodTag;
+                if (periodType == "Quarter" || periodType == "Quy")
+                    periodTag = $"Quy{month}_{year}";
+                else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                    periodTag = $"Nam{year}";
+                else
+                    periodTag = $"Thang{month:D2}_{year}";
+
+                string zipFileName = $"BaoCao_TCV_CD45_{periodTag}{suffix}.zip";
                 string zipFilePath = Path.Combine(storageDir, zipFileName);
 
                 if (File.Exists(zipFilePath))
@@ -202,8 +263,8 @@ namespace WebApp.Services
                     {
                         ReportType = "TCV_CD45",
                         ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
-                        PeriodType = "Month",
-                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        PeriodType = periodType ?? "Month",
+                        PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
                         Month = month,
                         MaDuAn = "CD45",
@@ -235,8 +296,8 @@ namespace WebApp.Services
                     {
                         ReportType = "TCV_CD45",
                         ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
-                        PeriodType = "Month",
-                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        PeriodType = periodType ?? "Month",
+                        PeriodValue = periodValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
                         Month = month,
                         MaDuAn = "CD45",
@@ -255,27 +316,40 @@ namespace WebApp.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<ReportExportResult> ExportHoatDongCD45ExcelAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User")
+        public async Task<ReportExportResult> ExportHoatDongCD45ExcelAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null)
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
 
             try
             {
-                var daysInMonth = DateTime.DaysInMonth(year, month);
-                string fromDate = $"01/{month:D2}/{year}";
-                string toDate = $"{daysInMonth:D2}/{month:D2}/{year}";
+                string fromDate = customFromDate;
+                string toDate = customToDate;
+                string pValue = periodValue;
+
+                if (string.IsNullOrEmpty(fromDate) || string.IsNullOrEmpty(toDate))
+                {
+                    CalculatePeriodDateRange(periodType ?? "Month", year, month, out fromDate, out toDate, out pValue);
+                }
 
                 var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, cityCode, maNhom, null);
                 string storageDir = GetStorageDirectory(year, month);
                 string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_TOANQUOC";
 
-                string fileName = $"BaoCao_HoatDong_CD45_Thang{month:D2}_{year}{suffix}.xlsx";
+                string periodTag;
+                if (periodType == "Quarter" || periodType == "Quy")
+                    periodTag = $"Quy{month}_{year}";
+                else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                    periodTag = $"Nam{year}";
+                else
+                    periodTag = $"Thang{month:D2}_{year}";
+
+                string fileName = $"BaoCao_HoatDong_CD45_{periodTag}{suffix}.xlsx";
                 string filePath = Path.Combine(storageDir, fileName);
 
                 using (var wb = new XLWorkbook())
                 {
-                    var ws = wb.Worksheets.Add($"CD45_T{month}_{year}");
+                    var ws = wb.Worksheets.Add($"CD45_{periodTag}");
                     BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, cityCode ?? "Toàn quốc", maNhom ?? "Tất cả nhóm");
                     wb.SaveAs(filePath);
                 }
@@ -298,8 +372,8 @@ namespace WebApp.Services
                     {
                         ReportType = "HOATDONG_CD45",
                         ReportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45",
-                        PeriodType = "Month",
-                        PeriodValue = $"Tháng {month:D2}/{year}",
+                        PeriodType = periodType ?? "Month",
+                        PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
                         Month = month,
                         MaDuAn = "CD45",

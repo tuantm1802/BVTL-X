@@ -108,6 +108,7 @@ namespace Data.Admin
                     WHERE [ReportType] = @ReportType
                       AND [Year] = @Year
                       AND ISNULL([Month], 0) = ISNULL(@Month, 0)
+                      AND ISNULL([PeriodType], 'Month') = ISNULL(@PeriodType, 'Month')
                       AND ISNULL([MaDuAn], '') = ISNULL(@MaDuAn, '')
                       AND ISNULL([CityCode], '') = ISNULL(@CityCode, '')
                       AND ISNULL([MaNhom], '') = ISNULL(@MaNhom, '')
@@ -119,6 +120,7 @@ namespace Data.Admin
                         findCmd.Parameters.AddWithValue("@ReportType", (object)model.ReportType ?? DBNull.Value);
                         findCmd.Parameters.AddWithValue("@Year", model.Year);
                         findCmd.Parameters.AddWithValue("@Month", (object)model.Month ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@PeriodType", (object)model.PeriodType ?? "Month");
                         findCmd.Parameters.AddWithValue("@MaDuAn", (object)model.MaDuAn ?? DBNull.Value);
                         findCmd.Parameters.AddWithValue("@CityCode", (object)model.CityCode ?? DBNull.Value);
                         findCmd.Parameters.AddWithValue("@MaNhom", (object)model.MaNhom ?? DBNull.Value);
@@ -274,7 +276,7 @@ namespace Data.Admin
             }
         }
 
-        public List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows)
+        public List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows, string periodType = null)
         {
             var list = new List<ExportedReportLogModel>();
             totalRows = 0;
@@ -295,6 +297,11 @@ namespace Data.Admin
                     {
                         filter += " AND ReportType = @ReportType";
                         parameters.Add(new SqlParameter("@ReportType", reportType));
+                    }
+                    if (!string.IsNullOrEmpty(periodType))
+                    {
+                        filter += " AND PeriodType = @PeriodType";
+                        parameters.Add(new SqlParameter("@PeriodType", periodType));
                     }
                     if (year.HasValue && year.Value > 0)
                     {
@@ -510,39 +517,61 @@ namespace Data.Admin
             }
         }
 
-        public bool CheckDataAvailability(string reportType, int year, int month)
+        public bool CheckDataAvailability(string reportType, int year, int month, string periodType = "Month")
         {
             try
             {
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     conn.Open();
-                    string fromDateStr = $"01/{month:D2}/{year}";
-                    var daysInMonth = DateTime.DaysInMonth(year, month);
-                    string toDateStr = $"{daysInMonth:D2}/{month:D2}/{year}";
+
+                    DateTime fromDate;
+                    DateTime toDate;
+
+                    if (periodType == "Quarter" || periodType == "Quy")
+                    {
+                        switch (month)
+                        {
+                            case 1:
+                                fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
+                                toDate = new DateTime(year, 3, 25, 23, 59, 59);
+                                break;
+                            case 2:
+                                fromDate = new DateTime(year, 3, 26, 0, 0, 0);
+                                toDate = new DateTime(year, 6, 25, 23, 59, 59);
+                                break;
+                            case 3:
+                                fromDate = new DateTime(year, 6, 26, 0, 0, 0);
+                                toDate = new DateTime(year, 9, 25, 23, 59, 59);
+                                break;
+                            case 4:
+                            default:
+                                fromDate = new DateTime(year, 9, 26, 0, 0, 0);
+                                toDate = new DateTime(year, 12, 25, 23, 59, 59);
+                                break;
+                        }
+                    }
+                    else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                    {
+                        fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
+                        toDate = new DateTime(year, 12, 25, 23, 59, 59);
+                    }
+                    else // Month (Tháng: từ 26 tháng trước đến 25 tháng này)
+                    {
+                        int prevMonth = month == 1 ? 12 : month - 1;
+                        int prevYear = month == 1 ? year - 1 : year;
+                        fromDate = new DateTime(prevYear, prevMonth, 26, 0, 0, 0);
+                        toDate = new DateTime(year, month, 25, 23, 59, 59);
+                    }
 
                     if (reportType == "TCV_CD45" || reportType == "HOATDONG_CD45")
                     {
-                        // Kiểm tra bảng CD45_KHACH_HANG hoặc gọi SP_CD45_GetBaoCao xem có tổng > 0 không
-                        const string sql = @"
-                        SELECT TOP 1 1 
-                        FROM [CD45_KHACH_HANG] 
-                        WHERE CREATED_DATE >= @FromDate AND CREATED_DATE <= @ToDate";
-
-                        using (var cmd = new SqlCommand(sql, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@FromDate", new DateTime(year, month, 1));
-                            cmd.Parameters.AddWithValue("@ToDate", new DateTime(year, month, daysInMonth, 23, 59, 59));
-                            var val = cmd.ExecuteScalar();
-                            if (val != null) return true;
-                        }
-
-                        // Kiểm tra bổ sung qua SP_CD45_GetBaoCao
+                        // Kiểm tra dữ liệu qua SP_CD45_GetBaoCao
                         const string spSql = "EXEC SP_CD45_GetBaoCao @FromDate, @ToDate, NULL, NULL, NULL";
                         using (var cmdSp = new SqlCommand(spSql, conn))
                         {
-                            cmdSp.Parameters.AddWithValue("@FromDate", new DateTime(year, month, 1));
-                            cmdSp.Parameters.AddWithValue("@ToDate", new DateTime(year, month, daysInMonth, 23, 59, 59));
+                            cmdSp.Parameters.AddWithValue("@FromDate", fromDate);
+                            cmdSp.Parameters.AddWithValue("@ToDate", toDate);
                             using (var r = cmdSp.ExecuteReader())
                             {
                                 while (r.Read())
@@ -563,8 +592,8 @@ namespace Data.Admin
 
                         using (var cmd = new SqlCommand(sqlBvtl, conn))
                         {
-                            cmd.Parameters.AddWithValue("@FromDate", new DateTime(year, month, 1));
-                            cmd.Parameters.AddWithValue("@ToDate", new DateTime(year, month, daysInMonth, 23, 59, 59));
+                            cmd.Parameters.AddWithValue("@FromDate", fromDate);
+                            cmd.Parameters.AddWithValue("@ToDate", toDate);
                             var val = cmd.ExecuteScalar();
                             return val != null;
                         }
@@ -573,7 +602,7 @@ namespace Data.Admin
             }
             catch (Exception ex)
             {
-                log.Error($"Lỗi CheckDataAvailability ({reportType}, {month}/{year}): " + ex.Message);
+                log.Error($"Lỗi CheckDataAvailability ({reportType}, {month}/{year}, {periodType}): " + ex.Message);
                 // Nếu lỗi query, trả về true để cho phép chạy thay vì chặn hoàn toàn
                 return true;
             }

@@ -5,6 +5,7 @@ using log4net;
 using Model.ModelExtend.Base;
 using Model.ModelExtend.Report;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -80,12 +81,12 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetLogs(string reportType = null, int? year = null, int? month = null, int pageIndex = 1, int pageSize = 15)
+        public JsonResult GetLogs(string reportType = null, int? year = null, int? month = null, int pageIndex = 1, int pageSize = 15, string periodType = null)
         {
             try
             {
                 int totalRows = 0;
-                var logs = _scheduledReportDA.GetExportLogs(reportType, year, month, pageIndex, pageSize, out totalRows);
+                var logs = _scheduledReportDA.GetExportLogs(reportType, year, month, pageIndex, pageSize, out totalRows, periodType);
                 return Json(new
                 {
                     Success = true,
@@ -104,7 +105,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL")
+        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL", string periodType = "Month", int? quarter = null)
         {
             try
             {
@@ -112,27 +113,59 @@ namespace WebApp.Controllers
                 string userName = user != null ? user.UserName : "Admin";
 
                 var now = DateTime.Now;
-                int targetYear = year.HasValue && year.Value > 2000 ? year.Value : (now.Month == 1 ? now.Year - 1 : now.Year);
-                int targetMonth = month.HasValue && month.Value >= 1 && month.Value <= 12 ? month.Value : (now.Month == 1 ? 12 : now.Month - 1);
+                int targetYear = year.HasValue && year.Value > 2000 ? year.Value : now.Year;
+                string pType = !string.IsNullOrEmpty(periodType) ? periodType : "Month";
+                int periodNum = 1;
+
+                if (pType == "Quarter" || pType == "Quy")
+                {
+                    periodNum = quarter.HasValue && quarter.Value >= 1 && quarter.Value <= 4
+                        ? quarter.Value
+                        : ((now.Month - 1) / 3 + 1);
+                }
+                else if (pType == "Year" || pType == "Nam" || pType == "12Thang")
+                {
+                    periodNum = targetYear;
+                }
+                else // Month
+                {
+                    pType = "Month";
+                    periodNum = month.HasValue && month.Value >= 1 && month.Value <= 12
+                        ? month.Value
+                        : (now.Month == 1 ? 12 : now.Month - 1);
+                    if (!month.HasValue && now.Month == 1 && !year.HasValue)
+                    {
+                        targetYear = now.Year - 1;
+                    }
+                }
+
+                string fromDate, toDate, pValue;
+                ReportExportService.CalculatePeriodDateRange(pType, targetYear, periodNum, out fromDate, out toDate, out pValue);
 
                 if (reportType == "TCV_CD45")
                 {
-                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, targetMonth, null, null, "Manual", userName);
+                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else if (reportType == "HOATDONG_CD45")
                 {
-                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, targetMonth, null, null, "Manual", userName);
+                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else // ALL (Xuất cả TCV và Hoạt động CD45)
                 {
-                    var results = await _reportExportService.ExecuteAllMonthlyReportsAsync(targetYear, targetMonth, "Manual", userName);
+                    var results = new List<ReportExportResult>();
+                    var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    results.Add(resTCV);
+
+                    var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    results.Add(resHD);
+
                     int success = results.FindAll(r => r.Success).Count;
                     return Json(new
                     {
                         Success = success > 0,
-                        Message = $"Đã hoàn thành xử lý {results.Count} báo cáo ({success} thành công).",
+                        Message = $"Đã hoàn thành xuất {results.Count} báo cáo cho {pValue} (Từ {fromDate} đến {toDate}) ({success} thành công).",
                         Results = results
                     });
                 }

@@ -61,6 +61,11 @@ namespace WebApp.Controllers
         {
             try
             {
+                if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+                {
+                    return Json(new { Success = false, Message = dateError });
+                }
+
                 var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null);
                 var jsonResult = Json(new { Success = true, Data = data });
                 jsonResult.MaxJsonLength = int.MaxValue;
@@ -79,6 +84,11 @@ namespace WebApp.Controllers
         {
             try
             {
+                if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+                {
+                    return Json(new { Success = false, Message = dateError });
+                }
+
                 var list = _BaoCaoCD45DA.GetDrillDown(ChiTieuCode, FromDate, ToDate, MaTinh, MaNhom, null, DoiTuong);
                 var jsonResult = Json(new { Success = true, Data = list, Total = list.Count });
                 jsonResult.MaxJsonLength = int.MaxValue;
@@ -91,9 +101,14 @@ namespace WebApp.Controllers
             }
         }
 
-        [HttpPost]
+        [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
         public ActionResult ExportExcel(string FromDate, string ToDate, string MaTinh, string MaNhom)
         {
+            if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+            {
+                return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
+            }
+
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null);
             using (var workbook = new XLWorkbook())
             {

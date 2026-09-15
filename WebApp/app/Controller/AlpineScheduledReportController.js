@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () => {
         // Filter & Paging State
         filter: {
             reportType: '',
+            periodType: '',
             year: new Date().getFullYear(),
             month: ''
         },
@@ -33,6 +34,8 @@ document.addEventListener('alpine:init', () => {
         // Trigger Run Now Modal State
         manualExport: {
             reportType: 'ALL',
+            periodType: 'Month',
+            quarter: Math.floor((new Date().getMonth() - 1) / 3) + 1,
             year: new Date().getFullYear(),
             month: new Date().getMonth() === 0 ? 12 : new Date().getMonth()
         },
@@ -113,6 +116,7 @@ document.addEventListener('alpine:init', () => {
 
             const params = new URLSearchParams({
                 reportType: this.filter.reportType || '',
+                periodType: this.filter.periodType || '',
                 year: this.filter.year || '',
                 month: this.filter.month || '',
                 pageIndex: this.pageIndex,
@@ -139,13 +143,34 @@ document.addEventListener('alpine:init', () => {
                 });
         },
 
+        getComputedDateRangeText() {
+            var y = parseInt(this.manualExport.year) || new Date().getFullYear();
+            if (this.manualExport.periodType === 'Quarter') {
+                var q = parseInt(this.manualExport.quarter) || 1;
+                if (q === 1) return '26/12/' + (y - 1) + ' đến 25/03/' + y + ' (Quý I/' + y + ')';
+                if (q === 2) return '26/03/' + y + ' đến 25/06/' + y + ' (Quý II/' + y + ')';
+                if (q === 3) return '26/06/' + y + ' đến 25/09/' + y + ' (Quý III/' + y + ')';
+                return '26/09/' + y + ' đến 25/12/' + y + ' (Quý IV/' + y + ')';
+            } else if (this.manualExport.periodType === 'Year') {
+                return '26/12/' + (y - 1) + ' đến 25/12/' + y + ' (Cả Năm ' + y + ')';
+            } else {
+                var m = parseInt(this.manualExport.month) || 1;
+                var prevM = m === 1 ? 12 : m - 1;
+                var prevY = m === 1 ? y - 1 : y;
+                var strPrevM = prevM < 10 ? '0' + prevM : prevM;
+                var strM = m < 10 ? '0' + m : m;
+                return '26/' + strPrevM + '/' + prevY + ' đến 25/' + strM + '/' + y + ' (Tháng ' + m + '/' + y + ')';
+            }
+        },
+
         triggerExportNow() {
-            if (!this.manualExport.year || !this.manualExport.month) {
-                toastr.error('Vui lòng chọn năm và tháng cần xuất báo cáo.');
+            if (!this.manualExport.year) {
+                toastr.error('Vui lòng chọn năm cần xuất báo cáo.');
                 return;
             }
 
-            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)} cho Tháng ${this.manualExport.month}/${this.manualExport.year} ngay bây giờ không?`;
+            var periodDesc = this.getComputedDateRangeText();
+            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)} cho kỳ:\n${periodDesc}\nngay bây giờ không?`;
             if (!confirm(confirmMsg)) return;
 
             this.isExporting = true;
@@ -154,6 +179,8 @@ document.addEventListener('alpine:init', () => {
             const formData = new URLSearchParams();
             formData.append('year', this.manualExport.year);
             formData.append('month', this.manualExport.month);
+            formData.append('periodType', this.manualExport.periodType);
+            formData.append('quarter', this.manualExport.quarter);
             formData.append('reportType', this.manualExport.reportType);
 
             fetch('/ScheduledReport/TriggerExportNow', {

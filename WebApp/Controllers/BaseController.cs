@@ -26,7 +26,7 @@ namespace WebApp.Controllers
         readonly IUserDA _userDA;
         private static readonly ISystemMonitorDA _systemMonitorDA = new SystemMonitorDA();
         ITokenService _ITokenService = new TokenService();
-        private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"].ToString();
+        private static readonly string IsDev = ConfigurationManager.AppSettings["IsDev"]?.ToString() ?? "0";
 
         public BaseController(IPageMenuDA pageMenuDA = null, IUserDA userDA = null)
         {
@@ -249,6 +249,49 @@ namespace WebApp.Controllers
             log4net.GlobalContext.Properties["IpAddress"] = (filterContext.HttpContext.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ?? filterContext.HttpContext.Request.ServerVariables["REMOTE_ADDR"]).Split(',')[0].Trim();
             var logger = new Common.ActionLogger();
             logger.InsertRequestAudit(filterContext);
+        }
+
+        protected bool ValidateDateRange(string fromDateStr, string toDateStr, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(fromDateStr))
+            {
+                errorMessage = "Vui lòng nhập 'Từ ngày'!";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(toDateStr))
+            {
+                errorMessage = "Vui lòng nhập 'Đến ngày'!";
+                return false;
+            }
+
+            string[] formats = { "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy", "yyyy-MM-dd", "yyyy/MM/dd" };
+            DateTime dFrom, dTo;
+            if (!DateTime.TryParseExact(fromDateStr.Trim(), formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dFrom))
+            {
+                if (!DateTime.TryParse(fromDateStr.Trim(), out dFrom))
+                {
+                    errorMessage = "'Từ ngày' không đúng định dạng (dd/MM/yyyy)!";
+                    return false;
+                }
+            }
+
+            if (!DateTime.TryParseExact(toDateStr.Trim(), formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dTo))
+            {
+                if (!DateTime.TryParse(toDateStr.Trim(), out dTo))
+                {
+                    errorMessage = "'Đến ngày' không đúng định dạng (dd/MM/yyyy)!";
+                    return false;
+                }
+            }
+
+            if (dTo.Date < dFrom.Date)
+            {
+                errorMessage = "Khoảng thời gian không hợp lệ: 'Đến ngày' không được nhỏ hơn 'Từ ngày' (Từ ngày phải nhỏ hơn hoặc bằng Đến ngày)!";
+                return false;
+            }
+
+            return true;
         }
     }
 }

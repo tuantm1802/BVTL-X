@@ -22,6 +22,7 @@ document.addEventListener('alpine:init', function () {
             nam: new Date().getFullYear(),
             fromDate: '',
             toDate: '',
+            dateError: '',
             selectedCity: '',
             selectedNhom: '',
             selectedTCV: '',
@@ -48,6 +49,74 @@ document.addEventListener('alpine:init', function () {
                 return Number(val).toLocaleString('vi-VN');
             },
 
+            parseDateVN: function (dateStr) {
+                if (!dateStr || typeof dateStr !== 'string') return null;
+                var parts = dateStr.trim().split('/');
+                if (parts.length === 3) {
+                    var day = parseInt(parts[0], 10);
+                    var month = parseInt(parts[1], 10) - 1;
+                    var year = parseInt(parts[2], 10);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        var d = new Date(year, month, day);
+                        if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
+                            return d;
+                        }
+                    }
+                }
+                var isoParts = dateStr.trim().split('-');
+                if (isoParts.length === 3) {
+                    var year = parseInt(isoParts[0], 10);
+                    var month = parseInt(isoParts[1], 10) - 1;
+                    var day = parseInt(isoParts[2], 10);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        var d = new Date(year, month, day);
+                        if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
+                            return d;
+                        }
+                    }
+                }
+                return null;
+            },
+
+            validateDateRange: function (showToast) {
+                var self = this;
+                if (showToast === undefined) showToast = true;
+
+                if (!self.fromDate || !self.fromDate.trim()) {
+                    self.dateError = "Vui lòng nhập 'Từ ngày'!";
+                    if (showToast && window.toastr) toastr.error(self.dateError);
+                    return false;
+                }
+                if (!self.toDate || !self.toDate.trim()) {
+                    self.dateError = "Vui lòng nhập 'Đến ngày'!";
+                    if (showToast && window.toastr) toastr.error(self.dateError);
+                    return false;
+                }
+
+                var dFrom = self.parseDateVN(self.fromDate);
+                if (!dFrom) {
+                    self.dateError = "'Từ ngày' không đúng định dạng dd/mm/yyyy!";
+                    if (showToast && window.toastr) toastr.error(self.dateError);
+                    return false;
+                }
+
+                var dTo = self.parseDateVN(self.toDate);
+                if (!dTo) {
+                    self.dateError = "'Đến ngày' không đúng định dạng dd/mm/yyyy!";
+                    if (showToast && window.toastr) toastr.error(self.dateError);
+                    return false;
+                }
+
+                if (dTo < dFrom) {
+                    self.dateError = "Khoảng thời gian không hợp lệ: 'Đến ngày' không được nhỏ hơn 'Từ ngày' (Từ ngày phải nhỏ hơn hoặc bằng Đến ngày)!";
+                    if (showToast && window.toastr) toastr.error(self.dateError);
+                    return false;
+                }
+
+                self.dateError = '';
+                return true;
+            },
+
             updateDateRange: function () {
                 var self = this;
                 var y = parseInt(self.nam) || new Date().getFullYear();
@@ -61,6 +130,7 @@ document.addEventListener('alpine:init', function () {
 
                 self.fromDate = '26/' + strPrevMonth + '/' + prevYear;
                 self.toDate = '25/' + strM + '/' + y;
+                self.dateError = '';
 
                 if (self.selectedTCVObj) {
                     self.previewData();
@@ -275,6 +345,9 @@ document.addEventListener('alpine:init', function () {
 
             previewData: function () {
                 var self = this;
+                if (!self.validateDateRange(true)) {
+                    return;
+                }
                 if (!self.selectedTCVObj) {
                     if (window.toastr) toastr.warning("Vui lòng chọn 1 Tiếp cận viên để xem trước.");
                     return;
@@ -307,6 +380,9 @@ document.addEventListener('alpine:init', function () {
 
             exportSingle: function () {
                 var self = this;
+                if (!self.validateDateRange(true)) {
+                    return;
+                }
                 if (!self.selectedTCVObj) {
                     if (window.toastr) toastr.warning("Vui lòng chọn 1 Tiếp cận viên.");
                     return;
@@ -338,8 +414,15 @@ document.addEventListener('alpine:init', function () {
                 document.body.removeChild(form);
             },
 
+            exportExcel: function () {
+                this.exportSingle();
+            },
+
             exportBatchZip: function () {
                 var self = this;
+                if (!self.validateDateRange(true)) {
+                    return;
+                }
                 if (!self.checkedTCVs || self.checkedTCVs.length === 0) {
                     if (window.toastr) toastr.warning("Vui lòng tích chọn ít nhất 1 TCV để xuất file ZIP hàng loạt.");
                     return;

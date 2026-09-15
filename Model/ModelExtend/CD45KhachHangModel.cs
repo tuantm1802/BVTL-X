@@ -159,6 +159,7 @@ namespace Model.ModelExtend
         public string DANH_GIA_HIEN_TAI { get; set; }
         public string CAN_THIEP_AP_DUNG { get; set; }
         public DateTime? NGAY_HEN_TIEP { get; set; }
+        public int SoThuTu { get; set; }
     }
 
     public class CD45_NhomTcvViewModel

@@ -92,12 +92,12 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Từ ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Đến ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" x-model="toDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
@@ -118,6 +118,13 @@
                             <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
                         </template>
                     </select>
+                </div>
+
+                <div class="col-12" x-show="dateError" style="display: none;">
+                    <div class="alert alert-danger py-1 px-3 mb-2 small font-weight-bold d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle mr-2 fa-lg"></i>
+                        <span x-text="dateError"></span>
+                    </div>
                 </div>
             </div>
 
@@ -149,11 +156,14 @@
                                 <label class="font-weight-bold small m-0 text-danger">
                                     <i class="fas fa-tasks mr-1"></i> Danh sách TCV xuất file ZIP hàng loạt (<span x-text="checkedTCVs.length + '/' + filteredTCVs.length"></span> được chọn):
                                 </label>
-                                <div>
-                                    <label class="small m-0 text-muted cursor-pointer">
+                                <div class="d-flex align-items-center">
+                                    <label class="small m-0 text-muted cursor-pointer mr-3">
                                         <input type="checkbox" x-model="isSelectAll" x-on:change="toggleSelectAll()" />
                                         <span class="font-weight-bold">Chọn tất cả</span>
                                     </label>
+                                    <button type="button" class="btn btn-xs btn-danger shadow-sm font-weight-bold px-2 py-1" x-on:click="exportBatchZip()">
+                                        <i class="fas fa-file-archive mr-1"></i> Xuất hàng loạt (.ZIP)
+                                    </button>
                                 </div>
                             </div>
                             <div class="border rounded p-2 bg-white" style="max-height: 140px; overflow-y: auto;">
@@ -279,8 +289,10 @@
                 } else if (modelName === 'toDate') {
                     comp.toDate = val;
                 }
-                if (comp && comp.selectedTCVObj) {
-                    comp.previewData();
+                if (comp.validateDateRange(false)) {
+                    if (comp.selectedTCVObj) {
+                        comp.previewData();
+                    }
                 }
             });
 

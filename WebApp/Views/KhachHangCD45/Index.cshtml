@@ -903,16 +903,19 @@
                             <div class="tab-pane fade" id="tab-tuvan">
                                 <!-- 1. Tư vấn cá nhân -->
                                 <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-3">
-                                    <div class="card-header bg-white py-2 border-bottom">
+                                    <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
                                         <h6 class="fw-bold text-primary mb-0">
                                             <i class="fas fa-comments me-2"></i>1. Lịch sử Tư vấn Cá nhân (Lần 1 & Lần 2+)
                                         </h6>
+                                        <span class="badge bg-light text-dark border" 
+                                              x-show="selectedCustomer?.ListTuVan?.length"
+                                              x-text="'Tổng cộng: ' + selectedCustomer?.ListTuVan?.length + ' lần tư vấn'"></span>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-modern table-hover align-middle mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 90px;">Giai đoạn</th>
+                                                    <th style="width: 125px;">Lần tư vấn</th>
                                                     <th style="width: 110px;">Ngày tư vấn</th>
                                                     <th>Tiếp cận viên</th>
                                                     <th>Địa điểm</th>
@@ -924,11 +927,18 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <template x-for="tv in selectedCustomer?.ListTuVan" :key="tv.LanTuVan + '_' + tv.REPEAT_INSTANCE + '_' + tv.NGAY_TU_VAN">
+                                                <template x-for="(tv, idx) in selectedCustomer?.ListTuVan" :key="tv.LanTuVan + '_' + tv.REPEAT_INSTANCE + '_' + (tv.NGAY_TU_VAN || '') + '_' + idx">
                                                     <tr>
                                                         <td>
-                                                            <span class="badge" :class="tv.LanTuVan === 1 ? 'bg-primary-subtle text-primary border border-primary' : 'bg-success-subtle text-success border border-success'"
-                                                                  x-text="tv.LanTuVan === 1 ? 'Lần 1' : ('Lần ' + tv.REPEAT_INSTANCE)"></span>
+                                                            <div class="d-flex align-items-center gap-1">
+                                                                <span class="badge" 
+                                                                      :class="tv.LanTuVan === 1 ? 'bg-primary-subtle text-primary border border-primary' : 'bg-success-subtle text-success border border-success'"
+                                                                      x-text="'Lần ' + (tv.SoThuTu || (idx + 1))"></span>
+                                                                <span class="badge bg-light text-secondary border px-1" 
+                                                                      style="font-size: 0.7rem;" 
+                                                                      :title="tv.LanTuVan === 1 ? 'Biểu mẫu F7: Tư vấn lần 1 (Ban đầu)' : ('Biểu mẫu F8: Tư vấn tiếp theo (Đợt ' + tv.REPEAT_INSTANCE + ')')"
+                                                                      x-text="tv.LanTuVan === 1 ? 'F7' : 'F8'"></span>
+                                                            </div>
                                                         </td>
                                                         <td class="fw-semibold text-secondary" x-text="formatDate(tv.NGAY_TU_VAN)"></td>
                                                         <td class="fw-semibold" x-text="tv.TenTCV"></td>

@@ -197,5 +197,106 @@ namespace BVTL.Tests
                 }
             }
         }
+
+        [TestMethod]
+        public void ReportExportService_CalculatePeriodDateRange_ShouldFollow26To25Rule()
+        {
+            string fromDate, toDate, periodValue;
+
+            // 1. Month 8/2026 -> 26/07/2026 to 25/08/2026
+            ReportExportService.CalculatePeriodDateRange("Month", 2026, 8, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/07/2026", fromDate);
+            Assert.AreEqual("25/08/2026", toDate);
+            Assert.AreEqual("Tháng 08/2026", periodValue);
+
+            // 2. Month 1/2026 -> 26/12/2025 to 25/01/2026
+            ReportExportService.CalculatePeriodDateRange("Month", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/12/2025", fromDate);
+            Assert.AreEqual("25/01/2026", toDate);
+            Assert.AreEqual("Tháng 01/2026", periodValue);
+
+            // 3. Quarter 1/2026 -> 26/12/2025 to 25/03/2026
+            ReportExportService.CalculatePeriodDateRange("Quarter", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/12/2025", fromDate);
+            Assert.AreEqual("25/03/2026", toDate);
+            Assert.AreEqual("Quý I/2026", periodValue);
+
+            // 4. Quarter 2/2026 -> 26/03/2026 to 25/06/2026
+            ReportExportService.CalculatePeriodDateRange("Quarter", 2026, 2, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/03/2026", fromDate);
+            Assert.AreEqual("25/06/2026", toDate);
+            Assert.AreEqual("Quý II/2026", periodValue);
+
+            // 5. Quarter 3/2026 -> 26/06/2026 to 25/09/2026
+            ReportExportService.CalculatePeriodDateRange("Quarter", 2026, 3, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/06/2026", fromDate);
+            Assert.AreEqual("25/09/2026", toDate);
+            Assert.AreEqual("Quý III/2026", periodValue);
+
+            // 6. Quarter 4/2026 -> 26/09/2026 to 25/12/2026
+            ReportExportService.CalculatePeriodDateRange("Quarter", 2026, 4, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/09/2026", fromDate);
+            Assert.AreEqual("25/12/2026", toDate);
+            Assert.AreEqual("Quý IV/2026", periodValue);
+
+            // 7. Year 2026 -> 26/12/2025 to 25/12/2026
+            ReportExportService.CalculatePeriodDateRange("Year", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("26/12/2025", fromDate);
+            Assert.AreEqual("25/12/2026", toDate);
+            Assert.AreEqual("Năm 2026", periodValue);
+        }
+
+        [TestMethod]
+        public void ScheduledReportDA_CheckDataAvailability_ShouldSupportPeriodTypes()
+        {
+            var da = new ScheduledReportDA();
+
+            // Month check (26/07/2026 to 25/08/2026)
+            bool monthHasData = da.CheckDataAvailability("HOAT_DONG_CD45", 2026, 8, "Month");
+            Assert.IsTrue(monthHasData, "August 2026 should have data with 26-25 range");
+
+            // Quarter check (Q3/2026: 26/06/2026 to 25/09/2026)
+            bool quarterHasData = da.CheckDataAvailability("HOAT_DONG_CD45", 2026, 3, "Quarter");
+            Assert.IsTrue(quarterHasData, "Q3 2026 should have data with 26-25 range");
+
+            // Year check (2026: 26/12/2025 to 25/12/2026)
+            bool yearHasData = da.CheckDataAvailability("HOAT_DONG_CD45", 2026, 1, "Year");
+            Assert.IsTrue(yearHasData, "Year 2026 should have data with 26-25 range");
+        }
+
+        [TestMethod]
+        public void ScheduledReportDA_GetExportLogs_WithPeriodTypeFilter_ShouldSucceed()
+        {
+            var da = new ScheduledReportDA();
+            int totalRows;
+            var logs = da.GetExportLogs(null, null, null, 1, 10, out totalRows, "Month");
+
+            Assert.IsNotNull(logs, "Logs list with periodType filter should not be null");
+            Assert.IsTrue(totalRows >= 0, "Total rows should be >= 0");
+        }
+
+        [TestMethod]
+        public void CD45KhachHangDA_GetCustomerDetail_ShouldNumberTuVanSequentially()
+        {
+            var da = new CD45KhachHangDA();
+            // Test with customer DHY230142 from user request
+            var detail = da.GetCustomerDetail("DHY230142");
+            Assert.IsNotNull(detail, "Detail should not be null for DHY230142");
+            Assert.IsNotNull(detail.ListTuVan, "ListTuVan should not be null");
+            Assert.IsTrue(detail.ListTuVan.Count >= 3, "Customer should have at least 3 tu van sessions");
+
+            // Verify sequential numbering: 1, 2, 3...
+            for (int i = 0; i < detail.ListTuVan.Count; i++)
+            {
+                Assert.AreEqual(i + 1, detail.ListTuVan[i].SoThuTu, $"Session at index {i} must have SoThuTu = {i + 1}");
+            }
+
+            // Verify F7 is first
+            Assert.AreEqual(1, detail.ListTuVan[0].LanTuVan, "First session should be F7 (LanTuVan = 1)");
+            // Verify F8 are next
+            Assert.AreEqual(2, detail.ListTuVan[1].LanTuVan, "Second session should be F8 (LanTuVan = 2)");
+            Assert.AreEqual(2, detail.ListTuVan[2].LanTuVan, "Third session should be F8 (LanTuVan = 2)");
+        }
     }
 }
+

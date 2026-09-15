@@ -72,12 +72,12 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Từ ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Đến ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" x-model="toDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
@@ -98,6 +98,13 @@
                             <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
                         </template>
                     </select>
+                </div>
+
+                <div class="col-12" x-show="dateError" style="display: none;">
+                    <div class="alert alert-danger py-1 px-3 mb-2 small font-weight-bold d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle mr-2 fa-lg"></i>
+                        <span x-text="dateError"></span>
+                    </div>
                 </div>
 
                 <div class="col-md-3 mb-2 d-flex align-items-end">
@@ -269,11 +276,13 @@
             }).on('changeDate', function (e) {
                 var modelName = $(this).attr('x-model');
                 var val = $(this).val();
+                var comp = document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0];
                 if (modelName === 'fromDate') {
-                    document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0].fromDate = val;
+                    comp.fromDate = val;
                 } else if (modelName === 'toDate') {
-                    document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0].toDate = val;
+                    comp.toDate = val;
                 }
+                comp.validateDateRange(false);
             });
         });
     </script>

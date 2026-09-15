@@ -80,6 +80,11 @@ namespace WebApp.Controllers
         {
             try
             {
+                if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+                {
+                    return Json(new { Success = false, Message = dateError });
+                }
+
                 var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV);
                 return Json(new { Success = true, Data = data });
             }
@@ -93,6 +98,11 @@ namespace WebApp.Controllers
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
         public ActionResult ExportSingleExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom)
         {
+            if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+            {
+                return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
+            }
+
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV);
             using (var wb = new XLWorkbook())
             {
@@ -107,12 +117,22 @@ namespace WebApp.Controllers
                 }
             }
         }
+        [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
+        public ActionResult ExportExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom)
+        {
+            return ExportSingleExcel(FromDate, ToDate, MaNhom, MaTCV, TenTCV, TenNhom);
+        }
 
-        [HttpPost]
+        [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
         public ActionResult ExportExcelZip(string FromDate, string ToDate, string DanhSachTCVJson)
         {
             try
             {
+                if (!ValidateDateRange(FromDate, ToDate, out var dateError))
+                {
+                    return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
+                }
+
                 if (string.IsNullOrEmpty(DanhSachTCVJson)) return Content("Vui lòng chọn ít nhất 1 TCV.");
 
                 var listTCV = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CD45_TCV_ItemModel>>(DanhSachTCVJson);

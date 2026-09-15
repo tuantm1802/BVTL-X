@@ -44,3 +44,7 @@ TestResults/
 
 # Dynamically generated build metadata
 /WebApp/version.json
+
+# Exported report archives (keep folder structure via .gitkeep)
+/WebApp/App_Data/ExportedReports/*
+!/WebApp/App_Data/ExportedReports/.gitkeep

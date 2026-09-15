@@ -564,3 +564,54 @@ Sửa lỗi tính toán Mục VI và chuẩn hóa danh sách tên Tiếp cận v
 - `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
 - `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên làm việc 17 (15/09/2026): Kiểm Soát Khoảng Thời Gian Báo Cáo, Chuẩn Hóa Chu Kỳ CD45 (26-25) & Bản Vá v1.4.3
+
+### Mục tiêu:
+Bắt lỗi và ngăn chặn người dùng tìm kiếm/xuất báo cáo khi Đến ngày nhỏ hơn Từ ngày; đánh số thứ tự tuần tự lịch sử tiếp cận của khách hàng; chuẩn hóa chu kỳ tính báo cáo dự án CD45 (từ ngày 26 tháng trước đến 25 tháng này cho Tháng, Quý, Năm) trong hệ thống xuất báo cáo định kỳ ScheduledReport; mở rộng bộ kiểm thử tự động lên 44 tests.
+
+### Các công việc đã hoàn thành:
+1. **Kiểm Soát Tính Hợp Lệ Khoảng Thời Gian (`ValidateDateRange`)**:
+   - Bổ sung phương thức xác thực tập trung `ValidateDateRange` vào `BaseController.cs` kiểm tra định dạng và bắt buộc Từ ngày <= Đến ngày.
+   - Áp dụng vào các Action tìm kiếm và xuất Excel của `BaoCaoCD45Controller.cs` và `BaoCaoTCVCD45Controller.cs`.
+   - Bổ sung kiểm tra phía Client trong `AlpineBaoCaoCD45Controller.js` và `AlpineBaoCaoTCVCD45Controller.js` với cảnh báo trực quan bằng Toastr.
+2. **Đánh Số Thứ Tự Tuần Tự Lịch Sử Tiếp Cận (`SoThuTu`)**:
+   - Thêm trường `SoThuTu` vào `CD45_KhachHang_LichSuTiepCanModel` và cập nhật logic sắp xếp trong `CD45KhachHangDA.cs` để đánh số thứ tự tăng dần 1, 2, 3... (ưu tiên lần đầu F7 ở dòng 1, tiếp đến các lần F8).
+   - Hiển thị cột STT chuẩn hóa trên bảng lịch sử tư vấn tại `Views/KhachHangCD45/Index.cshtml`.
+3. **Chuẩn Hóa Chu Kỳ Tính Báo Cáo CD45 (Ngày 26 đến ngày 25) trong ScheduledReport**:
+   - Thêm hàm `CalculatePeriodDateRange` trong `ReportExportService.cs` tính đúng chu kỳ theo Tháng (26 tháng trước - 25 tháng này), Quý (Q1..Q4) và Năm (26/12 - 25/12).
+   - Tối ưu tên tệp xuất báo cáo và tham số lọc theo loại kỳ `periodType` (Month / Quarter / Year).
+   - Cập nhật bộ lọc và hiển thị loại kỳ trên giao diện `ScheduledReport/Index.cshtml` và `AlpineScheduledReportController.js`.
+4. **Mở Rộng Bộ Kiểm Thử Tự Động (Unit Tests)**:
+   - Thêm 10 bài test mới trong `ExcelReportServiceTests.cs` và `ScheduledReportTests.cs`.
+   - Toàn bộ 44/44 unit tests vượt qua thành công 100% (thời gian chạy ~15s).
+5. **Cấu Hình `.gitignore` & Triển Khai v1.4.3**:
+   - Cập nhật `.gitignore` bỏ qua các tệp báo cáo sinh ra ở runtime trong `App_Data/ExportedReports/*`.
+   - Gắn thẻ release `v1.4.3`, đóng gói Publish và triển khai Patch lên Host IIS qua FTP.
+   - Đối chiếu đồng bộ 100% giữa Local và Host.
+
+### Các tệp đã thay đổi/thêm mới:
+- `.gitignore` (Modified)
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `Data/Admin/CD45KhachHangDA.cs` (Modified)
+- `Data/Admin/ScheduledReportDA.cs` (Modified)
+- `Data/InterfaceDA/Admin/IScheduledReportDA.cs` (Modified)
+- `Model/ModelExtend/CD45KhachHangModel.cs` (Modified)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/BaseController.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (Modified)
+- `WebApp/Services/IReportExportService.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/BaoCaoCD45/Index.cshtml` (Modified)
+- `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (Modified)
+- `WebApp/Views/KhachHangCD45/Index.cshtml` (Modified)
+- `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineBaoCaoCD45Controller.js` (Modified)
+- `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
+- `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
+- `docs/session-log.md` (Modified)

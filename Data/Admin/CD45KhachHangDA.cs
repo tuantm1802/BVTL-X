@@ -379,49 +379,55 @@ namespace Data.Admin
 
             // 6. Tư vấn cá nhân (L1 & L2)
             var sqlTv = @"
-                SELECT 
-                    1 AS LanTuVan,
-                    1 AS REPEAT_INSTANCE,
-                    tv.NGAY_TU_VAN,
-                    tv.MA_TCV,
-                    ISNULL(tcv.TEN_TCV, tv.MA_TCV) AS TenTCV,
-                    tv.DIA_DIEM,
-                    tv.AUDIT_C_SCORE,
-                    tv.PCL5_SCORE,
-                    tv.PCL5_POSITIVE,
-                    tv.STIGMA_SCORE,
-                    tv.TINH_TRANG_SKTT,
-                    tv.NHU_CAU_HO_TRO,
-                    CAST(NULL AS NVARCHAR(MAX)) AS DANH_GIA_HIEN_TAI,
-                    CAST(NULL AS NVARCHAR(MAX)) AS CAN_THIEP_AP_DUNG,
-                    tv.LICH_HEN_TIEP AS NGAY_HEN_TIEP
-                FROM CD45_TU_VAN_L1 tv
-                LEFT JOIN CD45_NHOM_TCV tcv ON tv.MA_NHOM = tcv.MA_NHOM AND tv.MA_TCV = tcv.MA_TCV AND tcv.MADUAN = 'CD45'
-                WHERE tv.RECORD_ID = @RecordId
+                SELECT * FROM (
+                    SELECT 
+                        1 AS LanTuVan,
+                        1 AS REPEAT_INSTANCE,
+                        tv.NGAY_TU_VAN,
+                        tv.MA_TCV,
+                        ISNULL(tcv.TEN_TCV, tv.MA_TCV) AS TenTCV,
+                        tv.DIA_DIEM,
+                        tv.AUDIT_C_SCORE,
+                        tv.PCL5_SCORE,
+                        tv.PCL5_POSITIVE,
+                        tv.STIGMA_SCORE,
+                        tv.TINH_TRANG_SKTT,
+                        tv.NHU_CAU_HO_TRO,
+                        CAST(NULL AS NVARCHAR(MAX)) AS DANH_GIA_HIEN_TAI,
+                        CAST(NULL AS NVARCHAR(MAX)) AS CAN_THIEP_AP_DUNG,
+                        tv.LICH_HEN_TIEP AS NGAY_HEN_TIEP
+                    FROM CD45_TU_VAN_L1 tv
+                    LEFT JOIN CD45_NHOM_TCV tcv ON tv.MA_NHOM = tcv.MA_NHOM AND tv.MA_TCV = tcv.MA_TCV AND tcv.MADUAN = 'CD45'
+                    WHERE tv.RECORD_ID = @RecordId
 
-                UNION ALL
+                    UNION ALL
 
-                SELECT 
-                    2 AS LanTuVan,
-                    tv2.REPEAT_INSTANCE,
-                    tv2.NGAY_TU_VAN,
-                    tv2.MA_TCV,
-                    ISNULL(tcv.TEN_TCV, tv2.MA_TCV) AS TenTCV,
-                    tv2.DIA_DIEM,
-                    NULL AS AUDIT_C_SCORE,
-                    NULL AS PCL5_SCORE,
-                    NULL AS PCL5_POSITIVE,
-                    NULL AS STIGMA_SCORE,
-                    NULL AS TINH_TRANG_SKTT,
-                    NULL AS NHU_CAU_HO_TRO,
-                    tv2.DANH_GIA_HIEN_TAI,
-                    tv2.CAN_THIEP_AP_DUNG,
-                    tv2.NGAY_HEN_TIEP
-                FROM CD45_TU_VAN_L2 tv2
-                LEFT JOIN CD45_NHOM_TCV tcv ON tv2.MA_NHOM = tcv.MA_NHOM AND tv2.MA_TCV = tcv.MA_TCV AND tcv.MADUAN = 'CD45'
-                WHERE tv2.RECORD_ID = @RecordId
-                ORDER BY NGAY_TU_VAN";
+                    SELECT 
+                        2 AS LanTuVan,
+                        tv2.REPEAT_INSTANCE,
+                        tv2.NGAY_TU_VAN,
+                        tv2.MA_TCV,
+                        ISNULL(tcv.TEN_TCV, tv2.MA_TCV) AS TenTCV,
+                        tv2.DIA_DIEM,
+                        NULL AS AUDIT_C_SCORE,
+                        NULL AS PCL5_SCORE,
+                        NULL AS PCL5_POSITIVE,
+                        NULL AS STIGMA_SCORE,
+                        NULL AS TINH_TRANG_SKTT,
+                        NULL AS NHU_CAU_HO_TRO,
+                        tv2.DANH_GIA_HIEN_TAI,
+                        tv2.CAN_THIEP_AP_DUNG,
+                        tv2.NGAY_HEN_TIEP
+                    FROM CD45_TU_VAN_L2 tv2
+                    LEFT JOIN CD45_NHOM_TCV tcv ON tv2.MA_NHOM = tcv.MA_NHOM AND tv2.MA_TCV = tcv.MA_TCV AND tcv.MADUAN = 'CD45'
+                    WHERE tv2.RECORD_ID = @RecordId
+                ) AS tvAll
+                ORDER BY ISNULL(tvAll.NGAY_TU_VAN, '1900-01-01') ASC, tvAll.LanTuVan ASC, ISNULL(tvAll.REPEAT_INSTANCE, 1) ASC";
             detail.ListTuVan = db.Database.SqlQuery<CD45_TuVanItemModel>(sqlTv, new SqlParameter("@RecordId", recordId)).ToList();
+            for (int i = 0; i < detail.ListTuVan.Count; i++)
+            {
+                detail.ListTuVan[i].SoThuTu = i + 1;
+            }
             detail.TongTuVan = detail.ListTuVan.Count;
 
             // 7. Vân tay
