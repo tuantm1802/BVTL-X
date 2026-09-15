@@ -6,6 +6,8 @@ namespace Data.InterfaceDA.Admin
     public interface IScheduledReportDA
     {
         long AddExportLog(ExportedReportLogModel model);
+        long SaveOrUpdateExportLog(ExportedReportLogModel model);
+        bool DeleteExportLog(long id, out string filePath);
         List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows);
         ExportedReportLogModel GetById(long id);
         ScheduledReportSettingModel GetSettings();

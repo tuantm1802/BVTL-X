@@ -681,34 +681,38 @@ BEGIN
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
     SELECT 
         '', dv.Ten,
-        COUNT(DISTINCT htxh.RECORD_ID),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN htxh.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN htxh.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN htxh.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN htxh.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT kh.RECORD_ID),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN kh.RECORD_ID END),
         0, 1, dv.SubCode
     FROM @DvList dv
-    LEFT JOIN CD45_HO_TRO_XH htxh ON (
-            (dv.CodeStr = '1' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%1%'))
-            OR (dv.CodeStr = '2' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%2%'))
-            OR (dv.CodeStr = '10' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%10%'))
-            OR (dv.CodeStr = 'STIS' AND htxh.DICH_VU LIKE '%STIs%')
-            OR (dv.CodeStr = 'GAN' AND htxh.DICH_VU LIKE '%gan%')
-            OR (dv.CodeStr = 'KHAC' AND (
-                CHARINDEX(',3,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',4,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',5,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',6,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',7,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',8,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
-                CHARINDEX(',9,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0
-            ))
+    LEFT JOIN (
+        CD45_HO_TRO_XH htxh
+        INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
+    ) ON (
+            (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
+            AND (@ToDate IS NULL OR htxh.NGAY_HO_TRO <= @ToDate)
+            AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
+            AND (
+                (dv.CodeStr = '1' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%'))
+                OR (dv.CodeStr = '2' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%Methadone%'))
+                OR (dv.CodeStr = '10' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%HIV%'))
+                OR (dv.CodeStr = 'STIS' AND (htxh.DICH_VU LIKE '%STIs%' OR CHARINDEX(',stis,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
+                OR (dv.CodeStr = 'GAN' AND (htxh.DICH_VU LIKE '%gan%' OR CHARINDEX(',gan,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
+                OR (dv.CodeStr = 'KHAC' AND (
+                    CHARINDEX(',3,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',4,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',5,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',6,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',7,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',8,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
+                    CHARINDEX(',9,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0
+                ))
+            )
         )
-        AND (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
-        AND (@ToDate IS NULL OR htxh.NGAY_HO_TRO <= @ToDate)
-        AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
-    LEFT JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
     GROUP BY dv.CodeStr, dv.Ten, dv.SubCode;
 
     -- =========================================================================
@@ -777,9 +781,12 @@ GO
 
 -- =========================================================================
 -- SP_CD45_Dashboard: Phục vụ Dashboard Tổng quan Trang chủ Dự án CD45
--- =========================================================================
-GO
-
+-- =========================================================================
+
+GO
+
+
+
 CREATE OR ALTER PROC SP_CD45_Dashboard
     @CityCode VARCHAR(50) = NULL,
     @MaNhom VARCHAR(50) = NULL,
@@ -983,12 +990,18 @@ BEGIN
     INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID;
 
     DROP TABLE #TmpKH;
-END
-GO
-
--- =========================================================================
--- SP_CD45_GetDrillDown: Phục vụ Drill Down Chi tiết Báo cáo CD45
--- =========================================================================
+END
+
+GO
+
+
+
+-- =========================================================================
+
+-- SP_CD45_GetDrillDown: Phục vụ Drill Down Chi tiết Báo cáo CD45
+
+-- =========================================================================
+
 CREATE OR ALTER PROC SP_CD45_GetDrillDown
     @ChiTieuCode VARCHAR(50),
     @FromDate DATE = NULL,
@@ -1473,11 +1486,11 @@ BEGIN
               AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
               AND (
                   (@ChiTieuCode = 'VI_1')
-                  OR (@ChiTieuCode = 'VI_1_BHYT' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%1%'))
-                  OR (@ChiTieuCode = 'VI_1_METHADONE' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%2%'))
-                  OR (@ChiTieuCode = 'VI_1_HIV' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%10%'))
-                  OR (@ChiTieuCode = 'VI_1_STIS' AND htxh.DICH_VU LIKE '%STIs%')
-                  OR (@ChiTieuCode = 'VI_1_HEPATITIS' AND htxh.DICH_VU LIKE '%gan%')
+                  OR (@ChiTieuCode = 'VI_1_BHYT' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%'))
+                  OR (@ChiTieuCode = 'VI_1_METHADONE' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%Methadone%'))
+                  OR (@ChiTieuCode = 'VI_1_HIV' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%HIV%'))
+                  OR (@ChiTieuCode = 'VI_1_STIS' AND (htxh.DICH_VU LIKE '%STIs%' OR CHARINDEX(',stis,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
+                  OR (@ChiTieuCode = 'VI_1_HEPATITIS' AND (htxh.DICH_VU LIKE '%gan%' OR CHARINDEX(',gan,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
                   OR (@ChiTieuCode = 'VI_1_OTHER' AND (
                       CHARINDEX(',3,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
                       CHARINDEX(',4,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
@@ -1548,6 +1561,9 @@ BEGIN
     END
 
     DROP TABLE #TmpKH;
-END
-GO
-
+END
+
+GO
+
+
+

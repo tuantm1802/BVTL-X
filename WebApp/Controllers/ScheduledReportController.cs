@@ -125,12 +125,7 @@ namespace WebApp.Controllers
                     var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, targetMonth, null, null, "Manual", userName);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
-                else if (reportType == "TONGHOP_BVTL")
-                {
-                    var res = await _reportExportService.ExportTongHopBVTLExcelAsync(targetYear, targetMonth, "Manual", userName);
-                    return Json(new { Success = res.Success, Message = res.Message, Result = res });
-                }
-                else // ALL
+                else // ALL (Xuất cả TCV và Hoạt động CD45)
                 {
                     var results = await _reportExportService.ExecuteAllMonthlyReportsAsync(targetYear, targetMonth, "Manual", userName);
                     int success = results.FindAll(r => r.Success).Count;
@@ -146,6 +141,63 @@ namespace WebApp.Controllers
             {
                 log.Error("Lỗi TriggerExportNow: " + ex.Message, ex);
                 return Json(new { Success = false, Message = "Lỗi kích hoạt xuất báo cáo: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLog(long id)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null)
+                {
+                    return Json(new { Success = false, Message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại." });
+                }
+
+                string filePath;
+                bool deletedFromDb = _scheduledReportDA.DeleteExportLog(id, out filePath);
+                if (!deletedFromDb)
+                {
+                    return Json(new { Success = false, Message = "Không tìm thấy bản ghi báo cáo để xóa." });
+                }
+
+                // Xóa file vật lý trên máy chủ
+                bool physicalDeleted = false;
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    string resolvedPath = filePath;
+                    if (!System.IO.File.Exists(resolvedPath))
+                    {
+                        string candidate = Server.MapPath($"~/App_Data/ExportedReports/{Path.GetFileName(filePath)}");
+                        if (System.IO.File.Exists(candidate)) resolvedPath = candidate;
+                    }
+
+                    if (System.IO.File.Exists(resolvedPath))
+                    {
+                        try
+                        {
+                            System.IO.File.Delete(resolvedPath);
+                            physicalDeleted = true;
+                            log.Info($"[DeleteLog] Đã xóa tệp vật lý báo cáo: {resolvedPath} bởi người dùng {user.UserName}");
+                        }
+                        catch (Exception exFile)
+                        {
+                            log.Warn($"[DeleteLog] Lỗi khi xóa tệp vật lý {resolvedPath}: {exFile.Message}");
+                        }
+                    }
+                }
+
+                string msg = physicalDeleted
+                    ? "Đã xóa bản ghi và tệp báo cáo vật lý trên máy chủ thành công!"
+                    : "Đã xóa bản ghi báo cáo trong kho lưu trữ thành công.";
+
+                return Json(new { Success = true, Message = msg });
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi DeleteLog: " + ex.Message, ex);
+                return Json(new { Success = false, Message = "Lỗi khi xóa báo cáo: " + ex.Message });
             }
         }
 

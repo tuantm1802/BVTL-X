@@ -482,11 +482,11 @@ BEGIN
               AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
               AND (
                   (@ChiTieuCode = 'VI_1')
-                  OR (@ChiTieuCode = 'VI_1_BHYT' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%1%'))
-                  OR (@ChiTieuCode = 'VI_1_METHADONE' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%2%'))
-                  OR (@ChiTieuCode = 'VI_1_HIV' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%10%'))
-                  OR (@ChiTieuCode = 'VI_1_STIS' AND htxh.DICH_VU LIKE '%STIs%')
-                  OR (@ChiTieuCode = 'VI_1_HEPATITIS' AND htxh.DICH_VU LIKE '%gan%')
+                  OR (@ChiTieuCode = 'VI_1_BHYT' AND (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%'))
+                  OR (@ChiTieuCode = 'VI_1_METHADONE' AND (CHARINDEX(',2,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%Methadone%'))
+                  OR (@ChiTieuCode = 'VI_1_HIV' AND (CHARINDEX(',10,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE N'%HIV%'))
+                  OR (@ChiTieuCode = 'VI_1_STIS' AND (htxh.DICH_VU LIKE '%STIs%' OR CHARINDEX(',stis,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
+                  OR (@ChiTieuCode = 'VI_1_HEPATITIS' AND (htxh.DICH_VU LIKE '%gan%' OR CHARINDEX(',gan,', ',' + LOWER(ISNULL(htxh.DICH_VU, '')) + ',') > 0))
                   OR (@ChiTieuCode = 'VI_1_OTHER' AND (
                       CHARINDEX(',3,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
                       CHARINDEX(',4,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR 
@@ -557,5 +557,7 @@ BEGIN
     END
 
     DROP TABLE #TmpKH;
-END
-GO
+END
+
+GO
+

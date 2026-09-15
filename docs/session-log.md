@@ -518,3 +518,49 @@ Khắc phục các lỗi liên quan đến xuất báo cáo tự động Schedul
 - `WebApp/WebApp.csproj` (Modified)
 - `WebApp/App_Data/ExportedReports/.gitkeep` (New)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên làm việc 16 (15/09/2026): Nâng cấp Báo cáo CD45, Quản lý Tệp Báo cáo & Đồng bộ Bản vá v1.4.2
+
+### Mục tiêu:
+Sửa lỗi tính toán Mục VI và chuẩn hóa danh sách tên Tiếp cận viên CD45 trong CSDL SQL Server; hoàn thiện định dạng thẩm mỹ khi xuất Excel (dấu `-` cho số 0, ẩn giá trị ô tiêu đề nhóm); nâng cấp toàn diện phân hệ Báo cáo Định kỳ ScheduledReport (cơ chế Upsert tránh trùng lặp bản ghi và tính năng Xóa báo cáo kèm tệp vật lý máy chủ).
+
+### Các công việc đã hoàn thành:
+1. **Sửa Logic CSDL SQL Server CD45 (`SQL_CD45_SP.sql`, `SQL_CD45_SP_DrillDown.sql`)**:
+   - Khắc phục lỗi đếm nhầm tại Mục VI (Dịch vụ chuyển gửi khác) do điều kiện so khớp chuỗi số `LIKE '%1%'` lẫn với mã `10` (HIV).
+   - Đồng bộ bảng tạm `INNER JOIN #TmpKH` bên trong `LEFT JOIN CD45_HO_TRO_XH` để đảm bảo tổng số liệu các mục con luôn bằng tổng 5 nhóm đích.
+   - Thêm script `SQL_CD45_Fix_TCV_Names.sql` chuẩn hóa lại 21 tên TCV CD45 viết sai chính tả.
+2. **Chuẩn hóa Định dạng Xuất Báo cáo Excel (ClosedXML)**:
+   - Cập nhật `BaoCaoCD45Controller.cs`, `BaoCaoTCVCD45Controller.cs` và `ReportExportService.cs`: các ô có giá trị bằng 0 hoặc null được hiển thị bằng dấu gạch ngang (`-`) căn giữa; các dòng tiêu đề nhóm in đậm (bold header) được xóa sạch giá trị để bảng biểu chuyên nghiệp, dễ đọc.
+3. **Nâng cấp Hệ thống Quản lý Báo cáo Đã Xuất (`ScheduledReport`)**:
+   - Bổ sung phương thức `SaveOrUpdateExportLog` (Upsert): tự động cập nhật bản ghi khi xuất lại báo cáo cho cùng một kỳ thay vì tạo thêm bản ghi mới gây trùng lặp.
+   - Bổ sung tính năng Xóa báo cáo (`DeleteLog`): hỗ trợ xóa đồng thời bản ghi trong CSDL và tệp vật lý `.xlsx`/`.zip` trên máy chủ lưu trữ.
+   - Xây dựng modal cảnh báo xác nhận xóa (`modalConfirmDelete`) trên giao diện Alpine.js với màu sắc cảnh báo rủi ro cao.
+   - Bỏ tùy chọn xuất Tổng hợp BVTL trong dropdown xuất định kỳ của CD45.
+4. **Mở rộng Bộ Kiểm thử Tự động (Unit Tests)**:
+   - Bổ sung kiểm thử `ScheduledReportDA_SaveOrUpdateExportLog_And_DeleteExportLog_ShouldUpsertAndCleanup`.
+   - Bổ sung kiểm thử `ReportExportService_ExportHoatDongCD45ExcelAsync_ShouldSucceedAndDisplayDashesForZero` kiểm tra ClosedXML và định dạng dấu `-`.
+   - Bổ sung assembly references `DocumentFormat.OpenXml` và `ExcelNumberFormat` vào `BVTL.Tests.csproj`.
+   - Toàn bộ 34/34 tests pass 100%.
+5. **Đóng gói Publish, Gắn thẻ Git Tag & Triển khai Host**:
+   - Gắn thẻ release `v1.4.2`, đẩy toàn bộ mã nguồn lên nhánh `TUANTM_BVTL_V1.0`.
+   - Đóng gói Publish vào `D:\Deploy\WebApp_Publish` và file nén `BVTL_WebApp_Publish_v1.4.2.rar`.
+   - Triển khai bản vá (Patch) lên Host IIS qua FTP và xác nhận tính đồng bộ 100% giữa Local và Host.
+
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `Data/Admin/ScheduledReportDA.cs` (Modified)
+- `Data/InterfaceDA/Admin/IScheduledReportDA.cs` (Modified)
+- `SQL_CD45_SP.sql` (Modified)
+- `SQL_CD45_SP_DrillDown.sql` (Modified)
+- `SQL_CD45_Fix_Section_VI.sql` (New)
+- `SQL_CD45_Fix_TCV_Names.sql` (New)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
+- `docs/session-log.md` (Modified)

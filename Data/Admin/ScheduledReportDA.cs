@@ -93,6 +93,187 @@ namespace Data.Admin
             }
         }
 
+        public long SaveOrUpdateExportLog(ExportedReportLogModel model)
+        {
+            try
+            {
+                using (var conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+
+                    // Tìm các bản ghi cũ cùng kỳ & cùng loại báo cáo & bộ lọc
+                    const string findSql = @"
+                    SELECT [Id], [FilePath], [FileName]
+                    FROM [dbo].[BVTL_EXPORTED_REPORT_LOG]
+                    WHERE [ReportType] = @ReportType
+                      AND [Year] = @Year
+                      AND ISNULL([Month], 0) = ISNULL(@Month, 0)
+                      AND ISNULL([MaDuAn], '') = ISNULL(@MaDuAn, '')
+                      AND ISNULL([CityCode], '') = ISNULL(@CityCode, '')
+                      AND ISNULL([MaNhom], '') = ISNULL(@MaNhom, '')
+                    ORDER BY [Id] DESC;";
+
+                    var existingLogs = new List<Tuple<long, string, string>>();
+                    using (var findCmd = new SqlCommand(findSql, conn))
+                    {
+                        findCmd.Parameters.AddWithValue("@ReportType", (object)model.ReportType ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@Year", model.Year);
+                        findCmd.Parameters.AddWithValue("@Month", (object)model.Month ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@MaDuAn", (object)model.MaDuAn ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@CityCode", (object)model.CityCode ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@MaNhom", (object)model.MaNhom ?? DBNull.Value);
+
+                        using (var r = findCmd.ExecuteReader())
+                        {
+                            while (r.Read())
+                            {
+                                existingLogs.Add(Tuple.Create(
+                                    r.GetInt64(0),
+                                    r.IsDBNull(1) ? null : r.GetString(1),
+                                    r.IsDBNull(2) ? null : r.GetString(2)
+                                ));
+                            }
+                        }
+                    }
+
+                    if (existingLogs.Count > 0)
+                    {
+                        var mainRecord = existingLogs[0];
+                        long targetId = mainRecord.Item1;
+                        string oldFilePath = mainRecord.Item2;
+
+                        // Nếu có file vật lý cũ khác với file mới, xóa file cũ
+                        if (!string.IsNullOrEmpty(oldFilePath) &&
+                            !string.Equals(oldFilePath, model.FilePath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            try
+                            {
+                                if (System.IO.File.Exists(oldFilePath))
+                                {
+                                    System.IO.File.Delete(oldFilePath);
+                                    log.Info($"Đã xóa file báo cáo cũ: {oldFilePath}");
+                                }
+                            }
+                            catch (Exception exFile)
+                            {
+                                log.Warn($"Không thể xóa file cũ {oldFilePath}: {exFile.Message}");
+                            }
+                        }
+
+                        // Xóa các bản ghi trùng thừa (nếu có từ trước) và file vật lý của chúng
+                        for (int i = 1; i < existingLogs.Count; i++)
+                        {
+                            var dup = existingLogs[i];
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(dup.Item2) &&
+                                    !string.Equals(dup.Item2, model.FilePath, StringComparison.OrdinalIgnoreCase) &&
+                                    System.IO.File.Exists(dup.Item2))
+                                {
+                                    System.IO.File.Delete(dup.Item2);
+                                }
+                            }
+                            catch { }
+
+                            using (var delCmd = new SqlCommand("DELETE FROM [dbo].[BVTL_EXPORTED_REPORT_LOG] WHERE Id = @Id", conn))
+                            {
+                                delCmd.Parameters.AddWithValue("@Id", dup.Item1);
+                                delCmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        // UPDATE bản ghi chính thành dữ liệu mới nhất
+                        const string updateSql = @"
+                        UPDATE [dbo].[BVTL_EXPORTED_REPORT_LOG]
+                        SET [ReportName] = @ReportName,
+                            [PeriodType] = @PeriodType,
+                            [PeriodValue] = @PeriodValue,
+                            [FileName] = @FileName,
+                            [FilePath] = @FilePath,
+                            [FileSizeKb] = @FileSizeKb,
+                            [TotalRecords] = @TotalRecords,
+                            [Status] = @Status,
+                            [ErrorMessage] = @ErrorMessage,
+                            [ExecutionTimeMs] = @ExecutionTimeMs,
+                            [TelegramSent] = @TelegramSent,
+                            [TriggerType] = @TriggerType,
+                            [CreatedBy] = @CreatedBy,
+                            [CreatedDate] = @CreatedDate
+                        WHERE [Id] = @Id;";
+
+                        using (var upCmd = new SqlCommand(updateSql, conn))
+                        {
+                            upCmd.Parameters.AddWithValue("@Id", targetId);
+                            upCmd.Parameters.AddWithValue("@ReportName", (object)model.ReportName ?? DBNull.Value);
+                            upCmd.Parameters.AddWithValue("@PeriodType", (object)model.PeriodType ?? "Month");
+                            upCmd.Parameters.AddWithValue("@PeriodValue", (object)model.PeriodValue ?? DBNull.Value);
+                            upCmd.Parameters.AddWithValue("@FileName", (object)model.FileName ?? DBNull.Value);
+                            upCmd.Parameters.AddWithValue("@FilePath", (object)model.FilePath ?? DBNull.Value);
+                            upCmd.Parameters.AddWithValue("@FileSizeKb", model.FileSizeKb);
+                            upCmd.Parameters.AddWithValue("@TotalRecords", model.TotalRecords);
+                            upCmd.Parameters.AddWithValue("@Status", (object)model.Status ?? "Success");
+                            upCmd.Parameters.AddWithValue("@ErrorMessage", (object)model.ErrorMessage ?? DBNull.Value);
+                            upCmd.Parameters.AddWithValue("@ExecutionTimeMs", model.ExecutionTimeMs);
+                            upCmd.Parameters.AddWithValue("@TelegramSent", model.TelegramSent);
+                            upCmd.Parameters.AddWithValue("@TriggerType", (object)model.TriggerType ?? "AutoSchedule");
+                            upCmd.Parameters.AddWithValue("@CreatedBy", (object)model.CreatedBy ?? "QuartzScheduler");
+                            upCmd.Parameters.AddWithValue("@CreatedDate", model.CreatedDate == DateTime.MinValue ? DateTime.Now : model.CreatedDate);
+
+                            upCmd.ExecuteNonQuery();
+                        }
+
+                        model.Id = targetId;
+                        return targetId;
+                    }
+                    else
+                    {
+                        return AddExportLog(model);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi SaveOrUpdateExportLog: " + ex.Message, ex);
+                return 0;
+            }
+        }
+
+        public bool DeleteExportLog(long id, out string filePath)
+        {
+            filePath = null;
+            try
+            {
+                using (var conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+
+                    const string selectSql = "SELECT [FilePath] FROM [dbo].[BVTL_EXPORTED_REPORT_LOG] WHERE Id = @Id;";
+                    using (var selCmd = new SqlCommand(selectSql, conn))
+                    {
+                        selCmd.Parameters.AddWithValue("@Id", id);
+                        var obj = selCmd.ExecuteScalar();
+                        if (obj != null && obj != DBNull.Value)
+                        {
+                            filePath = obj.ToString();
+                        }
+                    }
+
+                    const string delSql = "DELETE FROM [dbo].[BVTL_EXPORTED_REPORT_LOG] WHERE Id = @Id;";
+                    using (var delCmd = new SqlCommand(delSql, conn))
+                    {
+                        delCmd.Parameters.AddWithValue("@Id", id);
+                        int affected = delCmd.ExecuteNonQuery();
+                        return affected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi DeleteExportLog: " + ex.Message, ex);
+                return false;
+            }
+        }
+
         public List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows)
         {
             var list = new List<ExportedReportLogModel>();

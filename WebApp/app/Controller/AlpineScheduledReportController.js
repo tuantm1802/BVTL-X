@@ -26,6 +26,10 @@ document.addEventListener('alpine:init', () => {
         totalPages: 1,
         logsLoading: false,
 
+        // Delete Modal State
+        deleteItem: null,
+        isDeleting: false,
+
         // Trigger Run Now Modal State
         manualExport: {
             reportType: 'ALL',
@@ -208,8 +212,7 @@ document.addEventListener('alpine:init', () => {
             switch (code) {
                 case 'TCV_CD45': return 'Báo cáo TCV CD45 (.ZIP)';
                 case 'HOATDONG_CD45': return 'Báo cáo Hoạt động CD45 (.xlsx)';
-                case 'TONGHOP_BVTL': return 'Báo cáo Tổng hợp BVTL (.xlsx)';
-                case 'ALL': return 'Tất cả 3 loại báo cáo';
+                case 'ALL': return 'Cả 2 loại báo cáo (TCV + Hoạt động)';
                 default: return code;
             }
         },
@@ -218,9 +221,53 @@ document.addEventListener('alpine:init', () => {
             switch (type) {
                 case 'TCV_CD45': return 'badge bg-danger text-white';
                 case 'HOATDONG_CD45': return 'badge bg-primary text-white';
-                case 'TONGHOP_BVTL': return 'badge bg-success text-white';
                 default: return 'badge bg-secondary text-white';
             }
+        },
+
+        confirmDelete(item) {
+            this.deleteItem = item;
+            const modalEl = document.getElementById('modalConfirmDelete');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        },
+
+        executeDelete() {
+            if (!this.deleteItem || !this.deleteItem.Id) return;
+
+            this.isDeleting = true;
+            const formData = new URLSearchParams();
+            formData.append('id', this.deleteItem.Id);
+
+            fetch('/ScheduledReport/DeleteLog', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.Success) {
+                        toastr.success(res.Message || 'Đã xóa báo cáo thành công!');
+                        const modalEl = document.getElementById('modalConfirmDelete');
+                        if (modalEl) {
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
+                        this.deleteItem = null;
+                        this.loadLogs(this.pageIndex);
+                        this.loadSettings();
+                    } else {
+                        toastr.error(res.Message || 'Không thể xóa báo cáo.');
+                    }
+                })
+                .catch(err => {
+                    toastr.error('Lỗi kết nối máy chủ: ' + err);
+                })
+                .finally(() => {
+                    this.isDeleting = false;
+                });
         }
     }));
 });

@@ -183,6 +183,20 @@ namespace WebApp.Controllers
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#E8ECEF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            Action<IXLCell, int?> setVal = (c, val) =>
+            {
+                if (val.HasValue && val.Value > 0)
+                {
+                    c.Value = val.Value;
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                }
+                else
+                {
+                    c.Value = "-";
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+            };
+
             int row = 6;
             foreach (var item in data)
             {
@@ -192,22 +206,20 @@ namespace WebApp.Controllers
                 var prefix = item.IndentLevel == 1 ? "      " : "";
                 ws.Cell(row, 2).Value = prefix + item.ChiTieu;
 
-                ws.Cell(row, 3).Value = item.Tong ?? 0;
-                ws.Cell(row, 4).Value = item.PUD ?? 0;
-                ws.Cell(row, 5).Value = item.PLHIV ?? 0;
-                ws.Cell(row, 6).Value = item.TG ?? 0;
-                ws.Cell(row, 7).Value = item.SW ?? 0;
-                ws.Cell(row, 8).Value = item.MSM ?? 0;
-
-                for (int c = 3; c <= 8; c++)
-                {
-                    ws.Cell(row, c).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                }
-
                 if (item.IsBold)
                 {
+                    for (int c = 3; c <= 8; c++) ws.Cell(row, c).Value = "";
                     ws.Range(row, 1, row, 8).Style.Font.Bold = true;
                     ws.Range(row, 1, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3CD");
+                }
+                else
+                {
+                    setVal(ws.Cell(row, 3), item.Tong);
+                    setVal(ws.Cell(row, 4), item.PUD);
+                    setVal(ws.Cell(row, 5), item.PLHIV);
+                    setVal(ws.Cell(row, 6), item.TG);
+                    setVal(ws.Cell(row, 7), item.SW);
+                    setVal(ws.Cell(row, 8), item.MSM);
                 }
                 row++;
             }

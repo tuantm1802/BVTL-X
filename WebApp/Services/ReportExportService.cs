@@ -77,16 +77,15 @@ namespace WebApp.Services
 
             // 1. Pre-flight Check: Kiểm tra dữ liệu tháng
             bool hasCd45Data = _scheduledReportDA.CheckDataAvailability("TCV_CD45", year, month);
-            bool hasBvtlData = _scheduledReportDA.CheckDataAvailability("TONGHOP_BVTL", year, month);
 
-            if (!hasCd45Data && !hasBvtlData)
+            if (!hasCd45Data)
             {
                 string warnMsg = $"⚠️ [HỆ THỐNG BVTL] Tạm hoãn xuất tự động báo cáo tháng {month:D2}/{year}: Chưa phát hiện dữ liệu nhập từ các tỉnh trong CSDL. Hệ thống sẽ giữ nguyên và thử lại vào chu kỳ tiếp theo.";
                 log.Warn(warnMsg);
                 await telegram.SendMessageAsync(warnMsg);
 
                 // Ghi nhận log trạng thái tạm hoãn
-                _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                 {
                     ReportType = "ALL",
                     ReportName = $"Tự động xuất báo cáo tháng {month:D2}/{year}",
@@ -107,32 +106,14 @@ namespace WebApp.Services
                 return results;
             }
 
-            // 2. Xuất Báo cáo TCV CD45 (Gói nén ZIP)
-            if (hasCd45Data)
-            {
-                var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy);
-                results.Add(resTCV);
+            // 2. Xuất Báo cáo TCV CD45 & Báo cáo Hoạt động CD45
+            var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy);
+            results.Add(resTCV);
 
-                var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy);
-                results.Add(resHD);
-            }
-            else
-            {
-                log.Warn($"[CD45] Chưa có dữ liệu hoạt động tháng {month}/{year}, bỏ qua xuất CD45.");
-            }
+            var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy);
+            results.Add(resHD);
 
-            // 3. Xuất Báo cáo Tổng Hợp Số Liệu BVTL
-            if (hasBvtlData)
-            {
-                var resBVTL = await ExportTongHopBVTLExcelAsync(year, month, triggerType, createdBy);
-                results.Add(resBVTL);
-            }
-            else
-            {
-                log.Warn($"[BVTL] Chưa có dữ liệu tháng {month}/{year}, bỏ qua xuất BVTL.");
-            }
-
-            // 4. Bắn thông báo Telegram tổng kết
+            // 3. Bắn thông báo Telegram tổng kết
             int successCount = results.Count(r => r.Success);
             string summaryMsg = $"🎉 [HỆ THỐNG BVTL] Đã hoàn tất xuất báo cáo định kỳ tháng {month:D2}/{year} ({triggerType}):\n" +
                                 string.Join("\n", results.Select(r => (r.Success ? "✅ " : "❌ ") + r.Message)) +
@@ -217,7 +198,7 @@ namespace WebApp.Services
                 // Ghi log CSDL (bỏ qua khi chạy UnitTest để không làm bẩn dữ liệu thật)
                 if (triggerType != "UnitTest")
                 {
-                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
                         ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
@@ -250,7 +231,7 @@ namespace WebApp.Services
 
                 if (triggerType != "UnitTest")
                 {
-                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
                         ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
@@ -313,7 +294,7 @@ namespace WebApp.Services
 
                 if (triggerType != "UnitTest")
                 {
-                    _scheduledReportDA.AddExportLog(new ExportedReportLogModel
+                    _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "HOATDONG_CD45",
                         ReportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45",
@@ -463,6 +444,20 @@ namespace WebApp.Services
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#E8ECEF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            Action<IXLCell, int?> setVal = (c, val) =>
+            {
+                if (val.HasValue && val.Value > 0)
+                {
+                    c.Value = val.Value;
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                }
+                else
+                {
+                    c.Value = "-";
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+            };
+
             int row = 6;
             if (data != null)
             {
@@ -474,22 +469,20 @@ namespace WebApp.Services
                     var prefix = item.IndentLevel == 1 ? "      " : "";
                     ws.Cell(row, 2).Value = prefix + item.ChiTieu;
 
-                    ws.Cell(row, 3).Value = item.Tong ?? 0;
-                    ws.Cell(row, 4).Value = item.PUD ?? 0;
-                    ws.Cell(row, 5).Value = item.PLHIV ?? 0;
-                    ws.Cell(row, 6).Value = item.TG ?? 0;
-                    ws.Cell(row, 7).Value = item.SW ?? 0;
-                    ws.Cell(row, 8).Value = item.MSM ?? 0;
-
-                    for (int c = 3; c <= 8; c++)
-                    {
-                        ws.Cell(row, c).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    }
-
                     if (item.IsBold)
                     {
+                        for (int c = 3; c <= 8; c++) ws.Cell(row, c).Value = "";
                         ws.Range(row, 1, row, 8).Style.Font.Bold = true;
                         ws.Range(row, 1, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3CD");
+                    }
+                    else
+                    {
+                        setVal(ws.Cell(row, 3), item.Tong);
+                        setVal(ws.Cell(row, 4), item.PUD);
+                        setVal(ws.Cell(row, 5), item.PLHIV);
+                        setVal(ws.Cell(row, 6), item.TG);
+                        setVal(ws.Cell(row, 7), item.SW);
+                        setVal(ws.Cell(row, 8), item.MSM);
                     }
                     row++;
                 }
@@ -542,6 +535,20 @@ namespace WebApp.Services
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#CCE5FF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            Action<IXLCell, int?> setVal = (c, val) =>
+            {
+                if (val.HasValue && val.Value > 0)
+                {
+                    c.Value = val.Value;
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                }
+                else
+                {
+                    c.Value = "-";
+                    c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+            };
+
             int row = 5;
             if (data != null)
             {
@@ -553,22 +560,20 @@ namespace WebApp.Services
                     var prefix = item.IndentLevel == 1 ? "      " : "";
                     ws.Cell(row, 2).Value = prefix + item.ChiTieu;
 
-                    ws.Cell(row, 3).Value = item.Tong ?? 0;
-                    ws.Cell(row, 4).Value = item.PUD ?? 0;
-                    ws.Cell(row, 5).Value = item.PLHIV ?? 0;
-                    ws.Cell(row, 6).Value = item.TG ?? 0;
-                    ws.Cell(row, 7).Value = item.SW ?? 0;
-                    ws.Cell(row, 8).Value = item.MSM ?? 0;
-
-                    for (int c = 3; c <= 8; c++)
-                    {
-                        ws.Cell(row, c).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    }
-
                     if (item.IsBold)
                     {
+                        for (int c = 3; c <= 8; c++) ws.Cell(row, c).Value = "";
                         ws.Range(row, 1, row, 8).Style.Font.Bold = true;
                         ws.Range(row, 1, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#FFF3CD");
+                    }
+                    else
+                    {
+                        setVal(ws.Cell(row, 3), item.Tong);
+                        setVal(ws.Cell(row, 4), item.PUD);
+                        setVal(ws.Cell(row, 5), item.PLHIV);
+                        setVal(ws.Cell(row, 6), item.TG);
+                        setVal(ws.Cell(row, 7), item.SW);
+                        setVal(ws.Cell(row, 8), item.MSM);
                     }
                     row++;
                 }
