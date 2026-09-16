@@ -1,9 +1,10 @@
 ﻿CREATE OR ALTER PROC SP_CD45_GetBaoCao
-    @FromDate DATE = NULL,
-    @ToDate DATE = NULL,
-    @CityCode VARCHAR(100) = NULL,
-    @MaNhom VARCHAR(100) = NULL,
-    @MaTCV VARCHAR(100) = NULL
+    @FromDate    DATE         = NULL,
+    @ToDate      DATE         = NULL,
+    @CityCode    VARCHAR(100) = NULL,
+    @MaNhom      VARCHAR(100) = NULL,
+    @MaTCV       VARCHAR(100) = NULL,
+    @LoaiBaoCao  VARCHAR(10)  = NULL  -- 'Thang' | 'Quy' | '6T' | '12T' | NULL = hiển thị tất cả
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -760,6 +761,41 @@ BEGIN
     -- =========================================================================
     -- TRẢ VỀ KẾT QUẢ
     -- =========================================================================
+
+    -- ★ FILTER THEO CẤU HÌNH CHỈ TIÊU BÁO CÁO ★
+    -- Khi @LoaiBaoCao được truyền vào ('Thang', 'Quy', '6T', '12T'),
+    -- xóa các chỉ tiêu không được cấu hình cho kỳ đó khỏi kết quả trả về.
+    -- Khi @LoaiBaoCao = NULL (Tùy chọn ngày), giữ nguyên toàn bộ chỉ tiêu.
+    IF @LoaiBaoCao IS NOT NULL AND @LoaiBaoCao <> ''
+    BEGIN
+        -- Bước 1: Xóa các chỉ tiêu không được cấu hình cho kỳ này
+        DELETE r FROM @TmpResult r
+        WHERE r.Code IS NOT NULL
+          AND r.Code NOT LIKE 'SEC_%'   -- Giữ section headers, xử lý riêng bên dưới
+          AND NOT EXISTS (
+            SELECT 1 FROM dbo.CD45_BCTIEU_CAU_HINH c
+            WHERE c.ChiTieuCode = r.Code
+              AND c.IsActive = 1
+              AND (
+                    (@LoaiBaoCao = 'Thang' AND c.HienThi_Thang = 1)
+                 OR (@LoaiBaoCao = 'Quy'   AND c.HienThi_Quy   = 1)
+                 OR (@LoaiBaoCao = '6T'    AND c.HienThi_6T    = 1)
+                 OR (@LoaiBaoCao = '12T'   AND c.HienThi_12T   = 1)
+                  )
+          );
+
+        -- Bước 2: Ẩn section header nếu không còn chỉ tiêu con nào
+        DELETE r FROM @TmpResult r
+        WHERE r.Code LIKE 'SEC_%'
+          AND NOT EXISTS (
+            SELECT 1 FROM @TmpResult r2
+            WHERE r2.Code NOT LIKE 'SEC_%'
+              AND r2.Code IS NOT NULL
+              AND LEFT(r2.Code, CHARINDEX('_', r2.Code + '_') - 1) =
+                  REPLACE(r.Code, 'SEC_', '')
+          );
+    END
+
     SELECT 
         STT, 
         ChiTieu, 
@@ -778,6 +814,7 @@ BEGIN
     DROP TABLE #TmpKH;
 END
 GO
+
 
 -- =========================================================================
 -- SP_CD45_Dashboard: Phục vụ Dashboard Tổng quan Trang chủ Dự án CD45

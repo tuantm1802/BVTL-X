@@ -181,6 +181,10 @@ document.addEventListener('alpine:init', function () {
                 }
                 self.isLoading = true;
 
+                // Map loaiKy sang giá trị LoaiBaoCao: 'Thang' → 'Thang', 'Quy' → 'Quy', '6Thang' → '6T', '12Thang' → '12T', 'TuyChon' → 'TuyChon' (server sẽ hiển thị tất cả)
+                var loaiBaoCaoMap = { 'Thang': 'Thang', 'Quy': 'Quy', '6Thang': '6T', '12Thang': '12T', 'TuyChon': 'TuyChon' };
+                var loaiBaoCao = loaiBaoCaoMap[self.loaiKy] || 'TuyChon';
+
                 $.ajax({
                     type: 'POST',
                     url: '/BaoCaoCD45/SearchBaoCao',
@@ -188,7 +192,8 @@ document.addEventListener('alpine:init', function () {
                         FromDate: self.fromDate,
                         ToDate: self.toDate,
                         MaTinh: self.selectedCity,
-                        MaNhom: self.selectedNhom
+                        MaNhom: self.selectedNhom,
+                        LoaiBaoCao: loaiBaoCao
                     },
                     success: function (res) {
                         self.isLoading = false;
@@ -210,10 +215,13 @@ document.addEventListener('alpine:init', function () {
                 if (!self.validateDateRange(true)) {
                     return;
                 }
+                var loaiBaoCaoMap = { 'Thang': 'Thang', 'Quy': 'Quy', '6Thang': '6T', '12Thang': '12T', 'TuyChon': 'TuyChon' };
+                var loaiBaoCao = loaiBaoCaoMap[self.loaiKy] || 'TuyChon';
                 var url = '/BaoCaoCD45/ExportExcel?FromDate=' + encodeURIComponent(self.fromDate) +
                     '&ToDate=' + encodeURIComponent(self.toDate) +
                     '&MaTinh=' + encodeURIComponent(self.selectedCity) +
-                    '&MaNhom=' + encodeURIComponent(self.selectedNhom);
+                    '&MaNhom=' + encodeURIComponent(self.selectedNhom) +
+                    '&LoaiBaoCao=' + encodeURIComponent(loaiBaoCao);
                 window.location.href = url;
             },
 
@@ -316,8 +324,11 @@ document.addEventListener('alpine:init', function () {
                 self.filteredDrillItems = self.drillItems.filter(function (x) {
                     return (x.RECORD_ID && x.RECORD_ID.toLowerCase().indexOf(kw) >= 0)
                         || (x.CITY_CODE && x.CITY_CODE.toLowerCase().indexOf(kw) >= 0)
+                        || (x.TEN_TINH && x.TEN_TINH.toLowerCase().indexOf(kw) >= 0)
                         || (x.MA_NHOM && x.MA_NHOM.toLowerCase().indexOf(kw) >= 0)
+                        || (x.TEN_NHOM && x.TEN_NHOM.toLowerCase().indexOf(kw) >= 0)
                         || (x.MA_TCV && x.MA_TCV.toLowerCase().indexOf(kw) >= 0)
+                        || (x.TEN_TCV && x.TEN_TCV.toLowerCase().indexOf(kw) >= 0)
                         || (x.DOI_TUONG_TEXT && x.DOI_TUONG_TEXT.toLowerCase().indexOf(kw) >= 0)
                         || (x.CHI_TIET && x.CHI_TIET.toLowerCase().indexOf(kw) >= 0);
                 });

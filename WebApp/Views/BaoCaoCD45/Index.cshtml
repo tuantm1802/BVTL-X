@@ -9,6 +9,9 @@
         <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
             <i class="fas fa-chart-line text-primary mr-2"></i>BÁO CÁO HOẠT ĐỘNG & CHỈ SỐ - DỰ ÁN CD45 (DREAMH)
         </h1>
+        <a href="/BaoCaoCD45/CauHinhChiTieu" class="btn btn-sm btn-outline-primary shadow-sm">
+            <i class="fas fa-sliders-h mr-1"></i> Cấu hình chỉ tiêu
+        </a>
     </div>
 
     <!-- Filter Card -->
@@ -219,11 +222,11 @@
                                 <tr>
                                     <th style="width: 40px;" class="text-center">#</th>
                                     <th style="width: 120px;">Mã Khách hàng</th>
-                                    <th style="width: 70px;" class="text-center">Tỉnh</th>
-                                    <th style="width: 90px;" class="text-center">Nhóm</th>
-                                    <th style="width: 80px;" class="text-center">TCV</th>
+                                    <th style="width: 100px;" class="text-center">Tỉnh</th>
+                                    <th style="width: 140px;" class="text-center">Nhóm</th>
+                                    <th style="width: 140px;" class="text-center">TCV</th>
                                     <th style="width: 90px;" class="text-center">Quần thể</th>
-                                    <th style="width: 100px;" class="text-center">Ngày</th>
+                                    <th style="width: 95px;" class="text-center">Ngày</th>
                                     <th>Thông tin chi tiết</th>
                                 </tr>
                             </thead>
@@ -232,9 +235,9 @@
                                     <tr>
                                         <td class="text-center text-muted" x-text="idx + 1"></td>
                                         <td class="font-weight-bold text-primary" x-text="d.RECORD_ID"></td>
-                                        <td class="text-center" x-text="d.CITY_CODE"></td>
-                                        <td class="text-center" x-text="d.MA_NHOM"></td>
-                                        <td class="text-center" x-text="d.MA_TCV || '-'"></td>
+                                        <td class="text-center" x-text="d.TEN_TINH || d.CITY_CODE" :title="'Mã: ' + (d.CITY_CODE || '')"></td>
+                                        <td class="text-center" x-text="d.TEN_NHOM || d.MA_NHOM" :title="'Mã: ' + (d.MA_NHOM || '')"></td>
+                                        <td class="text-center" x-text="d.TEN_TCV || d.MA_TCV || '-'" :title="'Mã: ' + (d.MA_TCV || '-')"></td>
                                         <td class="text-center">
                                             <span class="badge badge-info" x-text="d.DOI_TUONG_TEXT"></span>
                                         </td>

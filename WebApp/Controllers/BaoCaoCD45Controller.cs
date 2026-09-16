@@ -57,7 +57,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaTinh, string MaNhom)
+        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao)
         {
             try
             {
@@ -66,14 +66,15 @@ namespace WebApp.Controllers
                     return Json(new { Success = false, Message = dateError });
                 }
 
-                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null);
+                // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → truyền null để hiển thị tất cả chỉ tiêu
+                string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
+                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
                 var jsonResult = Json(new { Success = true, Data = data });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;
             }
             catch (Exception ex)
             {
-                // TODO: Log error
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
             }
@@ -102,31 +103,49 @@ namespace WebApp.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportExcel(string FromDate, string ToDate, string MaTinh, string MaNhom)
+        public ActionResult ExportExcel(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao)
         {
             if (!ValidateDateRange(FromDate, ToDate, out var dateError))
             {
                 return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
             }
 
-            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null);
+            // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → hiển thị tất cả chỉ tiêu
+            string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
+            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
+
+            // Nhãn và tiêu đề kỳ báo cáo
+            string kyLabel = loaiFilter == null ? "TuyChon" :
+                             loaiFilter == "Thang" ? "Thang" :
+                             loaiFilter == "Quy" ? "Quy" :
+                             loaiFilter == "6T" ? "6Thang" : "Nam12T";
+            string kyTitle = loaiFilter == null ? "Tùy chọn ngày" :
+                             loaiFilter == "Thang" ? "Báo cáo Tháng" :
+                             loaiFilter == "Quy" ? "Báo cáo Quý" :
+                             loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
+
             using (var workbook = new XLWorkbook())
             {
                 var ws = workbook.Worksheets.Add("BaoCao");
-                ws.Cell(1, 1).Value = "BÁO CÁO KẾT QUẢ HOẠT ĐỘNG (DỰ ÁN CD45)";
+                ws.Cell(1, 1).Value = "BÁO CÁO KẾT QUẢ HOẠT ĐỘNG (DỰ ÁN CD45 - DREAMH)";
                 ws.Cell(1, 1).Style.Font.Bold = true;
                 ws.Cell(1, 1).Style.Font.FontSize = 14;
+                ws.Range("A1:H1").Row(1).Merge();
 
-                ws.Cell(3, 1).Value = "STT";
-                ws.Cell(3, 2).Value = "Thông tin báo cáo";
-                ws.Cell(3, 3).Value = "Tổng";
-                ws.Cell(3, 4).Value = "PUD";
-                ws.Cell(3, 5).Value = "PLHIV";
-                ws.Cell(3, 6).Value = "TG";
-                ws.Cell(3, 7).Value = "SW";
-                ws.Cell(3, 8).Value = "MSM";
+                ws.Cell(2, 1).Value = "Kỳ báo cáo: " + kyTitle + "   |   Từ ngày: " + FromDate + " đến ngày: " + ToDate;
+                ws.Cell(2, 1).Style.Font.Italic = true;
+                ws.Range("A2:H2").Row(1).Merge();
 
-                var headerRange = ws.Range("A3:H3");
+                ws.Cell(4, 1).Value = "STT";
+                ws.Cell(4, 2).Value = "Thông tin báo cáo";
+                ws.Cell(4, 3).Value = "Tổng";
+                ws.Cell(4, 4).Value = "PUD";
+                ws.Cell(4, 5).Value = "PLHIV";
+                ws.Cell(4, 6).Value = "TG";
+                ws.Cell(4, 7).Value = "SW";
+                ws.Cell(4, 8).Value = "MSM";
+
+                var headerRange = ws.Range("A4:H4");
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
 
@@ -144,7 +163,7 @@ namespace WebApp.Controllers
                     }
                 };
 
-                int row = 4;
+                int row = 5;
                 foreach (var item in data)
                 {
                     ws.Cell(row, 1).Value = item.STT;
@@ -167,16 +186,57 @@ namespace WebApp.Controllers
                     }
                     row++;
                 }
-                
+
                 ws.Columns().AdjustToContents();
+
+                string fileName = "BaoCao_CD45_" + kyLabel + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BaoCao_CD45_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx");
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
+            }
+        }
+
+        // ========== QUẢN TRỊ CẤU HÌNH CHỈ TIÊU ==========
+
+        [HasCredential(ControllerName = "BaoCaoCD45")]
+        public ActionResult CauHinhChiTieu()
+        {
+            var user = Session["USER_SESSION"] as UserLogin;
+            if (user == null) return Redirect("/Login/Index");
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetCauHinhChiTieu()
+        {
+            try
+            {
+                var data = _BaoCaoCD45DA.GetCauHinhChiTieu();
+                return Json(new { Success = true, Data = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi tải cấu hình: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SaveCauHinhChiTieu(List<CD45_BcTieuCauHinhModel> items)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                string updatedBy = user?.UserName ?? "System";
+                bool ok = _BaoCaoCD45DA.SaveCauHinhChiTieu(items, updatedBy);
+                return Json(new { Success = ok, Message = ok ? "Lưu cấu hình thành công!" : "Không có dữ liệu để lưu." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi lưu cấu hình: " + ex.Message });
             }
         }
     }
 }
-

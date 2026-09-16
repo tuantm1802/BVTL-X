@@ -95,7 +95,7 @@ namespace BVTL.Tests
 
             // Verify actual export execution
             var controller = new BaoCaoCD45Controller(null, null, new BaoCaoCD45DA(), null);
-            var result = controller.ExportExcel("26/07/2026", "25/08/2026", null, null) as FileContentResult;
+            var result = controller.ExportExcel("26/07/2026", "25/08/2026", null, null, null) as FileContentResult;
             Assert.IsNotNull(result, "Export result should be FileContentResult");
             Assert.IsNotNull(result.FileContents, "FileContents should not be null");
             Assert.IsTrue(result.FileContents.Length > 0, "FileContents should not be empty");
@@ -150,7 +150,7 @@ namespace BVTL.Tests
         {
             var controller = new BaoCaoCD45Controller(null, null, new BaoCaoCD45DA(), null);
             // From: 25/08/2026, To: 26/07/2026 -> Đến ngày nhỏ hơn Từ ngày
-            var res = controller.SearchBaoCao("25/08/2026", "26/07/2026", null, null);
+            var res = controller.SearchBaoCao("25/08/2026", "26/07/2026", null, null, null);
             Assert.IsNotNull(res, "JsonResult should not be null");
             Assert.IsNotNull(res.Data, "JsonResult.Data should not be null");
 
@@ -183,7 +183,7 @@ namespace BVTL.Tests
         public void BaoCaoCD45_ExportExcel_WhenToDateBeforeFromDate_ShouldReturnContentResultWithError()
         {
             var controller = new BaoCaoCD45Controller(null, null, new BaoCaoCD45DA(), null);
-            var result = controller.ExportExcel("25/08/2026", "26/07/2026", null, null);
+            var result = controller.ExportExcel("25/08/2026", "26/07/2026", null, null, null);
             Assert.IsInstanceOfType(result, typeof(ContentResult), "Should return ContentResult with alert instead of exporting file");
             var content = (ContentResult)result;
             Assert.IsTrue(content.Content.Contains("không được nhỏ hơn"));
@@ -197,6 +197,31 @@ namespace BVTL.Tests
             Assert.IsInstanceOfType(result, typeof(ContentResult), "Should return ContentResult with alert instead of exporting file");
             var content = (ContentResult)result;
             Assert.IsTrue(content.Content.Contains("không được nhỏ hơn"));
+        }
+
+        [TestMethod]
+        public void BaoCaoCD45DA_GetDrillDown_ShouldEnrichNamesForTinhNhomTCV()
+        {
+            var da = new BaoCaoCD45DA();
+            var list = da.GetDrillDown("II_2", null, null, null, null, null, null);
+
+            Assert.IsNotNull(list);
+            if (list.Count > 0)
+            {
+                var first = list[0];
+                Assert.IsFalse(string.IsNullOrEmpty(first.RECORD_ID));
+                Assert.IsFalse(string.IsNullOrEmpty(first.TEN_TINH), "TEN_TINH should not be empty");
+                Assert.IsFalse(string.IsNullOrEmpty(first.TEN_NHOM), "TEN_NHOM should not be empty");
+                Assert.IsFalse(string.IsNullOrEmpty(first.TEN_TCV), "TEN_TCV should not be empty");
+
+                var dnaCustomer = list.FirstOrDefault(x => x.RECORD_ID == "DNA200157");
+                if (dnaCustomer != null)
+                {
+                    Assert.AreEqual("Nghệ An", dnaCustomer.TEN_TINH);
+                    Assert.AreEqual("Liên Minh MSM", dnaCustomer.TEN_NHOM);
+                    Assert.AreEqual("Trần Trung Đức", dnaCustomer.TEN_TCV);
+                }
+            }
         }
     }
 }

@@ -615,3 +615,49 @@ Bắt lỗi và ngăn chặn người dùng tìm kiếm/xuất báo cáo khi Đ�
 - `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
 - `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên làm việc 18 (16/09/2026): Quản lý Cấu hình Chỉ tiêu Báo cáo CD45, Làm giàu Dữ liệu Drill-down & Bản Vá v1.4.4
+
+### Mục tiêu:
+Xây dựng phân hệ quản lý Cấu hình Chỉ tiêu Báo cáo CD45 theo Ma trận chỉ tiêu chuẩn; làm giàu thông tin Tên Tỉnh, Tên Nhóm, Tên Tiếp cận viên khi người dùng tra cứu Drill-down danh sách khách hàng trong Báo cáo Hoạt động CD45; mở rộng bộ kiểm thử tự động lên 45 unit tests.
+
+### Các công việc đã hoàn thành:
+1. **Thiết Lập Phân Hệ Cấu Hình Chỉ Tiêu Báo Cáo CD45**:
+   - Thêm bảng CSDL và kịch bản phân quyền menu `SQL_CD45_CauHinhChiTieu.sql`, `SQL_Add_Menu_CauHinhChiTieu.sql`.
+   - Bổ sung `CD45_CauHinhChiTieuModel` trong `Model/ModelExtend/BaoCaoCD45Model.cs`.
+   - Bổ sung giao diện quản lý [CauHinhChiTieu.cshtml](file:///d:/Projects/BVTL-X/WebApp/Views/BaoCaoCD45/CauHinhChiTieu.cshtml) và tích hợp vào thanh điều hướng `Views/Shared/_MenuLeft.cshtml`.
+   - Cập nhật `BaoCaoCD45DA.cs` và `IBaoCaoCD45DA.cs` hỗ trợ lấy và cập nhật ma trận chỉ tiêu báo cáo.
+2. **Làm Giàu Dữ Liệu Drill-down Báo Cáo CD45**:
+   - Cải tiến `BaoCaoCD45DA.GetDrillDown` tự động liên kết lấy đầy đủ Tên Tỉnh (`TEN_TINH`), Tên Nhóm (`TEN_NHOM`), Tên Tiếp cận viên (`TEN_TCV`) thay vì chỉ hiển thị mã định danh thô.
+   - Đồng bộ các tham số tìm kiếm và xuất Excel trong `BaoCaoCD45Controller.cs`, `ReportExportService.cs` và giao diện `AlpineBaoCaoCD45Controller.js`.
+3. **Mở Rộng Bộ Kiểm Thử Tự Động (Unit Tests)**:
+   - Thêm bài test `BaoCaoCD45DA_GetDrillDown_ShouldEnrichNamesForTinhNhomTCV` kiểm tra tính chính xác của dữ liệu drill-down đã làm giàu tên tỉnh/nhóm/TCV.
+   - Toàn bộ **45/45 unit tests** đều vượt qua thành công 100%.
+4. **Cấu Hình Dự Án & Triển Khai v1.4.4**:
+   - Bổ sung tệp view mới vào `WebApp.csproj`.
+   - Đảm bảo mã hóa toàn bộ tệp `.sql` và `.cshtml` tuân thủ nghiêm ngặt UTF-8 với BOM (`utf-8-sig`).
+   - Gắn thẻ release `v1.4.4`, đóng gói Publish và đẩy bản vá lên Host IIS qua FTP.
+   - Đối chiếu đồng bộ 100% giữa Local và Host.
+
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `Data/InterfaceDA/IBaoCaoCD45DA.cs` (Modified)
+- `Model/ModelExtend/BaoCaoCD45Model.cs` (Modified)
+- `SQL_CD45_SP.sql` (Modified)
+- `SQL_Add_Menu_CauHinhChiTieu.sql` (New)
+- `SQL_CD45_CauHinhChiTieu.sql` (New)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/BaoCaoCD45/Index.cshtml` (Modified)
+- `WebApp/Views/BaoCaoCD45/CauHinhChiTieu.cshtml` (New)
+- `WebApp/Views/KhachHangCD45/Index.cshtml` (Modified)
+- `WebApp/Views/Shared/_MenuLeft.cshtml` (Modified)
+- `WebApp/WebApp.csproj` (Modified)
+- `WebApp/app/Controller/AlpineBaoCaoCD45Controller.js` (Modified)
+- `WebApp/app/Controller/AlpineKhachHangCD45Controller.js` (Modified)
+- `docs/DREAMH/CD45_Bieu_mau_bao_cao_ket_qua_hoat_dong 1.xlsx` (Modified)
+- `docs/DREAMH/CD45_Ma_Tran_Cau_hinh_Chi_Tieu_Bao_Cao.xlsx` (New)
+- `docs/session-log.md` (Modified)

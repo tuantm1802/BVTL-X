@@ -67,6 +67,18 @@ namespace WebApp.Services
             return targetDir;
         }
 
+        /// <summary>
+        /// Map periodType sang giá trị @LoaiBaoCao để lọc chỉ tiêu trong SP_CD45_GetBaoCao.
+        /// Khi xuất báo cáo tự động, cần đảm bảo đúng chỉ tiêu cho từng kỳ.
+        /// </summary>
+        private static string MapPeriodTypeToLoaiBaoCao(string periodType)
+        {
+            if (periodType == "Quarter" || periodType == "Quy") return "Quy";
+            if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang") return "12T";
+            if (periodType == "6Thang" || periodType == "HalfYear") return "6T";
+            return "Thang"; // Default: Month
+        }
+
         public static void CalculatePeriodDateRange(string periodType, int year, int periodNumber, out string fromDate, out string toDate, out string periodValue)
         {
             if (periodType == "Quarter" || periodType == "Quy")
@@ -332,7 +344,7 @@ namespace WebApp.Services
                     CalculatePeriodDateRange(periodType ?? "Month", year, month, out fromDate, out toDate, out pValue);
                 }
 
-                var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, cityCode, maNhom, null);
+                var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, cityCode, maNhom, null, MapPeriodTypeToLoaiBaoCao(periodType));
                 string storageDir = GetStorageDirectory(year, month);
                 string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_TOANQUOC";
 

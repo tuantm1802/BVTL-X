@@ -1,4 +1,4 @@
-@{
+﻿@{
     var menuLevel1 = new List<Model.ModelExtend.MenuModel>();
     var menuLevel2 = new List<Model.ModelExtend.MenuModel>();
     var menuLevel3 = new List<Model.ModelExtend.MenuModel>();
@@ -109,23 +109,24 @@
 
                 var menuChikd2 = menuLevel2.Where(x => x.PARENT_PAGE_ID != null && x.PARENT_PAGE_ID == itemM1.ID).ToList();
                 var tenDuAns = menuChikd2.Where(x => !string.IsNullOrEmpty(x.TITLE_GROUP_MENU)).Select(x => x.TITLE_GROUP_MENU).Distinct().ToList();
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="@itemM1.HREF_URL" data-bs-toggle="collapse" data-bs-target="#collapseTwo@(itemM1.ID)"
-                       aria-expanded="true" aria-controls="collapseTwo@(itemM1.ID)">
+                bool isParentActive = menuChikd2.Any(x => !string.IsNullOrEmpty(x.HREF_URL) && x.HREF_URL != "/" && url.IndexOf(x.HREF_URL, StringComparison.OrdinalIgnoreCase) >= 0);
+                <li class="nav-item @(isParentActive ? "active" : "")">
+                    <a class="nav-link @(isParentActive ? "" : "collapsed")" href="@itemM1.HREF_URL" data-bs-toggle="collapse" data-bs-target="#collapseTwo@(itemM1.ID)"
+                       aria-expanded="@(isParentActive ? "true" : "false")" aria-controls="collapseTwo@(itemM1.ID)">
                         <i class="fas fa-fw fa-cog"></i>
                         <span>@itemM1.NAME</span>
                     </a>
-                    <div id="collapseTwo@(itemM1.ID)" class="collapse" aria-labelledby="headingTwo@(itemM1.ID)" data-bs-parent="#accordionSidebar">
+                    <div id="collapseTwo@(itemM1.ID)" class="collapse @(isParentActive ? "show" : "")" aria-labelledby="headingTwo@(itemM1.ID)" data-bs-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             @if (tenDuAns != null && tenDuAns.Count > 0)
                             {
                                 foreach (var tenDuAn in tenDuAns)
                                 {
                                     <h6 class="collapse-header">@tenDuAn:</h6>
-                                    //foreach (var itemM2 in menuChikd2.Where(x=>x.TEN_DU_AN == tenDuAn))
                                     foreach (var itemM2 in menuChikd2.Where(x=>x.TITLE_GROUP_MENU == tenDuAn))
                                     {
-                                        <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
+                                        bool isChildActive = !string.IsNullOrEmpty(itemM2.HREF_URL) && itemM2.HREF_URL != "/" && url.IndexOf(itemM2.HREF_URL, StringComparison.OrdinalIgnoreCase) >= 0;
+                                        <a class="collapse-item @(isChildActive ? "active font-weight-bold" : "")" href="@itemM2.HREF_URL">@itemM2.NAME</a>
                                     }
                                 }
                                 var itemsNoGroup = menuChikd2.Where(x => string.IsNullOrEmpty(x.TITLE_GROUP_MENU)).ToList();
@@ -134,7 +135,8 @@
                                     <h6 class="collapse-header">Chung:</h6>
                                     foreach (var itemM2 in itemsNoGroup)
                                     {
-                                        <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
+                                        bool isChildActive = !string.IsNullOrEmpty(itemM2.HREF_URL) && itemM2.HREF_URL != "/" && url.IndexOf(itemM2.HREF_URL, StringComparison.OrdinalIgnoreCase) >= 0;
+                                        <a class="collapse-item @(isChildActive ? "active font-weight-bold" : "")" href="@itemM2.HREF_URL">@itemM2.NAME</a>
                                     }
                                 }
                             }
@@ -142,7 +144,8 @@
                             {
                                 foreach (var itemM2 in menuChikd2)
                                 {
-                                    <a class="collapse-item" href="@itemM2.HREF_URL">@itemM2.NAME</a>
+                                    bool isChildActive = !string.IsNullOrEmpty(itemM2.HREF_URL) && itemM2.HREF_URL != "/" && url.IndexOf(itemM2.HREF_URL, StringComparison.OrdinalIgnoreCase) >= 0;
+                                    <a class="collapse-item @(isChildActive ? "active font-weight-bold" : "")" href="@itemM2.HREF_URL">@itemM2.NAME</a>
                                 }
                             }
 

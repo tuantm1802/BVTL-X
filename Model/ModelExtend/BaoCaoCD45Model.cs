@@ -2,6 +2,21 @@ using System;
 
 namespace Model.ModelExtend
 {
+    public class CD45_BcTieuCauHinhModel
+    {
+        public int ID { get; set; }
+        public string ChiTieuCode { get; set; }
+        public string ChiTieuName { get; set; }
+        public string SectionCode { get; set; }
+        public bool IsSection { get; set; }
+        public bool HienThi_Thang { get; set; }
+        public bool HienThi_Quy { get; set; }
+        public bool HienThi_6T { get; set; }
+        public bool HienThi_12T { get; set; }
+        public int SortOrder { get; set; }
+        public bool IsActive { get; set; }
+    }
+
     public class BaoCaoCD45Model
     {
         public string STT { get; set; }
@@ -26,6 +41,9 @@ namespace Model.ModelExtend
         public string DOI_TUONG_TEXT { get; set; }
         public string NGAY_THUC_HIEN { get; set; }
         public string CHI_TIET { get; set; }
+        public string TEN_TINH { get; set; }
+        public string TEN_NHOM { get; set; }
+        public string TEN_TCV { get; set; }
     }
 
     public class CD45_TCV_ItemModel

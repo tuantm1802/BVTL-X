@@ -5,8 +5,10 @@ namespace Data.InterfaceDA
 {
     public interface IBaoCaoCD45DA
     {
-        List<BaoCaoCD45Model> GetBaoCao(string fromDate, string toDate, string cityCode, string maNhom, string maTCV);
+        List<BaoCaoCD45Model> GetBaoCao(string fromDate, string toDate, string cityCode, string maNhom, string maTCV, string loaiBaoCao = null);
         List<CD45_TCV_ItemModel> GetListTCV(string cityCode, string maNhom);
         List<CD45_DrillDown_ItemModel> GetDrillDown(string chiTieuCode, string fromDate, string toDate, string cityCode, string maNhom, string maTCV, int? doiTuong);
+        List<CD45_BcTieuCauHinhModel> GetCauHinhChiTieu();
+        bool SaveCauHinhChiTieu(List<CD45_BcTieuCauHinhModel> items, string updatedBy);
     }
 }

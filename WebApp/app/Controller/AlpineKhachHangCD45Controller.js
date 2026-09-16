@@ -407,10 +407,10 @@
 
                     var modalEl = document.getElementById('modalCustomerDetail');
                     if (window.bootstrap && bootstrap.Modal) {
-                        var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl, { backdrop: true, keyboard: true });
                         modal.show();
                     } else if (window.jQuery) {
-                        window.jQuery(modalEl).modal('show');
+                        window.jQuery(modalEl).modal({ backdrop: true, keyboard: true }).modal('show');
                     }
 
                     // Kích hoạt lại tab đầu tiên nếu có

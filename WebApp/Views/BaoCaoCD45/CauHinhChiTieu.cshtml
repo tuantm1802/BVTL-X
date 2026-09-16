@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "Cấu hình Chỉ tiêu Báo cáo CD45";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineCauHinhCD45">
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-sliders-h text-primary mr-2"></i>CẤU HÌNH CHỈ TIÊU BÁO CÁO CD45
+        </h1>
+        <a href="/BaoCaoCD45/Index" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-1"></i> Quay lại Báo cáo
+        </a>
+    </div>
+
+    <div class="card shadow mb-3">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold">
+                <i class="fas fa-table mr-1"></i> Ma trận Chỉ tiêu theo Kỳ báo cáo
+            </h6>
+            <div>
+                <button class="btn btn-sm btn-light mr-2" x-on:click="selectAll(true)">
+                    <i class="fas fa-check-square"></i> Chọn tất cả
+                </button>
+                <button class="btn btn-sm btn-outline-light mr-2" x-on:click="selectAll(false)">
+                    <i class="fas fa-square"></i> Bỏ chọn tất cả
+                </button>
+                <button class="btn btn-sm btn-success shadow-sm" x-on:click="saveCauHinh()" :disabled="isSaving">
+                    <i class="fas fa-save mr-1"></i>
+                    <span x-text="isSaving ? 'Đang lưu...' : 'Lưu cấu hình'"></span>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div x-show="isLoading" class="text-center py-5 text-primary">
+                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>Đang tải cấu hình...
+            </div>
+            <div x-show="!isLoading" class="table-responsive">
+                <table class="table table-bordered table-hover mb-0" style="font-size: 13.5px;">
+                    <thead class="bg-primary text-white text-center sticky-top">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th class="text-left">Chỉ tiêu</th>
+                            <th style="width: 90px;">
+                                <i class="fas fa-calendar-day mr-1"></i>Tháng
+                                <br><small class="font-weight-normal">(26-25)</small>
+                            </th>
+                            <th style="width: 90px;">
+                                <i class="fas fa-calendar-week mr-1"></i>Quý
+                            </th>
+                            <th style="width: 90px;">
+                                <i class="fas fa-calendar-alt mr-1"></i>6 Tháng
+                            </th>
+                            <th style="width: 90px;">
+                                <i class="fas fa-calendar mr-1"></i>12 Tháng
+                                <br><small class="font-weight-normal">(Năm)</small>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, idx) in items" :key="item.ID">
+                            <tr :class="item.IsSection ? 'bg-warning font-weight-bold text-dark' : ''">
+                                <td class="text-center text-muted small" x-text="item.IsSection ? '' : (idx + 1)"></td>
+                                <td :class="item.IsSection ? '' : 'pl-4'">
+                                    <span x-text="item.ChiTieuName"></span>
+                                    <small class="text-muted ml-2" x-text="'[' + item.ChiTieuCode + ']'"></small>
+                                </td>
+                                <!-- Tháng -->
+                                <td class="text-center" :class="item.IsSection ? 'bg-warning' : ''">
+                                    <template x-if="!item.IsSection">
+                                        <input type="checkbox" x-model="item.HienThi_Thang" class="form-check-input"
+                                               style="width:18px; height:18px; cursor:pointer;" />
+                                    </template>
+                                </td>
+                                <!-- Quý -->
+                                <td class="text-center" :class="item.IsSection ? 'bg-warning' : ''">
+                                    <template x-if="!item.IsSection">
+                                        <input type="checkbox" x-model="item.HienThi_Quy" class="form-check-input"
+                                               style="width:18px; height:18px; cursor:pointer;" />
+                                    </template>
+                                </td>
+                                <!-- 6T -->
+                                <td class="text-center" :class="item.IsSection ? 'bg-warning' : ''">
+                                    <template x-if="!item.IsSection">
+                                        <input type="checkbox" x-model="item.HienThi_6T" class="form-check-input"
+                                               style="width:18px; height:18px; cursor:pointer;" />
+                                    </template>
+                                </td>
+                                <!-- 12T -->
+                                <td class="text-center" :class="item.IsSection ? 'bg-warning' : ''">
+                                    <template x-if="!item.IsSection">
+                                        <input type="checkbox" x-model="item.HienThi_12T" class="form-check-input"
+                                               style="width:18px; height:18px; cursor:pointer;" />
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="items.length === 0 && !isLoading">
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>Không có dữ liệu cấu hình
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-muted small">
+            <i class="fas fa-info-circle mr-1"></i>
+            Tích checkbox ✓ = chỉ tiêu đó <strong>hiển thị</strong> trong kỳ báo cáo tương ứng.
+            Khi báo cáo "Tùy chọn ngày" → luôn hiển thị tất cả chỉ tiêu.
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.addEventListener('alpine:init', function () {
+            Alpine.data('alpineCauHinhCD45', function () {
+                return {
+                    items: [],
+                    isLoading: false,
+                    isSaving: false,
+
+                    init: function () {
+                        this.loadCauHinh();
+                    },
+
+                    loadCauHinh: function () {
+                        var self = this;
+                        self.isLoading = true;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/BaoCaoCD45/GetCauHinhChiTieu',
+                            success: function (res) {
+                                self.isLoading = false;
+                                if (res.Success) {
+                                    self.items = res.Data || [];
+                                } else {
+                                    if (window.toastr) toastr.error(res.Message || 'Lỗi tải cấu hình!');
+                                }
+                            },
+                            error: function () {
+                                self.isLoading = false;
+                                if (window.toastr) toastr.error('Có lỗi xảy ra khi tải cấu hình!');
+                            }
+                        });
+                    },
+
+                    selectAll: function (checked) {
+                        this.items.forEach(function (item) {
+                            if (!item.IsSection) {
+                                item.HienThi_Thang = checked;
+                                item.HienThi_Quy = checked;
+                                item.HienThi_6T = checked;
+                                item.HienThi_12T = checked;
+                            }
+                        });
+                    },
+
+                    saveCauHinh: function () {
+                        var self = this;
+                        if (self.isSaving) return;
+                        self.isSaving = true;
+
+                        // Chỉ gửi các dòng chỉ tiêu (không gửi section header)
+                        var payload = self.items.filter(function (x) { return !x.IsSection; });
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/BaoCaoCD45/SaveCauHinhChiTieu',
+                            contentType: 'application/json',
+                            data: JSON.stringify(payload),
+                            success: function (res) {
+                                self.isSaving = false;
+                                if (res.Success) {
+                                    if (window.toastr) toastr.success(res.Message || 'Lưu thành công!');
+                                } else {
+                                    if (window.toastr) toastr.error(res.Message || 'Lỗi khi lưu!');
+                                }
+                            },
+                            error: function () {
+                                self.isSaving = false;
+                                if (window.toastr) toastr.error('Có lỗi xảy ra khi lưu cấu hình!');
+                            }
+                        });
+                    }
+                };
+            });
+        });
+    </script>
+}

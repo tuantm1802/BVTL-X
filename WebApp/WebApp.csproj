@@ -4753,6 +4753,7 @@
     <Content Include="Views\KhachHangCD45\Index.cshtml" />
     <Content Include="Views\NhomTCVCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoCD45\Index.cshtml" />
+    <Content Include="Views\BaoCaoCD45\CauHinhChiTieu.cshtml" />
     <Content Include="Views\BaoCaoTCVCD45\Index.cshtml" />
     <Content Include="Views\DataQuality\Index.cshtml" />
     <Content Include="Views\ScheduledReport\Index.cshtml" />
