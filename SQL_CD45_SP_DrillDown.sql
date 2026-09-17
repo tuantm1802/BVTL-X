@@ -164,7 +164,7 @@ BEGIN
     -- =========================================================================
     -- SECTION II: HOẠT ĐỘNG TRUYỀN THÔNG
     -- =========================================================================
-    -- II.1 Truyền thông lần 1
+    -- II.1 Truyền thông lần 1 (VR-06a: Xếp hạng độc lập theo LOAI_DV = 1)
     ELSE IF @ChiTieuCode = 'II_1'
     BEGIN
         ;WITH CTE AS (
@@ -173,21 +173,20 @@ BEGIN
                 hd.NGAY_HOAT_DONG,
                 CONVERT(VARCHAR(10), hd.NGAY_HOAT_DONG, 103) AS NGAY_THUC_HIEN,
                 N'Chủ đề: ' + ISNULL(hd.CHU_DE, '') AS CHI_TIET,
-                ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG DESC) AS rn
+                ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG, hd.REPEAT_INSTANCE) AS TT_Order
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-            WHERE hd.REPEAT_INSTANCE = 1
-              AND hd.LOAI_DV = 1
+            WHERE hd.LOAI_DV = 1
               AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
         )
         SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET
         FROM CTE
-        WHERE rn = 1
+        WHERE TT_Order = 1
         ORDER BY NGAY_HOAT_DONG DESC, RECORD_ID;
     END
-    -- II.2 Truyền thông lần 2+
+    -- II.2 Truyền thông lần 2+ (VR-06a: Xếp hạng độc lập theo LOAI_DV = 1)
     ELSE IF @ChiTieuCode = 'II_2'
     BEGIN
         ;WITH CTE AS (
@@ -195,19 +194,19 @@ BEGIN
                 kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, hd.MA_TCV, kh.DOI_TUONG_TEXT, 
                 hd.NGAY_HOAT_DONG,
                 CONVERT(VARCHAR(10), hd.NGAY_HOAT_DONG, 103) AS NGAY_THUC_HIEN,
-                N'Lần ' + CAST(hd.REPEAT_INSTANCE AS VARCHAR) + N' - Chủ đề: ' + ISNULL(hd.CHU_DE, '') AS CHI_TIET,
+                N'Chủ đề: ' + ISNULL(hd.CHU_DE, '') AS CHI_TIET,
+                ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG, hd.REPEAT_INSTANCE) AS TT_Order,
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG DESC) AS rn
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-            WHERE hd.REPEAT_INSTANCE > 1
-              AND hd.LOAI_DV = 1
+            WHERE hd.LOAI_DV = 1
               AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
         )
         SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET
         FROM CTE
-        WHERE rn = 1
+        WHERE TT_Order > 1 AND rn = 1
         ORDER BY NGAY_HOAT_DONG DESC, RECORD_ID;
     END
     -- II.3 Tổng số lượt truyền thông

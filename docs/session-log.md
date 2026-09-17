@@ -661,3 +661,157 @@ Xây dựng phân hệ quản lý Cấu hình Chỉ tiêu Báo cáo CD45 theo Ma
 - `docs/DREAMH/CD45_Bieu_mau_bao_cao_ket_qua_hoat_dong 1.xlsx` (Modified)
 - `docs/DREAMH/CD45_Ma_Tran_Cau_hinh_Chi_Tieu_Bao_Cao.xlsx` (New)
 - `docs/session-log.md` (Modified)
+
+---
+
+## Phiên làm việc 19 (17/09/2026): Triển khai Giai đoạn P0 - Bộ Quy tắc Chuẩn hóa & Xác thực Dữ liệu (Validation Rules) & Tối ưu Cảnh báo DAG
+
+### Mục tiêu:
+Phân tích và triển khai gói ưu tiên P0 của bộ Validate Rules chuẩn hóa dữ liệu cho dự án CD45 (DREAMH) với mốc khởi động chính thức là **2026-01-01**; thiết lập chốt chặn kiểm toán số học tự động khi xuất báo cáo (VR-01); áp dụng luật kiểm soát định dạng Record ID và ràng buộc đối chiếu DAG (VR-02(1)); áp dụng luật kiểm soát tính hợp lệ ngày tháng (VR-03); đồng thời giải quyết triệt để vấn đề spam hàng chục ngàn bản ghi cảnh báo/info R3_DAG_NORMALIZED khi đồng bộ dữ liệu.
+
+### Các công việc đã hoàn thành:
+1. **VR-01 [BLOCKING] Thiết Lập Chốt Chặn Kiểm Toán Số Học Tự Động (Pre-Export Gatekeeper)**:
+   - Xây dựng lớp trợ năng Common/Common/ReportValidatorHelper.cs kiểm tra điều kiện bảo toàn: Tổng = PUD + PLHIV + TG + SW + MSM trên từng dòng dữ liệu báo cáo CD45. Bỏ qua các dòng tiêu đề/section (IsBold, SEC_*).
+   - Tích hợp kiểm toán vào BaoCaoCD45Controller.cs (hàm ExportExcel chặn xuất file nếu phát hiện sai lệch số học; hàm SearchBaoCao trả cảnh báo mềm Warning để hiển thị toastr).
+   - Tích hợp kiểm toán vào ReportExportService.cs (ExportHoatDongCD45ExcelAsync trả ExportResult kèm thông báo chi tiết mã chỉ tiêu và dòng vi phạm).
+   - Cập nhật giao diện AlpineBaoCaoCD45Controller.js tự động bật toastr warning nếu có dòng dữ liệu lệch cấu trúc tổng.
+2. **VR-02(1) [BLOCKING] Kiểm Soát Định Dạng Record ID & Đối Chiếu DAG**:
+   - Cập nhật CleanRecordId trong DataCleanerHelper.cs: Kiểm soát chặt 9 ký tự (^D(HN|HP|HY|NA|NB|HC)\d{2}\d{4}$). Nếu sai định dạng -> ghi log ERR_RECORD_ID_FORMAT (SEVERITY = ERROR, ACTION = QUARANTINED), trả 
+ull để ngăn nạp dữ liệu sai cấu trúc.
+   - Bổ sung luật đối chiếu mã tỉnh của Record ID với mã tiền tố của DAG. Nếu không khớp (ví dụ mã tỉnh Hà Nội DHN... nhưng DAG lại thuộc Ninh Bình hi_vng / NB_HV) -> ghi log ERR_RECORD_ID_DAG_MISMATCH, trả 
+ull (chặn cứng).
+3. **VR-03(a, c) [BLOCKING] Kiểm Soát Mốc Thời Gian Khởi Động Dự Án & Logic Ngày Hẹn Khám**:
+   - Khởi tạo mốc dự án chính thức: ProjectStartDate = new DateTime(2026, 1, 1).
+   - Cập nhật CleanDate trong DataCleanerHelper.cs: Chặn tất cả ngày diễn ra trước ngày khởi động dự án < 2026-01-01 (ERR_DATE_BEFORE_PROJECT) và ngày tương lai > Today (ERR_DATE_FUTURE), trả về 
+ull. Cho phép ngoại lệ với các cột ngày hẹn trong tương lai (isAppointmentDate = true).
+   - Cập nhật ConvertCD45ApiToEntity.cs: Chặn logic ngày hẹn khám/tư vấn xảy ra trước ngày khám/tư vấn thực tế (F6: ERR_F6_APPOINTMENT_BEFORE_VISIT; F7/F8: ERR_F7_APPOINTMENT_BEFORE_VISIT, ERR_F8_APPOINTMENT_BEFORE_VISIT).
+4. **Giải Pháp Tối Ưu Hóa Cảnh Báo Chuẩn Hóa Dữ Liệu (Chống Spam Log DAG)**:
+   - Xây dựng cơ chế gom nhóm DagSummaryCollector: Thay vì ghi hàng vạn log R3_DAG_NORMALIZED cấp row-level (do 100% DAG từ REDCap đều ở dạng slug cần mapping), hệ thống gom lại thành 1 log tóm tắt theo batch cho mỗi nhóm (BATCH (N=...)).
+   - Cập nhật ProcessDag: Không ghi log INFO ở từng dòng; chỉ ghi log WARNING khi gặp DAG lạ chưa từng được ánh xạ (ERR_DAG_UNMAPPED).
+   - Cập nhật giao diện Views/DataQuality/Index.cshtml và AlpineDataQualityController.js: Mặc định lọc cấp độ WARNING khi người dùng mở trang, giúp tập trung vào các vấn đề thực sự cần xử lý.
+   - Tạo script CSDL SQL_Clean_Old_Standardization_Logs.sql hỗ trợ dọn dẹp các log INFO DAG cũ hơn 7 ngày.
+5. **Mở Rộng Bộ Kiểm Thử Tự Động (Unit Tests)**:
+   - Tạo bộ kiểm thử mới BVTL.Tests/DataValidationP0Tests.cs gồm 12 bài test chuyên biệt kiểm thử VR-01, VR-02, VR-03 và DagSummaryCollector.
+   - Toàn bộ **57/57 unit tests** (45 tests hồi quy + 12 tests mới) đều vượt qua thành công 100%.
+
+### Các tệp đã thay đổi/thêm mới:
+- BVTL.Tests/BVTL.Tests.csproj (Modified)
+- BVTL.Tests/DataValidationP0Tests.cs (New)
+- Common/Common.csproj (Modified)
+- Common/Common/ConvertCD45ApiToEntity.cs (Modified)
+- Common/Common/DataCleanerHelper.cs (Modified)
+- Common/Common/ReportValidatorHelper.cs (New)
+- SQL_Clean_Old_Standardization_Logs.sql (New)
+- WebApp/Controllers/BaoCaoCD45Controller.cs (Modified)
+- WebApp/Services/ReportExportService.cs (Modified)
+- WebApp/Views/DataQuality/Index.cshtml (Modified)
+- WebApp/app/Controller/AlpineBaoCaoCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineDataQualityController.js (Modified)
+- docs/session-log.md (Modified)
+
+---
+
+## Phiên làm việc 20 (17/09/2026): Hoàn thiện Toàn diện Giai đoạn P1 & P2 - Bộ Quy tắc Xác thực Dữ liệu & Nâng cấp Data Quality Dashboard
+
+### Mục tiêu:
+Triển khai trọn vẹn Giai đoạn P1 và P2 của Bộ Quy tắc Chuẩn hóa & Xác thực Dữ liệu (Validation Rules VR-01 đến VR-07) cho hệ thống BVTL-X (Dự án CD45 / DREAMH), bao gồm các ràng buộc quan hệ liên form F1-F10, kiểm soát tiến trình và đơn điệu thời gian, phát hiện trùng lặp hồ sơ đa trường (Họ tên + Ngày sinh/Năm sinh + Tỉnh), cảnh báo cụm và mâu thuẫn nghiệp vụ, đồng thời nâng cấp toàn diện Data Quality Monitoring Dashboard với giao diện Đa Tab (Chi tiết, Gom nhóm quy tắc, Thống kê theo Tỉnh/CBO).
+
+### Các công việc đã hoàn thành:
+
+1. **Giai đoạn P1: Ràng buộc Quan hệ Dữ liệu & Tiến trình Dịch vụ**:
+   - **VR-04(a) [BLOCKING] Ràng buộc Khách hàng F1 Complete**: Xây dựng `Common/Common/CD45ValidationContext.cs` nạp danh sách khách hàng F1 hợp lệ (`Status = 2`) và nhóm đích. Khách hàng chưa hoàn thành F1 hoặc thiếu nhóm đích sẽ bị chặn nhập vào F2-F10 (`ERR_F1_MISSING`, `ERR_F1_NOT_COMPLETE`, `ERR_F1_INVALID_TARGET_GROUP`).
+   - **VR-04(a) [BLOCKING] Phụ thuộc F8 -> F7 Complete & F5 -> F6 Đã khám**: Chặn F8 nếu khách hàng chưa có buổi F7 hoàn thành (`ERR_F8_WITHOUT_F7_COMPLETED`); Chặn F5 nếu khách hàng chưa từng khám tại F6 (`ERR_F5_WITHOUT_F6_VISIT`).
+   - **VR-03(b) [BLOCKING] Ràng buộc Thời gian Diễn tiến Dịch vụ**: Chặn các bản ghi dịch vụ F2-F10 có ngày diễn ra trước ngày tạo hồ sơ F1 (`ERR_SERVICE_BEFORE_F1`).
+   - **VR-05(a, b, c) [BLOCKING / WARNING] Kiểm soát Thứ tự & Đơn điệu Tiến trình**: Kiểm soát không trùng lần/ngày, đơn điệu ngày theo số lần tăng dần, và gắn cảnh báo nhảy cóc bước (`WARN_PROGRESS_SKIPPED_STEP`).
+   - **VR-06(a) Phân định Độc lập Thứ tự Truyền thông Mục II vs Sinh hoạt Nhóm Mục IV.3**: Cập nhật Stored Procedure `SQL_CD45_SP.sql` và `SQL_CD45_SP_DrillDown.sql` xếp hạng độc lập thứ tự buổi truyền thông bằng `ROW_NUMBER() OVER (PARTITION BY RECORD_ID ORDER BY NGAY_HOAT_DONG, REPEAT_INSTANCE)`.
+   - **VR-06(b) Chuẩn hóa Khám đầu / Tái khám F6**: Tự động chuyển đổi `lan_kham = 1` thành "Khám đầu", `lan_kham > 1` thành "Tái khám" (`INFO_F6_VISIT_TYPE_NORMALIZED`).
+   - **VR-06(c) Chuẩn hóa Điểm QST F3 & Ép Mức 1 khi có Hành vi Tự hại**: Tự động tính toán lại tổng điểm QST, ép mức độ trầm cảm lên Mức 1 nếu câu hỏi tự hại/tự sát có điểm > 0 (`AUTO_F3_QST_RECALCULATED`, `WARN_F3_SELF_HARM_ELEVATED`).
+   - **VR-06(d) Cảnh báo Dịch vụ Sau Mất Dấu F9**: Tích hợp module `ConvertF9` cho `CD45_THEO_DAU_Entity` và cảnh báo khi có dịch vụ sau ngày xác nhận mất dấu (`WARN_SERVICE_AFTER_LOST_TO_FOLLOWUP`).
+   - **VR-07(a) Cảnh báo Repeat Instance Rỗng**: Bỏ qua các instance rỗng từ REDCap và ghi nhận cảnh báo (`WARN_EMPTY_INSTANCE`).
+
+2. **Giai đoạn P2: Dò Trùng Hồ Sơ, Cảnh Báo Cụm & Nâng Cấp Dashboard**:
+   - **VR-02(2) [WARNING] Dò Trùng Hồ Sơ Đa Trường (F1)**:
+     - Tạo mới Stored Procedure `SP_CD45_Scan_Duplicate_Clients` (`SQL_CD45_Duplicate_Scan_SP.sql`) quét trùng lặp khách hàng theo tổ hợp (Họ tên + Ngày sinh + Mã tỉnh) và (Họ tên + Năm sinh + Mã tỉnh) nhưng khác Record ID.
+     - Tự động ghi nhận log cảnh báo `WARN_DUPLICATE_CLIENT_PROFILE` vào `BVTL_DATA_STANDARDIZATION_LOG`.
+   - **VR-07(b) [WARNING] Cảnh báo Cụm Bất Thường (Cluster Incomplete)**:
+     - Phát hiện và gắn cờ cảnh báo khi có $\ge 3$ khách hàng của cùng một TCV bị Incomplete trong cùng một ngày (`WARN_CLUSTER_INCOMPLETE`).
+   - **VR-07(c) [WARNING] Kiểm tra Cặp Mâu Thuẫn Nghiệp Vụ**:
+     - Phát hiện không tham gia nghiên cứu nhưng có mã nghiên cứu (`WARN_CONTRADICTORY_RESEARCH_INFO`).
+     - Phát hiện khách hàng nhóm đích PLHIV nhưng lại làm test sàng lọc HIV mới tại Form F4 (`WARN_CONTRADICTORY_HIV_STATUS`).
+   - **Nâng Cấp Data Quality Monitoring Dashboard**:
+     - Cập nhật `DataQualityDA.cs`: Triển khai `GetGroupedLogs`, `GetStatsByNhom`, `ScanDuplicateClients`.
+     - Cập nhật `DataQualityController.cs`: Bổ sung 3 HTTP POST endpoints (`GetGroupedLogs`, `GetStatsByNhom`, `ScanDuplicates`).
+     - Cập nhật `AlpineDataQualityController.js`: Quản lý state đa tab, tự động tải dữ liệu theo tab, và hỗ trợ kích hoạt quét trùng đa trường F1 với toastr notification.
+     - Nâng cấp `Views/DataQuality/Index.cshtml` (UTF-8 with BOM): Bổ sung thanh Tab điều hướng gồm:
+       1. **Tab 1 - Chi tiết Sự kiện & Cảnh báo**: Tìm kiếm, lọc nâng cao, phân trang, và nút "Đã sửa".
+       2. **Tab 2 - Gom Nhóm Theo Quy Tắc (Grouped Summary)**: Bảng thống kê theo từng mã lỗi vi phạm (VR-01 đến VR-07), số lượng tồn đọng, hồ sơ gần nhất, mẫu cảnh báo.
+       3. **Tab 3 - Thống kê Theo Đơn Vị (Tỉnh / CBO)**: Đánh giá chất lượng dữ liệu từng tỉnh và từng nhóm CBO, phân loại mức độ rủi ro (Cao, Trung bình, Sạch).
+       4. **Nút Hành Động**: "Quét trùng hồ sơ F1" và "Xuất Excel Cảnh báo cho M&E".
+
+3. **Kiểm Thử Tự Động Toàn Diện (Unit Tests)**:
+   - Viết mới `BVTL.Tests/DataValidationP1Tests.cs` (14 bài test P1) và `BVTL.Tests/DataValidationP2Tests.cs` (15 bài test P2).
+   - Đạt kết quả kiểm thử tuyệt đối: **86/86 unit tests PASSED (100%)**, không có bất kỳ regression nào trên toàn bộ solution.
+
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `BVTL.Tests/DataValidationP1Tests.cs` (New)
+- `BVTL.Tests/DataValidationP2Tests.cs` (New)
+- `Common/Common.csproj` (Modified)
+- `Common/Common/CD45ValidationContext.cs` (New)
+- `Common/Common/ConvertCD45ApiToEntity.cs` (Modified)
+- `Common/Common/DataCleanerHelper.cs` (Modified)
+- `Data/Admin/DataQualityDA.cs` (Modified)
+- `Data/API/SyncDataFromApi_SaveToDB.cs` (Modified)
+- `Data/Data.csproj` (Modified)
+- `Data/InterfaceDA/IDataQualityDA.cs` (Modified)
+- `Model/ModelExtend/API/CD45/DreamhDbEntities.cs` (Modified)
+- `SQL_CD45_Duplicate_Scan_SP.sql` (New - UTF-8 BOM)
+- `SQL_CD45_SP.sql` (Modified - UTF-8 BOM)
+- `SQL_CD45_SP_DrillDown.sql` (Modified - UTF-8 BOM)
+- `WebApp/Controllers/DataQualityController.cs` (Modified)
+- `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+
+---
+
+## Phiên làm việc 21 (17/09/2026): Rà soát và Tinh chỉnh Quy tắc Validate RECORD_ID - Xử lý False Positive cho mã DNT (Quỳnh Hương Xanh / Nha Trang) & Dọn dẹp Log CSDL
+
+### Mục tiêu:
+Khắc phục vấn đề cảnh báo nhầm (False Positive) cho mã khách hàng `DNT210242` và `DNT210241` thuộc nhóm Quỳnh Hương Xanh chi nhánh Nha Trang, đồng thời rà soát toàn bộ các mã khách hàng bị gắn cờ cảnh báo trong CSDL, đảm bảo các mã sai thực sự tiếp tục bị chặn và dọn dẹp sạch sẽ các cảnh báo oan.
+
+### Các công việc đã hoàn thành:
+
+1. **Phân tích & Xác minh Dữ liệu**:
+   - Khách hàng `DNT210242` và `DNT210241` có cấu trúc: `D` + `NT` (Nha Trang) + `21` (Nhóm Quỳnh Hương Xanh) + `0242` (STT 4 số) = đúng chuẩn 9 ký tự. Cột `CITY_CODE` trong `CD45_KH` lưu giá trị `NT`.
+   - Nguyên nhân cảnh báo: Regex cũ trong `DataCleanerHelper.cs` bị giới hạn cứng trong 6 tỉnh (`^D(HN|HP|HY|NA|NB|HC)\d{2}\d{4}$`), thiếu tiền tố `NT`.
+   - Rà soát toàn bộ các bản ghi bị cảnh báo `ERR_RECORD_ID_FORMAT` trong CSDL:
+     - **Cảnh báo nhầm (False Positive)**: Chỉ duy nhất 2 mã `DNT210241` và `DNT210242` (do thiếu mã tỉnh `NT`).
+     - **Sai thật sự (True Positive - tiếp tục duy trì chặn)**:
+       - `DNA21271` và `DNA21025`: 8 ký tự (thiếu 1 số 0 ở phần STT).
+       - `DNA2002008` và `DNA2200159`: 10 ký tự (dư 1 số 0).
+       - `21251` và `21252`: 5 ký tự (mất chữ `D` và mã tỉnh).
+       - `D NA210106`: Bị chèn khoảng trắng ở giữa.
+       - `DNA`: Chỉ có 3 ký tự (dữ liệu rác).
+
+2. **Cập nhật Mã Nguồn**:
+   - `Common/Common/DataCleanerHelper.cs`:
+     - Cập nhật Regex kiểm tra định dạng sang dạng tổng quát toàn quốc: `^D[A-Z]{2}\d{2}\d{4}$` (chấp nhận mọi mã tỉnh 2 chữ cái in hoa, 2 số nhóm CBO, 4 số STT = đúng 9 ký tự).
+     - Cập nhật quy tắc đối chiếu DAG vs Record ID: Thêm ngoại lệ cho nhóm Quỳnh Hương Xanh (`qunh_hng_xanh` / `qhx`) chấp nhận cả mã tỉnh `NAN` (`NA` - Nghệ An) và `NT` (Nha Trang).
+   - `Model/ModelExtend/API/CD45/CD45Helper.cs`:
+     - Bổ sung `case "NT": return "NT";` trong hàm `ExtractCityCode`.
+   - `BVTL.Tests/DataValidationP0Tests.cs`:
+     - Thêm bài test `CleanRecordId_WithDNTCodeAndQuynhHuongXanh_ShouldSucceed` xác thực mã `DNT210242` đạt chuẩn và không sinh bất kỳ log ERROR nào.
+     - Thêm bài test `CleanRecordId_WithDNA21271_EightChars_ShouldBlockAndReturnNull` xác thực mã thiếu ký tự `DNA21271` (8 ký tự) bị chặn đúng quy chuẩn.
+
+3. **Dọn dẹp Log CSDL & Kiểm thử Tự động**:
+   - Đã xóa sạch 18 dòng log cảnh báo oan `ERR_RECORD_ID_FORMAT` của `DNT210241` và `DNT210242` trong bảng `BVTL_DATA_STANDARDIZATION_LOG`.
+   - Biên dịch thành công Release Solution `WebApp.sln`.
+   - Chạy toàn bộ bộ kiểm thử tự động VSTest: **88/88 unit tests PASSED (100%)**.
+
+### Các tệp đã thay đổi:
+- `Common/Common/DataCleanerHelper.cs` (Modified)
+- `Model/ModelExtend/API/CD45/CD45Helper.cs` (Modified)
+- `BVTL.Tests/DataValidationP0Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)

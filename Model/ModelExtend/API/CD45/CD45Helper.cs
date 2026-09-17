@@ -96,6 +96,7 @@ namespace Model.ModelExtend.API.CD45
                 case "HY": return "HYE";
                 case "NA": return "NAN";
                 case "NB": return "NBI";
+                case "NT": return "NT";
                 default: return prefix;
             }
         }

@@ -99,10 +99,10 @@
     <Compile Include="Common\clsEncrypt.cs" />
     <Compile Include="Common\Ultil.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\CD45ValidationContext.cs" />
     <Compile Include="Common\ConvertCD45ApiToEntity.cs" />
     <Compile Include="Common\DataCleanerHelper.cs" />
-    <Compile Include="Common\ConvertCD45ApiToEntity.cs" />
-    <Compile Include="Common\DataCleanerHelper.cs" />
+    <Compile Include="Common\ReportValidatorHelper.cs" />
     <Compile Include="Common\ConvertResultApiToEntity.cs" />
     <Compile Include="Common\DatabaseSql.cs" />
     <Compile Include="Common\Encryptor.cs" />

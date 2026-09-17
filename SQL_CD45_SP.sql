@@ -150,43 +150,53 @@ BEGIN
     INSERT INTO @TmpResult (STT, ChiTieu, IsBold, IndentLevel, Code)
     VALUES ('II', N'HOẠT ĐỘNG TRUYỀN THÔNG', 1, 0, 'SEC_II');
 
-    -- 1. Lần 1
+    -- 1. Lần 1 (VR-06a: Xếp hạng thứ tự độc lập theo LOAI_DV = 1)
+    ;WITH CTE_TruyenThong AS (
+        SELECT hd.RECORD_ID, hd.NGAY_HOAT_DONG, hd.MA_TCV,
+               ROW_NUMBER() OVER (PARTITION BY hd.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG, hd.REPEAT_INSTANCE) AS TT_Order
+        FROM CD45_HOAT_DONG hd
+        WHERE hd.LOAI_DV = 1
+    )
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số KH được tham gia truyền thông lần 1',
-        COUNT(DISTINCT hd.RECORD_ID),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT tt.RECORD_ID),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN tt.RECORD_ID END),
         0, 0, 'II_1'
-    FROM CD45_HOAT_DONG hd
-    INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-    WHERE hd.REPEAT_INSTANCE = 1
-      AND hd.LOAI_DV = 1
-      AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
-      AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
-      AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
+    FROM CTE_TruyenThong tt
+    INNER JOIN #TmpKH kh ON tt.RECORD_ID = kh.RECORD_ID
+    WHERE tt.TT_Order = 1
+      AND (@FromDate IS NULL OR tt.NGAY_HOAT_DONG >= @FromDate)
+      AND (@ToDate IS NULL OR tt.NGAY_HOAT_DONG <= @ToDate)
+      AND (@MaTCV IS NULL OR @MaTCV = '' OR tt.MA_TCV = @MaTCV);
 
-    -- 2. Lần 2+
+    -- 2. Lần 2+ (VR-06a: Xếp hạng thứ tự độc lập theo LOAI_DV = 1)
+    ;WITH CTE_TruyenThong AS (
+        SELECT hd.RECORD_ID, hd.NGAY_HOAT_DONG, hd.MA_TCV,
+               ROW_NUMBER() OVER (PARTITION BY hd.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG, hd.REPEAT_INSTANCE) AS TT_Order
+        FROM CD45_HOAT_DONG hd
+        WHERE hd.LOAI_DV = 1
+    )
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH được tham gia truyền thông lần 2',
-        COUNT(DISTINCT hd.RECORD_ID),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN hd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT tt.RECORD_ID),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN tt.RECORD_ID END),
         0, 0, 'II_2'
-    FROM CD45_HOAT_DONG hd
-    INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-    WHERE hd.REPEAT_INSTANCE > 1
-      AND hd.LOAI_DV = 1
-      AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
-      AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
-      AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
+    FROM CTE_TruyenThong tt
+    INNER JOIN #TmpKH kh ON tt.RECORD_ID = kh.RECORD_ID
+    WHERE tt.TT_Order > 1
+      AND (@FromDate IS NULL OR tt.NGAY_HOAT_DONG >= @FromDate)
+      AND (@ToDate IS NULL OR tt.NGAY_HOAT_DONG <= @ToDate)
+      AND (@MaTCV IS NULL OR @MaTCV = '' OR tt.MA_TCV = @MaTCV);
 
     -- 3. Tổng lượt
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)

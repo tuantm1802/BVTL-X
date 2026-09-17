@@ -3,13 +3,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid" x-data="alpineDataQuality">
+<div class="container-fluid" x-data="alpineDataQuality" x-init="if (!activeTab) activeTab = 'details'">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
             <i class="fas fa-shield-alt text-primary mr-2"></i>GIÁM SÁT & CHUẨN HÓA DỮ LIỆU REDCAP
         </h1>
         <div>
+            <button class="btn btn-warning btn-sm shadow-sm mr-2" @@click="scanDuplicates()" :disabled="isScanningDuplicates">
+                <i class="fas fa-search-plus fa-sm mr-1" :class="isScanningDuplicates ? 'fa-spin' : ''"></i>
+                <span x-text="isScanningDuplicates ? 'Đang quét trùng...' : 'Quét trùng hồ sơ F1'">Quét trùng hồ sơ F1</span>
+            </button>
             <button class="btn btn-danger btn-sm shadow-sm" @@click="exportWarnings()">
                 <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel Cảnh báo cho M&E
             </button>
@@ -91,150 +95,307 @@
         </div>
     </div>
 
-    <!-- Filter Card -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc tra cứu nhật ký</h6>
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-3 bg-white p-2 rounded shadow-sm">
+        <li class="nav-item">
+            <a class="nav-link font-weight-bold" :class="(!activeTab || activeTab === 'details') ? 'active bg-primary text-white' : 'text-secondary'" href="#" @@click.prevent="switchTab('details')">
+                <i class="fas fa-list-alt mr-1"></i> Chi tiết sự kiện & Cảnh báo
+            </a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link font-weight-bold" :class="activeTab === 'grouped' ? 'active bg-primary text-white' : 'text-secondary'" href="#" @@click.prevent="switchTab('grouped')">
+                <i class="fas fa-layer-group mr-1"></i> Gom nhóm theo Quy tắc (Grouped Summary)
+            </a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link font-weight-bold" :class="activeTab === 'byUnit' ? 'active bg-primary text-white' : 'text-secondary'" href="#" @@click.prevent="switchTab('byUnit')">
+                <i class="fas fa-chart-pie mr-1"></i> Thống kê theo Đơn vị (Tỉnh / CBO)
+            </a>
+        </li>
+    </ul>
+
+    <!-- ================= TAB 1: CHI TIẾT SỰ KIỆN ================= -->
+    <div x-show="!activeTab || activeTab === 'details'">
+        <!-- Filter Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc tra cứu nhật ký</h6>
+            </div>
+            <div class="card-body py-3">
+                <div class="row">
+                    <div class="col-md-2 mb-2">
+                        <label class="font-weight-bold small">API / Biểu mẫu</label>
+                        <select class="form-control form-control-sm" x-model="filterApiCode">
+                            <option value="">-- Tất cả Form (F1-F10) --</option>
+                            <option value="API_CD45_F1">F1 - Khách hàng</option>
+                            <option value="API_CD45_F2">F2 - Truyền thông / Nhóm</option>
+                            <option value="API_CD45_F3">F3 - Sàng lọc QST</option>
+                            <option value="API_CD45_F4">F4 - Hỗ trợ XH khác</option>
+                            <option value="API_CD45_F5">F5 - Tuân thủ điều trị</option>
+                            <option value="API_CD45_F6">F6 - Chẩn đoán & Điều trị</option>
+                            <option value="API_CD45_F7">F7 - Tư vấn tâm lý L1</option>
+                            <option value="API_CD45_F8">F8 - Tư vấn tâm lý L2+</option>
+                            <option value="API_CD45_F9">F9 - Theo dấu khách hàng</option>
+                            <option value="API_CD45_F10">F10 - Vân tay KH</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 mb-2">
+                        <label class="font-weight-bold small">Mức độ (Severity)</label>
+                        <select class="form-control form-control-sm" x-model="filterSeverity" @@change="loadLogs(1)">
+                            <option value="WARNING">WARNING (Cảnh báo nghi vấn)</option>
+                            <option value="ERROR">ERROR (Lỗi nghiêm trọng / Chặn)</option>
+                            <option value="INFO">INFO (Tự động chuẩn hóa tóm tắt)</option>
+                            <option value="">-- Tất cả mức độ --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 mb-2">
+                        <label class="font-weight-bold small">Trạng thái xử lý</label>
+                        <select class="form-control form-control-sm" x-model="filterIsResolved">
+                            <option value="">-- Tất cả --</option>
+                            <option value="false">Chưa xử lý (Pending)</option>
+                            <option value="true">Đã xử lý (Resolved)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="font-weight-bold small">Tìm kiếm (Mã KH / Nội dung)</label>
+                        <input type="text" class="form-control form-control-sm" x-model="filterKeyword" placeholder="Nhập mã KH (DHN01...), từ khóa lỗi..." @@keyup.enter="loadLogs(1)" />
+                    </div>
+
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button class="btn btn-primary btn-sm btn-block shadow-sm" @@click="loadLogs(1)">
+                            <i class="fas fa-search fa-sm mr-1"></i> Tra cứu
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body py-3">
-            <div class="row">
-                <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">API / Biểu mẫu</label>
-                    <select class="form-control form-control-sm" x-model="filterApiCode">
-                        <option value="">-- Tất cả Form (F1-F10) --</option>
-                        <option value="API_CD45_F1">F1 - Khách hàng</option>
-                        <option value="API_CD45_F2">F2 - Truyền thông / Nhóm</option>
-                        <option value="API_CD45_F3">F3 - Sàng lọc QST</option>
-                        <option value="API_CD45_F4">F4 - Hỗ trợ XH khác</option>
-                        <option value="API_CD45_F5">F5 - Tuân thủ điều trị</option>
-                        <option value="API_CD45_F6">F6 - Chẩn đoán & Điều trị</option>
-                        <option value="API_CD45_F7">F7 - Tư vấn tâm lý L1</option>
-                        <option value="API_CD45_F8">F8 - Tư vấn tâm lý L2+</option>
-                        <option value="API_CD45_F10">F10 - Vân tay KH</option>
-                    </select>
+
+        <!-- Data Table Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-alt mr-1"></i> Danh sách sự kiện Chuẩn hóa & Cảnh báo Dữ liệu</h6>
+                <span class="badge badge-secondary" x-text="'Tổng cộng: ' + totalRows.toLocaleString('vi-VN') + ' bản ghi'"></span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0" style="font-size: 13px;">
+                        <thead class="bg-primary text-white text-center">
+                            <tr>
+                                <th style="width: 45px;">#</th>
+                                <th style="width: 130px;">Thời gian</th>
+                                <th style="width: 100px;">Form / API</th>
+                                <th style="width: 110px;">Mã KH</th>
+                                <th style="width: 130px;">Trường dữ liệu</th>
+                                <th style="width: 150px;">Giá trị REDCap</th>
+                                <th style="width: 150px;">Sau chuẩn hóa</th>
+                                <th style="width: 90px;">Mức độ</th>
+                                <th>Nội dung cảnh báo & Quy tắc</th>
+                                <th style="width: 110px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(item, index) in logs" :key="item.ID">
+                                <tr :class="item.SEVERITY === 'WARNING' ? 'table-warning' : (item.SEVERITY === 'ERROR' ? 'table-danger' : '')">
+                                    <td class="text-center" x-text="(pageIndex - 1) * pageSize + index + 1"></td>
+                                    <td class="text-center small" x-text="formatDate(item.CREATED_DATE)"></td>
+                                    <td class="text-center font-weight-bold" x-text="item.API_CODE"></td>
+                                    <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID || '-'"></td>
+                                    <td class="font-italic" x-text="item.FIELD_NAME"></td>
+                                    <td class="text-break" x-text="item.OLD_VALUE || '(trống)'"></td>
+                                    <td class="text-break text-success font-weight-bold" x-text="item.NEW_VALUE || '-'"></td>
+                                    <td class="text-center">
+                                        <span class="badge" 
+                                              :class="item.SEVERITY === 'INFO' ? 'badge-success' : (item.SEVERITY === 'WARNING' ? 'badge-warning text-dark' : 'badge-danger')"
+                                              x-text="item.SEVERITY"></span>
+                                    </td>
+                                    <td>
+                                        <div><strong class="text-dark" x-text="item.RULE_CODE"></strong></div>
+                                        <div class="small text-muted" x-text="item.MESSAGE"></div>
+                                        <div x-show="item.IS_RESOLVED" class="small text-success mt-1">
+                                            <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (item.RESOLVED_NOTE || '')"></span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <template x-if="item.SEVERITY === 'WARNING' || item.SEVERITY === 'ERROR'">
+                                            <div>
+                                                <button x-show="!item.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolved(item)">
+                                                    <i class="fas fa-check fa-xs"></i> Đã sửa
+                                                </button>
+                                                <span x-show="item.IS_RESOLVED" class="badge badge-success">
+                                                    <i class="fas fa-check"></i> Xong
+                                                </span>
+                                            </div>
+                                        </template>
+                                        <template x-if="item.SEVERITY === 'INFO'">
+                                            <span class="text-muted small"><i class="fas fa-magic"></i> Auto</span>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="logs.length === 0 && !isLoading">
+                                <td colspan="10" class="text-center py-4 text-muted">
+                                    <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                    Không tìm thấy dữ liệu nhật ký phù hợp
+                                </td>
+                            </tr>
+                            <tr x-show="isLoading">
+                                <td colspan="10" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                    Đang tải danh sách nhật ký...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">Mức độ (Severity)</label>
-                    <select class="form-control form-control-sm" x-model="filterSeverity">
-                        <option value="">-- Tất cả mức độ --</option>
-                        <option value="INFO">INFO (Tự động chuẩn hóa)</option>
-                        <option value="WARNING">WARNING (Cảnh báo bất thường)</option>
-                        <option value="ERROR">ERROR (Lỗi nghiêm trọng)</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">Trạng thái xử lý</label>
-                    <select class="form-control form-control-sm" x-model="filterIsResolved">
-                        <option value="">-- Tất cả --</option>
-                        <option value="false">Chưa xử lý (Pending)</option>
-                        <option value="true">Đã xử lý (Resolved)</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4 mb-2">
-                    <label class="font-weight-bold small">Tìm kiếm (Mã KH / Nội dung)</label>
-                    <input type="text" class="form-control form-control-sm" x-model="filterKeyword" placeholder="Nhập mã KH (DHN01...), từ khóa lỗi..." @@keyup.enter="loadLogs(1)" />
-                </div>
-
-                <div class="col-md-2 mb-2 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm btn-block shadow-sm" @@click="loadLogs(1)">
-                        <i class="fas fa-search fa-sm mr-1"></i> Tra cứu
-                    </button>
+                <!-- Pagination -->
+                <div class="card-footer bg-white py-2 d-flex justify-content-between align-items-center" x-show="totalPages > 1">
+                    <span class="small text-muted" x-text="'Trang ' + pageIndex + ' / ' + totalPages"></span>
+                    <div>
+                        <button class="btn btn-outline-primary btn-sm mr-1" :disabled="pageIndex <= 1" @@click="loadLogs(pageIndex - 1)">
+                            <i class="fas fa-chevron-left fa-sm"></i> Trước
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" :disabled="pageIndex >= totalPages" @@click="loadLogs(pageIndex + 1)">
+                            Sau <i class="fas fa-chevron-right fa-sm"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Data Table Card -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list-alt mr-1"></i> Danh sách sự kiện Chuẩn hóa & Cảnh báo Dữ liệu</h6>
-            <span class="badge badge-secondary" x-text="'Tổng cộng: ' + totalRows.toLocaleString('vi-VN') + ' bản ghi'"></span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover mb-0" style="font-size: 13px;">
-                    <thead class="bg-primary text-white text-center">
-                        <tr>
-                            <th style="width: 45px;">#</th>
-                            <th style="width: 130px;">Thời gian</th>
-                            <th style="width: 100px;">Form / API</th>
-                            <th style="width: 110px;">Mã KH</th>
-                            <th style="width: 130px;">Trường dữ liệu</th>
-                            <th style="width: 150px;">Giá trị REDCap</th>
-                            <th style="width: 150px;">Sau chuẩn hóa</th>
-                            <th style="width: 90px;">Mức độ</th>
-                            <th>Nội dung cảnh báo & Quy tắc</th>
-                            <th style="width: 110px;">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="(item, index) in logs" :key="item.ID">
-                            <tr :class="item.SEVERITY === 'WARNING' ? 'table-warning' : (item.SEVERITY === 'ERROR' ? 'table-danger' : '')">
-                                <td class="text-center" x-text="(pageIndex - 1) * pageSize + index + 1"></td>
-                                <td class="text-center small" x-text="formatDate(item.CREATED_DATE)"></td>
-                                <td class="text-center font-weight-bold" x-text="item.API_CODE"></td>
-                                <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID || '-'"></td>
-                                <td class="font-italic" x-text="item.FIELD_NAME"></td>
-                                <td class="text-break" x-text="item.OLD_VALUE || '(trống)'"></td>
-                                <td class="text-break text-success font-weight-bold" x-text="item.NEW_VALUE || '-'"></td>
-                                <td class="text-center">
-                                    <span class="badge" 
-                                          :class="item.SEVERITY === 'INFO' ? 'badge-success' : (item.SEVERITY === 'WARNING' ? 'badge-warning text-dark' : 'badge-danger')"
-                                          x-text="item.SEVERITY"></span>
-                                </td>
-                                <td>
-                                    <div><strong class="text-dark" x-text="item.RULE_CODE"></strong></div>
-                                    <div class="small text-muted" x-text="item.MESSAGE"></div>
-                                    <div x-show="item.IS_RESOLVED" class="small text-success mt-1">
-                                        <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (item.RESOLVED_NOTE || '')"></span>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <template x-if="item.SEVERITY === 'WARNING' || item.SEVERITY === 'ERROR'">
-                                        <div>
-                                            <button x-show="!item.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolved(item)">
-                                                <i class="fas fa-check fa-xs"></i> Đã sửa
-                                            </button>
-                                            <span x-show="item.IS_RESOLVED" class="badge badge-success">
-                                                <i class="fas fa-check"></i> Xong
-                                            </span>
-                                        </div>
-                                    </template>
-                                    <template x-if="item.SEVERITY === 'INFO'">
-                                        <span class="text-muted small"><i class="fas fa-magic"></i> Auto</span>
-                                    </template>
+    <!-- ================= TAB 2: GOM NHÓM THEO QUY TẮC ================= -->
+    <div x-show="activeTab === 'grouped'">
+        <div class="card shadow mb-4">
+            <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-layer-group mr-1"></i> Bảng tổng hợp vi phạm theo Mã quy tắc (VR-01 đến VR-07)</h6>
+                <div>
+                    <button class="btn btn-light btn-sm font-weight-bold text-primary" @@click="loadGroupedLogs()">
+                        <i class="fas fa-sync-alt fa-sm mr-1"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0" style="font-size: 13px;">
+                        <thead class="bg-primary text-white text-center">
+                            <tr>
+                                <th style="width: 45px;">#</th>
+                                <th style="width: 160px;">Bảng dữ liệu</th>
+                                <th style="width: 240px;">Mã Quy tắc</th>
+                                <th style="width: 100px;">Mức độ</th>
+                                <th style="width: 120px;">Tổng phát hiện</th>
+                                <th style="width: 120px;">Chưa xử lý</th>
+                                <th style="width: 140px;">Phát hiện đầu</th>
+                                <th style="width: 140px;">Phát hiện cuối</th>
+                                <th>Thông điệp cảnh báo mẫu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(grp, idx) in groupedLogs" :key="grp.RULE_CODE + grp.TABLE_NAME">
+                                <tr :class="grp.SEVERITY === 'ERROR' ? 'table-danger' : (grp.SEVERITY === 'WARNING' ? 'table-warning' : '')">
+                                    <td class="text-center" x-text="idx + 1"></td>
+                                    <td class="text-center font-weight-bold" x-text="grp.TABLE_NAME || 'TOÀN CỤC'"></td>
+                                    <td>
+                                        <strong class="text-primary font-weight-bold" x-text="grp.RULE_CODE"></strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge" 
+                                              :class="grp.SEVERITY === 'INFO' ? 'badge-success' : (grp.SEVERITY === 'WARNING' ? 'badge-warning text-dark' : 'badge-danger')"
+                                              x-text="grp.SEVERITY"></span>
+                                    </td>
+                                    <td class="text-center font-weight-bold" x-text="grp.TotalCount ? grp.TotalCount.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center font-weight-bold" :class="grp.UnresolvedCount > 0 ? 'text-danger' : 'text-success'" x-text="grp.UnresolvedCount ? grp.UnresolvedCount.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center small" x-text="formatDate(grp.FirstSeen)"></td>
+                                    <td class="text-center small" x-text="formatDate(grp.LastSeen)"></td>
+                                    <td class="small text-muted" x-text="grp.SampleMessage"></td>
+                                </tr>
+                            </template>
+                            <tr x-show="groupedLogs.length === 0 && !isLoadingGrouped">
+                                <td colspan="9" class="text-center py-4 text-muted">
+                                    <i class="fas fa-check-circle fa-2x d-block mb-2 text-success"></i>
+                                    Không có nhóm cảnh báo bất thường nào
                                 </td>
                             </tr>
-                        </template>
-                        <tr x-show="logs.length === 0 && !isLoading">
-                            <td colspan="10" class="text-center py-4 text-muted">
-                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
-                                Không tìm thấy dữ liệu nhật ký phù hợp
-                            </td>
-                        </tr>
-                        <tr x-show="isLoading">
-                            <td colspan="10" class="text-center py-4 text-primary">
-                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
-                                Đang tải danh sách nhật ký...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            <tr x-show="isLoadingGrouped">
+                                <td colspan="9" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                    Đang tổng hợp dữ liệu quy tắc...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Pagination -->
-            <div class="card-footer bg-white py-2 d-flex justify-content-between align-items-center" x-show="totalPages > 1">
-                <span class="small text-muted" x-text="'Trang ' + pageIndex + ' / ' + totalPages"></span>
+    <!-- ================= TAB 3: THỐNG KÊ THEO ĐƠN VỊ ================= -->
+    <div x-show="activeTab === 'byUnit'">
+        <div class="card shadow mb-4">
+            <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold"><i class="fas fa-chart-pie mr-1"></i> Đánh giá Chất lượng Dữ liệu theo Tỉnh & Nhóm CBO</h6>
                 <div>
-                    <button class="btn btn-outline-primary btn-sm mr-1" :disabled="pageIndex <= 1" @@click="loadLogs(pageIndex - 1)">
-                        <i class="fas fa-chevron-left fa-sm"></i> Trước
+                    <button class="btn btn-light btn-sm font-weight-bold text-primary" @@click="loadStatsByNhom()">
+                        <i class="fas fa-sync-alt fa-sm mr-1"></i> Làm mới
                     </button>
-                    <button class="btn btn-outline-primary btn-sm" :disabled="pageIndex >= totalPages" @@click="loadLogs(pageIndex + 1)">
-                        Sau <i class="fas fa-chevron-right fa-sm"></i>
-                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0" style="font-size: 13px;">
+                        <thead class="bg-primary text-white text-center">
+                            <tr>
+                                <th style="width: 45px;">#</th>
+                                <th style="width: 140px;">Tỉnh / Thành phố</th>
+                                <th style="width: 150px;">Mã Nhóm CBO</th>
+                                <th style="width: 140px;">Cần xử lý (Pending)</th>
+                                <th style="width: 130px;">Tổng Cảnh báo</th>
+                                <th style="width: 130px;">Tổng Lỗi chặn</th>
+                                <th style="width: 130px;">Đã khắc phục</th>
+                                <th>Đánh giá rủi ro chất lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(unit, idx) in statsByNhom" :key="unit.MA_NHOM + unit.CITY_CODE">
+                                <tr>
+                                    <td class="text-center" x-text="idx + 1"></td>
+                                    <td class="text-center font-weight-bold" x-text="unit.CITY_CODE || '-'"></td>
+                                    <td class="text-center font-weight-bold text-primary" x-text="unit.MA_NHOM || 'CHƯA PHÂN NHÓM'"></td>
+                                    <td class="text-center font-weight-bold text-danger" style="font-size: 14px;" x-text="unit.TotalPending ? unit.TotalPending.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center text-warning font-weight-bold" x-text="unit.TotalWarnings ? unit.TotalWarnings.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center text-danger font-weight-bold" x-text="unit.TotalErrors ? unit.TotalErrors.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center text-success font-weight-bold" x-text="unit.TotalResolved ? unit.TotalResolved.toLocaleString('vi-VN') : 0"></td>
+                                    <td>
+                                        <template x-if="unit.TotalPending > 20">
+                                            <span class="badge badge-danger"><i class="fas fa-exclamation-circle mr-1"></i> Rủi ro cao: Dữ liệu nguồn sai sót nhiều</span>
+                                        </template>
+                                        <template x-if="unit.TotalPending > 0 && unit.TotalPending <= 20">
+                                            <span class="badge badge-warning text-dark"><i class="fas fa-exclamation-triangle mr-1"></i> Rủi ro trung bình: Cần rà soát bổ sung</span>
+                                        </template>
+                                        <template x-if="unit.TotalPending === 0">
+                                            <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Dữ liệu sạch / Đã xử lý hoàn tất</span>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="statsByNhom.length === 0 && !isLoadingByNhom">
+                                <td colspan="8" class="text-center py-4 text-muted">
+                                    <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                    Chưa có dữ liệu thống kê theo đơn vị
+                                </td>
+                            </tr>
+                            <tr x-show="isLoadingByNhom">
+                                <td colspan="8" class="text-center py-4 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                    Đang tính toán số liệu đơn vị...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -242,5 +403,5 @@
 </div>
 
 @section scripts {
-    <script src="~/app/Controller/AlpineDataQualityController.js"></script>
+    <script src="~/app/Controller/AlpineDataQualityController.js?v=@DateTime.Now.Ticks"></script>
 }

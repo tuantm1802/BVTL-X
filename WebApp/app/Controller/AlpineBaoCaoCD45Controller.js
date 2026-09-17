@@ -199,6 +199,9 @@ document.addEventListener('alpine:init', function () {
                         self.isLoading = false;
                         if (res.Success) {
                             self.items = res.Data || [];
+                            if (res.Warning && window.toastr) {
+                                toastr.warning(res.Warning, 'Cảnh báo tính toàn vẹn (VR-01)', { timeOut: 10000, closeButton: true });
+                            }
                         } else {
                             if (window.toastr) toastr.error(res.Message);
                         }

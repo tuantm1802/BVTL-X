@@ -213,4 +213,24 @@ namespace Model.ModelExtend.API.CD45
         public bool IS_RESOLVED { get; set; }
         public string RESOLVED_NOTE { get; set; }
     }
+
+    public class GroupedDataQualityLogModel {
+        public string RULE_CODE { get; set; }
+        public string SEVERITY { get; set; }
+        public string TABLE_NAME { get; set; }
+        public int TotalCount { get; set; }
+        public int UnresolvedCount { get; set; }
+        public DateTime? FirstSeen { get; set; }
+        public DateTime? LastSeen { get; set; }
+        public string SampleMessage { get; set; }
+    }
+
+    public class DataQualityStatsByNhomModel {
+        public string MA_NHOM { get; set; }
+        public string CITY_CODE { get; set; }
+        public int TotalErrors { get; set; }
+        public int TotalWarnings { get; set; }
+        public int TotalResolved { get; set; }
+        public int TotalPending { get; set; }
+    }
 }

@@ -69,7 +69,11 @@ namespace WebApp.Controllers
                 // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → truyền null để hiển thị tất cả chỉ tiêu
                 string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
                 var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
-                var jsonResult = Json(new { Success = true, Data = data });
+
+                // VR-01: Kiểm toán cấu trúc số học (Tổng = PUD + PLHIV + TG + SW + MSM)
+                ReportValidatorHelper.ValidateReportArithmetic(data, out string arithmeticWarning);
+
+                var jsonResult = Json(new { Success = true, Data = data, Warning = arithmeticWarning });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;
             }
@@ -113,6 +117,12 @@ namespace WebApp.Controllers
             // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → hiển thị tất cả chỉ tiêu
             string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
+
+            // VR-01 [BLOCKING]: Chặn xuất báo cáo nếu có bất kỳ dòng nào vi phạm Tổng = 5 nhóm đích
+            if (!ReportValidatorHelper.ValidateReportArithmetic(data, out var arithmeticError))
+            {
+                return Content("<script>alert('" + arithmeticError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
+            }
 
             // Nhãn và tiêu đề kỳ báo cáo
             string kyLabel = loaiFilter == null ? "TuyChon" :

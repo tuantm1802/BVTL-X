@@ -889,9 +889,40 @@ namespace Data.API
                         var converter = new Common.Common.ConvertCD45ApiToEntity();
                         var stdLogs = new List<Model.ModelExtend.API.CD45.BVTL_DATA_STANDARDIZATION_LOG_Entity>();
 
+                        // Nạp ngữ cảnh kiểm thực quan hệ liên kết form (F1, F6, F7, F9)
+                        var valContext = new Common.Common.CD45ValidationContext();
+                        try
+                        {
+                            using (var dbCtx = new BVTL_REPORTINGEntities())
+                            {
+                                var khList = dbCtx.Database.SqlQuery<Model.ModelExtend.API.CD45.CD45_KH_Entity>(
+                                    "SELECT RECORD_ID, COMPLETE_STATUS, DOI_TUONG, NGAY_THAM_GIA, MA_NHOM, CITY_CODE FROM CD45_KH WHERE MADUAN = @p0", maDuAn).ToList();
+                                foreach (var kh in khList)
+                                {
+                                    valContext.RegisterClientF1(kh.RECORD_ID, kh.COMPLETE_STATUS, kh.DOI_TUONG, kh.NGAY_THAM_GIA, kh.MA_NHOM, kh.CITY_CODE);
+                                }
+
+                                var f7List = dbCtx.Database.SqlQuery<string>(
+                                    "SELECT RECORD_ID FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2' AND MADUAN = @p0", maDuAn).ToList();
+                                foreach (var id in f7List) valContext.RegisterF7Complete(id);
+
+                                var f6List = dbCtx.Database.SqlQuery<string>(
+                                    "SELECT DISTINCT RECORD_ID FROM CD45_CHAN_DOAN WHERE MADUAN = @p0", maDuAn).ToList();
+                                foreach (var id in f6List) valContext.RegisterF6Visit(id);
+
+                                var f9List = dbCtx.Database.SqlQuery<Model.ModelExtend.API.CD45.CD45_THEO_DAU_Entity>(
+                                    "SELECT RECORD_ID, NGAY_THEO_DAU FROM CD45_THEO_DAU WHERE MAT_DAU = 1 AND MADUAN = @p0", maDuAn).ToList();
+                                foreach (var f9 in f9List) valContext.RegisterF9Lost(f9.RECORD_ID, f9.NGAY_THEO_DAU);
+                            }
+                        }
+                        catch (Exception exCtx)
+                        {
+                            log.Warn("Không thể nạp CD45ValidationContext từ DB: " + exCtx.Message);
+                        }
+
                         if (tableNames.Contains("CD45_KH")) {
                             var listF1 = new List<Model.ModelExtend.API.CD45.CD45_KH_Entity>();
-                            converter.ConvertF1(dataResultApi, maDuAn, apiCode, reportId, ref listF1, ref stdLogs);
+                            converter.ConvertF1(dataResultApi, maDuAn, apiCode, reportId, ref listF1, ref stdLogs, valContext);
                             if (listF1.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF1);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_KH", "", maDuAn);
@@ -899,7 +930,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_HOAT_DONG")) {
                             var listF2 = new List<Model.ModelExtend.API.CD45.CD45_HOAT_DONG_Entity>();
-                            converter.ConvertF2(dataResultApi, maDuAn, apiCode, reportId, ref listF2, ref stdLogs);
+                            converter.ConvertF2(dataResultApi, maDuAn, apiCode, reportId, ref listF2, ref stdLogs, valContext);
                             if (listF2.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF2);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_HOAT_DONG", "", maDuAn);
@@ -907,7 +938,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_QST")) {
                             var listF3 = new List<Model.ModelExtend.API.CD45.CD45_QST_Entity>();
-                            converter.ConvertF3(dataResultApi, maDuAn, apiCode, reportId, ref listF3, ref stdLogs);
+                            converter.ConvertF3(dataResultApi, maDuAn, apiCode, reportId, ref listF3, ref stdLogs, valContext);
                             if (listF3.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF3);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_QST", "", maDuAn);
@@ -915,7 +946,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_HO_TRO_XH")) {
                             var listF4 = new List<Model.ModelExtend.API.CD45.CD45_HO_TRO_XH_Entity>();
-                            converter.ConvertF4(dataResultApi, maDuAn, apiCode, reportId, ref listF4, ref stdLogs);
+                            converter.ConvertF4(dataResultApi, maDuAn, apiCode, reportId, ref listF4, ref stdLogs, valContext);
                             if (listF4.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF4);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_HO_TRO_XH", "", maDuAn);
@@ -923,7 +954,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_TUAN_THU")) {
                             var listF5 = new List<Model.ModelExtend.API.CD45.CD45_TUAN_THU_Entity>();
-                            converter.ConvertF5(dataResultApi, maDuAn, apiCode, reportId, ref listF5, ref stdLogs);
+                            converter.ConvertF5(dataResultApi, maDuAn, apiCode, reportId, ref listF5, ref stdLogs, valContext);
                             if (listF5.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF5);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_TUAN_THU", "", maDuAn);
@@ -931,7 +962,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_CHAN_DOAN")) {
                             var listF6 = new List<Model.ModelExtend.API.CD45.CD45_CHAN_DOAN_Entity>();
-                            converter.ConvertF6(dataResultApi, maDuAn, apiCode, reportId, ref listF6, ref stdLogs);
+                            converter.ConvertF6(dataResultApi, maDuAn, apiCode, reportId, ref listF6, ref stdLogs, valContext);
                             if (listF6.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF6);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_CHAN_DOAN", "", maDuAn);
@@ -939,7 +970,7 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_TU_VAN_L1")) {
                             var listF7 = new List<Model.ModelExtend.API.CD45.CD45_TU_VAN_L1_Entity>();
-                            converter.ConvertF7(dataResultApi, maDuAn, apiCode, reportId, ref listF7, ref stdLogs);
+                            converter.ConvertF7(dataResultApi, maDuAn, apiCode, reportId, ref listF7, ref stdLogs, valContext);
                             if (listF7.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF7);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L1", "", maDuAn);
@@ -947,15 +978,23 @@ namespace Data.API
                         }
                         else if (tableNames.Contains("CD45_TU_VAN_L2")) {
                             var listF8 = new List<Model.ModelExtend.API.CD45.CD45_TU_VAN_L2_Entity>();
-                            converter.ConvertF8(dataResultApi, maDuAn, apiCode, reportId, ref listF8, ref stdLogs);
+                            converter.ConvertF8(dataResultApi, maDuAn, apiCode, reportId, ref listF8, ref stdLogs, valContext);
                             if (listF8.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF8);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_TU_VAN_L2", "", maDuAn);
                             }
                         }
+                        else if (tableNames.Contains("CD45_THEO_DAU")) {
+                            var listF9 = new List<Model.ModelExtend.API.CD45.CD45_THEO_DAU_Entity>();
+                            converter.ConvertF9(dataResultApi, maDuAn, apiCode, reportId, ref listF9, ref stdLogs, valContext);
+                            if (listF9.Count > 0) {
+                                var dt = insertDataDA.ConvertToDataTable(listF9);
+                                result = insertDataDA.InsertDataFromApi(dt, "CD45_THEO_DAU", "", maDuAn);
+                            }
+                        }
                         else if (tableNames.Contains("CD45_VAN_TAY")) {
                             var listF10 = new List<Model.ModelExtend.API.CD45.CD45_VAN_TAY_Entity>();
-                            converter.ConvertF10(dataResultApi, maDuAn, apiCode, reportId, ref listF10, ref stdLogs);
+                            converter.ConvertF10(dataResultApi, maDuAn, apiCode, reportId, ref listF10, ref stdLogs, valContext);
                             if (listF10.Count > 0) {
                                 var dt = insertDataDA.ConvertToDataTable(listF10);
                                 result = insertDataDA.InsertDataFromApi(dt, "CD45_VAN_TAY", "", maDuAn);

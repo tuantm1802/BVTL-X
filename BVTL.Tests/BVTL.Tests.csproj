@@ -60,6 +60,9 @@
     <Reference Include="ExcelNumberFormat">
       <HintPath>..\packages\ExcelNumberFormat.1.0.10\lib\net20\ExcelNumberFormat.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncryptorTests.cs" />
@@ -71,6 +74,9 @@
     <Compile Include="DashboardCD45Tests.cs" />
     <Compile Include="ScheduledReportTests.cs" />
     <Compile Include="AppVersionHelperTests.cs" />
+    <Compile Include="DataValidationP0Tests.cs" />
+    <Compile Include="DataValidationP1Tests.cs" />
+    <Compile Include="DataValidationP2Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

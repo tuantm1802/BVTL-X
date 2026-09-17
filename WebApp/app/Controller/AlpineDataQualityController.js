@@ -1,7 +1,10 @@
-﻿document.addEventListener('alpine:init', function () {
+document.addEventListener('alpine:init', function () {
     Alpine.data('alpineDataQuality', function () {
         return {
+            activeTab: 'details', // 'details' | 'grouped' | 'byUnit'
             logs: [],
+            groupedLogs: [],
+            statsByNhom: [],
             stats: {
                 TotalLogs: 0,
                 TotalAutoCleaned: 0,
@@ -11,9 +14,12 @@
                 TotalPendingAction: 0
             },
             isLoading: false,
+            isLoadingGrouped: false,
+            isLoadingByNhom: false,
+            isScanningDuplicates: false,
             filterMaDuAn: 'CD45',
             filterApiCode: '',
-            filterSeverity: '',
+            filterSeverity: 'WARNING',
             filterIsResolved: '',
             filterKeyword: '',
             pageIndex: 1,
@@ -25,6 +31,16 @@
                 var self = this;
                 self.loadStats();
                 self.loadLogs();
+            },
+
+            switchTab: function (tab) {
+                var self = this;
+                self.activeTab = tab;
+                if (tab === 'grouped' && self.groupedLogs.length === 0) {
+                    self.loadGroupedLogs();
+                } else if (tab === 'byUnit' && self.statsByNhom.length === 0) {
+                    self.loadStatsByNhom();
+                }
             },
 
             loadStats: function () {
@@ -79,6 +95,89 @@
                 });
             },
 
+            loadGroupedLogs: function () {
+                var self = this;
+                self.isLoadingGrouped = true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/GetGroupedLogs',
+                    data: {
+                        maDuAn: self.filterMaDuAn,
+                        severity: self.filterSeverity
+                    },
+                    success: function (res) {
+                        self.isLoadingGrouped = false;
+                        if (res.Success) {
+                            self.groupedLogs = res.Data || [];
+                        } else {
+                            if (window.toastr) toastr.error(res.Message);
+                        }
+                    },
+                    error: function () {
+                        self.isLoadingGrouped = false;
+                        if (window.toastr) toastr.error('Có lỗi xảy ra khi tải bảng gom nhóm.');
+                    }
+                });
+            },
+
+            loadStatsByNhom: function () {
+                var self = this;
+                self.isLoadingByNhom = true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/GetStatsByNhom',
+                    data: {
+                        maDuAn: self.filterMaDuAn
+                    },
+                    success: function (res) {
+                        self.isLoadingByNhom = false;
+                        if (res.Success) {
+                            self.statsByNhom = res.Data || [];
+                        } else {
+                            if (window.toastr) toastr.error(res.Message);
+                        }
+                    },
+                    error: function () {
+                        self.isLoadingByNhom = false;
+                        if (window.toastr) toastr.error('Có lỗi xảy ra khi tải thống kê theo đơn vị.');
+                    }
+                });
+            },
+
+            scanDuplicates: function () {
+                var self = this;
+                if (!confirm("Hệ thống sẽ thực hiện quét trùng lặp hồ sơ đa trường (Họ tên + Ngày sinh/Năm sinh + Tỉnh) trên bảng Khách hàng F1.\nBạn có muốn tiếp tục?")) {
+                    return;
+                }
+
+                self.isScanningDuplicates = true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/ScanDuplicates',
+                    data: { maDuAn: self.filterMaDuAn },
+                    success: function (res) {
+                        self.isScanningDuplicates = false;
+                        if (res.Success) {
+                            if (window.toastr) {
+                                toastr.success(res.Message);
+                            } else {
+                                alert(res.Message);
+                            }
+                            self.loadStats();
+                            self.loadLogs(1);
+                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
+                            if (self.activeTab === 'byUnit') self.loadStatsByNhom();
+                        } else {
+                            if (window.toastr) toastr.error("Lỗi quét trùng: " + res.Message);
+                        }
+                    },
+                    error: function () {
+                        self.isScanningDuplicates = false;
+                        if (window.toastr) toastr.error("Có lỗi xảy ra trong quá trình quét trùng lặp.");
+                    }
+                });
+            },
+
             markResolved: function (logItem) {
                 var self = this;
                 var note = prompt("Nhập ghi chú xử lý (ví dụ: Đã báo TCV sửa lại trên REDCap):", "Đã rà soát và điều chỉnh trên REDCap");
@@ -94,6 +193,8 @@
                             logItem.IS_RESOLVED = true;
                             logItem.RESOLVED_NOTE = note;
                             self.loadStats();
+                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
+                            if (self.activeTab === 'byUnit') self.loadStatsByNhom();
                         } else {
                             if (window.toastr) toastr.error("Không thể cập nhật trạng thái: " + res.Message);
                         }

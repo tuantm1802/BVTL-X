@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -57,6 +57,51 @@ namespace WebApp.Controllers
             {
                 bool ok = _dataQualityDA.MarkResolved(id, note);
                 return Json(new { Success = ok });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetGroupedLogs(string maDuAn, string severity)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(maDuAn)) maDuAn = "CD45";
+                var list = _dataQualityDA.GetGroupedLogs(maDuAn, severity);
+                return Json(new { Success = true, Data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetStatsByNhom(string maDuAn)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(maDuAn)) maDuAn = "CD45";
+                var list = _dataQualityDA.GetStatsByNhom(maDuAn);
+                return Json(new { Success = true, Data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ScanDuplicates(string maDuAn)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(maDuAn)) maDuAn = "CD45";
+                int count = _dataQualityDA.ScanDuplicateClients(maDuAn);
+                return Json(new { Success = true, Count = count, Message = $"Đã hoàn tất quét trùng lặp F1. Ghi nhận {count} bản ghi nghi vấn trùng hồ sơ." });
             }
             catch (Exception ex)
             {

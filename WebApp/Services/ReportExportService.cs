@@ -1,4 +1,5 @@
 using ClosedXML.Excel;
+using Common.Common;
 using Data.Admin;
 using Data.InterfaceDA;
 using Data.InterfaceDA.Admin;
@@ -345,6 +346,17 @@ namespace WebApp.Services
                 }
 
                 var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, cityCode, maNhom, null, MapPeriodTypeToLoaiBaoCao(periodType));
+
+                // VR-01 [BLOCKING]: Kiểm toán cấu trúc số học (Tổng = 5 nhóm đích) trước khi tạo file
+                if (!ReportValidatorHelper.ValidateReportArithmetic(data, out var arithmeticError))
+                {
+                    sw.Stop();
+                    log.Error(arithmeticError);
+                    result.Success = false;
+                    result.Message = arithmeticError;
+                    return await Task.FromResult(result);
+                }
+
                 string storageDir = GetStorageDirectory(year, month);
                 string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_TOANQUOC";
 
