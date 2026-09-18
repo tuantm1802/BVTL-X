@@ -230,28 +230,127 @@ namespace WebApp.Services
                     try { File.Delete(zipFilePath); } catch { }
                 }
 
+                var cities = _cityDA.GetAll();
+                var cityDict = (cities != null && cities.Count > 0)
+                    ? cities.ToDictionary(x => (x.Code ?? "").Trim(), x => (x.Name ?? "").Trim(), StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                Func<string, string> getCityName = (cCode) =>
+                {
+                    if (string.IsNullOrEmpty(cCode)) return "Toàn dự án";
+                    if (cityDict.TryGetValue(cCode, out var cName) && !string.IsNullOrEmpty(cName)) return cName;
+                    switch (cCode.ToUpper())
+                    {
+                        case "HNO": return "Hà Nội";
+                        case "HPG": return "Hải Phòng";
+                        case "HYE": return "Hưng Yên";
+                        case "NAN": return "Nghệ An";
+                        case "NBI": return "Ninh Bình";
+                        case "HCM": return "TP. Hồ Chí Minh";
+                        default: return cCode;
+                    }
+                };
+
+                Func<string, string> sanitize = (input) =>
+                {
+                    if (string.IsNullOrWhiteSpace(input)) return "Unknown";
+                    var invalid = Path.GetInvalidFileNameChars();
+                    var clean = new string(input.Where(ch => !invalid.Contains(ch) && ch != '/' && ch != '\\').ToArray()).Trim();
+                    return string.IsNullOrWhiteSpace(clean) ? "Unknown" : clean;
+                };
+
                 int totalTcvExported = 0;
+                int totalSummaries = 0;
+                string loaiBaoCaoFilter = MapPeriodTypeToLoaiBaoCao(periodType);
+
+                var cityGroups = listTCV.GroupBy(x => (x.CITY_CODE ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
 
                 using (var fileStream = new FileStream(zipFilePath, FileMode.Create))
                 {
                     using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                     {
-                        foreach (var tcv in listTCV)
+                        foreach (var cGroup in cityGroups)
                         {
-                            var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                            string currentCityCode = cGroup.Key;
+                            string currentCityName = getCityName(currentCityCode);
+                            string cleanCityFolder = sanitize(currentCityName);
 
-                            using (var wb = new XLWorkbook())
+                            // 1. Báo cáo tổng hợp cấp Tỉnh (nếu có dữ liệu)
+                            try
                             {
-                                var ws = wb.Worksheets.Add("BaoCao");
-                                BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV);
-
-                                var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
-                                var zipEntry = archive.CreateEntry($"BaoCao_{(tcv.MA_NHOM ?? "CD45")}_{cleanName}.xlsx", CompressionLevel.Fastest);
-                                using (var zipStream = zipEntry.Open())
+                                var cityData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, currentCityCode, null, null, loaiBaoCaoFilter);
+                                if (cityData != null && cityData.Count > 0)
                                 {
-                                    wb.SaveAs(zipStream);
+                                    using (var wbCity = new XLWorkbook())
+                                    {
+                                        var wsCity = wbCity.Worksheets.Add("TongHop_" + currentCityCode);
+                                        BuildHoatDongCD45Worksheet(wsCity, cityData, fromDate, toDate, currentCityName, "Toàn tỉnh (" + currentCityCode + ")");
+                                        var cityEntry = archive.CreateEntry($"{cleanCityFolder}/BaoCao_TongHop_{sanitize(currentCityCode)}.xlsx", CompressionLevel.Fastest);
+                                        using (var zipStream = cityEntry.Open())
+                                        {
+                                            wbCity.SaveAs(zipStream);
+                                        }
+                                        totalSummaries++;
+                                    }
                                 }
-                                totalTcvExported++;
+                            }
+                            catch (Exception exCity)
+                            {
+                                log.Warn($"Không thể tạo file tổng hợp tỉnh {currentCityCode}: {exCity.Message}");
+                            }
+
+                            // 2. Gom nhóm theo từng Nhóm CBO trong Tỉnh
+                            var nhomGroups = cGroup.GroupBy(x => (x.MA_NHOM ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
+                            foreach (var nGroup in nhomGroups)
+                            {
+                                string currentMaNhom = nGroup.Key;
+                                var firstItem = nGroup.First();
+                                string currentTenNhom = !string.IsNullOrEmpty(firstItem.TEN_NHOM) ? firstItem.TEN_NHOM.Trim() : currentMaNhom;
+                                string cleanGroupFolder = sanitize("Nhóm " + currentTenNhom);
+
+                                // 2.1 Báo cáo tổng hợp cấp Nhóm CBO
+                                try
+                                {
+                                    var nhomData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, currentMaNhom, null, loaiBaoCaoFilter);
+                                    if (nhomData != null && nhomData.Count > 0)
+                                    {
+                                        using (var wbNhom = new XLWorkbook())
+                                        {
+                                            var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
+                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, currentTenNhom);
+                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_Nhom_{sanitize(currentTenNhom)}.xlsx", CompressionLevel.Fastest);
+                                            using (var zipStream = nhomEntry.Open())
+                                            {
+                                                wbNhom.SaveAs(zipStream);
+                                            }
+                                            totalSummaries++;
+                                        }
+                                    }
+                                }
+                                catch (Exception exNhom)
+                                {
+                                    log.Warn($"Không thể tạo file tổng hợp nhóm {currentMaNhom}: {exNhom.Message}");
+                                }
+
+                                // 2.2 Các Báo cáo TCV cá nhân trong Nhóm CBO
+                                foreach (var tcv in nGroup)
+                                {
+                                    var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+
+                                    using (var wb = new XLWorkbook())
+                                    {
+                                        var ws = wb.Worksheets.Add("BaoCao");
+                                        BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV);
+
+                                        var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
+                                        var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
+                                        using (var zipStream = zipEntry.Open())
+                                        {
+                                            wb.SaveAs(zipStream);
+                                        }
+                                        totalTcvExported++;
+                                    }
+                                }
                             }
                         }
                     }
@@ -267,7 +366,7 @@ namespace WebApp.Services
                 result.FileSizeBytes = fileInfo.Length;
                 result.TotalItems = totalTcvExported;
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                result.Message = $"Báo cáo TCV CD45: Đóng gói thành công {totalTcvExported} TCV vào file ZIP ({sizeKb} KB).";
+                result.Message = $"Báo cáo TCV CD45 theo Tỉnh/Nhóm: Đóng gói thành công {totalTcvExported} TCV và {totalSummaries} báo cáo tổng hợp Tỉnh/Nhóm vào file ZIP ({sizeKb} KB).";
 
                 // Ghi log CSDL (bỏ qua khi chạy UnitTest để không làm bẩn dữ liệu thật)
                 if (triggerType != "UnitTest")
@@ -275,7 +374,7 @@ namespace WebApp.Services
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
-                        ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
+                        ReportName = "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
                         PeriodType = periodType ?? "Month",
                         PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
@@ -308,7 +407,7 @@ namespace WebApp.Services
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
-                        ReportName = "Báo cáo Tiếp cận viên (TCV) Dự án CD45",
+                        ReportName = "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
                         PeriodType = periodType ?? "Month",
                         PeriodValue = periodValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
@@ -357,8 +456,82 @@ namespace WebApp.Services
                     return await Task.FromResult(result);
                 }
 
+                var cities = _cityDA.GetAll();
+                var cityDict = (cities != null && cities.Count > 0)
+                    ? cities.ToDictionary(x => (x.Code ?? "").Trim(), x => (x.Name ?? "").Trim(), StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                Func<string, string> getCityName = (cCode) =>
+                {
+                    if (string.IsNullOrEmpty(cCode)) return "Toàn dự án";
+                    if (cityDict.TryGetValue(cCode, out var cName) && !string.IsNullOrEmpty(cName)) return cName;
+                    switch (cCode.ToUpper())
+                    {
+                        case "HNO": return "Hà Nội";
+                        case "HPG": return "Hải Phòng";
+                        case "HYE": return "Hưng Yên";
+                        case "NAN": return "Nghệ An";
+                        case "NBI": return "Ninh Bình";
+                        case "HCM": return "TP. Hồ Chí Minh";
+                        default: return cCode;
+                    }
+                };
+
+                Func<string, string> sanitize = (input) =>
+                {
+                    if (string.IsNullOrWhiteSpace(input)) return "Unknown";
+                    var invalid = Path.GetInvalidFileNameChars();
+                    var clean = new string(input.Where(ch => !invalid.Contains(ch) && ch != '/' && ch != '\\').ToArray()).Trim();
+                    return string.IsNullOrWhiteSpace(clean) ? "Unknown" : clean;
+                };
+
+                string resolvedCityName = !string.IsNullOrEmpty(cityCode) ? getCityName(cityCode) : "Toàn quốc";
+                string resolvedTenNhom = "Tất cả nhóm";
+
+                if (!string.IsNullOrEmpty(maNhom))
+                {
+                    var nhoms = _nhomTBHDA.GetAll();
+                    var nhomItem = nhoms?.FirstOrDefault(x => string.Equals(x.manhom_tbh, maNhom, StringComparison.OrdinalIgnoreCase) ||
+                                                              string.Equals(x.manhom_tbh_map, maNhom, StringComparison.OrdinalIgnoreCase));
+                    if (nhomItem != null && !string.IsNullOrEmpty(nhomItem.tennhom_tbh))
+                    {
+                        resolvedTenNhom = nhomItem.tennhom_tbh.Trim();
+                        if (string.IsNullOrEmpty(cityCode) && !string.IsNullOrEmpty(nhomItem.city_code))
+                        {
+                            cityCode = nhomItem.city_code.Trim();
+                            resolvedCityName = getCityName(cityCode);
+                        }
+                    }
+                    else
+                    {
+                        resolvedTenNhom = maNhom;
+                    }
+                }
+
+                string suffix;
+                string reportName;
+                string scopeDesc;
+
+                if (!string.IsNullOrEmpty(maNhom))
+                {
+                    suffix = $"_{sanitize(cityCode ?? "CD45")}_{sanitize(maNhom)}";
+                    reportName = $"Báo cáo Hoạt động CD45 - Nhóm {resolvedTenNhom} ({resolvedCityName})";
+                    scopeDesc = $"Nhóm {resolvedTenNhom} - {resolvedCityName}";
+                }
+                else if (!string.IsNullOrEmpty(cityCode))
+                {
+                    suffix = $"_{sanitize(cityCode)}";
+                    reportName = $"Báo cáo Hoạt động CD45 - Tỉnh {resolvedCityName}";
+                    scopeDesc = $"Tỉnh {resolvedCityName}";
+                }
+                else
+                {
+                    suffix = "_TOANQUOC";
+                    reportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45 (Toàn quốc)";
+                    scopeDesc = "Toàn quốc";
+                }
+
                 string storageDir = GetStorageDirectory(year, month);
-                string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_TOANQUOC";
 
                 string periodTag;
                 if (periodType == "Quarter" || periodType == "Quy")
@@ -374,7 +547,7 @@ namespace WebApp.Services
                 using (var wb = new XLWorkbook())
                 {
                     var ws = wb.Worksheets.Add($"CD45_{periodTag}");
-                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, cityCode ?? "Toàn quốc", maNhom ?? "Tất cả nhóm");
+                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom);
                     wb.SaveAs(filePath);
                 }
 
@@ -388,14 +561,14 @@ namespace WebApp.Services
                 result.FileSizeBytes = fileInfo.Length;
                 result.TotalItems = data != null ? data.Count : 0;
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                result.Message = $"Báo cáo Hoạt động CD45: Xuất thành công file Excel ({sizeKb} KB).";
+                result.Message = $"Báo cáo Hoạt động CD45 ({scopeDesc}): Xuất thành công file Excel ({sizeKb} KB).";
 
                 if (triggerType != "UnitTest")
                 {
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "HOATDONG_CD45",
-                        ReportName = "Báo cáo Hoạt động Tổng hợp Dự án CD45",
+                        ReportName = reportName,
                         PeriodType = periodType ?? "Month",
                         PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
@@ -590,20 +763,75 @@ namespace WebApp.Services
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
+            // Signature Footer
             row += 2;
-            ws.Cell(row, 2).Value = "Tiếp cận viên";
-            ws.Cell(row, 2).Style.Font.Bold = true;
-            ws.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            int signTitleRow = row;
+            int signNoteRow = row + 1;
+            int signNameRow = row + 5;
 
-            ws.Cell(row, 5).Value = "Cán bộ dự án";
-            ws.Cell(row, 5).Style.Font.Bold = true;
-            ws.Cell(row, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            // 1. Khối chữ ký "Tiếp cận viên" (Merge cột A:B)
+            ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+            ws.Cell(signTitleRow, 1).Value = "Tiếp cận viên";
+            ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell(row, 8).Value = "MnE";
-            ws.Cell(row, 8).Style.Font.Bold = true;
-            ws.Cell(row, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+            ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Columns().AdjustToContents();
+            if (!string.IsNullOrEmpty(tenTCV))
+            {
+                ws.Range(signNameRow, 1, signNameRow, 2).Merge();
+                ws.Cell(signNameRow, 1).Value = tenTCV;
+                ws.Cell(signNameRow, 1).Style.Font.Bold = true;
+                ws.Cell(signNameRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            }
+
+            // 2. Khối chữ ký "Cán bộ dự án" (Merge cột C:E)
+            ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
+            ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+            ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
+            ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // 3. Khối chữ ký "MnE" (Merge cột F:H)
+            ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
+            ws.Cell(signTitleRow, 6).Value = "MnE";
+            ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
+            ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Thiết lập độ rộng cột (Column Widths)
+            ws.Column(1).Width = 5.5;  // Cột # (STT)
+            ws.Column(2).Width = 44.0; // Cột Thông tin báo cáo
+            ws.Column(2).Style.Alignment.WrapText = true;
+
+            // Các cột số liệu từ C đến H (Tổng, PUD, PLHIV, TG, SW, MSM) có khoảng cách bằng nhau tuyệt đối
+            for (int c = 3; c <= 8; c++)
+            {
+                ws.Column(c).Width = 10.0;
+            }
+
+            // Cấu hình trang in chuẩn A4 dọc vừa vặn trong 1 trang ngang
+            ws.PageSetup.PaperSize = XLPaperSize.A4Paper;
+            ws.PageSetup.PageOrientation = XLPageOrientation.Portrait;
+            ws.PageSetup.FitToPages(1, 0);
+            ws.PageSetup.Margins.Left = 0.4;
+            ws.PageSetup.Margins.Right = 0.4;
+            ws.PageSetup.Margins.Top = 0.6;
+            ws.PageSetup.Margins.Bottom = 0.6;
         }
 
         private void BuildHoatDongCD45Worksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenTinh, string tenNhom)
@@ -681,7 +909,25 @@ namespace WebApp.Services
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            ws.Columns().AdjustToContents();
+            // Thiết lập độ rộng cột (Column Widths)
+            ws.Column(1).Width = 5.5;  // Cột # (STT)
+            ws.Column(2).Width = 44.0; // Cột Chỉ tiêu báo cáo
+            ws.Column(2).Style.Alignment.WrapText = true;
+
+            // Các cột số liệu từ C đến H (Tổng, PUD, PLHIV, TG, SW, MSM) có khoảng cách bằng nhau tuyệt đối
+            for (int c = 3; c <= 8; c++)
+            {
+                ws.Column(c).Width = 10.0;
+            }
+
+            // Cấu hình trang in chuẩn A4 dọc vừa vặn trong 1 trang ngang
+            ws.PageSetup.PaperSize = XLPaperSize.A4Paper;
+            ws.PageSetup.PageOrientation = XLPageOrientation.Portrait;
+            ws.PageSetup.FitToPages(1, 0);
+            ws.PageSetup.Margins.Left = 0.4;
+            ws.PageSetup.Margins.Right = 0.4;
+            ws.PageSetup.Margins.Top = 0.6;
+            ws.PageSetup.Margins.Bottom = 0.6;
         }
     }
 }

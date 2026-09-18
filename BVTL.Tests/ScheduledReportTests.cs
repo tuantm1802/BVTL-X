@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend.Report;
 using System;
 using System.IO;
+using System.IO.Compression;
 using WebApp.Services;
 
 namespace BVTL.Tests
@@ -76,6 +77,94 @@ namespace BVTL.Tests
                 Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file should have size > 0");
                 Assert.IsTrue(result.TotalItems > 0, "Should have exported at least 1 TCV");
                 generatedFilePath = result.FilePath;
+
+                // Kiểm tra cấu trúc thư mục phân cấp bên trong file ZIP
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                    {
+                        Assert.IsTrue(archive.Entries.Count > 0, "ZIP must contain entries");
+
+                        bool hasProvinceSummary = false;
+                        bool hasGroupSummary = false;
+                        bool hasTcvDetail = false;
+
+                        foreach (var entry in archive.Entries)
+                        {
+                            // Kiểm tra đường dẫn có phân cấp thư mục (dấu /)
+                            Assert.IsTrue(entry.FullName.Contains("/"), $"Entry '{entry.FullName}' should be in a folder");
+
+                            if (entry.FullName.Contains("BaoCao_TongHop_HNO")) hasProvinceSummary = true;
+                            if (entry.FullName.Contains("BaoCao_TongHop_Nhom_")) hasGroupSummary = true;
+                            if (entry.FullName.Contains("BaoCao_TCV_")) hasTcvDetail = true;
+                        }
+
+                        Assert.IsTrue(hasProvinceSummary, "ZIP should contain Province summary report (BaoCao_TongHop_HNO)");
+                        Assert.IsTrue(hasGroupSummary, "ZIP should contain Group summary report (BaoCao_TongHop_Nhom_)");
+                        Assert.IsTrue(hasTcvDetail, "ZIP should contain individual TCV report (BaoCao_TCV_)");
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportTCVCD45ZipAsync_AllProvinces_ShouldCreateHierarchicalStructure()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                var task = service.ExportTCVCD45ZipAsync(2026, 8, null, null, "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk");
+                Assert.IsTrue(result.TotalItems >= 100, $"Total exported TCVs should be >= 100 (actual: {result.TotalItems})");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                    {
+                        Assert.IsTrue(archive.Entries.Count > 100, "ZIP should contain > 100 entries");
+
+                        bool hasHanoi = false;
+                        bool hasHaiPhong = false;
+                        bool hasNgheAn = false;
+                        int provinceSummaryCount = 0;
+                        int groupSummaryCount = 0;
+                        int tcvCount = 0;
+
+                        foreach (var entry in archive.Entries)
+                        {
+                            if (entry.FullName.StartsWith("Hà Nội/")) hasHanoi = true;
+                            if (entry.FullName.StartsWith("Hải Phòng/")) hasHaiPhong = true;
+                            if (entry.FullName.StartsWith("Nghệ An/")) hasNgheAn = true;
+
+                            if (entry.FullName.Contains("BaoCao_TongHop_") && !entry.FullName.Contains("BaoCao_TongHop_Nhom_"))
+                                provinceSummaryCount++;
+                            else if (entry.FullName.Contains("BaoCao_TongHop_Nhom_"))
+                                groupSummaryCount++;
+                            else if (entry.FullName.Contains("BaoCao_TCV_"))
+                                tcvCount++;
+                        }
+
+                        Assert.IsTrue(hasHanoi, "ZIP should contain folder for Hà Nội");
+                        Assert.IsTrue(hasHaiPhong, "ZIP should contain folder for Hải Phòng");
+                        Assert.IsTrue(hasNgheAn, "ZIP should contain folder for Nghệ An");
+                        Assert.IsTrue(provinceSummaryCount >= 5, $"Should contain summary reports for at least 5 provinces (actual: {provinceSummaryCount})");
+                        Assert.IsTrue(groupSummaryCount >= 10, $"Should contain summary reports for groups (actual: {groupSummaryCount})");
+                        Assert.IsTrue(tcvCount >= 100, $"Should contain >= 100 TCV reports (actual: {tcvCount})");
+                    }
+                }
             }
             finally
             {
@@ -296,6 +385,90 @@ namespace BVTL.Tests
             // Verify F8 are next
             Assert.AreEqual(2, detail.ListTuVan[1].LanTuVan, "Second session should be F8 (LanTuVan = 2)");
             Assert.AreEqual(2, detail.ListTuVan[2].LanTuVan, "Third session should be F8 (LanTuVan = 2)");
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportHoatDongCD45ExcelAsync_ProvinceScope_NgheAn_ShouldSucceed()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "NAN", null, "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export HoatDong for Nghe An should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "Excel file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileName.Contains("NAN"), "FileName should contain province code NAN: " + result.FileName);
+                generatedFilePath = result.FilePath;
+
+                using (var wb = new XLWorkbook(result.FilePath))
+                {
+                    var ws = wb.Worksheets.Worksheet(1);
+                    Assert.IsNotNull(ws, "Worksheet must exist");
+
+                    string subtitle = ws.Cell(2, 1).GetString();
+                    Assert.IsTrue(subtitle.Contains("Nghệ An"), "Subtitle must mention Nghệ An: " + subtitle);
+
+                    // Verify equal column width 10.0 for C..H
+                    for (int c = 3; c <= 8; c++)
+                    {
+                        Assert.AreEqual(10.0, ws.Column(c).Width, 0.1, $"Column {c} width must be 10.0");
+                    }
+
+                    // Verify A4 Portrait
+                    Assert.AreEqual(XLPaperSize.A4Paper, ws.PageSetup.PaperSize);
+                    Assert.AreEqual(XLPageOrientation.Portrait, ws.PageSetup.PageOrientation);
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportHoatDongCD45ExcelAsync_GroupScope_BinhMinh_ShouldSucceed()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HPG", "bm", "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export HoatDong for Binh Minh group should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "Excel file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileName.Contains("HPG") && result.FileName.Contains("bm"), "FileName should contain HPG and bm: " + result.FileName);
+                generatedFilePath = result.FilePath;
+
+                using (var wb = new XLWorkbook(result.FilePath))
+                {
+                    var ws = wb.Worksheets.Worksheet(1);
+                    Assert.IsNotNull(ws, "Worksheet must exist");
+
+                    string subtitle = ws.Cell(2, 1).GetString();
+                    Assert.IsTrue(subtitle.Contains("Bình Minh") || subtitle.Contains("Hải Phòng"), "Subtitle must mention Binh Minh or Hai Phong: " + subtitle);
+
+                    // Verify equal column width 10.0 for C..H
+                    for (int c = 3; c <= 8; c++)
+                    {
+                        Assert.AreEqual(10.0, ws.Column(c).Width, 0.1, $"Column {c} width must be 10.0");
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
         }
     }
 }

@@ -815,3 +815,43 @@ Khắc phục vấn đề cảnh báo nhầm (False Positive) cho mã khách hà
 - `Model/ModelExtend/API/CD45/CD45Helper.cs` (Modified)
 - `BVTL.Tests/DataValidationP0Tests.cs` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Phiên làm việc 22 (18/09/2026): Chuẩn Hóa Biểu Mẫu Báo Cáo Excel Khổ In A4 & Hỗ Trợ Xuất Theo Tỉnh/Nhóm Trong ScheduledReport (Bản Vá v1.5.1)
+
+### Mục tiêu:
+Chuẩn hóa toàn diện định dạng biểu mẫu báo cáo Excel (Báo cáo Hoạt động CD45 và Báo cáo TCV CD45) theo đúng quy chuẩn in ấn khổ A4 và khối chữ ký chân trang chuẩn; nâng cấp phân hệ Báo Cáo Định Kỳ ScheduledReport cho phép người dùng tùy chọn phạm vi xuất linh hoạt (Toàn quốc, Tỉnh / Thành phố, hoặc từng Nhóm CBO cụ thể) thay vì chỉ xuất cứng toàn quốc.
+
+### Các công việc đã hoàn thành:
+1. **Chuẩn Hóa Khung Biểu Mẫu Excel & Khối Chữ Ký Chân Trang**:
+   - Tái cấu trúc khối chữ ký chân trang (Signature block) trong `ReportExportService.cs`, `BaoCaoCD45Controller.cs` và `BaoCaoTCVCD45Controller.cs`:
+     - Cột A:B: Chữ ký "Tiếp cận viên" + "(Ký, ghi rõ họ tên)" + Tên TCV in đậm (nếu có).
+     - Cột C:E: Chữ ký "Cán bộ dự án" + "(Ký, ghi rõ họ tên)".
+     - Cột F:H: Chữ ký "MnE" + "(Ký, ghi rõ họ tên)".
+   - Căn chỉnh độ rộng cột chuẩn mực: Cột 1 (#): 5.5, Cột 2 (Chỉ tiêu/Thông tin): 44.0 + WrapText, 6 cột số liệu (Tổng, PUD, PLHIV, TG, SW, MSM): độ rộng 10.0 bằng nhau tuyệt đối.
+   - Thiết lập trang in: Khổ A4 dọc (`XLPageOrientation.Portrait`), fit vừa vặn trong 1 trang ngang (`FitToPages(1, 0)`), lề in chuẩn (Trái/Phải: 0.4", Trên/Dưới: 0.6").
+2. **Nâng Cấp Xuất Báo Cáo Phân Hệ ScheduledReport Theo Phạm Vi Tỉnh / Nhóm**:
+   - Bổ sung API `GetFilterData` tại `ScheduledReportController.cs` trả về danh mục Tỉnh và Nhóm CBO.
+   - Cập nhật giao diện modal "Xuất thủ công" tại `Views/ScheduledReport/Index.cshtml` và `AlpineScheduledReportController.js` với dropdown chọn Tỉnh và Nhóm (cascading).
+   - Bổ sung tham số phạm vi xuất (`cityCode`, `maNhom`) vào `TriggerExportNow`, hỗ trợ xuất linh hoạt cả Báo cáo Hoạt động và gói ZIP Báo cáo TCV.
+   - Đặt tên tệp xuất báo cáo chuẩn xác theo phạm vi: `BaoCao_HoatDong_CD45_Thang07_2026_TOANQUOC.xlsx`, `BaoCao_HoatDong_CD45_Thang07_2026_NAN.xlsx`, `BaoCao_HoatDong_CD45_Thang07_2026_NAN_bm.xlsx`, v.v.
+   - Gói ZIP Báo cáo TCV CD45 toàn quốc được tổ chức theo cấu trúc phân tầng thư mục: `[Tên Tỉnh]/[Tên Nhóm]/[Tên Tệp TCV].xlsx`.
+3. **Mở Rộng Bộ Kiểm Thử Tự Động (Unit Tests)**:
+   - Thêm 5 bài test mới trong `ExcelReportServiceTests.cs` và `ScheduledReportTests.cs` kiểm tra định dạng chữ ký merged, độ rộng cột đồng đều, cấu hình in A4, và xuất báo cáo theo phạm vi Tỉnh/Nhóm.
+   - Toàn bộ **93/93 unit tests** đều vượt qua thành công 100%.
+4. **Đóng Gói Publish & Triển Khai v1.5.1**:
+   - Gắn thẻ release `v1.5.1`, đóng gói Publish vào `D:\Deploy\WebApp_Publish` và file nén `BVTL_WebApp_Publish_v1.5.1.rar`.
+   - Triển khai bản vá (Patch) lên Host IIS qua FTP và xác nhận tính đồng bộ 100% giữa Local và Host.
+
+### Các tệp đã thay đổi/thêm mới:
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
+- `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
+- `docs/session-log.md` (Modified)

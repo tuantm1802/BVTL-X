@@ -251,19 +251,73 @@ namespace WebApp.Controllers
 
             // Signature Footer
             row += 2;
-            ws.Cell(row, 2).Value = "Tiếp cận viên";
-            ws.Cell(row, 2).Style.Font.Bold = true;
-            ws.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            int signTitleRow = row;
+            int signNoteRow = row + 1;
+            int signNameRow = row + 5;
 
-            ws.Cell(row, 5).Value = "Cán bộ dự án";
-            ws.Cell(row, 5).Style.Font.Bold = true;
-            ws.Cell(row, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            // 1. Khối chữ ký "Tiếp cận viên" (Merge cột A:B)
+            ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+            ws.Cell(signTitleRow, 1).Value = "Tiếp cận viên";
+            ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell(row, 8).Value = "MnE";
-            ws.Cell(row, 8).Style.Font.Bold = true;
-            ws.Cell(row, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+            ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Columns().AdjustToContents();
+            if (!string.IsNullOrEmpty(tenTCV))
+            {
+                ws.Range(signNameRow, 1, signNameRow, 2).Merge();
+                ws.Cell(signNameRow, 1).Value = tenTCV;
+                ws.Cell(signNameRow, 1).Style.Font.Bold = true;
+                ws.Cell(signNameRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            }
+
+            // 2. Khối chữ ký "Cán bộ dự án" (Merge cột C:E)
+            ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
+            ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+            ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
+            ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // 3. Khối chữ ký "MnE" (Merge cột F:H)
+            ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
+            ws.Cell(signTitleRow, 6).Value = "MnE";
+            ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
+            ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Thiết lập độ rộng cột (Column Widths)
+            ws.Column(1).Width = 5.5;  // Cột # (STT)
+            ws.Column(2).Width = 44.0; // Cột Thông tin báo cáo
+            ws.Column(2).Style.Alignment.WrapText = true;
+
+            // Các cột số liệu từ C đến H (Tổng, PUD, PLHIV, TG, SW, MSM) có khoảng cách bằng nhau tuyệt đối
+            for (int c = 3; c <= 8; c++)
+            {
+                ws.Column(c).Width = 10.0;
+            }
+
+            // Cấu hình trang in chuẩn A4 dọc vừa vặn trong 1 trang ngang
+            ws.PageSetup.PaperSize = XLPaperSize.A4Paper;
+            ws.PageSetup.PageOrientation = XLPageOrientation.Portrait;
+            ws.PageSetup.FitToPages(1, 0);
+            ws.PageSetup.Margins.Left = 0.4;
+            ws.PageSetup.Margins.Right = 0.4;
+            ws.PageSetup.Margins.Top = 0.6;
+            ws.PageSetup.Margins.Bottom = 0.6;
         }
     }
 }

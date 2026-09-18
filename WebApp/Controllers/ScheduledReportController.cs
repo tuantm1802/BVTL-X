@@ -7,6 +7,7 @@ using Model.ModelExtend.Report;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebApp.Services;
@@ -47,6 +48,35 @@ namespace WebApp.Controllers
             catch (Exception ex)
             {
                 log.Error("Lỗi GetSettings: " + ex.Message, ex);
+                return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetFilterData()
+        {
+            try
+            {
+                var cityDA = new CityDA();
+                var nhomDA = new BVTL_NHOM_TBHDA();
+                var cities = cityDA.GetAll()
+                                   .Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code))
+                                   .Select(x => new { CityCode = x.Code, CityName = x.Name })
+                                   .ToList();
+                var nhoms = nhomDA.GetAll()
+                                  .Where(x => x.maduan == "CD45")
+                                  .Select(x => new
+                                  {
+                                      MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map.Trim() : x.manhom_tbh.Trim(),
+                                      TenNhom = x.tennhom_tbh,
+                                      CityCode = x.city_code != null ? x.city_code.Trim() : ""
+                                  })
+                                  .ToList();
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi GetFilterData: " + ex.Message, ex);
                 return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -105,7 +135,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL", string periodType = "Month", int? quarter = null)
+        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL", string periodType = "Month", int? quarter = null, string cityCode = null, string maNhom = null)
         {
             try
             {
@@ -142,23 +172,26 @@ namespace WebApp.Controllers
                 string fromDate, toDate, pValue;
                 ReportExportService.CalculatePeriodDateRange(pType, targetYear, periodNum, out fromDate, out toDate, out pValue);
 
+                cityCode = string.IsNullOrWhiteSpace(cityCode) ? null : cityCode.Trim();
+                maNhom = string.IsNullOrWhiteSpace(maNhom) ? null : maNhom.Trim();
+
                 if (reportType == "TCV_CD45")
                 {
-                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else if (reportType == "HOATDONG_CD45")
                 {
-                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else // ALL (Xuất cả TCV và Hoạt động CD45)
                 {
                     var results = new List<ReportExportResult>();
-                    var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     results.Add(resTCV);
 
-                    var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, null, null, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     results.Add(resHD);
 
                     int success = results.FindAll(r => r.Success).Count;

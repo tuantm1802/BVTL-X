@@ -31,20 +31,52 @@ document.addEventListener('alpine:init', () => {
         deleteItem: null,
         isDeleting: false,
 
+        // List of Cities & Nhoms for Run Now
+        listCities: [],
+        listNhoms: [],
+        filteredNhoms: [],
+
         // Trigger Run Now Modal State
         manualExport: {
             reportType: 'ALL',
             periodType: 'Month',
             quarter: Math.floor((new Date().getMonth() - 1) / 3) + 1,
             year: new Date().getFullYear(),
-            month: new Date().getMonth() === 0 ? 12 : new Date().getMonth()
+            month: new Date().getMonth() === 0 ? 12 : new Date().getMonth(),
+            cityCode: '',
+            maNhom: ''
         },
         isExporting: false,
         exportProgressMsg: '',
 
         init() {
             this.loadSettings();
+            this.loadFilterData();
             this.loadLogs();
+        },
+
+        loadFilterData() {
+            fetch('/ScheduledReport/GetFilterData')
+                .then(res => res.json())
+                .then(res => {
+                    if (res.Success) {
+                        this.listCities = res.Cities || [];
+                        this.listNhoms = res.Nhoms || [];
+                        this.filteredNhoms = this.listNhoms;
+                    }
+                })
+                .catch(err => {
+                    console.error('Lỗi tải danh mục Tỉnh/Nhóm:', err);
+                });
+        },
+
+        onCityChange() {
+            this.manualExport.maNhom = '';
+            if (!this.manualExport.cityCode) {
+                this.filteredNhoms = this.listNhoms;
+            } else {
+                this.filteredNhoms = this.listNhoms.filter(n => n.CityCode === this.manualExport.cityCode);
+            }
         },
 
         loadSettings() {
@@ -170,7 +202,15 @@ document.addEventListener('alpine:init', () => {
             }
 
             var periodDesc = this.getComputedDateRangeText();
-            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)} cho kỳ:\n${periodDesc}\nngay bây giờ không?`;
+            var scopeText = '';
+            if (this.manualExport.maNhom) {
+                var nhomObj = this.listNhoms.find(n => n.MaNhom === this.manualExport.maNhom);
+                scopeText = ` - Nhóm: ${nhomObj ? nhomObj.TenNhom : this.manualExport.maNhom}`;
+            } else if (this.manualExport.cityCode) {
+                var cityObj = this.listCities.find(c => c.CityCode === this.manualExport.cityCode);
+                scopeText = ` - Tỉnh: ${cityObj ? cityObj.CityName : this.manualExport.cityCode}`;
+            }
+            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)}${scopeText} cho kỳ:\n${periodDesc}\nngay bây giờ không?`;
             if (!confirm(confirmMsg)) return;
 
             this.isExporting = true;
@@ -182,6 +222,8 @@ document.addEventListener('alpine:init', () => {
             formData.append('periodType', this.manualExport.periodType);
             formData.append('quarter', this.manualExport.quarter);
             formData.append('reportType', this.manualExport.reportType);
+            formData.append('cityCode', this.manualExport.cityCode || '');
+            formData.append('maNhom', this.manualExport.maNhom || '');
 
             fetch('/ScheduledReport/TriggerExportNow', {
                 method: 'POST',
@@ -237,7 +279,7 @@ document.addEventListener('alpine:init', () => {
 
         getReportTypeName(code) {
             switch (code) {
-                case 'TCV_CD45': return 'Báo cáo TCV CD45 (.ZIP)';
+                case 'TCV_CD45': return 'Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)';
                 case 'HOATDONG_CD45': return 'Báo cáo Hoạt động CD45 (.xlsx)';
                 case 'ALL': return 'Cả 2 loại báo cáo (TCV + Hoạt động)';
                 default: return code;

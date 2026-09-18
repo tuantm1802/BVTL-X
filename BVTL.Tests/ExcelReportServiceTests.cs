@@ -223,5 +223,82 @@ namespace BVTL.Tests
                 }
             }
         }
+
+        [TestMethod]
+        public void BaoCaoTCVCD45_BuildTCVWorksheet_ShouldHaveEqualColumnsAndMergedSignaturesAndA4()
+        {
+            using (var wb = new ClosedXML.Excel.XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("BaoCao");
+                var listData = new List<Model.ModelExtend.BaoCaoCD45Model>
+                {
+                    new Model.ModelExtend.BaoCaoCD45Model { STT = "1", ChiTieu = "Số tiếp cận truyền thông", Tong = 10, PUD = 2, PLHIV = 1, TG = 1, SW = 2, MSM = 4 }
+                };
+
+                var ctrl = (BaoCaoTCVCD45Controller)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(BaoCaoTCVCD45Controller));
+                var method = typeof(BaoCaoTCVCD45Controller).GetMethod("BuildTCVWorksheet", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                Assert.IsNotNull(method, "BuildTCVWorksheet method must exist");
+
+                method.Invoke(ctrl, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh" });
+
+                // 1. Column widths
+                Assert.AreEqual(5.5, ws.Column(1).Width, 0.01, "Col 1 width must be 5.5");
+                Assert.AreEqual(44.0, ws.Column(2).Width, 0.01, "Col 2 width must be 44.0");
+                for (int c = 3; c <= 8; c++)
+                {
+                    Assert.AreEqual(10.0, ws.Column(c).Width, 0.01, $"Col {c} width must be exactly 10.0");
+                }
+
+                // 2. Merged signatures
+                var mergedRanges = ws.MergedRanges.Select(r => r.RangeAddress.ToString()).ToList();
+                // A:B for Tiếp cận viên, C:E for Cán bộ dự án, F:H for MnE
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("A") && r.Contains(":B")), "Must have A:B merged signature cell");
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("C") && r.Contains(":E")), "Must have C:E merged signature cell");
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("F") && r.Contains(":H")), "Must have F:H merged signature cell");
+
+                // 3. A4 Portrait Setup
+                Assert.AreEqual(ClosedXML.Excel.XLPaperSize.A4Paper, ws.PageSetup.PaperSize, "PaperSize must be A4");
+                Assert.AreEqual(ClosedXML.Excel.XLPageOrientation.Portrait, ws.PageSetup.PageOrientation, "PageOrientation must be Portrait");
+                Assert.AreEqual(1, ws.PageSetup.PagesWide, "PagesWide must be 1 for fit-to-page");
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_BuildTCVWorksheet_ShouldHaveEqualColumnsAndMergedSignaturesAndA4()
+        {
+            using (var wb = new ClosedXML.Excel.XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("BaoCao");
+                var listData = new List<Model.ModelExtend.BaoCaoCD45Model>
+                {
+                    new Model.ModelExtend.BaoCaoCD45Model { STT = "1", ChiTieu = "Số tiếp cận truyền thông", Tong = 10, PUD = 2, PLHIV = 1, TG = 1, SW = 2, MSM = 4 }
+                };
+
+                var svc = (WebApp.Services.ReportExportService)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WebApp.Services.ReportExportService));
+                var method = typeof(WebApp.Services.ReportExportService).GetMethod("BuildTCVWorksheet", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                Assert.IsNotNull(method, "BuildTCVWorksheet method must exist on ReportExportService");
+
+                method.Invoke(svc, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh" });
+
+                // 1. Column widths
+                Assert.AreEqual(5.5, ws.Column(1).Width, 0.01, "Col 1 width must be 5.5");
+                Assert.AreEqual(44.0, ws.Column(2).Width, 0.01, "Col 2 width must be 44.0");
+                for (int c = 3; c <= 8; c++)
+                {
+                    Assert.AreEqual(10.0, ws.Column(c).Width, 0.01, $"Col {c} width must be exactly 10.0");
+                }
+
+                // 2. Merged signatures
+                var mergedRanges = ws.MergedRanges.Select(r => r.RangeAddress.ToString()).ToList();
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("A") && r.Contains(":B")), "Must have A:B merged signature cell");
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("C") && r.Contains(":E")), "Must have C:E merged signature cell");
+                Assert.IsTrue(mergedRanges.Any(r => r.StartsWith("F") && r.Contains(":H")), "Must have F:H merged signature cell");
+
+                // 3. A4 Portrait Setup
+                Assert.AreEqual(ClosedXML.Excel.XLPaperSize.A4Paper, ws.PageSetup.PaperSize, "PaperSize must be A4");
+                Assert.AreEqual(ClosedXML.Excel.XLPageOrientation.Portrait, ws.PageSetup.PageOrientation, "PageOrientation must be Portrait");
+                Assert.AreEqual(1, ws.PageSetup.PagesWide, "PagesWide must be 1 for fit-to-page");
+            }
+        }
     }
 }

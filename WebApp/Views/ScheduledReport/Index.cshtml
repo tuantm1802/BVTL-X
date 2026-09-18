@@ -155,6 +155,28 @@
                             </div>
                         </div>
 
+                        <!-- Lọc theo Tỉnh/Thành và Nhóm (CBO) -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small font-weight-bold text-gray-800">Tỉnh / Thành phố</label>
+                                <select class="form-select form-select-sm" x-model="manualExport.cityCode" @@change="onCityChange()">
+                                    <option value="">-- Toàn bộ --</option>
+                                    <template x-for="city in listCities" :key="city.CityCode">
+                                        <option :value="city.CityCode" x-text="city.CityName"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small font-weight-bold text-gray-800">Nhóm (CBO)</label>
+                                <select class="form-select form-select-sm" x-model="manualExport.maNhom">
+                                    <option value="">-- Toàn bộ --</option>
+                                    <template x-for="nhom in filteredNhoms" :key="nhom.MaNhom">
+                                        <option :value="nhom.MaNhom" x-text="nhom.TenNhom"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="alert alert-secondary py-1 px-2 small mb-3 border text-center">
                             <i class="fas fa-calendar-alt text-primary me-1"></i> Phạm vi: <strong class="text-primary" x-text="getComputedDateRangeText()"></strong>
                         </div>
@@ -245,7 +267,7 @@
                         <div class="col-md-3">
                             <select class="form-select form-select-sm" x-model="filter.reportType" @@change="loadLogs(1)">
                                 <option value="">-- Tất cả loại báo cáo --</option>
-                                <option value="TCV_CD45">Báo cáo TCV CD45</option>
+                                <option value="TCV_CD45">Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)</option>
                                 <option value="HOATDONG_CD45">Báo cáo Hoạt động CD45</option>
                             </select>
                         </div>
@@ -323,6 +345,7 @@
                                             <td class="font-weight-semibold text-gray-900" x-text="item.PeriodValue"></td>
                                             <td>
                                                 <div class="font-weight-bold text-primary" x-text="item.FileName"></div>
+                                                <div class="text-xs text-secondary mb-1" x-show="item.ReportName" x-text="item.ReportName"></div>
                                                 <div class="text-xs text-muted" x-text="'Dung lượng: ' + formatFileSize(item.FileSizeKb) + (item.TotalRecords ? ' | ' + item.TotalRecords + ' bản ghi' : '')"></div>
                                             </td>
                                             <td class="small text-muted font-monospace" x-text="formatDateTime(item.CreatedDate)"></td>

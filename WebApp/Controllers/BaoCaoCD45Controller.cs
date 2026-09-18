@@ -134,6 +134,28 @@ namespace WebApp.Controllers
                              loaiFilter == "Quy" ? "Báo cáo Quý" :
                              loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
 
+            string tenTinh = "Toàn quốc";
+            if (!string.IsNullOrEmpty(MaTinh))
+            {
+                var city = _CityDA.GetAll()?.FirstOrDefault(x => string.Equals(x.Code, MaTinh, StringComparison.OrdinalIgnoreCase));
+                tenTinh = city != null ? city.Name : MaTinh;
+            }
+
+            string tenNhom = "Tất cả nhóm";
+            if (!string.IsNullOrEmpty(MaNhom))
+            {
+                var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
+                    string.Equals(x.manhom_tbh, MaNhom, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
+                tenNhom = nhom != null ? nhom.tennhom_tbh : MaNhom;
+                if (string.IsNullOrEmpty(MaTinh) && nhom != null && !string.IsNullOrEmpty(nhom.city_code))
+                {
+                    MaTinh = nhom.city_code;
+                    var city = _CityDA.GetAll()?.FirstOrDefault(x => string.Equals(x.Code, MaTinh, StringComparison.OrdinalIgnoreCase));
+                    tenTinh = city != null ? city.Name : MaTinh;
+                }
+            }
+
             using (var workbook = new XLWorkbook())
             {
                 var ws = workbook.Worksheets.Add("BaoCao");
@@ -142,7 +164,7 @@ namespace WebApp.Controllers
                 ws.Cell(1, 1).Style.Font.FontSize = 14;
                 ws.Range("A1:H1").Row(1).Merge();
 
-                ws.Cell(2, 1).Value = "Kỳ báo cáo: " + kyTitle + "   |   Từ ngày: " + FromDate + " đến ngày: " + ToDate;
+                ws.Cell(2, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   Nhóm: {tenNhom}";
                 ws.Cell(2, 1).Style.Font.Italic = true;
                 ws.Range("A2:H2").Row(1).Merge();
 
@@ -197,9 +219,28 @@ namespace WebApp.Controllers
                     row++;
                 }
 
-                ws.Columns().AdjustToContents();
+                // Thiết lập độ rộng cột (Column Widths)
+                ws.Column(1).Width = 5.5;  // Cột # (STT)
+                ws.Column(2).Width = 44.0; // Cột Thông tin báo cáo
+                ws.Column(2).Style.Alignment.WrapText = true;
 
-                string fileName = "BaoCao_CD45_" + kyLabel + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+                // Các cột số liệu từ C đến H (Tổng, PUD, PLHIV, TG, SW, MSM) có khoảng cách bằng nhau tuyệt đối
+                for (int c = 3; c <= 8; c++)
+                {
+                    ws.Column(c).Width = 10.0;
+                }
+
+                // Cấu hình trang in chuẩn A4 dọc vừa vặn trong 1 trang ngang
+                ws.PageSetup.PaperSize = XLPaperSize.A4Paper;
+                ws.PageSetup.PageOrientation = XLPageOrientation.Portrait;
+                ws.PageSetup.FitToPages(1, 0);
+                ws.PageSetup.Margins.Left = 0.4;
+                ws.PageSetup.Margins.Right = 0.4;
+                ws.PageSetup.Margins.Top = 0.6;
+                ws.PageSetup.Margins.Bottom = 0.6;
+
+                string scopeTag = !string.IsNullOrEmpty(MaNhom) ? $"_{MaTinh}_{MaNhom}" : (!string.IsNullOrEmpty(MaTinh) ? $"_{MaTinh}" : "_TOANQUOC");
+                string fileName = $"BaoCao_CD45_{kyLabel}{scopeTag}_{DateTime.Now:yyyyMMdd}.xlsx";
 
                 using (MemoryStream stream = new MemoryStream())
                 {
