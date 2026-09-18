@@ -365,10 +365,30 @@
                                     <td class="text-center" x-text="idx + 1"></td>
                                     <td class="text-center font-weight-bold" x-text="unit.CITY_CODE || '-'"></td>
                                     <td class="text-center font-weight-bold text-primary" x-text="unit.MA_NHOM || 'CHƯA PHÂN NHÓM'"></td>
-                                    <td class="text-center font-weight-bold text-danger" style="font-size: 14px;" x-text="unit.TotalPending ? unit.TotalPending.toLocaleString('vi-VN') : 0"></td>
-                                    <td class="text-center text-warning font-weight-bold" x-text="unit.TotalWarnings ? unit.TotalWarnings.toLocaleString('vi-VN') : 0"></td>
-                                    <td class="text-center text-danger font-weight-bold" x-text="unit.TotalErrors ? unit.TotalErrors.toLocaleString('vi-VN') : 0"></td>
-                                    <td class="text-center text-success font-weight-bold" x-text="unit.TotalResolved ? unit.TotalResolved.toLocaleString('vi-VN') : 0"></td>
+                                    <td class="text-center font-weight-bold text-danger" style="font-size: 14px;">
+                                        <span :style="unit.TotalPending > 0 ? 'cursor:pointer; text-decoration:underline;' : ''"
+                                              x-on:click="if (unit.TotalPending > 0) openUnitDrillDown(unit, 'PENDING', 'Cần xử lý (Pending)')"
+                                              :title="unit.TotalPending > 0 ? 'Click để xem chi tiết ' + unit.TotalPending + ' cảnh báo cần xử lý' : ''"
+                                              x-text="unit.TotalPending ? unit.TotalPending.toLocaleString('vi-VN') : 0"></span>
+                                    </td>
+                                    <td class="text-center text-warning font-weight-bold">
+                                        <span :style="unit.TotalWarnings > 0 ? 'cursor:pointer; text-decoration:underline;' : ''"
+                                              x-on:click="if (unit.TotalWarnings > 0) openUnitDrillDown(unit, 'WARNING', 'Tổng Cảnh báo')"
+                                              :title="unit.TotalWarnings > 0 ? 'Click để xem chi tiết ' + unit.TotalWarnings + ' cảnh báo' : ''"
+                                              x-text="unit.TotalWarnings ? unit.TotalWarnings.toLocaleString('vi-VN') : 0"></span>
+                                    </td>
+                                    <td class="text-center text-danger font-weight-bold">
+                                        <span :style="unit.TotalErrors > 0 ? 'cursor:pointer; text-decoration:underline;' : ''"
+                                              x-on:click="if (unit.TotalErrors > 0) openUnitDrillDown(unit, 'ERROR', 'Tổng Lỗi chặn')"
+                                              :title="unit.TotalErrors > 0 ? 'Click để xem chi tiết ' + unit.TotalErrors + ' lỗi chặn' : ''"
+                                              x-text="unit.TotalErrors ? unit.TotalErrors.toLocaleString('vi-VN') : 0"></span>
+                                    </td>
+                                    <td class="text-center text-success font-weight-bold">
+                                        <span :style="unit.TotalResolved > 0 ? 'cursor:pointer; text-decoration:underline;' : ''"
+                                              x-on:click="if (unit.TotalResolved > 0) openUnitDrillDown(unit, 'RESOLVED', 'Đã khắc phục')"
+                                              :title="unit.TotalResolved > 0 ? 'Click để xem chi tiết ' + unit.TotalResolved + ' bản ghi đã khắc phục' : ''"
+                                              x-text="unit.TotalResolved ? unit.TotalResolved.toLocaleString('vi-VN') : 0"></span>
+                                    </td>
                                     <td>
                                         <template x-if="unit.TotalPending > 20">
                                             <span class="badge badge-danger"><i class="fas fa-exclamation-circle mr-1"></i> Rủi ro cao: Dữ liệu nguồn sai sót nhiều</span>
@@ -396,6 +416,109 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DRILL-DOWN CHI TIẾT CẢNH BÁO THEO ĐƠN VỊ ================= -->
+    <div class="modal fade" id="modalUnitDrillDown" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-gradient-primary text-white py-2">
+                    <h6 class="modal-title font-weight-bold" style="font-size: 15px;">
+                        <i class="fas fa-list-ul mr-2"></i><span x-text="unitDrillModalTitle"></span>
+                    </h6>
+                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" x-on:click="closeUnitDrillDown()" style="background:none; border:none; font-size:1.5rem; line-height:1; color:#fff; opacity:0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="w-50">
+                            <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh mã KH, thông báo, quy tắc, trường..." x-model="unitDrillSearchText" x-on:input="filterUnitDrill()" />
+                        </div>
+                        <div>
+                            <span class="badge badge-primary font-weight-bold py-1 px-2" x-text="'Đang hiển thị: ' + filteredUnitDrillItems.length + ' / ' + unitDrillItems.length + ' bản ghi'"></span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                        <table class="table table-bordered table-sm table-striped table-hover mb-0" style="font-size: 12.5px;">
+                            <thead class="bg-light sticky-top text-center">
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th style="width: 125px;">Thời gian</th>
+                                    <th style="width: 100px;">Form / API</th>
+                                    <th style="width: 110px;">Mã KH</th>
+                                    <th style="width: 120px;">Trường dữ liệu</th>
+                                    <th style="width: 130px;">Giá trị REDCap</th>
+                                    <th style="width: 130px;">Sau chuẩn hóa</th>
+                                    <th style="width: 85px;">Mức độ</th>
+                                    <th>Nội dung cảnh báo & Hướng xử lý</th>
+                                    <th style="width: 95px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(d, idx) in filteredUnitDrillItems" :key="d.ID">
+                                    <tr :class="d.SEVERITY === 'WARNING' ? 'table-warning' : (d.SEVERITY === 'ERROR' ? 'table-danger' : '')">
+                                        <td class="text-center text-muted" x-text="idx + 1"></td>
+                                        <td class="text-center small" x-text="formatDate(d.CREATED_DATE)"></td>
+                                        <td class="text-center font-weight-bold" x-text="d.API_CODE"></td>
+                                        <td class="text-center font-weight-bold text-primary" x-text="d.RECORD_ID || '-'"></td>
+                                        <td class="font-italic" x-text="d.FIELD_NAME"></td>
+                                        <td class="text-break" x-text="d.OLD_VALUE || '(trống)'"></td>
+                                        <td class="text-break text-success font-weight-bold" x-text="d.NEW_VALUE || '-'"></td>
+                                        <td class="text-center">
+                                            <span class="badge" 
+                                                  :class="d.SEVERITY === 'INFO' ? 'badge-success' : (d.SEVERITY === 'WARNING' ? 'badge-warning text-dark' : 'badge-danger')"
+                                                  x-text="d.SEVERITY"></span>
+                                        </td>
+                                        <td>
+                                            <div><strong class="text-dark" x-text="d.RULE_CODE"></strong></div>
+                                            <div class="small text-muted" x-text="d.MESSAGE"></div>
+                                            <div x-show="d.IS_RESOLVED" class="small text-success mt-1">
+                                                <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (d.RESOLVED_NOTE || '')"></span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <template x-if="d.SEVERITY === 'WARNING' || d.SEVERITY === 'ERROR'">
+                                                <div>
+                                                    <button x-show="!d.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolvedInDrill(d)">
+                                                        <i class="fas fa-check fa-xs"></i> Đã sửa
+                                                    </button>
+                                                    <span x-show="d.IS_RESOLVED" class="badge badge-success">
+                                                        <i class="fas fa-check"></i> Xong
+                                                    </span>
+                                                </div>
+                                            </template>
+                                            <template x-if="d.SEVERITY === 'INFO'">
+                                                <span class="text-muted small"><i class="fas fa-magic"></i> Auto</span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                                <tr x-show="filteredUnitDrillItems.length === 0 && !isUnitDrillLoading">
+                                    <td colspan="10" class="text-center py-4 text-muted">
+                                        <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                        Không tìm thấy cảnh báo nào phù hợp
+                                    </td>
+                                </tr>
+                                <tr x-show="isUnitDrillLoading">
+                                    <td colspan="10" class="text-center py-4 text-primary">
+                                        <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                        Đang tải danh sách cảnh báo chi tiết...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer py-2 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-primary btn-sm" @@click="jumpToDetailsTab()">
+                        <i class="fas fa-external-link-alt mr-1"></i> Mở trên Tab Chi tiết & Tra cứu nâng cao
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeUnitDrillDown()">Đóng</button>
                 </div>
             </div>
         </div>

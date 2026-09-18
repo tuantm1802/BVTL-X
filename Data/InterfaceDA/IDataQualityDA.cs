@@ -12,5 +12,6 @@ namespace Data.InterfaceDA
         dynamic GetStats(string maDuAn);
         bool MarkResolved(long id, string note);
         int ScanDuplicateClients(string maDuAn);
+        List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogsByUnit(string maDuAn, string cityCode, string maNhom, string metricType);
     }
 }

@@ -43,12 +43,29 @@ namespace WebApp.Controllers
             };
             try
             {
+                if (modelSearch == null)
+                {
+                    modelSearch = new ModelSearch();
+                }
+                if (string.IsNullOrEmpty(modelSearch.SortColumn))
+                {
+                    modelSearch.SortColumn = "Code";
+                }
+                if (modelSearch.currentPage <= 0)
+                {
+                    modelSearch.currentPage = 1;
+                }
+                if (modelSearch.pageSize <= 0)
+                {
+                    modelSearch.pageSize = 20;
+                }
+
                 int totalItems = 0;
                 var data = _CityDA.GetAllByPage(modelSearch);
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
                 AddLog("Lấy dữ liệu theo trang bảng tỉnh( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {

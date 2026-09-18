@@ -70,5 +70,45 @@ namespace BVTL.Tests
             Assert.IsTrue(result.Overview.TongSangLocQST > 0, "Hải Đăng must have QST screenings");
             Assert.IsTrue(result.Overview.QSTNguyCoCao > 0, "Hải Đăng must have high risk QST");
         }
+
+        [TestMethod]
+        public void CityDA_GetAllByPage_ShouldReturn63ProvincesAndProperPaging()
+        {
+            var da = new CityDA();
+            var searchModel = new Model.ModelExtend.Base.ModelSearch
+            {
+                currentPage = 1,
+                pageSize = 20,
+                SortColumn = "Code"
+            };
+            var result = da.GetAllByPage(searchModel);
+
+            Assert.IsNotNull(result, "City list must not be null");
+            Assert.AreEqual(20, result.Count, "First page should have exactly 20 provinces");
+            Assert.IsTrue(result.First().TotalRow >= 63, "TotalRow must be at least 63 nationwide");
+
+            // Verify Code_Map exists for key provinces
+            var allProvinces = da.GetAll();
+            var hno = allProvinces.FirstOrDefault(c => c.Code == "HNO");
+            Assert.IsNotNull(hno);
+            Assert.AreEqual("HN", hno.Code_Map, "HNO must have Code_Map HN");
+        }
+
+        [TestMethod]
+        public void CityDA_GetAllByPage_WithKeyword_ShouldFilterAccurately()
+        {
+            var da = new CityDA();
+            var searchModel = new Model.ModelExtend.Base.ModelSearch
+            {
+                KeyWord = "Hà Nội",
+                currentPage = 1,
+                pageSize = 20,
+                SortColumn = "Code"
+            };
+            var result = da.GetAllByPage(searchModel);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Any(c => c.Code == "HNO"), "Filtered results must contain HNO");
+        }
     }
 }

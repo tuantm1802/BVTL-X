@@ -147,6 +147,57 @@ namespace Data.Admin
                 return 0;
             }
         }
+
+        public List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogsByUnit(string maDuAn, string cityCode, string maNhom, string metricType)
+        {
+            var pDuAn = new SqlParameter("@MaDuAn", string.IsNullOrEmpty(maDuAn) ? DBNull.Value : (object)maDuAn);
+            var pCity = new SqlParameter("@CityCode", string.IsNullOrEmpty(cityCode) || cityCode == "-" ? DBNull.Value : (object)cityCode);
+            var pNhom = new SqlParameter("@MaNhom", string.IsNullOrEmpty(maNhom) ? DBNull.Value : (object)maNhom);
+            var pMetric = new SqlParameter("@MetricType", string.IsNullOrEmpty(metricType) ? DBNull.Value : (object)metricType.ToUpper());
+
+            var sql = @"
+                ;WITH CTE_LogNhom AS (
+                    SELECT 
+                        log.ID,
+                        log.MADUAN,
+                        log.REPORT_ID,
+                        log.API_CODE,
+                        log.TABLE_NAME,
+                        log.RECORD_ID,
+                        log.FIELD_NAME,
+                        log.OLD_VALUE,
+                        log.NEW_VALUE,
+                        log.RULE_CODE,
+                        log.SEVERITY,
+                        log.ACTION_TAKEN,
+                        log.MESSAGE,
+                        log.CREATED_DATE,
+                        log.IS_RESOLVED,
+                        log.RESOLVED_NOTE,
+                        ISNULL(kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
+                        ISNULL(kh.CITY_CODE, SUBSTRING(log.RECORD_ID, 2, 2)) AS CITY_CODE
+                    FROM BVTL_DATA_STANDARDIZATION_LOG log
+                    LEFT JOIN CD45_KH kh ON log.RECORD_ID = kh.RECORD_ID AND log.MADUAN = kh.MADUAN
+                    WHERE (@MaDuAn IS NULL OR log.MADUAN = @MaDuAn)
+                )
+                SELECT 
+                    ID, MADUAN, REPORT_ID, API_CODE, TABLE_NAME, RECORD_ID, FIELD_NAME, 
+                    OLD_VALUE, NEW_VALUE, RULE_CODE, SEVERITY, ACTION_TAKEN, MESSAGE, 
+                    CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE
+                FROM CTE_LogNhom
+                WHERE (@CityCode IS NULL OR CITY_CODE = @CityCode)
+                  AND (@MaNhom IS NULL OR MA_NHOM = @MaNhom)
+                  AND (
+                      (@MetricType = 'PENDING' AND IS_RESOLVED = 0 AND (SEVERITY = 'WARNING' OR SEVERITY = 'ERROR'))
+                      OR (@MetricType = 'WARNING' AND SEVERITY = 'WARNING')
+                      OR (@MetricType = 'ERROR' AND SEVERITY = 'ERROR')
+                      OR (@MetricType = 'RESOLVED' AND IS_RESOLVED = 1)
+                      OR (@MetricType IS NULL OR @MetricType = '' OR @MetricType = 'ALL')
+                  )
+                ORDER BY CREATED_DATE DESC, ID DESC";
+
+            return db.Database.SqlQuery<BVTL_DATA_STANDARDIZATION_LOG_Entity>(sql, pDuAn, pCity, pNhom, pMetric).ToList();
+        }
     }
 
     public class DataQualityStatsModel

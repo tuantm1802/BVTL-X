@@ -855,3 +855,87 @@ Chuẩn hóa toàn diện định dạng biểu mẫu báo cáo Excel (Báo cáo
 - `WebApp/Views/ScheduledReport/Index.cshtml` (Modified)
 - `WebApp/app/Controller/AlpineScheduledReportController.js` (Modified)
 - `docs/session-log.md` (Modified)
+
+
+---
+
+## Phiên làm việc 23 (18/09/2026): Rà soát Toàn diện Hệ thống Danh mục & Nâng cấp Giao diện / Phân trang Danh mục Tỉnh / Thành phố
+
+### Mục tiêu:
+1. Rà soát hiện trạng toàn bộ hệ thống danh mục của dự án (BVTL-X / CD45 DREAMH). Đánh giá các danh mục còn thiếu hoặc cần bổ sung/kích hoạt để quản trị dữ liệu can thiệp y tế & cộng đồng chặt chẽ.
+2. Khắc phục dứt điểm vấn đề Danh mục Tỉnh/Thành phố thiếu thông tin hiển thị và phân trang (người dùng trước đây chỉ xem được 20 tỉnh đầu tiên, không có thông tin bản ghi, thiếu mã rút gọn dự án và trạng thái bị hardcode).
+
+### Các công việc đã hoàn thành:
+1. **Nâng Cấp Giao Diện & Phân Trang Danh mục Tỉnh / Thành phố**:
+   - `WebApp/Views/City/Index.cshtml`:
+     - Bổ sung thanh Phân trang (Pagination) chuẩn SB Admin 2 kèm dòng hiển thị: *"Hiển thị từ {fromRecord} đến {toRecord} trong tổng số {totalItems} Tỉnh/Thành phố (Trang {currentPage} / {totalPages})"*.
+     - Bổ sung bộ chọn số dòng/trang linh hoạt: `10, 20, 30, 50, Tất cả (63 tỉnh/thành)`.
+     - Tách riêng cột **Mã Viết Tắt (CD45 / BVTL)** với badge màu sắc nổi bật cho các tỉnh trọng điểm (`HN`, `HP`, `NA`, `NB`, `HC`, `HY`).
+     - Động hóa cột **Trạng thái**: Hiển thị badge xanh *"Hoạt động"* nếu `IsActive = true`, badge xám *"Ngừng"* nếu `IsActive = false`.
+     - Thêm thẻ thống kê nhanh (KPI card) trên đầu trang: Tổng số 63 Tỉnh/Thành & 6 Tỉnh trọng điểm triển khai dự án CD45.
+     - Lưu tệp chuẩn mực với **UTF-8 with BOM (`utf-8-sig`)**.
+   - `WebApp/app/Controller/AlpineCityController.js`:
+     - Bổ sung các computed getters: `totalPages`, `fromRecord`, `toRecord`, `visiblePages`.
+     - Bổ sung các action: `changePage(p)`, `changePageSize(size)`.
+     - Thiết lập tham số sắp xếp mặc định `SortColumn: 'Code'` tránh lỗi sắp xếp không xác định.
+   - `WebApp/Controllers/CityController.cs`:
+     - Bổ sung fallback kiểm soát tham số `SortColumn = "Code"`, `currentPage = 1`, `pageSize = 20` trong hàm `GetAll()`.
+
+2. **Chuẩn Hóa CSDL & Menu Hệ Thống**:
+   - Menu `BVTL_QT_PAGE_MENU` (ID = 28): Đổi tên hiển thị thành **"Tỉnh / Thành phố"** và gán nhóm `TITLE_GROUP_MENU = N'Danh mục chung'`.
+   - Bảng `BVTL_DU_AN`: Bổ sung mã dự án **`CD45` (Dự án CD45 - DREAMH)** vào danh mục dự án.
+
+3. **Mở Rộng Bộ Kiểm Thử Tự Động (Unit Tests)**:
+   - Thêm 2 bài test mới trong `BVTL.Tests/DashboardCD45Tests.cs`:
+     - `CityDA_GetAllByPage_ShouldReturn63ProvincesAndProperPaging`
+     - `CityDA_GetAllByPage_WithKeyword_ShouldFilterAccurately`
+   - Cấu hình `appSettings.config` cho project kiểm thử `BVTL.Tests`.
+   - Toàn bộ **95/95 unit tests** PASSED 100%.
+
+### Các tệp đã thay đổi:
+- `BVTL.Tests/App.config` (Modified)
+- `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
+- `WebApp/Controllers/CityController.cs` (Modified)
+- `WebApp/Views/City/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineCityController.js` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+
+---
+
+## Phiên làm việc 24 (19/09/2026): Nâng cấp Tính năng Drill-Down Chi tiết Cảnh báo theo Đơn vị (Tỉnh / CBO) trên Data Quality Dashboard
+
+### Mục tiêu:
+Nâng cấp màn hình Giám sát & Chuẩn hóa Dữ liệu REDCap (Tab 3: *Thống kê theo Đơn vị - Tỉnh / CBO*), cho phép người dùng click trực tiếp vào từng ô số liệu thống kê (Cần xử lý, Tổng Cảnh báo, Tổng Lỗi chặn, Đã khắc phục) để mở hộp thoại Modal xem danh sách chi tiết các cảnh báo/lỗi cụ thể tương ứng, hỗ trợ tìm kiếm nhanh, xử lý trực tiếp ("Đã sửa") và đồng bộ số liệu tức thời.
+
+### Các công việc đã hoàn thành:
+
+1. **Tầng Backend (DA & Controller)**:
+   - `Data/InterfaceDA/IDataQualityDA.cs`: Bổ sung phương thức `GetLogsByUnit(string maDuAn, string cityCode, string maNhom, string metricType)`.
+   - `Data/Admin/DataQualityDA.cs`: Triển khai `GetLogsByUnit` sử dụng CTE `CTE_LogNhom` chuẩn xác, lọc linh hoạt theo `CITY_CODE`, `MA_NHOM` và `metricType` (`PENDING`, `WARNING`, `ERROR`, `RESOLVED`, `ALL`), đảm bảo dữ liệu trả về khớp 100% với số liệu thống kê của từng dòng.
+   - `WebApp/Controllers/DataQualityController.cs`: Bổ sung HTTP POST endpoint `GetLogsByUnit` trả về danh sách nhật ký và tổng số bản ghi dưới dạng JSON.
+
+2. **Tầng Giao Diện & Tương Tác (Razor View & Alpine.js)**:
+   - `WebApp/Views/DataQuality/Index.cshtml` (STRICT UTF-8 WITH BOM):
+     - Chuyển đổi các ô số liệu Tab 3 thành các link tương tác có gạch chân, con trỏ tay và tooltip chỉ dẫn thao tác khi giá trị > 0.
+     - Bổ sung Modal Drill-down `#modalUnitDrillDown` (chuẩn `modal-xl`) có thanh tìm kiếm tức thời theo từ khóa, huy hiệu đếm bản ghi hiển thị, bảng cuộn danh sách cảnh báo chi tiết, nút "Đã sửa" trực tiếp và nút chuyển tiếp sang Tab Chi tiết.
+   - `WebApp/app/Controller/AlpineDataQualityController.js`:
+     - Quản lý trạng thái drilldown: `currentDrillUnit`, `currentDrillMetric`, `unitDrillModalTitle`, `unitDrillItems`, `filteredUnitDrillItems`, `unitDrillSearchText`, `isUnitDrillLoading`.
+     - Triển khai các phương thức: `openUnitDrillDown`, `closeUnitDrillDown` (hỗ trợ đa phiên bản Bootstrap và CSS fallback), `filterUnitDrill`, `markResolvedInDrill` (kích hoạt cập nhật đồng thời số liệu thống kê Tab 3 và các thẻ chỉ số), `jumpToDetailsTab`.
+
+3. **Kiểm Thử Tự Động (Unit Tests)**:
+   - `BVTL.Tests/DataValidationP2Tests.cs`: Bổ sung 4 bài test kiểm tra `GetLogsByUnit`:
+     - `GetLogsByUnit_WithPendingMetric_ShouldReturnOnlyUnresolvedItems`: Khớp 26 bản ghi `NA / UNKNOWN`.
+     - `GetLogsByUnit_WithErrorsMetric_ShouldReturnOnlyErrors`: Khớp 27 bản ghi `ERROR`.
+     - `GetLogsByUnit_WithWarningsMetric_ShouldReturnOnlyWarnings`: Khớp 16 bản ghi `WARNING`.
+     - `GetLogsByUnit_WithResolvedMetric_ShouldReturnOnlyResolvedItems`: Khớp 17 bản ghi `RESOLVED`.
+   - Kết quả kiểm thử: Toàn bộ **99/99 unit tests PASSED (100%)**.
+
+### Các tệp đã thay đổi:
+- `Data/InterfaceDA/IDataQualityDA.cs` (Modified)
+- `Data/Admin/DataQualityDA.cs` (Modified)
+- `WebApp/Controllers/DataQualityController.cs` (Modified)
+- `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)

@@ -95,6 +95,21 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLogsByUnit(string maDuAn, string cityCode, string maNhom, string metricType)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(maDuAn)) maDuAn = "CD45";
+                var logs = _dataQualityDA.GetLogsByUnit(maDuAn, cityCode, maNhom, metricType);
+                return Json(new { Success = true, Data = logs, TotalCount = logs.Count });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
         public JsonResult ScanDuplicates(string maDuAn)
         {
             try

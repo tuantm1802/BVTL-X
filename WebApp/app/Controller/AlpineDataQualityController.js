@@ -17,6 +17,13 @@ document.addEventListener('alpine:init', function () {
             isLoadingGrouped: false,
             isLoadingByNhom: false,
             isScanningDuplicates: false,
+            currentDrillUnit: null,
+            currentDrillMetric: '',
+            unitDrillModalTitle: '',
+            unitDrillItems: [],
+            filteredUnitDrillItems: [],
+            unitDrillSearchText: '',
+            isUnitDrillLoading: false,
             filterMaDuAn: 'CD45',
             filterApiCode: '',
             filterSeverity: 'WARNING',
@@ -200,6 +207,146 @@ document.addEventListener('alpine:init', function () {
                         }
                     }
                 });
+            },
+
+            openUnitDrillDown: function (unit, metricType, metricLabel) {
+                var self = this;
+                self.currentDrillUnit = unit;
+                self.currentDrillMetric = metricType;
+                var count = 0;
+                if (metricType === 'PENDING') count = unit.TotalPending;
+                else if (metricType === 'WARNING') count = unit.TotalWarnings;
+                else if (metricType === 'ERROR') count = unit.TotalErrors;
+                else if (metricType === 'RESOLVED') count = unit.TotalResolved;
+
+                self.unitDrillModalTitle = 'Chi tiết Cảnh báo: Tỉnh [' + (unit.CITY_CODE || '-') + '] - Nhóm [' + (unit.MA_NHOM || 'CHƯA PHÂN NHÓM') + '] | ' + metricLabel + ' (' + (count || 0) + ' bản ghi)';
+                self.unitDrillItems = [];
+                self.filteredUnitDrillItems = [];
+                self.unitDrillSearchText = '';
+                self.isUnitDrillLoading = true;
+
+                // Show modal safely for Bootstrap 5, Bootstrap 4/jQuery, or CSS fallback
+                var modalEl = document.getElementById('modalUnitDrillDown');
+                if (modalEl) {
+                    if (window.bootstrap && bootstrap.Modal) {
+                        var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        modal.show();
+                    } else if (window.jQuery && typeof $(modalEl).modal === 'function') {
+                        $(modalEl).modal('show');
+                    } else {
+                        modalEl.classList.add('show');
+                        modalEl.style.display = 'block';
+                        modalEl.removeAttribute('aria-hidden');
+                        modalEl.setAttribute('aria-modal', 'true');
+                    }
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/GetLogsByUnit',
+                    data: {
+                        maDuAn: self.filterMaDuAn,
+                        cityCode: unit.CITY_CODE,
+                        maNhom: unit.MA_NHOM,
+                        metricType: metricType
+                    },
+                    success: function (res) {
+                        self.isUnitDrillLoading = false;
+                        if (res.Success) {
+                            self.unitDrillItems = res.Data || [];
+                            self.filterUnitDrill();
+                        } else {
+                            if (window.toastr) toastr.error(res.Message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        self.isUnitDrillLoading = false;
+                        console.error('[Unit DrillDown] AJAX Error:', status, error);
+                        if (window.toastr) toastr.error('Lỗi khi tải chi tiết cảnh báo theo đơn vị!');
+                    }
+                });
+            },
+
+            closeUnitDrillDown: function () {
+                var modalEl = document.getElementById('modalUnitDrillDown');
+                if (modalEl) {
+                    if (window.bootstrap && bootstrap.Modal) {
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                    }
+                    if (window.jQuery && typeof $(modalEl).modal === 'function') {
+                        $(modalEl).modal('hide');
+                    }
+                    modalEl.classList.remove('show');
+                    modalEl.style.display = 'none';
+                    modalEl.setAttribute('aria-hidden', 'true');
+                    modalEl.removeAttribute('aria-modal');
+                    var backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(function (b) { b.remove(); });
+                }
+            },
+
+            filterUnitDrill: function () {
+                var self = this;
+                var kw = (self.unitDrillSearchText || '').trim().toLowerCase();
+                if (!kw) {
+                    self.filteredUnitDrillItems = self.unitDrillItems;
+                    return;
+                }
+                self.filteredUnitDrillItems = self.unitDrillItems.filter(function (x) {
+                    return (x.RECORD_ID && x.RECORD_ID.toLowerCase().indexOf(kw) >= 0)
+                        || (x.RULE_CODE && x.RULE_CODE.toLowerCase().indexOf(kw) >= 0)
+                        || (x.MESSAGE && x.MESSAGE.toLowerCase().indexOf(kw) >= 0)
+                        || (x.FIELD_NAME && x.FIELD_NAME.toLowerCase().indexOf(kw) >= 0)
+                        || (x.API_CODE && x.API_CODE.toLowerCase().indexOf(kw) >= 0);
+                });
+            },
+
+            markResolvedInDrill: function (logItem) {
+                var self = this;
+                var note = prompt("Nhập ghi chú xử lý (ví dụ: Đã báo TCV sửa lại trên REDCap):", "Đã rà soát và điều chỉnh trên REDCap");
+                if (note === null) return;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/ResolveLog',
+                    data: { id: logItem.ID, note: note },
+                    success: function (res) {
+                        if (res.Success) {
+                            if (window.toastr) toastr.success("Đã đánh dấu xử lý thành công!");
+                            logItem.IS_RESOLVED = true;
+                            logItem.RESOLVED_NOTE = note;
+                            self.loadStats();
+                            self.loadStatsByNhom();
+                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
+                        } else {
+                            if (window.toastr) toastr.error("Không thể cập nhật trạng thái: " + res.Message);
+                        }
+                    }
+                });
+            },
+
+            jumpToDetailsTab: function () {
+                var self = this;
+                self.closeUnitDrillDown();
+                self.activeTab = 'details';
+                if (self.currentDrillUnit && self.currentDrillUnit.CITY_CODE && self.currentDrillUnit.CITY_CODE !== '-') {
+                    self.filterKeyword = self.currentDrillUnit.CITY_CODE;
+                }
+                if (self.currentDrillMetric === 'ERROR') {
+                    self.filterSeverity = 'ERROR';
+                    self.filterIsResolved = 'false';
+                } else if (self.currentDrillMetric === 'WARNING') {
+                    self.filterSeverity = 'WARNING';
+                    self.filterIsResolved = 'false';
+                } else if (self.currentDrillMetric === 'RESOLVED') {
+                    self.filterSeverity = '';
+                    self.filterIsResolved = 'true';
+                } else if (self.currentDrillMetric === 'PENDING') {
+                    self.filterSeverity = '';
+                    self.filterIsResolved = 'false';
+                }
+                self.loadLogs(1);
             },
 
             exportWarnings: function () {

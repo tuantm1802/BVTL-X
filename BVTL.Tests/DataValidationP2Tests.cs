@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Common;
 using Model.ModelExtend.API.CD45;
@@ -322,6 +324,55 @@ namespace BVTL.Tests
             Assert.AreEqual(8, model.TotalWarnings);
             Assert.AreEqual(5, model.TotalResolved);
             Assert.AreEqual(5, model.TotalPending);
+        }
+
+        #endregion
+
+        #region Tab 3 Unit Drilldown Tests
+
+        [TestMethod]
+        public void GetLogsByUnit_WithPendingMetric_ShouldReturnOnlyUnresolvedItems()
+        {
+            var da = new DataQualityDA();
+            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "PENDING");
+
+            Assert.IsNotNull(logs);
+            Assert.AreEqual(26, logs.Count, "Pending count for NA / UNKNOWN should be exactly 26");
+            Assert.IsTrue(logs.All(x => x.IS_RESOLVED == false), "All pending logs must have IS_RESOLVED = false");
+            Assert.IsTrue(logs.All(x => x.SEVERITY == "WARNING" || x.SEVERITY == "ERROR"), "All pending logs must be WARNING or ERROR");
+        }
+
+        [TestMethod]
+        public void GetLogsByUnit_WithErrorsMetric_ShouldReturnOnlyErrors()
+        {
+            var da = new DataQualityDA();
+            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "ERROR");
+
+            Assert.IsNotNull(logs);
+            Assert.AreEqual(27, logs.Count, "Errors count for NA / UNKNOWN should be exactly 27");
+            Assert.IsTrue(logs.All(x => x.SEVERITY == "ERROR"), "All error logs must have SEVERITY = ERROR");
+        }
+
+        [TestMethod]
+        public void GetLogsByUnit_WithWarningsMetric_ShouldReturnOnlyWarnings()
+        {
+            var da = new DataQualityDA();
+            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "WARNING");
+
+            Assert.IsNotNull(logs);
+            Assert.AreEqual(16, logs.Count, "Warnings count for NA / UNKNOWN should be exactly 16");
+            Assert.IsTrue(logs.All(x => x.SEVERITY == "WARNING"), "All warning logs must have SEVERITY = WARNING");
+        }
+
+        [TestMethod]
+        public void GetLogsByUnit_WithResolvedMetric_ShouldReturnOnlyResolvedItems()
+        {
+            var da = new DataQualityDA();
+            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "RESOLVED");
+
+            Assert.IsNotNull(logs);
+            Assert.AreEqual(17, logs.Count, "Resolved count for NA / UNKNOWN should be exactly 17");
+            Assert.IsTrue(logs.All(x => x.IS_RESOLVED == true), "All resolved logs must have IS_RESOLVED = true");
         }
 
         #endregion
