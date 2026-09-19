@@ -217,9 +217,9 @@ document.addEventListener('alpine:init', function () {
                 if (metricType === 'PENDING') count = unit.TotalPending;
                 else if (metricType === 'WARNING') count = unit.TotalWarnings;
                 else if (metricType === 'ERROR') count = unit.TotalErrors;
-                else if (metricType === 'RESOLVED') count = unit.TotalResolved;
-
-                self.unitDrillModalTitle = 'Chi tiết Cảnh báo: Tỉnh [' + (unit.CITY_CODE || '-') + '] - Nhóm [' + (unit.MA_NHOM || 'CHƯA PHÂN NHÓM') + '] | ' + metricLabel + ' (' + (count || 0) + ' bản ghi)';
+                var cityDisplay = unit.TEN_TINH ? (unit.TEN_TINH + (unit.CITY_CODE && unit.CITY_CODE !== unit.TEN_TINH ? ' (' + unit.CITY_CODE + ')' : '')) : (unit.CITY_CODE || '-');
+                var nhomDisplay = unit.TEN_NHOM ? (unit.TEN_NHOM + (unit.MA_NHOM && unit.MA_NHOM !== 'UNKNOWN' && unit.MA_NHOM !== unit.TEN_NHOM ? ' (' + unit.MA_NHOM + ')' : '')) : (unit.MA_NHOM || 'CHƯA PHÂN NHÓM');
+                self.unitDrillModalTitle = 'Chi tiết Cảnh báo: Tỉnh [' + cityDisplay + '] - Nhóm [' + nhomDisplay + '] | ' + metricLabel + ' (' + (count || 0) + ' bản ghi)';
                 self.unitDrillItems = [];
                 self.filteredUnitDrillItems = [];
                 self.unitDrillSearchText = '';

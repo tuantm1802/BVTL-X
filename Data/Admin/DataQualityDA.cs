@@ -132,7 +132,105 @@ namespace Data.Admin
                 GROUP BY MA_NHOM, CITY_CODE
                 ORDER BY TotalPending DESC, TotalWarnings DESC";
 
-            return db.Database.SqlQuery<DataQualityStatsByNhomModel>(sql, pDuAn).ToList();
+            var list = db.Database.SqlQuery<DataQualityStatsByNhomModel>(sql, pDuAn).ToList();
+            EnrichStatsWithNames(list);
+            return list;
+        }
+
+        private void EnrichStatsWithNames(List<DataQualityStatsByNhomModel> list)
+        {
+            if (list == null || list.Count == 0) return;
+
+            var dictCity = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "HNO", "Hà Nội" }, { "HN", "Hà Nội" },
+                { "HPG", "Hải Phòng" }, { "HP", "Hải Phòng" },
+                { "HCM", "TP Hồ Chí Minh" }, { "HC", "TP Hồ Chí Minh" },
+                { "NAN", "Nghệ An" }, { "NA", "Nghệ An" },
+                { "HYE", "Hưng Yên" }, { "HY", "Hưng Yên" },
+                { "NBI", "Ninh Bình" }, { "NB", "Ninh Bình" },
+                { "KHA", "Khánh Hòa" }, { "NT", "Nha Trang" },
+                { "LU", "Cụm hồ sơ TCV" },
+                { "AT", "Gom nhóm tự động" }
+            };
+
+            try
+            {
+                var cities = db.Database.SqlQuery<LookupItem>("SELECT RTRIM(Code) AS Code, RTRIM(Name) AS Name FROM BVTL_CITES").ToList();
+                foreach (var c in cities)
+                {
+                    if (!string.IsNullOrEmpty(c.Code) && !string.IsNullOrEmpty(c.Name) && !dictCity.ContainsKey(c.Code))
+                    {
+                        dictCity[c.Code] = c.Name;
+                    }
+                }
+            }
+            catch { }
+
+            var dictNhom = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "UNKNOWN", "Chưa phân nhóm" }
+            };
+
+            try
+            {
+                var groups = db.Database.SqlQuery<NhomLookupItem>("SELECT RTRIM(manhom_tbh) AS Code1, RTRIM(manhom_tbh_map) AS Code2, RTRIM(tennhom_tbh) AS Name FROM BVTL_NHOM_TBH WHERE maduan = 'CD45'").ToList();
+                foreach (var g in groups)
+                {
+                    if (!string.IsNullOrEmpty(g.Name))
+                    {
+                        if (!string.IsNullOrEmpty(g.Code1)) dictNhom[g.Code1] = g.Name;
+                        if (!string.IsNullOrEmpty(g.Code2)) dictNhom[g.Code2] = g.Name;
+                    }
+                }
+
+                var tcvGroups = db.Database.SqlQuery<LookupItem>("SELECT DISTINCT RTRIM(MA_NHOM) AS Code, RTRIM(TEN_NHOM) AS Name FROM CD45_NHOM_TCV WHERE TEN_NHOM IS NOT NULL AND TEN_NHOM <> ''").ToList();
+                foreach (var tg in tcvGroups)
+                {
+                    if (!string.IsNullOrEmpty(tg.Code) && !string.IsNullOrEmpty(tg.Name) && !dictNhom.ContainsKey(tg.Code))
+                    {
+                        dictNhom[tg.Code] = tg.Name;
+                    }
+                }
+            }
+            catch { }
+
+            foreach (var item in list)
+            {
+                string cityCode = (item.CITY_CODE ?? "").Trim();
+                string nhomCode = (item.MA_NHOM ?? "").Trim();
+
+                if (dictCity.TryGetValue(cityCode, out var cityName))
+                {
+                    item.TEN_TINH = cityName;
+                }
+                else
+                {
+                    item.TEN_TINH = !string.IsNullOrEmpty(cityCode) ? ("Mã tỉnh " + cityCode) : "Chưa xác định";
+                }
+
+                if (dictNhom.TryGetValue(nhomCode, out var nhomName))
+                {
+                    item.TEN_NHOM = nhomName;
+                }
+                else
+                {
+                    item.TEN_NHOM = nhomCode != "UNKNOWN" && !string.IsNullOrEmpty(nhomCode) ? ("Nhóm " + nhomCode) : "Chưa phân nhóm";
+                }
+            }
+        }
+
+        private class LookupItem
+        {
+            public string Code { get; set; }
+            public string Name { get; set; }
+        }
+
+        private class NhomLookupItem
+        {
+            public string Code1 { get; set; }
+            public string Code2 { get; set; }
+            public string Name { get; set; }
         }
 
         public int ScanDuplicateClients(string maDuAn)

@@ -228,6 +228,8 @@ namespace Model.ModelExtend.API.CD45
     public class DataQualityStatsByNhomModel {
         public string MA_NHOM { get; set; }
         public string CITY_CODE { get; set; }
+        public string TEN_NHOM { get; set; }
+        public string TEN_TINH { get; set; }
         public int TotalErrors { get; set; }
         public int TotalWarnings { get; set; }
         public int TotalResolved { get; set; }

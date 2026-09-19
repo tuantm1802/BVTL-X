@@ -1,4 +1,4 @@
-﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -935,6 +935,45 @@ Nâng cấp màn hình Giám sát & Chuẩn hóa Dữ liệu REDCap (Tab 3: *Th�
 - `Data/InterfaceDA/IDataQualityDA.cs` (Modified)
 - `Data/Admin/DataQualityDA.cs` (Modified)
 - `WebApp/Controllers/DataQualityController.cs` (Modified)
+- `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+
+---
+
+## Phiên làm việc 25 (19/09/2026): Nâng cấp Hiển thị Tên Tỉnh/Thành phố & Tên Nhóm CBO trên Tab Thống kê theo Đơn vị (Data Quality Dashboard)
+
+### Mục tiêu:
+Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CBO*) của màn hình Giám sát & Chuẩn hóa Dữ liệu: Chuyển đổi các cột mã viết tắt kỹ thuật (`CITY_CODE` và `MA_NHOM`) sang hiển thị Tên đầy đủ, chính xác của Tỉnh/Thành phố và Nhóm CBO theo nghiệp vụ thực tế, đồng thời giữ mã phụ đề để thuận tiện cho việc đối chiếu tra cứu.
+
+### Các công việc đã hoàn thành:
+
+1. **Tầng Model & Data Access (DA)**:
+   - `Model/ModelExtend/API/CD45/DreamhDbEntities.cs`: Bổ sung 2 thuộc tính `TEN_NHOM` và `TEN_TINH` vào class `DataQualityStatsByNhomModel`.
+   - `Data/Admin/DataQualityDA.cs`:
+     - Xây dựng phương thức `EnrichStatsWithNames` kết hợp linh hoạt bảng danh mục `BVTL_CITES` với danh mục chuẩn hóa 2 ký tự (`NA` -> Nghệ An, `HP` -> Hải Phòng, `HN` -> Hà Nội, `NB` -> Ninh Bình, `HY` -> Hưng Yên, `HC` -> TP Hồ Chí Minh, `NT` -> Nha Trang, `LU` -> Cụm hồ sơ TCV, `AT` -> Gom nhóm tự động).
+     - Kết hợp danh mục nhóm CBO từ `BVTL_NHOM_TBH` (mã chính + mã phụ map) và `CD45_NHOM_TCV` (`vn` -> Về nhà, `hd` -> Hải Đăng, `tg` -> The Gate, `qhx` -> Quỳnh Hương Xanh, `UNKNOWN` -> Chưa phân nhóm...).
+     - Tự động điền `TEN_TINH` và `TEN_NHOM` cho toàn bộ các dòng thống kê trước khi trả về cho client.
+
+2. **Tầng Giao Diện & Tương Tác (View & Alpine.js)**:
+   - `WebApp/Views/DataQuality/Index.cshtml` (STRICT UTF-8 WITH BOM):
+     - Cập nhật tiêu đề bảng thành: **Tỉnh / Thành phố** và **Nhóm CBO**.
+     - Cột Tỉnh hiển thị Tên tỉnh đậm rõ ràng (`font-weight-bold text-gray-800`), bên dưới có dòng chú thích mã nhỏ (`Mã: HNO`, `Mã: NA`...).
+     - Cột Nhóm hiển thị Tên nhóm CBO màu xanh thương hiệu (`font-weight-bold text-primary`), bên dưới có mã nhóm (`Mã: vn`, `Mã: hd`...).
+   - `WebApp/app/Controller/AlpineDataQualityController.js`:
+     - Cập nhật hàm `openUnitDrillDown`: Tiêu đề Modal Drill-down hiển thị trực tiếp Tên Tỉnh và Tên Nhóm (Ví dụ: `Chi tiết Cảnh báo: Tỉnh [Hà Nội (HNO)] - Nhóm [Về nhà (vn)] | Cần xử lý (Pending) (11 bản ghi)`).
+
+3. **Kiểm Thử Tự Động (Unit Tests)**:
+   - `BVTL.Tests/DataValidationP2Tests.cs`:
+     - Cập nhật bài test `DataQualityStatsByNhomModel_PropertiesMapping_ShouldHoldExpectedValues` kiểm tra 2 thuộc tính mới.
+     - Bổ sung bài test `GetStatsByNhom_ShouldEnrichNamesForTinhAndNhom`: Xác nhận 100% dòng dữ liệu đều được làm giàu Tên Tỉnh và Tên Nhóm; kiểm tra các giá trị cụ thể `HNO / vn` ra đúng `Hà Nội / Về nhà`, `HPG / hd` ra đúng `Hải Phòng / Hải Đăng`.
+   - Biên dịch Solution Release thành công 0 lỗi. Toàn bộ 20/20 test P2 PASSED (100%).
+
+### Các tệp đã thay đổi:
+- `Model/ModelExtend/API/CD45/DreamhDbEntities.cs` (Modified)
+- `Data/Admin/DataQualityDA.cs` (Modified)
 - `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
 - `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
 - `BVTL.Tests/DataValidationP2Tests.cs` (Modified)

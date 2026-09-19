@@ -350,8 +350,8 @@
                         <thead class="bg-primary text-white text-center">
                             <tr>
                                 <th style="width: 45px;">#</th>
-                                <th style="width: 140px;">Tỉnh / Thành phố</th>
-                                <th style="width: 150px;">Mã Nhóm CBO</th>
+                                <th style="width: 160px;">Tỉnh / Thành phố</th>
+                                <th style="width: 180px;">Nhóm CBO</th>
                                 <th style="width: 140px;">Cần xử lý (Pending)</th>
                                 <th style="width: 130px;">Tổng Cảnh báo</th>
                                 <th style="width: 130px;">Tổng Lỗi chặn</th>
@@ -363,8 +363,14 @@
                             <template x-for="(unit, idx) in statsByNhom" :key="unit.MA_NHOM + unit.CITY_CODE">
                                 <tr>
                                     <td class="text-center" x-text="idx + 1"></td>
-                                    <td class="text-center font-weight-bold" x-text="unit.CITY_CODE || '-'"></td>
-                                    <td class="text-center font-weight-bold text-primary" x-text="unit.MA_NHOM || 'CHƯA PHÂN NHÓM'"></td>
+                                    <td class="text-center">
+                                        <div class="font-weight-bold text-gray-800" x-text="unit.TEN_TINH || unit.CITY_CODE || '-'"></div>
+                                        <small class="text-muted" x-show="unit.CITY_CODE && unit.TEN_TINH && unit.CITY_CODE !== unit.TEN_TINH" x-text="'Mã: ' + unit.CITY_CODE"></small>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="font-weight-bold text-primary" x-text="unit.TEN_NHOM || unit.MA_NHOM || 'CHƯA PHÂN NHÓM'"></div>
+                                        <small class="text-muted" x-show="unit.MA_NHOM && unit.TEN_NHOM && unit.MA_NHOM !== 'UNKNOWN'" x-text="'Mã: ' + unit.MA_NHOM"></small>
+                                    </td>
                                     <td class="text-center font-weight-bold text-danger" style="font-size: 14px;">
                                         <span :style="unit.TotalPending > 0 ? 'cursor:pointer; text-decoration:underline;' : ''"
                                               x-on:click="if (unit.TotalPending > 0) openUnitDrillDown(unit, 'PENDING', 'Cần xử lý (Pending)')"

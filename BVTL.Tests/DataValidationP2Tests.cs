@@ -312,6 +312,8 @@ namespace BVTL.Tests
             {
                 MA_NHOM = "NB_HN",
                 CITY_CODE = "HN",
+                TEN_NHOM = "Hoa Nắng",
+                TEN_TINH = "Hà Nội",
                 TotalErrors = 2,
                 TotalWarnings = 8,
                 TotalResolved = 5,
@@ -320,10 +322,38 @@ namespace BVTL.Tests
 
             Assert.AreEqual("NB_HN", model.MA_NHOM);
             Assert.AreEqual("HN", model.CITY_CODE);
+            Assert.AreEqual("Hoa Nắng", model.TEN_NHOM);
+            Assert.AreEqual("Hà Nội", model.TEN_TINH);
             Assert.AreEqual(2, model.TotalErrors);
             Assert.AreEqual(8, model.TotalWarnings);
             Assert.AreEqual(5, model.TotalResolved);
             Assert.AreEqual(5, model.TotalPending);
+        }
+
+        [TestMethod]
+        public void GetStatsByNhom_ShouldEnrichNamesForTinhAndNhom()
+        {
+            var da = new DataQualityDA();
+            var list = da.GetStatsByNhom("CD45");
+
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0, "List of stats by nhom should not be empty");
+            Assert.IsTrue(list.All(x => !string.IsNullOrEmpty(x.TEN_TINH)), "All units must have TEN_TINH populated");
+            Assert.IsTrue(list.All(x => !string.IsNullOrEmpty(x.TEN_NHOM)), "All units must have TEN_NHOM populated");
+
+            var hanoiVn = list.FirstOrDefault(x => x.CITY_CODE == "HNO" && x.MA_NHOM == "vn");
+            if (hanoiVn != null)
+            {
+                Assert.AreEqual("Hà Nội", hanoiVn.TEN_TINH);
+                Assert.AreEqual("Về nhà", hanoiVn.TEN_NHOM);
+            }
+
+            var hpDan = list.FirstOrDefault(x => x.CITY_CODE == "HPG" && x.MA_NHOM == "hd");
+            if (hpDan != null)
+            {
+                Assert.AreEqual("Hải Phòng", hpDan.TEN_TINH);
+                Assert.AreEqual("Hải Đăng", hpDan.TEN_NHOM);
+            }
         }
 
         #endregion
