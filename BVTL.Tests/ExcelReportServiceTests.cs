@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.QualityTools.UnitTestFramework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend.Base;
 using Model.ModelExtend.Report;
+using Model.ModelExtend;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -225,6 +226,85 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
+        public void BaoCaoCD45DA_FormatKhamSKTTChiTiet_ShouldEnrichHospitalAndDiagnosisNames()
+        {
+            // Case 1: Lần khám: 2 - Cơ sở: 7 - 132
+            var item1 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 2 - Cơ sở: 7 - 132" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item1);
+            Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: Khác", item1.CHI_TIET);
+
+            // Case 2: Lần khám: 2 - Cơ sở: 7 - Chẩn đoán: 132
+            var item2 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 2 - Cơ sở: 7 - Chẩn đoán: 132" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item2);
+            Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: Khác", item2.CHI_TIET);
+
+            // Case 3: Lần khám: 2 - Cơ sở: 7 - 126
+            var item3 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 2 - Cơ sở: 7 - 126" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item3);
+            Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: F51- Rối loạn giấc ngủ không thực tổn", item3.CHI_TIET);
+
+            // Case 4: Lần khám: 1 - Cơ sở: 1 - 131
+            var item4 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 1 - Cơ sở: 1 - 131" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item4);
+            Assert.AreEqual("Lần khám: 1 - Cơ sở: Hà Nội - Bệnh viện Lão khoa - Chẩn đoán: F41.2- Rối loạn hỗn hợp lo âu và trầm cảm", item4.CHI_TIET);
+
+            // Case 5: Lần khám: 2 - Cơ sở: 1 - 114
+            var item5 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 2 - Cơ sở: 1 - 114" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item5);
+            Assert.AreEqual("Lần khám: 2 - Cơ sở: Hà Nội - Bệnh viện Lão khoa - Chẩn đoán: F33- Rối loạn trầm cảm tái diễn", item5.CHI_TIET);
+
+            // Case 6: Lần khám: 1 - Cơ sở: 6 - 132
+            var item6 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 1 - Cơ sở: 6 - 132" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item6);
+            Assert.AreEqual("Lần khám: 1 - Cơ sở: Bệnh viện tâm thần Nghệ An - Chẩn đoán: Khác", item6.CHI_TIET);
+
+            // Case 7: Lần khám: 1 - Cơ sở: 1 - (Không có chẩn đoán)
+            var item7 = new CD45_DrillDown_ItemModel { CHI_TIET = "Lần khám: 1 - Cơ sở: 1 - " };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item7);
+            Assert.AreEqual("Lần khám: 1 - Cơ sở: Hà Nội - Bệnh viện Lão khoa", item7.CHI_TIET);
+
+            // Case 8: Idempotency (gọi lại không bị biến dạng)
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item1);
+            Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: Khác", item1.CHI_TIET);
+
+            // Case 9: Non-kham items remain unchanged
+            var item9 = new CD45_DrillDown_ItemModel { CHI_TIET = "Sàng lọc QST" };
+            BaoCaoCD45DA.FormatKhamSKTTChiTiet(item9);
+            Assert.AreEqual("Sàng lọc QST", item9.CHI_TIET);
+        }
+
+        [TestMethod]
+        public void BaoCaoCD45DA_GetDrillDown_KhamSKTT_ShouldEnrichHospitalAndDiagnosis()
+        {
+            var da = new BaoCaoCD45DA();
+            var list = da.GetDrillDown("III_3", null, null, null, null, null, 2);
+
+            Assert.IsNotNull(list);
+            if (list.Count > 0)
+            {
+                var hpItem = list.FirstOrDefault(x => x.RECORD_ID == "DHP090029");
+                if (hpItem != null)
+                {
+                    Assert.AreEqual("Hải Phòng", hpItem.TEN_TINH);
+                    Assert.AreEqual("Hải Đăng", hpItem.TEN_NHOM);
+                    Assert.AreEqual("Nguyễn Hoàng Long", hpItem.TEN_TCV);
+                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: Khác", hpItem.CHI_TIET);
+                }
+
+                var hpItem2 = list.FirstOrDefault(x => x.RECORD_ID == "DHP090053");
+                if (hpItem2 != null)
+                {
+                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: F51- Rối loạn giấc ngủ không thực tổn", hpItem2.CHI_TIET);
+                }
+
+                var naItem = list.FirstOrDefault(x => x.RECORD_ID == "DNA210040");
+                if (naItem != null)
+                {
+                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện tâm thần Nghệ An - Chẩn đoán: Khác", naItem.CHI_TIET);
+                }
+            }
+        }
+
         public void BaoCaoTCVCD45_BuildTCVWorksheet_ShouldHaveEqualColumnsAndMergedSignaturesAndA4()
         {
             using (var wb = new ClosedXML.Excel.XLWorkbook())

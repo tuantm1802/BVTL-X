@@ -913,6 +913,10 @@ namespace Data.API
                                 var f9List = dbCtx.Database.SqlQuery<Model.ModelExtend.API.CD45.CD45_THEO_DAU_Entity>(
                                     "SELECT RECORD_ID, NGAY_THEO_DAU FROM CD45_THEO_DAU WHERE MAT_DAU = 1 AND MADUAN = @p0", maDuAn).ToList();
                                 foreach (var f9 in f9List) valContext.RegisterF9Lost(f9.RECORD_ID, f9.NGAY_THEO_DAU);
+
+                                var tcvList = dbCtx.Database.SqlQuery<Model.ModelExtend.CD45_NhomTcvViewModel>(
+                                    "SELECT RTRIM(MA_NHOM) AS MA_NHOM, RTRIM(MA_TCV) AS MA_TCV, RTRIM(TEN_TCV) AS TEN_TCV FROM CD45_NHOM_TCV WHERE MADUAN = @p0 AND TEN_TCV IS NOT NULL AND TEN_TCV <> ''", maDuAn).ToList();
+                                foreach (var tcv in tcvList) valContext.RegisterTcv(tcv.MA_NHOM, tcv.MA_TCV, tcv.TEN_TCV);
                             }
                         }
                         catch (Exception exCtx)
@@ -1004,6 +1008,23 @@ namespace Data.API
                         // Lưu nhật ký chuẩn hóa dữ liệu & cảnh báo (nếu có phát sinh)
                         if (stdLogs.Count > 0) {
                             try {
+                                foreach (var itemLog in stdLogs)
+                                {
+                                    if (string.IsNullOrEmpty(itemLog.MA_NHOM) || string.IsNullOrEmpty(itemLog.CITY_CODE))
+                                    {
+                                        if (valContext != null && !string.IsNullOrEmpty(itemLog.RECORD_ID))
+                                        {
+                                            if (string.IsNullOrEmpty(itemLog.MA_NHOM)) itemLog.MA_NHOM = valContext.GetMaNhom(itemLog.RECORD_ID);
+                                            if (string.IsNullOrEmpty(itemLog.CITY_CODE)) itemLog.CITY_CODE = valContext.GetCityCode(itemLog.RECORD_ID);
+                                        }
+                                        if (string.IsNullOrEmpty(itemLog.MA_NHOM) || string.IsNullOrEmpty(itemLog.CITY_CODE))
+                                        {
+                                            Model.ModelExtend.API.CD45.CD45Helper.InferGroupAndCity(itemLog.RECORD_ID, itemLog.OLD_VALUE, out string infNhom, out string infCity);
+                                            if (string.IsNullOrEmpty(itemLog.MA_NHOM)) itemLog.MA_NHOM = infNhom;
+                                            if (string.IsNullOrEmpty(itemLog.CITY_CODE)) itemLog.CITY_CODE = infCity;
+                                        }
+                                    }
+                                }
                                 var dtLogs = insertDataDA.ConvertToDataTable(stdLogs);
                                 insertDataDA.InsertDataFromApi(dtLogs, "BVTL_DATA_STANDARDIZATION_LOG", "ALL", maDuAn);
                                 int warnCount = stdLogs.Count(x => x.SEVERITY == "WARNING" || x.SEVERITY == "ERROR");

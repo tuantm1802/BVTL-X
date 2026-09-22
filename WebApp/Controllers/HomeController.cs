@@ -43,14 +43,41 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetFilterData()
+        public JsonResult GetFilterData(string cityMode = "NEW34")
         {
             try
             {
-                var cities = _cityDA.GetAll()
-                                    .Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code))
-                                    .Select(x => new { CityCode = x.Code, CityName = x.Name })
-                                    .ToList();
+                object cities;
+                if (string.Equals(cityMode, "OLD63", StringComparison.OrdinalIgnoreCase))
+                {
+                    var allOld = _cityDA.GetAll();
+                    cities = allOld.OrderByDescending(x => !string.IsNullOrEmpty(x.Code_Map))
+                                   .ThenBy(x => x.Name)
+                                   .Select(x => new { 
+                                       CityCode = x.Code, 
+                                       CityName = (!string.IsNullOrEmpty(x.Code_Map) ? "⭐ " : "") + x.Name + (!string.IsNullOrEmpty(x.Code_Map) ? " (" + x.Code_Map + ")" : ""),
+                                       IsKey = !string.IsNullOrEmpty(x.Code_Map),
+                                       OldCodes = new[] { x.Code }
+                                   })
+                                   .ToList();
+                }
+                else
+                {
+                    var newCities = _cityDA.GetAllNewCities();
+                    var mappings = _cityDA.GetCityMappings();
+                    var mapGroup = mappings.GroupBy(m => m.NewCityCode).ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray());
+
+                    cities = newCities.OrderByDescending(x => x.IsKeyProvince)
+                                      .ThenBy(x => x.DisplayOrder)
+                                      .ThenBy(x => x.Name)
+                                      .Select(x => new { 
+                                          CityCode = x.Code, 
+                                          CityName = (x.IsKeyProvince ? "⭐ " : "") + x.Name + (x.OldCount > 1 ? string.Format(" ({0} tỉnh gộp)", x.OldCount) : ""),
+                                          IsKey = x.IsKeyProvince,
+                                          OldCodes = mapGroup.ContainsKey(x.Code) ? mapGroup[x.Code] : new[] { x.Code }
+                                      })
+                                      .ToList();
+                }
 
                 var nhoms = _nhomDA.GetAll()
                                    .Where(x => x.maduan == "CD45")
@@ -73,11 +100,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null)
+        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34")
         {
             try
             {
-                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate, nhomTuoiTable1);
+                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate, nhomTuoiTable1, cityMode);
                 var jsonResult = Json(new { Success = true, Data = data, Error = false, Title = "Lấy dữ liệu thành công." });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;

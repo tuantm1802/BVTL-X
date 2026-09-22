@@ -184,7 +184,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HOAT_DONG, x => x.REPEAT_INSTANCE, x => x.LOAI_DV, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HOAT_DONG, x => x.COMPLETE_STATUS, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HOAT_DONG, x => x.COMPLETE_STATUS, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF3(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -342,7 +342,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_SANG_LOC, x => x.REPEAT_INSTANCE, null, "CD45_QST", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_SANG_LOC, x => x.COMPLETE_STATUS, "CD45_QST", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_SANG_LOC, x => x.COMPLETE_STATUS, "CD45_QST", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF4(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -442,7 +442,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HO_TRO, x => x.REPEAT_INSTANCE, null, "CD45_HO_TRO_XH", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_HO_TRO_XH", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_HO_TRO_XH", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF5(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -533,7 +533,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HO_TRO, x => x.REPEAT_INSTANCE, null, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF6(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -707,7 +707,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_KHAM, x => (int?)x.LAN_KHAM ?? x.REPEAT_INSTANCE, null, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_KHAM, x => x.COMPLETE_STATUS, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_KHAM, x => x.COMPLETE_STATUS, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF7(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -863,7 +863,7 @@ namespace Common.Common
             dagCollector.FlushToLogs(maDuAn, apiCode, "CD45_TU_VAN_L1", reportId, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L1", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L1", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF8(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -993,7 +993,7 @@ namespace Common.Common
             ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_TU_VAN, x => x.REPEAT_INSTANCE, null, "CD45_TU_VAN_L2", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
-            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L2", apiCode, reportId, maDuAn, ref logs);
+            CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L2", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
         }
 
         public void ConvertF9(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -1424,9 +1424,17 @@ namespace Common.Common
             string apiCode,
             string reportId,
             string maDuAn,
-            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs,
+            Func<T, string> getRecordId = null,
+            Func<T, string> getMaNhom = null,
+            CD45ValidationContext context = null)
         {
-            DataCleanerHelper.CheckClusterIncomplete(entities, getTcv, getDate, getStatus, tableName, apiCode, reportId, maDuAn, ref logs);
+            Func<string, string, string> resolveTcvName = null;
+            if (context != null)
+            {
+                resolveTcvName = (nhom, tcv) => context.GetTcvName(nhom, tcv);
+            }
+            DataCleanerHelper.CheckClusterIncomplete(entities, getTcv, getDate, getStatus, tableName, apiCode, reportId, maDuAn, ref logs, getRecordId, getMaNhom, resolveTcvName);
         }
 
         #endregion

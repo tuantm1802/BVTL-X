@@ -223,7 +223,9 @@ namespace Data.API
                                 Target.[SEVERITY] = Source.[SEVERITY],
                                 Target.[ACTION_TAKEN] = Source.[ACTION_TAKEN],
                                 Target.[MESSAGE] = Source.[MESSAGE],
-                                Target.[CREATED_DATE] = Source.[CREATED_DATE]
+                                Target.[CREATED_DATE] = Source.[CREATED_DATE],
+                                Target.[MA_NHOM] = Source.[MA_NHOM],
+                                Target.[CITY_CODE] = Source.[CITY_CODE]
                         WHEN NOT MATCHED BY TARGET THEN
                             INSERT ({columnsList}) VALUES ({sourceColumnsList});";
 

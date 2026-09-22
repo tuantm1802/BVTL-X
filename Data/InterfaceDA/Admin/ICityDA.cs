@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Model.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +36,28 @@ namespace Data.InterfaceDA.Admin
         /// <summary>
         /// Lấy danh sách tỉnh theo người dùng
         /// </summary>
-        /// <param name="modelSearch"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-         List<BVTL_CITES> GetCityReport(int userId);
+        List<BVTL_CITES> GetCityReport(int userId);
+
+        /// <summary>
+        /// Cập nhật trạng thái tỉnh trọng điểm CD45 và mã viết tắt
+        /// </summary>
+        ObjectMessage UpdateKeyProvince(string code, string codeMap, bool isKey);
+
+        /// <summary>
+        /// Lấy toàn bộ danh mục 34 tỉnh mới (NQ 202/2025/QH15)
+        /// </summary>
+        List<CityNewModel> GetAllNewCities(bool keyOnly = false);
+
+        /// <summary>
+        /// Lấy toàn bộ danh sách ánh xạ 63 tỉnh cũ sang 34 tỉnh mới
+        /// </summary>
+        List<CityMappingModel> GetCityMappings();
+
+        /// <summary>
+        /// Lấy danh sách các mã tỉnh cũ thuộc về 1 tỉnh mới
+        /// </summary>
+        List<string> GetMappedOldCityCodes(string newCityCode);
     }
 }

@@ -1,4 +1,4 @@
-# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -977,4 +977,280 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
 - `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
 - `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+---
+
+## Session 24: [2026-09-21] Chỉ rõ danh tính TCV '4' và Cải tiến chi tiết Cảnh báo cụm bất thường (WARN_CLUSTER_INCOMPLETE)
+
+### Yêu cầu người dùng:
+1. Xác định và chỉ rõ danh tính Tiếp cận viên: **TCV '4' là TCV nào? Họ tên đầy đủ là gì?**
+2. Thực hiện cải tiến cảnh báo cụm (`WARN_CLUSTER_INCOMPLETE`): Liệt kê danh sách các Mã KH cụ thể và Tên TCV ngay trong thông báo cảnh báo.
+
+---
+
+### Kết quả điều tra thực tế trong CSDL:
+1. **TCV '4'**:
+   - **Họ và tên**: **Vũ Thị Phương Lan**
+   - **Nhóm CBO**: **Về nhà** (Mã: `vn`)
+   - **Tỉnh/Thành**: **Hà Nội** (`HNO`)
+   - **Cụm 3 khách hàng bị Incomplete ngày 18/08/2026**: `DHN020241`, `DHN020243`, `DHN020255` (Tiền tố `DHN02`: CD45 Hà Nội nhóm Về nhà).
+2. **TCV '2'** (xuất hiện cùng cảnh báo cụm):
+   - **Họ và tên**: **Chu Thị Thanh**
+   - **Nhóm CBO**: **Về nhà** (Mã: `vn`)
+   - **Tỉnh/Thành**: **Hà Nội** (`HNO`)
+   - **Cụm 7 khách hàng bị Incomplete ngày 17/08/2026**: `DHN020198`, `DHN020199`, `DHN020200`, `DHN020201`, `DHN020204`, `DHN020205`, `DHN020207`.
+
+---
+
+### Các công việc đã hoàn thành:
+
+1. **Ngữ cảnh kiểm thực dữ liệu (`CD45ValidationContext.cs`)**:
+   - Bổ sung `TcvNameLookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)`.
+   - Thêm phương thức `RegisterTcv(string maNhom, string maTcv, string tenTcv)` và `GetTcvName(string maNhom, string maTcv)`.
+
+2. **Dịch vụ đồng bộ API (`SyncDataFromApi_SaveToDB.cs`)**:
+   - Nạp tự động danh bạ 112 TCV từ bảng `CD45_NHOM_TCV` vào `valContext` khi khởi động tiến trình đồng bộ API.
+
+3. **Cải tiến thuật toán cảnh báo cụm (`DataCleanerHelper.cs`)**:
+   - Mở rộng phương thức `CheckClusterIncomplete<T>` với các tham số: `Func<T, string> getRecordId`, `Func<T, string> getMaNhom`, `Func<string, string, string> resolveTcvName`.
+   - Thu thập danh sách Mã KH duy nhất thuộc cụm: `(gồm các KH: {ma1}, {ma2}, ...)`.
+   - Tra cứu và ghép Tên TCV kèm Mã: `TCV '{tenTcv}' (Mã: {maTcv})`.
+   - Định dạng nội dung thông báo đầy đủ thông tin hỗ trợ người quản trị kiểm soát ngay trên màn hình.
+
+4. **Tích hợp toàn diện các Form dịch vụ (`ConvertCD45ApiToEntity.cs`)**:
+   - Cập nhật wrapper method và toàn bộ 7 vị trí gọi kiểm tra cụm từ `ConvertF2` đến `ConvertF8` (F2 Hoạt động, F3 QST, F4 Hỗ trợ XH, F5 Tuân thủ, F6 Khám chẩn đoán SKTT, F7 Tư vấn lần 1, F8 Tư vấn lần 2).
+
+5. **Cập nhật dữ liệu Log thực tế trong CSDL**:
+   - Chạy lệnh SQL cập nhật 2 bản ghi log ID `31444` và `31442` trong bảng `BVTL_DATA_STANDARDIZATION_LOG` sang định dạng thông báo mới, hiển thị đầy đủ tên TCV và danh sách mã KH ngay lập tức.
+
+6. **Kiểm thử tự động (Unit Tests)**:
+   - Thêm unit test `CheckClusterIncomplete_WhenRecordIdAndTcvNameProvided_ShouldIncludeClientIdsAndTcvNameInMessage` vào `BVTL.Tests/DataValidationP2Tests.cs`.
+   - Kết quả: 21/21 test P2 PASSED (100%), 49/49 DataValidation tests PASSED (100%).
+
+---
+
+### Các tệp đã thay đổi:
+- `Common/Common/CD45ValidationContext.cs` (Modified)
+- `Common/Common/DataCleanerHelper.cs` (Modified)
+- `Common/Common/ConvertCD45ApiToEntity.cs` (Modified)
+- `Data/API/SyncDataFromApi_SaveToDB.cs` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Session 25: [2026-09-21] Khắc phục triệt để lỗi phân nhóm CBO & Tỉnh/Thành phố trên Tab Thống kê (Tab 3)
+
+### Yêu cầu người dùng:
+1. Giải đáp thắc mắc: Hệ thống đang lấy **Tên nhóm CBO** theo trường nào? Có phải lấy theo trường "Data Access Group (`redcap_data_access_group`)" từ API của các F1 - F10 không?
+2. Khắc phục lỗi bất thường trên bảng Thống kê theo Đơn vị:
+   - "Mã tỉnh 51" - "Chưa phân nhóm" (198 lỗi)
+   - "Mã tỉnh 12" - "Chưa phân nhóm" (18 lỗi)
+   - "Hải Phòng (HP)" - "Chưa phân nhóm" (45 lỗi chặn)
+   - "Nghệ An (NA)" - "Chưa phân nhóm" (26 lỗi)
+
+---
+
+### Phân tích nguyên nhân gốc rễ:
+1. **Cơ chế truy vấn cũ**:
+   - Trong `DataQualityDA.cs` (`GetStatsByNhom` và `GetLogsByUnit`), hệ thống cũ **không** lấy trực tiếp từ `redcap_data_access_group` mà thực hiện `LEFT JOIN CD45_KH kh ON log.RECORD_ID = kh.RECORD_ID`.
+   - Lấy `ISNULL(kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM` và `ISNULL(kh.CITY_CODE, SUBSTRING(log.RECORD_ID, 2, 2)) AS CITY_CODE`.
+2. **Nguyên nhân phát sinh lỗi bất thường**:
+   - Các bản ghi bị lỗi định dạng mã khách hàng (`ERR_RECORD_ID_FORMAT`) như `151117`..`151138`, `21251`..`21252`, `DHP10099`.. bị chặn cứng (QUARANTINED) ở tầng validate nên **không bao giờ được nạp vào bảng `CD45_KH`**.
+   - Do đó, `kh.MA_NHOM` luôn là `NULL` -> fallback thành `'UNKNOWN'` (**"Chưa phân nhóm"**).
+   - Đoạn cắt chuỗi mù quáng `SUBSTRING(log.RECORD_ID, 2, 2)`:
+     - Với `151117`: ký tự 2-3 là `'51'` -> hiển thị thành **"Mã tỉnh 51"** (198 lỗi)!
+     - Với `21251`: ký tự 2-3 là `'12'` -> hiển thị thành **"Mã tỉnh 12"** (18 lỗi)!
+3. **Đối chiếu thực tế với Quy hoạch mã nhóm**:
+   - `151117..151138`: Thuộc nhóm **Gió Mới** (Mã: `gm`, Tỉnh: **Ninh Bình** `NBI`, tiền tố chuẩn `DNB15`). Do người dùng nhập thiếu tiền tố `DNB`!
+   - `21251..21252`: Thuộc nhóm **Quỳnh Hương Xanh** (Mã: `qhx`, Tỉnh: **Nghệ An** `NAN`, tiền tố chuẩn `DNA21`). Do người dùng nhập thiếu tiền tố `DNA`!
+   - `DHP10099..`: Thuộc nhóm **Vòng Tay Bè Bạn** (Mã: `vtbb`, Tỉnh: **Hải Phòng** `HPG`, chuẩn `DHP10`). Do người dùng nhập thiếu số 0 (8 ký tự thay vì 9)!
+
+---
+
+### Các giải pháp & Thay đổi đã triển khai:
+1. **Nâng cấp CSDL (`BVTL_REPORTING_DEV`)**:
+   - Bổ sung 2 cột mới `MA_NHOM varchar(50) NULL` và `CITY_CODE varchar(50) NULL` vào bảng `BVTL_DATA_STANDARDIZATION_LOG`.
+   - Chạy script backfill toàn bộ dữ liệu log lịch sử sang đúng nhóm CBO và tỉnh/thành phố.
+2. **Cập nhật Model (`DreamhDbEntities.cs`)**:
+   - Bổ sung thuộc tính `MA_NHOM` và `CITY_CODE` vào entity `BVTL_DATA_STANDARDIZATION_LOG_Entity`.
+3. **Cập nhật Module Suy luận & Gán Nhóm (`CD45Helper.cs` & `DataCleanerHelper.cs`)**:
+   - Xây dựng `CD45Helper.InferGroupAndCity` tra cứu theo quy hoạch 22 nhóm CD45 từ `redcap_data_access_group` (DAG) hoặc từ mã nhóm số (`15` -> `gm`/`NBI`, `21` -> `qhx`/`NAN`, `10` -> `vtbb`/`HPG`, v.v.).
+   - Cập nhật `DataCleanerHelper.CleanRecordId`, `FlushToLogs`, `ProcessDag`, `CheckClusterIncomplete` tự động gán `MA_NHOM` và `CITY_CODE` ngay khi tạo log.
+4. **Cập nhật Luồng Lưu Dữ liệu (`SyncDataFromApi_SaveToDB.cs` & `InsertDataDA.cs`)**:
+   - Tự động kiểm tra và làm giàu `MA_NHOM` / `CITY_CODE` cho toàn bộ danh sách `stdLogs` từ `valContext` trước khi lưu vào CSDL.
+   - Cập nhật câu lệnh `MERGE INTO BVTL_DATA_STANDARDIZATION_LOG` đồng bộ cả `MA_NHOM` và `CITY_CODE`.
+5. **Cập nhật Thống kê & Drill-Down (`DataQualityDA.cs`)**:
+   - Thay đổi câu lệnh CTE `CTE_LogNhom`: Sử dụng `COALESCE(log.MA_NHOM, kh.MA_NHOM, 'UNKNOWN')` và `COALESCE(log.CITY_CODE, kh.CITY_CODE, ...)`.
+   - Loại bỏ hoàn toàn lỗi cắt chuỗi mù quáng `SUBSTRING(log.RECORD_ID, 2, 2)`.
+6. **Kiểm thử tự động (Unit Tests)**:
+   - Cập nhật `BVTL.Tests/DataValidationP2Tests.cs`: thêm test `InferGroupAndCity_ShouldMapMalformedClientIdsAndDags` và chuẩn hóa các test drill-down theo invariant động.
+   - Kết quả: **102 / 102 unit tests PASSED (100%)** với VSTest.
+
+---
+
+### Các tệp đã thay đổi:
+- `Model/ModelExtend/API/CD45/DreamhDbEntities.cs` (Modified)
+- `Model/ModelExtend/API/CD45/CD45Helper.cs` (Modified)
+- `Common/Common/CD45ValidationContext.cs` (Modified)
+- `Common/Common/DataCleanerHelper.cs` (Modified)
+- `Data/API/SyncDataFromApi_SaveToDB.cs` (Modified)
+- `Data/API/InsertDataDA.cs` (Modified)
+- `Data/Admin/DataQualityDA.cs` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Session 26: [2026-09-21] Chuẩn hóa Thông tin chi tiết Khám SKTT (Hiển thị Tên Cơ sở khám & Tên Chẩn đoán bệnh) trong Báo cáo hoạt động CD45
+
+### Yêu cầu người dùng:
+1. Trong Popup chi tiết (chỉ tiêu **"Số lượt KH được chuyển gửi khám SKTT"** hoặc **"Số KH được chuyển gửi khám SKTT"**) tại màn hình **Báo cáo - Báo cáo hoạt động CD45**:
+   - Trường **"Thông tin chi tiết"** hiện đang hiển thị mã số thô: `Lần khám: 2 - Cơ sở: 7 - 132`, `Lần khám: 2 - Cơ sở: 7 - 126`, `Lần khám: 2 - Cơ sở: 6 - 132`... Cần hiển thị **Tên của Cơ sở khám** thay vì chỉ hiển thị mã số.
+   - Giải thích rõ các con số `126`, `131`, `132` ở cuối chuỗi là mã của thông tin gì? Hiển thị **Tên tương ứng** để thông tin rõ ràng, minh bạch cho người dùng.
+
+---
+
+### Phân tích & Giải đáp nguồn gốc dữ liệu:
+1. **Con số `126`, `131`, `132` ở cuối chuỗi là gì?**
+   - Đây chính là **Mã Chẩn đoán chính (Primary Diagnosis)** bệnh lý tâm thần theo danh mục ICD-10 của REDCap Form F6 (trường `cd.CHAN_DOAN_CHINH` / `f6_diagnose_pri`).
+   - Cụ thể:
+     - `114`: **F33- Rối loạn trầm cảm tái diễn**
+     - `126`: **F51- Rối loạn giấc ngủ không thực tổn**
+     - `131`: **F41.2- Rối loạn hỗn hợp lo âu và trầm cảm**
+     - `132`: **Khác**
+     - `113`: **F32- Giai đoạn trầm cảm**
+     - `118`: **F40- Rối loạn lo âu ám ảnh sợ hãi**
+     - (Toàn bộ 132 mã theo phân loại bệnh lý ICD-10 của dự án CD45 DREAMH).
+2. **Mã cơ sở khám (`cd.CO_SO_Y_TE`)**:
+   - `1`: Hà Nội - Bệnh viện Lão khoa
+   - `2`: Hưng Yên - BV SKTT Thái Bình
+   - `3`: Hưng Yên - PK Meheal
+   - `4`: Hà Nội - Phòng khám Dr Phi
+   - `5`: Ninh Bình - BV SKTT Ninh Bình
+   - `6`: Bệnh viện tâm thần Nghệ An
+   - `7`: Bệnh viện SKTT Hải Phòng
+   - `8`: Bệnh viện tâm thần TP.HCM
+   - `9`: Bệnh viện Thủ Đức
+
+---
+
+### Các thay đổi kỹ thuật đã triển khai:
+1. **Tầng Data Access C# (`Data/Admin/BaoCaoCD45DA.cs`)**:
+   - Định nghĩa từ điển danh mục:
+     - `DictHospital` (Mã 1..9 -> Tên cơ sở y tế đầy đủ).
+     - `DictDiagnose` (Mã 1..132 -> Tên chẩn đoán bệnh lý theo ICD-10).
+   - Xây dựng phương thức chuẩn hóa `FormatKhamSKTTChiTiet(CD45_DrillDown_ItemModel item)`:
+     - Sử dụng Regex bóc tách linh hoạt: Lần khám, Mã cơ sở, Mã chẩn đoán.
+     - Ánh xạ sang Tên cơ sở và Tên chẩn đoán tương ứng.
+     - Định dạng đầu ra: `Lần khám: {lan} - Cơ sở: {TenCoSo} - Chẩn đoán: {TenChanDoan}`.
+     - Đảm bảo tính Idempotent (không làm biến dạng nếu dữ liệu đã được làm giàu trước đó).
+   - Tích hợp tự động vào `EnrichDrillDownData`: Mọi yêu cầu lấy dữ liệu chi tiết (Drill-Down) từ người dùng đều tự động được làm giàu tên cơ sở và chẩn đoán.
+2. **Tầng Cơ sở dữ liệu (`SQL_CD45_SP_DrillDown.sql`, `SQL_CD45_SP.sql`, DB `BVTL_REPORTING_DEV`)**:
+   - Cập nhật câu lệnh trích xuất chi tiết trong `SP_CD45_GetDrillDown` (các chỉ tiêu `III_3`, `III_4`, `III_4_1`, `III_4_2`, `III_4_3`, `III_5`):
+     Bổ sung tiền tố nhãn ` - Chẩn đoán: ` nếu có mã chẩn đoán.
+   - Deploy cập nhật trực tiếp `SP_CD45_GetDrillDown` lên CSDL `BVTL_REPORTING_DEV`.
+3. **Tầng Giao diện Client (`WebApp/app/Controller/AlpineBaoCaoCD45Controller.js`)**:
+   - Tinh chỉnh tiêu đề Modal Drill-down: Nhận biết chỉ tiêu dạng "lượt" (ví dụ: `Số lượt KH được chuyển gửi khám SKTT`) để hiển thị đơn vị chính xác là `(PLHIV: 51 lượt)` thay vì `51 KH`.
+4. **Kiểm thử tự động (`BVTL.Tests/ExcelReportServiceTests.cs`)**:
+   - Bổ sung bài test `BaoCaoCD45DA_FormatKhamSKTTChiTiet_ShouldEnrichHospitalAndDiagnosisNames`: Kiểm tra toàn diện 9 ca kiểm thử (các mã 7, 6, 1, các mã bệnh 132, 126, 131, 114, trường hợp không có chẩn đoán, tính idempotent...).
+   - Bổ sung bài test `BaoCaoCD45DA_GetDrillDown_KhamSKTT_ShouldEnrichHospitalAndDiagnosis`: Kiểm tra trực tiếp dữ liệu thật trả về từ CSDL, kiểm tra khách hàng `DHP090029`, `DHP090053`, `DNA210040`.
+   - Kết quả kiểm thử: **103 / 103 tests PASSED (100%)**.
+
+---
+
+### Các tệp đã thay đổi:
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `SQL_CD45_SP_DrillDown.sql` (Modified - UTF-8 BOM)
+- `SQL_CD45_SP.sql` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineBaoCaoCD45Controller.js` (Modified)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Session 27: [2026-09-22] Triển khai Tính năng Chuyển đổi "34 Tỉnh mới (Hiện tại - NQ 202/2025/QH15)" và "63 Tỉnh cũ (Lịch sử)", Quản trị Tỉnh trọng điểm CD45
+
+### Yêu cầu người dùng:
+1. Rà soát danh mục Tỉnh/Thành phố (`/City/Index`): Bổ sung hiển thị thông tin phân trang, khắc phục tình trạng thiếu sót dữ liệu trên giao diện.
+2. Sắp xếp ưu tiên 6 tỉnh trọng điểm CD45 (`HNO`, `HPG`, `HCM`, `NAN`, `NBI`, `HYE`) lên đầu, bổ sung bộ lọc nhanh 6 tỉnh trọng điểm.
+3. Bổ sung tính năng cho Quản trị viên (Admin) thiết lập/bật tắt Tỉnh trọng điểm CD45 và quản lý mã viết tắt `Code_Map`.
+4. Cập nhật phương án sáp nhập 63 tỉnh thành phố thành **34 Tỉnh/Thành phố mới** theo **Nghị quyết số 202/2025/QH15** (hiệu lực từ 01/07/2025, gồm 11 tỉnh giữ nguyên và 23 tỉnh mới thành lập từ sáp nhập 2-3 tỉnh cũ).
+5. Xây dựng tính năng chuyển đổi chế độ xem **"34 Tỉnh mới (Hiện tại - NQ 202)"** và **"63 Tỉnh cũ (Lịch sử)"** trên toàn hệ thống:
+   - **Danh mục Tỉnh/Thành phố** (`/City/Index`)
+   - **Dashboard CD45** (`/Home/Index`)
+   - **Báo cáo Hoạt động CD45** (`/BaoCaoCD45/Index`)
+6. Bảo toàn 100% dữ liệu lịch sử REDCap và quy tắc sinh mã `RECORD_ID` (`D` + mã tỉnh 2 ký tự + nhóm 2 số + STT 4 số). Khi chọn 1 tỉnh mới sáp nhập, hệ thống tự động tổng hợp số liệu của tất cả các tỉnh cũ thành phần.
+
+---
+
+### Các thay đổi kỹ thuật đã triển khai:
+1. **Tầng Cơ sở dữ liệu (`BVTL_REPORTING_DEV`)**:
+   - `SQL_Create_34_New_Cities_And_Mapping.sql`:
+     - Tạo bảng `BVTL_DM_TINH_MOI` (34 bản ghi tỉnh/thành mới theo NQ 202/2025/QH15).
+     - Tạo bảng ánh xạ `BVTL_MAP_TINH_CU_MOI` (63 bản ghi mapping chi tiết tỉnh cũ -> tỉnh mới).
+   - `SQL_CD45_SP_CityMapping_Upgrade.sql` & `SQL_City_KeyProvince_Upgrade.sql`:
+     - Nâng cấp `City_Get_By_Page`: Hỗ trợ `@CityMode VARCHAR(10) = 'NEW34'` hoặc `'OLD63'`, `@IsKeyOnly bit = 0`, `@OrderByName = 'KeyFirst'`, tìm kiếm từ khóa trên cả `Code`, `Name`, `Code_Map` và `OldNamesSummary`.
+     - Nâng cấp `SP_CD45_Dashboard`: Phân giải `@CityCode` sang các mã tỉnh cũ cấu thành qua CTE/Bảng ánh xạ (`@MappedCityCodes`), Section 5 (ByProvince) tự động gom nhóm theo 34 tỉnh mới hoặc 63 tỉnh cũ tùy theo `@CityMode`.
+     - Nâng cấp `SP_CD45_GetBaoCao` & `SP_CD45_GetDrillDown`: Tự động nhận diện danh sách mã tỉnh thành phần để trích xuất số liệu và danh sách khách hàng chính xác.
+2. **Tầng Data Access & Model C#**:
+   - `Model/ModelExtend/CityMappingModel.cs`: Định nghĩa `CityNewModel` và `CityMappingModel` (thêm vào `Model/Model.csproj`).
+   - `Model/ModelExtend/CityPageModel.cs` & `Model/ModelExtend/Base/ModelSearch.cs`: Bổ sung `CityMode`, `OldCount`, `OldNamesSummary`.
+   - `Data/InterfaceDA/Admin/ICityDA.cs` & `Data/Admin/CityDA.cs`:
+     - Bổ sung `GetAllNewCities(keyOnly)`, `GetCityMappings()`, `GetMappedOldCityCodes(newCityCode)`.
+     - `GetAllByPage` hỗ trợ đầy đủ `CityMode`.
+     - `UpdateKeyProvince(code, codeMap, isKey)` kiểm tra tính hợp lệ và cập nhật cờ tỉnh trọng điểm.
+   - `Data/InterfaceDA/Admin/IDashboardCD45DA.cs` & `Data/Admin/DashboardCD45DA.cs`:
+     - Bổ sung tham số `cityMode = "NEW34"` / `"OLD63"`.
+     - Trả về `CityName` trực tiếp từ tập kết quả Stored Procedure.
+   - `Data/Admin/BaoCaoCD45DA.cs`:
+     - Tích hợp 34 tỉnh mới vào từ điển tên tỉnh hiển thị báo cáo.
+3. **Tầng Bộ điều khiển & Giao diện (Controllers & Views)**:
+   - `WebApp/Controllers/CityController.cs` & `WebApp/Views/City/Index.cshtml` & `AlpineCityController.js`:
+     - Segmented Button chuyển đổi: `[34 Tỉnh/Thành mới (NQ 202/2025)]` vs `[63 Tỉnh/Thành lịch sử]`.
+     - Bộ lọc nhanh: `[Tất cả: 34/63]` và `[⭐ Tỉnh trọng điểm CD45: 6]`.
+     - Cột mới "Đơn vị sáp nhập (NQ 202/2025)" hiển thị danh sách các tỉnh cũ thành phần.
+     - Modal Admin "Thiết lập Tỉnh trọng điểm CD45" cho phép bật/tắt tỉnh trọng điểm và cấu hình `Code_Map`.
+   - `WebApp/Controllers/HomeController.cs` & `WebApp/Views/Home/Index.cshtml` & `AlpineHomeController.js`:
+     - Thêm nút gạt phân loại tỉnh `34 Tỉnh mới` / `63 Tỉnh cũ`.
+     - Tự động lọc danh sách nhóm CBO theo các tỉnh cũ thành phần khi chọn một tỉnh mới đã sáp nhập.
+     - Đồng bộ biểu đồ và Bảng 4 theo tỉnh.
+   - `WebApp/Controllers/BaoCaoCD45Controller.cs` & `WebApp/Views/BaoCaoCD45/Index.cshtml` & `AlpineBaoCaoCD45Controller.js`:
+     - Thêm nút chuyển đổi chế độ tỉnh `34 mới` / `63 cũ`.
+     - Đồng bộ lọc nhóm CBO và số liệu báo cáo 6 nhóm chỉ tiêu.
+4. **Kiểm thử tự động (Unit & Integration Tests)**:
+   - Thêm tệp kiểm thử `BVTL.Tests/CityMappingTests.cs` (6 test cases toàn diện: 34 tỉnh mới, 63 tỉnh ánh xạ, 6 tỉnh trọng điểm, phân trang 2 chế độ, Dashboard tổng hợp dữ liệu tỉnh sáp nhập, Báo cáo hoạt động).
+   - Bổ sung vào `BVTL.Tests/BVTL.Tests.csproj`.
+   - Cập nhật `BVTL.Tests/DashboardCD45Tests.cs`.
+   - Toàn bộ **111 / 111 bài kiểm thử tự động VSTest đều PASSED (100%)**.
+
+---
+
+### Các tệp đã thêm mới & thay đổi:
+- `SQL_Create_34_New_Cities_And_Mapping.sql` (New - UTF-8 BOM)
+- `SQL_CD45_SP_CityMapping_Upgrade.sql` (New - UTF-8 BOM)
+- `SQL_City_KeyProvince_Upgrade.sql` (New - UTF-8 BOM)
+- `SQL_CD45_SP.sql` (Modified - UTF-8 BOM)
+- `SQL_CD45_SP_DrillDown.sql` (Modified - UTF-8 BOM)
+- `Model/ModelExtend/CityMappingModel.cs` (New)
+- `Model/ModelExtend/CityPageModel.cs` (Modified)
+- `Model/ModelExtend/Base/ModelSearch.cs` (Modified)
+- `Model/Model.csproj` (Modified)
+- `Data/InterfaceDA/Admin/ICityDA.cs` (Modified)
+- `Data/Admin/CityDA.cs` (Modified)
+- `Data/InterfaceDA/Admin/IDashboardCD45DA.cs` (Modified)
+- `Data/Admin/DashboardCD45DA.cs` (Modified)
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `WebApp/Controllers/CityController.cs` (Modified)
+- `WebApp/Views/City/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineCityController.js` (Modified)
+- `WebApp/Controllers/HomeController.cs` (Modified)
+- `WebApp/Views/Home/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineHomeController.js` (Modified)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Views/BaoCaoCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineBaoCaoCD45Controller.js` (Modified)
+- `BVTL.Tests/CityMappingTests.cs` (New)
+- `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
+- `BVTL.Tests/BVTL.Tests.csproj` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)

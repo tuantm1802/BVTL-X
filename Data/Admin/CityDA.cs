@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using System;
@@ -41,12 +41,16 @@ namespace Data.Admin
             var result = new List<CityPageModel>();
             try
             {
+                bool isKeyOnly = (modelSearch.CityCodes == "KEY_ONLY" || modelSearch.AppCode == "KEY_ONLY");
+                string cityMode = string.Equals(modelSearch.CityMode, "OLD63", StringComparison.OrdinalIgnoreCase) || modelSearch.MaDuAn == "OLD63" || modelSearch.AppCode == "OLD63" ? "OLD63" : "NEW34";
                 var param = new List<SqlParameter>
                 {
-                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
-                    new SqlParameter("OrderByName", modelSearch.SortColumn),
-                    new SqlParameter("Page", modelSearch.currentPage),
-                    new SqlParameter("PageSize", modelSearch.pageSize)
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),
+                    new SqlParameter("OrderByName", string.IsNullOrEmpty(modelSearch.SortColumn) ? "KeyFirst" : (object)modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage <= 0 ? 1 : modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize <= 0 ? 20 : modelSearch.pageSize),
+                    new SqlParameter("IsKeyOnly", isKeyOnly),
+                    new SqlParameter("CityMode", cityMode)
                 };
                 result = _DatabaseSql.ExecuteProcToList<CityPageModel>(Constants.SP_City_Get_By_Page, param).ToList();
             }
@@ -132,6 +136,121 @@ namespace Data.Admin
                 result = new List<BVTL_CITES>();
             }
             return result;
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái tỉnh trọng điểm CD45 và mã viết tắt
+        /// </summary>
+        public ObjectMessage UpdateKeyProvince(string code, string codeMap, bool isKey)
+        {
+            var obj = new ObjectMessage { Error = false };
+            try
+            {
+                var city = db.BVTL_CITES.FirstOrDefault(x => x.Code == code);
+                if (city == null)
+                {
+                    obj.Error = true;
+                    obj.Title = "Không tìm thấy tỉnh/thành phố với mã: " + code;
+                    return obj;
+                }
+
+                if (isKey)
+                {
+                    if (string.IsNullOrWhiteSpace(codeMap))
+                    {
+                        obj.Error = true;
+                        obj.Title = "Mã viết tắt (Code_Map) không được để trống khi thiết lập làm tỉnh trọng điểm.";
+                        return obj;
+                    }
+                    codeMap = codeMap.Trim().ToUpper();
+                    // Kiểm tra trùng mã viết tắt với tỉnh khác
+                    var existing = db.BVTL_CITES.FirstOrDefault(x => x.Code_Map == codeMap && x.Code != code);
+                    if (existing != null)
+                    {
+                        obj.Error = true;
+                        obj.Title = string.Format("Mã viết tắt '{0}' đã được sử dụng bởi tỉnh {1} ({2}).", codeMap, existing.Name, existing.Code);
+                        return obj;
+                    }
+                    city.Code_Map = codeMap;
+                }
+                else
+                {
+                    city.Code_Map = null;
+                }
+
+                city.LastUpdateDate = DateTime.Now;
+                db.SaveChanges();
+                obj.Title = isKey ? string.Format("Đã thiết lập '{0}' thành tỉnh trọng điểm (Mã ánh xạ: {1}).", city.Name, city.Code_Map) 
+                                  : string.Format("Đã gỡ trạng thái trọng điểm của '{0}'.", city.Name);
+            }
+            catch (Exception ex)
+            {
+                obj.Error = true;
+                obj.Title = "Lỗi cập nhật tỉnh trọng điểm: " + ex.Message;
+            }
+            return obj;
+        }
+
+        /// <summary>
+        /// Lấy toàn bộ danh mục 34 tỉnh mới (NQ 202/2025/QH15)
+        /// </summary>
+        public List<CityNewModel> GetAllNewCities(bool keyOnly = false)
+        {
+            try
+            {
+                string sql = "SELECT Code, Name, Code_Map, IsKeyProvince, OldCount, OldNamesSummary, DisplayOrder, IsActive, CreatedDate FROM BVTL_DM_TINH_MOI WHERE IsActive = 1";
+                if (keyOnly)
+                {
+                    sql += " AND IsKeyProvince = 1";
+                }
+                sql += " ORDER BY CASE WHEN IsKeyProvince = 1 THEN 0 ELSE 1 END, DisplayOrder ASC, Name ASC";
+                return db.Database.SqlQuery<CityNewModel>(sql).ToList();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi GetAllNewCities: " + ex.Message, ex);
+                return new List<CityNewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Lấy toàn bộ danh sách ánh xạ 63 tỉnh cũ sang 34 tỉnh mới
+        /// </summary>
+        public List<CityMappingModel> GetCityMappings()
+        {
+            try
+            {
+                string sql = "SELECT OldCityCode, NewCityCode, OldCityName, NewCityName, EffectiveDate FROM BVTL_MAP_TINH_CU_MOI ORDER BY NewCityCode ASC, OldCityCode ASC";
+                return db.Database.SqlQuery<CityMappingModel>(sql).ToList();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi GetCityMappings: " + ex.Message, ex);
+                return new List<CityMappingModel>();
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách các mã tỉnh cũ thuộc về 1 tỉnh mới
+        /// </summary>
+        public List<string> GetMappedOldCityCodes(string newCityCode)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(newCityCode)) return new List<string>();
+                var p = new SqlParameter("@NewCityCode", newCityCode);
+                var codes = db.Database.SqlQuery<string>("SELECT OldCityCode FROM BVTL_MAP_TINH_CU_MOI WHERE NewCityCode = @NewCityCode", p).ToList();
+                if (codes.Count == 0)
+                {
+                    codes.Add(newCityCode);
+                }
+                return codes;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi GetMappedOldCityCodes: " + ex.Message, ex);
+                return new List<string> { newCityCode };
+            }
         }
 
     }

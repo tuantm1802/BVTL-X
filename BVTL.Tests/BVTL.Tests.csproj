@@ -79,6 +79,7 @@
     <Compile Include="DataValidationP0Tests.cs" />
     <Compile Include="DataValidationP1Tests.cs" />
     <Compile Include="DataValidationP2Tests.cs" />
+    <Compile Include="CityMappingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

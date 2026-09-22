@@ -212,6 +212,8 @@ namespace Model.ModelExtend.API.CD45
         public DateTime CREATED_DATE { get; set; }
         public bool IS_RESOLVED { get; set; }
         public string RESOLVED_NOTE { get; set; }
+        public string MA_NHOM { get; set; }
+        public string CITY_CODE { get; set; }
     }
 
     public class GroupedDataQualityLogModel {

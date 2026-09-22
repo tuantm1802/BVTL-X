@@ -49,7 +49,7 @@ namespace WebApp.Controllers
                 }
                 if (string.IsNullOrEmpty(modelSearch.SortColumn))
                 {
-                    modelSearch.SortColumn = "Code";
+                    modelSearch.SortColumn = "KeyFirst";
                 }
                 if (modelSearch.currentPage <= 0)
                 {
@@ -65,7 +65,7 @@ namespace WebApp.Controllers
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
                 AddLog("Lấy dữ liệu theo trang bảng tỉnh( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." });
+                return Json(new { data = data, totalItems = totalItems, cityMode = modelSearch.CityMode ?? "NEW34", Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {
@@ -74,6 +74,25 @@ namespace WebApp.Controllers
                 AddLog("Lấy dữ liệu theo trang bảng tỉnh( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") lỗi: " + ex.Message);
 
                 return Json(obj);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetCitySummary()
+        {
+            try
+            {
+                var newCities = _CityDA.GetAllNewCities();
+                var oldCities = _CityDA.GetAll();
+                int totalNew = newCities.Count;
+                int totalOld = oldCities.Count;
+                int keyNew = newCities.Count(x => x.IsKeyProvince);
+                int keyOld = oldCities.Count(x => !string.IsNullOrEmpty(x.Code_Map));
+                return Json(new { Error = false, TotalNew = totalNew, TotalOld = totalOld, KeyNew = keyNew, KeyOld = keyOld });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Error = true, Message = ex.Message });
             }
         }
 
@@ -131,6 +150,28 @@ namespace WebApp.Controllers
             catch (Exception ex)
             {
                 AddLog("Lấy dữ liệu theo code bảng tỉnh( code: " + code + ") lỗi: " + ex.Message);
+                return Json(new { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult UpdateKeyProvince(string code, string codeMap, bool isKey)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null || !user.IsAdmin)
+                {
+                    return Json(new { Error = true, Title = "Bạn không có quyền quản trị để thực hiện thao tác này." });
+                }
+
+                var result = _CityDA.UpdateKeyProvince(code, codeMap, isKey);
+                AddLog(string.Format("Cập nhật tỉnh trọng điểm {0}: isKey={1}, codeMap={2}", code, isKey, codeMap));
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                AddLog(string.Format("Lỗi cập nhật tỉnh trọng điểm {0}: {1}", code, ex.Message));
                 return Json(new { Error = true, Title = ex.Message });
             }
         }

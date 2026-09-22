@@ -105,6 +105,8 @@ namespace BVTL.Tests
 
         public class FakeServiceRecord
         {
+            public string RecordId { get; set; }
+            public string MaNhom { get; set; }
             public string Tcv { get; set; }
             public DateTime? ServiceDate { get; set; }
             public string Status { get; set; }
@@ -139,6 +141,39 @@ namespace BVTL.Tests
             Assert.AreEqual("WARNING", logs[0].SEVERITY);
             Assert.IsTrue(logs[0].MESSAGE.Contains("Có 3 khách hàng"));
             Assert.IsTrue(logs[0].MESSAGE.Contains("TCV01"));
+        }
+
+        [TestMethod]
+        public void CheckClusterIncomplete_WhenRecordIdAndTcvNameProvided_ShouldIncludeClientIdsAndTcvNameInMessage()
+        {
+            var list = new List<FakeServiceRecord>
+            {
+                new FakeServiceRecord { RecordId = "DHN020241", MaNhom = "vn", Tcv = "4", ServiceDate = new DateTime(2026, 8, 18), Status = "0" },
+                new FakeServiceRecord { RecordId = "DHN020243", MaNhom = "vn", Tcv = "4", ServiceDate = new DateTime(2026, 8, 18), Status = "0" },
+                new FakeServiceRecord { RecordId = "DHN020255", MaNhom = "vn", Tcv = "4", ServiceDate = new DateTime(2026, 8, 18), Status = "0" }
+            };
+
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            DataCleanerHelper.CheckClusterIncomplete(
+                list,
+                x => x.Tcv,
+                x => x.ServiceDate,
+                x => x.Status,
+                tableName: "CD45_HOAT_DONG",
+                apiCode: "API_CD45_F2",
+                reportId: "REP1",
+                maDuAn: "CD45",
+                logs: ref logs,
+                getRecordId: x => x.RecordId,
+                getMaNhom: x => x.MaNhom,
+                resolveTcvName: (nhom, tcv) => nhom == "vn" && tcv == "4" ? "Vũ Thị Phương Lan" : null
+            );
+
+            Assert.AreEqual(1, logs.Count);
+            Assert.AreEqual("WARN_CLUSTER_INCOMPLETE", logs[0].RULE_CODE);
+            Assert.IsTrue(logs[0].MESSAGE.Contains("DHN020241, DHN020243, DHN020255"));
+            Assert.IsTrue(logs[0].MESSAGE.Contains("Vũ Thị Phương Lan"));
+            Assert.IsTrue(logs[0].MESSAGE.Contains("Mã: 4"));
         }
 
         [TestMethod]
@@ -364,10 +399,14 @@ namespace BVTL.Tests
         public void GetLogsByUnit_WithPendingMetric_ShouldReturnOnlyUnresolvedItems()
         {
             var da = new DataQualityDA();
-            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "PENDING");
+            var stats = da.GetStatsByNhom("CD45");
+            var target = stats.FirstOrDefault(x => x.TotalPending > 0);
+            Assert.IsNotNull(target, "Must have at least one unit with pending items");
+
+            var logs = da.GetLogsByUnit("CD45", target.CITY_CODE, target.MA_NHOM, "PENDING");
 
             Assert.IsNotNull(logs);
-            Assert.AreEqual(26, logs.Count, "Pending count for NA / UNKNOWN should be exactly 26");
+            Assert.AreEqual(target.TotalPending, logs.Count, $"Pending count for {target.CITY_CODE} / {target.MA_NHOM} must match TotalPending in stats");
             Assert.IsTrue(logs.All(x => x.IS_RESOLVED == false), "All pending logs must have IS_RESOLVED = false");
             Assert.IsTrue(logs.All(x => x.SEVERITY == "WARNING" || x.SEVERITY == "ERROR"), "All pending logs must be WARNING or ERROR");
         }
@@ -376,10 +415,14 @@ namespace BVTL.Tests
         public void GetLogsByUnit_WithErrorsMetric_ShouldReturnOnlyErrors()
         {
             var da = new DataQualityDA();
-            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "ERROR");
+            var stats = da.GetStatsByNhom("CD45");
+            var target = stats.FirstOrDefault(x => x.TotalErrors > 0);
+            Assert.IsNotNull(target, "Must have at least one unit with error items");
+
+            var logs = da.GetLogsByUnit("CD45", target.CITY_CODE, target.MA_NHOM, "ERROR");
 
             Assert.IsNotNull(logs);
-            Assert.AreEqual(27, logs.Count, "Errors count for NA / UNKNOWN should be exactly 27");
+            Assert.AreEqual(target.TotalErrors, logs.Count, $"Errors count for {target.CITY_CODE} / {target.MA_NHOM} must match TotalErrors in stats");
             Assert.IsTrue(logs.All(x => x.SEVERITY == "ERROR"), "All error logs must have SEVERITY = ERROR");
         }
 
@@ -387,10 +430,14 @@ namespace BVTL.Tests
         public void GetLogsByUnit_WithWarningsMetric_ShouldReturnOnlyWarnings()
         {
             var da = new DataQualityDA();
-            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "WARNING");
+            var stats = da.GetStatsByNhom("CD45");
+            var target = stats.FirstOrDefault(x => x.TotalWarnings > 0);
+            Assert.IsNotNull(target, "Must have at least one unit with warning items");
+
+            var logs = da.GetLogsByUnit("CD45", target.CITY_CODE, target.MA_NHOM, "WARNING");
 
             Assert.IsNotNull(logs);
-            Assert.AreEqual(16, logs.Count, "Warnings count for NA / UNKNOWN should be exactly 16");
+            Assert.AreEqual(target.TotalWarnings, logs.Count, $"Warnings count for {target.CITY_CODE} / {target.MA_NHOM} must match TotalWarnings in stats");
             Assert.IsTrue(logs.All(x => x.SEVERITY == "WARNING"), "All warning logs must have SEVERITY = WARNING");
         }
 
@@ -398,11 +445,43 @@ namespace BVTL.Tests
         public void GetLogsByUnit_WithResolvedMetric_ShouldReturnOnlyResolvedItems()
         {
             var da = new DataQualityDA();
-            var logs = da.GetLogsByUnit("CD45", "NA", "UNKNOWN", "RESOLVED");
+            var stats = da.GetStatsByNhom("CD45");
+            var target = stats.FirstOrDefault(x => x.TotalResolved > 0);
+            Assert.IsNotNull(target, "Must have at least one unit with resolved items");
+
+            var logs = da.GetLogsByUnit("CD45", target.CITY_CODE, target.MA_NHOM, "RESOLVED");
 
             Assert.IsNotNull(logs);
-            Assert.AreEqual(17, logs.Count, "Resolved count for NA / UNKNOWN should be exactly 17");
+            Assert.AreEqual(target.TotalResolved, logs.Count, $"Resolved count for {target.CITY_CODE} / {target.MA_NHOM} must match TotalResolved in stats");
             Assert.IsTrue(logs.All(x => x.IS_RESOLVED == true), "All resolved logs must have IS_RESOLVED = true");
+        }
+
+        [TestMethod]
+        public void InferGroupAndCity_ShouldMapMalformedClientIdsAndDags()
+        {
+            // 1. Ninh Bình - Gió Mới: mã thiếu tiền tố DNB '151117'
+            bool ok1 = CD45Helper.InferGroupAndCity("151117", null, out string nhom1, out string city1);
+            Assert.IsTrue(ok1);
+            Assert.AreEqual("gm", nhom1, "151117 must map to Gió Mới (gm)");
+            Assert.AreEqual("NBI", city1, "151117 must map to Ninh Bình (NBI)");
+
+            // 2. Nghệ An - Quỳnh Hương Xanh: mã thiếu tiền tố DNA '21251'
+            bool ok2 = CD45Helper.InferGroupAndCity("21251", null, out string nhom2, out string city2);
+            Assert.IsTrue(ok2);
+            Assert.AreEqual("qhx", nhom2, "21251 must map to Quỳnh Hương Xanh (qhx)");
+            Assert.AreEqual("NAN", city2, "21251 must map to Nghệ An (NAN)");
+
+            // 3. Hải Phòng - Vòng Tay Bè Bạn: mã thiếu số 0 'DHP10099'
+            bool ok3 = CD45Helper.InferGroupAndCity("DHP10099", null, out string nhom3, out string city3);
+            Assert.IsTrue(ok3);
+            Assert.AreEqual("vtbb", nhom3, "DHP10099 must map to Vòng Tay Bè Bạn (vtbb)");
+            Assert.AreEqual("HPG", city3, "DHP10099 must map to Hải Phòng (HPG)");
+
+            // 4. Tra cứu từ DAG slug
+            bool okDag = CD45Helper.InferGroupAndCity(null, "gi_mi", out string nhomDag, out string cityDag);
+            Assert.IsTrue(okDag);
+            Assert.AreEqual("gm", nhomDag);
+            Assert.AreEqual("NBI", cityDag);
         }
 
         #endregion

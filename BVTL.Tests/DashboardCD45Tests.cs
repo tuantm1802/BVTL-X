@@ -79,7 +79,8 @@ namespace BVTL.Tests
             {
                 currentPage = 1,
                 pageSize = 20,
-                SortColumn = "Code"
+                SortColumn = "Code",
+                CityMode = "OLD63"
             };
             var result = da.GetAllByPage(searchModel);
 
@@ -109,6 +110,42 @@ namespace BVTL.Tests
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Any(c => c.Code == "HNO"), "Filtered results must contain HNO");
+        }
+
+        [TestMethod]
+        public void CityDA_GetAllByPage_WhenFilterIsKeyOnly_ShouldReturnOnlyKeyProvinces()
+        {
+            var da = new CityDA();
+            var searchModel = new Model.ModelExtend.Base.ModelSearch
+            {
+                CityCodes = "KEY_ONLY",
+                currentPage = 1,
+                pageSize = 20,
+                SortColumn = "KeyFirst"
+            };
+            var result = da.GetAllByPage(searchModel);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count >= 6, "Should return at least 6 key provinces");
+            Assert.IsTrue(result.All(c => !string.IsNullOrEmpty(c.Code_Map)), "All returned provinces must have Code_Map");
+        }
+
+        [TestMethod]
+        public void CityDA_UpdateKeyProvince_ShouldValidateAndToggleProperly()
+        {
+            var da = new CityDA();
+
+            // Test 1: Empty Code_Map when setting as key province should fail
+            var invalidResult = da.UpdateKeyProvince("AGI", "", true);
+            Assert.IsTrue(invalidResult.Error, "Setting key province without Code_Map should return error");
+
+            // Test 2: Non-existent city should fail
+            var notFound = da.UpdateKeyProvince("XYZ_NON_EXISTENT", "XY", true);
+            Assert.IsTrue(notFound.Error, "Non-existent city should return error");
+
+            // Test 3: Existing duplicate Code_Map (e.g. 'HN') should fail
+            var dup = da.UpdateKeyProvince("AGI", "HN", true);
+            Assert.IsTrue(dup.Error, "Duplicate Code_Map must return error");
         }
     }
 }

@@ -97,6 +97,7 @@
     <Compile Include="ModelExtend\DashboardCD45Model.cs" />
     <Compile Include="ModelExtend\DuAnPageModel.cs" />
     <Compile Include="ModelExtend\CityPageModel.cs" />
+    <Compile Include="ModelExtend\CityMappingModel.cs" />
     <Compile Include="ModelExtend\CustomerPageModel.cs" />
     <Compile Include="ModelExtend\DuongSuDungPageModel.cs" />
     <Compile Include="ModelExtend\KetQuaACEPageModel.cs" />

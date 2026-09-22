@@ -52,7 +52,21 @@
         <div class="card-body py-3">
             <div class="row align-items-end">
                 <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
-                    <label class="small font-weight-bold text-dark mb-1"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Tỉnh / Thành phố:</label>
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <label class="small font-weight-bold text-dark mb-0"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Tỉnh / TP:</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-2 py-0 font-weight-bold shadow-xs" 
+                                    :class="cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('NEW34')" title="34 Tỉnh/Thành mới theo NQ 202/2025/QH15 (Vận hành từ 01/7/2025)">
+                                34 Tỉnh mới
+                            </button>
+                            <button type="button" class="btn btn-xs px-2 py-0 font-weight-bold shadow-xs" 
+                                    :class="cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('OLD63')" title="63 Tỉnh/Thành phố trước sáp nhập">
+                                63 Tỉnh cũ
+                            </button>
+                        </div>
+                    </div>
                     <select class="form-control bg-light" x-model="selectedTinh" x-on:change="selectCity($event.target.value)" style="border-radius: 8px;">
                         <option value="">-- Toàn bộ Tỉnh / Thành --</option>
                         <template x-for="t in ListCity" :key="t.CityCode">
@@ -231,8 +245,7 @@
                         <div style="height: 280px; position: relative;">
                             <canvas id="chartProvince"></canvas>
                         </div>
-                        <div class="mt-2 text-center small text-muted">
-                            Tổng 6 tỉnh thành trọng điểm tham gia dự án
+                        <div class="mt-2 text-center small text-muted" x-text="cityMode === 'NEW34' ? 'Phân bố theo 34 Tỉnh mới (NQ 202/2025/QH15)' : 'Phân bố theo 63 Tỉnh lịch sử'">
                         </div>
                     </div>
                 </div>
@@ -510,6 +523,7 @@
             <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
                     <i class="fas fa-map-marker-alt mr-2"></i> Bảng 4: Phân bố Hoạt động theo Tỉnh / Thành phố
+                    <span class="badge badge-light border ml-2 text-muted" x-text="cityMode === 'NEW34' ? '34 Tỉnh mới NQ 202' : '63 Tỉnh lịch sử'"></span>
                 </h6>
             </div>
             <div class="card-body p-0">

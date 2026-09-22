@@ -59,7 +59,7 @@ namespace Data.Admin
             return nt;
         }
 
-        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null)
+        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34")
         {
             var model = new DashboardCD45FullDataModel
             {
@@ -123,6 +123,7 @@ namespace Data.Admin
                     }
 
                     cmd.Parameters.Add(new SqlParameter("@NhomTuoiTable1", string.IsNullOrEmpty(nhomTuoiTable1) ? (object)DBNull.Value : nhomTuoiTable1));
+                    cmd.Parameters.Add(new SqlParameter("@CityMode", string.IsNullOrEmpty(cityMode) ? "NEW34" : cityMode));
 
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
@@ -233,10 +234,13 @@ namespace Data.Admin
                             foreach (DataRow r in ds.Tables[4].Rows)
                             {
                                 string cCode = r["CityCode"] != DBNull.Value ? r["CityCode"].ToString() : "";
+                                string cName = r.Table.Columns.Contains("CityName") && r["CityName"] != DBNull.Value && !string.IsNullOrWhiteSpace(r["CityName"].ToString())
+                                    ? r["CityName"].ToString()
+                                    : GetTenTinh(cCode);
                                 model.ByProvince.Add(new DashboardCD45ByProvinceModel
                                 {
                                     CityCode = cCode,
-                                    CityName = GetTenTinh(cCode),
+                                    CityName = cName,
                                     TongKH = r["TongKH"] != DBNull.Value ? Convert.ToInt32(r["TongKH"]) : 0,
                                     SangLocQST = r["SangLocQST"] != DBNull.Value ? Convert.ToInt32(r["SangLocQST"]) : 0,
                                     KhamSKTT = r["KhamSKTT"] != DBNull.Value ? Convert.ToInt32(r["KhamSKTT"]) : 0,

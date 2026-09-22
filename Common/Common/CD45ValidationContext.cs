@@ -42,12 +42,18 @@ namespace Common.Common
         /// </summary>
         public Dictionary<string, DateTime> F9LostClients { get; set; }
 
+        /// <summary>
+        /// Danh bạ Tiếp cận viên (Key: "maNhom_maTcv" hoặc "maTcv", Value: Tên TCV)
+        /// </summary>
+        public Dictionary<string, string> TcvNameLookup { get; set; }
+
         public CD45ValidationContext()
         {
             KhachHangLookup = new Dictionary<string, CD45ClientValidationInfo>(StringComparer.OrdinalIgnoreCase);
             F7CompletedClients = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             F6VisitedClients = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             F9LostClients = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+            TcvNameLookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -100,6 +106,67 @@ namespace Common.Common
             {
                 F9LostClients[recordId] = ngayMatDau.Value.Date;
             }
+        }
+
+        /// <summary>
+        /// Đăng ký thông tin Tiếp cận viên (TCV)
+        /// </summary>
+        public void RegisterTcv(string maNhom, string maTcv, string tenTcv)
+        {
+            if (string.IsNullOrWhiteSpace(maTcv) || string.IsNullOrWhiteSpace(tenTcv)) return;
+            string cleanTcv = maTcv.Trim();
+            string cleanTen = tenTcv.Trim();
+
+            if (!string.IsNullOrWhiteSpace(maNhom))
+            {
+                string key = $"{maNhom.Trim().ToLower()}_{cleanTcv.ToLower()}";
+                TcvNameLookup[key] = cleanTen;
+            }
+            if (!TcvNameLookup.ContainsKey(cleanTcv))
+            {
+                TcvNameLookup[cleanTcv] = cleanTen;
+            }
+        }
+
+        /// <summary>
+        /// Tra cứu tên Tiếp cận viên theo mã nhóm và mã TCV
+        /// </summary>
+        public string GetTcvName(string maNhom, string maTcv)
+        {
+            if (string.IsNullOrWhiteSpace(maTcv)) return null;
+            string cleanTcv = maTcv.Trim();
+
+            if (!string.IsNullOrWhiteSpace(maNhom))
+            {
+                string key = $"{maNhom.Trim().ToLower()}_{cleanTcv.ToLower()}";
+                if (TcvNameLookup.TryGetValue(key, out var name))
+                {
+                    return name;
+                }
+            }
+            if (TcvNameLookup.TryGetValue(cleanTcv, out var fallbackName))
+            {
+                return fallbackName;
+            }
+            return null;
+        }
+
+        public string GetMaNhom(string recordId)
+        {
+            if (!string.IsNullOrEmpty(recordId) && KhachHangLookup.TryGetValue(recordId, out var info))
+            {
+                return info.MaNhom;
+            }
+            return null;
+        }
+
+        public string GetCityCode(string recordId)
+        {
+            if (!string.IsNullOrEmpty(recordId) && KhachHangLookup.TryGetValue(recordId, out var info))
+            {
+                return info.CityCode;
+            }
+            return null;
         }
     }
 }

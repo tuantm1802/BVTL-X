@@ -1,5 +1,7 @@
 ﻿@{
     ViewBag.Title = "Danh mục Tỉnh / Thành phố";
+    var userSession = (Model.ModelExtend.Base.UserLogin)HttpContext.Current.Session["USER_SESSION"];
+    bool isAdmin = userSession != null && userSession.IsAdmin;
 }
 
 <div class="container-fluid py-3" x-data="alpineCity()" x-cloak>
@@ -10,15 +12,54 @@
             <h1 class="h3 mb-1 text-gray-800 font-weight-bold d-flex align-items-center">
                 <i class="fas fa-city text-primary mr-2"></i> Danh mục Tỉnh / Thành phố
             </h1>
-            <p class="text-muted small mb-0">Quản trị và tra cứu danh sách các địa bàn Tỉnh / Thành phố triển khai các hoạt động dự án.</p>
+            <p class="text-muted small mb-0">Quản trị và tra cứu danh sách địa bàn Tỉnh / Thành phố theo phân định hành chính hiện tại (NQ 202/2025/QH15) và lịch sử.</p>
         </div>
-        <div class="mt-3 mt-md-0 d-flex align-items-center">
-            <span class="badge badge-light border px-3 py-2 text-dark font-weight-bold mr-2 shadow-sm">
-                <i class="fas fa-map-marked-alt text-primary mr-1"></i> Tổng số: <span class="text-primary ml-1" x-text="totalItems">0</span> Tỉnh/Thành
-            </span>
-            <span class="badge badge-light border px-3 py-2 text-dark font-weight-bold shadow-sm">
-                <i class="fas fa-star text-warning mr-1"></i> Tỉnh trọng điểm CD45: <span class="text-success ml-1">6</span>
-            </span>
+        <div class="mt-3 mt-md-0 d-flex align-items-center flex-wrap gap-2">
+            <!-- Nút Lọc Tất cả -->
+            <button type="button" class="btn btn-sm mr-2 shadow-sm font-weight-bold"
+                    :class="filterScope === 'all' ? 'btn-primary' : 'btn-light border text-dark'"
+                    x-on:click="setFilterScope('all')">
+                <i class="fas fa-map-marked-alt mr-1"></i> Tất cả: <span class="ml-1" x-text="filterScope === 'all' ? totalItems : (cityMode === 'NEW34' ? summary.totalNew : summary.totalOld)"></span>
+            </button>
+            <!-- Nút Lọc Tỉnh Trọng Điểm -->
+            <button type="button" class="btn btn-sm shadow-sm font-weight-bold"
+                    :class="filterScope === 'key' ? 'btn-warning text-dark' : 'btn-light border text-dark'"
+                    x-on:click="setFilterScope('key')" title="Bấm để chỉ lọc danh sách các tỉnh trọng điểm CD45">
+                <i class="fas fa-star mr-1" :class="filterScope === 'key' ? 'text-dark' : 'text-warning'"></i>
+                Tỉnh trọng điểm CD45: <span class="badge badge-warning text-dark ml-1 font-weight-bold" x-text="filterScope === 'key' ? totalItems : (cityMode === 'NEW34' ? summary.keyNew : summary.keyOld)">6</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mode Selector Tabs (34 Tỉnh mới vs 63 Tỉnh cũ) -->
+    <div class="card border-0 shadow-sm mb-3" style="border-radius: 12px; background: #ffffff;">
+        <div class="card-body py-2 px-3">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between">
+                <div class="d-flex align-items-center mb-2 mb-sm-0">
+                    <span class="text-muted small font-weight-bold mr-3 text-uppercase">
+                        <i class="fas fa-layer-group text-primary mr-1"></i> Chế độ hiển thị:
+                    </span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn px-3 py-1 font-weight-bold shadow-xs"
+                                :class="cityMode === 'NEW34' ? 'btn-primary' : 'btn-outline-secondary'"
+                                x-on:click="setCityMode('NEW34')">
+                            <i class="fas fa-flag mr-1"></i> 34 Tỉnh/Thành mới (NQ 202/2025/QH15)
+                        </button>
+                        <button type="button" class="btn px-3 py-1 font-weight-bold shadow-xs"
+                                :class="cityMode === 'OLD63' ? 'btn-primary' : 'btn-outline-secondary'"
+                                x-on:click="setCityMode('OLD63')">
+                            <i class="fas fa-history mr-1"></i> 63 Tỉnh/Thành lịch sử
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <span class="badge badge-light border px-2 py-1 small text-muted">
+                        <i class="fas fa-info-circle text-info mr-1"></i>
+                        <span x-show="cityMode === 'NEW34'">Chính thức vận hành từ 01/7/2025</span>
+                        <span x-show="cityMode === 'OLD63'">Dữ liệu đơn vị hành chính trước sáp nhập</span>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -26,20 +67,20 @@
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
         <div class="card-body py-3">
             <div class="row align-items-center">
-                <div class="col-md-7 mb-2 mb-md-0">
+                <div class="col-md-6 mb-2 mb-md-0">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
                         </div>
-                        <input type="text" class="form-control bg-light border-0" placeholder="Nhập Mã hoặc Tên Tỉnh/Thành phố cần tìm..." x-model="keyword" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
+                        <input type="text" class="form-control bg-light border-0" placeholder="Nhập Mã (HNO), Tên (Hà Nội), Mã tắt (HN) hoặc đơn vị sáp nhập..." x-model="keyword" x-on:keyup.enter="search()" style="border-radius: 0 8px 8px 0;">
                     </div>
                 </div>
-                <div class="col-md-2 mb-2 mb-md-0">
+                <div class="col-md-3 mb-2 mb-md-0">
                     <div class="d-flex align-items-center">
                         <span class="text-muted small mr-2 text-nowrap">Hiển thị:</span>
                         <select class="custom-select custom-select-sm border-light bg-light font-weight-bold" x-model="pageSize" x-on:change="changePageSize($event.target.value)" style="border-radius: 8px;">
                             <template x-for="opt in pageSizeOptions" :key="opt">
-                                <option :value="opt" x-text="opt === 63 ? 'Tất cả (63)' : opt + ' dòng'"></option>
+                                <option :value="opt" x-text="opt >= 50 ? 'Tất cả (' + opt + ')' : opt + ' dòng'"></option>
                             </template>
                         </select>
                     </div>
@@ -63,16 +104,24 @@
                 <table class="table table-hover align-middle mb-0" width="100%" cellspacing="0">
                     <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                         <tr>
-                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pl-4" style="width: 80px; font-size: 0.75rem;">STT</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 140px; font-size: 0.75rem;">Mã Tỉnh (3 ký tự)</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 170px; font-size: 0.75rem;">Mã Viết Tắt (CD45 / BVTL)</th>
-                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tên Tỉnh / Thành phố</th>
-                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="width: 160px; font-size: 0.75rem;">Trạng thái</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pl-4" style="width: 60px; font-size: 0.75rem;">STT</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 120px; font-size: 0.75rem;">Mã Tỉnh</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="width: 140px; font-size: 0.75rem;">Mã Ánh Xạ (CD45)</th>
+                            <th class="text-secondary text-uppercase font-weight-bold py-3" style="min-width: 160px; font-size: 0.75rem;">Tên Tỉnh / Thành phố</th>
+                            <template x-if="cityMode === 'NEW34'">
+                                <th class="text-secondary text-uppercase font-weight-bold py-3" style="min-width: 220px; font-size: 0.75rem;">Đơn vị sáp nhập (NQ 202/2025)</th>
+                            </template>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 150px; font-size: 0.75rem;">Phân loại Dự án</th>
+                            <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="width: 110px; font-size: 0.75rem;">Trạng thái</th>
+                            @if (isAdmin)
+                            {
+                                <th class="text-center text-secondary text-uppercase font-weight-bold py-3 pr-4" style="width: 110px; font-size: 0.75rem;">Thao tác</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         <template x-for="(item, index) in items" :key="item.Code || index">
-                            <tr>
+                            <tr :class="item.Code_Map ? 'bg-light bg-opacity-25' : ''">
                                 <td class="text-center font-weight-bold text-muted pl-4" x-text="fromRecord + index"></td>
                                 <td>
                                     <span class="badge badge-light border font-weight-bold text-primary font-monospace px-2 py-1" x-text="item.Code || '—'"></span>
@@ -87,27 +136,62 @@
                                 </td>
                                 <td>
                                     <div class="font-weight-bold text-dark d-flex align-items-center">
-                                        <i class="fas fa-map-marker-alt text-danger mr-2"></i>
+                                        <i class="fas fa-map-marker-alt mr-2" :class="item.Code_Map ? 'text-danger' : 'text-secondary'"></i>
                                         <span x-text="item.Name || item.CityName || '—'"></span>
                                     </div>
                                 </td>
-                                <td class="text-center pr-4">
+                                <!-- Cột Đơn vị sáp nhập (Chế độ 34 Tỉnh mới) -->
+                                <template x-if="cityMode === 'NEW34'">
+                                    <td>
+                                        <template x-if="item.OldCount > 1">
+                                            <div>
+                                                <span class="badge badge-info mr-1" x-text="item.OldCount + ' đơn vị gộp'"></span>
+                                                <span class="small text-dark font-weight-500" x-text="item.OldNamesSummary || '—'"></span>
+                                            </div>
+                                        </template>
+                                        <template x-if="!item.OldCount || item.OldCount <= 1">
+                                            <span class="small text-muted"><i class="fas fa-check-circle text-success mr-1"></i> Giữ nguyên địa giới</span>
+                                        </template>
+                                    </td>
+                                </template>
+                                <td class="text-center">
+                                    <template x-if="item.Code_Map">
+                                        <span class="badge badge-warning text-dark px-2 py-1 font-weight-bold shadow-sm border border-warning">
+                                            <i class="fas fa-star mr-1"></i> Trọng điểm CD45
+                                        </span>
+                                    </template>
+                                    <template x-if="!item.Code_Map">
+                                        <span class="badge badge-light border text-secondary px-2 py-1">
+                                            Địa bàn khác
+                                        </span>
+                                    </template>
+                                </td>
+                                <td class="text-center">
                                     <template x-if="item.IsActive !== false">
-                                        <span class="badge badge-success px-3 py-1 font-weight-bold">
+                                        <span class="badge badge-success px-2 py-1 font-weight-bold">
                                             <i class="fas fa-check mr-1"></i> Hoạt động
                                         </span>
                                     </template>
                                     <template x-if="item.IsActive === false">
-                                        <span class="badge badge-secondary px-3 py-1 font-weight-bold">
+                                        <span class="badge badge-secondary px-2 py-1 font-weight-bold">
                                             <i class="fas fa-ban mr-1"></i> Ngừng
                                         </span>
                                     </template>
                                 </td>
+                                @if (isAdmin)
+                                {
+                                    <td class="text-center pr-4">
+                                        <button type="button" class="btn btn-sm btn-outline-primary px-2 py-1 font-weight-bold"
+                                                x-on:click="openEditModal(item)" title="Thiết lập trạng thái trọng điểm CD45">
+                                            <i class="fas fa-cog mr-1"></i> Thiết lập
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         </template>
                         <template x-if="isLoading">
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-primary">
+                                <td :colspan="cityMode === 'NEW34' ? @(isAdmin ? 8 : 7) : @(isAdmin ? 7 : 6)" class="text-center py-5 text-primary">
                                     <i class="fas fa-spinner fa-spin fa-2x"></i>
                                     <p class="mt-2 mb-0 font-weight-bold">Đang tải dữ liệu Tỉnh / Thành phố...</p>
                                 </td>
@@ -115,9 +199,9 @@
                         </template>
                         <template x-if="!isLoading && (!items || items.length === 0)">
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
+                                <td :colspan="cityMode === 'NEW34' ? @(isAdmin ? 8 : 7) : @(isAdmin ? 7 : 6)" class="text-center py-5 text-muted">
                                     <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-                                    <span>Không tìm thấy Tỉnh / Thành phố nào phù hợp</span>
+                                    <span>Không tìm thấy Tỉnh / Thành phố nào phù hợp với bộ lọc</span>
                                 </td>
                             </tr>
                         </template>
@@ -129,7 +213,10 @@
         <!-- Phân trang & Dòng thông tin hiển thị bản ghi -->
         <div class="card-footer bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-center border-top" x-show="totalItems > 0">
             <div class="text-muted small mb-2 mb-md-0">
-                Hiển thị từ <span class="font-weight-bold text-dark" x-text="fromRecord"></span> đến <span class="font-weight-bold text-dark" x-text="toRecord"></span> trong tổng số <span class="font-weight-bold text-primary" x-text="totalItems"></span> Tỉnh/Thành phố (Trang <span class="font-weight-bold text-dark" x-text="currentPage"></span> / <span x-text="totalPages"></span>)
+                Hiển thị từ <span class="font-weight-bold text-dark" x-text="fromRecord"></span> đến <span class="font-weight-bold text-dark" x-text="toRecord"></span> trong tổng số <span class="font-weight-bold text-primary" x-text="totalItems"></span> Tỉnh/Thành phố (<span class="font-weight-bold" x-text="cityMode === 'NEW34' ? '34 Tỉnh mới theo NQ 202/2025/QH15' : '63 Tỉnh lịch sử'"></span> - Trang <span class="font-weight-bold text-dark" x-text="currentPage"></span> / <span x-text="totalPages"></span>)
+                <template x-if="filterScope === 'key'">
+                    <span class="badge badge-warning text-dark ml-2">Đang lọc 6 tỉnh trọng điểm</span>
+                </template>
             </div>
             <nav x-show="totalPages > 1">
                 <ul class="pagination pagination-sm mb-0">
@@ -154,6 +241,68 @@
             </nav>
         </div>
     </div>
+
+    <!-- Modal Thiết lập Tỉnh Trọng Điểm (Chỉ Admin) -->
+    @if (isAdmin)
+    {
+        <div class="modal fade" :class="{ 'show d-block': editModal.isOpen }" tabindex="-1" style="background: rgba(0,0,0,0.5);" x-show="editModal.isOpen" x-cloak>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                    <div class="modal-header bg-light border-0 py-3">
+                        <h5 class="modal-title font-weight-bold text-primary">
+                            <i class="fas fa-sliders-h mr-2"></i> Thiết lập Tỉnh Trọng Điểm CD45
+                        </h5>
+                        <button type="button" class="close" x-on:click="closeEditModal()">&times;</button>
+                    </div>
+                    <div class="modal-body py-3">
+                        <!-- Thông báo lỗi -->
+                        <div class="alert alert-danger py-2 small mb-3" x-show="editModal.errorMessage" x-text="editModal.errorMessage"></div>
+
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold small text-muted text-uppercase mb-1">Tỉnh / Thành phố</label>
+                            <div class="form-control-plaintext font-weight-bold text-dark fs-5">
+                                <span x-text="editModal.name"></span> (<span class="text-primary font-monospace" x-text="editModal.code"></span>)
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="switchIsKey" x-model="editModal.isKey">
+                                <label class="custom-control-label font-weight-bold text-dark" for="switchIsKey">
+                                    Xác nhận là Tỉnh trọng điểm triển khai Dự án CD45
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Khi kích hoạt, tỉnh này sẽ được ưu tiên hiển thị lên đầu danh sách và đưa vào danh mục địa bàn trọng điểm của dự án.
+                            </small>
+                        </div>
+
+                        <div class="form-group mb-3" x-show="editModal.isKey">
+                            <label class="font-weight-bold small text-dark mb-1">
+                                Mã Viết Tắt CD45 (Code_Map) <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control text-uppercase font-weight-bold font-monospace"
+                                   placeholder="VD: NT (Nha Trang), CT (Cần Thơ), BD (Bình Dương)..."
+                                   maxlength="5" x-model="editModal.codeMap" style="border-radius: 8px; letter-spacing: 2px;">
+                            <small class="form-text text-muted mt-1">
+                                <i class="fas fa-info-circle text-info mr-1"></i> Mã viết tắt 2 ký tự in hoa dùng làm tiền tố sinh mã khách hàng RECORD_ID (VD: <code>D</code> + <code>NT</code> + <code>210001</code>).
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 bg-light py-2">
+                        <button type="button" class="btn btn-secondary px-3 font-weight-bold" x-on:click="closeEditModal()" :disabled="editModal.isSaving">
+                            Hủy bỏ
+                        </button>
+                        <button type="button" class="btn btn-primary px-4 font-weight-bold" x-on:click="saveKeyProvince()" :disabled="editModal.isSaving">
+                            <span x-show="!editModal.isSaving"><i class="fas fa-save mr-1"></i> Lưu thiết lập</span>
+                            <span x-show="editModal.isSaving"><i class="fas fa-spinner fa-spin mr-1"></i> Đang lưu...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
 </div>
 
 @section Scripts{

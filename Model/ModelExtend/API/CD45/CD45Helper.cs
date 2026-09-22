@@ -192,5 +192,124 @@ namespace Model.ModelExtend.API.CD45
 
             return (detectedGroup, detectedTcv);
         }
+
+        // 4. Dictionary quy hoạch mã số nhóm theo tài liệu chuẩn -> (Mã nhóm map, Mã tỉnh)
+        private static readonly Dictionary<string, (string maNhomMap, string cityCode)> GroupNumberMapping
+            = new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase)
+        {
+            // Hà Nội (HNO)
+            { "01", ("tt", "HNO") },   // The Times
+            { "02", ("vn", "HNO") },   // Về Nhà
+            { "04", ("itt", "HNO") },  // It's T Time
+
+            // Hải Phòng (HPG)
+            { "09", ("hd", "HPG") },   // Hải Đăng
+            { "10", ("vtbb", "HPG") }, // Vòng Tay Bè Bạn
+            { "11", ("hs", "HPG") },   // Hoa Sen
+            { "12", ("ct", "HPG") },   // Cát Trắng
+            { "13", ("bm", "HPG") },   // Bình Minh
+            { "14", ("htn", "HPG") },  // Hoa Trinh Nữ
+
+            // Ninh Bình (NBI)
+            { "15", ("gm", "NBI") },   // Gió Mới
+            { "16", ("tk", "NBI") },   // Trăng Khuyết 35
+            { "17", ("hv", "NBI") },   // Hy Vọng 35
+
+            // Nghệ An (NAN)
+            { "18", ("sv", "NAN") },   // Sao Va
+            { "19", ("ad", "NAN") },   // Ánh Dương
+            { "20", ("lmm", "NAN") },  // Liên Minh MSM
+            { "21", ("qhx", "NAN") },  // Quỳnh Hương Xanh
+            { "22", ("hn", "NAN") },   // Hoa Nắng
+
+            // Hưng Yên (HYE)
+            { "23", ("lmhp", "HYE") }, // Liên Minh Hạnh Phúc
+
+            // TP. Hồ Chí Minh (HCM)
+            { "05", ("myh", "HCM") },  // Myhands
+            { "06", ("tg", "HCM") },   // The Gate
+            { "07", ("alo", "HCM") },  // Alocare
+            { "08", ("g3vn", "HCM") }  // G3VN
+        };
+
+        /// <summary>
+        /// Suy luận Nhóm CBO và Tỉnh/Thành phố từ DAG, Record ID hoặc Ngữ cảnh kiểm thực
+        /// </summary>
+        public static bool InferGroupAndCity(string recordId, string rawDag, out string maNhom, out string cityCode)
+        {
+            maNhom = null;
+            cityCode = null;
+
+            // 1. Ưu tiên 1: redcap_data_access_group (DAG)
+            if (!string.IsNullOrWhiteSpace(rawDag))
+            {
+                if (NormalizeDagToGroupCode(rawDag.Trim(), out _, out string map, out string c))
+                {
+                    maNhom = map;
+                    cityCode = c;
+                    return true;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(recordId)) return false;
+            string clean = recordId.Trim().ToUpper();
+
+            // 2. Tra cứu theo quy hoạch số nhóm (2 chữ số sau mã tỉnh hoặc ở đầu chuỗi)
+            // Trường hợp chuẩn: D + 2 chữ cái tỉnh + 2 chữ số nhóm (VD: DHN020001 -> 02 -> vn / HNO)
+            if (clean.Length >= 5 && clean.StartsWith("D") && char.IsLetter(clean[1]) && char.IsLetter(clean[2]) && char.IsDigit(clean[3]) && char.IsDigit(clean[4]))
+            {
+                string groupNum = clean.Substring(3, 2);
+                if (GroupNumberMapping.TryGetValue(groupNum, out var gMap))
+                {
+                    maNhom = gMap.maNhomMap;
+                    cityCode = (clean.Substring(1, 2) == "NT") ? "NT" : gMap.cityCode;
+                    return true;
+                }
+                cityCode = ExtractCityCode(clean);
+                return true;
+            }
+
+            // Trường hợp gõ sai thiếu tiền tố D (VD: 151117... -> 15 -> gm / NBI, 21251... -> 21 -> qhx / NAN)
+            if (clean.Length >= 2 && char.IsDigit(clean[0]) && char.IsDigit(clean[1]))
+            {
+                string groupNum = clean.Substring(0, 2);
+                if (GroupNumberMapping.TryGetValue(groupNum, out var gMap))
+                {
+                    maNhom = gMap.maNhomMap;
+                    cityCode = gMap.cityCode;
+                    return true;
+                }
+            }
+
+            // Trường hợp gõ thiếu số (VD: DHP10099 -> length 8 -> D + HP + 10)
+            if (clean.StartsWith("D") && clean.Length >= 5 && char.IsLetter(clean[1]) && char.IsLetter(clean[2]) && char.IsDigit(clean[3]) && char.IsDigit(clean[4]))
+            {
+                string groupNum = clean.Substring(3, 2);
+                if (GroupNumberMapping.TryGetValue(groupNum, out var gMap))
+                {
+                    maNhom = gMap.maNhomMap;
+                    cityCode = gMap.cityCode;
+                    return true;
+                }
+            }
+
+            // Trường hợp có khoảng trắng "D NA..."
+            if (clean.StartsWith("D NA") || clean == "DNA")
+            {
+                cityCode = "NAN";
+                if (clean.Length >= 6 && char.IsDigit(clean[4]) && char.IsDigit(clean[5]))
+                {
+                    string groupNum = clean.Substring(4, 2);
+                    if (GroupNumberMapping.TryGetValue(groupNum, out var gMap))
+                    {
+                        maNhom = gMap.maNhomMap;
+                    }
+                }
+                return true;
+            }
+
+            cityCode = ExtractCityCode(clean);
+            return !string.IsNullOrEmpty(cityCode);
+        }
     }
 }

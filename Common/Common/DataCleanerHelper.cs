@@ -45,7 +45,9 @@ namespace Common.Common
                     SEVERITY = "INFO",
                     ACTION_TAKEN = "AUTO_NORMALIZED",
                     MESSAGE = $"Tự động chuẩn hóa {item.Count:N0} bản ghi từ nhóm '{item.RawDag}' -> Mã nhóm '{item.MaNhomStd}' (Map: '{item.MaNhomMap}').",
-                    CREATED_DATE = DateTime.Now
+                    CREATED_DATE = DateTime.Now,
+                    MA_NHOM = item.MaNhomMap,
+                    CITY_CODE = CD45Helper.NormalizeDagToGroupCode(item.RawDag, out _, out _, out string cDag) ? cDag : null
                 });
             }
             _counts.Clear();
@@ -67,6 +69,10 @@ namespace Common.Common
         public static string CleanRecordId(string rawRecordId, string apiCode, string tableName, string reportId, string maDuAn, 
             ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs, string rawDag = null)
         {
+            string inferredNhom = null;
+            string inferredCity = null;
+            CD45Helper.InferGroupAndCity(rawRecordId, rawDag, out inferredNhom, out inferredCity);
+
             if (string.IsNullOrWhiteSpace(rawRecordId))
             {
                 if (logs != null)
@@ -85,13 +91,21 @@ namespace Common.Common
                         SEVERITY = "ERROR",
                         ACTION_TAKEN = "QUARANTINED",
                         MESSAGE = "Mã khách hàng record_id bị trống. Bắt buộc cách ly không nạp vào hệ thống.",
-                        CREATED_DATE = DateTime.Now
+                        CREATED_DATE = DateTime.Now,
+                        MA_NHOM = inferredNhom,
+                        CITY_CODE = inferredCity
                     });
                 }
                 return null;
             }
 
             string clean = rawRecordId.Trim().ToUpper();
+            if (string.IsNullOrEmpty(inferredCity) || string.IsNullOrEmpty(inferredNhom))
+            {
+                CD45Helper.InferGroupAndCity(clean, rawDag, out string n2, out string c2);
+                if (string.IsNullOrEmpty(inferredNhom)) inferredNhom = n2;
+                if (string.IsNullOrEmpty(inferredCity)) inferredCity = c2;
+            }
 
             // Nếu có sự thay đổi (chữ thường -> chữ hoa hoặc có khoảng trắng thừa)
             if (clean != rawRecordId && logs != null)
@@ -110,7 +124,9 @@ namespace Common.Common
                     SEVERITY = "INFO",
                     ACTION_TAKEN = "AUTO_NORMALIZED",
                     MESSAGE = "Tự động xóa khoảng trắng và viết HOA mã khách hàng.",
-                    CREATED_DATE = DateTime.Now
+                    CREATED_DATE = DateTime.Now,
+                    MA_NHOM = inferredNhom,
+                    CITY_CODE = inferredCity
                 });
             }
 
@@ -133,7 +149,9 @@ namespace Common.Common
                         SEVERITY = "ERROR",
                         ACTION_TAKEN = "QUARANTINED",
                         MESSAGE = $"Mã khách hàng '{clean}' không đúng quy chuẩn 9 ký tự (ví dụ: DHN010001, DHP100124). Bắt buộc chặn và cách ly.",
-                        CREATED_DATE = DateTime.Now
+                        CREATED_DATE = DateTime.Now,
+                        MA_NHOM = inferredNhom,
+                        CITY_CODE = inferredCity
                     });
                 }
                 return null; // Chặn cứng không cho nạp vào bảng hoạt động
@@ -166,7 +184,9 @@ namespace Common.Common
                                 SEVERITY = "ERROR",
                                 ACTION_TAKEN = "QUARANTINED",
                                 MESSAGE = $"Mã khách hàng '{clean}' (Mã tỉnh: {idCity}) không khớp với tỉnh của nhóm truy cập DAG '{rawDag}' (Tỉnh: {dagCity}). Bắt buộc cách ly.",
-                                CREATED_DATE = DateTime.Now
+                                CREATED_DATE = DateTime.Now,
+                                MA_NHOM = inferredNhom ?? maNhomMap,
+                                CITY_CODE = inferredCity ?? dagCity
                             });
                         }
                         return null; // Chặn cứng không cho nạp
@@ -217,6 +237,7 @@ namespace Common.Common
                 // Cảnh báo DAG không nhận diện được (WARNING - cần quản trị viên kiểm tra)
                 if (logs != null)
                 {
+                    CD45Helper.InferGroupAndCity(recordId, rawDag, out string infNhom, out string infCity);
                     logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                     {
                         MADUAN = maDuAn,
@@ -231,7 +252,9 @@ namespace Common.Common
                         SEVERITY = "WARNING",
                         ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
                         MESSAGE = $"Giá trị Nhóm truy cập (DAG) '{rawDag}' chưa được định nghĩa trong danh mục 22 nhóm CD45.",
-                        CREATED_DATE = DateTime.Now
+                        CREATED_DATE = DateTime.Now,
+                        MA_NHOM = infNhom,
+                        CITY_CODE = infCity
                     });
                 }
             }
@@ -709,7 +732,10 @@ namespace Common.Common
             string apiCode,
             string reportId,
             string maDuAn,
-            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs,
+            Func<T, string> getRecordId = null,
+            Func<T, string> getMaNhom = null,
+            Func<string, string, string> resolveTcvName = null)
         {
             if (entities == null || logs == null) return;
 
@@ -720,6 +746,36 @@ namespace Common.Common
 
             foreach (var grp in incompleteClusters)
             {
+                string clientListStr = "";
+                if (getRecordId != null)
+                {
+                    var clientIds = grp.Select(x => getRecordId(x))
+                        .Where(r => !string.IsNullOrWhiteSpace(r))
+                        .Distinct()
+                        .ToList();
+                    if (clientIds.Count > 0)
+                    {
+                        clientListStr = $" (gồm các KH: {string.Join(", ", clientIds)})";
+                    }
+                }
+
+                string tcvName = null;
+                string maNhomFound = getMaNhom != null ? grp.Select(x => getMaNhom(x)).FirstOrDefault(m => !string.IsNullOrEmpty(m)) : null;
+                if (resolveTcvName != null)
+                {
+                    tcvName = resolveTcvName(maNhomFound, grp.Key.Tcv);
+                }
+
+                string tcvDisplay = !string.IsNullOrEmpty(tcvName) ? $"TCV '{tcvName}' (Mã: {grp.Key.Tcv})" : $"TCV '{grp.Key.Tcv}'";
+                string clusterCity = null;
+                string firstClientId = grp.Select(x => getRecordId != null ? getRecordId(x) : null).FirstOrDefault(r => !string.IsNullOrEmpty(r));
+                if (!string.IsNullOrEmpty(firstClientId))
+                {
+                    CD45Helper.InferGroupAndCity(firstClientId, null, out string infN, out string infC);
+                    if (string.IsNullOrEmpty(maNhomFound)) maNhomFound = infN;
+                    clusterCity = infC;
+                }
+
                 logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                 {
                     MADUAN = maDuAn,
@@ -733,8 +789,10 @@ namespace Common.Common
                     RULE_CODE = "WARN_CLUSTER_INCOMPLETE",
                     SEVERITY = "WARNING",
                     ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                    MESSAGE = $"Cảnh báo cụm bất thường: Có {grp.Count()} khách hàng của TCV '{grp.Key.Tcv}' cùng bị Incomplete tại dịch vụ {tableName} trong ngày {grp.Key.Date:dd/MM/yyyy}. Cần kiểm tra sự kiện bị hủy hoặc khách bỏ về.",
-                    CREATED_DATE = DateTime.Now
+                    MESSAGE = $"Cảnh báo cụm bất thường: Có {grp.Count()} khách hàng{clientListStr} của {tcvDisplay} cùng bị Incomplete tại dịch vụ {tableName} trong ngày {grp.Key.Date:dd/MM/yyyy}. Cần kiểm tra sự kiện bị hủy hoặc khách bỏ về.",
+                    CREATED_DATE = DateTime.Now,
+                    MA_NHOM = maNhomFound,
+                    CITY_CODE = clusterCity
                 });
             }
         }

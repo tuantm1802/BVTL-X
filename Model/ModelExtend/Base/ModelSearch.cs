@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +18,6 @@ namespace Model.ModelExtend.Base
         public int? Year { get; set; }
         public string CityCodes { get; set; }
         public string MaDuAn { get; set; }
+        public string CityMode { get; set; }
     }
 }

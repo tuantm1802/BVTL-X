@@ -84,7 +84,17 @@
                 </div>
 
                 <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="font-weight-bold small mb-0">Tỉnh/TP</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('NEW34')" title="34 Tỉnh mới (NQ 202)">34 mới</button>
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('OLD63')" title="63 Tỉnh cũ lịch sử">63 cũ</button>
+                        </div>
+                    </div>
                     <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
                         <option value="">-- Toàn dự án --</option>
                         <template x-for="c in listCities" :key="c.CityCode">

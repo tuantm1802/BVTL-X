@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Data.Admin
 {
@@ -167,7 +168,7 @@ namespace Data.Admin
                 try
                 {
                     // 1. Tỉnh/Thành
-                    var cities = db.Database.SqlQuery<CityLookupRow>("SELECT RTRIM(Code) AS Code, RTRIM(Name) AS Name FROM BVTL_CITES").ToList();
+                    var cities = db.Database.SqlQuery<CityLookupRow>("SELECT RTRIM(Code) AS Code, RTRIM(Name) AS Name FROM BVTL_CITES UNION SELECT RTRIM(Code) AS Code, RTRIM(Name) AS Name FROM BVTL_DM_TINH_MOI").ToList();
                     foreach (var c in cities)
                     {
                         if (!string.IsNullOrEmpty(c.Code) && !string.IsNullOrEmpty(c.Name))
@@ -307,6 +308,229 @@ namespace Data.Admin
                 {
                     item.TEN_TCV = item.MA_TCV;
                 }
+
+                // 4. Làm giàu Thông tin chi tiết cho Khám SKTT (Cơ sở khám & Chẩn đoán chính)
+                FormatKhamSKTTChiTiet(item);
+            }
+        }
+
+
+        private static readonly Dictionary<string, string> DictHospital = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "1", "Hà Nội - Bệnh viện Lão khoa" },
+            { "2", "Hưng Yên - BV SKTT Thái Bình" },
+            { "3", "Hưng Yên - PK Meheal" },
+            { "4", "Hà Nội - Phòng khám Dr Phi" },
+            { "5", "Ninh Bình - BV SKTT Ninh Bình" },
+            { "6", "Bệnh viện tâm thần Nghệ An" },
+            { "7", "Bệnh viện SKTT Hải Phòng" },
+            { "8", "Bệnh viện tâm thần TP.HCM" },
+            { "9", "Bệnh viện Thủ Đức" }
+        };
+
+﻿        private static readonly Dictionary<string, string> DictDiagnose = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "1", "F00- Sa sút trí tuệ (bệnh Alzheimer, sa sút trí tuệ do mạch máu, sa sút trí tuệ trong các bệnh lý khác)" },
+            { "2", "F10- Rối loạn tâm thần và hành vi do sử dụng rượu" },
+            { "3", "F10.0- Rối loạn tâm thần và hành vi do sử dụng rượu (Nhiễm độc cấp)" },
+            { "4", "F10.1- Rối loạn tâm thần và hành vi do sử dụng rượu (Sử dụng gây hại)" },
+            { "5", "F10.2- Rối loạn tâm thần và hành vi do sử dụng rượu (Hội chứng nghiện)" },
+            { "6", "F10.3- Rối loạn tâm thần và hành vi do sử dụng rượu (Trạng thái cai)" },
+            { "7", "F10.4- Rối loạn tâm thần và hành vi do sử dụng rượu (Trạng thái cai với mê sảng)" },
+            { "8", "F10.5- Rối loạn tâm thần và hành vi do sử dụng rượu (Rối loạn tâm thần)" },
+            { "9", "F10.6- Rối loạn tâm thần và hành vi do sử dụng rượu (Hội chứng quên)" },
+            { "10", "F10.7- Rối loạn tâm thần và hành vi do sử dụng rượu (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "11", "F10.8- Rối loạn tâm thần và hành vi do sử dụng rượu (Rối loạn tâm thần và hành vi khác)" },
+            { "12", "F10.9- Rối loạn tâm thần và hành vi do sử dụng rượu (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "13", "F11- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện" },
+            { "14", "F11.0- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Nhiễm độc cấp)" },
+            { "15", "F11.1- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Sử dụng gây hại)" },
+            { "16", "F11.2- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Hội chứng nghiện)" },
+            { "17", "F11.3- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Trạng thái cai)" },
+            { "18", "F11.4- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Trạng thái cai với mê sảng)" },
+            { "19", "F11.5- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Rối loạn tâm thần)" },
+            { "20", "F11.6- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Hội chứng quên)" },
+            { "21", "F11.7- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "22", "F11.8- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Rối loạn tâm thần và hành vi khác)" },
+            { "23", "F11.9- Rối loạn tâm thần và hành vi do sử dụng các dạng thuốc phiện (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "24", "F12- Rối loạn tâm thần và hành vi do sử dụng cần sa" },
+            { "25", "F12.0- Rối loạn tâm thần và hành vi do sử dụng cần sa (Nhiễm độc cấp)" },
+            { "26", "F12.1- Rối loạn tâm thần và hành vi do sử dụng cần sa (Sử dụng gây hại)" },
+            { "27", "F12.2- Rối loạn tâm thần và hành vi do sử dụng cần sa (Hội chứng nghiện)" },
+            { "28", "F12.3- Rối loạn tâm thần và hành vi do sử dụng cần sa (Trạng thái cai)" },
+            { "29", "F12.4- Rối loạn tâm thần và hành vi do sử dụng cần sa (Trạng thái cai với mê sảng)" },
+            { "30", "F12.5- Rối loạn tâm thần và hành vi do sử dụng cần sa (Rối loạn tâm thần)" },
+            { "31", "F12.6- Rối loạn tâm thần và hành vi do sử dụng cần sa (Hội chứng quên)" },
+            { "32", "F12.7- Rối loạn tâm thần và hành vi do sử dụng cần sa (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "33", "F12.8- Rối loạn tâm thần và hành vi do sử dụng cần sa (Rối loạn tâm thần và hành vi khác)" },
+            { "34", "F12.9- Rối loạn tâm thần và hành vi do sử dụng cần sa (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "35", "F13- Rối loạn tâm thần và hành vi do sử dụng các chất an dịu hoặc các thuốc ngủ" },
+            { "36", "F13.0- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Nhiễm độc cấp)" },
+            { "37", "F13.1- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Sử dụng gây hại)" },
+            { "38", "F13.2- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Hội chứng nghiện)" },
+            { "39", "F13.3- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Trạng thái cai)" },
+            { "40", "F13.4- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Trạng thái cai với mê sảng)" },
+            { "41", "F13.5- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Rối loạn tâm thần)" },
+            { "42", "F13.6- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Hội chứng quên)" },
+            { "43", "F13.7- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "44", "F13.8- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Rối loạn tâm thần và hành vi khác)" },
+            { "45", "F13.9- Rối loạn tâm thần và hành vi do sử dụng các chất an thần hoặc các thuốc ngủ (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "46", "F14- Rối loạn tâm thần và hành vi do sử dụng cocain" },
+            { "47", "F14.0- Rối loạn tâm thần và hành vi do sử dụng cocain (Nhiễm độc cấp)" },
+            { "48", "F14.1- Rối loạn tâm thần và hành vi do sử dụng cocain (Sử dụng gây hại)" },
+            { "49", "F14.2- Rối loạn tâm thần và hành vi do sử dụng cocain (Hội chứng nghiện)" },
+            { "50", "F14.3- Rối loạn tâm thần và hành vi do sử dụng cocain (Trạng thái cai)" },
+            { "51", "F14.4- Rối loạn tâm thần và hành vi do sử dụng cocain (Trạng thái cai với mê sảng)" },
+            { "52", "F14.5- Rối loạn tâm thần và hành vi do sử dụng cocain (Rối loạn tâm thần)" },
+            { "53", "F14.6- Rối loạn tâm thần và hành vi do sử dụng cocain (Hội chứng quên)" },
+            { "54", "F14.7- Rối loạn tâm thần và hành vi do sử dụng cocain (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "55", "F14.8- Rối loạn tâm thần và hành vi do sử dụng cocain (Rối loạn tâm thần và hành vi khác)" },
+            { "56", "F14.9- Rối loạn tâm thần và hành vi do sử dụng cocain (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "57", "F15- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein" },
+            { "58", "F15.0- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Nhiễm độc cấp)" },
+            { "59", "F15.1- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Sử dụng gây hại)" },
+            { "60", "F15.2- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Hội chứng nghiện)" },
+            { "61", "F15.3- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Trạng thái cai)" },
+            { "62", "F15.4- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Trạng thái cai với mê sảng)" },
+            { "63", "F15.5- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Rối loạn tâm thần)" },
+            { "64", "F15.6- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Hội chứng quên)" },
+            { "65", "F15.7- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "66", "F15.8- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Rối loạn tâm thần và hành vi khác)" },
+            { "67", "F15.9- Rối loạn tâm thần và hành vi do sử dụng chất kích thích khác, bao gồm cả caffein (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "68", "F16- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác" },
+            { "69", "F16.0- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Nhiễm độc cấp)" },
+            { "70", "F16.1- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Sử dụng gây hại)" },
+            { "71", "F16.2- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Hội chứng nghiện)" },
+            { "72", "F16.3- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Trạng thái cai)" },
+            { "73", "F16.4- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Trạng thái cai với mê sảng)" },
+            { "74", "F16.5- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Rối loạn tâm thần)" },
+            { "75", "F16.6- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Hội chứng quên)" },
+            { "76", "F16.7- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "77", "F16.8- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Rối loạn tâm thần và hành vi khác)" },
+            { "78", "F16.9- Rối loạn tâm thần và hành vi do sử dụng các chất gây ảo giác (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "79", "F18- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi" },
+            { "80", "F18.0- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Nhiễm độc cấp)" },
+            { "81", "F18.1- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Sử dụng gây hại)" },
+            { "82", "F18.2- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Hội chứng nghiện)" },
+            { "83", "F18.3- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Trạng thái cai)" },
+            { "84", "F18.4- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Trạng thái cai với mê sảng)" },
+            { "85", "F18.5- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Rối loạn tâm thần)" },
+            { "86", "F18.6- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Hội chứng quên)" },
+            { "87", "F18.7- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "88", "F18.8- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Rối loạn tâm thần và hành vi khác)" },
+            { "89", "F18.9- Rối loạn tâm thần và hành vi do sử dụng dung môi dễ bay hơi (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "90", "F19- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác" },
+            { "91", "F19.0- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Nhiễm độc cấp)" },
+            { "92", "F19.1- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Sử dụng gây hại)" },
+            { "93", "F19.2- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Hội chứng nghiện)" },
+            { "94", "F19.3- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Trạng thái cai)" },
+            { "95", "F19.4- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Trạng thái cai với mê sảng)" },
+            { "96", "F19.5- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Rối loạn tâm thần)" },
+            { "97", "F19.6- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Hội chứng quên)" },
+            { "98", "F19.7- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Rối loạn loạn thần di chứng và khởi phát muộn)" },
+            { "99", "F19.8- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Rối loạn tâm thần và hành vi khác)" },
+            { "100", "F19.9- Rối loạn tâm thần và hành vi do sử dụng nhiều loại ma túy và chất tác động tâm thần khác (Rối loạn tâm thần và hành vi không biệt định)" },
+            { "101", "F20- Tâm thần phân liệt" },
+            { "102", "F21- Rối loạn loại phân liệt" },
+            { "103", "F22- Rối loạn hoang tưởng dai dẳng" },
+            { "104", "F23- Rối loạn loạn thần cấp và nhất thời" },
+            { "105", "F24- Rối loạn hoang tưởng cảm ứng" },
+            { "106", "F25- Rối loạn phân liệt cảm xúc" },
+            { "107", "F29- Loạn thần không thực tổn không biệt định" },
+            { "108", "F30- Giai đoạn hưng cảm" },
+            { "109", "F30.0- Hưng cảm nhẹ" },
+            { "110", "F30.1- Hưng cảm không có các triệu chứng loạn thần" },
+            { "111", "F30.2- Hưng cảm với các triệu chứng loạn thần" },
+            { "112", "F31- Rối loạn cảm xúc lưỡng cực" },
+            { "113", "F32- Giai đoạn trầm cảm" },
+            { "114", "F33- Rối loạn trầm cảm tái diễn" },
+            { "115", "F34- Rối loạn khí sắc [cảm xúc] dai dẳng" },
+            { "116", "F38- Rối loạn khí sắc [cảm xúc] khác" },
+            { "117", "F39- Rối loạn khí sắc (cảm xúc) biệt định" },
+            { "118", "F40- Rối loạn lo âu ám ảnh sợ hãi" },
+            { "119", "F41- Các rối loạn lo âu khác" },
+            { "120", "F42- Rối loạn ám ảnh nghi thức" },
+            { "121", "F43- Phản ứng với stress trầm trọng và rối loạn sự thích ứng" },
+            { "122", "F43.1- Rối loạn stress sau sang chấn" },
+            { "123", "F44- Các rối loạn phân ly [chuyển di]" },
+            { "124", "F45- Rối loạn dạng cơ thể" },
+            { "125", "F50- Các rối loạn ăn uống" },
+            { "126", "F51- Rối loạn giấc ngủ không thực tổn" },
+            { "127", "F52- Loạn chức năng tình dục, không do rối loạn hoặc bệnh thực tổn" },
+            { "128", "F60- Rối loạn nhân cách đặc hiệu" },
+            { "129", "F70- Chậm phát triển tâm thần nhẹ" },
+            { "130", "F90- Các rối loạn tăng động" },
+            { "131", "F41.2- Rối loạn hỗn hợp lo âu và trầm cảm" },
+            { "132", "Khác" },
+        };
+
+
+        public static void FormatKhamSKTTChiTiet(CD45_DrillDown_ItemModel item)
+        {
+            if (string.IsNullOrEmpty(item?.CHI_TIET)) return;
+
+            if (!item.CHI_TIET.StartsWith("Lần khám:", StringComparison.OrdinalIgnoreCase)) return;
+
+            // Nếu đã được làm giàu hoàn chỉnh: có "Chẩn đoán:" và phần sau "Chẩn đoán:" không phải chỉ là mã số thuần túy
+            var chanDoanIdx = item.CHI_TIET.IndexOf("Chẩn đoán:", StringComparison.OrdinalIgnoreCase);
+            if (chanDoanIdx >= 0)
+            {
+                string afterCd = item.CHI_TIET.Substring(chanDoanIdx + "Chẩn đoán:".Length).Trim();
+                if (!int.TryParse(afterCd, out _))
+                {
+                    return;
+                }
+            }
+            else if (DictHospital.Values.Any(v => item.CHI_TIET.Contains(v)))
+            {
+                // Đã chứa tên cơ sở y tế
+                return;
+            }
+
+            // Nhận diện: Lần khám: {lan} - Cơ sở: {coSo} [ - [Chẩn đoán:]? {cd} ]
+            var match = Regex.Match(
+                item.CHI_TIET,
+                @"^Lần khám:\s*(?<lan>\d+)\s*-\s*Cơ sở:\s*(?<cs>[^-]*?)(?:\s*-\s*(?:Chẩn đoán:\s*)?(?<cd>.*))?$",
+                RegexOptions.IgnoreCase
+            );
+
+            if (!match.Success) return;
+
+            string lan = match.Groups["lan"].Value.Trim();
+            string cs = match.Groups["cs"].Value.Trim();
+            string cd = match.Groups["cd"].Value.Trim();
+
+            // Map tên Cơ sở
+            string tenCoSo = cs;
+            if (!string.IsNullOrEmpty(cs))
+            {
+                if (DictHospital.TryGetValue(cs, out var hName))
+                {
+                    tenCoSo = hName;
+                }
+            }
+            else
+            {
+                tenCoSo = "-";
+            }
+
+            // Map tên Chẩn đoán chính
+            string tenCd = cd;
+            if (!string.IsNullOrEmpty(cd))
+            {
+                if (DictDiagnose.TryGetValue(cd, out var dName))
+                {
+                    tenCd = dName;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(tenCd))
+            {
+                item.CHI_TIET = $"Lần khám: {lan} - Cơ sở: {tenCoSo} - Chẩn đoán: {tenCd}";
+            }
+            else
+            {
+                item.CHI_TIET = $"Lần khám: {lan} - Cơ sở: {tenCoSo}";
             }
         }
 

@@ -2,6 +2,7 @@ document.addEventListener('alpine:init', function () {
     Alpine.data('alpineHome', function () {
         return {
             activeTab: 'visual', // 'visual' | 'tables'
+            cityMode: 'NEW34',   // 'NEW34' (NQ 202/2025) hoặc 'OLD63' (Lịch sử)
             selectedTinh: '',
             selectedTinhName: 'Toàn bộ Tỉnh/Thành',
             selectedNhom: '',
@@ -57,11 +58,24 @@ document.addEventListener('alpine:init', function () {
                 this.loadDashboardData();
             },
 
+            setCityMode: function (mode) {
+                if (this.cityMode !== mode) {
+                    this.cityMode = mode;
+                    this.selectedTinh = '';
+                    this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
+                    this.selectedNhom = '';
+                    this.selectedNhomName = 'Toàn bộ Nhóm';
+                    this.loadFilterData();
+                    this.loadDashboardData();
+                }
+            },
+
             loadFilterData: function () {
                 var self = this;
                 $.ajax({
                     type: 'POST',
                     url: '/Home/GetFilterData',
+                    data: { cityMode: self.cityMode },
                     success: function (response) {
                         if (response && response.Success) {
                             self.ListCity = response.Cities || [];
@@ -80,8 +94,9 @@ document.addEventListener('alpine:init', function () {
                 if (this.selectedTinh) {
                     var foundCity = this.ListCity.find(function (c) { return c.CityCode === code; });
                     this.selectedTinhName = foundCity ? foundCity.CityName : (name || code);
+                    var mappedCodes = (foundCity && foundCity.OldCodes && foundCity.OldCodes.length) ? foundCity.OldCodes : [code];
                     this.ListNhom = this.ListNhomAll.filter(function (n) {
-                        return !n.CityCode || n.CityCode === code;
+                        return !n.CityCode || mappedCodes.indexOf(n.CityCode) !== -1;
                     });
                 } else {
                     this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
@@ -124,7 +139,8 @@ document.addEventListener('alpine:init', function () {
                     maNhom: self.selectedNhom || null,
                     fromDate: self.fromDate || null,
                     toDate: self.toDate || null,
-                    nhomTuoiTable1: self.selectedAgeTable1 || null
+                    nhomTuoiTable1: self.selectedAgeTable1 || null,
+                    cityMode: self.cityMode
                 };
 
                 $.ajax({

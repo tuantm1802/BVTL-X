@@ -20,6 +20,21 @@ BEGIN
         WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom;
     END
 
+    -- Resolve @CityCode mapping (hỗ trợ cả 34 tỉnh mới và 63 tỉnh cũ)
+    DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
+    IF @CityCode IS NOT NULL AND @CityCode <> ''
+    BEGIN
+        IF EXISTS (SELECT 1 FROM BVTL_DM_TINH_MOI WHERE Code = @CityCode)
+        BEGIN
+            INSERT INTO @MappedCityCodes(Code)
+            SELECT OldCityCode FROM BVTL_MAP_TINH_CU_MOI WHERE NewCityCode = @CityCode;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO @MappedCityCodes(Code) VALUES (@CityCode);
+        END
+    END
+
     SELECT 
         kh.RECORD_ID,
         kh.CITY_CODE,
@@ -37,7 +52,7 @@ BEGIN
         kh.NGAY_THAM_GIA
     INTO #TmpKH
     FROM CD45_KH kh
-    WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE = @CityCode)
+    WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
       AND (@MaNhom IS NULL OR @MaNhom = '' OR kh.MA_NHOM IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom) OR kh.REDCAP_DAG IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom))
       AND (@DoiTuong IS NULL OR @DoiTuong = 0 OR kh.DOI_TUONG = @DoiTuong);
 
@@ -294,7 +309,7 @@ BEGIN
             SELECT 
                 kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, cd.MA_TCV, kh.DOI_TUONG_TEXT, 
                 CONVERT(VARCHAR(10), cd.NGAY_KHAM, 103) AS NGAY_THUC_HIEN,
-                N'Lần khám: ' + CAST(ISNULL(cd.LAN_KHAM, 1) AS VARCHAR) + N' - Cơ sở: ' + ISNULL(cd.CO_SO_Y_TE, '') + N' - ' + ISNULL(cd.CHAN_DOAN_CHINH, '') AS CHI_TIET
+                N'Lần khám: ' + CAST(ISNULL(cd.LAN_KHAM, 1) AS VARCHAR) + N' - Cơ sở: ' + ISNULL(cd.CO_SO_Y_TE, '') + CASE WHEN cd.CHAN_DOAN_CHINH IS NOT NULL AND cd.CHAN_DOAN_CHINH <> '' THEN N' - Chẩn đoán: ' + cd.CHAN_DOAN_CHINH ELSE N'' END AS CHI_TIET
             FROM CD45_CHAN_DOAN cd
             INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
             WHERE (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
@@ -310,7 +325,7 @@ BEGIN
                     kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, cd.MA_TCV, kh.DOI_TUONG_TEXT, 
                     cd.NGAY_KHAM,
                     CONVERT(VARCHAR(10), cd.NGAY_KHAM, 103) AS NGAY_THUC_HIEN,
-                    N'Lần khám: ' + CAST(ISNULL(cd.LAN_KHAM, 1) AS VARCHAR) + N' - Cơ sở: ' + ISNULL(cd.CO_SO_Y_TE, '') + N' - ' + ISNULL(cd.CHAN_DOAN_CHINH, '') AS CHI_TIET,
+                    N'Lần khám: ' + CAST(ISNULL(cd.LAN_KHAM, 1) AS VARCHAR) + N' - Cơ sở: ' + ISNULL(cd.CO_SO_Y_TE, '') + CASE WHEN cd.CHAN_DOAN_CHINH IS NOT NULL AND cd.CHAN_DOAN_CHINH <> '' THEN N' - Chẩn đoán: ' + cd.CHAN_DOAN_CHINH ELSE N'' END AS CHI_TIET,
                     ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY cd.NGAY_KHAM DESC) AS rn
                 FROM CD45_CHAN_DOAN cd
                 INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID

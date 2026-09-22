@@ -11,6 +11,7 @@ document.addEventListener('alpine:init', function () {
             fromDate: '',
             toDate: '',
             dateError: '',
+            cityMode: 'NEW34', // 'NEW34' (NQ 202/2025) hoặc 'OLD63' (Lịch sử)
             selectedCity: '',
             selectedNhom: '',
             listCities: [],
@@ -40,6 +41,15 @@ document.addEventListener('alpine:init', function () {
                 self.loadDanhMuc();
             },
 
+            setCityMode: function (mode) {
+                if (this.cityMode !== mode) {
+                    this.cityMode = mode;
+                    this.selectedCity = '';
+                    this.selectedNhom = '';
+                    this.loadDanhMuc();
+                }
+            },
+
             formatNumber: function (val) {
                 if (val === null || val === undefined || val === 0 || val === "0") return '-';
                 return Number(val).toLocaleString('vi-VN');
@@ -50,6 +60,7 @@ document.addEventListener('alpine:init', function () {
                 $.ajax({
                     type: 'POST',
                     url: '/BaoCaoCD45/GetFilterData',
+                    data: { cityMode: self.cityMode },
                     success: function (res) {
                         if (res.Success) {
                             self.listCities = res.Cities || [];
@@ -69,8 +80,10 @@ document.addEventListener('alpine:init', function () {
                 if (!self.selectedCity) {
                     self.filteredNhoms = self.listNhoms;
                 } else {
+                    var foundCity = self.listCities.find(function (c) { return c.CityCode === self.selectedCity; });
+                    var mappedCodes = (foundCity && foundCity.OldCodes && foundCity.OldCodes.length) ? foundCity.OldCodes : [self.selectedCity];
                     self.filteredNhoms = self.listNhoms.filter(function (x) {
-                        return x.city_code === self.selectedCity;
+                        return mappedCodes.indexOf(x.city_code) !== -1;
                     });
                 }
                 self.selectedNhom = '';
@@ -248,7 +261,8 @@ document.addEventListener('alpine:init', function () {
                 var doiTuongMap = { 'Tong': 0, 'PUD': 1, 'PLHIV': 2, 'TG': 3, 'SW': 5, 'MSM': 4 };
                 var doiTuong = doiTuongMap[colKey] !== undefined ? doiTuongMap[colKey] : 0;
 
-                self.drillModalTitle = 'Chi tiết: ' + item.ChiTieu + ' (' + colTitle + ': ' + self.formatNumber(val) + ' KH)';
+                var unitText = (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('lượt') >= 0) ? 'lượt' : 'KH';
+                self.drillModalTitle = 'Chi tiết: ' + item.ChiTieu + ' (' + colTitle + ': ' + self.formatNumber(val) + ' ' + unitText + ')';
                 self.drillItems = [];
                 self.filteredDrillItems = [];
                 self.drillSearchText = '';

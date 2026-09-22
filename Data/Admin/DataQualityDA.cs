@@ -42,7 +42,7 @@ namespace Data.Admin
             var sql = @"
                 SELECT ID, MADUAN, REPORT_ID, API_CODE, TABLE_NAME, RECORD_ID, FIELD_NAME, 
                        OLD_VALUE, NEW_VALUE, RULE_CODE, SEVERITY, ACTION_TAKEN, MESSAGE, 
-                       CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE
+                       CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE, MA_NHOM, CITY_CODE
                 FROM BVTL_DATA_STANDARDIZATION_LOG
                 WHERE (@MaDuAn IS NULL OR MADUAN = @MaDuAn)
                   AND (@ApiCode IS NULL OR API_CODE = @ApiCode)
@@ -115,8 +115,10 @@ namespace Data.Admin
                         log.ID,
                         log.SEVERITY,
                         log.IS_RESOLVED,
-                        ISNULL(kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
-                        ISNULL(kh.CITY_CODE, SUBSTRING(log.RECORD_ID, 2, 2)) AS CITY_CODE
+                        COALESCE(log.MA_NHOM, kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
+                        COALESCE(log.CITY_CODE, kh.CITY_CODE, 
+                            CASE WHEN log.RECORD_ID LIKE 'D[A-Z][A-Z]%' THEN SUBSTRING(log.RECORD_ID, 2, 2) ELSE NULL END, 
+                            'UNKNOWN') AS CITY_CODE
                     FROM BVTL_DATA_STANDARDIZATION_LOG log
                     LEFT JOIN CD45_KH kh ON log.RECORD_ID = kh.RECORD_ID AND log.MADUAN = kh.MADUAN
                     WHERE (@MaDuAn IS NULL OR log.MADUAN = @MaDuAn)
@@ -272,8 +274,10 @@ namespace Data.Admin
                         log.CREATED_DATE,
                         log.IS_RESOLVED,
                         log.RESOLVED_NOTE,
-                        ISNULL(kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
-                        ISNULL(kh.CITY_CODE, SUBSTRING(log.RECORD_ID, 2, 2)) AS CITY_CODE
+                        COALESCE(log.MA_NHOM, kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
+                        COALESCE(log.CITY_CODE, kh.CITY_CODE, 
+                            CASE WHEN log.RECORD_ID LIKE 'D[A-Z][A-Z]%' THEN SUBSTRING(log.RECORD_ID, 2, 2) ELSE NULL END, 
+                            'UNKNOWN') AS CITY_CODE
                     FROM BVTL_DATA_STANDARDIZATION_LOG log
                     LEFT JOIN CD45_KH kh ON log.RECORD_ID = kh.RECORD_ID AND log.MADUAN = kh.MADUAN
                     WHERE (@MaDuAn IS NULL OR log.MADUAN = @MaDuAn)
@@ -281,7 +285,7 @@ namespace Data.Admin
                 SELECT 
                     ID, MADUAN, REPORT_ID, API_CODE, TABLE_NAME, RECORD_ID, FIELD_NAME, 
                     OLD_VALUE, NEW_VALUE, RULE_CODE, SEVERITY, ACTION_TAKEN, MESSAGE, 
-                    CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE
+                    CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE, MA_NHOM, CITY_CODE
                 FROM CTE_LogNhom
                 WHERE (@CityCode IS NULL OR CITY_CODE = @CityCode)
                   AND (@MaNhom IS NULL OR MA_NHOM = @MaNhom)
