@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Common.Common;
 using Common.ICommon;
 using Data.InterfaceDA.Admin;
@@ -60,14 +60,21 @@ namespace Data.Admin
         /// <summary>
         /// Lấy tất cả Nhóm thu thập dữ liệu
         /// </summary>
-        /// <param name="modelSearch"></param>
         /// <returns></returns>
         public List<BVTL_NHOM_TBH> GetAll()
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            return db.BVTL_NHOM_TBH.ToList();
+            try
+            {
+                var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH";
+                return db.Database.SqlQuery<BVTL_NHOM_TBH>(sql).ToList();
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi GetAll Nhóm: " + ex.Message);
+                db.Configuration.ProxyCreationEnabled = false;
+                return db.BVTL_NHOM_TBH.ToList();
+            }
         }
-
 
         /// <summary>
         /// Lấy Nhóm thu thập dữ liệu theo id
@@ -76,8 +83,17 @@ namespace Data.Admin
         /// <returns></returns>
         public BVTL_NHOM_TBH GetItemByMaNhom(string maNhom)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            return db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom);
+            try
+            {
+                var pMa = new SqlParameter("@MaNhom", (object)maNhom ?? DBNull.Value);
+                var sql = "SELECT TOP 1 manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom";
+                return db.Database.SqlQuery<BVTL_NHOM_TBH>(sql, pMa).FirstOrDefault();
+            }
+            catch
+            {
+                db.Configuration.ProxyCreationEnabled = false;
+                return db.BVTL_NHOM_TBH.FirstOrDefault(x => x.manhom_tbh == maNhom || x.manhom_tbh_map == maNhom);
+            }
         }
 
         /// <summary>
@@ -323,6 +339,27 @@ namespace Data.Admin
                 return obj;
             }
 
+        }
+
+        /// <summary>
+        /// Cập nhật Xưng danh (Prefix) và Xưng danh viết tắt (ShortPrefix) cho Nhóm CBO
+        /// </summary>
+        public bool UpdatePrefix(string maNhom, string prefix, string shortPrefix)
+        {
+            try
+            {
+                var pMa = new SqlParameter("@MaNhom", (object)maNhom ?? DBNull.Value);
+                var pPrefix = new SqlParameter("@Prefix", string.IsNullOrWhiteSpace(prefix) ? "Nhóm" : (object)prefix.Trim());
+                var pShort = new SqlParameter("@ShortPrefix", string.IsNullOrWhiteSpace(shortPrefix) ? (object)pPrefix.Value : (object)shortPrefix.Trim());
+
+                db.Database.ExecuteSqlCommand("EXEC dbo.SP_CD45_UpdateNhomPrefix @MaNhom, @Prefix, @ShortPrefix", pMa, pPrefix, pShort);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Lỗi UpdatePrefix nhóm: " + ex.Message, ex);
+                return false;
+            }
         }
 
     }

@@ -63,7 +63,7 @@ namespace Data.Admin
 
         public List<CD45_TCV_ItemModel> GetListTCV(string cityCode, string maNhom)
         {
-            var sql = "SELECT ID, RTRIM(MA_NHOM) AS MA_NHOM, TEN_NHOM, RTRIM(CITY_CODE) AS CITY_CODE, RTRIM(MA_TCV) AS MA_TCV, TEN_TCV FROM CD45_NHOM_TCV WHERE 1=1";
+            var sql = "SELECT ID, RTRIM(MA_NHOM) AS MA_NHOM, TEN_NHOM, RTRIM(CITY_CODE) AS CITY_CODE, RTRIM(MA_TCV) AS MA_TCV, TEN_TCV, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM CD45_NHOM_TCV WHERE 1=1";
             if (!string.IsNullOrEmpty(cityCode))
             {
                 sql += " AND (CITY_CODE = '" + cityCode.Replace("'", "''") + "')";

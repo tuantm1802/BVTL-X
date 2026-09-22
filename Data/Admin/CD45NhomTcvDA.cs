@@ -24,7 +24,9 @@ namespace Data.Admin
                     tcv.TEN_TCV,
                     tcv.MADUAN,
                     tcv.IsActive,
-                    tcv.CreatedDate
+                    tcv.CreatedDate,
+                    ISNULL(tcv.PREFIX, N'Nhóm') AS PREFIX,
+                    ISNULL(tcv.SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX
                 FROM CD45_NHOM_TCV tcv
                 LEFT JOIN BVTL_CITES c ON tcv.CITY_CODE = c.Code
                 WHERE tcv.MADUAN = 'CD45'";

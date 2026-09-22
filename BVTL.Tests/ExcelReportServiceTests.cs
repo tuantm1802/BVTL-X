@@ -139,7 +139,7 @@ namespace BVTL.Tests
             CollectionAssert.Contains(attrZip.Verbs.ToList(), "POST");
 
             // Verify actual export execution
-            var controller = new BaoCaoTCVCD45Controller(null, null, new BaoCaoCD45DA());
+            var controller = new BaoCaoTCVCD45Controller(null, new BVTL_NHOM_TBHDA(), new BaoCaoCD45DA());
             var result = controller.ExportExcel("26/07/2026", "25/08/2026", "CD45_HN_01", "TCV01", "Bùi Văn Bằng", "Nhóm Test") as FileContentResult;
             Assert.IsNotNull(result, "Export result should be FileContentResult");
             Assert.IsNotNull(result.FileContents, "FileContents should not be null");
@@ -319,7 +319,7 @@ namespace BVTL.Tests
                 var method = typeof(BaoCaoTCVCD45Controller).GetMethod("BuildTCVWorksheet", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 Assert.IsNotNull(method, "BuildTCVWorksheet method must exist");
 
-                method.Invoke(ctrl, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh" });
+                method.Invoke(ctrl, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh", null, "Nhóm" });
 
                 // 1. Column widths
                 Assert.AreEqual(5.5, ws.Column(1).Width, 0.01, "Col 1 width must be 5.5");
@@ -358,7 +358,7 @@ namespace BVTL.Tests
                 var method = typeof(WebApp.Services.ReportExportService).GetMethod("BuildTCVWorksheet", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 Assert.IsNotNull(method, "BuildTCVWorksheet method must exist on ReportExportService");
 
-                method.Invoke(svc, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh" });
+                method.Invoke(svc, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Nhóm Test", "Hoàng Quang Vinh", "Nhóm" });
 
                 // 1. Column widths
                 Assert.AreEqual(5.5, ws.Column(1).Width, 0.01, "Col 1 width must be 5.5");
@@ -378,6 +378,70 @@ namespace BVTL.Tests
                 Assert.AreEqual(ClosedXML.Excel.XLPaperSize.A4Paper, ws.PageSetup.PaperSize, "PaperSize must be A4");
                 Assert.AreEqual(ClosedXML.Excel.XLPageOrientation.Portrait, ws.PageSetup.PageOrientation, "PageOrientation must be Portrait");
                 Assert.AreEqual(1, ws.PageSetup.PagesWide, "PagesWide must be 1 for fit-to-page");
+            }
+        }
+
+        [TestMethod]
+        public void NhomTBH_PrefixModelHelpers_ShouldProvideProperDefaultsAndFormatting()
+        {
+            // 1. Default (null / empty prefix)
+            var defaultNhom = new Model.Model.BVTL_NHOM_TBH
+            {
+                manhom_tbh = "bm",
+                tennhom_tbh = "Bình Minh"
+            };
+            Assert.AreEqual("Nhóm", defaultNhom.GetXungDanh());
+            Assert.AreEqual("Nhóm", defaultNhom.GetShortXungDanh());
+            Assert.AreEqual("Nhóm: Bình Minh", defaultNhom.GetFullDisplayName());
+            Assert.AreEqual("Nhóm Bình Minh", defaultNhom.GetTitleName());
+            Assert.AreEqual("Nhóm Bình Minh", defaultNhom.GetShortTitleName());
+
+            // 2. Custom Prefix (e.g. HCM Social Enterprise)
+            var customNhom = new Model.Model.BVTL_NHOM_TBH
+            {
+                manhom_tbh = "alo",
+                tennhom_tbh = "Alocare",
+                PREFIX = "Doanh nghiệp xã hội",
+                SHORT_PREFIX = "DNXH"
+            };
+            Assert.AreEqual("Doanh nghiệp xã hội", customNhom.GetXungDanh());
+            Assert.AreEqual("DNXH", customNhom.GetShortXungDanh());
+            Assert.AreEqual("Doanh nghiệp xã hội: Alocare", customNhom.GetFullDisplayName());
+            Assert.AreEqual("Doanh nghiệp xã hội Alocare", customNhom.GetTitleName());
+            Assert.AreEqual("DNXH Alocare", customNhom.GetShortTitleName());
+
+            // 3. ViewModel helper
+            var vm = new Model.ModelExtend.CD45_NhomTcvViewModel
+            {
+                TEN_NHOM = "The Times",
+                PREFIX = "Doanh nghiệp xã hội",
+                SHORT_PREFIX = "DNXH"
+            };
+            Assert.AreEqual("Doanh nghiệp xã hội", vm.GetXungDanh());
+            Assert.AreEqual("DNXH", vm.GetShortXungDanh());
+        }
+
+        [TestMethod]
+        public void ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3()
+        {
+            using (var wb = new ClosedXML.Excel.XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("BaoCao");
+                var listData = new List<Model.ModelExtend.BaoCaoCD45Model>
+                {
+                    new Model.ModelExtend.BaoCaoCD45Model { STT = "1", ChiTieu = "Số tiếp cận truyền thông", Tong = 10 }
+                };
+
+                var svc = (WebApp.Services.ReportExportService)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WebApp.Services.ReportExportService));
+                var method = typeof(WebApp.Services.ReportExportService).GetMethod("BuildTCVWorksheet", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                Assert.IsNotNull(method, "BuildTCVWorksheet method must exist on ReportExportService");
+
+                // Invoke with custom prefix "Doanh nghiệp xã hội"
+                method.Invoke(svc, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Alocare", "Nguyễn Văn A", "Doanh nghiệp xã hội" });
+
+                string cellA3 = ws.Cell("A3").GetString();
+                Assert.IsTrue(cellA3.Contains("Doanh nghiệp xã hội: Alocare"), $"Cell A3 must contain custom prefix 'Doanh nghiệp xã hội: Alocare'. Actual: '{cellA3}'");
+                Assert.IsTrue(cellA3.Contains("Tiếp cận viên: Nguyễn Văn A"), $"Cell A3 must contain 'Tiếp cận viên: Nguyễn Văn A'. Actual: '{cellA3}'");
             }
         }
     }

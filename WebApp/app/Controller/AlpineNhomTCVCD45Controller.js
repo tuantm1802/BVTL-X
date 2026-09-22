@@ -19,6 +19,17 @@
                 listNhoms: [],
                 filteredNhoms: [],
 
+                editModal: {
+                    show: false,
+                    maNhom: '',
+                    tenNhom: '',
+                    cityName: '',
+                    prefix: 'Nhóm',
+                    shortPrefix: 'Nhóm',
+                    isSaving: false,
+                    errorMsg: ''
+                },
+
                 pageIndex: 1,
                 pageSize: 15,
 
@@ -154,6 +165,89 @@
                     var url = '/NhomTCVCD45/ExportExcel?cityCode=' + encodeURIComponent(self.selectedCity || '') +
                         '&maNhom=' + encodeURIComponent(self.selectedNhom || '');
                     window.location.href = url;
+                },
+
+                openEditPrefixModal: function (item) {
+                    var self = this;
+                    if (!item) return;
+                    self.editModal.show = true;
+                    self.editModal.maNhom = item.MA_NHOM || item.MaNhom || '';
+                    self.editModal.tenNhom = item.TEN_NHOM || item.TenNhom || '';
+                    self.editModal.cityName = item.CityName || item.CityCode || '';
+                    self.editModal.prefix = item.PREFIX || item.Prefix || 'Nhóm';
+                    self.editModal.shortPrefix = item.SHORT_PREFIX || item.ShortPrefix || self.editModal.prefix || 'Nhóm';
+                    self.editModal.errorMsg = '';
+                    self.editModal.isSaving = false;
+                },
+
+                openEditPrefixModalByMaNhom: function (maNhom) {
+                    var self = this;
+                    if (!maNhom) return;
+                    var nhom = self.listNhoms.find(function (x) { return x.MaNhom === maNhom; });
+                    if (nhom) {
+                        self.openEditPrefixModal({
+                            MA_NHOM: nhom.MaNhom,
+                            TEN_NHOM: nhom.TenNhom,
+                            CityName: nhom.CityCode,
+                            PREFIX: nhom.Prefix || 'Nhóm',
+                            SHORT_PREFIX: nhom.ShortPrefix || 'Nhóm'
+                        });
+                    }
+                },
+
+                closeEditPrefixModal: function () {
+                    this.editModal.show = false;
+                    this.editModal.errorMsg = '';
+                    this.editModal.isSaving = false;
+                },
+
+                setPresetPrefix: function (prefix, shortPrefix) {
+                    this.editModal.prefix = prefix;
+                    this.editModal.shortPrefix = shortPrefix;
+                },
+
+                saveNhomPrefix: function () {
+                    var self = this;
+                    if (!self.editModal.prefix || !self.editModal.prefix.trim()) {
+                        self.editModal.errorMsg = 'Vui lòng nhập xưng danh / loại hình!';
+                        return;
+                    }
+                    if (!self.editModal.shortPrefix || !self.editModal.shortPrefix.trim()) {
+                        self.editModal.shortPrefix = self.editModal.prefix;
+                    }
+
+                    self.editModal.isSaving = true;
+                    self.editModal.errorMsg = '';
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/NhomTCVCD45/UpdateNhomPrefix',
+                        data: {
+                            maNhom: self.editModal.maNhom,
+                            prefix: self.editModal.prefix.trim(),
+                            shortPrefix: self.editModal.shortPrefix.trim()
+                        },
+                        success: function (res) {
+                            self.editModal.isSaving = false;
+                            if (res.Success) {
+                                if (window.toastr) {
+                                    toastr.success(res.Message || 'Cập nhật xưng danh nhóm thành công!');
+                                } else {
+                                    alert(res.Message || 'Cập nhật xưng danh nhóm thành công!');
+                                }
+                                self.closeEditPrefixModal();
+                                self.loadDanhMuc();
+                            } else {
+                                self.editModal.errorMsg = res.Message || 'Lỗi khi cập nhật!';
+                                if (window.toastr) toastr.error(self.editModal.errorMsg);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.editModal.isSaving = false;
+                            self.editModal.errorMsg = 'Lỗi kết nối máy chủ: ' + error;
+                            if (window.toastr) toastr.error(self.editModal.errorMsg);
+                        }
+                    });
                 },
 
                 parseDate: function (val) {

@@ -1332,3 +1332,103 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 
+---
+
+## Session 29: [2026-09-22] Thiết lập Xưng danh / Tiền tố Nhóm CBO (DNXH, Nhóm, TT, CLB) & Chuẩn hóa Báo cáo Chỉ tiêu VII.1 Số quyển phát
+
+### Mục tiêu:
+1. Triển khai giải pháp **Phương án 1 (Khuyến nghị cao nhất)** - Thiết lập Xưng danh riêng / Tiền tố Loại hình Tổ chức (Prefix) cho các Nhóm CBO (ví dụ: "Doanh nghiệp xã hội: The Times", "Doanh nghiệp xã hội: Alocare" thay vì mặc định "Nhóm: ...") đồng bộ xuyên suốt từ Cơ sở dữ liệu, Model, Dịch vụ Xuất Excel/ZIP đến Giao diện Quản trị.
+2. Chuẩn hóa Báo cáo Hoạt động Chỉ tiêu VII.1 (Tài liệu truyền thông):
+   - Đổi từ đếm số dòng (COUNT) sang tổng hợp số lượng quyển phát thực tế (SUM `SL_TAI_LIEU_PHAT`).
+   - Cập nhật hiển thị Drill-down và dòng tổng cộng chân bảng hiển thị rõ "Tổng số quyển phát" và "số lượt phát/KH".
+3. Tinh chỉnh Engine Giám sát & Chuẩn hóa Dữ liệu REDCap (`DataCleanerHelper.cs`):
+   - Khử trùng lặp: Tự động loại bỏ các cảnh báo đơn lẻ `WARN_FORM_INCOMPLETE` khi đã được gom vào cụm cảnh báo 3+ form chưa hoàn thiện trong ngày.
+   - Giữ nguyên số lượng tài liệu phát qua hàm `CleanDocumentDelivery`.
+
+---
+
+### Đã hoàn thành:
+
+1. **Cơ sở dữ liệu (Database Layer)**:
+   - Tạo tệp `SQL_Nhom_Prefix_Upgrade.sql` (chuẩn UTF-8 with BOM) và thực thi thành công 9 batch trên cơ sở dữ liệu `BVTL_REPORTING_DEV`.
+   - Bổ sung 2 cột cấu hình:
+     - `PREFIX NVARCHAR(50) DEFAULT N'Nhóm'` (Tiền tố đầy đủ dùng trong báo cáo Excel và văn bản).
+     - `SHORT_PREFIX NVARCHAR(20) DEFAULT N'Nhóm'` (Tiền tố viết tắt dùng trong tên thư mục ZIP và mã viết tắt).
+     vào cả 2 bảng: `BVTL_NHOM_TBH` và `CD45_NHOM_TCV`.
+   - Khởi tạo dữ liệu (Seeding) cho toàn bộ các nhóm tại TP. Hồ Chí Minh (`HC_ALO`, `HC_G3V`, `HC_MYH`, `HC_TGA`, `alo`, `g3vn`, `myh`, `tg`) sang `PREFIX = N'Doanh nghiệp xã hội'`, `SHORT_PREFIX = N'DNXH'`.
+   - Cập nhật Stored Procedure `NhomTBH_Get_By_Page` và tạo mới Stored Procedure `SP_CD45_UpdateNhomPrefix` để cập nhật đồng bộ 2 bảng.
+   - Cập nhật `SQL_CD45_SP.sql` & `SQL_CD45_SP_DrillDown.sql`: Tính đúng tổng số quyển phát (`SUM(ISNULL(k.SL_TAI_LIEU_PHAT, 1))`) cho Chỉ tiêu VII.1.
+
+2. **Mô hình Dữ liệu & Data Access Layer**:
+   - Tạo partial class `Model/ModelExtend/BVTL_NHOM_TBH_Extend.cs` (được đăng ký trong `Model/Model.csproj`) với thuộc tính `[NotMapped]` tránh xung đột metadata EF6 EDMX và cung cấp các phương thức mở rộng:
+     - `GetXungDanh()`: Trả về xưng danh đầy đủ, mặc định là `"Nhóm"`.
+     - `GetShortXungDanh()`: Trả về xưng danh viết tắt, fallback về `PREFIX` hoặc `"Nhóm"`.
+     - `GetFullDisplayName()`: Ví dụ `"Doanh nghiệp xã hội: Alocare"`, `"Nhóm: Bình Minh"`.
+     - `GetTitleName()`: Ví dụ `"Doanh nghiệp xã hội Alocare"`.
+     - `GetShortTitleName()`: Ví dụ `"DNXH Alocare"`, `"Nhóm Bình Minh"`.
+   - Cập nhật `Model/ModelExtend/CD45KhachHangModel.cs` (`CD45_NhomTcvViewModel` bổ sung `PREFIX`, `SHORT_PREFIX`, `GetXungDanh()`, `GetShortXungDanh()`).
+   - Cập nhật `Model/ModelExtend/BaoCaoCD45Model.cs` (`CD45_TCV_ItemModel` bổ sung `PREFIX`, `SHORT_PREFIX`).
+   - Cập nhật `Data/InterfaceDA/Admin/IBVTL_NHOM_TBHDA.cs` & `Data/Admin/BVTL_NHOM_TBHDA.cs`:
+     - Tối ưu `GetAll()` và `GetItemByMaNhom()` nạp trực tiếp `PREFIX`, `SHORT_PREFIX` qua `SqlQuery`.
+     - Bổ sung phương thức `UpdatePrefix(string maNhom, string prefix, string shortPrefix)`.
+   - Cập nhật `Data/Admin/CD45NhomTcvDA.cs` (`GetListNhomTcv` nạp `PREFIX`, `SHORT_PREFIX`).
+   - Cập nhật `Data/Admin/BaoCaoCD45DA.cs` (`GetListTCV` nạp `PREFIX`, `SHORT_PREFIX`).
+   - Cập nhật `Data/Admin/DataQualityDA.cs`: Đảm bảo đồng bộ truy vấn log chuẩn hóa.
+
+3. **Dịch vụ Xuất Excel & Nén ZIP Đa cấp (`ReportExportService.cs`, Controllers)**:
+   - `WebApp/Services/ReportExportService.cs`:
+     - `BuildTCVWorksheet`: Nhận tham số `xungDanh`, hiển thị chính xác tiền tố ở ô A3 (`{xungDanh}: {tenNhom} | Tiếp cận viên: {tenTCV}`).
+     - `BuildHoatDongCD45Worksheet`: Hiển thị đúng xưng danh nhóm trong ô A2.
+     - `ExportHoatDongCD45ExcelAsync`: Nhận diện và gán đúng xưng danh theo nhóm.
+     - `ExportTCVCD45ZipAsync`: Đặt tên thư mục nhóm bên trong file ZIP theo cấu trúc `{SHORT_PREFIX} {TEN_NHOM}` (ví dụ: `DNXH Alocare`, `Nhóm Bình Minh`) và tệp tổng hợp nhóm `BaoCao_TongHop_{SHORT_PREFIX}_{TEN_NHOM}`.
+   - `WebApp/Controllers/BaoCaoCD45Controller.cs` & `WebApp/Controllers/BaoCaoTCVCD45Controller.cs`:
+     - Tự động tra cứu `xungDanh` theo mã nhóm khi xuất Excel đơn lẻ hoặc nén ZIP hàng loạt.
+   - `WebApp/Controllers/NhomTCVCD45Controller.cs`:
+     - `GetFilterData`: Trả về `Prefix`, `ShortPrefix`, `DisplayName` (`[DNXH] Alocare`).
+     - `ExportExcel`: Thêm cột "Xưng danh / Loại hình" trong file Excel xuất mạng lưới TCV.
+     - `UpdateNhomPrefix`: Action API cập nhật xưng danh nhóm từ giao diện.
+
+4. **Giao diện Người dùng Mạng lưới Nhóm & Báo cáo Hoạt động**:
+   - `WebApp/Views/NhomTCVCD45/Index.cshtml` & `AlpineNhomTCVCD45Controller.js` (UTF-8 with BOM):
+     - Bổ sung cột "Loại hình / Xưng danh" trên bảng danh sách, hiển thị badge trực quan và icon nút bấm chỉnh sửa nhanh.
+     - Bổ sung nút liên kết "Đổi xưng danh" ngay bên cạnh bộ lọc CBO khi người dùng chọn một nhóm cụ thể.
+     - Modal "Thiết lập Xưng danh / Loại hình Nhóm CBO": Presets nhanh (*Doanh nghiệp xã hội*, *Nhóm*, *Trung tâm*, *Phòng khám*, *Câu lạc bộ*), ô nhập liệu tùy biến, khung xem trước (Live Preview).
+   - `WebApp/Views/BaoCaoCD45/Index.cshtml` & `AlpineBaoCaoCD45Controller.js` (UTF-8 with BOM):
+     - Nâng cấp modal Drill-down cho Chỉ tiêu VII.1: Hiển thị badge tổng số quyển phát, số lượt phát, và dòng tổng cộng chân bảng rõ ràng.
+
+5. **Kiểm thử tự động (Unit Testing & VSTest)**:
+   - `BVTL.Tests/ExcelReportServiceTests.cs`:
+     - `NhomTBH_PrefixModelHelpers_ShouldProvideProperDefaultsAndFormatting`: Kiểm tra toàn diện giá trị mặc định, xưng danh tùy biến và các chuỗi hiển thị.
+     - `ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3`: Kiểm tra việc hiển thị chính xác xưng danh `"Doanh nghiệp xã hội: Alocare"` tại ô A3 trong file Excel sinh ra.
+   - `BVTL.Tests/DataValidationP2Tests.cs`: Toàn bộ các test case kiểm tra chuẩn hóa và xuất Excel đều đạt.
+   - Toàn bộ các bài kiểm thử hệ thống đều **PASSED (100%)**.
+
+---
+
+### Các tệp đã thêm mới & thay đổi:
+- `SQL_Nhom_Prefix_Upgrade.sql` (New - UTF-8 BOM)
+- `SQL_CD45_SP.sql` (Modified - UTF-8 BOM)
+- `SQL_CD45_SP_DrillDown.sql` (Modified - UTF-8 BOM)
+- `Model/ModelExtend/BVTL_NHOM_TBH_Extend.cs` (New)
+- `Model/Model.csproj` (Modified)
+- `Model/ModelExtend/CD45KhachHangModel.cs` (Modified)
+- `Model/ModelExtend/BaoCaoCD45Model.cs` (Modified)
+- `Common/Common/DataCleanerHelper.cs` (Modified)
+- `Data/InterfaceDA/Admin/IBVTL_NHOM_TBHDA.cs` (Modified)
+- `Data/Admin/BVTL_NHOM_TBHDA.cs` (Modified)
+- `Data/Admin/CD45NhomTcvDA.cs` (Modified)
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `Data/Admin/DataQualityDA.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/NhomTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/DataQualityController.cs` (Modified)
+- `WebApp/Views/NhomTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/Views/BaoCaoCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineNhomTCVCD45Controller.js` (Modified)
+- `WebApp/app/Controller/AlpineBaoCaoCD45Controller.js` (Modified)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+

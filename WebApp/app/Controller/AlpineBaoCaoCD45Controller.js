@@ -22,6 +22,8 @@ document.addEventListener('alpine:init', function () {
             filteredDrillItems: [],
             drillSearchText: '',
             isDrillLoading: false,
+            currentChiTieuCode: '',
+            currentChiTieuUnit: '',
 
             init: function () {
                 var self = this;
@@ -261,7 +263,21 @@ document.addEventListener('alpine:init', function () {
                 var doiTuongMap = { 'Tong': 0, 'PUD': 1, 'PLHIV': 2, 'TG': 3, 'SW': 5, 'MSM': 4 };
                 var doiTuong = doiTuongMap[colKey] !== undefined ? doiTuongMap[colKey] : 0;
 
-                var unitText = (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('lượt') >= 0) ? 'lượt' : 'KH';
+                var unitText = 'KH';
+                if (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('lượt') >= 0) {
+                    unitText = 'lượt';
+                } else if (item.Code === 'VII_1' || (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('quyển') >= 0)) {
+                    unitText = 'quyển';
+                } else if (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('bao cao su') >= 0) {
+                    unitText = 'chiếc';
+                } else if (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('bôi trơn') >= 0) {
+                    unitText = 'gói';
+                } else if (item.ChiTieu && item.ChiTieu.toLowerCase().indexOf('bơm kim tiêm') >= 0) {
+                    unitText = 'chiếc';
+                }
+
+                self.currentChiTieuCode = item.Code;
+                self.currentChiTieuUnit = unitText;
                 self.drillModalTitle = 'Chi tiết: ' + item.ChiTieu + ' (' + colTitle + ': ' + self.formatNumber(val) + ' ' + unitText + ')';
                 self.drillItems = [];
                 self.filteredDrillItems = [];
@@ -349,6 +365,23 @@ document.addEventListener('alpine:init', function () {
                         || (x.DOI_TUONG_TEXT && x.DOI_TUONG_TEXT.toLowerCase().indexOf(kw) >= 0)
                         || (x.CHI_TIET && x.CHI_TIET.toLowerCase().indexOf(kw) >= 0);
                 });
+            },
+
+            getDrillTotalQuantity: function () {
+                var self = this;
+                if (self.currentChiTieuCode === 'VII_1') {
+                    var sum = 0;
+                    (self.filteredDrillItems || []).forEach(function (d) {
+                        if (d.SO_LUONG !== undefined && d.SO_LUONG !== null) {
+                            sum += Number(d.SO_LUONG) || 0;
+                        } else if (d.CHI_TIET) {
+                            var m = d.CHI_TIET.match(/Số quyển phát:\s*(\d+)/i);
+                            if (m) sum += parseInt(m[1], 10);
+                        }
+                    });
+                    return sum;
+                }
+                return null;
             }
         };
     });

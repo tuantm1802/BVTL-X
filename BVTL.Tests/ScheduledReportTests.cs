@@ -95,12 +95,12 @@ namespace BVTL.Tests
                             Assert.IsTrue(entry.FullName.Contains("/"), $"Entry '{entry.FullName}' should be in a folder");
 
                             if (entry.FullName.Contains("BaoCao_TongHop_HNO")) hasProvinceSummary = true;
-                            if (entry.FullName.Contains("BaoCao_TongHop_Nhom_")) hasGroupSummary = true;
+                            if (entry.FullName.Contains("BaoCao_TongHop_") && !entry.FullName.Contains("BaoCao_TongHop_HNO")) hasGroupSummary = true;
                             if (entry.FullName.Contains("BaoCao_TCV_")) hasTcvDetail = true;
                         }
 
                         Assert.IsTrue(hasProvinceSummary, "ZIP should contain Province summary report (BaoCao_TongHop_HNO)");
-                        Assert.IsTrue(hasGroupSummary, "ZIP should contain Group summary report (BaoCao_TongHop_Nhom_)");
+                        Assert.IsTrue(hasGroupSummary, "ZIP should contain Group summary report (BaoCao_TongHop_...)");
                         Assert.IsTrue(hasTcvDetail, "ZIP should contain individual TCV report (BaoCao_TCV_)");
                     }
                 }
@@ -149,11 +149,12 @@ namespace BVTL.Tests
                             if (entry.FullName.StartsWith("Hải Phòng/")) hasHaiPhong = true;
                             if (entry.FullName.StartsWith("Nghệ An/")) hasNgheAn = true;
 
-                            if (entry.FullName.Contains("BaoCao_TongHop_") && !entry.FullName.Contains("BaoCao_TongHop_Nhom_"))
+                            var parts = entry.FullName.Split('/');
+                            if (parts.Length == 2 && entry.Name.StartsWith("BaoCao_TongHop_"))
                                 provinceSummaryCount++;
-                            else if (entry.FullName.Contains("BaoCao_TongHop_Nhom_"))
+                            else if (parts.Length == 3 && entry.Name.StartsWith("BaoCao_TongHop_"))
                                 groupSummaryCount++;
-                            else if (entry.FullName.Contains("BaoCao_TCV_"))
+                            else if (entry.Name.StartsWith("BaoCao_TCV_"))
                                 tcvCount++;
                         }
 

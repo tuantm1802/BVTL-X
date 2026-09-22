@@ -48,7 +48,10 @@ namespace WebApp.Controllers
                                    .Select(x => new { 
                                        MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
                                        TenNhom = x.tennhom_tbh, 
-                                       CityCode = x.city_code 
+                                       CityCode = x.city_code,
+                                       Prefix = x.GetXungDanh(),
+                                       ShortPrefix = x.GetShortXungDanh(),
+                                       DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
                                    })
                                    .ToList();
 
@@ -89,7 +92,7 @@ namespace WebApp.Controllers
                     ws.Cell(1, 1).Style.Font.Bold = true;
                     ws.Cell(1, 1).Style.Font.FontSize = 14;
 
-                    var headers = new string[] { "STT", "Tỉnh/Thành", "Mã Nhóm", "Tên Nhóm CBO", "Mã TCV", "Tên Tiếp Cận Viên", "Trạng thái", "Ngày cập nhật" };
+                    var headers = new string[] { "STT", "Tỉnh/Thành", "Mã Nhóm", "Xưng danh / Loại hình", "Tên Nhóm CBO", "Mã TCV", "Tên Tiếp Cận Viên", "Trạng thái", "Ngày cập nhật" };
 
                     for (int i = 0; i < headers.Length; i++)
                     {
@@ -107,11 +110,12 @@ namespace WebApp.Controllers
                         ws.Cell(row, 1).Value = stt++;
                         ws.Cell(row, 2).Value = item.CityName ?? item.CITY_CODE;
                         ws.Cell(row, 3).Value = item.MA_NHOM;
-                        ws.Cell(row, 4).Value = item.TEN_NHOM;
-                        ws.Cell(row, 5).Value = item.MA_TCV;
-                        ws.Cell(row, 6).Value = item.TEN_TCV;
-                        ws.Cell(row, 7).Value = item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
-                        ws.Cell(row, 8).Value = item.CreatedDate.ToString("dd/MM/yyyy HH:mm");
+                        ws.Cell(row, 4).Value = item.GetXungDanh();
+                        ws.Cell(row, 5).Value = item.TEN_NHOM;
+                        ws.Cell(row, 6).Value = item.MA_TCV;
+                        ws.Cell(row, 7).Value = item.TEN_TCV;
+                        ws.Cell(row, 8).Value = item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+                        ws.Cell(row, 9).Value = item.CreatedDate.ToString("dd/MM/yyyy HH:mm");
                         row++;
                     }
 
@@ -127,6 +131,25 @@ namespace WebApp.Controllers
             catch (Exception ex)
             {
                 return Content("Lỗi khi xuất Excel: " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateNhomPrefix(string maNhom, string prefix, string shortPrefix)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!" });
+
+                if (string.IsNullOrEmpty(maNhom)) return Json(new { Success = false, Message = "Mã nhóm không hợp lệ." });
+
+                bool ok = _nhomDA.UpdatePrefix(maNhom, prefix, shortPrefix);
+                return Json(new { Success = ok, Message = ok ? "Cập nhật xưng danh nhóm thành công!" : "Lỗi khi cập nhật xưng danh nhóm." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
     }

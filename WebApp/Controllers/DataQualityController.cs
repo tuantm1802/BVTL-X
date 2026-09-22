@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -333,11 +333,12 @@ namespace WebApp.Controllers
             for (int i = 0; i < list.Count; i++)
             {
                 var grp = list[i];
-                int resolved = Math.Max(0, grp.TotalCount - grp.UnresolvedCount);
+                int unresolved = grp.SEVERITY == "INFO" ? 0 : grp.UnresolvedCount;
+                int resolved = grp.SEVERITY == "INFO" ? grp.TotalCount : Math.Max(0, grp.TotalCount - grp.UnresolvedCount);
                 double rate = grp.TotalCount > 0 ? (double)resolved / grp.TotalCount * 100 : 100;
 
                 sumTotal += grp.TotalCount;
-                sumPending += grp.UnresolvedCount;
+                sumPending += unresolved;
                 sumResolved += resolved;
 
                 ws.Cell(row, 1).Value = i + 1;
@@ -353,10 +354,10 @@ namespace WebApp.Controllers
                 ws.Cell(row, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 ws.Cell(row, 5).Style.NumberFormat.Format = "#,##0";
 
-                ws.Cell(row, 6).Value = grp.UnresolvedCount;
+                ws.Cell(row, 6).Value = unresolved;
                 ws.Cell(row, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 ws.Cell(row, 6).Style.NumberFormat.Format = "#,##0";
-                if (grp.UnresolvedCount > 0)
+                if (unresolved > 0)
                 {
                     ws.Cell(row, 6).Style.Font.FontColor = XLColor.FromHtml("#E74A3B");
                     ws.Cell(row, 6).Style.Font.Bold = true;

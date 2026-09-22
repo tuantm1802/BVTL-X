@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Mạng lưới Nhóm & Tiếp cận viên CD45";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -107,11 +107,17 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold mb-1">Nhóm CBO</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small fw-semibold mb-0">Nhóm CBO</label>
+                        <a href="javascript:void(0)" x-show="selectedNhom" class="small text-primary text-decoration-none"
+                           x-on:click="openEditPrefixModalByMaNhom(selectedNhom)" title="Thiết lập xưng danh cho nhóm đang chọn">
+                            <i class="fas fa-edit me-1"></i>Đổi xưng danh
+                        </a>
+                    </div>
                     <select class="form-select form-select-sm" x-model="selectedNhom" x-on:change="loadData()">
                         <option value="">-- Tất cả nhóm --</option>
                         <template x-for="n in filteredNhoms" :key="n.MaNhom">
-                            <option :value="n.MaNhom" x-text="n.TenNhom"></option>
+                            <option :value="n.MaNhom" x-text="n.DisplayName || n.TenNhom"></option>
                         </template>
                     </select>
                 </div>
@@ -149,19 +155,20 @@
                 <table class="table table-hover table-striped align-middle mb-0 small">
                     <thead class="table-light text-nowrap">
                         <tr>
-                            <th class="text-center" style="width: 60px;">STT</th>
+                            <th class="text-center" style="width: 50px;">STT</th>
                             <th style="width: 140px;">Tỉnh / Thành phố</th>
-                            <th style="width: 120px;">Mã Nhóm</th>
+                            <th style="width: 110px;">Mã Nhóm</th>
+                            <th style="width: 170px;">Loại hình / Xưng danh</th>
                             <th>Tên Nhóm CBO</th>
                             <th class="text-center" style="width: 100px;">Mã TCV</th>
                             <th>Họ và Tên Tiếp Cận Viên</th>
-                            <th class="text-center" style="width: 150px;">Trạng thái</th>
-                            <th style="width: 150px;">Ngày cập nhật</th>
+                            <th class="text-center" style="width: 140px;">Trạng thái</th>
+                            <th style="width: 140px;">Ngày cập nhật</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr x-show="isLoading">
-                            <td colspan="8" class="text-center py-5 text-primary">
+                            <td colspan="9" class="text-center py-5 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 <span class="fw-semibold">Đang tải danh sách tiếp cận viên...</span>
                             </td>
@@ -174,6 +181,18 @@
                                 </td>
                                 <td>
                                     <span class="font-monospace fw-semibold text-secondary" x-text="item.MA_NHOM"></span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <span class="badge" 
+                                              :class="(item.PREFIX && item.PREFIX.indexOf('Doanh nghiệp') !== -1) ? 'bg-primary-subtle text-primary border border-primary' : 'bg-light text-dark border'" 
+                                              x-text="item.PREFIX || 'Nhóm'"></span>
+                                        <button type="button" class="btn btn-sm btn-link p-0 text-muted" 
+                                                title="Chỉnh sửa xưng danh nhóm" 
+                                                x-on:click="openEditPrefixModal(item)">
+                                            <i class="fas fa-edit small text-primary"></i>
+                                        </button>
+                                    </div>
                                 </td>
                                 <td class="fw-semibold" x-text="item.TEN_NHOM"></td>
                                 <td class="text-center">
@@ -192,7 +211,7 @@
                             </tr>
                         </template>
                         <tr x-show="!isLoading && totalRecords === 0">
-                            <td colspan="8" class="text-center py-4 text-muted">
+                            <td colspan="9" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                 Không tìm thấy tiếp cận viên nào!
                             </td>
@@ -228,6 +247,116 @@
                     </li>
                 </ul>
             </nav>
+        </div>
+    </div>
+
+    <!-- Modal Thiết lập Xưng danh / Loại hình Nhóm CBO -->
+    <div class="modal fade" :class="{ 'show d-block': editModal.show }" tabindex="-1" style="background: rgba(0,0,0,0.5);" x-show="editModal.show" x-cloak>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header bg-light border-0 py-3">
+                    <h5 class="modal-title font-weight-bold text-primary fs-6">
+                        <i class="fas fa-id-card me-2"></i>Thiết lập Xưng danh / Loại hình Nhóm CBO
+                    </h5>
+                    <button type="button" class="btn-close" x-on:click="closeEditPrefixModal()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <!-- Thông báo lỗi nếu có -->
+                    <div class="alert alert-danger py-2 small mb-3" x-show="editModal.errorMsg" x-text="editModal.errorMsg"></div>
+
+                    <!-- Thông tin nhóm đang chọn -->
+                    <div class="bg-light p-3 rounded mb-3 border">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Tỉnh / Thành phố:</span>
+                            <span class="fw-semibold text-dark" x-text="editModal.cityName || '—'"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Mã nhóm:</span>
+                            <span class="badge bg-secondary font-monospace" x-text="editModal.maNhom"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Tên nhóm:</span>
+                            <span class="fw-bold text-primary" x-text="editModal.tenNhom"></span>
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý nhanh các loại hình xưng danh -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted mb-1">Mẫu xưng danh phổ biến:</label>
+                        <div class="d-flex flex-wrap gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                    x-on:click="setPresetPrefix('Doanh nghiệp xã hội', 'DNXH')">
+                                <i class="fas fa-building me-1"></i>Doanh nghiệp xã hội (DNXH)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    x-on:click="setPresetPrefix('Nhóm', 'Nhóm')">
+                                <i class="fas fa-users me-1"></i>Nhóm (Mặc định)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info"
+                                    x-on:click="setPresetPrefix('Trung tâm', 'TT')">
+                                <i class="fas fa-hospital-user me-1"></i>Trung tâm (TT)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success"
+                                    x-on:click="setPresetPrefix('Phòng khám', 'PK')">
+                                <i class="fas fa-clinic-medical me-1"></i>Phòng khám (PK)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-warning text-dark"
+                                    x-on:click="setPresetPrefix('Câu lạc bộ', 'CLB')">
+                                <i class="fas fa-user-friends me-1"></i>Câu lạc bộ (CLB)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trường nhập Xưng danh đầy đủ (PREFIX) -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold mb-1">
+                            Xưng danh đầy đủ (Tiền tố tiêu đề báo cáo) <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control form-control-sm font-weight-bold"
+                               placeholder="VD: Doanh nghiệp xã hội, Nhóm, Trung tâm..."
+                               maxlength="50" x-model="editModal.prefix">
+                        <div class="form-text small text-muted">
+                            Hiển thị ở ô A3/A2 trong file Excel báo cáo và giao diện chi tiết.
+                        </div>
+                    </div>
+
+                    <!-- Trường nhập Xưng danh viết tắt (SHORT_PREFIX) -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold mb-1">
+                            Xưng danh viết tắt (Dùng đặt tên thư mục ZIP / File) <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control form-control-sm font-monospace"
+                               placeholder="VD: DNXH, Nhóm, TT, PK..."
+                               maxlength="20" x-model="editModal.shortPrefix">
+                        <div class="form-text small text-muted">
+                            Dùng làm tiền tố trong cấu trúc thư mục file ZIP nén khi xuất báo cáo hàng loạt.
+                        </div>
+                    </div>
+
+                    <!-- Xem trước định dạng hiển thị -->
+                    <div class="card bg-light border p-2 small">
+                        <div class="text-muted fw-semibold mb-1"><i class="fas fa-eye me-1"></i>Xem trước định dạng:</div>
+                        <div class="mb-1">
+                            <span class="text-secondary">Tiêu đề Excel:</span>
+                            <span class="fw-bold text-primary" x-text="(editModal.prefix || 'Nhóm') + ': ' + editModal.tenNhom"></span>
+                        </div>
+                        <div>
+                            <span class="text-secondary">Thư mục tải về:</span>
+                            <span class="fw-bold text-success font-monospace" x-text="(editModal.shortPrefix || 'Nhóm') + ' ' + editModal.tenNhom"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 bg-light py-2">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" x-on:click="closeEditPrefixModal()" :disabled="editModal.isSaving">
+                        Hủy bỏ
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm px-4" x-on:click="saveNhomPrefix()" :disabled="editModal.isSaving">
+                        <span x-show="!editModal.isSaving"><i class="fas fa-save me-1"></i>Lưu thiết lập</span>
+                        <span x-show="editModal.isSaving"><i class="fas fa-spinner fa-spin me-1"></i>Đang lưu...</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

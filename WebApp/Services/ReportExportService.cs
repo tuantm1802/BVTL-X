@@ -4,6 +4,7 @@ using Data.Admin;
 using Data.InterfaceDA;
 using Data.InterfaceDA.Admin;
 using log4net;
+using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Report;
 using System;
@@ -263,6 +264,14 @@ namespace WebApp.Services
                 int totalSummaries = 0;
                 string loaiBaoCaoFilter = MapPeriodTypeToLoaiBaoCao(periodType);
 
+                var allNhoms = _nhomTBHDA.GetAll();
+                Func<string, BVTL_NHOM_TBH> findNhom = (mNhom) =>
+                {
+                    if (string.IsNullOrEmpty(mNhom) || allNhoms == null) return null;
+                    return allNhoms.FirstOrDefault(x => string.Equals(x.manhom_tbh, mNhom, StringComparison.OrdinalIgnoreCase) ||
+                                                        string.Equals(x.manhom_tbh_map, mNhom, StringComparison.OrdinalIgnoreCase));
+                };
+
                 var cityGroups = listTCV.GroupBy(x => (x.CITY_CODE ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
 
                 using (var fileStream = new FileStream(zipFilePath, FileMode.Create))
@@ -284,7 +293,7 @@ namespace WebApp.Services
                                     using (var wbCity = new XLWorkbook())
                                     {
                                         var wsCity = wbCity.Worksheets.Add("TongHop_" + currentCityCode);
-                                        BuildHoatDongCD45Worksheet(wsCity, cityData, fromDate, toDate, currentCityName, "Toàn tỉnh (" + currentCityCode + ")");
+                                        BuildHoatDongCD45Worksheet(wsCity, cityData, fromDate, toDate, currentCityName, "Toàn tỉnh (" + currentCityCode + ")", "Nhóm");
                                         var cityEntry = archive.CreateEntry($"{cleanCityFolder}/BaoCao_TongHop_{sanitize(currentCityCode)}.xlsx", CompressionLevel.Fastest);
                                         using (var zipStream = cityEntry.Open())
                                         {
@@ -306,7 +315,12 @@ namespace WebApp.Services
                                 string currentMaNhom = nGroup.Key;
                                 var firstItem = nGroup.First();
                                 string currentTenNhom = !string.IsNullOrEmpty(firstItem.TEN_NHOM) ? firstItem.TEN_NHOM.Trim() : currentMaNhom;
-                                string cleanGroupFolder = sanitize("Nhóm " + currentTenNhom);
+
+                                var nhomObj = findNhom(currentMaNhom);
+                                string currentXungDanh = nhomObj != null ? nhomObj.GetXungDanh() : "Nhóm";
+                                string currentShortPrefix = nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm";
+
+                                string cleanGroupFolder = sanitize($"{currentShortPrefix} {currentTenNhom}");
 
                                 // 2.1 Báo cáo tổng hợp cấp Nhóm CBO
                                 try
@@ -317,8 +331,8 @@ namespace WebApp.Services
                                         using (var wbNhom = new XLWorkbook())
                                         {
                                             var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
-                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, currentTenNhom);
-                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_Nhom_{sanitize(currentTenNhom)}.xlsx", CompressionLevel.Fastest);
+                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, currentTenNhom, currentXungDanh);
+                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(currentShortPrefix)}_{sanitize(currentTenNhom)}.xlsx", CompressionLevel.Fastest);
                                             using (var zipStream = nhomEntry.Open())
                                             {
                                                 wbNhom.SaveAs(zipStream);
@@ -340,7 +354,7 @@ namespace WebApp.Services
                                     using (var wb = new XLWorkbook())
                                     {
                                         var ws = wb.Worksheets.Add("BaoCao");
-                                        BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV);
+                                        BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, currentXungDanh);
 
                                         var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
                                         var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
@@ -487,6 +501,7 @@ namespace WebApp.Services
 
                 string resolvedCityName = !string.IsNullOrEmpty(cityCode) ? getCityName(cityCode) : "Toàn quốc";
                 string resolvedTenNhom = "Tất cả nhóm";
+                string resolvedXungDanh = "Nhóm";
 
                 if (!string.IsNullOrEmpty(maNhom))
                 {
@@ -496,6 +511,7 @@ namespace WebApp.Services
                     if (nhomItem != null && !string.IsNullOrEmpty(nhomItem.tennhom_tbh))
                     {
                         resolvedTenNhom = nhomItem.tennhom_tbh.Trim();
+                        resolvedXungDanh = nhomItem.GetXungDanh();
                         if (string.IsNullOrEmpty(cityCode) && !string.IsNullOrEmpty(nhomItem.city_code))
                         {
                             cityCode = nhomItem.city_code.Trim();
@@ -515,8 +531,8 @@ namespace WebApp.Services
                 if (!string.IsNullOrEmpty(maNhom))
                 {
                     suffix = $"_{sanitize(cityCode ?? "CD45")}_{sanitize(maNhom)}";
-                    reportName = $"Báo cáo Hoạt động CD45 - Nhóm {resolvedTenNhom} ({resolvedCityName})";
-                    scopeDesc = $"Nhóm {resolvedTenNhom} - {resolvedCityName}";
+                    reportName = $"Báo cáo Hoạt động CD45 - {resolvedXungDanh} {resolvedTenNhom} ({resolvedCityName})";
+                    scopeDesc = $"{resolvedXungDanh} {resolvedTenNhom} - {resolvedCityName}";
                 }
                 else if (!string.IsNullOrEmpty(cityCode))
                 {
@@ -547,7 +563,7 @@ namespace WebApp.Services
                 using (var wb = new XLWorkbook())
                 {
                     var ws = wb.Worksheets.Add($"CD45_{periodTag}");
-                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom);
+                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom, resolvedXungDanh);
                     wb.SaveAs(filePath);
                 }
 
@@ -683,7 +699,7 @@ namespace WebApp.Services
             return await Task.FromResult(result);
         }
 
-        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV)
+        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV, string xungDanh = "Nhóm")
         {
             ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG - DỰ ÁN CD45";
             ws.Range("A1:H1").Row(1).Merge();
@@ -696,7 +712,8 @@ namespace WebApp.Services
             ws.Cell("A2").Style.Font.Italic = true;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A3").Value = $"Nhóm: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A3").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
             ws.Range("A3:H3").Row(1).Merge();
             ws.Cell("A3").Style.Font.Bold = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -834,7 +851,7 @@ namespace WebApp.Services
             ws.PageSetup.Margins.Bottom = 0.6;
         }
 
-        private void BuildHoatDongCD45Worksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenTinh, string tenNhom)
+        private void BuildHoatDongCD45Worksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenTinh, string tenNhom, string xungDanh = "Nhóm")
         {
             ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG TỔNG HỢP - DỰ ÁN CD45 (DREAMH)";
             ws.Range("A1:H1").Row(1).Merge();
@@ -842,7 +859,8 @@ namespace WebApp.Services
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A2").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate} | Tỉnh/Thành: {tenTinh} | Nhóm: {tenNhom}";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A2").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate} | Tỉnh/Thành: {tenTinh} | {prefixText}: {tenNhom}";
             ws.Range("A2:H2").Row(1).Merge();
             ws.Cell("A2").Style.Font.Italic = true;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

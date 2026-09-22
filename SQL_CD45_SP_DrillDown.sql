@@ -354,7 +354,7 @@ BEGIN
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY htxh.NGAY_HO_TRO DESC) AS rn
             FROM CD45_HO_TRO_XH htxh
             INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
-            WHERE (CHARINDEX(',1,', ',' + ISNULL(htxh.DICH_VU, '') + ',') > 0 OR htxh.DICH_VU LIKE '%1%')
+            WHERE (CHARINDEX(',1,', ',' + REPLACE(ISNULL(htxh.DICH_VU, ''), ' ', '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%')
               AND (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
               AND (@ToDate IS NULL OR htxh.NGAY_HO_TRO <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
@@ -527,7 +527,8 @@ BEGIN
         SELECT 
             kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, hd.MA_TCV, kh.DOI_TUONG_TEXT, 
             CONVERT(VARCHAR(10), hd.NGAY_HOAT_DONG, 103) AS NGAY_THUC_HIEN,
-            N'Số quyển phát: ' + CAST(ISNULL(hd.SO_TAI_LIEU, 0) AS VARCHAR) AS CHI_TIET
+            N'Số quyển phát: ' + CAST(ISNULL(hd.SO_TAI_LIEU, 0) AS VARCHAR) AS CHI_TIET,
+            ISNULL(hd.SO_TAI_LIEU, 0) AS SO_LUONG
         FROM CD45_HOAT_DONG hd
         INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
         WHERE ISNULL(hd.SO_TAI_LIEU, 0) > 0
@@ -544,7 +545,8 @@ BEGIN
                 kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, hd.MA_TCV, kh.DOI_TUONG_TEXT, 
                 hd.NGAY_HOAT_DONG,
                 CONVERT(VARCHAR(10), hd.NGAY_HOAT_DONG, 103) AS NGAY_THUC_HIEN,
-                N'Số quyển phát: ' + CAST(ISNULL(hd.SO_TAI_LIEU, 0) AS VARCHAR) AS CHI_TIET,
+                N'Khách hàng nhận tài liệu (' + CAST(ISNULL(hd.SO_TAI_LIEU, 0) AS VARCHAR) + N' quyển)' AS CHI_TIET,
+                ISNULL(hd.SO_TAI_LIEU, 0) AS SO_LUONG,
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG DESC) AS rn
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -553,7 +555,7 @@ BEGIN
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
         )
-        SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET
+        SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET, SO_LUONG
         FROM CTE
         WHERE rn = 1
         ORDER BY NGAY_HOAT_DONG DESC, RECORD_ID;

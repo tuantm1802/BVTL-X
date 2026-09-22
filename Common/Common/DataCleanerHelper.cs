@@ -44,6 +44,8 @@ namespace Common.Common
                     RULE_CODE = "R3_DAG_NORMALIZED",
                     SEVERITY = "INFO",
                     ACTION_TAKEN = "AUTO_NORMALIZED",
+                    IS_RESOLVED = true,
+                    RESOLVED_NOTE = "SYSTEM_AUTO",
                     MESSAGE = $"Tự động chuẩn hóa {item.Count:N0} bản ghi từ nhóm '{item.RawDag}' -> Mã nhóm '{item.MaNhomStd}' (Map: '{item.MaNhomMap}').",
                     CREATED_DATE = DateTime.Now,
                     MA_NHOM = item.MaNhomMap,
@@ -123,6 +125,8 @@ namespace Common.Common
                     RULE_CODE = "R1_RECORD_ID_AUTO_UPPER",
                     SEVERITY = "INFO",
                     ACTION_TAKEN = "AUTO_NORMALIZED",
+                    IS_RESOLVED = true,
+                    RESOLVED_NOTE = "SYSTEM_AUTO",
                     MESSAGE = "Tự động xóa khoảng trắng và viết HOA mã khách hàng.",
                     CREATED_DATE = DateTime.Now,
                     MA_NHOM = inferredNhom,
@@ -671,6 +675,14 @@ namespace Common.Common
         }
 
         /// <summary>
+        /// Giữ nguyên số lượng tài liệu phát từ dữ liệu nguồn REDCap.
+        /// </summary>
+        public static int? CleanDocumentDelivery(int? rawDocDelivery, string recordId, string apiCode, string tableName, string reportId, string maDuAn, ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+        {
+            return rawDocDelivery;
+        }
+
+        /// <summary>
         /// VR-07(c) [WARNING]. Kiểm tra các cặp thông tin mâu thuẫn nghiệp vụ.
         /// </summary>
         public static void CheckContradictoryRules(string recordId, bool? thamGiaNc, string maKhNc, byte? doiTuong, byte? ketQuaHivF4, string apiCode, string tableName, string reportId, string maDuAn, ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
@@ -794,6 +806,19 @@ namespace Common.Common
                     MA_NHOM = maNhomFound,
                     CITY_CODE = clusterCity
                 });
+
+                // Khử lặp: loại bỏ các cảnh báo đơn lẻ WARN_FORM_INCOMPLETE của các khách hàng đã được đưa vào cụm cảnh báo này
+                if (getRecordId != null)
+                {
+                    var clusterRecIds = new HashSet<string>(
+                        grp.Select(x => getRecordId(x)).Where(r => !string.IsNullOrWhiteSpace(r)),
+                        StringComparer.OrdinalIgnoreCase
+                    );
+
+                    logs.RemoveAll(l => l.RULE_CODE == "WARN_FORM_INCOMPLETE"
+                                     && l.TABLE_NAME == tableName
+                                     && clusterRecIds.Contains(l.RECORD_ID));
+                }
             }
         }
 

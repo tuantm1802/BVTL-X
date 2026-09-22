@@ -92,7 +92,7 @@ namespace Data.Admin
                     SEVERITY,
                     TABLE_NAME,
                     COUNT(*) AS TotalCount,
-                    SUM(CASE WHEN IS_RESOLVED = 0 THEN 1 ELSE 0 END) AS UnresolvedCount,
+                    SUM(CASE WHEN IS_RESOLVED = 0 AND SEVERITY <> 'INFO' THEN 1 ELSE 0 END) AS UnresolvedCount,
                     MIN(CREATED_DATE) AS FirstSeen,
                     MAX(CREATED_DATE) AS LastSeen,
                     MAX(MESSAGE) AS SampleMessage

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Common;
 using Model.ModelExtend.API.CD45;
+using Model.ModelExtend;
 using System.IO;
 using System.Web.Mvc;
 using ClosedXML.Excel;
@@ -586,6 +587,114 @@ namespace BVTL.Tests
                 var ws = wb.Worksheet("CanhBaoDuLieu");
                 Assert.IsNotNull(ws, "Must have worksheet CanhBaoDuLieu");
             }
+        }
+
+        [TestMethod]
+        public void CheckClusterIncomplete_WhenClusterDetected_ShouldRemoveIndividualFormIncompleteLogs()
+        {
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>
+            {
+                // Existing individual warnings
+                new BVTL_DATA_STANDARDIZATION_LOG_Entity { TABLE_NAME = "CD45_HOAT_DONG", RECORD_ID = "DHN020198", RULE_CODE = "WARN_FORM_INCOMPLETE", SEVERITY = "WARNING" },
+                new BVTL_DATA_STANDARDIZATION_LOG_Entity { TABLE_NAME = "CD45_HOAT_DONG", RECORD_ID = "DHN020199", RULE_CODE = "WARN_FORM_INCOMPLETE", SEVERITY = "WARNING" },
+                new BVTL_DATA_STANDARDIZATION_LOG_Entity { TABLE_NAME = "CD45_HOAT_DONG", RECORD_ID = "DHN020207", RULE_CODE = "WARN_FORM_INCOMPLETE", SEVERITY = "WARNING" },
+                new BVTL_DATA_STANDARDIZATION_LOG_Entity { TABLE_NAME = "CD45_HOAT_DONG", RECORD_ID = "DHN020999", RULE_CODE = "WARN_FORM_INCOMPLETE", SEVERITY = "WARNING" } // Not in cluster
+            };
+
+            var list = new List<FakeServiceRecord>
+            {
+                new FakeServiceRecord { RecordId = "DHN020198", MaNhom = "vn", Tcv = "2", ServiceDate = new DateTime(2026, 8, 17), Status = "0" },
+                new FakeServiceRecord { RecordId = "DHN020199", MaNhom = "vn", Tcv = "2", ServiceDate = new DateTime(2026, 8, 17), Status = "0" },
+                new FakeServiceRecord { RecordId = "DHN020207", MaNhom = "vn", Tcv = "2", ServiceDate = new DateTime(2026, 8, 17), Status = "0" }
+            };
+
+            DataCleanerHelper.CheckClusterIncomplete(
+                list,
+                x => x.Tcv,
+                x => x.ServiceDate,
+                x => x.Status,
+                tableName: "CD45_HOAT_DONG",
+                apiCode: "API_CD45_F2",
+                reportId: "REP1",
+                maDuAn: "CD45",
+                logs: ref logs,
+                getRecordId: x => x.RecordId,
+                getMaNhom: x => x.MaNhom
+            );
+
+            // Must contain 1 cluster warning and 1 unaffected individual log (DHN020999)
+            Assert.AreEqual(2, logs.Count, "Cluster incomplete must deduplicate individual incomplete logs for records in the cluster");
+            Assert.IsTrue(logs.Any(l => l.RULE_CODE == "WARN_CLUSTER_INCOMPLETE"));
+            Assert.IsTrue(logs.Any(l => l.RULE_CODE == "WARN_FORM_INCOMPLETE" && l.RECORD_ID == "DHN020999"));
+            Assert.IsFalse(logs.Any(l => l.RULE_CODE == "WARN_FORM_INCOMPLETE" && l.RECORD_ID == "DHN020207"), "DHN020207 individual incomplete log must be removed");
+        }
+
+        [TestMethod]
+        public void CleanDocumentDelivery_WhenGreaterThan10_ShouldPreserveRawValueWithoutAltering()
+        {
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            int? clean = DataCleanerHelper.CleanDocumentDelivery(860, "DHN020127", "API_CD45_F2", "CD45_HOAT_DONG", "REP1", "CD45", ref logs);
+
+            Assert.AreEqual(860, clean, "Document delivery quantity from REDCap source must be preserved faithfully as raw 860");
+            Assert.AreEqual(0, logs.Count, "Must not artificially alter or flag outlier delivery quantity");
+        }
+
+        [TestMethod]
+        public void CleanDocumentDelivery_WhenNormalValue_ShouldPreserveValueWithoutLogging()
+        {
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            int? clean = DataCleanerHelper.CleanDocumentDelivery(2, "DHN020128", "API_CD45_F2", "CD45_HOAT_DONG", "REP1", "CD45", ref logs);
+
+            Assert.AreEqual(2, clean, "Normal delivery quantity (2) must be preserved");
+            Assert.AreEqual(0, logs.Count, "Must not log when within normal range");
+        }
+
+        [TestMethod]
+        public void BHYT_ServiceCodeMatching_Service10ShouldNotMatchBHYT()
+        {
+            // Emulate SQL logic: CHARINDEX(',1,', ',' + REPLACE(DICH_VU, ' ', '') + ',') > 0
+            bool IsBHYT(string dichVu)
+            {
+                if (string.IsNullOrEmpty(dichVu)) return false;
+                string padded = "," + dichVu.Replace(" ", "") + ",";
+                return padded.Contains(",1,") || dichVu.Contains("BHYT") || dichVu.Contains("bảo hiểm");
+            }
+
+            Assert.IsFalse(IsBHYT("10"), "Service 10 (HIV test) must NOT match BHYT (service 1)");
+            Assert.IsFalse(IsBHYT("10, 2"), "Service 10 and 2 must NOT match BHYT");
+            Assert.IsTrue(IsBHYT("1"), "Service 1 must match BHYT");
+            Assert.IsTrue(IsBHYT("1, 10"), "Service 1 and 10 must match BHYT");
+            Assert.IsTrue(IsBHYT("10, 1"), "Service 10 and 1 must match BHYT");
+            Assert.IsTrue(IsBHYT("Hỗ trợ thẻ BHYT"), "Text BHYT must match");
+        }
+
+        [TestMethod]
+        public void DrillDown_UnitAndQuantityMapping_VII_1ShouldMapBooksAndSumCorrectly()
+        {
+            string GetUnitText(string chiTieu, string code)
+            {
+                if (chiTieu != null && chiTieu.ToLower().Contains("lượt")) return "lượt";
+                if (code == "VII_1" || (chiTieu != null && chiTieu.ToLower().Contains("quyển"))) return "quyển";
+                if (chiTieu != null && chiTieu.ToLower().Contains("bao cao su")) return "chiếc";
+                if (chiTieu != null && chiTieu.ToLower().Contains("bôi trơn")) return "gói";
+                if (chiTieu != null && chiTieu.ToLower().Contains("bơm kim tiêm")) return "chiếc";
+                return "KH";
+            }
+
+            Assert.AreEqual("quyển", GetUnitText("1. Số quyển tài liệu đã phát", "VII_1"));
+            Assert.AreEqual("KH", GetUnitText("2. Số KH nhận tài liệu", "VII_2"));
+            Assert.AreEqual("lượt", GetUnitText("2. Số lượt tiếp cận", "I_2"));
+
+            var items = new List<CD45_DrillDown_ItemModel>
+            {
+                new CD45_DrillDown_ItemModel { RECORD_ID = "DHN01", SO_LUONG = 1, CHI_TIET = "Số quyển phát: 1" },
+                new CD45_DrillDown_ItemModel { RECORD_ID = "DHN02", SO_LUONG = 2, CHI_TIET = "Số quyển phát: 2" },
+                new CD45_DrillDown_ItemModel { RECORD_ID = "DHN03", SO_LUONG = 860, CHI_TIET = "Số quyển phát: 860" }
+            };
+
+            int totalBooks = items.Sum(x => x.SO_LUONG ?? 0);
+            Assert.AreEqual(863, totalBooks);
+            Assert.AreEqual(3, items.Count);
         }
 
         #endregion

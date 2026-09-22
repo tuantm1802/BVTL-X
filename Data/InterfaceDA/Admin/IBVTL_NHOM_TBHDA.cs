@@ -1,4 +1,4 @@
-﻿using Model.Model;
+using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using System;
@@ -77,5 +77,9 @@ namespace Data.InterfaceDA.Admin
         /// <returns></returns>
         ObjectMessage Delete(string maNhom, int userId);
 
+        /// <summary>
+        /// Cập nhật Xưng danh (Prefix) và Xưng danh viết tắt (ShortPrefix) cho Nhóm CBO
+        /// </summary>
+        bool UpdatePrefix(string maNhom, string prefix, string shortPrefix);
     }
 }

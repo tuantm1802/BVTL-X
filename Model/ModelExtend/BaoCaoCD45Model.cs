@@ -48,6 +48,7 @@ namespace Model.ModelExtend
         public string TEN_TINH { get; set; }
         public string TEN_NHOM { get; set; }
         public string TEN_TCV { get; set; }
+        public int? SO_LUONG { get; set; }
     }
 
     public class CD45_TCV_ItemModel
@@ -58,5 +59,10 @@ namespace Model.ModelExtend
         public string CITY_CODE { get; set; }
         public string MA_TCV { get; set; }
         public string TEN_TCV { get; set; }
+        public string PREFIX { get; set; }
+        public string SHORT_PREFIX { get; set; }
+
+        public string GetXungDanh() => !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
+        public string GetShortXungDanh() => !string.IsNullOrWhiteSpace(SHORT_PREFIX) ? SHORT_PREFIX.Trim() : GetXungDanh();
     }
 }

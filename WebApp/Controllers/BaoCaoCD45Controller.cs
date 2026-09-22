@@ -173,12 +173,14 @@ namespace WebApp.Controllers
             }
 
             string tenNhom = "Tất cả nhóm";
+            string xungDanh = "Nhóm";
             if (!string.IsNullOrEmpty(MaNhom))
             {
                 var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
                     string.Equals(x.manhom_tbh, MaNhom, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
                 tenNhom = nhom != null ? nhom.tennhom_tbh : MaNhom;
+                xungDanh = nhom != null ? nhom.GetXungDanh() : "Nhóm";
                 if (string.IsNullOrEmpty(MaTinh) && nhom != null && !string.IsNullOrEmpty(nhom.city_code))
                 {
                     MaTinh = nhom.city_code;
@@ -195,7 +197,7 @@ namespace WebApp.Controllers
                 ws.Cell(1, 1).Style.Font.FontSize = 14;
                 ws.Range("A1:H1").Row(1).Merge();
 
-                ws.Cell(2, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   Nhóm: {tenNhom}";
+                ws.Cell(2, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   {xungDanh}: {tenNhom}";
                 ws.Cell(2, 1).Style.Font.Italic = true;
                 ws.Range("A2:H2").Row(1).Merge();
 

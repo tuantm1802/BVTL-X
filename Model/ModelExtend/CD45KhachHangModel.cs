@@ -174,6 +174,10 @@ namespace Model.ModelExtend
         public string MADUAN { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string PREFIX { get; set; }
+        public string SHORT_PREFIX { get; set; }
+        public string GetXungDanh() => !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
+        public string GetShortXungDanh() => !string.IsNullOrWhiteSpace(SHORT_PREFIX) ? SHORT_PREFIX.Trim() : GetXungDanh();
     }
 
     public class CD45_NhomTcvKpiModel

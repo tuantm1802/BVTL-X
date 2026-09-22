@@ -107,6 +107,15 @@ namespace WebApp.Controllers
             string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV, loaiFilter);
 
+            string xungDanh = "Nhóm";
+            if (!string.IsNullOrEmpty(MaNhom) && _BVTL_NHOM_TBHDA != null)
+            {
+                var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
+                    string.Equals(x.manhom_tbh, MaNhom, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
+                if (nhom != null) xungDanh = nhom.GetXungDanh();
+            }
+
             string kyLabel = loaiFilter == null ? "TuyChon" :
                              loaiFilter == "Thang" ? "Thang" :
                              loaiFilter == "Quy" ? "Quy" :
@@ -119,7 +128,7 @@ namespace WebApp.Controllers
             using (var wb = new XLWorkbook())
             {
                 var ws = wb.Worksheets.Add("BaoCao");
-                BuildTCVWorksheet(ws, data, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, kyTitle);
+                BuildTCVWorksheet(ws, data, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, kyTitle, xungDanh);
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -151,6 +160,15 @@ namespace WebApp.Controllers
                 var listTCV = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CD45_TCV_ItemModel>>(DanhSachTCVJson);
                 if (listTCV == null || listTCV.Count == 0) return Content("Không có TCV nào được chọn.");
 
+                var allNhoms = _BVTL_NHOM_TBHDA != null ? _BVTL_NHOM_TBHDA.GetAll() : null;
+                Func<string, string> getXungDanh = (mNhom) =>
+                {
+                    if (string.IsNullOrEmpty(mNhom) || allNhoms == null) return "Nhóm";
+                    var nhom = allNhoms.FirstOrDefault(x => string.Equals(x.manhom_tbh, mNhom, StringComparison.OrdinalIgnoreCase) ||
+                                                           string.Equals(x.manhom_tbh_map, mNhom, StringComparison.OrdinalIgnoreCase));
+                    return nhom != null ? nhom.GetXungDanh() : "Nhóm";
+                };
+
                 string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
                 string kyLabel = loaiFilter == null ? "TuyChon" :
                                  loaiFilter == "Thang" ? "Thang" :
@@ -172,7 +190,7 @@ namespace WebApp.Controllers
                             using (var wb = new XLWorkbook())
                             {
                                 var ws = wb.Worksheets.Add("BaoCao");
-                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle);
+                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle, getXungDanh(tcv.MA_NHOM));
 
                                 var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
                                 var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + "_" + kyLabel + ".xlsx", CompressionLevel.Fastest);
@@ -192,7 +210,7 @@ namespace WebApp.Controllers
             }
         }
 
-        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV, string kyTitle = null)
+        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV, string kyTitle = null, string xungDanh = "Nhóm")
         {
             // Title Header
             ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG - DỰ ÁN CD45";
@@ -209,7 +227,8 @@ namespace WebApp.Controllers
             ws.Cell("A2").Style.Font.Italic = true;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A3").Value = $"Nhóm: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A3").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
             ws.Range("A3:H3").Row(1).Merge();
             ws.Cell("A3").Style.Font.Bold = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
