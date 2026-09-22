@@ -112,10 +112,10 @@ namespace WebApp.Controllers
                         ws.Cell(row, 3).Value = item.MA_NHOM;
                         ws.Cell(row, 4).Value = item.GetXungDanh();
                         ws.Cell(row, 5).Value = item.TEN_NHOM;
-                        ws.Cell(row, 6).Value = item.MA_TCV;
-                        ws.Cell(row, 7).Value = item.TEN_TCV;
-                        ws.Cell(row, 8).Value = item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
-                        ws.Cell(row, 9).Value = item.CreatedDate.ToString("dd/MM/yyyy HH:mm");
+                        ws.Cell(row, 6).Value = item.MA_TCV ?? "";
+                        ws.Cell(row, 7).Value = !string.IsNullOrEmpty(item.TEN_TCV) ? item.TEN_TCV : (string.IsNullOrEmpty(item.MA_TCV) ? "(Chưa có TCV)" : "");
+                        ws.Cell(row, 8).Value = string.IsNullOrEmpty(item.MA_TCV) && string.IsNullOrEmpty(item.TEN_TCV) ? "Chưa có TCV" : (item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động");
+                        ws.Cell(row, 9).Value = item.CreatedDate != DateTime.MinValue ? item.CreatedDate.ToString("dd/MM/yyyy HH:mm") : "";
                         row++;
                     }
 

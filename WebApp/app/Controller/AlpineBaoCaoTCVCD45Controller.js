@@ -286,7 +286,8 @@ document.addEventListener('alpine:init', function () {
                         $select.append(new Option('-- Không có TCV nào --', '', true, true));
                     } else {
                         self.filteredTCVs.forEach(function (t) {
-                            var text = '[' + t.MA_TCV + '] ' + t.TEN_TCV + ' - ' + t.TEN_NHOM + ' (' + t.CITY_CODE + ')';
+                            var prefix = t.SHORT_PREFIX || t.PREFIX || 'Nhóm';
+                            var text = '[' + t.MA_TCV + '] ' + t.TEN_TCV + ' - ' + prefix + ' ' + t.TEN_NHOM + ' (' + t.CITY_CODE + ')';
                             var isSelected = String(t.ID) === String(self.selectedTCV);
                             var opt = new Option(text, t.ID, isSelected, isSelected);
                             $select.append(opt);

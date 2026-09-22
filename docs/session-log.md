@@ -1432,3 +1432,64 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 
+---
+
+## Session 30: [2026-09-23] Sửa lỗi Hiển thị Nhóm HCM chưa có TCV trên Quản trị Mạng lưới (/NhomTCVCD45) & Khắc phục Cơ chế Nạp Xưng danh EF6 trên Form Báo cáo TCV, Xuất Excel & Báo cáo Định kỳ
+
+### Mục tiêu:
+1. **Khắc phục Bug 1 (/NhomTCVCD45 - Quản trị Mạng lưới Nhóm & TCV)**:
+   - Các nhóm CBO tại TP. Hồ Chí Minh (`HC_ALO` - Alocare, `HC_G3V` - G3VN, `HC_MYH` - Myhands, `HC_TGA` - The Gate) do chưa có Tiếp cận viên thực địa trong bảng `CD45_NHOM_TCV` nên trước đây bị loại hoàn toàn khỏi danh sách hiển thị và bộ lọc theo tỉnh TP.HCM.
+   - Chuẩn hóa các chỉ số KPI thống kê mạng lưới (`TongNhom`, `TongTinh`) đếm đủ 22 nhóm CBO và 6 tỉnh/thành phố thuộc dự án CD45.
+2. **Khắc phục Bug 2 (BaoCaoTCVCD45/Index, Xuất Excel, Báo cáo Định kỳ Quartz & ScheduledReport)**:
+   - Tìm ra và xử lý triệt để nguyên nhân gốc rễ trong tầng Entity Framework 6: Entity `BVTL_NHOM_TBH` có các thuộc tính `PREFIX` và `SHORT_PREFIX` gắn thẻ `[NotMapped]`. Khi gọi `db.Database.SqlQuery<BVTL_NHOM_TBH>`, EF6 dùng entity materializer và tự động bỏ qua các trường `[NotMapped]`, khiến giá trị luôn là `null` và luôn fallback về `"Nhóm"`.
+   - Cung cấp POCO DTO `BVTL_NHOM_TBH_DTO` cho các hàm `GetAll()` và `GetItemByMaNhom()` trong `BVTL_NHOM_TBHDA.cs` để bảo toàn thuộc tính xưng danh trên toàn bộ ứng dụng.
+   - Bổ sung `Prefix`, `ShortPrefix`, `DisplayName` vào `GetFilterData()` của `BaoCaoTCVCD45Controller.cs` và `ScheduledReportController.cs`.
+   - Nâng cấp giao diện `BaoCaoTCVCD45/Index.cshtml` và `AlpineBaoCaoTCVCD45Controller.js` hiển thị xưng danh động tại dropdown chọn nhóm, checklist xuất ZIP hàng loạt, badge và banner xem trước.
+   - Hoàn thiện cơ chế fallback nhiều tầng trong `ReportExportService.cs` (`ExportTCVCD45ZipAsync`, `ExportHoatDongCD45ExcelAsync`).
+
+### Các công việc đã hoàn thành:
+1. **Model & Data Layer**:
+   - `Model/ModelExtend/BVTL_NHOM_TBH_Extend.cs`: Định nghĩa POCO DTO `BVTL_NHOM_TBH_DTO` không bị ảnh hưởng bởi cơ chế materialization của EF6.
+   - `Data/Admin/BVTL_NHOM_TBHDA.cs`: Cập nhật `GetAll()` và `GetItemByMaNhom()` sử dụng `SqlQuery<BVTL_NHOM_TBH_DTO>` và ánh xạ sang entity `BVTL_NHOM_TBH`, đảm bảo `PREFIX` và `SHORT_PREFIX` được đọc chính xác từ CSDL.
+   - `Data/Admin/CD45NhomTcvDA.cs`:
+     - Tái cấu trúc `GetListNhomTcv`: Dùng `UNION ALL` giữa TCV trong `CD45_NHOM_TCV` và các nhóm trong `BVTL_NHOM_TBH` (CD45) chưa có TCV. Gán `ID < 0`, `MA_TCV = NULL`, `TEN_TCV = NULL`, nạp đầy đủ xưng danh từ `BVTL_NHOM_TBH`.
+     - Cập nhật `GetKpiStats`: Tính `TongNhom` (22) và `TongTinh` (6) từ `BVTL_NHOM_TBH`.
+   - `Data/Admin/BaoCaoCD45DA.cs`: Cập nhật `GetListTCV` join `BVTL_NHOM_TBH` để ưu tiên `n.PREFIX` và `n.SHORT_PREFIX`.
+2. **Controllers & Reporting Services**:
+   - `WebApp/Controllers/BaoCaoTCVCD45Controller.cs`:
+     - `GetFilterData()`: Trả về `Prefix`, `ShortPrefix`, `DisplayName` cho từng nhóm.
+     - `ExportSingleExcel()` & `ExportExcelZip()`: Tích hợp logic fallback xưng danh đa tầng (`_BVTL_NHOM_TBHDA` -> `_BaoCaoCD45DA` -> `"Nhóm"`).
+   - `WebApp/Controllers/ScheduledReportController.cs`: Cập nhật `GetFilterData()` trả về `Prefix`, `ShortPrefix`, `DisplayName`.
+   - `WebApp/Controllers/NhomTCVCD45Controller.cs`: `ExportExcel` xử lý an toàn với các nhóm chưa có TCV.
+   - `WebApp/Services/ReportExportService.cs`: Bổ sung fallback xưng danh trong `ExportTCVCD45ZipAsync` và `ExportHoatDongCD45ExcelAsync`.
+3. **Giao diện Người dùng (UI & Scripts)**:
+   - `WebApp/Views/NhomTCVCD45/Index.cshtml` (UTF-8 with BOM): Hiển thị `(Chưa có TCV)` và badge cảnh báo `Chưa có TCV` khi dòng dữ liệu là nhóm chưa có TCV. Nút sửa xưng danh hoạt động đầy đủ.
+   - `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (UTF-8 with BOM): Cập nhật dropdown nhóm, checklist chọn TCV, badge và banner xem trước sử dụng xưng danh động (`selectedTCVObj.PREFIX || 'Nhóm'`).
+   - `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js`: Cập nhật hàm `syncSelect2` hiển thị `[Mã TCV] Tên TCV - [Prefix] Tên Nhóm (Tỉnh)`.
+4. **Kiểm thử Tự động & Nghiệm thu Hệ thống**:
+   - Viết mới các bài test trong `BVTL.Tests/ExcelReportServiceTests.cs`:
+     - `BVTL_NHOM_TBHDA_GetAll_ShouldRetrievePrefixFromDatabase`: Xác nhận đọc đúng `"Doanh nghiệp xã hội"` từ CSDL.
+     - `CD45NhomTcvDA_GetListNhomTcv_ShouldIncludeHcmGroupsWith0Tcv`: Xác nhận 4 nhóm TP.HCM hiển thị đầy đủ kể cả khi chưa có TCV.
+     - `CD45NhomTcvDA_GetKpiStats_ShouldCountAllGroupsAndProvinces`: Xác nhận `TongNhom >= 22` và `TongTinh >= 6`.
+     - `BaoCaoTCVCD45Controller_GetFilterData_ShouldReturnPrefixAndDisplayName`: Xác nhận trả đủ thuộc tính xưng danh.
+     - `ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3`: Xác nhận ô A3 render chính xác `Doanh nghiệp xã hội: Alocare`.
+   - Toàn bộ **127/127 unit tests** đạt trạng thái **PASSED (100%)**.
+   - Toàn bộ solution biên dịch thành công 0 lỗi trên MSBuild cấu hình Release.
+   - Đảm bảo nghiêm ngặt UTF-8 with BOM trên tất cả các tệp `.cshtml`, `.sql`, `.ps1`.
+
+### Các tệp đã thay đổi:
+- `Model/ModelExtend/BVTL_NHOM_TBH_Extend.cs` (Modified)
+- `Data/Admin/BVTL_NHOM_TBHDA.cs` (Modified)
+- `Data/Admin/CD45NhomTcvDA.cs` (Modified)
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/NhomTCVCD45Controller.cs` (Modified)
+- `WebApp/Controllers/ScheduledReportController.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Views/NhomTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
+- `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+

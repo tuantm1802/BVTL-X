@@ -66,7 +66,17 @@ namespace Data.Admin
             try
             {
                 var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH";
-                return db.Database.SqlQuery<BVTL_NHOM_TBH>(sql).ToList();
+                var dtoList = db.Database.SqlQuery<BVTL_NHOM_TBH_DTO>(sql).ToList();
+                return dtoList.Select(d => new BVTL_NHOM_TBH
+                {
+                    manhom_tbh = d.manhom_tbh,
+                    tennhom_tbh = d.tennhom_tbh,
+                    city_code = d.city_code,
+                    manhom_tbh_map = d.manhom_tbh_map,
+                    maduan = d.maduan,
+                    PREFIX = d.PREFIX,
+                    SHORT_PREFIX = d.SHORT_PREFIX
+                }).ToList();
             }
             catch (Exception ex)
             {
@@ -87,7 +97,21 @@ namespace Data.Admin
             {
                 var pMa = new SqlParameter("@MaNhom", (object)maNhom ?? DBNull.Value);
                 var sql = "SELECT TOP 1 manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom";
-                return db.Database.SqlQuery<BVTL_NHOM_TBH>(sql, pMa).FirstOrDefault();
+                var dto = db.Database.SqlQuery<BVTL_NHOM_TBH_DTO>(sql, pMa).FirstOrDefault();
+                if (dto != null)
+                {
+                    return new BVTL_NHOM_TBH
+                    {
+                        manhom_tbh = dto.manhom_tbh,
+                        tennhom_tbh = dto.tennhom_tbh,
+                        city_code = dto.city_code,
+                        manhom_tbh_map = dto.manhom_tbh_map,
+                        maduan = dto.maduan,
+                        PREFIX = dto.PREFIX,
+                        SHORT_PREFIX = dto.SHORT_PREFIX
+                    };
+                }
+                return null;
             }
             catch
             {

@@ -63,16 +63,28 @@ namespace Data.Admin
 
         public List<CD45_TCV_ItemModel> GetListTCV(string cityCode, string maNhom)
         {
-            var sql = "SELECT ID, RTRIM(MA_NHOM) AS MA_NHOM, TEN_NHOM, RTRIM(CITY_CODE) AS CITY_CODE, RTRIM(MA_TCV) AS MA_TCV, TEN_TCV, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM CD45_NHOM_TCV WHERE 1=1";
+            var sql = @"
+                SELECT 
+                    tcv.ID, 
+                    RTRIM(tcv.MA_NHOM) AS MA_NHOM, 
+                    tcv.TEN_NHOM, 
+                    RTRIM(tcv.CITY_CODE) AS CITY_CODE, 
+                    RTRIM(tcv.MA_TCV) AS MA_TCV, 
+                    tcv.TEN_TCV, 
+                    ISNULL(n.PREFIX, ISNULL(tcv.PREFIX, N'Nhóm')) AS PREFIX, 
+                    ISNULL(n.SHORT_PREFIX, ISNULL(tcv.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX 
+                FROM CD45_NHOM_TCV tcv
+                LEFT JOIN BVTL_NHOM_TBH n ON (tcv.MA_NHOM = n.manhom_tbh OR (n.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = n.manhom_tbh_map))
+                WHERE 1=1";
             if (!string.IsNullOrEmpty(cityCode))
             {
-                sql += " AND (CITY_CODE = '" + cityCode.Replace("'", "''") + "')";
+                sql += " AND (tcv.CITY_CODE = '" + cityCode.Replace("'", "''") + "')";
             }
             if (!string.IsNullOrEmpty(maNhom))
             {
-                sql += " AND (MA_NHOM = '" + maNhom.Replace("'", "''") + "')";
+                sql += " AND (tcv.MA_NHOM = '" + maNhom.Replace("'", "''") + "')";
             }
-            sql += " ORDER BY CITY_CODE, MA_NHOM, TRY_CAST(MA_TCV AS INT), TEN_TCV";
+            sql += " ORDER BY tcv.CITY_CODE, tcv.MA_NHOM, TRY_CAST(tcv.MA_TCV AS INT), tcv.TEN_TCV";
             return db.Database.SqlQuery<CD45_TCV_ItemModel>(sql).ToList();
         }
 

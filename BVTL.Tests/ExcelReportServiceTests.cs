@@ -422,6 +422,67 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
+        public void BVTL_NHOM_TBHDA_GetAll_ShouldRetrievePrefixFromDatabase()
+        {
+            var da = new BVTL_NHOM_TBHDA();
+            var list = da.GetAll();
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0);
+
+            var hcmItem = list.FirstOrDefault(x => x.city_code == "HCM" || x.manhom_tbh == "HC_ALO" || x.manhom_tbh_map == "alo");
+            Assert.IsNotNull(hcmItem, "HCM group should exist in GetAll()");
+            Assert.AreEqual("Doanh nghiệp xã hội", hcmItem.PREFIX, $"PREFIX was '{hcmItem.PREFIX}', expected 'Doanh nghiệp xã hội'");
+            Assert.AreEqual("Doanh nghiệp xã hội", hcmItem.GetXungDanh());
+        }
+
+        [TestMethod]
+        public void CD45NhomTcvDA_GetListNhomTcv_ShouldIncludeHcmGroupsWith0Tcv()
+        {
+            var da = new CD45NhomTcvDA();
+            var list = da.GetListNhomTcv("HCM", null, null);
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count >= 4, $"Expected at least 4 HCM groups with 0 TCVs, actual count: {list.Count}");
+
+            var alocare = list.FirstOrDefault(x => x.MA_NHOM == "HC_ALO" || x.MA_NHOM == "alo");
+            Assert.IsNotNull(alocare, "Alocare group should exist in HCM list");
+            Assert.IsNull(alocare.MA_TCV, "MA_TCV should be null for groups without TCV");
+            Assert.IsNull(alocare.TEN_TCV, "TEN_TCV should be null for groups without TCV");
+            Assert.AreEqual("Doanh nghiệp xã hội", alocare.PREFIX);
+            Assert.AreEqual("DNXH", alocare.SHORT_PREFIX);
+            Assert.AreEqual("TP Hồ Chí Minh", alocare.CityName);
+        }
+
+        [TestMethod]
+        public void CD45NhomTcvDA_GetKpiStats_ShouldCountAllGroupsAndProvinces()
+        {
+            var da = new CD45NhomTcvDA();
+            var kpi = da.GetKpiStats();
+            Assert.IsNotNull(kpi);
+            Assert.IsTrue(kpi.TongNhom >= 22, $"TongNhom must be >= 22 (actual: {kpi.TongNhom})");
+            Assert.IsTrue(kpi.TongTinh >= 6, $"TongTinh must be >= 6 (actual: {kpi.TongTinh})");
+            Assert.IsTrue(kpi.TongTCV > 0, $"TongTCV must be > 0 (actual: {kpi.TongTCV})");
+        }
+
+        [TestMethod]
+        public void BaoCaoTCVCD45Controller_GetFilterData_ShouldReturnPrefixAndDisplayName()
+        {
+            var controller = new BaoCaoTCVCD45Controller(new CityDA(), new BVTL_NHOM_TBHDA(), new BaoCaoCD45DA());
+            var jsonResult = controller.GetFilterData() as JsonResult;
+            Assert.IsNotNull(jsonResult);
+
+            var jobj = Newtonsoft.Json.Linq.JObject.FromObject(jsonResult.Data);
+            Assert.IsTrue((bool)jobj["Success"]);
+            var nhoms = jobj["Nhoms"] as Newtonsoft.Json.Linq.JArray;
+            Assert.IsNotNull(nhoms);
+            Assert.IsTrue(nhoms.Count > 0);
+
+            var firstNhom = nhoms[0];
+            Assert.IsNotNull(firstNhom["Prefix"]);
+            Assert.IsNotNull(firstNhom["ShortPrefix"]);
+            Assert.IsNotNull(firstNhom["DisplayName"]);
+        }
+
+        [TestMethod]
         public void ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3()
         {
             using (var wb = new ClosedXML.Excel.XLWorkbook())

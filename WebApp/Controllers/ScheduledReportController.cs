@@ -69,7 +69,10 @@ namespace WebApp.Controllers
                                   {
                                       MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map.Trim() : x.manhom_tbh.Trim(),
                                       TenNhom = x.tennhom_tbh,
-                                      CityCode = x.city_code != null ? x.city_code.Trim() : ""
+                                      CityCode = x.city_code != null ? x.city_code.Trim() : "",
+                                      Prefix = x.GetXungDanh(),
+                                      ShortPrefix = x.GetShortXungDanh(),
+                                      DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
                                   })
                                   .ToList();
                 return Json(new { Success = true, Cities = cities, Nhoms = nhoms }, JsonRequestBehavior.AllowGet);

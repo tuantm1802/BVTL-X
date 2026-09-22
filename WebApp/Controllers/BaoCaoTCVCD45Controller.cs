@@ -50,7 +50,10 @@ namespace WebApp.Controllers
                         manhom_tbh = (x.manhom_tbh ?? "").Trim(),
                         tennhom_tbh = (x.tennhom_tbh ?? "").Trim(),
                         city_code = (x.city_code ?? "").Trim(),
-                        manhom_tbh_map = (x.manhom_tbh_map ?? "").Trim()
+                        manhom_tbh_map = (x.manhom_tbh_map ?? "").Trim(),
+                        Prefix = x.GetXungDanh(),
+                        ShortPrefix = x.GetShortXungDanh(),
+                        DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
                     }).ToList();
                 var tcvs = _BaoCaoCD45DA.GetListTCV(null, null);
                 return Json(new { Success = true, Cities = cities, Nhoms = nhoms, TCVs = tcvs });
@@ -108,12 +111,28 @@ namespace WebApp.Controllers
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV, loaiFilter);
 
             string xungDanh = "Nhóm";
-            if (!string.IsNullOrEmpty(MaNhom) && _BVTL_NHOM_TBHDA != null)
+            if (!string.IsNullOrEmpty(MaNhom))
             {
-                var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
-                    string.Equals(x.manhom_tbh, MaNhom, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
-                if (nhom != null) xungDanh = nhom.GetXungDanh();
+                if (_BVTL_NHOM_TBHDA != null)
+                {
+                    var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
+                        string.Equals(x.manhom_tbh, MaNhom, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
+                    if (nhom != null && !string.IsNullOrWhiteSpace(nhom.PREFIX) && nhom.PREFIX != "Nhóm")
+                    {
+                        xungDanh = nhom.GetXungDanh();
+                    }
+                }
+
+                if (xungDanh == "Nhóm" && _BaoCaoCD45DA != null)
+                {
+                    var tcvList = _BaoCaoCD45DA.GetListTCV(null, MaNhom);
+                    var tcvFirst = tcvList?.FirstOrDefault();
+                    if (tcvFirst != null && !string.IsNullOrWhiteSpace(tcvFirst.PREFIX))
+                    {
+                        xungDanh = tcvFirst.PREFIX.Trim();
+                    }
+                }
             }
 
             string kyLabel = loaiFilter == null ? "TuyChon" :
@@ -161,12 +180,19 @@ namespace WebApp.Controllers
                 if (listTCV == null || listTCV.Count == 0) return Content("Không có TCV nào được chọn.");
 
                 var allNhoms = _BVTL_NHOM_TBHDA != null ? _BVTL_NHOM_TBHDA.GetAll() : null;
-                Func<string, string> getXungDanh = (mNhom) =>
+                Func<string, string, string> getXungDanh = (mNhom, tcvPrefix) =>
                 {
-                    if (string.IsNullOrEmpty(mNhom) || allNhoms == null) return "Nhóm";
-                    var nhom = allNhoms.FirstOrDefault(x => string.Equals(x.manhom_tbh, mNhom, StringComparison.OrdinalIgnoreCase) ||
-                                                           string.Equals(x.manhom_tbh_map, mNhom, StringComparison.OrdinalIgnoreCase));
-                    return nhom != null ? nhom.GetXungDanh() : "Nhóm";
+                    if (allNhoms != null && !string.IsNullOrEmpty(mNhom))
+                    {
+                        var nhom = allNhoms.FirstOrDefault(x => string.Equals(x.manhom_tbh, mNhom, StringComparison.OrdinalIgnoreCase) ||
+                                                               string.Equals(x.manhom_tbh_map, mNhom, StringComparison.OrdinalIgnoreCase));
+                        if (nhom != null && !string.IsNullOrWhiteSpace(nhom.PREFIX) && nhom.PREFIX != "Nhóm")
+                        {
+                            return nhom.GetXungDanh();
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(tcvPrefix)) return tcvPrefix.Trim();
+                    return "Nhóm";
                 };
 
                 string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
@@ -190,7 +216,7 @@ namespace WebApp.Controllers
                             using (var wb = new XLWorkbook())
                             {
                                 var ws = wb.Worksheets.Add("BaoCao");
-                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle, getXungDanh(tcv.MA_NHOM));
+                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
 
                                 var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
                                 var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + "_" + kyLabel + ".xlsx", CompressionLevel.Fastest);

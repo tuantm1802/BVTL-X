@@ -196,18 +196,34 @@
                                 </td>
                                 <td class="fw-semibold" x-text="item.TEN_NHOM"></td>
                                 <td class="text-center">
-                                    <span class="badge bg-secondary font-monospace" x-text="item.MA_TCV"></span>
+                                    <template x-if="item.MA_TCV">
+                                        <span class="badge bg-secondary font-monospace" x-text="item.MA_TCV"></span>
+                                    </template>
+                                    <template x-if="!item.MA_TCV">
+                                        <span class="text-muted small fst-italic">-</span>
+                                    </template>
                                 </td>
-                                <td class="fw-bold text-primary" x-text="item.TEN_TCV"></td>
+                                <td :class="item.TEN_TCV ? 'fw-bold text-primary' : 'text-muted fst-italic'">
+                                    <span x-text="item.TEN_TCV || '(Chưa có TCV)'"></span>
+                                </td>
                                 <td class="text-center">
-                                    <span x-show="item.IsActive" class="badge bg-success-subtle text-success border border-success">
-                                        <i class="fas fa-check-circle me-1"></i>Đang hoạt động
-                                    </span>
-                                    <span x-show="!item.IsActive" class="badge bg-danger-subtle text-danger border border-danger">
-                                        <i class="fas fa-ban me-1"></i>Ngừng hoạt động
-                                    </span>
+                                    <template x-if="!item.MA_TCV && !item.TEN_TCV">
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning">
+                                            <i class="fas fa-user-slash me-1"></i>Chưa có TCV
+                                        </span>
+                                    </template>
+                                    <template x-if="item.MA_TCV || item.TEN_TCV">
+                                        <div>
+                                            <span x-show="item.IsActive" class="badge bg-success-subtle text-success border border-success">
+                                                <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                                            </span>
+                                            <span x-show="!item.IsActive" class="badge bg-danger-subtle text-danger border border-danger">
+                                                <i class="fas fa-ban me-1"></i>Ngừng hoạt động
+                                            </span>
+                                        </div>
+                                    </template>
                                 </td>
-                                <td class="text-muted" x-text="formatDateTime(item.CreatedDate)"></td>
+                                <td class="text-muted" x-text="item.MA_TCV ? formatDateTime(item.CreatedDate) : '-'"></td>
                             </tr>
                         </template>
                         <tr x-show="!isLoading && totalRecords === 0">

@@ -317,8 +317,12 @@ namespace WebApp.Services
                                 string currentTenNhom = !string.IsNullOrEmpty(firstItem.TEN_NHOM) ? firstItem.TEN_NHOM.Trim() : currentMaNhom;
 
                                 var nhomObj = findNhom(currentMaNhom);
-                                string currentXungDanh = nhomObj != null ? nhomObj.GetXungDanh() : "Nhóm";
-                                string currentShortPrefix = nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm";
+                                string currentXungDanh = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.PREFIX) && nhomObj.PREFIX != "Nhóm")
+                                    ? nhomObj.GetXungDanh()
+                                    : (!string.IsNullOrWhiteSpace(firstItem.PREFIX) ? firstItem.PREFIX.Trim() : (nhomObj != null ? nhomObj.GetXungDanh() : "Nhóm"));
+                                string currentShortPrefix = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.SHORT_PREFIX) && nhomObj.SHORT_PREFIX != "Nhóm")
+                                    ? nhomObj.GetShortXungDanh()
+                                    : (!string.IsNullOrWhiteSpace(firstItem.SHORT_PREFIX) ? firstItem.SHORT_PREFIX.Trim() : (nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm"));
 
                                 string cleanGroupFolder = sanitize($"{currentShortPrefix} {currentTenNhom}");
 
@@ -512,6 +516,15 @@ namespace WebApp.Services
                     {
                         resolvedTenNhom = nhomItem.tennhom_tbh.Trim();
                         resolvedXungDanh = nhomItem.GetXungDanh();
+                        if (resolvedXungDanh == "Nhóm" && _baoCaoCD45DA != null)
+                        {
+                            var tcvList = _baoCaoCD45DA.GetListTCV(null, maNhom);
+                            var tcvFirst = tcvList?.FirstOrDefault();
+                            if (tcvFirst != null && !string.IsNullOrWhiteSpace(tcvFirst.PREFIX))
+                            {
+                                resolvedXungDanh = tcvFirst.PREFIX.Trim();
+                            }
+                        }
                         if (string.IsNullOrEmpty(cityCode) && !string.IsNullOrEmpty(nhomItem.city_code))
                         {
                             cityCode = nhomItem.city_code.Trim();

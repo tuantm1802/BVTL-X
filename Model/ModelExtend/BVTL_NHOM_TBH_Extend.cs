@@ -38,4 +38,16 @@ namespace Model.Model
             return $"{GetShortXungDanh()} {tennhom_tbh}";
         }
     }
+
+    public class BVTL_NHOM_TBH_DTO
+    {
+        public string manhom_tbh { get; set; }
+        public string tennhom_tbh { get; set; }
+        public string city_code { get; set; }
+        public string manhom_tbh_map { get; set; }
+        public string maduan { get; set; }
+        public string PREFIX { get; set; }
+        public string SHORT_PREFIX { get; set; }
+    }
 }
+
