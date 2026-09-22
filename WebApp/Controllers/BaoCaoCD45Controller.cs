@@ -320,5 +320,22 @@ namespace WebApp.Controllers
                 return Json(new { Success = false, Message = "Lỗi lưu cấu hình: " + ex.Message });
             }
         }
+
+        [HttpPost]
+        public JsonResult ResetCauHinhMacDinh()
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                string updatedBy = user?.UserName ?? "System";
+                bool ok = _BaoCaoCD45DA.ResetCauHinhMacDinh(updatedBy);
+                var data = _BaoCaoCD45DA.GetCauHinhChiTieu();
+                return Json(new { Success = ok, Message = "Đã khôi phục cấu hình mặc định thành công!", Data = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi khôi phục cấu hình mặc định: " + ex.Message });
+            }
+        }
     }
 }

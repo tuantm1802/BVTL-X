@@ -18,8 +18,11 @@ document.addEventListener('alpine:init', function () {
         return {
             items: [],
             isLoading: false,
+            loaiKy: 'Thang', // Thang, Quy, 6Thang, 12Thang, TuyChon
             thang: (new Date().getMonth() + 1).toString(),
             nam: new Date().getFullYear(),
+            quy: 'I',
+            ky6Thang: '1',
             fromDate: '',
             toDate: '',
             dateError: '',
@@ -38,10 +41,24 @@ document.addEventListener('alpine:init', function () {
             init: function () {
                 var self = this;
                 var now = new Date();
-                self.thang = (now.getMonth() + 1).toString();
+                var curMonth = now.getMonth() + 1;
+                self.thang = curMonth.toString();
                 self.nam = now.getFullYear();
+
+                if (curMonth >= 1 && curMonth <= 3) self.quy = 'I';
+                else if (curMonth >= 4 && curMonth <= 6) self.quy = 'II';
+                else if (curMonth >= 7 && curMonth <= 9) self.quy = 'III';
+                else if (curMonth >= 10 && curMonth <= 12) self.quy = 'IV';
+
+                self.ky6Thang = curMonth <= 6 ? '1' : '2';
+
                 self.updateDateRange();
                 self.loadDanhMuc();
+            },
+
+            getLoaiBaoCao: function () {
+                var loaiBaoCaoMap = { 'Thang': 'Thang', 'Quy': 'Quy', '6Thang': '6T', '12Thang': '12T', 'TuyChon': 'TuyChon' };
+                return loaiBaoCaoMap[this.loaiKy] || 'TuyChon';
             },
 
             formatNumber: function (val) {
@@ -120,16 +137,29 @@ document.addEventListener('alpine:init', function () {
             updateDateRange: function () {
                 var self = this;
                 var y = parseInt(self.nam) || new Date().getFullYear();
-                var m = parseInt(self.thang) || (new Date().getMonth() + 1);
 
-                // Chu kỳ: 26 tháng trước đến 25 tháng này
-                var prevMonth = m === 1 ? 12 : m - 1;
-                var prevYear = m === 1 ? y - 1 : y;
-                var strPrevMonth = prevMonth < 10 ? '0' + prevMonth : prevMonth;
-                var strM = m < 10 ? '0' + m : m;
+                if (self.loaiKy === 'Thang') {
+                    var m = parseInt(self.thang) || (new Date().getMonth() + 1);
+                    // Chu kỳ REDCap: 26 tháng trước đến 25 tháng này
+                    var prevMonth = m === 1 ? 12 : m - 1;
+                    var prevYear = m === 1 ? y - 1 : y;
+                    var strPrevMonth = prevMonth < 10 ? '0' + prevMonth : prevMonth;
+                    var strM = m < 10 ? '0' + m : m;
 
-                self.fromDate = '26/' + strPrevMonth + '/' + prevYear;
-                self.toDate = '25/' + strM + '/' + y;
+                    self.fromDate = '26/' + strPrevMonth + '/' + prevYear;
+                    self.toDate = '25/' + strM + '/' + y;
+                } else if (self.loaiKy === 'Quy') {
+                    if (self.quy === 'I') { self.fromDate = '26/12/' + (y - 1); self.toDate = '25/03/' + y; }
+                    else if (self.quy === 'II') { self.fromDate = '26/03/' + y; self.toDate = '25/06/' + y; }
+                    else if (self.quy === 'III') { self.fromDate = '26/06/' + y; self.toDate = '25/09/' + y; }
+                    else if (self.quy === 'IV') { self.fromDate = '26/09/' + y; self.toDate = '25/12/' + y; }
+                } else if (self.loaiKy === '6Thang') {
+                    if (self.ky6Thang === '1') { self.fromDate = '26/12/' + (y - 1); self.toDate = '25/06/' + y; }
+                    else { self.fromDate = '26/06/' + y; self.toDate = '25/12/' + y; }
+                } else if (self.loaiKy === '12Thang') {
+                    self.fromDate = '26/12/' + (y - 1);
+                    self.toDate = '25/12/' + y;
+                }
                 self.dateError = '';
 
                 if (self.selectedTCVObj) {
@@ -354,6 +384,8 @@ document.addEventListener('alpine:init', function () {
                 }
                 self.isLoading = true;
 
+                var loaiBaoCao = self.getLoaiBaoCao();
+
                 $.ajax({
                     type: 'POST',
                     url: '/BaoCaoTCVCD45/SearchBaoCao',
@@ -361,7 +393,8 @@ document.addEventListener('alpine:init', function () {
                         FromDate: self.fromDate,
                         ToDate: self.toDate,
                         MaNhom: self.selectedTCVObj.MA_NHOM,
-                        MaTCV: self.selectedTCVObj.MA_TCV
+                        MaTCV: self.selectedTCVObj.MA_TCV,
+                        LoaiBaoCao: loaiBaoCao
                     },
                     success: function (res) {
                         self.isLoading = false;
@@ -388,6 +421,8 @@ document.addEventListener('alpine:init', function () {
                     return;
                 }
 
+                var loaiBaoCao = self.getLoaiBaoCao();
+
                 var form = document.createElement("form");
                 form.method = "POST";
                 form.action = "/BaoCaoTCVCD45/ExportSingleExcel";
@@ -398,7 +433,8 @@ document.addEventListener('alpine:init', function () {
                     MaNhom: self.selectedTCVObj.MA_NHOM,
                     MaTCV: self.selectedTCVObj.MA_TCV,
                     TenTCV: self.selectedTCVObj.TEN_TCV,
-                    TenNhom: self.selectedTCVObj.TEN_NHOM
+                    TenNhom: self.selectedTCVObj.TEN_NHOM,
+                    LoaiBaoCao: loaiBaoCao
                 };
 
                 for (var key in fields) {
@@ -428,6 +464,8 @@ document.addEventListener('alpine:init', function () {
                     return;
                 }
 
+                var loaiBaoCao = self.getLoaiBaoCao();
+
                 var selectedObjs = self.listTCVs.filter(function (x) {
                     return self.checkedTCVs.includes(x.ID);
                 });
@@ -453,6 +491,12 @@ document.addEventListener('alpine:init', function () {
                 inputJson.name = "DanhSachTCVJson";
                 inputJson.value = JSON.stringify(selectedObjs);
                 form.appendChild(inputJson);
+
+                var inputLoai = document.createElement("input");
+                inputLoai.type = "hidden";
+                inputLoai.name = "LoaiBaoCao";
+                inputLoai.value = loaiBaoCao;
+                form.appendChild(inputLoai);
 
                 document.body.appendChild(form);
                 form.submit();

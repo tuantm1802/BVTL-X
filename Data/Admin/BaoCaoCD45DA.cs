@@ -101,6 +101,7 @@ namespace Data.Admin
             return db.Database.SqlQuery<CD45_BcTieuCauHinhModel>(
                 @"SELECT ID, ChiTieuCode, ChiTieuName, SectionCode, IsSection,
                          HienThi_Thang, HienThi_Quy, HienThi_6T, HienThi_12T,
+                         Default_Thang, Default_Quy, Default_6T, Default_12T,
                          SortOrder, IsActive
                   FROM dbo.CD45_BCTIEU_CAU_HINH
                   ORDER BY SortOrder"
@@ -138,6 +139,13 @@ namespace Data.Admin
                     }
                 }
             }
+            return true;
+        }
+
+        public bool ResetCauHinhMacDinh(string updatedBy)
+        {
+            var pUpdatedBy = string.IsNullOrEmpty(updatedBy) ? new SqlParameter("@UpdatedBy", DBNull.Value) : new SqlParameter("@UpdatedBy", updatedBy);
+            db.Database.ExecuteSqlCommand("EXEC dbo.SP_CD45_ResetCauHinhChiTieuMacDinh @UpdatedBy", pUpdatedBy);
             return true;
         }
 

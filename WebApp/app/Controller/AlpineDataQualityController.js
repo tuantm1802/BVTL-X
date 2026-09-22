@@ -349,11 +349,59 @@ document.addEventListener('alpine:init', function () {
                 self.loadLogs(1);
             },
 
-            exportWarnings: function () {
+            getExportButtonLabel: function () {
                 var self = this;
-                var url = '/DataQuality/ExportExcelWarnings?maDuAn=' + encodeURIComponent(self.filterMaDuAn) +
-                    '&apiCode=' + encodeURIComponent(self.filterApiCode);
-                window.location.href = url;
+                if (self.activeTab === 'grouped') {
+                    return 'Xuất Excel Gom nhóm Quy tắc';
+                } else if (self.activeTab === 'byUnit') {
+                    return 'Xuất Excel Thống kê Đơn vị';
+                }
+                return 'Xuất Excel Chi tiết Sự kiện';
+            },
+
+            getExportMenuLabel: function () {
+                var self = this;
+                if (self.activeTab === 'grouped') {
+                    return 'Xuất Bảng Gom nhóm Quy tắc (Tab 2)';
+                } else if (self.activeTab === 'byUnit') {
+                    return 'Xuất Bảng Thống kê Đơn vị (Tab 3)';
+                }
+                return 'Xuất Danh sách Chi tiết theo Bộ lọc (Tab 1)';
+            },
+
+            exportCurrentTab: function () {
+                var self = this;
+                if (self.activeTab === 'grouped') {
+                    window.location.href = '/DataQuality/ExportExcel?tabType=grouped&maDuAn=' + encodeURIComponent(self.filterMaDuAn) +
+                        '&severity=' + encodeURIComponent(self.filterSeverity || '');
+                } else if (self.activeTab === 'byUnit') {
+                    window.location.href = '/DataQuality/ExportExcel?tabType=byUnit&maDuAn=' + encodeURIComponent(self.filterMaDuAn);
+                } else {
+                    window.location.href = '/DataQuality/ExportExcel?tabType=details&maDuAn=' + encodeURIComponent(self.filterMaDuAn) +
+                        '&apiCode=' + encodeURIComponent(self.filterApiCode || '') +
+                        '&severity=' + encodeURIComponent(self.filterSeverity || '') +
+                        '&isResolved=' + encodeURIComponent(self.filterIsResolved || '') +
+                        '&keyword=' + encodeURIComponent(self.filterKeyword || '');
+                }
+            },
+
+            exportMultiSheet: function () {
+                var self = this;
+                window.location.href = '/DataQuality/ExportExcel?tabType=multi&maDuAn=' + encodeURIComponent(self.filterMaDuAn) +
+                    '&apiCode=' + encodeURIComponent(self.filterApiCode || '') +
+                    '&severity=' + encodeURIComponent(self.filterSeverity || '') +
+                    '&isResolved=' + encodeURIComponent(self.filterIsResolved || '') +
+                    '&keyword=' + encodeURIComponent(self.filterKeyword || '');
+            },
+
+            exportWarningsOnly: function () {
+                var self = this;
+                window.location.href = '/DataQuality/ExportExcel?tabType=warnings&maDuAn=' + encodeURIComponent(self.filterMaDuAn) +
+                    '&apiCode=' + encodeURIComponent(self.filterApiCode || '');
+            },
+
+            exportWarnings: function () {
+                this.exportCurrentTab();
             },
 
             formatDate: function (dtStr) {

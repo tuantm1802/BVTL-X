@@ -68,7 +68,18 @@
         <div class="card-body py-3">
             <div class="row">
                 <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">Tháng báo cáo</label>
+                    <label class="font-weight-bold small">Kỳ báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="loaiKy" x-on:change="updateDateRange()">
+                        <option value="Thang">Theo Tháng (26-25)</option>
+                        <option value="Quy">Theo Quý</option>
+                        <option value="6Thang">6 Tháng</option>
+                        <option value="12Thang">12 Tháng / Năm</option>
+                        <option value="TuyChon">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Thang'">
+                    <label class="font-weight-bold small">Tháng</label>
                     <select class="form-control form-control-sm" x-model="thang" x-on:change="updateDateRange()">
                         <option value="1">Tháng 1</option>
                         <option value="2">Tháng 2</option>
@@ -85,7 +96,25 @@
                     </select>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Quy'">
+                    <label class="font-weight-bold small">Quý</label>
+                    <select class="form-control form-control-sm" x-model="quy" x-on:change="updateDateRange()">
+                        <option value="I">Quý I</option>
+                        <option value="II">Quý II</option>
+                        <option value="III">Quý III</option>
+                        <option value="IV">Quý IV</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === '6Thang'">
+                    <label class="font-weight-bold small">Kỳ 6 Tháng</label>
+                    <select class="form-control form-control-sm" x-model="ky6Thang" x-on:change="updateDateRange()">
+                        <option value="1">6 Tháng đầu năm</option>
+                        <option value="2">6 Tháng cuối năm</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2" x-show="loaiKy !== 'TuyChon'">
                     <label class="font-weight-bold small">Năm</label>
                     <input type="number" class="form-control form-control-sm" x-model="nam" x-on:change="updateDateRange()" />
                 </div>

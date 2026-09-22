@@ -25,7 +25,10 @@
                 <button class="btn btn-sm btn-outline-light mr-2" x-on:click="selectAll(false)">
                     <i class="fas fa-square"></i> Bỏ chọn tất cả
                 </button>
-                <button class="btn btn-sm btn-success shadow-sm" x-on:click="saveCauHinh()" :disabled="isSaving">
+                <button class="btn btn-sm btn-warning mr-2 text-dark font-weight-bold" x-on:click="resetDefault()" :disabled="isSaving || isLoading">
+                    <i class="fas fa-undo-alt mr-1"></i> Mặc định
+                </button>
+                <button class="btn btn-sm btn-success shadow-sm" x-on:click="saveCauHinh()" :disabled="isSaving || isLoading">
                     <i class="fas fa-save mr-1"></i>
                     <span x-text="isSaving ? 'Đang lưu...' : 'Lưu cấu hình'"></span>
                 </button>
@@ -153,6 +156,32 @@
                                 item.HienThi_Quy = checked;
                                 item.HienThi_6T = checked;
                                 item.HienThi_12T = checked;
+                            }
+                        });
+                    },
+
+                    resetDefault: function () {
+                        var self = this;
+                        if (self.isSaving || self.isLoading) return;
+                        if (!confirm('Bạn có chắc chắn muốn khôi phục về cấu hình chỉ tiêu MẶC ĐỊNH ban đầu không?\n\n- Kỳ Tháng: Bỏ 5 chỉ tiêu (I_1, I_3, IV_2_1, IV_2_2, IV_2_3)\n- Các kỳ Quý, 6T, 12T: Chọn toàn bộ chỉ tiêu.')) {
+                            return;
+                        }
+                        self.isLoading = true;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/BaoCaoCD45/ResetCauHinhMacDinh',
+                            success: function (res) {
+                                self.isLoading = false;
+                                if (res.Success) {
+                                    self.items = res.Data || [];
+                                    if (window.toastr) toastr.success(res.Message || 'Đã khôi phục cấu hình mặc định thành công!');
+                                } else {
+                                    if (window.toastr) toastr.error(res.Message || 'Lỗi khi khôi phục cấu hình mặc định!');
+                                }
+                            },
+                            error: function () {
+                                self.isLoading = false;
+                                if (window.toastr) toastr.error('Có lỗi xảy ra khi khôi phục cấu hình mặc định!');
                             }
                         });
                     },

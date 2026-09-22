@@ -1,10 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Common.Common;
 using Model.ModelExtend.API.CD45;
+using System.IO;
+using System.Web.Mvc;
+using ClosedXML.Excel;
+using WebApp.Controllers;
 
 namespace BVTL.Tests
 {
@@ -485,5 +489,106 @@ namespace BVTL.Tests
         }
 
         #endregion
+    
+        #region DataQuality Tab-Context Aware Export Excel Tests
+
+        [TestMethod]
+        public void DataQualityController_ExportExcel_Details_ShouldReturnExcelFileWithChiTietSheet()
+        {
+            var ctrl = new DataQualityController();
+            var result = ctrl.ExportExcel("details", "CD45", null, null, null, null) as FileContentResult;
+
+            Assert.IsNotNull(result, "ExportExcel for details must return FileContentResult");
+            Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.ContentType);
+            Assert.IsTrue(result.FileDownloadName.StartsWith("NhatKy_ChiTiet_CD45_"), "File name must start with NhatKy_ChiTiet_CD45_");
+            Assert.IsTrue(result.FileContents.Length > 0, "File content must not be empty");
+
+            using (var stream = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(stream))
+            {
+                var ws = wb.Worksheet("ChiTiet_SuKien");
+                Assert.IsNotNull(ws, "Must have worksheet ChiTiet_SuKien");
+                Assert.IsTrue(ws.Cell("A1").GetString().Contains("NHẬT KÝ CHI TIẾT"), "A1 must contain title");
+            }
+        }
+
+        [TestMethod]
+        public void DataQualityController_ExportExcel_Grouped_ShouldReturnExcelFileWithGroupedSheet()
+        {
+            var ctrl = new DataQualityController();
+            var result = ctrl.ExportExcel("grouped", "CD45", null, null, null, null) as FileContentResult;
+
+            Assert.IsNotNull(result, "ExportExcel for grouped must return FileContentResult");
+            Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.ContentType);
+            Assert.IsTrue(result.FileDownloadName.StartsWith("GomNhom_QuyTac_CD45_"), "File name must start with GomNhom_QuyTac_CD45_");
+
+            using (var stream = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(stream))
+            {
+                var ws = wb.Worksheet("GomNhom_QuyTac");
+                Assert.IsNotNull(ws, "Must have worksheet GomNhom_QuyTac");
+                Assert.IsTrue(ws.Cell("A1").GetString().Contains("BẢNG TỔNG HỢP VI PHẠM"), "A1 must contain title");
+            }
+        }
+
+        [TestMethod]
+        public void DataQualityController_ExportExcel_ByUnit_ShouldReturnExcelFileWithUnitSheet()
+        {
+            var ctrl = new DataQualityController();
+            var result = ctrl.ExportExcel("byUnit", "CD45", null, null, null, null) as FileContentResult;
+
+            Assert.IsNotNull(result, "ExportExcel for byUnit must return FileContentResult");
+            Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.ContentType);
+            Assert.IsTrue(result.FileDownloadName.StartsWith("ThongKe_DonVi_CD45_"), "File name must start with ThongKe_DonVi_CD45_");
+
+            using (var stream = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(stream))
+            {
+                var ws = wb.Worksheet("ThongKe_DonVi");
+                Assert.IsNotNull(ws, "Must have worksheet ThongKe_DonVi");
+                Assert.IsTrue(ws.Cell("A1").GetString().Contains("BẢNG THỐNG KÊ CHẤT LƯỢNG"), "A1 must contain title");
+            }
+        }
+
+        [TestMethod]
+        public void DataQualityController_ExportExcel_MultiSheet_ShouldReturnExcelFileWithAllThreeSheets()
+        {
+            var ctrl = new DataQualityController();
+            var result = ctrl.ExportExcel("multi", "CD45", null, null, null, null) as FileContentResult;
+
+            Assert.IsNotNull(result, "ExportExcel for multi must return FileContentResult");
+            Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.ContentType);
+            Assert.IsTrue(result.FileDownloadName.StartsWith("BaoCao_ChatLuongDuLieu_CD45_"), "File name must start with BaoCao_ChatLuongDuLieu_CD45_");
+
+            using (var stream = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(stream))
+            {
+                Assert.AreEqual(3, wb.Worksheets.Count, "Multi-sheet workbook must have exactly 3 worksheets");
+                Assert.IsNotNull(wb.Worksheet("ThongKe_DonVi"), "Must contain ThongKe_DonVi worksheet");
+                Assert.IsNotNull(wb.Worksheet("GomNhom_QuyTac"), "Must contain GomNhom_QuyTac worksheet");
+                Assert.IsNotNull(wb.Worksheet("ChiTiet_CanhBao"), "Must contain ChiTiet_CanhBao worksheet");
+            }
+        }
+
+        [TestMethod]
+        public void DataQualityController_ExportExcelWarnings_ShouldReturnLegacyExcelFile()
+        {
+            var ctrl = new DataQualityController();
+            var result = ctrl.ExportExcelWarnings("CD45", null) as FileContentResult;
+
+            Assert.IsNotNull(result, "ExportExcelWarnings must return FileContentResult");
+            Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", result.ContentType);
+            Assert.IsTrue(result.FileDownloadName.StartsWith("CanhBao_REDCap_CD45_"), "File name must start with CanhBao_REDCap_CD45_");
+
+            using (var stream = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(stream))
+            {
+                var ws = wb.Worksheet("CanhBaoDuLieu");
+                Assert.IsNotNull(ws, "Must have worksheet CanhBaoDuLieu");
+            }
+        }
+
+        #endregion
+
     }
 }

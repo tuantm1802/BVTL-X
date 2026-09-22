@@ -335,7 +335,7 @@ namespace WebApp.Services
                                 // 2.2 Các Báo cáo TCV cá nhân trong Nhóm CBO
                                 foreach (var tcv in nGroup)
                                 {
-                                    var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                    var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiBaoCaoFilter);
 
                                     using (var wb = new XLWorkbook())
                                     {

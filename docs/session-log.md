@@ -1,4 +1,4 @@
-﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -1254,3 +1254,81 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `BVTL.Tests/DashboardCD45Tests.cs` (Modified)
 - `BVTL.Tests/BVTL.Tests.csproj` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Session 28: [2026-09-22] Nâng cấp Xuất Excel Đa Tab Data Quality, Khôi phục Cấu hình Chỉ tiêu Mặc định & Bộ lọc Kỳ Báo cáo TCV CD45
+
+### Yêu cầu người dùng:
+1. **Nâng cấp Xuất Excel Giám sát & Chuẩn hóa Dữ liệu (`/DataQuality/Index`)**:
+   - Triển khai Phương án 3 (Dropdown/Split button thông minh kết hợp):
+     - Click nút chính: Tự động xuất đúng dữ liệu của Tab người dùng đang đứng (Chi tiết sự kiện, Gom nhóm quy tắc, hoặc Thống kê đơn vị).
+     - Click dropdown mở rộng: Cho phép tùy chọn xuất Tab hiện tại, xuất Báo cáo Toàn diện M&E (3 Sheet trong 1 file Excel), hoặc xuất nhanh Cảnh báo chưa xử lý.
+2. **Khôi phục Cấu hình Chỉ tiêu Mặc định (`/BaoCaoCD45/CauHinhChiTieu`)**:
+   - Bổ sung nút bấm "Khôi phục mặc định" kèm hộp thoại xác nhận an toàn.
+   - Thêm các trường dữ liệu `Default_Thang`, `Default_Quy`, `Default_6T`, `Default_12T` vào bảng `CD45_BCTIEU_CAU_HINH`.
+   - Viết Stored Procedure `SP_CD45_ResetCauHinhChiTieuMacDinh` để reset nhanh các chỉ tiêu về chuẩn ma trận Excel.
+3. **Bộ lọc Kỳ Báo cáo Hoạt động TCV (`/BaoCaoTCVCD45/Index`)**:
+   - Bổ sung nút bấm chọn nhanh Kỳ báo cáo: Tháng, Quý, 6 Tháng, Năm (12T), Tùy chọn.
+   - Đồng bộ tham số `LoaiBaoCao` cho cả chức năng Tìm kiếm dữ liệu, Xuất Excel đơn lẻ (1 TCV) và Xuất file ZIP toàn bộ TCV.
+   - Cải tiến tiêu đề báo cáo và quy tắc đặt tên file Excel/ZIP chứa nhãn kỳ báo cáo rõ ràng.
+
+---
+
+### Các thay đổi kỹ thuật đã triển khai:
+
+1. **Màn hình Giám sát Dữ liệu REDCap (`/DataQuality`)**:
+   - `WebApp/Controllers/DataQualityController.cs`:
+     - Viết action tổng quát `ExportExcel(string tabType, string maDuAn, string apiCode, string severity, string keyword, string isResolved)`.
+     - Hỗ trợ đầy đủ các chế độ: `details` (Sheet ChiTiet_SuKien), `grouped` (Sheet GomNhom_QuyTac), `byunit` (Sheet ThongKe_DonVi), `multi` (Cả 3 sheet trong 1 file), `warnings` (Cảnh báo chưa xử lý).
+     - 3 hàm helper ClosedXML: `BuildSheetDetails`, `BuildSheetGrouped`, `BuildSheetByUnit` định dạng chuẩn nhận diện thương hiệu xanh, căn lề, format số liệu, kẻ khung và tô màu Severity.
+     - Duy trì alias `ExportExcelWarnings` đảm bảo tương thích ngược.
+   - `WebApp/app/Controller/AlpineDataQualityController.js`:
+     - Bổ sung `getExportButtonLabel()`, `getExportMenuLabel()`, `exportCurrentTab()`, `exportMultiSheet()`, `exportWarningsOnly()`.
+   - `WebApp/Views/DataQuality/Index.cshtml`:
+     - Cập nhật Split/Dropdown button màu đỏ (`btn-group`) với biểu tượng Excel, nhãn động và dropdown menu 3 tùy chọn.
+
+2. **Cấu hình Chỉ tiêu Báo cáo CD45 (`/BaoCaoCD45/CauHinhChiTieu`)**:
+   - `SQL_CD45_Default_Columns.sql` & `SQL_CD45_SP_ResetDefault.sql`:
+     - Thêm cột cấu hình mặc định vào `CD45_BCTIEU_CAU_HINH` và nạp dữ liệu chuẩn ma trận Excel.
+     - Tạo Stored Procedure `SP_CD45_ResetCauHinhChiTieuMacDinh`.
+   - `Data/InterfaceDA/IBaoCaoCD45DA.cs` & `Data/Admin/BaoCaoCD45DA.cs`:
+     - Bổ sung phương thức `ResetCauHinhMacDinh(string updatedBy)`.
+   - `WebApp/Controllers/BaoCaoCD45Controller.cs`:
+     - Bổ sung action `[HttpPost] ResetCauHinhMacDinh()`.
+   - `WebApp/Views/BaoCaoCD45/CauHinhChiTieu.cshtml`:
+     - Bổ sung nút bấm "Khôi phục mặc định" cạnh nút "Lưu cấu hình", tích hợp SweetAlert2 xác nhận an toàn.
+
+3. **Báo cáo Hoạt động TCV CD45 (`/BaoCaoTCVCD45`)**:
+   - `WebApp/Controllers/BaoCaoTCVCD45Controller.cs`:
+     - Hỗ trợ tham số `LoaiBaoCao` cho `SearchData`, `ExportSingleExcel`, `ExportExcel`, `ExportExcelZip`.
+     - Thêm nhãn kỳ báo cáo vào tiêu đề dòng 2 trên bảng tính Excel và tên tệp tin `.xlsx` / `.zip`.
+   - `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` & `AlpineBaoCaoTCVCD45Controller.js`:
+     - Thêm nhóm nút gạt chọn nhanh Kỳ báo cáo (Tháng / Quý / 6T / Năm 12T / Tùy chọn).
+     - Tự động đồng bộ dải ngày tương ứng khi chọn kỳ và truyền tham số khi tải/xuất dữ liệu.
+
+4. **Kiểm thử tự động (`BVTL.Tests`)**:
+   - `BVTL.Tests/DataValidationP2Tests.cs`:
+     - 5 bài kiểm thử mới cho Xuất Excel: Details, Grouped, ByUnit, MultiSheet, Legacy Warnings.
+   - Toàn bộ **116 / 116 bài kiểm thử tự động VSTest đều PASSED (100%)**.
+
+---
+
+### Các tệp đã thêm mới & thay đổi:
+- `SQL_CD45_Default_Columns.sql` (New - UTF-8 BOM)
+- `SQL_CD45_SP_ResetDefault.sql` (New - UTF-8 BOM)
+- `Data/InterfaceDA/IBaoCaoCD45DA.cs` (Modified)
+- `Data/Admin/BaoCaoCD45DA.cs` (Modified)
+- `Model/ModelExtend/BaoCaoCD45Model.cs` (Modified)
+- `WebApp/Controllers/DataQualityController.cs` (Modified)
+- `WebApp/app/Controller/AlpineDataQualityController.js` (Modified)
+- `WebApp/Views/DataQuality/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Views/BaoCaoCD45/CauHinhChiTieu.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (Modified)
+- `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `BVTL.Tests/DataValidationP2Tests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+

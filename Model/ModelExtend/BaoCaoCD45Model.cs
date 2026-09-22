@@ -13,6 +13,10 @@ namespace Model.ModelExtend
         public bool HienThi_Quy { get; set; }
         public bool HienThi_6T { get; set; }
         public bool HienThi_12T { get; set; }
+        public bool Default_Thang { get; set; }
+        public bool Default_Quy { get; set; }
+        public bool Default_6T { get; set; }
+        public bool Default_12T { get; set; }
         public int SortOrder { get; set; }
         public bool IsActive { get; set; }
     }

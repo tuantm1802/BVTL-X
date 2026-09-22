@@ -76,7 +76,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaNhom, string MaTCV)
+        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaNhom, string MaTCV, string LoaiBaoCao = null)
         {
             try
             {
@@ -85,7 +85,8 @@ namespace WebApp.Controllers
                     return Json(new { Success = false, Message = dateError });
                 }
 
-                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV);
+                string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
+                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV, loaiFilter);
                 return Json(new { Success = true, Data = data });
             }
             catch (Exception ex)
@@ -96,35 +97,47 @@ namespace WebApp.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportSingleExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom)
+        public ActionResult ExportSingleExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom, string LoaiBaoCao = null)
         {
             if (!ValidateDateRange(FromDate, ToDate, out var dateError))
             {
                 return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
             }
 
-            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV);
+            string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
+            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, MaNhom, MaTCV, loaiFilter);
+
+            string kyLabel = loaiFilter == null ? "TuyChon" :
+                             loaiFilter == "Thang" ? "Thang" :
+                             loaiFilter == "Quy" ? "Quy" :
+                             loaiFilter == "6T" ? "6Thang" : "Nam12T";
+            string kyTitle = loaiFilter == null ? "Tùy chọn ngày" :
+                             loaiFilter == "Thang" ? "Báo cáo Tháng" :
+                             loaiFilter == "Quy" ? "Báo cáo Quý" :
+                             loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
+
             using (var wb = new XLWorkbook())
             {
                 var ws = wb.Worksheets.Add("BaoCao");
-                BuildTCVWorksheet(ws, data, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV);
+                BuildTCVWorksheet(ws, data, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, kyTitle);
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    var fileName = "BaoCao_TCV_" + (TenTCV ?? MaTCV) + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+                    var cleanTcv = (TenTCV ?? MaTCV ?? "TCV").Replace("/", "_").Replace("\\", "_");
+                    var fileName = "BaoCao_TCV_" + cleanTcv + "_" + kyLabel + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom)
+        public ActionResult ExportExcel(string FromDate, string ToDate, string MaNhom, string MaTCV, string TenTCV, string TenNhom, string LoaiBaoCao = null)
         {
-            return ExportSingleExcel(FromDate, ToDate, MaNhom, MaTCV, TenTCV, TenNhom);
+            return ExportSingleExcel(FromDate, ToDate, MaNhom, MaTCV, TenTCV, TenNhom, LoaiBaoCao);
         }
 
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportExcelZip(string FromDate, string ToDate, string DanhSachTCVJson)
+        public ActionResult ExportExcelZip(string FromDate, string ToDate, string DanhSachTCVJson, string LoaiBaoCao = null)
         {
             try
             {
@@ -138,21 +151,31 @@ namespace WebApp.Controllers
                 var listTCV = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CD45_TCV_ItemModel>>(DanhSachTCVJson);
                 if (listTCV == null || listTCV.Count == 0) return Content("Không có TCV nào được chọn.");
 
+                string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
+                string kyLabel = loaiFilter == null ? "TuyChon" :
+                                 loaiFilter == "Thang" ? "Thang" :
+                                 loaiFilter == "Quy" ? "Quy" :
+                                 loaiFilter == "6T" ? "6Thang" : "Nam12T";
+                string kyTitle = loaiFilter == null ? "Tùy chọn ngày" :
+                                 loaiFilter == "Thang" ? "Báo cáo Tháng" :
+                                 loaiFilter == "Quy" ? "Báo cáo Quý" :
+                                 loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
+
                 using (var memoryStream = new MemoryStream())
                 {
                     using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                     {
                         foreach (var tcv in listTCV)
                         {
-                            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiFilter);
 
                             using (var wb = new XLWorkbook())
                             {
                                 var ws = wb.Worksheets.Add("BaoCao");
-                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV);
+                                BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle);
 
                                 var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
-                                var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + ".xlsx", CompressionLevel.Fastest);
+                                var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + "_" + kyLabel + ".xlsx", CompressionLevel.Fastest);
                                 using (var zipStream = zipEntry.Open())
                                 {
                                     wb.SaveAs(zipStream);
@@ -160,7 +183,7 @@ namespace WebApp.Controllers
                             }
                         }
                     }
-                    return File(memoryStream.ToArray(), "application/zip", "BaoCao_TCV_CD45_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip");
+                    return File(memoryStream.ToArray(), "application/zip", "BaoCao_TCV_CD45_" + kyLabel + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip");
                 }
             }
             catch (Exception ex)
@@ -169,7 +192,7 @@ namespace WebApp.Controllers
             }
         }
 
-        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV)
+        private void BuildTCVWorksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenNhom, string tenTCV, string kyTitle = null)
         {
             // Title Header
             ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG - DỰ ÁN CD45";
@@ -178,7 +201,10 @@ namespace WebApp.Controllers
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A2").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate}";
+            string kyLine = string.IsNullOrEmpty(kyTitle)
+                ? $"Kỳ báo cáo: Từ {fromDate} đến {toDate}"
+                : $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {fromDate} đến ngày: {toDate}";
+            ws.Cell("A2").Value = kyLine;
             ws.Range("A2:H2").Row(1).Merge();
             ws.Cell("A2").Style.Font.Italic = true;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
