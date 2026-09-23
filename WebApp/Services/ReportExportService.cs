@@ -187,6 +187,15 @@ namespace WebApp.Services
             return results;
         }
 
+        private class GroupProcessItem
+        {
+            public string QueryCode { get; set; }
+            public string TenNhom { get; set; }
+            public string XungDanh { get; set; }
+            public string ShortPrefix { get; set; }
+            public List<CD45_TCV_ItemModel> TcvList { get; set; }
+        }
+
         public async Task<ReportExportResult> ExportTCVCD45ZipAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null)
         {
             var sw = Stopwatch.StartNew();
@@ -203,17 +212,41 @@ namespace WebApp.Services
                     CalculatePeriodDateRange(periodType ?? "Month", year, month, out fromDate, out toDate, out pValue);
                 }
 
-                var listTCV = _baoCaoCD45DA.GetListTCV(cityCode, maNhom);
-                if (listTCV == null || listTCV.Count == 0)
+                string filterCityCode = string.IsNullOrWhiteSpace(cityCode) ? null : cityCode.Trim();
+                string filterMaNhom = string.IsNullOrWhiteSpace(maNhom) ? null : maNhom.Trim();
+
+                var listTCV = _baoCaoCD45DA.GetListTCV(filterCityCode, filterMaNhom) ?? new List<CD45_TCV_ItemModel>();
+                var allNhoms = _nhomTBHDA.GetAll() ?? new List<BVTL_NHOM_TBH>();
+
+                var cd45Nhoms = allNhoms
+                    .Where(x => string.Equals(x.maduan, "CD45", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (!string.IsNullOrEmpty(filterCityCode))
+                {
+                    cd45Nhoms = cd45Nhoms
+                        .Where(x => string.Equals((x.city_code ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                if (!string.IsNullOrEmpty(filterMaNhom))
+                {
+                    cd45Nhoms = cd45Nhoms
+                        .Where(x => string.Equals((x.manhom_tbh ?? "").Trim(), filterMaNhom, StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals((x.manhom_tbh_map ?? "").Trim(), filterMaNhom, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                if ((listTCV == null || listTCV.Count == 0) && (cd45Nhoms == null || cd45Nhoms.Count == 0))
                 {
                     result.Success = false;
-                    result.Message = $"Không tìm thấy danh sách Tiếp cận viên CD45 ({cityCode ?? "Tất cả"} - {maNhom ?? "Tất cả"}).";
+                    result.Message = $"Không tìm thấy dữ liệu Tiếp cận viên hoặc Nhóm CBO thuộc dự án CD45 ({filterCityCode ?? "Tất cả"} - {filterMaNhom ?? "Tất cả"}).";
                     return result;
                 }
 
                 string storageDir = GetStorageDirectory(year, month);
-                string suffix = !string.IsNullOrEmpty(cityCode) ? $"_{cityCode}" : "_ALL";
-                if (!string.IsNullOrEmpty(maNhom)) suffix += $"_{maNhom}";
+                string suffix = !string.IsNullOrEmpty(filterCityCode) ? $"_{filterCityCode}" : "_ALL";
+                if (!string.IsNullOrEmpty(filterMaNhom)) suffix += $"_{filterMaNhom}";
 
                 string periodTag;
                 if (periodType == "Quarter" || periodType == "Quy")
@@ -264,23 +297,35 @@ namespace WebApp.Services
                 int totalSummaries = 0;
                 string loaiBaoCaoFilter = MapPeriodTypeToLoaiBaoCao(periodType);
 
-                var allNhoms = _nhomTBHDA.GetAll();
                 Func<string, BVTL_NHOM_TBH> findNhom = (mNhom) =>
                 {
                     if (string.IsNullOrEmpty(mNhom) || allNhoms == null) return null;
-                    return allNhoms.FirstOrDefault(x => string.Equals(x.manhom_tbh, mNhom, StringComparison.OrdinalIgnoreCase) ||
-                                                        string.Equals(x.manhom_tbh_map, mNhom, StringComparison.OrdinalIgnoreCase));
+                    return allNhoms.FirstOrDefault(x => string.Equals((x.manhom_tbh ?? "").Trim(), mNhom.Trim(), StringComparison.OrdinalIgnoreCase) ||
+                                                        string.Equals((x.manhom_tbh_map ?? "").Trim(), mNhom.Trim(), StringComparison.OrdinalIgnoreCase));
                 };
 
-                var cityGroups = listTCV.GroupBy(x => (x.CITY_CODE ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
+                List<string> targetCityCodes;
+                if (!string.IsNullOrEmpty(filterCityCode))
+                {
+                    targetCityCodes = new List<string> { filterCityCode.ToUpper() };
+                }
+                else
+                {
+                    targetCityCodes = cd45Nhoms
+                        .Where(x => !string.IsNullOrWhiteSpace(x.city_code))
+                        .Select(x => x.city_code.Trim().ToUpper())
+                        .Union(listTCV.Where(x => !string.IsNullOrWhiteSpace(x.CITY_CODE)).Select(x => x.CITY_CODE.Trim().ToUpper()))
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(c => c)
+                        .ToList();
+                }
 
                 using (var fileStream = new FileStream(zipFilePath, FileMode.Create))
                 {
                     using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
                     {
-                        foreach (var cGroup in cityGroups)
+                        foreach (var currentCityCode in targetCityCodes)
                         {
-                            string currentCityCode = cGroup.Key;
                             string currentCityName = getCityName(currentCityCode);
                             string cleanCityFolder = sanitize(currentCityName);
 
@@ -309,34 +354,99 @@ namespace WebApp.Services
                             }
 
                             // 2. Gom nhóm theo từng Nhóm CBO trong Tỉnh
-                            var nhomGroups = cGroup.GroupBy(x => (x.MA_NHOM ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
-                            foreach (var nGroup in nhomGroups)
+                            var nhomsInCity = cd45Nhoms
+                                .Where(x => string.Equals((x.city_code ?? "").Trim(), currentCityCode, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+
+                            var tcvsInCity = listTCV
+                                .Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), currentCityCode, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+
+                            var groupItems = new List<GroupProcessItem>();
+                            var processedGroupCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                            // 2.1 Ưu tiên duyệt từ danh mục nhóm CBO CD45
+                            foreach (var nhom in nhomsInCity)
                             {
-                                string currentMaNhom = nGroup.Key;
-                                var firstItem = nGroup.First();
-                                string currentTenNhom = !string.IsNullOrEmpty(firstItem.TEN_NHOM) ? firstItem.TEN_NHOM.Trim() : currentMaNhom;
+                                string stdCode = (nhom.manhom_tbh ?? "").Trim();
+                                string mapCode = (nhom.manhom_tbh_map ?? "").Trim();
+                                string queryCode = !string.IsNullOrEmpty(mapCode) ? mapCode : stdCode;
+                                if (string.IsNullOrEmpty(queryCode)) continue;
 
-                                var nhomObj = findNhom(currentMaNhom);
-                                string currentXungDanh = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.PREFIX) && nhomObj.PREFIX != "Nhóm")
+                                var matchedTcvs = tcvsInCity.Where(t =>
+                                    string.Equals((t.MA_NHOM ?? "").Trim(), stdCode, StringComparison.OrdinalIgnoreCase) ||
+                                    (!string.IsNullOrEmpty(mapCode) && string.Equals((t.MA_NHOM ?? "").Trim(), mapCode, StringComparison.OrdinalIgnoreCase))
+                                ).ToList();
+
+                                string tenNhom = !string.IsNullOrWhiteSpace(nhom.tennhom_tbh)
+                                    ? nhom.tennhom_tbh.Trim()
+                                    : (matchedTcvs.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.TEN_NHOM))?.TEN_NHOM?.Trim() ?? queryCode);
+
+                                string xungDanh = nhom.GetXungDanh();
+                                string shortPrefix = nhom.GetShortXungDanh();
+
+                                groupItems.Add(new GroupProcessItem
+                                {
+                                    QueryCode = queryCode,
+                                    TenNhom = tenNhom,
+                                    XungDanh = xungDanh,
+                                    ShortPrefix = shortPrefix,
+                                    TcvList = matchedTcvs
+                                });
+
+                                if (!string.IsNullOrEmpty(stdCode)) processedGroupCodes.Add(stdCode);
+                                if (!string.IsNullOrEmpty(mapCode)) processedGroupCodes.Add(mapCode);
+                            }
+
+                            // 2.2 Gom tiếp các nhóm có TCV trong CSDL nhưng không có trong danh mục nhóm CD45
+                            var remainingTcvGroups = tcvsInCity
+                                .Where(t => !processedGroupCodes.Contains((t.MA_NHOM ?? "").Trim()))
+                                .GroupBy(t => (t.MA_NHOM ?? "OTHER").Trim(), StringComparer.OrdinalIgnoreCase);
+
+                            foreach (var rGroup in remainingTcvGroups)
+                            {
+                                string rMaNhom = rGroup.Key;
+                                var firstTcv = rGroup.First();
+                                var nhomObj = findNhom(rMaNhom);
+
+                                string tenNhom = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.tennhom_tbh))
+                                    ? nhomObj.tennhom_tbh.Trim()
+                                    : (!string.IsNullOrWhiteSpace(firstTcv.TEN_NHOM) ? firstTcv.TEN_NHOM.Trim() : rMaNhom);
+
+                                string xungDanh = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.PREFIX) && nhomObj.PREFIX != "Nhóm")
                                     ? nhomObj.GetXungDanh()
-                                    : (!string.IsNullOrWhiteSpace(firstItem.PREFIX) ? firstItem.PREFIX.Trim() : (nhomObj != null ? nhomObj.GetXungDanh() : "Nhóm"));
-                                string currentShortPrefix = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.SHORT_PREFIX) && nhomObj.SHORT_PREFIX != "Nhóm")
+                                    : (!string.IsNullOrWhiteSpace(firstTcv.PREFIX) ? firstTcv.PREFIX.Trim() : (nhomObj != null ? nhomObj.GetXungDanh() : "Nhóm"));
+
+                                string shortPrefix = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.SHORT_PREFIX) && nhomObj.SHORT_PREFIX != "Nhóm")
                                     ? nhomObj.GetShortXungDanh()
-                                    : (!string.IsNullOrWhiteSpace(firstItem.SHORT_PREFIX) ? firstItem.SHORT_PREFIX.Trim() : (nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm"));
+                                    : (!string.IsNullOrWhiteSpace(firstTcv.SHORT_PREFIX) ? firstTcv.SHORT_PREFIX.Trim() : (nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm"));
 
-                                string cleanGroupFolder = sanitize($"{currentShortPrefix} {currentTenNhom}");
+                                groupItems.Add(new GroupProcessItem
+                                {
+                                    QueryCode = rMaNhom,
+                                    TenNhom = tenNhom,
+                                    XungDanh = xungDanh,
+                                    ShortPrefix = shortPrefix,
+                                    TcvList = rGroup.ToList()
+                                });
+                            }
 
-                                // 2.1 Báo cáo tổng hợp cấp Nhóm CBO
+                            // Tiến hành xuất báo cáo cho từng Nhóm CBO
+                            foreach (var groupItem in groupItems)
+                            {
+                                string cleanGroupFolder = sanitize($"{groupItem.ShortPrefix} {groupItem.TenNhom}");
+
+                                // Báo cáo tổng hợp cấp Nhóm CBO
                                 try
                                 {
-                                    var nhomData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, currentMaNhom, null, loaiBaoCaoFilter);
+                                    var nhomData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, groupItem.QueryCode, null, loaiBaoCaoFilter);
                                     if (nhomData != null && nhomData.Count > 0)
                                     {
                                         using (var wbNhom = new XLWorkbook())
                                         {
                                             var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
-                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, currentTenNhom, currentXungDanh);
-                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(currentShortPrefix)}_{sanitize(currentTenNhom)}.xlsx", CompressionLevel.Fastest);
+                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, groupItem.TenNhom, groupItem.XungDanh);
+                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.xlsx", CompressionLevel.Fastest);
                                             using (var zipStream = nhomEntry.Open())
                                             {
                                                 wbNhom.SaveAs(zipStream);
@@ -347,26 +457,29 @@ namespace WebApp.Services
                                 }
                                 catch (Exception exNhom)
                                 {
-                                    log.Warn($"Không thể tạo file tổng hợp nhóm {currentMaNhom}: {exNhom.Message}");
+                                    log.Warn($"Không thể tạo file tổng hợp nhóm {groupItem.QueryCode}: {exNhom.Message}");
                                 }
 
-                                // 2.2 Các Báo cáo TCV cá nhân trong Nhóm CBO
-                                foreach (var tcv in nGroup)
+                                // Các Báo cáo TCV cá nhân trong Nhóm CBO (nếu nhóm có TCV)
+                                if (groupItem.TcvList != null && groupItem.TcvList.Count > 0)
                                 {
-                                    var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiBaoCaoFilter);
-
-                                    using (var wb = new XLWorkbook())
+                                    foreach (var tcv in groupItem.TcvList)
                                     {
-                                        var ws = wb.Worksheets.Add("BaoCao");
-                                        BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, currentXungDanh);
+                                        var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiBaoCaoFilter);
 
-                                        var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
-                                        var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
-                                        using (var zipStream = zipEntry.Open())
+                                        using (var wb = new XLWorkbook())
                                         {
-                                            wb.SaveAs(zipStream);
+                                            var ws = wb.Worksheets.Add("BaoCao");
+                                            BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+
+                                            var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
+                                            var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
+                                            using (var zipStream = zipEntry.Open())
+                                            {
+                                                wb.SaveAs(zipStream);
+                                            }
+                                            totalTcvExported++;
                                         }
-                                        totalTcvExported++;
                                     }
                                 }
                             }
@@ -378,13 +491,22 @@ namespace WebApp.Services
                 var fileInfo = new FileInfo(zipFilePath);
                 long sizeKb = fileInfo.Exists ? fileInfo.Length / 1024 : 0;
 
+                if (totalTcvExported == 0 && totalSummaries == 0)
+                {
+                    result.Success = false;
+                    result.Message = $"Không tìm thấy dữ liệu báo cáo nào được tạo ({filterCityCode ?? "Tất cả"} - {filterMaNhom ?? "Tất cả"}).";
+                    return result;
+                }
+
                 result.Success = true;
                 result.FileName = zipFileName;
                 result.FilePath = zipFilePath;
                 result.FileSizeBytes = fileInfo.Length;
-                result.TotalItems = totalTcvExported;
+                result.TotalItems = totalTcvExported > 0 ? totalTcvExported : totalSummaries;
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                result.Message = $"Báo cáo TCV CD45 theo Tỉnh/Nhóm: Đóng gói thành công {totalTcvExported} TCV và {totalSummaries} báo cáo tổng hợp Tỉnh/Nhóm vào file ZIP ({sizeKb} KB).";
+                result.Message = totalTcvExported > 0
+                    ? $"Báo cáo TCV CD45 theo Tỉnh/Nhóm: Đóng gói thành công {totalTcvExported} TCV và {totalSummaries} báo cáo tổng hợp Tỉnh/Nhóm vào file ZIP ({sizeKb} KB)."
+                    : $"Báo cáo TCV CD45 theo Tỉnh/Nhóm: Đóng gói thành công {totalSummaries} báo cáo tổng hợp Tỉnh/Nhóm vào file ZIP ({sizeKb} KB).";
 
                 // Ghi log CSDL (bỏ qua khi chạy UnitTest để không làm bẩn dữ liệu thật)
                 if (triggerType != "UnitTest")
@@ -398,12 +520,12 @@ namespace WebApp.Services
                         Year = year,
                         Month = month,
                         MaDuAn = "CD45",
-                        CityCode = cityCode,
-                        MaNhom = maNhom,
+                        CityCode = filterCityCode,
+                        MaNhom = filterMaNhom,
                         FileName = zipFileName,
                         FilePath = zipFilePath,
                         FileSizeKb = sizeKb,
-                        TotalRecords = totalTcvExported,
+                        TotalRecords = totalTcvExported > 0 ? totalTcvExported : totalSummaries,
                         Status = "Success",
                         ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                         TelegramSent = true,

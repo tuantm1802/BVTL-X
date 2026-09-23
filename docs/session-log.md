@@ -1473,7 +1473,8 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
      - `CD45NhomTcvDA_GetKpiStats_ShouldCountAllGroupsAndProvinces`: Xác nhận `TongNhom >= 22` và `TongTinh >= 6`.
      - `BaoCaoTCVCD45Controller_GetFilterData_ShouldReturnPrefixAndDisplayName`: Xác nhận trả đủ thuộc tính xưng danh.
      - `ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3`: Xác nhận ô A3 render chính xác `Doanh nghiệp xã hội: Alocare`.
-   - Toàn bộ **127/127 unit tests** đạt trạng thái **PASSED (100%)**.
+     - `ReportExportService_ExportTCVCD45ZipAsync_ForHCM_ShouldExportCityAndGroupSummaries`: Kiểm tra xuất báo cáo tổng hợp Tỉnh và nhóm CBO cho TP.HCM trong file ZIP.
+   - Toàn bộ **128/128 unit tests** đạt trạng thái **PASSED (100%)**.
    - Toàn bộ solution biên dịch thành công 0 lỗi trên MSBuild cấu hình Release.
    - Đảm bảo nghiêm ngặt UTF-8 with BOM trên tất cả các tệp `.cshtml`, `.sql`, `.ps1`.
 
@@ -1490,6 +1491,7 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
 - `WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js` (Modified)
 - `BVTL.Tests/ExcelReportServiceTests.cs` (Modified)
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 
 

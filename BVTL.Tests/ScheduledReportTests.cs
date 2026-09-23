@@ -115,6 +115,66 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
+        public void ReportExportService_ExportTCVCD45ZipAsync_ForHCM_ShouldExportCityAndGroupSummaries()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                var task = service.ExportTCVCD45ZipAsync(2026, 8, "HCM", null, "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export should succeed for HCM: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file should have size > 0");
+                Assert.IsTrue(result.TotalItems >= 5, $"Should have exported at least 5 summaries for HCM (actual: {result.TotalItems})");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                    {
+                        Assert.IsTrue(archive.Entries.Count >= 5, $"ZIP must contain at least 5 entries (actual: {archive.Entries.Count})");
+
+                        bool hasProvinceSummary = false;
+                        bool hasAlocare = false;
+                        bool hasG3vn = false;
+                        bool hasMyhands = false;
+                        bool hasTheGate = false;
+                        int tcvFileCount = 0;
+
+                        foreach (var entry in archive.Entries)
+                        {
+                            Assert.IsTrue(entry.FullName.Contains("Hồ Chí Minh/"), $"All entries for HCM should be in Hồ Chí Minh folder: {entry.FullName}");
+
+                            if (entry.Name == "BaoCao_TongHop_HCM.xlsx") hasProvinceSummary = true;
+                            if (entry.FullName.Contains("Alocare")) hasAlocare = true;
+                            if (entry.FullName.Contains("G3VN")) hasG3vn = true;
+                            if (entry.FullName.Contains("Myhands")) hasMyhands = true;
+                            if (entry.FullName.Contains("The Gate")) hasTheGate = true;
+                            if (entry.Name.StartsWith("BaoCao_TCV_")) tcvFileCount++;
+                        }
+
+                        Assert.IsTrue(hasProvinceSummary, "ZIP should contain Province summary report for HCM (BaoCao_TongHop_HCM.xlsx)");
+                        Assert.IsTrue(hasAlocare, "ZIP should contain Group summary report for Alocare");
+                        Assert.IsTrue(hasG3vn, "ZIP should contain Group summary report for G3VN");
+                        Assert.IsTrue(hasMyhands, "ZIP should contain Group summary report for Myhands");
+                        Assert.IsTrue(hasTheGate, "ZIP should contain Group summary report for The Gate");
+                        Assert.AreEqual(0, tcvFileCount, "HCM should have 0 TCV detail files since it has no individual TCV data in database");
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
         public void ReportExportService_ExportTCVCD45ZipAsync_AllProvinces_ShouldCreateHierarchicalStructure()
         {
             var service = new ReportExportService();
@@ -139,6 +199,7 @@ namespace BVTL.Tests
                         bool hasHanoi = false;
                         bool hasHaiPhong = false;
                         bool hasNgheAn = false;
+                        bool hasHcm = false;
                         int provinceSummaryCount = 0;
                         int groupSummaryCount = 0;
                         int tcvCount = 0;
@@ -148,6 +209,7 @@ namespace BVTL.Tests
                             if (entry.FullName.StartsWith("Hà Nội/")) hasHanoi = true;
                             if (entry.FullName.StartsWith("Hải Phòng/")) hasHaiPhong = true;
                             if (entry.FullName.StartsWith("Nghệ An/")) hasNgheAn = true;
+                            if (entry.FullName.Contains("Hồ Chí Minh/")) hasHcm = true;
 
                             var parts = entry.FullName.Split('/');
                             if (parts.Length == 2 && entry.Name.StartsWith("BaoCao_TongHop_"))
@@ -161,8 +223,9 @@ namespace BVTL.Tests
                         Assert.IsTrue(hasHanoi, "ZIP should contain folder for Hà Nội");
                         Assert.IsTrue(hasHaiPhong, "ZIP should contain folder for Hải Phòng");
                         Assert.IsTrue(hasNgheAn, "ZIP should contain folder for Nghệ An");
-                        Assert.IsTrue(provinceSummaryCount >= 5, $"Should contain summary reports for at least 5 provinces (actual: {provinceSummaryCount})");
-                        Assert.IsTrue(groupSummaryCount >= 10, $"Should contain summary reports for groups (actual: {groupSummaryCount})");
+                        Assert.IsTrue(hasHcm, "ZIP should contain folder for TP. Hồ Chí Minh");
+                        Assert.IsTrue(provinceSummaryCount >= 6, $"Should contain summary reports for at least 6 provinces (actual: {provinceSummaryCount})");
+                        Assert.IsTrue(groupSummaryCount >= 14, $"Should contain summary reports for groups (actual: {groupSummaryCount})");
                         Assert.IsTrue(tcvCount >= 100, $"Should contain >= 100 TCV reports (actual: {tcvCount})");
                     }
                 }
