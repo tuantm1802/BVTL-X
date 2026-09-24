@@ -27,7 +27,8 @@ namespace Data.Admin
                         tcv.IsActive,
                         ISNULL(tcv.CreatedDate, GETDATE()) AS CreatedDate,
                         ISNULL(n.PREFIX, ISNULL(tcv.PREFIX, N'Nhóm')) AS PREFIX,
-                        ISNULL(n.SHORT_PREFIX, ISNULL(tcv.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX
+                        ISNULL(n.SHORT_PREFIX, ISNULL(tcv.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX,
+                        ISNULL(n.CHUC_DANH, ISNULL(tcv.CHUC_DANH, N'Trưởng nhóm')) AS CHUC_DANH
                     FROM CD45_NHOM_TCV tcv
                     LEFT JOIN BVTL_CITES c ON tcv.CITY_CODE = c.Code
                     LEFT JOIN BVTL_NHOM_TBH n ON (tcv.MA_NHOM = n.manhom_tbh OR (n.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = n.manhom_tbh_map))
@@ -47,7 +48,8 @@ namespace Data.Admin
                         CAST(0 AS BIT) AS IsActive,
                         CAST(GETDATE() AS DATETIME) AS CreatedDate,
                         ISNULL(n.PREFIX, N'Nhóm') AS PREFIX,
-                        ISNULL(n.SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX
+                        ISNULL(n.SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX,
+                        ISNULL(n.CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH
                     FROM BVTL_NHOM_TBH n
                     LEFT JOIN BVTL_CITES c ON n.city_code = c.Code
                     WHERE n.maduan = 'CD45'

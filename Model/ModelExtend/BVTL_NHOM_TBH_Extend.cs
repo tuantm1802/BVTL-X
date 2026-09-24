@@ -11,6 +11,9 @@ namespace Model.Model
         [NotMapped]
         public string SHORT_PREFIX { get; set; }
 
+        [NotMapped]
+        public string CHUC_DANH { get; set; }
+
         public string GetXungDanh()
         {
             return !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
@@ -21,6 +24,19 @@ namespace Model.Model
             if (!string.IsNullOrWhiteSpace(SHORT_PREFIX)) return SHORT_PREFIX.Trim();
             if (!string.IsNullOrWhiteSpace(PREFIX)) return PREFIX.Trim();
             return "Nhóm";
+        }
+
+        public string GetChucDanh()
+        {
+            if (!string.IsNullOrWhiteSpace(CHUC_DANH)) return CHUC_DANH.Trim();
+            if (city_code == "HCM" || manhom_tbh == "HN_TT" || manhom_tbh_map == "tt" || (tennhom_tbh != null && tennhom_tbh.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0))
+                return "Giám đốc";
+            return "Trưởng nhóm";
+        }
+
+        public string GetDaiDienNhomSigner()
+        {
+            return $"{GetChucDanh()} \"{tennhom_tbh}\"";
         }
 
         public string GetFullDisplayName()
@@ -48,6 +64,7 @@ namespace Model.Model
         public string maduan { get; set; }
         public string PREFIX { get; set; }
         public string SHORT_PREFIX { get; set; }
+        public string CHUC_DANH { get; set; }
     }
 }
 

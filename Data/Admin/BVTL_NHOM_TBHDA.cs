@@ -65,7 +65,7 @@ namespace Data.Admin
         {
             try
             {
-                var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH";
+                var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX, ISNULL(CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH FROM BVTL_NHOM_TBH";
                 var dtoList = db.Database.SqlQuery<BVTL_NHOM_TBH_DTO>(sql).ToList();
                 return dtoList.Select(d => new BVTL_NHOM_TBH
                 {
@@ -75,7 +75,8 @@ namespace Data.Admin
                     manhom_tbh_map = d.manhom_tbh_map,
                     maduan = d.maduan,
                     PREFIX = d.PREFIX,
-                    SHORT_PREFIX = d.SHORT_PREFIX
+                    SHORT_PREFIX = d.SHORT_PREFIX,
+                    CHUC_DANH = d.CHUC_DANH
                 }).ToList();
             }
             catch (Exception ex)
@@ -96,7 +97,7 @@ namespace Data.Admin
             try
             {
                 var pMa = new SqlParameter("@MaNhom", (object)maNhom ?? DBNull.Value);
-                var sql = "SELECT TOP 1 manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX FROM BVTL_NHOM_TBH WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom";
+                var sql = "SELECT TOP 1 manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX, ISNULL(CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH FROM BVTL_NHOM_TBH WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom";
                 var dto = db.Database.SqlQuery<BVTL_NHOM_TBH_DTO>(sql, pMa).FirstOrDefault();
                 if (dto != null)
                 {
@@ -108,7 +109,8 @@ namespace Data.Admin
                         manhom_tbh_map = dto.manhom_tbh_map,
                         maduan = dto.maduan,
                         PREFIX = dto.PREFIX,
-                        SHORT_PREFIX = dto.SHORT_PREFIX
+                        SHORT_PREFIX = dto.SHORT_PREFIX,
+                        CHUC_DANH = dto.CHUC_DANH
                     };
                 }
                 return null;
@@ -366,17 +368,18 @@ namespace Data.Admin
         }
 
         /// <summary>
-        /// Cập nhật Xưng danh (Prefix) và Xưng danh viết tắt (ShortPrefix) cho Nhóm CBO
+        /// Cập nhật Xưng danh (Prefix), Xưng danh viết tắt (ShortPrefix) và Chức danh người ký (ChucDanh) cho Nhóm CBO
         /// </summary>
-        public bool UpdatePrefix(string maNhom, string prefix, string shortPrefix)
+        public bool UpdatePrefix(string maNhom, string prefix, string shortPrefix, string chucDanh = null)
         {
             try
             {
                 var pMa = new SqlParameter("@MaNhom", (object)maNhom ?? DBNull.Value);
                 var pPrefix = new SqlParameter("@Prefix", string.IsNullOrWhiteSpace(prefix) ? "Nhóm" : (object)prefix.Trim());
                 var pShort = new SqlParameter("@ShortPrefix", string.IsNullOrWhiteSpace(shortPrefix) ? (object)pPrefix.Value : (object)shortPrefix.Trim());
+                var pChuc = new SqlParameter("@ChucDanh", string.IsNullOrWhiteSpace(chucDanh) ? (object)DBNull.Value : (object)chucDanh.Trim());
 
-                db.Database.ExecuteSqlCommand("EXEC dbo.SP_CD45_UpdateNhomPrefix @MaNhom, @Prefix, @ShortPrefix", pMa, pPrefix, pShort);
+                db.Database.ExecuteSqlCommand("EXEC dbo.SP_CD45_UpdateNhomPrefix @MaNhom, @Prefix, @ShortPrefix, @ChucDanh", pMa, pPrefix, pShort, pChuc);
                 return true;
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 using ClosedXML.Excel;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Model.ModelExtend;
 using Model.ModelExtend.Report;
 using System;
 using System.IO;
@@ -524,6 +525,104 @@ namespace BVTL.Tests
                     {
                         Assert.AreEqual(10.0, ws.Column(c).Width, 0.1, $"Column {c} width must be 10.0");
                     }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void NhomChucDanh_DefaultValues_And_SignerFormatting_ShouldBeAccurate()
+        {
+            // HCM default is Giam doc
+            var nhomHcm = new Model.Model.BVTL_NHOM_TBH { city_code = "HCM", tennhom_tbh = "Bầu Trời Xanh" };
+            Assert.AreEqual("Giám đốc", nhomHcm.GetChucDanh());
+            Assert.AreEqual("Giám đốc \"Bầu Trời Xanh\"", nhomHcm.GetDaiDienNhomSigner());
+
+            // The Time default is Giam doc
+            var nhomTheTime = new Model.Model.BVTL_NHOM_TBH { manhom_tbh = "HN_TT", tennhom_tbh = "The Time" };
+            Assert.AreEqual("Giám đốc", nhomTheTime.GetChucDanh());
+            Assert.AreEqual("Giám đốc \"The Time\"", nhomTheTime.GetDaiDienNhomSigner());
+
+            // Other groups default is Truong nhom
+            var nhomHaiDang = new Model.Model.BVTL_NHOM_TBH { city_code = "HPG", tennhom_tbh = "Hải Đăng" };
+            Assert.AreEqual("Trưởng nhóm", nhomHaiDang.GetChucDanh());
+            Assert.AreEqual("Trưởng nhóm \"Hải Đăng\"", nhomHaiDang.GetDaiDienNhomSigner());
+
+            // Custom ChucDanh override
+            var nhomCustom = new Model.Model.BVTL_NHOM_TBH { CHUC_DANH = "Điều phối viên", tennhom_tbh = "Khát Vọng Sống" };
+            Assert.AreEqual("Điều phối viên", nhomCustom.GetChucDanh());
+            Assert.AreEqual("Điều phối viên \"Khát Vọng Sống\"", nhomCustom.GetDaiDienNhomSigner());
+
+            // CD45_NhomTcvViewModel tests
+            var vmHcm = new CD45_NhomTcvViewModel { CITY_CODE = "HCM", TEN_NHOM = "Alocare" };
+            Assert.AreEqual("Giám đốc", vmHcm.GetChucDanh());
+            Assert.AreEqual("Giám đốc \"Alocare\"", vmHcm.GetDaiDienNhomSigner());
+
+            var vmOther = new CD45_NhomTcvViewModel { CITY_CODE = "DNA", TEN_NHOM = "Sông Hàn" };
+            Assert.AreEqual("Trưởng nhóm", vmOther.GetChucDanh());
+            Assert.AreEqual("Trưởng nhóm \"Sông Hàn\"", vmOther.GetDaiDienNhomSigner());
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportHoatDongCD45ExcelAsync_ShouldIncludeFooterSignatures()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Test for The Time group in Hanoi (HNO, tt)
+                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HNO", "tt", "UnitTest", "Tester");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result);
+                Assert.IsTrue(result.Success, "Export for The Time should succeed");
+                Assert.IsTrue(File.Exists(result.FilePath));
+                generatedFilePath = result.FilePath;
+
+                using (var wb = new XLWorkbook(result.FilePath))
+                {
+                    var ws = wb.Worksheets.Worksheet(1);
+                    Assert.IsNotNull(ws);
+
+                    // Scan column A to find the signature block
+                    int lastRow = ws.LastRowUsed().RowNumber();
+                    int signRow = -1;
+                    for (int r = 5; r <= lastRow; r++)
+                    {
+                        string cellVal = ws.Cell(r, 1).GetString();
+                        if (!string.IsNullOrEmpty(cellVal) && (cellVal.Contains("Giám đốc") || cellVal.Contains("Trưởng nhóm")))
+                        {
+                            signRow = r;
+                            break;
+                        }
+                    }
+
+                    Assert.IsTrue(signRow > 0, "Signature block must be found in sheet");
+
+                    // 1. Signer 1: Dai dien nhom (Col A:B) -> Giám đốc "The Time"
+                    string signer1 = ws.Cell(signRow, 1).GetString();
+                    Assert.IsTrue(signer1.Contains("Giám đốc"), "Signer 1 should contain Giám đốc: " + signer1);
+                    Assert.IsTrue(signer1.Contains("The Time") || signer1.Contains("Time"), "Signer 1 should contain group name: " + signer1);
+                    string signer1Note = ws.Cell(signRow + 1, 1).GetString();
+                    Assert.AreEqual("(Ký, ghi rõ họ tên)", signer1Note.Trim());
+
+                    // 2. Signer 2: Can bo du an (Col C:E)
+                    string signer2 = ws.Cell(signRow, 3).GetString();
+                    Assert.AreEqual("Cán bộ dự án", signer2.Trim());
+                    string signer2Note = ws.Cell(signRow + 1, 3).GetString();
+                    Assert.AreEqual("(Ký, ghi rõ họ tên)", signer2Note.Trim());
+
+                    // 3. Signer 3: MnE (Col F:H)
+                    string signer3 = ws.Cell(signRow, 6).GetString();
+                    Assert.AreEqual("MnE", signer3.Trim());
+                    string signer3Note = ws.Cell(signRow + 1, 6).GetString();
+                    Assert.AreEqual("(Ký, ghi rõ họ tên)", signer3Note.Trim());
                 }
             }
             finally

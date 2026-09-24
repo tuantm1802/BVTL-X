@@ -159,6 +159,7 @@
                             <th style="width: 140px;">Tỉnh / Thành phố</th>
                             <th style="width: 110px;">Mã Nhóm</th>
                             <th style="width: 170px;">Loại hình / Xưng danh</th>
+                            <th style="width: 150px;">Chức danh người ký</th>
                             <th>Tên Nhóm CBO</th>
                             <th class="text-center" style="width: 100px;">Mã TCV</th>
                             <th>Họ và Tên Tiếp Cận Viên</th>
@@ -168,7 +169,7 @@
                     </thead>
                     <tbody>
                         <tr x-show="isLoading">
-                            <td colspan="9" class="text-center py-5 text-primary">
+                            <td colspan="10" class="text-center py-5 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 <span class="fw-semibold">Đang tải danh sách tiếp cận viên...</span>
                             </td>
@@ -188,11 +189,16 @@
                                               :class="(item.PREFIX && item.PREFIX.indexOf('Doanh nghiệp') !== -1) ? 'bg-primary-subtle text-primary border border-primary' : 'bg-light text-dark border'" 
                                               x-text="item.PREFIX || 'Nhóm'"></span>
                                         <button type="button" class="btn btn-sm btn-link p-0 text-muted" 
-                                                title="Chỉnh sửa xưng danh nhóm" 
+                                                title="Chỉnh sửa xưng danh & chức danh nhóm" 
                                                 x-on:click="openEditPrefixModal(item)">
                                             <i class="fas fa-edit small text-primary"></i>
                                         </button>
                                     </div>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          :class="(item.CHUC_DANH === 'Giám đốc' || item.ChucDanh === 'Giám đốc') ? 'bg-info-subtle text-info-emphasis border border-info' : 'bg-light text-dark border'" 
+                                          x-text="item.CHUC_DANH || item.ChucDanh || (item.CITY_CODE === 'HCM' || item.MA_NHOM === 'HN_TT' ? 'Giám đốc' : 'Trưởng nhóm')"></span>
                                 </td>
                                 <td class="fw-semibold" x-text="item.TEN_NHOM"></td>
                                 <td class="text-center">
@@ -227,7 +233,7 @@
                             </tr>
                         </template>
                         <tr x-show="!isLoading && totalRecords === 0">
-                            <td colspan="9" class="text-center py-4 text-muted">
+                            <td colspan="10" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                 Không tìm thấy tiếp cận viên nào!
                             </td>
@@ -296,28 +302,28 @@
                         </div>
                     </div>
 
-                    <!-- Gợi ý nhanh các loại hình xưng danh -->
+                    <!-- Gợi ý nhanh các loại hình xưng danh & chức danh -->
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-muted mb-1">Mẫu xưng danh phổ biến:</label>
+                        <label class="form-label small fw-semibold text-muted mb-1">Mẫu xưng danh & chức danh phổ biến:</label>
                         <div class="d-flex flex-wrap gap-1">
                             <button type="button" class="btn btn-sm btn-outline-primary"
-                                    x-on:click="setPresetPrefix('Doanh nghiệp xã hội', 'DNXH')">
-                                <i class="fas fa-building me-1"></i>Doanh nghiệp xã hội (DNXH)
+                                    x-on:click="setPresetPrefix('Doanh nghiệp xã hội', 'DNXH', 'Giám đốc')">
+                                <i class="fas fa-building me-1"></i>DNXH (Giám đốc)
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    x-on:click="setPresetPrefix('Nhóm', 'Nhóm')">
-                                <i class="fas fa-users me-1"></i>Nhóm (Mặc định)
+                                    x-on:click="setPresetPrefix('Nhóm', 'Nhóm', 'Trưởng nhóm')">
+                                <i class="fas fa-users me-1"></i>Nhóm CBO (Trưởng nhóm)
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-info"
-                                    x-on:click="setPresetPrefix('Trung tâm', 'TT')">
-                                <i class="fas fa-hospital-user me-1"></i>Trung tâm (TT)
+                                    x-on:click="setPresetPrefix('Trung tâm', 'TT', 'Giám đốc')">
+                                <i class="fas fa-hospital-user me-1"></i>Trung tâm (Giám đốc)
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-success"
-                                    x-on:click="setPresetPrefix('Phòng khám', 'PK')">
+                                    x-on:click="setPresetPrefix('Phòng khám', 'PK', 'Trưởng phòng khám')">
                                 <i class="fas fa-clinic-medical me-1"></i>Phòng khám (PK)
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-warning text-dark"
-                                    x-on:click="setPresetPrefix('Câu lạc bộ', 'CLB')">
+                                    x-on:click="setPresetPrefix('Câu lạc bộ', 'CLB', 'Chủ nhiệm CLB')">
                                 <i class="fas fa-user-friends me-1"></i>Câu lạc bộ (CLB)
                             </button>
                         </div>
@@ -349,6 +355,29 @@
                         </div>
                     </div>
 
+                    <!-- Trường nhập Chức danh người ký đại diện (CHUC_DANH) -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold mb-1">
+                            Chức danh người ký đại diện (Chân trang báo cáo) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control font-weight-bold"
+                                   placeholder="VD: Giám đốc, Trưởng nhóm, Điều phối viên..."
+                                   maxlength="50" x-model="editModal.chucDanh">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Chọn mẫu</button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="javascript:void(0)" x-on:click="editModal.chucDanh = 'Giám đốc'">Giám đốc (DNXH)</a>
+                                    <a class="dropdown-item" href="javascript:void(0)" x-on:click="editModal.chucDanh = 'Trưởng nhóm'">Trưởng nhóm (Nhóm CBO)</a>
+                                    <a class="dropdown-item" href="javascript:void(0)" x-on:click="editModal.chucDanh = 'Điều phối viên'">Điều phối viên</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-text small text-muted">
+                            Hiển thị ở chữ ký chân trang: <strong>[Chức danh] "[Tên nhóm]"</strong>.
+                        </div>
+                    </div>
+
                     <!-- Xem trước định dạng hiển thị -->
                     <div class="card bg-light border p-2 small">
                         <div class="text-muted fw-semibold mb-1"><i class="fas fa-eye me-1"></i>Xem trước định dạng:</div>
@@ -356,9 +385,13 @@
                             <span class="text-secondary">Tiêu đề Excel:</span>
                             <span class="fw-bold text-primary" x-text="(editModal.prefix || 'Nhóm') + ': ' + editModal.tenNhom"></span>
                         </div>
-                        <div>
+                        <div class="mb-1">
                             <span class="text-secondary">Thư mục tải về:</span>
                             <span class="fw-bold text-success font-monospace" x-text="(editModal.shortPrefix || 'Nhóm') + ' ' + editModal.tenNhom"></span>
+                        </div>
+                        <div>
+                            <span class="text-secondary">Chữ ký Chân trang:</span>
+                            <span class="fw-bold text-danger" x-text="(editModal.chucDanh || 'Trưởng nhóm') + ' &quot;' + editModal.tenNhom + '&quot;'"></span>
                         </div>
                     </div>
                 </div>

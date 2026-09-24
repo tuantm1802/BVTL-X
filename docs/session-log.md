@@ -1,4 +1,4 @@
-﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -1494,4 +1494,35 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `BVTL.Tests/ScheduledReportTests.cs` (Modified)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 
+---
+
+## Session 31: [2026-09-24] Thiết lập Chức danh Người ký Đại diện (CHUC_DANH: Giám đốc / Trưởng nhóm) cho Nhóm CBO & Chuẩn hóa Khối Chữ ký Báo cáo Excel
+
+### Mục tiêu:
+1. Cho phép cấu hình Chức danh người ký đại diện (`CHUC_DANH`) cho các Nhóm CBO/DNXH (ví dụ: "Giám đốc" đối với các Doanh nghiệp xã hội tại TP.HCM, "Trưởng nhóm" đối với các nhóm CBO truyền thống).
+2. Chuẩn hóa Khối chữ ký dưới chân bảng tính Excel báo cáo hoạt động CD45 (`BaoCaoCD45Controller.cs` và `ReportExportService.cs`):
+   - Thay thế chức danh cố định bằng chức danh động kèm tên nhóm: `{CHUC_DANH} "{TEN_NHOM}"` (ví dụ: `Giám đốc "Alocare"`, `Trưởng nhóm "Bình Minh"`).
+   - Thiết lập chuẩn chữ ký 3 bên: Đại diện đơn vị / CBO, Cán bộ dự án, MnE.
+3. Nâng cấp Modal Thiết lập Xưng danh & Chức danh trong Giao diện Quản trị Mạng lưới (`/NhomTCVCD45`):
+   - Bổ sung trường nhập liệu Chức danh người ký đại diện (`CHUC_DANH`) kèm preset gợi ý: *Giám đốc*, *Trưởng nhóm*, *Chủ nhiệm*, *Trưởng phòng khám*, *Giám đốc Trung tâm*.
+   - Khung xem trước (Live Preview) trực quan tiêu đề báo cáo và khối chữ ký cuối trang theo thời gian thực.
+4. Tầng Cơ sở dữ liệu:
+   - Tạo tệp `SQL_Nhom_ChucDanh_Upgrade.sql` (UTF-8 with BOM): Bổ sung cột `CHUC_DANH` vào `BVTL_NHOM_TBH` và `CD45_NHOM_TCV`, seed mặc định "Giám đốc" cho các nhóm TP.HCM và nhóm The Time.
+   - Cập nhật Stored Procedure `SP_CD45_UpdateNhomPrefix` hỗ trợ lưu tham số `@ChucDanh`.
+
+### Các tệp đã thêm mới & thay đổi:
+- `SQL_Nhom_ChucDanh_Upgrade.sql` (New - UTF-8 BOM)
+- `Model/ModelExtend/BVTL_NHOM_TBH_Extend.cs` (Modified)
+- `Model/ModelExtend/CD45KhachHangModel.cs` (Modified)
+- `Model/ModelExtend/BaoCaoCD45Model.cs` (Modified)
+- `Data/InterfaceDA/Admin/IBVTL_NHOM_TBHDA.cs` (Modified)
+- `Data/Admin/BVTL_NHOM_TBHDA.cs` (Modified)
+- `Data/Admin/CD45NhomTcvDA.cs` (Modified)
+- `WebApp/Services/ReportExportService.cs` (Modified)
+- `WebApp/Controllers/BaoCaoCD45Controller.cs` (Modified)
+- `WebApp/Controllers/NhomTCVCD45Controller.cs` (Modified)
+- `WebApp/Views/NhomTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
+- `WebApp/app/Controller/AlpineNhomTCVCD45Controller.js` (Modified)
+- `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
 

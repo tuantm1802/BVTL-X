@@ -193,6 +193,7 @@ namespace WebApp.Services
             public string TenNhom { get; set; }
             public string XungDanh { get; set; }
             public string ShortPrefix { get; set; }
+            public string ChucDanh { get; set; }
             public List<CD45_TCV_ItemModel> TcvList { get; set; }
         }
 
@@ -384,6 +385,7 @@ namespace WebApp.Services
 
                                 string xungDanh = nhom.GetXungDanh();
                                 string shortPrefix = nhom.GetShortXungDanh();
+                                string chucDanh = nhom.GetChucDanh();
 
                                 groupItems.Add(new GroupProcessItem
                                 {
@@ -391,6 +393,7 @@ namespace WebApp.Services
                                     TenNhom = tenNhom,
                                     XungDanh = xungDanh,
                                     ShortPrefix = shortPrefix,
+                                    ChucDanh = chucDanh,
                                     TcvList = matchedTcvs
                                 });
 
@@ -421,12 +424,17 @@ namespace WebApp.Services
                                     ? nhomObj.GetShortXungDanh()
                                     : (!string.IsNullOrWhiteSpace(firstTcv.SHORT_PREFIX) ? firstTcv.SHORT_PREFIX.Trim() : (nhomObj != null ? nhomObj.GetShortXungDanh() : "Nhóm"));
 
+                                string chucDanh = (nhomObj != null && !string.IsNullOrWhiteSpace(nhomObj.CHUC_DANH))
+                                    ? nhomObj.GetChucDanh()
+                                    : (!string.IsNullOrWhiteSpace(firstTcv.CHUC_DANH) ? firstTcv.CHUC_DANH.Trim() : (nhomObj != null ? nhomObj.GetChucDanh() : (currentCityCode == "HCM" || rMaNhom == "HN_TT" ? "Giám đốc" : "Trưởng nhóm")));
+
                                 groupItems.Add(new GroupProcessItem
                                 {
                                     QueryCode = rMaNhom,
                                     TenNhom = tenNhom,
                                     XungDanh = xungDanh,
                                     ShortPrefix = shortPrefix,
+                                    ChucDanh = chucDanh,
                                     TcvList = rGroup.ToList()
                                 });
                             }
@@ -444,9 +452,9 @@ namespace WebApp.Services
                                     {
                                         using (var wbNhom = new XLWorkbook())
                                         {
-                                            var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
-                                            BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, groupItem.TenNhom, groupItem.XungDanh);
-                                            var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.xlsx", CompressionLevel.Fastest);
+                                             var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
+                                             BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, groupItem.TenNhom, groupItem.XungDanh, groupItem.ChucDanh);
+                                             var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.xlsx", CompressionLevel.Fastest);
                                             using (var zipStream = nhomEntry.Open())
                                             {
                                                 wbNhom.SaveAs(zipStream);
@@ -628,6 +636,7 @@ namespace WebApp.Services
                 string resolvedCityName = !string.IsNullOrEmpty(cityCode) ? getCityName(cityCode) : "Toàn quốc";
                 string resolvedTenNhom = "Tất cả nhóm";
                 string resolvedXungDanh = "Nhóm";
+                string resolvedChucDanh = "Trưởng nhóm";
 
                 if (!string.IsNullOrEmpty(maNhom))
                 {
@@ -638,6 +647,7 @@ namespace WebApp.Services
                     {
                         resolvedTenNhom = nhomItem.tennhom_tbh.Trim();
                         resolvedXungDanh = nhomItem.GetXungDanh();
+                        resolvedChucDanh = nhomItem.GetChucDanh();
                         if (resolvedXungDanh == "Nhóm" && _baoCaoCD45DA != null)
                         {
                             var tcvList = _baoCaoCD45DA.GetListTCV(null, maNhom);
@@ -645,6 +655,10 @@ namespace WebApp.Services
                             if (tcvFirst != null && !string.IsNullOrWhiteSpace(tcvFirst.PREFIX))
                             {
                                 resolvedXungDanh = tcvFirst.PREFIX.Trim();
+                            }
+                            if (tcvFirst != null && !string.IsNullOrWhiteSpace(tcvFirst.CHUC_DANH))
+                            {
+                                resolvedChucDanh = tcvFirst.CHUC_DANH.Trim();
                             }
                         }
                         if (string.IsNullOrEmpty(cityCode) && !string.IsNullOrEmpty(nhomItem.city_code))
@@ -657,6 +671,14 @@ namespace WebApp.Services
                     {
                         resolvedTenNhom = maNhom;
                     }
+                }
+                else if (!string.IsNullOrEmpty(cityCode))
+                {
+                    resolvedChucDanh = "Đại diện đơn vị";
+                }
+                else
+                {
+                    resolvedChucDanh = "Đại diện dự án";
                 }
 
                 string suffix;
@@ -698,7 +720,7 @@ namespace WebApp.Services
                 using (var wb = new XLWorkbook())
                 {
                     var ws = wb.Worksheets.Add($"CD45_{periodTag}");
-                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom, resolvedXungDanh);
+                    BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom, resolvedXungDanh, resolvedChucDanh);
                     wb.SaveAs(filePath);
                 }
 
@@ -986,7 +1008,7 @@ namespace WebApp.Services
             ws.PageSetup.Margins.Bottom = 0.6;
         }
 
-        private void BuildHoatDongCD45Worksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenTinh, string tenNhom, string xungDanh = "Nhóm")
+        private void BuildHoatDongCD45Worksheet(IXLWorksheet ws, List<BaoCaoCD45Model> data, string fromDate, string toDate, string tenTinh, string tenNhom, string xungDanh = "Nhóm", string chucDanh = null)
         {
             ws.Cell("A1").Value = "BÁO CÁO HOẠT ĐỘNG TỔNG HỢP - DỰ ÁN CD45 (DREAMH)";
             ws.Range("A1:H1").Row(1).Merge();
@@ -1061,6 +1083,61 @@ namespace WebApp.Services
             var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), 8);
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            // Signature Footer
+            row += 2;
+            int signTitleRow = row;
+            int signNoteRow = row + 1;
+
+            string signer1Title;
+            if (!string.IsNullOrEmpty(tenNhom) && tenNhom != "Tất cả nhóm" && !tenNhom.StartsWith("Toàn tỉnh"))
+            {
+                signer1Title = $"{chucDanh ?? "Trưởng nhóm"} \"{tenNhom}\"";
+            }
+            else if (!string.IsNullOrEmpty(tenTinh) && tenTinh != "Toàn quốc")
+            {
+                signer1Title = !string.IsNullOrWhiteSpace(chucDanh) && chucDanh != "Trưởng nhóm" ? chucDanh : "Đại diện đơn vị";
+            }
+            else
+            {
+                signer1Title = !string.IsNullOrWhiteSpace(chucDanh) && chucDanh != "Trưởng nhóm" ? chucDanh : "Đại diện dự án";
+            }
+
+            // 1. Khối chữ ký "Đại diện nhóm" (Merge cột A:B)
+            ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+            ws.Cell(signTitleRow, 1).Value = signer1Title;
+            ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+            ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // 2. Khối chữ ký "Cán bộ dự án" (Merge cột C:E)
+            ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
+            ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+            ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
+            ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // 3. Khối chữ ký "MnE" (Merge cột F:H)
+            ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
+            ws.Cell(signTitleRow, 6).Value = "MnE";
+            ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
+            ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
+            ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
+            ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
+            ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             // Thiết lập độ rộng cột (Column Widths)
             ws.Column(1).Width = 5.5;  // Cột # (STT)

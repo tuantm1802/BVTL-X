@@ -174,6 +174,7 @@ namespace WebApp.Controllers
 
             string tenNhom = "Tất cả nhóm";
             string xungDanh = "Nhóm";
+            string chucDanh = "Trưởng nhóm";
             if (!string.IsNullOrEmpty(MaNhom))
             {
                 var nhom = _BVTL_NHOM_TBHDA.GetAll()?.FirstOrDefault(x =>
@@ -181,6 +182,7 @@ namespace WebApp.Controllers
                     string.Equals(x.manhom_tbh_map, MaNhom, StringComparison.OrdinalIgnoreCase));
                 tenNhom = nhom != null ? nhom.tennhom_tbh : MaNhom;
                 xungDanh = nhom != null ? nhom.GetXungDanh() : "Nhóm";
+                chucDanh = nhom != null ? nhom.GetChucDanh() : "Trưởng nhóm";
                 if (string.IsNullOrEmpty(MaTinh) && nhom != null && !string.IsNullOrEmpty(nhom.city_code))
                 {
                     MaTinh = nhom.city_code;
@@ -251,6 +253,65 @@ namespace WebApp.Controllers
                     }
                     row++;
                 }
+
+                var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), 8);
+                dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                // Signature Footer
+                row += 2;
+                int signTitleRow = row;
+                int signNoteRow = row + 1;
+
+                string signer1Title;
+                if (!string.IsNullOrEmpty(MaNhom) && tenNhom != "Tất cả nhóm" && !tenNhom.StartsWith("Toàn tỉnh"))
+                {
+                    signer1Title = $"{chucDanh ?? "Trưởng nhóm"} \"{tenNhom}\"";
+                }
+                else if (!string.IsNullOrEmpty(MaTinh) && tenTinh != "Toàn quốc")
+                {
+                    signer1Title = !string.IsNullOrWhiteSpace(chucDanh) && chucDanh != "Trưởng nhóm" ? chucDanh : "Đại diện đơn vị";
+                }
+                else
+                {
+                    signer1Title = !string.IsNullOrWhiteSpace(chucDanh) && chucDanh != "Trưởng nhóm" ? chucDanh : "Đại diện dự án";
+                }
+
+                // 1. Khối chữ ký "Đại diện nhóm" (Merge cột A:B)
+                ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+                ws.Cell(signTitleRow, 1).Value = signer1Title;
+                ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+                ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+                ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+                ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+                ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+                ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                // 2. Khối chữ ký "Cán bộ dự án" (Merge cột C:E)
+                ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
+                ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+                ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+                ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
+                ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+                ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+                ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+                ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                // 3. Khối chữ ký "MnE" (Merge cột F:H)
+                ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
+                ws.Cell(signTitleRow, 6).Value = "MnE";
+                ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
+                ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
+                ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
+                ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
+                ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
+                ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 // Thiết lập độ rộng cột (Column Widths)
                 ws.Column(1).Width = 5.5;  // Cột # (STT)

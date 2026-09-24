@@ -26,6 +26,7 @@
                     cityName: '',
                     prefix: 'Nhóm',
                     shortPrefix: 'Nhóm',
+                    chucDanh: 'Trưởng nhóm',
                     isSaving: false,
                     errorMsg: ''
                 },
@@ -176,6 +177,7 @@
                     self.editModal.cityName = item.CityName || item.CityCode || '';
                     self.editModal.prefix = item.PREFIX || item.Prefix || 'Nhóm';
                     self.editModal.shortPrefix = item.SHORT_PREFIX || item.ShortPrefix || self.editModal.prefix || 'Nhóm';
+                    self.editModal.chucDanh = item.CHUC_DANH || item.ChucDanh || (self.editModal.cityName === 'HCM' || self.editModal.maNhom === 'HN_TT' ? 'Giám đốc' : 'Trưởng nhóm');
                     self.editModal.errorMsg = '';
                     self.editModal.isSaving = false;
                 },
@@ -190,7 +192,8 @@
                             TEN_NHOM: nhom.TenNhom,
                             CityName: nhom.CityCode,
                             PREFIX: nhom.Prefix || 'Nhóm',
-                            SHORT_PREFIX: nhom.ShortPrefix || 'Nhóm'
+                            SHORT_PREFIX: nhom.ShortPrefix || 'Nhóm',
+                            CHUC_DANH: nhom.ChucDanh || 'Trưởng nhóm'
                         });
                     }
                 },
@@ -201,9 +204,12 @@
                     this.editModal.isSaving = false;
                 },
 
-                setPresetPrefix: function (prefix, shortPrefix) {
+                setPresetPrefix: function (prefix, shortPrefix, chucDanh) {
                     this.editModal.prefix = prefix;
                     this.editModal.shortPrefix = shortPrefix;
+                    if (chucDanh) {
+                        this.editModal.chucDanh = chucDanh;
+                    }
                 },
 
                 saveNhomPrefix: function () {
@@ -225,7 +231,8 @@
                         data: {
                             maNhom: self.editModal.maNhom,
                             prefix: self.editModal.prefix.trim(),
-                            shortPrefix: self.editModal.shortPrefix.trim()
+                            shortPrefix: self.editModal.shortPrefix.trim(),
+                            chucDanh: (self.editModal.chucDanh || '').trim() || 'Trưởng nhóm'
                         },
                         success: function (res) {
                             self.editModal.isSaving = false;

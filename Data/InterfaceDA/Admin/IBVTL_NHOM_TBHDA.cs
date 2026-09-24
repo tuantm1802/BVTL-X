@@ -78,8 +78,8 @@ namespace Data.InterfaceDA.Admin
         ObjectMessage Delete(string maNhom, int userId);
 
         /// <summary>
-        /// Cập nhật Xưng danh (Prefix) và Xưng danh viết tắt (ShortPrefix) cho Nhóm CBO
+        /// Cập nhật Xưng danh (Prefix), Xưng danh viết tắt (ShortPrefix) và Chức danh người ký (ChucDanh) cho Nhóm CBO
         /// </summary>
-        bool UpdatePrefix(string maNhom, string prefix, string shortPrefix);
+        bool UpdatePrefix(string maNhom, string prefix, string shortPrefix, string chucDanh = null);
     }
 }
