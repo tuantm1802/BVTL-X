@@ -1,4 +1,4 @@
-﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -1524,5 +1524,31 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `WebApp/Views/NhomTCVCD45/Index.cshtml` (Modified - UTF-8 BOM)
 - `WebApp/app/Controller/AlpineNhomTCVCD45Controller.js` (Modified)
 - `BVTL.Tests/ScheduledReportTests.cs` (Modified)
+- `docs/session-log.md` (Modified - UTF-8 BOM)
+
+---
+
+## Session 32: [2026-09-25] Phân biệt Tiến trình API Đồng bộ và Tác vụ Hệ thống trên Giao diện Quản lý Auto-Sync (/SyncData)
+
+### Mục tiêu:
+1. Nâng cấp bộ đếm tiến trình ngầm Quartz trên màn hình Quản lý Đồng bộ Dữ liệu Tự động (`/SyncData/Index`).
+2. Tách bạch rõ ràng số lượng tiến trình API đồng bộ dữ liệu (`syncJobCount`) và các tác vụ hệ thống nền (`systemJobCount`, ví dụ tác vụ tự động xuất báo cáo định kỳ `ScheduledReportJob`).
+3. Cải tiến giao diện hiển thị badge: `[syncJobCount] (+[systemJobCount] HT)` kèm tooltip giải thích chi tiết, tránh gây hiểu lầm cho người quản trị khi thấy số lượng tiến trình ngầm lệch so với số lượng API cấu hình.
+
+### Các công việc đã hoàn thành:
+1. **Backend Controller (`WebApp/Controllers/SyncDataController.cs`)**:
+   - Trong action `GetSchedulerStatus()`: Quét danh sách trigger của scheduler Quartz và phân loại tiến trình dựa vào `jobKey.Group` ("AutoSyncGroup") hoặc `jobKey.Name.EndsWith("_Job")`.
+   - Trả về các trường bổ sung: `syncJobCount`, `systemJobCount`, và thuộc tính `IsSyncJob` trong từng item của `jobs`.
+2. **Client Controller (`WebApp/app/Controller/AlpineSyncDataController.js`)**:
+   - Cập nhật state `scheduler` bổ sung `syncJobCount: 0`, `systemJobCount: 0`.
+   - Tự động nạp và gán giá trị khi polling/cập nhật trạng thái scheduler.
+3. **Giao diện Người dùng (`WebApp/Views/SyncData/Index.cshtml`)**:
+   - Đảm bảo lưu chuẩn UTF-8 with BOM (`utf-8-sig`).
+   - Cập nhật card "Tiến trình API ngầm": Hiển thị số lượng API đồng bộ chính, hiển thị thêm nhãn phụ `(+1 HT)` nếu có tác vụ hệ thống đang kích hoạt kèm tooltip diễn giải rõ ràng.
+
+### Các tệp đã thay đổi:
+- `WebApp/Controllers/SyncDataController.cs` (Modified)
+- `WebApp/app/Controller/AlpineSyncDataController.js` (Modified)
+- `WebApp/Views/SyncData/Index.cshtml` (Modified - UTF-8 BOM)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 

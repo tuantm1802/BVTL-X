@@ -18,6 +18,8 @@ document.addEventListener('alpine:init', function () {
                 isAutoSyncEnabled: true,
                 lastStartedTime: '—',
                 jobCount: 0,
+                syncJobCount: 0,
+                systemJobCount: 0,
                 jobs: [],
                 isAdmin: false,
                 isLoadingStatus: false
@@ -133,6 +135,8 @@ document.addEventListener('alpine:init', function () {
                             self.scheduler.isAutoSyncEnabled = res.isAutoSyncEnabled;
                             self.scheduler.lastStartedTime = res.lastStartedTime;
                             self.scheduler.jobCount = res.jobCount;
+                            self.scheduler.syncJobCount = res.syncJobCount !== undefined ? res.syncJobCount : res.jobCount;
+                            self.scheduler.systemJobCount = res.systemJobCount || 0;
                             self.scheduler.jobs = res.jobs || [];
                             self.scheduler.isAdmin = res.isAdmin;
                         }

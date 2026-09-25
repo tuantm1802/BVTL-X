@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Quản lý Đồng bộ Dữ liệu Tự động (Auto-Sync)";
 }
 
@@ -47,9 +47,12 @@
                     <p class="text-white-50 small mb-0">Các API có trạng thái Kích hoạt sẽ tự động thực thi định kỳ theo chu kỳ (TimeLoop) mà không cần thao tác thủ công.</p>
                 </div>
                 <div class="col-lg-6 text-lg-right d-flex align-items-center justify-content-lg-end">
-                    <div class="mr-4 text-center">
-                        <div class="text-xs text-white-50 text-uppercase font-weight-bold">Tiến trình ngầm</div>
-                        <div class="h3 font-weight-bold text-white mb-0" x-text="scheduler.jobCount">0</div>
+                    <div class="mr-4 text-center" :title="scheduler.systemJobCount > 0 ? ('Gồm ' + scheduler.syncJobCount + ' tiến trình API đồng bộ và ' + scheduler.systemJobCount + ' tác vụ hệ thống (xuất báo cáo định kỳ)') : (scheduler.syncJobCount + ' tiến trình API đồng bộ')" style="cursor: help;">
+                        <div class="text-xs text-white-50 text-uppercase font-weight-bold">Tiến trình API ngầm</div>
+                        <div class="h3 font-weight-bold text-white mb-0 d-flex align-items-center justify-content-center">
+                            <span x-text="scheduler.syncJobCount">0</span>
+                            <span class="text-white-50 font-weight-normal ml-1" style="font-size: 0.85rem;" x-show="scheduler.systemJobCount > 0" x-text="'(+' + scheduler.systemJobCount + ' HT)'" title="1 tác vụ hệ thống: Tự động xuất báo cáo định kỳ"></span>
+                        </div>
                     </div>
                     <template x-if="scheduler.isAdmin">
                         <div class="d-flex align-items-center bg-dark p-2 rounded border border-secondary">

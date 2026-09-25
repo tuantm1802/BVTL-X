@@ -166,6 +166,8 @@ namespace WebApp.Controllers
                 bool isRunning = scheduler != null && scheduler.IsStarted && !scheduler.IsShutdown && !scheduler.InStandbyMode;
                 bool isStandby = scheduler != null && scheduler.InStandbyMode;
                 int jobCount = 0;
+                int syncJobCount = 0;
+                int systemJobCount = 0;
                 var jobList = new List<object>();
 
                 if (scheduler != null && !scheduler.IsShutdown)
@@ -181,9 +183,21 @@ namespace WebApp.Controllers
                         DateTimeOffset? nextFire = trigger?.GetNextFireTimeUtc();
                         DateTimeOffset? prevFire = trigger?.GetPreviousFireTimeUtc();
 
+                        bool isSyncJob = jobKey.Group == "AutoSyncGroup" || jobKey.Name.EndsWith("_Job");
+                        if (isSyncJob)
+                        {
+                            syncJobCount++;
+                        }
+                        else
+                        {
+                            systemJobCount++;
+                        }
+
                         jobList.Add(new
                         {
                             JobName = jobKey.Name,
+                            JobGroup = jobKey.Group,
+                            IsSyncJob = isSyncJob,
                             NextFireTime = nextFire.HasValue ? nextFire.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss") : "—",
                             PrevFireTime = prevFire.HasValue ? prevFire.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss") : "—"
                         });
@@ -198,6 +212,8 @@ namespace WebApp.Controllers
                     isAutoSyncEnabled = JobScheduler.IsAutoSyncEnabled,
                     lastStartedTime = JobScheduler.LastStartedTime?.ToString("dd/MM/yyyy HH:mm:ss") ?? "—",
                     jobCount = jobCount,
+                    syncJobCount = syncJobCount,
+                    systemJobCount = systemJobCount,
                     jobs = jobList,
                     isAdmin = isAdmin
                 });
