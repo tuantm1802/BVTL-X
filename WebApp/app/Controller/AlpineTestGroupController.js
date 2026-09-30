@@ -94,12 +94,23 @@ document.addEventListener('alpine:init', function () {
                         if (window.hideLoading) hideLoading();
                         if (response && response.data) {
                             self.RawListData = response.data;
-                            self.applyFiltersAndPagination(response.totalItems);
+                            self.ListData = response.data;
+                            self.modelSearch.totalItems = response.totalItems || 0;
+                            if (response.stats) {
+                                self.stats.totalCities = response.stats.totalCities;
+                                self.stats.totalGroups = response.stats.totalGroups;
+                            } else {
+                                self.stats.totalGroups = self.modelSearch.totalItems;
+                            }
+                            self.calculatePagination();
                         } else {
                             self.ListData = [];
                             self.RawListData = [];
                             self.modelSearch.totalItems = 0;
-                            self.calculateStats();
+                            if (response && response.stats) {
+                                self.stats.totalCities = response.stats.totalCities;
+                                self.stats.totalGroups = response.stats.totalGroups;
+                            }
                             self.calculatePagination();
                         }
                     },
@@ -113,42 +124,22 @@ document.addEventListener('alpine:init', function () {
 
             applyFiltersAndPagination: function (serverTotal) {
                 var self = this;
-                serverTotal = serverTotal || 0;
-                var filtered = self.RawListData.slice();
-
-                var kw = (self.modelSearch.KeyWord || '').toLowerCase().trim();
-                if (kw) {
-                    filtered = filtered.filter(function (item) {
-                        return (item.manhom_tbh && item.manhom_tbh.toLowerCase().indexOf(kw) !== -1) ||
-                            (item.tennhom_tbh && item.tennhom_tbh.toLowerCase().indexOf(kw) !== -1) ||
-                            (item.CityName && item.CityName.toLowerCase().indexOf(kw) !== -1);
-                    });
-                }
-
-                if (self.modelSearch.CityCode) {
-                    filtered = filtered.filter(function (item) {
-                        return item.city_code === self.modelSearch.CityCode;
-                    });
-                }
-
-                self.ListData = filtered;
-                self.modelSearch.totalItems = (kw || self.modelSearch.CityCode) ? filtered.length : (serverTotal || filtered.length);
-
-                self.calculateStats();
+                self.ListData = self.RawListData;
+                self.modelSearch.totalItems = serverTotal || (self.RawListData ? self.RawListData.length : 0);
                 self.calculatePagination();
             },
 
-            calculateStats: function () {
+            calculateStats: function (serverStats) {
                 var self = this;
-                self.stats.totalGroups = self.modelSearch.totalItems || self.RawListData.length;
-                var citiesSet = {};
-                var list = (self.RawListData && self.RawListData.length > 0) ? self.RawListData : self.ListData;
-                list.forEach(function (item) {
-                    if (item.CityName) {
-                        citiesSet[item.CityName] = true;
+                if (serverStats) {
+                    if (serverStats.totalCities !== undefined) self.stats.totalCities = serverStats.totalCities;
+                    if (serverStats.totalGroups !== undefined) self.stats.totalGroups = serverStats.totalGroups;
+                } else {
+                    self.stats.totalGroups = self.modelSearch.totalItems;
+                    if (!self.stats.totalCities && self.ListCity && self.ListCity.length > 0) {
+                        self.stats.totalCities = self.ListCity.length;
                     }
-                });
-                self.stats.totalCities = Object.keys(citiesSet).length;
+                }
             },
 
             calculatePagination: function () {

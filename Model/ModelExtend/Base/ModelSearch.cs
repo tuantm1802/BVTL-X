@@ -17,6 +17,7 @@ namespace Model.ModelExtend.Base
         public string Months { get; set; }
         public int? Year { get; set; }
         public string CityCodes { get; set; }
+        public string CityCode { get; set; }
         public string MaDuAn { get; set; }
         public string CityMode { get; set; }
     }

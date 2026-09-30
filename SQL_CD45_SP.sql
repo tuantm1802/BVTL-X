@@ -1,4 +1,4 @@
-﻿﻿CREATE OR ALTER PROC SP_CD45_GetBaoCao
+﻿CREATE OR ALTER PROC SP_CD45_GetBaoCao
     @FromDate    DATE         = NULL,
     @ToDate      DATE         = NULL,
     @CityCode    VARCHAR(100) = NULL,

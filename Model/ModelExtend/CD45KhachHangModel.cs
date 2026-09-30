@@ -177,6 +177,9 @@ namespace Model.ModelExtend
         public string PREFIX { get; set; }
         public string SHORT_PREFIX { get; set; }
         public string CHUC_DANH { get; set; }
+        public string MANHOM_TBH { get; set; }
+        public string MANHOM_MAP { get; set; }
+        public int RowIndex { get; set; }
         public string GetXungDanh() => !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
         public string GetShortXungDanh() => !string.IsNullOrWhiteSpace(SHORT_PREFIX) ? SHORT_PREFIX.Trim() : GetXungDanh();
         public string GetChucDanh() => !string.IsNullOrWhiteSpace(CHUC_DANH) ? CHUC_DANH.Trim() : (CITY_CODE == "HCM" || MA_NHOM == "HN_TT" || MA_NHOM == "tt" || (TEN_NHOM != null && TEN_NHOM.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0) ? "Giám đốc" : "Trưởng nhóm");

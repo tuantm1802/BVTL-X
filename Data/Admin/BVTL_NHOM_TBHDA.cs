@@ -37,10 +37,11 @@ namespace Data.Admin
             {
                 var param = new List<SqlParameter>
                 {
-                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
-                    new SqlParameter("OrderByName", modelSearch.SortColumn),
-                    new SqlParameter("Page", modelSearch.currentPage),
-                    new SqlParameter("PageSize", modelSearch.pageSize)
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),
+                    new SqlParameter("OrderByName", string.IsNullOrEmpty(modelSearch.SortColumn) ? "manhom_tbh" : (object)modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage <= 0 ? 1 : modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize <= 0 ? 10 : modelSearch.pageSize),
+                    new SqlParameter("CityCode", string.IsNullOrEmpty(modelSearch.CityCode) ? DBNull.Value : (object)modelSearch.CityCode)
                 };
                 result = _DatabaseSql.ExecuteProcToList<NhomTBHPageModel>(Constants.SP_NhomTBH_Get_By_Page, param).ToList();
             }
@@ -357,6 +358,7 @@ namespace Data.Admin
 
                 // Thiết lập các trường mặc định nếu chưa có
                 model.manhom_tbh_map = model.manhom_tbh;
+                if (string.IsNullOrWhiteSpace(model.maduan)) model.maduan = "CD45";
                 if (string.IsNullOrWhiteSpace(model.PREFIX)) model.PREFIX = "Nhóm";
                 if (string.IsNullOrWhiteSpace(model.SHORT_PREFIX)) model.SHORT_PREFIX = "Nhóm";
                 if (string.IsNullOrWhiteSpace(model.CHUC_DANH)) model.CHUC_DANH = "Trưởng nhóm";
@@ -436,6 +438,7 @@ namespace Data.Admin
 
                 data.tennhom_tbh = model.tennhom_tbh.Trim();
                 data.city_code = model.city_code.Trim();
+                if (string.IsNullOrWhiteSpace(data.maduan)) data.maduan = "CD45";
                 if (!string.IsNullOrWhiteSpace(model.PREFIX)) data.PREFIX = model.PREFIX.Trim();
                 if (!string.IsNullOrWhiteSpace(model.SHORT_PREFIX)) data.SHORT_PREFIX = model.SHORT_PREFIX.Trim();
                 if (!string.IsNullOrWhiteSpace(model.CHUC_DANH)) data.CHUC_DANH = model.CHUC_DANH.Trim();

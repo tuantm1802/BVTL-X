@@ -66,42 +66,58 @@ namespace Data.Admin
         }
 
         /// <summary>
-        /// Lấy danh sách dự án
+        /// Lấy danh sách dự án (kèm trạng thái IsActive)
         /// </summary>
         /// <returns></returns>
         public List<BVTL_DU_AN> GetAll()
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            return db.BVTL_DU_AN.ToList();
+            try
+            {
+                var sql = "SELECT maduan, tenduan, ISNULL(IsActive, 1) AS IsActive FROM BVTL_DU_AN";
+                var dtoList = db.Database.SqlQuery<BVTL_DU_AN_DTO>(sql).ToList();
+                return dtoList.Select(d => new BVTL_DU_AN
+                {
+                    maduan = d.maduan,
+                    tenduan = d.tenduan,
+                    IsActive = d.IsActive
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                log.Warn("Lỗi lấy danh sách dự án với IsActive: " + ex.Message);
+                db.Configuration.ProxyCreationEnabled = false;
+                return db.BVTL_DU_AN.ToList();
+            }
         }
 
         /// <summary>
         /// Lấy danh sách dự án theo người dùng
         /// </summary>
-        /// <param name="modelSearch"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         public List<BVTL_DU_AN> GetDuAnReport(int userId)
         {
-            db.Configuration.ProxyCreationEnabled = false;
             var result = new List<BVTL_DU_AN>();
             try
             {
+                var allDuAn = GetAll();
                 var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == userId);
                 if (user == null) return result;
 
                 // Admin hệ thống: xem tất cả dự án
                 if (user.IsAdmin)
-                    return db.BVTL_DU_AN.ToList();
+                    return allDuAn;
 
                 // MaDuAn rỗng: trả về rỗng, không để lộ toàn bộ dự án
                 if (string.IsNullOrEmpty(user.MaDuAn))
                     return result;
 
                 var listMaDuAn = user.MaDuAn.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
-                return db.BVTL_DU_AN.Where(x => listMaDuAn.Contains(x.maduan)).ToList();
+                return allDuAn.Where(x => listMaDuAn.Contains(x.maduan)).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                log.Error("Lỗi GetDuAnReport: " + ex.Message, ex);
                 result = new List<BVTL_DU_AN>();
             }
             return result;

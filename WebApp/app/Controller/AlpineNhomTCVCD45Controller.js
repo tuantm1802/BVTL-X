@@ -79,6 +79,12 @@
                     return pages;
                 },
 
+                getItemKey: function (item, idx) {
+                    if (!item) return idx;
+                    if (item.RowIndex) return item.RowIndex;
+                    return (item.CITY_CODE || '') + '_' + (item.MA_NHOM || '') + '_' + (item.MA_TCV || item.ID || idx);
+                },
+
                 changePage: function (page) {
                     var p = parseInt(page);
                     if (isNaN(p) || p < 1) p = 1;
@@ -111,8 +117,9 @@
                     if (!self.selectedCity) {
                         self.filteredNhoms = self.listNhoms;
                     } else {
+                        var targetCity = (self.selectedCity || '').trim().toUpperCase();
                         self.filteredNhoms = self.listNhoms.filter(function (x) {
-                            return x.CityCode === self.selectedCity;
+                            return (x.CityCode || '').trim().toUpperCase() === targetCity;
                         });
                     }
                     self.selectedNhom = '';

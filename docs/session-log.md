@@ -1666,3 +1666,51 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - docs/session-log.md (Modified - UTF-8 BOM)
 - docs/test-cases-phan-quyen.md (New - UTF-8 BOM)
 - tests/ (New test scripts & screenshots)
+
+
+---
+
+## Session 35: [2026-09-30] Hoàn thiện Quản lý Dự án Active (CD45 - DREAMH), Nâng cấp Lọc Địa bàn Nhóm CBO (/TestGroup & /NhomTCVCD45) và Đồng bộ Mã hóa Toàn diện
+
+### Mục tiêu:
+1. Chuẩn hóa danh mục Dự án trong hệ thống: Kích hoạt duy nhất Dự án CD45 (DREAMH), vô hiệu hóa các dự án đã dừng hoạt động (CH07, CD43,...).
+2. Khi tạo người dùng mới tại /User: Mặc định chọn Dự án CD45, hiển thị ghi chú hướng dẫn rõ ràng.
+3. Nâng cấp bộ lọc địa bàn và phân trang Stored Procedure NhomTBH_Get_By_Page hỗ trợ lọc theo mã tỉnh, từ khóa và dự án CD45.
+4. Nâng cấp CD45NhomTcvDA hỗ trợ truy vấn danh sách đa mã tỉnh (CITY_CODE IN (...)), tối ưu khám phá và liên kết nhóm REDCap.
+5. Rà soát và đồng bộ chuẩn UTF-8 with BOM (utf-8-sig) trên 100% tệp tin .sql, .cshtml, .ps1 của toàn bộ hệ thống, loại bỏ triệt để nguy cơ double-BOM và mojibake.
+
+### Các công việc đã hoàn thành:
+1. **Quản lý Dự án & Phân quyền**:
+   - Thêm cột IsActive vào bảng BVTL_DU_AN (SQL_CD45_Project_Active_Upgrade.sql), đặt IsActive = 1 cho CD45 và IsActive = 0 cho các dự án khác.
+   - Bổ sung BVTL_DU_AN_Extend.cs và cập nhật DuAnDA.cs trả về trạng thái IsActive của dự án.
+   - Cập nhật UserController.cs, UserController.js, _add.cshtml, _edit.cshtml mặc định gán dự án CD45 và vô hiệu hóa chọn các dự án đã ngừng.
+2. **Quản trị Mạng lưới Nhóm CBO (/TestGroup & /NhomTCVCD45)**:
+   - Cập nhật Stored Procedure NhomTBH_Get_By_Page (SQL_NhomTBH_Get_By_Page_Upgrade.sql) tiếp nhận tham số @CityCode và @Keyword, phân trang OFFSET-FETCH chuẩn xác.
+   - Refactor TestGroupController.cs, AlpineTestGroupController.js đồng bộ dữ liệu và số liệu thống kê từ server.
+   - Tạo Stored Procedure SP_CD45_AutoProvisionNhom (SQL_CD45_AutoProvisionNhom.sql) hỗ trợ tự động đồng bộ nhóm mới từ REDCap sang bảng quản trị.
+   - Cập nhật CD45NhomTcvDA.cs hỗ trợ lọc nhiều mã tỉnh dạng mảng tham số an toàn.
+3. **Chuẩn hóa Mã hóa & Kiểm thử**:
+   - Quét toàn bộ repo, đảm bảo 100% tệp .sql, .cshtml, .ps1 đều có chính xác 1 UTF-8 BOM (ï»¿), không có mojibake.
+   - Chạy thành công 130/130 Unit Tests trong BVTL.Tests (100% PASS).
+
+### Các tệp đã thay đổi/thêm mới:
+- Data/Admin/BVTL_NHOM_TBHDA.cs (Modified)
+- Data/Admin/CD45NhomTcvDA.cs (Modified)
+- Data/Admin/DuAnDA.cs (Modified)
+- Model/Model.csproj (Modified)
+- Model/ModelExtend/Base/ModelSearch.cs (Modified)
+- Model/ModelExtend/BVTL_DU_AN_Extend.cs (New)
+- Model/ModelExtend/CD45KhachHangModel.cs (Modified)
+- SQL_CD45_AutoProvisionNhom.sql (New - UTF-8 BOM)
+- SQL_CD45_Project_Active_Upgrade.sql (New - UTF-8 BOM)
+- SQL_NhomTBH_Get_By_Page_Upgrade.sql (New - UTF-8 BOM)
+- WebApp/Controllers/NhomTCVCD45Controller.cs (Modified)
+- WebApp/Controllers/TestGroupController.cs (Modified)
+- WebApp/Controllers/UserController.cs (Modified)
+- WebApp/Views/NhomTCVCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/_add.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/_edit.cshtml (Modified - UTF-8 BOM)
+- WebApp/app/Controller/AlpineNhomTCVCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineTestGroupController.js (Modified)
+- WebApp/app/Controller/UserController.js (Modified)
+- Đồng bộ UTF-8 BOM trên các tệp .cshtml, .ps1 trong WebApp và WebBVTLAPI

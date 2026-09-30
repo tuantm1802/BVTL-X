@@ -174,7 +174,7 @@
                                 <span class="fw-semibold">Đang tải danh sách tiếp cận viên...</span>
                             </td>
                         </tr>
-                        <template x-for="(item, idx) in pagedItems" :key="item.ID">
+                        <template x-for="(item, idx) in pagedItems" :key="getItemKey(item, idx)">
                             <tr>
                                 <td class="text-center text-muted" x-text="(pageIndex - 1) * pageSize + idx + 1"></td>
                                 <td>

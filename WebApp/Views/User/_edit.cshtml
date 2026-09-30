@@ -180,8 +180,9 @@
                         <div class="row">
                             <div class="col-md-5 mb-3">
                                 <label class="font-weight-bold text-dark small requiredInput" title="Dự án quản lý">Dự án quản lý</label>
-                                <select class="form-control" ui-select2 multiple ng-model="ListMaDuAn" name="ListMaDuAn" ng-options="item.Code as item.Name for item in ListDuAn">
+                                <select class="form-control" ui-select2 multiple ng-model="ListMaDuAn" name="ListMaDuAn" ng-options="item.Code as item.Name disable when item.Disabled for item in ListDuAn">
                                 </select>
+                                <small class="form-text text-muted mt-1"><i class="fas fa-info-circle text-primary mr-1"></i> Hệ thống hiện áp dụng cho <b>Dự án CD45 (DREAMH)</b>. Các dự án khác đã dừng hoạt động.</small>
                             </div>
 
                             <div class="col-md-4 mb-3">

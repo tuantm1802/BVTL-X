@@ -43,19 +43,19 @@ namespace WebApp.Controllers
                 bool isAdmin = IsCurrentUserAdmin();
 
                 var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
-                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Contains(c)).ToArray();
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Any(a => string.Equals(a, c, StringComparison.OrdinalIgnoreCase))).ToArray();
 
                 var cities = _cityDA.GetAll()
                                     .Where(x => allowedTarget.Contains(x.Code))
                                     .Select(x => new { CityCode = x.Code, CityName = x.Name })
                                     .ToList();
 
-                var nhomsQuery = _nhomDA.GetAll().Where(x => x.maduan == "CD45");
+                var nhomsQuery = _nhomDA.GetAll().Where(x => (x.maduan == "CD45" || string.IsNullOrEmpty(x.maduan)) && x.maduan != "CH07");
                 if (!isAdmin)
                 {
-                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Any(a => string.Equals(a, x.city_code.Trim(), StringComparison.OrdinalIgnoreCase)));
                 }
-                var nhoms = nhomsQuery.Select(x => new { 
+                var nhoms = nhomsQuery.OrderBy(x => x.city_code).ThenBy(x => x.tennhom_tbh).Select(x => new { 
                                         MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
                                         TenNhom = x.tennhom_tbh, 
                                         CityCode = x.city_code,
@@ -99,7 +99,12 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = _nhomTcvDA.GetAllForExport(cityCode, maNhom);
+                string scopedCity = ScopeCityCodeFilter(cityCode);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Content("Bạn không có quyền truy cập dữ liệu khu vực này.");
+                }
+                var data = _nhomTcvDA.GetAllForExport(scopedCity, maNhom);
 
                 using (var workbook = new XLWorkbook())
                 {

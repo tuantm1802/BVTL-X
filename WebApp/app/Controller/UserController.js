@@ -427,11 +427,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
     $scope.ListCity = [];
     $scope.ListCityCode = [];
     $scope.ListDuAn = [];
-    $scope.ListMaDuAn = [];
+    $scope.ListMaDuAn = ['CD45'];
     $scope.FileName = "";
     angular.element(document).ready(function () {
         $scope.ListTestGroupId = [];
-        $scope.ListMaDuAn = [];
+        $scope.ListMaDuAn = ['CD45'];
         showToast();
         GetDanhMuc();
     });
@@ -464,6 +464,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                     $scope.ListDuAn = data.DuAns;
                 }
 
+                $scope.ListMaDuAn = ['CD45'];
                 $scope.ListStatus = [{ ID: true, Name: 'Sử dụng' }, { ID: false, Name: 'Không sử dụng' }];
                 $scope.model.Status = true;
                 $scope.model.Gender = "M";
@@ -479,6 +480,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             toastr.error("Bạn chưa chọn Dự án quản lý");
             return false;
         } else {
+            $scope.model.MaDuAn = '';
             for (var i = 0; i < $scope.ListMaDuAn.length; i++) {
                 if ($scope.model.MaDuAn == null || $scope.model.MaDuAn == '')
                     $scope.model.MaDuAn = $scope.ListMaDuAn[i];

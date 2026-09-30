@@ -53,12 +53,42 @@ namespace WebApp.Controllers
             };
             try
             {
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+                var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Any(a => string.Equals(a, c, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+                string inputCityCode = modelSearch.CityCode;
+                string scopedCity = ScopeCityCodeFilter(inputCityCode);
+
+                int totalCities = string.IsNullOrWhiteSpace(inputCityCode) ? allowedTarget.Length : Math.Min(inputCityCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Length, allowedTarget.Length);
+
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { 
+                        data = new List<object>(), 
+                        totalItems = 0, 
+                        stats = new { totalCities = totalCities, totalGroups = 0 }, 
+                        Error = false, 
+                        Title = "Lấy dữ liệu thành công." 
+                    });
+                }
+
+                modelSearch.CityCode = scopedCity;
                 int totalItems = 0;
                 var data = _testGroupDA.GetAllByPage(modelSearch);
                 if (data != null && data.Count > 0)
                     totalItems = data.FirstOrDefault().TotalRow;
+
+                int totalGroups = totalItems;
                 AddLog("Lấy dữ liệu theo trang bảng Nhóm thu thập DL( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
-                return Json(new { data = data, totalItems = totalItems, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { 
+                    data = data, 
+                    totalItems = totalItems, 
+                    stats = new { totalCities = totalCities, totalGroups = totalGroups }, 
+                    Error = false, 
+                    Title = "Lấy dữ liệu thành công." 
+                });
             }
             catch (Exception ex)
             {
@@ -117,9 +147,19 @@ namespace WebApp.Controllers
             };
             try
             {
-                var citys = _CityDA.GetAll();
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+                var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Any(a => string.Equals(a, c, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+                var citys = _CityDA.GetAll()
+                                   .Where(x => allowedTarget.Contains(x.Code))
+                                   .OrderBy(x => x.Code)
+                                   .Select(x => new { Code = x.Code, Name = x.Name })
+                                   .ToList();
+
                 AddLog("Lấy dữ liệu danh mục thành công.");
-                return Json(new { Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." }); ;
+                return Json(new { Citys = citys, Error = false, Title = "Lấy dữ liệu thành công." });
             }
             catch (Exception ex)
             {
@@ -154,6 +194,7 @@ namespace WebApp.Controllers
             try
             {
                 var session = (UserLogin)Session["USER_SESSION"];
+                if (string.IsNullOrWhiteSpace(model.maduan)) model.maduan = "CD45";
                 obj = _testGroupDA.Add(model);
                 if (obj.Error)
                     AddLog("Thêm mới dữ liệu bảng Nhóm thu thập DL(Name: " + model.tennhom_tbh + ", Descripttion: " + model.manhom_tbh + ") lỗi: " + obj.Title);

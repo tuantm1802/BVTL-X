@@ -168,13 +168,18 @@ namespace WebApp.Controllers
                 // Lấy danh sách tỉnh
                 var citys = _CityDA.GetAll().Select(x => new { Code = x.Code, Name = x.Name }).ToList();
 
-                // Lấy danh sách du an
-                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
-                duAns.Add(new
-                {
-                    Code = "ALL",
-                    Name = "Tất cả"
-                });
+                // Lấy danh sách du an (Chỉ active CD45, disable các dự án khác, bỏ ALL)
+                var duAns = _DuAnDA.GetAll()
+                    .Select(x => new
+                    {
+                        Code = x.maduan,
+                        Name = x.tenduan + (x.IsActive == false ? " (Đã dừng)" : ""),
+                        Disabled = (x.IsActive == false),
+                        IsActive = (x.IsActive != false)
+                    })
+                    .OrderByDescending(x => x.IsActive)
+                    .ThenBy(x => x.Code)
+                    .ToList();
 
                 int systemTotalUsers = 0;
                 int systemActiveUsers = 0;
@@ -231,17 +236,18 @@ namespace WebApp.Controllers
                 if (testGroupIds == null)
                     testGroupIds = new List<string>();
 
-                var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
-
                 var maDuAns = new List<string>();
                 if (!string.IsNullOrEmpty(data.MaDuAn))
-                    maDuAns = data.MaDuAn.Split(',').ToList();
-
-                if (duAns.Count == maDuAns.Count)
-                    maDuAns = new List<string>() { "ALL" };
-
-                if (maDuAns == null)
-                    maDuAns = new List<string>();
+                {
+                    if (data.MaDuAn.Trim().Equals("ALL", StringComparison.OrdinalIgnoreCase))
+                    {
+                        maDuAns = new List<string>() { "CD45" };
+                    }
+                    else
+                    {
+                        maDuAns = data.MaDuAn.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                    }
+                }
 
                 var cityCodes = new List<string>();
                 if (!string.IsNullOrEmpty(data.CityCodes))
@@ -393,10 +399,9 @@ namespace WebApp.Controllers
                         }
                     }
 
-                    if (user.MaDuAn == "ALL")
+                    if (string.IsNullOrWhiteSpace(user.MaDuAn) || user.MaDuAn.Trim().Equals("ALL", StringComparison.OrdinalIgnoreCase))
                     {
-                        var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
-                        user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
+                        user.MaDuAn = "CD45";
                     }
 
                     // Thu thập danh sách tỉnh quản lý: từ form + tự động bổ sung từ nhóm CBO được gán (nếu có)
@@ -561,10 +566,9 @@ namespace WebApp.Controllers
                     }
                 }
 
-                if (user.MaDuAn == "ALL")
+                if (string.IsNullOrWhiteSpace(user.MaDuAn) || user.MaDuAn.Trim().Equals("ALL", StringComparison.OrdinalIgnoreCase))
                 {
-                    var duAns = _DuAnDA.GetAll().Select(x => new { Code = x.maduan, Name = x.tenduan }).ToList();
-                    user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
+                    user.MaDuAn = "CD45";
                 }
 
                 // Thu thập danh sách tỉnh quản lý: từ form + tự động bổ sung từ nhóm CBO được gán (nếu có)
