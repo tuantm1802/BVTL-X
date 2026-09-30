@@ -132,7 +132,7 @@
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Tỉnh / Thành phố</label>
                     <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange($event.target.value)">
-                        <option value="">-- Tất cả tỉnh --</option>
+                        <option value="" x-text="isAdmin ? '-- Tất cả tỉnh --' : '-- Tất cả tỉnh được phân quyền --'">-- Tất cả tỉnh --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
                             <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
                         </template>

@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Model.Model;
 using Model.ModelExtend;
 using System;
@@ -87,16 +87,18 @@ namespace Data.Admin
             try
             {
                 var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == userId);
-                if (string.IsNullOrEmpty(user.MaDuAn) || user.IsAdmin)
-                {
-                    
+                if (user == null) return result;
+
+                // Admin hệ thống: xem tất cả dự án
+                if (user.IsAdmin)
                     return db.BVTL_DU_AN.ToList();
-                }
-                else
-                {
-                    var duAns = db.BVTL_DU_AN.Where(x => user.MaDuAn.Contains( x.maduan )).ToList();
-                    return duAns != null ? duAns : new List<BVTL_DU_AN>();
-                }
+
+                // MaDuAn rỗng: trả về rỗng, không để lộ toàn bộ dự án
+                if (string.IsNullOrEmpty(user.MaDuAn))
+                    return result;
+
+                var listMaDuAn = user.MaDuAn.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
+                return db.BVTL_DU_AN.Where(x => listMaDuAn.Contains(x.maduan)).ToList();
             }
             catch (Exception)
             {

@@ -40,21 +40,30 @@ namespace WebApp.Controllers
         {
             try
             {
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+
+                var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Contains(c)).ToArray();
+
                 var cities = _cityDA.GetAll()
-                                    .Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code))
+                                    .Where(x => allowedTarget.Contains(x.Code))
                                     .Select(x => new { CityCode = x.Code, CityName = x.Name })
                                     .ToList();
 
-                var nhoms = _nhomDA.GetAll()
-                                   .Where(x => x.maduan == "CD45")
-                                   .Select(x => new { 
+                var nhomsQuery = _nhomDA.GetAll().Where(x => x.maduan == "CD45");
+                if (!isAdmin)
+                {
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                }
+                var nhoms = nhomsQuery.Select(x => new { 
                                        MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
                                        TenNhom = x.tennhom_tbh, 
                                        CityCode = x.city_code 
                                    })
                                    .ToList();
 
-                return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, IsAdmin = isAdmin });
             }
             catch (Exception ex)
             {
@@ -67,6 +76,15 @@ namespace WebApp.Controllers
         {
             try
             {
+                if (filter != null)
+                {
+                    string scoped = ScopeCityCodeFilter(filter.CityCode);
+                    if (scoped == "__NO_ACCESS__")
+                    {
+                        return Json(new { Success = true, Data = new List<object>(), Total = 0 });
+                    }
+                    filter.CityCode = scoped;
+                }
                 var res = _khachHangDA.GetPagingCustomers(filter);
                 return Json(new { Success = true, Data = res.data, Total = res.recordsTotal });
             }

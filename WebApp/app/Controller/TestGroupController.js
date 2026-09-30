@@ -1,4 +1,5 @@
 app.controller("TestGroupController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+    window.$ngConfirm = $ngConfirm;
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;
@@ -302,6 +303,13 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
 
     $scope.model = {};
     $scope.submit = function () {
+        if ($scope.model.manhom_tbh) {
+            $scope.model.manhom_tbh = $scope.model.manhom_tbh.trim().toUpperCase();
+        }
+        if ($scope.model.tennhom_tbh) {
+            $scope.model.tennhom_tbh = $scope.model.tennhom_tbh.trim();
+        }
+
         $("#formSubmit").validate({
             errorElement: 'span',
             errorClass: 'error invalid-feedback',
@@ -323,11 +331,11 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             rules: {
                 manhom_tbh: {
                     required: true,
-                    maxlength: 50
+                    maxlength: 6
                 },
                 tennhom_tbh: {
                     required: true,
-                    maxlength: 250
+                    maxlength: 100
                 },
                 city_code: {
                     required: true
@@ -336,14 +344,14 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             messages: {
                 manhom_tbh: {
                     required: "Vui lòng nhập mã nhóm",
-                    maxlength: "Mã nhóm không được vượt quá 50 ký tự"
+                    maxlength: "Mã nhóm tối đa 6 ký tự (Ví dụ: HN_01, HCM01)"
                 },
                 tennhom_tbh: {
                     required: "Vui lòng nhập tên nhóm",
-                    maxlength: "Tên nhóm không được vượt quá 250 ký tự"
+                    maxlength: "Tên nhóm không được vượt quá 100 ký tự"
                 },
                 city_code: {
-                    required: "Vui lòng chọn tỉnh thành",
+                    required: "Vui lòng chọn Tỉnh / Thành phố quản lý"
                 }
             }
         });
@@ -358,6 +366,9 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                         toastr.error(data.Title);
                     } else {
                         toastr.success(data.Title);
+                        if (window.alpineTestGroupInstance) {
+                            window.alpineTestGroupInstance.LoadPage(1);
+                        }
                         $scope.cancel();
                     }
                 }
@@ -415,6 +426,10 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
     }
 
     $scope.submit = function () {
+        if ($scope.model.tennhom_tbh) {
+            $scope.model.tennhom_tbh = $scope.model.tennhom_tbh.trim();
+        }
+
         $("#formSubmit").validate({
             errorElement: 'span',
             errorClass: 'error invalid-feedback',
@@ -434,29 +449,21 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                 $(element).removeClass('is-invalid');
             },
             rules: {
-                manhom_tbh: {
-                    required: true,
-                    maxlength: 50
-                },
                 tennhom_tbh: {
                     required: true,
-                    maxlength: 250
+                    maxlength: 100
                 },
                 city_code: {
                     required: true
                 }
             },
             messages: {
-                manhom_tbh: {
-                    required: "Vui lòng nhập mã nhóm",
-                    maxlength: "Mã nhóm không được vượt quá 50 ký tự"
-                },
                 tennhom_tbh: {
                     required: "Vui lòng nhập tên nhóm",
-                    maxlength: "Tên nhóm không được vượt quá 250 ký tự"
+                    maxlength: "Tên nhóm không được vượt quá 100 ký tự"
                 },
                 city_code: {
-                    required: "Vui lòng chọn tỉnh thành",
+                    required: "Vui lòng chọn Tỉnh / Thành phố quản lý"
                 }
             }
         });
@@ -471,6 +478,9 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                         toastr.error(data.Title);
                     } else {
                         toastr.success(data.Title);
+                        if (window.alpineTestGroupInstance) {
+                            window.alpineTestGroupInstance.LoadPage(window.alpineTestGroupInstance.modelSearch.currentPage);
+                        }
                         $scope.cancel();
                     }
                 }

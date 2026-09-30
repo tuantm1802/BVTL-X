@@ -192,6 +192,7 @@
     <Compile Include="Model\BVTL_QT_NGUOI_DUNG_NHOM_TBH.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\BVTL_QT_NGUOI_DUNG_CITY.cs" />
     <Compile Include="Model\BVTL_QT_PAGE_ACTION.cs">
       <DependentUpon>BVTL_REPORTING.tt</DependentUpon>
     </Compile>

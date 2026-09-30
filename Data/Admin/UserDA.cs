@@ -178,14 +178,6 @@ namespace Data.Admin
         {
             ObjectMessage obj = new ObjectMessage();
 
-            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
-                .Select(x => new BVTL_NHOM_TBH
-                {
-                    manhom_tbh = x.manhom_tbh,
-                    tennhom_tbh = x.tennhom_tbh,
-                    city_code = x.city_code
-                }).ToList();
-
             using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
@@ -200,38 +192,39 @@ namespace Data.Admin
                         model.IsActive = true;
                         model = context.BVTL_QT_NGUOI_DUNG.Add(model);
                         context.SaveChanges();
-                        var cityCodes = "";
 
-                        // Thêm người dùng vào nhóm
+                        // Thêm người dùng vào nhóm CBO (không ảnh hưởng CityCodes)
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-
-                            var city_code = "";
                             for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
-                                context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
-
-                                var nhomTBH1s = nhomTBHs.Where(x => x.manhom_tbh == maNhomTBHs[i]).ToList();
-                                // Lấy nhóm tbh
-                                if (nhomTBH1s != null && nhomTBH1s.Count > 0)
-                                    city_code = nhomTBH1s.FirstOrDefault().city_code;
-
-                                if (!string.IsNullOrEmpty(city_code))
+                                context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH
                                 {
-                                    if (string.IsNullOrEmpty(cityCodes))
-                                        cityCodes = city_code;
-                                    else
-                                    {
-                                        if (!cityCodes.Contains(city_code))
-                                            cityCodes += ',' + city_code;
-                                    }
-                                }
+                                    NguoiDungId = model.ID,
+                                    NhomTBHMa = maNhomTBHs[i],
+                                    IsActive = true
+                                });
                             }
                             context.SaveChanges();
-
                         }
-                        // thêm danh sách tỉnh quản lý
-                        model.CityCodes = cityCodes;
+
+                        // Đồng bộ phân quyền địa bàn vào bảng liên kết chuẩn BVTL_QT_NGUOI_DUNG_CITY (Task 2.2)
+                        if (!string.IsNullOrEmpty(model.CityCodes))
+                        {
+                            var cityList = model.CityCodes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var c in cityList)
+                            {
+                                var cleanCode = c.Trim();
+                                if (!string.IsNullOrEmpty(cleanCode))
+                                {
+                                    context.Database.ExecuteSqlCommand(
+                                        "INSERT INTO BVTL_QT_NGUOI_DUNG_CITY (NguoiDungId, CityCode, IsActive, CreatedDate) VALUES (@userId, @cityCode, 1, GETDATE())",
+                                        new SqlParameter("@userId", model.ID),
+                                        new SqlParameter("@cityCode", cleanCode));
+                                }
+                            }
+                        }
+
                         context.SaveChanges();
                         dbContextTransaction.Commit();
                         obj.Error = false;
@@ -252,13 +245,6 @@ namespace Data.Admin
         public ObjectMessage Edit(BVTL_QT_NGUOI_DUNG model, List<string> maNhomTBHs)
         {
             ObjectMessage obj = new ObjectMessage();
-            var nhomTBHs = db.BVTL_NHOM_TBH.ToList()
-                .Select(x => new BVTL_NHOM_TBH
-                {
-                    manhom_tbh = x.manhom_tbh,
-                    tennhom_tbh = x.tennhom_tbh,
-                    city_code = x.city_code
-                }).ToList();
             using (BVTL_REPORTINGEntities context = new BVTL_REPORTINGEntities())
             {
                 using (var dbContextTransaction = context.Database.BeginTransaction())
@@ -267,55 +253,37 @@ namespace Data.Admin
                     {
                         var data = context.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == model.ID);
 
-                        var cityCodes = "";
                         if (model.ID > 0 && maNhomTBHs.Count > 0)
                         {
-                            var nhomTBH = new BVTL_NHOM_TBH();
-                            var allTestGroup = context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == (int)model.ID).ToList();
+                            // Vô hiệu hoá tất cả nhóm CBO cũ
+                            var allTestGroup = context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Where(x => x.NguoiDungId == model.ID).ToList();
                             if (allTestGroup != null && allTestGroup.Count > 0)
                             {
                                 for (int i = 0; i < allTestGroup.Count; i++)
-                                {
                                     allTestGroup[i].IsActive = false;
-
-                                }
                                 context.SaveChanges();
                             }
 
-                            var check = 0;
+                            // Thêm/kích hoạt nhóm CBO mới được chọn
                             var checkTGs = new List<BVTL_QT_NGUOI_DUNG_NHOM_TBH>();
                             for (int i = 0; i < maNhomTBHs.Count; i++)
                             {
-                                check = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).Count();
+                                var check = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).Count();
                                 if (check == 0)
-                                    context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = (int)model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
+                                    context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Add(new BVTL_QT_NGUOI_DUNG_NHOM_TBH { NguoiDungId = model.ID, NhomTBHMa = maNhomTBHs[i], IsActive = true });
                                 else
                                 {
                                     checkTGs = allTestGroup.Where(x => x.NguoiDungId == model.ID && x.NhomTBHMa == maNhomTBHs[i]).ToList();
                                     for (int j = 0; j < checkTGs.Count; j++)
-                                    {
                                         checkTGs[j].IsActive = true;
-                                    }
-                                }
-
-                                // Lấy nhóm tbh
-                                nhomTBH = nhomTBHs.FirstOrDefault(x => x.manhom_tbh == maNhomTBHs[i]);
-                                if (nhomTBH != null && !string.IsNullOrEmpty(nhomTBH.city_code))
-                                {
-                                    if (string.IsNullOrEmpty(cityCodes))
-                                        cityCodes = nhomTBH.city_code;
-                                    else
-                                    {
-                                        if (!cityCodes.Contains(nhomTBH.city_code))
-                                            cityCodes += ',' + nhomTBH.city_code;
-                                    }
                                 }
                             }
                             context.SaveChanges();
                         }
 
-                        // thêm danh sách tỉnh quản lý
-                        data.CityCodes = cityCodes;
+                        // CityCodes được admin chọn trực tiếp (từ UserController.Edit),
+                        // không ghi đè tự động từ nhóm CBO nữa
+                        data.CityCodes = model.CityCodes;
                         data.UserName = model.UserName;
                         data.Address = model.Address;
                         data.Name = model.Name;
@@ -329,8 +297,28 @@ namespace Data.Admin
                         data.Possition = model.Possition;
                         data.GroupID = model.GroupID;
                         data.MaDuAn = model.MaDuAn;
-                        //data.CityCodes = model.CityCodes;
                         context.SaveChanges();
+
+                        // Đồng bộ phân quyền địa bàn vào bảng liên kết chuẩn BVTL_QT_NGUOI_DUNG_CITY (Task 2.2)
+                        context.Database.ExecuteSqlCommand(
+                            "DELETE FROM BVTL_QT_NGUOI_DUNG_CITY WHERE NguoiDungId = @userId",
+                            new SqlParameter("@userId", data.ID));
+
+                        if (!string.IsNullOrEmpty(model.CityCodes))
+                        {
+                            var cityList = model.CityCodes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var c in cityList)
+                            {
+                                var cleanCode = c.Trim();
+                                if (!string.IsNullOrEmpty(cleanCode))
+                                {
+                                    context.Database.ExecuteSqlCommand(
+                                        "INSERT INTO BVTL_QT_NGUOI_DUNG_CITY (NguoiDungId, CityCode, IsActive, CreatedDate) VALUES (@userId, @cityCode, 1, GETDATE())",
+                                        new SqlParameter("@userId", data.ID),
+                                        new SqlParameter("@cityCode", cleanCode));
+                                }
+                            }
+                        }
 
                         obj.Error = false;
                         obj.Title = "Cập nhật thành công!";

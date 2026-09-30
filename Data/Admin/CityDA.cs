@@ -96,16 +96,28 @@ namespace Data.Admin
             try
             {
                 var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x=>x.ID == userId);
-                if (string.IsNullOrEmpty(user.CityCodes) || user.IsAdmin)
-                {
+                if (user == null) return result;
+
+                // Admin hệ thống: xem tất cả tỉnh thành
+                if (user.IsAdmin)
                     return db.BVTL_CITES.ToList();
-                }
-                else
+
+                // Ưu tiên đọc từ bảng liên kết chuẩn BVTL_QT_NGUOI_DUNG_CITY (Task 2.2)
+                var cityCodes = db.Database.SqlQuery<string>(
+                    "SELECT CityCode FROM BVTL_QT_NGUOI_DUNG_CITY WHERE NguoiDungId = @userId AND IsActive = 1",
+                    new SqlParameter("@userId", (long)userId)).ToList();
+
+                // Fallback tương thích ngược nếu bảng liên kết chưa có dữ liệu
+                if (cityCodes.Count == 0 && !string.IsNullOrEmpty(user.CityCodes))
                 {
-                    var cityCodes = user.CityCodes.Split(',').ToList();
-                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
-                    return citys != null ? citys : new List<BVTL_CITES>();
+                    cityCodes = user.CityCodes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
                 }
+
+                // Không có địa bàn phân quyền: trả về rỗng, fail-closed an toàn
+                if (cityCodes.Count == 0)
+                    return result;
+
+                return db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
             }
             catch (Exception)
             {
@@ -120,16 +132,28 @@ namespace Data.Admin
             try
             {
                 var user = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x=>x.ID == userId);
-                if (string.IsNullOrEmpty(user.CityCodes) || user.IsAdmin)
+                if (user == null) return result;
+
+                // Admin hệ thống: xem tất cả tỉnh thành có code map
+                if (user.IsAdmin)
+                    return db.BVTL_CITES.Where(x => x.Code_Map != null).ToList();
+
+                // Ưu tiên đọc từ bảng liên kết chuẩn BVTL_QT_NGUOI_DUNG_CITY (Task 2.2)
+                var cityCodes = db.Database.SqlQuery<string>(
+                    "SELECT CityCode FROM BVTL_QT_NGUOI_DUNG_CITY WHERE NguoiDungId = @userId AND IsActive = 1",
+                    new SqlParameter("@userId", (long)userId)).ToList();
+
+                // Fallback tương thích ngược nếu bảng liên kết chưa có dữ liệu
+                if (cityCodes.Count == 0 && !string.IsNullOrEmpty(user.CityCodes))
                 {
-                    return db.BVTL_CITES.ToList();
+                    cityCodes = user.CityCodes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
                 }
-                else
-                {
-                    var cityCodes = user.CityCodes.Split(',').ToList();
-                    var citys = db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code)).ToList();
-                    return citys != null ? citys : new List<BVTL_CITES>();
-                }
+
+                // Không có địa bàn phân quyền: trả về rỗng, fail-closed an toàn
+                if (cityCodes.Count == 0)
+                    return result;
+
+                return db.BVTL_CITES.Where(x => cityCodes.Contains(x.Code) && x.Code_Map != null).ToList();
             }
             catch (Exception)
             {

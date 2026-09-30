@@ -36,10 +36,8 @@ namespace Common.Common
             UserLogin sesion = (UserLogin)HttpContext.Current.Session["USER_SESSION"];
             if (sesion != null)
             {
-                //filterContext.Result = new ViewResult
-                //{
-                //    ViewName = "~/Views/Shared/401.cshtml"
-                //};
+                // Đã đăng nhập nhưng không có quyền truy cập trang này → chuyển hướng trang lỗi
+                filterContext.Result = new RedirectResult("/ErrorPage/Error404");
             }
             else
             {

@@ -1,73 +1,120 @@
-﻿
+﻿@using Model.ModelExtend.Base
 @{
-    ViewBag.Title = "404 not found";
+    ViewBag.Title = "Thông báo phân quyền truy cập";
+    var user = Session["USER_SESSION"] as UserLogin;
 }
 
-<div class="page-content">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="error-container">
-                <div class="well">
-                    <h1 class="grey lighter smaller">
-                        <span class="blue bigger-125">
-                            <i class="ace-icon fa fa-sitemap"></i>
-                            404
+<div class="container-fluid py-2" style="background: #f8fafc;">
+    <div class="row justify-content-center align-items-center py-2">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-7">
+            <div class="card border-0 text-center" style="border-radius: 18px; overflow: hidden; background: #ffffff; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.12) !important;">
+                
+                <!-- Thanh trang trí gradient hiện đại phía trên -->
+                <div style="height: 5px; background: linear-gradient(90deg, #3b82f6 0%, #0d9488 50%, #10b981 100%);"></div>
+
+                <div class="card-body px-4 py-4 px-md-5">
+                    <!-- Icon Khiên bảo mật / Khóa quyền -->
+                    <div class="d-inline-flex justify-content-center align-items-center mb-2" 
+                         style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);">
+                        <i class="fas fa-user-shield" style="font-size: 38px; color: #3b82f6;"></i>
+                    </div>
+
+                    <!-- Badge Trạng thái phân quyền -->
+                    <div class="mb-2">
+                        <span class="badge px-3 py-1.5 rounded-pill font-weight-bold" 
+                              style="background-color: #fee2e2; color: #dc2626; font-size: 12.5px; letter-spacing: 0.5px;">
+                            <i class="fas fa-lock mr-1"></i> GIỚI HẠN QUYỀN TRUY CẬP (403)
                         </span>
-                        Không tìm thấy đường dẫn hoặc không có quyền
-                    </h1>
+                    </div>
 
-                    <hr />
-                    <h3 class="lighter smaller">Không tìm thấy đường dẫn hoặc không có quyền!</h3>
+                    <!-- Tiêu đề chính thân thiện -->
+                    <h3 class="font-weight-bold text-dark mb-2" style="font-size: 1.5rem; letter-spacing: -0.3px;">
+                        Bạn chưa được phân quyền truy cập chức năng này
+                    </h3>
 
-                    @*<div>
-                        <form class="form-search">
-                            <span class="input-icon align-middle">
-                                <i class="ace-icon fa fa-search"></i>
+                    <!-- Mô tả giải thích thân thiện -->
+                    <p class="text-muted mb-3 px-md-3" style="font-size: 14px; line-height: 1.55;">
+                        Đường dẫn hoặc tính năng bạn đang cố gắng truy cập yêu cầu vai trò quyền hạn đặc biệt. 
+                        Tài khoản hiện tại của bạn chưa được cấp quyền để xem hoặc thao tác trên màn hình này.
+                    </p>
 
-                                <input type="text" class="search-query" placeholder="Give it a search..." />
-                            </span>
-                            <button class="btn btn-sm" type="button">Go!</button>
-                        </form>
+                    <!-- Khung thông tin phiên làm việc hiện tại (Giúp người dùng tự kiểm tra) -->
+                    @if (user != null)
+                    {
+                        <div class="text-left p-3 mb-3 rounded-3 text-start" 
+                             style="background: #f8fafc; border: 1px solid #e2e8f0; font-size: 13px;">
+                            <div class="d-flex align-items-center mb-2 font-weight-bold text-secondary">
+                                <i class="fas fa-id-badge mr-2 text-primary"></i> Thông tin tài khoản của bạn:
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-sm-6 mb-1">
+                                    <span class="text-muted">Tài khoản:</span> 
+                                    <strong class="text-dark ml-1">@user.UserName</strong> 
+                                    @if (!string.IsNullOrEmpty(user.Name)) { <span class="text-muted">(@user.Name)</span> }
+                                </div>
+                                <div class="col-sm-6 mb-1">
+                                    <span class="text-muted">Nhóm quyền:</span> 
+                                    <span class="badge badge-info text-white font-weight-normal px-2 py-1 ml-1">@(string.IsNullOrEmpty(user.GroupId) ? "Chưa gán nhóm" : user.GroupId)</span>
+                                </div>
+                                <div class="col-12 mt-1">
+                                    <span class="text-muted mr-1">Tỉnh/Thành phố phụ trách:</span> 
+                                    @if (!string.IsNullOrEmpty(user.CityCodes))
+                                    {
+                                        var cities = user.CityCodes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                        foreach (var c in cities)
+                                        {
+                                            <span class="badge badge-success px-2 py-1 mr-1">@c.Trim()</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted font-italic">Chưa phân quyền địa bàn</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
 
-                        <div class="space"></div>
-                        <h4 class="smaller">Try one of the following:</h4>
+                    <!-- Hộp gợi ý hướng dẫn liên hệ -->
+                    <div class="alert alert-warning border-0 d-flex align-items-center text-left text-start py-2 px-3 mb-3 rounded-3" 
+                         style="font-size: 13px; background: #fffbeb; border: 1px solid #fef3c7 !important;">
+                        <i class="fas fa-lightbulb text-warning mr-3 fa-lg flex-shrink-0"></i>
+                        <div class="text-dark">
+                            Nếu bạn cần truy cập chức năng này để thực hiện công việc, vui lòng liên hệ <strong>Quản trị viên hệ thống (Admin)</strong> để được kiểm tra và cấp quyền phù hợp.
+                        </div>
+                    </div>
 
-                        <ul class="list-unstyled spaced inline bigger-110 margin-15">
-                            <li>
-                                <i class="ace-icon fa fa-hand-o-right blue"></i>
-                                Re-check the url for typos
-                            </li>
-
-                            <li>
-                                <i class="ace-icon fa fa-hand-o-right blue"></i>
-                                Read the faq
-                            </li>
-
-                            <li>
-                                <i class="ace-icon fa fa-hand-o-right blue"></i>
-                                Tell us about it
-                            </li>
-                        </ul>
-                    </div>*@
-
-                    <hr />
-                    <div class="space"></div>
-
-                    <div class="center">
-                        <a href="javascript:history.back()" class="btn btn-grey">
-                            <i class="ace-icon fa fa-arrow-left"></i>
-                            Quay lại
+                    <!-- Các nút hành động điều hướng nhanh -->
+                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 pt-1">
+                        <button type="button" onclick="goBack()" class="btn btn-outline-secondary px-3 py-2 font-weight-medium rounded-pill shadow-sm" style="font-size: 13.5px;">
+                            <i class="fas fa-arrow-left mr-1.5"></i> Quay lại trang trước
+                        </button>
+                        
+                        <a href="~/Home" class="btn btn-success px-4 py-2 font-weight-medium rounded-pill shadow-sm" style="background: #00897b; border-color: #00897b; font-size: 13.5px;">
+                            <i class="fas fa-home mr-1.5"></i> Về Bảng điều khiển
                         </a>
 
-                        <a href="~/Home" class="btn btn-primary">
-                            <i class="ace-icon fa fa-tachometer"></i>
-                            Trang chủ
+                        <a href="~/Login/Logout" class="btn btn-light border px-3 py-2 text-muted rounded-pill shadow-sm" style="font-size: 13.5px;" title="Đăng nhập tài khoản khác">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Đổi tài khoản
                         </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- PAGE CONTENT ENDS -->
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</div><!-- /.page-content -->
+                <!-- Footer thẻ trợ giúp -->
+                <div class="card-footer bg-white border-top py-2 text-muted small" style="font-size: 12px;">
+                    <i class="fas fa-headset mr-1 text-primary"></i> Hệ thống Quản lý Báo cáo Dự án BVTL &bull; Hỗ trợ kỹ thuật nội bộ
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goBack() {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = '/Home';
+        }
+    }
+</script>

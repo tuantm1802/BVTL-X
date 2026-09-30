@@ -44,9 +44,19 @@ namespace WebApp.Controllers
         {
             try
             {
-                var cities = _CityDA.GetAll().Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code)).Select(x => new { CityCode = x.Code, CityName = x.Name }).ToList();
-                var nhoms = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45")
-                    .Select(x => new {
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+
+                var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Contains(c)).ToArray();
+
+                var cities = _CityDA.GetAll().Where(x => allowedTarget.Contains(x.Code)).Select(x => new { CityCode = x.Code, CityName = x.Name }).ToList();
+                var nhomsQuery = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45");
+                if (!isAdmin)
+                {
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                }
+                var nhoms = nhomsQuery.Select(x => new {
                         manhom_tbh = (x.manhom_tbh ?? "").Trim(),
                         tennhom_tbh = (x.tennhom_tbh ?? "").Trim(),
                         city_code = (x.city_code ?? "").Trim(),
@@ -55,8 +65,10 @@ namespace WebApp.Controllers
                         ShortPrefix = x.GetShortXungDanh(),
                         DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
                     }).ToList();
-                var tcvs = _BaoCaoCD45DA.GetListTCV(null, null);
-                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, TCVs = tcvs });
+
+                string defaultScopedCity = ScopeCityCodeFilter(null);
+                var tcvs = defaultScopedCity == "__NO_ACCESS__" ? new List<CD45_TCV_ItemModel>() : _BaoCaoCD45DA.GetListTCV(defaultScopedCity, null);
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, TCVs = tcvs, IsAdmin = isAdmin });
             }
             catch (Exception ex)
             {
@@ -69,7 +81,12 @@ namespace WebApp.Controllers
         {
             try
             {
-                var tcvs = _BaoCaoCD45DA.GetListTCV(cityCode, maNhom);
+                string scopedCity = ScopeCityCodeFilter(cityCode);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { Success = true, TCVs = new List<CD45_TCV_ItemModel>() });
+                }
+                var tcvs = _BaoCaoCD45DA.GetListTCV(scopedCity, maNhom);
                 return Json(new { Success = true, TCVs = tcvs });
             }
             catch (Exception ex)

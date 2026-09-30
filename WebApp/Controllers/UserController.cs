@@ -153,14 +153,16 @@ namespace WebApp.Controllers
                 var dataTestGroup = _BVTL_NHOM_TBHDA.GetAll().Select(x => new
                 {
                     Id = x.manhom_tbh,
-                    Name = x.tennhom_tbh
+                    Name = x.tennhom_tbh,
+                    CityCode = x.city_code
                 })
                 .OrderBy(x => x.Name).ToList();
 
                 dataTestGroup.Add(new
                 {
                     Id = "ALL",
-                    Name = "Tất cả"
+                    Name = "Tất cả",
+                    CityCode = ""
                 });
 
                 // Lấy danh sách tỉnh
@@ -397,10 +399,32 @@ namespace WebApp.Controllers
                         user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
                     }
 
+                    // Thu thập danh sách tỉnh quản lý: từ form + tự động bổ sung từ nhóm CBO được gán (nếu có)
+                    var finalCityCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     if (cityCodes != null && cityCodes.Count > 0)
-                        user.CityCodes = string.Join(",", cityCodes);
+                    {
+                        foreach (var c in cityCodes)
+                        {
+                            if (!string.IsNullOrWhiteSpace(c))
+                                finalCityCodes.Add(c.Trim());
+                        }
+                    }
+                    if (testGroupMa != null && testGroupMa.Count > 0)
+                    {
+                        var allGroups = _BVTL_NHOM_TBHDA.GetAll();
+                        var matchedGroups = allGroups.Where(x => testGroupMa.Contains(x.manhom_tbh)).ToList();
+                        foreach (var g in matchedGroups)
+                        {
+                            if (!string.IsNullOrWhiteSpace(g.city_code))
+                                finalCityCodes.Add(g.city_code.Trim());
+                        }
+                    }
+
+                    if (finalCityCodes.Count > 0)
+                        user.CityCodes = string.Join(",", finalCityCodes);
                     else
                         user.CityCodes = null;
+
                     obj = _userDA.Add(user, testGroupMa);
                     if (obj.Error)
                     {
@@ -543,8 +567,29 @@ namespace WebApp.Controllers
                     user.MaDuAn = string.Join(",", duAns.Select(x => x.Code));
                 }
 
+                // Thu thập danh sách tỉnh quản lý: từ form + tự động bổ sung từ nhóm CBO được gán (nếu có)
+                var finalCityCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 if (cityCodes != null && cityCodes.Count > 0)
-                    user.CityCodes = string.Join(",", cityCodes);
+                {
+                    foreach (var c in cityCodes)
+                    {
+                        if (!string.IsNullOrWhiteSpace(c))
+                            finalCityCodes.Add(c.Trim());
+                    }
+                }
+                if (testGroupMa != null && testGroupMa.Count > 0)
+                {
+                    var allGroups = _BVTL_NHOM_TBHDA.GetAll();
+                    var matchedGroups = allGroups.Where(x => testGroupMa.Contains(x.manhom_tbh)).ToList();
+                    foreach (var g in matchedGroups)
+                    {
+                        if (!string.IsNullOrWhiteSpace(g.city_code))
+                            finalCityCodes.Add(g.city_code.Trim());
+                    }
+                }
+
+                if (finalCityCodes.Count > 0)
+                    user.CityCodes = string.Join(",", finalCityCodes);
                 else
                     user.CityCodes = null;
 

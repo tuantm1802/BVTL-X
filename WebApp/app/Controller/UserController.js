@@ -490,6 +490,25 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
         showToast();
 
         $("#formSubmit").validate({
+            errorElement: "span",
+            errorClass: "form-error-msg",
+            errorPlacement: function (error, element) {
+                if (element.closest('.input-group').length) {
+                    error.insertAfter(element.closest('.input-group'));
+                } else if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+                $(element).closest('.input-group').addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+                $(element).closest('.input-group').removeClass('is-invalid');
+            },
             rules: {
                 UserName: {
                     required: true,
@@ -505,10 +524,6 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                     required: true,
                     maxlength: 250
                 }
-                //,
-                //MaDuAn: {
-                //    required: true
-                //}
             },
             messages: {
                 UserName: {
@@ -526,10 +541,6 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
                 }
-                //,
-                //MaDuAn: {
-                //    required: "Vui lòng chọn Dự án quản lý"
-                //}
             }
         });
         if ($("#formSubmit").valid()) {
@@ -662,6 +673,25 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
         }
 
         $("#formSubmit").validate({
+            errorElement: "span",
+            errorClass: "form-error-msg",
+            errorPlacement: function (error, element) {
+                if (element.closest('.input-group').length) {
+                    error.insertAfter(element.closest('.input-group'));
+                } else if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+                $(element).closest('.input-group').addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+                $(element).closest('.input-group').removeClass('is-invalid');
+            },
             rules: {
                 UserName: {
                     required: true,
@@ -677,10 +707,6 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     required: true,
                     maxlength: 250
                 }
-                //,
-                //MaDuAn: {
-                //    required: true
-                //}
             },
             messages: {
                 UserName: {
@@ -698,10 +724,6 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                     required: "Vui lòng nhập họ và tên",
                     maxlength: "Họ và tên không được vượt quá 250 ký tự"
                 }
-                //,
-                //MaDuAn: {
-                //    required: "Vui lòng chọn Dự án quản lý"
-                //}
             }
         });
         if ($("#formSubmit").valid()) {

@@ -24,6 +24,7 @@ document.addEventListener('alpine:init', function () {
             isDrillLoading: false,
             currentChiTieuCode: '',
             currentChiTieuUnit: '',
+            isAdmin: true,
 
             init: function () {
                 var self = this;
@@ -68,6 +69,7 @@ document.addEventListener('alpine:init', function () {
                             self.listCities = res.Cities || [];
                             self.listNhoms = res.Nhoms || [];
                             self.filteredNhoms = self.listNhoms;
+                            self.isAdmin = res.IsAdmin !== undefined ? res.IsAdmin : true;
                         }
                         self.loadData();
                     },

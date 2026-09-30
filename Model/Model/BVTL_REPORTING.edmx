@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
@@ -556,8 +556,6 @@
           <Property Name="Email" Type="nvarchar" MaxLength="50" />
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="Avartar" Type="nvarchar" MaxLength="1000" />
-          <Property Name="ProvinceID" Type="int" />
-          <Property Name="DistrictID" Type="int" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
           <Property Name="ModifiedDate" Type="datetime" />
@@ -579,8 +577,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="NguoiDungId" Type="int" Nullable="false" />
-          <Property Name="NhomTBHMa" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NguoiDungId" Type="bigint" Nullable="false" />
+          <Property Name="NhomTBHMa" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_PAGE_ACTION">
@@ -3296,8 +3294,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Avartar" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="ProvinceID" Type="Int32" />
-          <Property Name="DistrictID" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
@@ -3319,8 +3315,8 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NguoiDungId" Type="Int32" Nullable="false" />
-          <Property Name="NhomTBHMa" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NguoiDungId" Type="Int64" Nullable="false" />
+          <Property Name="NhomTBHMa" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="BVTL_QT_PAGE_ACTION">
@@ -6127,8 +6123,6 @@ warning 6002: The table/view 'BVTL_REPORTING.dbo.CH07_KHACH_HANG_SANG_LOC_NUOC_T
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Avartar" ColumnName="Avartar" />
-                <ScalarProperty Name="ProvinceID" ColumnName="ProvinceID" />
-                <ScalarProperty Name="DistrictID" ColumnName="DistrictID" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />

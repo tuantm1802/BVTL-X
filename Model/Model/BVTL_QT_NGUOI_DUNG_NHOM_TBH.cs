@@ -15,7 +15,7 @@ namespace Model.Model
     public partial class BVTL_QT_NGUOI_DUNG_NHOM_TBH
     {
         public int Id { get; set; }
-        public int NguoiDungId { get; set; }
+        public long NguoiDungId { get; set; }
         public string NhomTBHMa { get; set; }
         public bool IsActive { get; set; }
     }

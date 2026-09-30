@@ -1,4 +1,4 @@
-<style>
+﻿<style>
     .modal-user-view-header {
         background: linear-gradient(135deg, #36b9cc 0%, #1a8a99 100%);
         color: #fff;
@@ -97,6 +97,25 @@
             <div class="col-md-4 mb-3">
                 <div class="view-label">Trạng thái</div>
                 <div class="view-value" ng-bind="model.Status == 1 ? 'Đang hoạt động' : 'Tạm khóa'"></div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="view-label">Tỉnh / Thành phố quản lý</div>
+                <div class="view-value">
+                    <span ng-if="model.Citys && model.Citys.length > 0">
+                        <span class="badge badge-info mr-1 mb-1 font-weight-normal px-2 py-1" ng-repeat="c in model.Citys" ng-bind="c.Name"></span>
+                    </span>
+                    <span ng-if="!model.Citys || model.Citys.length == 0" class="text-muted">—</span>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="view-label">Nhóm CBO / TTDL</div>
+                <div class="view-value">
+                    <span ng-if="model.TestGroups && model.TestGroups.length > 0">
+                        <span class="badge badge-secondary mr-1 mb-1 font-weight-normal px-2 py-1" ng-repeat="g in model.TestGroups" ng-bind="g.tennhom_tbh"></span>
+                    </span>
+                    <span ng-if="!model.TestGroups || model.TestGroups.length == 0" class="text-muted">—</span>
+                </div>
             </div>
 
             <div class="col-md-12">

@@ -152,7 +152,7 @@ document.addEventListener('alpine:init', function () {
                             self.RoleBtnUpdate = response.Buttoms.indexOf('btnUpdate') !== -1;
                             self.RoleBtnSearch = response.Buttoms.indexOf('btnSearch') !== -1;
                             self.RoleBtnDelete = response.Buttoms.indexOf('btnDelete') !== -1;
-                            self.RoleBtnView = response.Buttoms.indexOf('btnView') !== -1;
+                            self.RoleBtnView = response.Buttoms.indexOf('btnView') !== -1 || response.Buttoms.indexOf('btnUpdate') !== -1;
                         }
                     },
                     error: function (err) {

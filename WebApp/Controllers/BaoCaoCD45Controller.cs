@@ -46,10 +46,19 @@ namespace WebApp.Controllers
         {
             try
             {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Chưa đăng nhập" });
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+
                 object cities;
                 if (string.Equals(cityMode, "OLD63", StringComparison.OrdinalIgnoreCase))
                 {
                     var allOld = _CityDA.GetAll();
+                    if (!isAdmin)
+                    {
+                        allOld = allOld.Where(x => allowedCodes.Contains(x.Code)).ToList();
+                    }
                     cities = allOld.OrderByDescending(x => !string.IsNullOrEmpty(x.Code_Map))
                                    .ThenBy(x => x.Name)
                                    .Select(x => new { 
@@ -64,7 +73,13 @@ namespace WebApp.Controllers
                 {
                     var newCities = _CityDA.GetAllNewCities();
                     var mappings = _CityDA.GetCityMappings();
-                    var mapGroup = mappings.GroupBy(m => m.NewCityCode).ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray());
+                    var mapGroup = mappings.GroupBy(m => m.NewCityCode).ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray(), StringComparer.OrdinalIgnoreCase);
+
+                    if (!isAdmin)
+                    {
+                        newCities = newCities.Where(x => allowedCodes.Contains(x.Code) || 
+                            (mapGroup.ContainsKey(x.Code) && mapGroup[x.Code].Any(old => allowedCodes.Contains(old)))).ToList();
+                    }
 
                     cities = newCities.OrderByDescending(x => x.IsKeyProvince)
                                       .ThenBy(x => x.DisplayOrder)
@@ -78,8 +93,14 @@ namespace WebApp.Controllers
                                       .ToList();
                 }
 
-                var nhoms = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45").ToList();
-                return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
+                var nhomsQuery = _BVTL_NHOM_TBHDA.GetAll().Where(x => x.maduan == "CD45");
+                if (!isAdmin)
+                {
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                }
+                var nhoms = nhomsQuery.ToList();
+
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, IsAdmin = isAdmin });
             }
             catch (Exception ex)
             {
@@ -97,9 +118,15 @@ namespace WebApp.Controllers
                     return Json(new { Success = false, Message = dateError });
                 }
 
+                string scopedCity = ScopeCityCodeFilter(MaTinh);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { Success = true, Data = new List<BaoCaoCD45Model>(), Warning = (string)null });
+                }
+
                 // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → truyền null để hiển thị tất cả chỉ tiêu
                 string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
-                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
+                var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, scopedCity, MaNhom, null, loaiFilter);
 
                 // VR-01: Kiểm toán cấu trúc số học (Tổng = PUD + PLHIV + TG + SW + MSM)
                 ReportValidatorHelper.ValidateReportArithmetic(data, out string arithmeticWarning);
@@ -125,7 +152,13 @@ namespace WebApp.Controllers
                     return Json(new { Success = false, Message = dateError });
                 }
 
-                var list = _BaoCaoCD45DA.GetDrillDown(ChiTieuCode, FromDate, ToDate, MaTinh, MaNhom, null, DoiTuong);
+                string scopedCity = ScopeCityCodeFilter(MaTinh);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { Success = true, Data = new List<object>(), Total = 0 });
+                }
+
+                var list = _BaoCaoCD45DA.GetDrillDown(ChiTieuCode, FromDate, ToDate, scopedCity, MaNhom, null, DoiTuong);
                 var jsonResult = Json(new { Success = true, Data = list, Total = list.Count });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;
@@ -145,9 +178,15 @@ namespace WebApp.Controllers
                 return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
             }
 
+            string scopedCity = ScopeCityCodeFilter(MaTinh);
+            if (scopedCity == "__NO_ACCESS__")
+            {
+                return Content("<script>alert('Bạn không có quyền truy cập dữ liệu địa bàn này!'); window.history.back();</script>", "text/html; charset=utf-8");
+            }
+
             // Khi LoaiBaoCao = "TuyChon" hoặc rỗng → hiển thị tất cả chỉ tiêu
             string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
-            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, MaTinh, MaNhom, null, loaiFilter);
+            var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, scopedCity, MaNhom, null, loaiFilter);
 
             // VR-01 [BLOCKING]: Chặn xuất báo cáo nếu có bất kỳ dòng nào vi phạm Tổng = 5 nhóm đích
             if (!ReportValidatorHelper.ValidateReportArithmetic(data, out var arithmeticError))

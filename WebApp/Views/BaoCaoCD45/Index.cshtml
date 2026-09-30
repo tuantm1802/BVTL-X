@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
-                        <option value="">-- Toàn dự án --</option>
+                        <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
                             <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
                         </template>

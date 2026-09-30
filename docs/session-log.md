@@ -1552,3 +1552,117 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - `WebApp/Views/SyncData/Index.cshtml` (Modified - UTF-8 BOM)
 - `docs/session-log.md` (Modified - UTF-8 BOM)
 
+
+## Session 33: [2026-09-26] Rà soát và Bổ sung Điều kiện Lọc Hoàn thành (COMPLETE_STATUS = '2') trên Báo cáo Hoạt động CD45, Báo cáo TCV và DrillDown
+
+### Mục tiêu:
+1. Rà soát nguồn dữ liệu và điều kiện tính toán của các chỉ tiêu trong Section IV (đặc biệt IV.5, IV.6 can thiệp chữa lành, và các chỉ tiêu tư vấn cá nhân liên quan F7/F8).
+2. Khắc phục hiện tượng báo cáo tính cả các bản ghi ở trạng thái chưa hoàn thành (COMPLETE_STATUS = '0' - Incomplete hoặc '1' - Unverified) trên REDCap (như cụm cảnh báo tháng 8/2026 và bản ghi gần nhất ngày 24/09/2026).
+3. Bổ sung điều kiện chuẩn hóa COMPLETE_STATUS = '2' trên toàn bộ các chỉ tiêu của Báo cáo Hoạt động CD45 (SP_CD45_GetBaoCao), Báo cáo TCV CD45, Dashboard CD45 (SP_CD45_Dashboard) và Popup DrillDown chi tiết (SP_CD45_GetDrillDown).
+
+### Các công việc đã hoàn thành:
+1. **Rà soát dữ liệu CSDL thực tế**:
+   - CD45_HOAT_DONG: Có 11 bản ghi COMPLETE_STATUS = '0' (10 bản ghi truyền thông tháng 8/2026 và 1 bản ghi DHN010169 can thiệp chữa lành ngày 24/09/2026).
+   - CD45_CHAN_DOAN: Có 2 bản ghi COMPLETE_STATUS = '0' ngày 26/08/2026.
+   - CD45_KH: Có 1 bản ghi Status 0 và 1 bản ghi Status 1.
+2. **Cập nhật Stored Procedure SQL_CD45_SP.sql & SQL_CD45_SP_DrillDown.sql**:
+   - Thêm kh.COMPLETE_STATUS = '2' vào bảng tạm #TmpKH cho cả SP_CD45_GetBaoCao, SP_CD45_Dashboard, SP_CD45_GetDrillDown.
+   - Bổ sung COMPLETE_STATUS = '2' cho tất cả các bảng nguồn dịch vụ:
+     + CD45_HOAT_DONG: CTE AllTimeCare, CTE KyCare, Section II (Truyền thông), Section IV.3, IV.4 (Sinh hoạt nhóm), Section IV.5, IV.6 (Can thiệp chữa lành), Section VII (Tài liệu).
+     + CD45_QST: CTE AllTimeCare, CTE KyCare, Section III.1, III.2 (Sàng lọc QST lần 1 & lần 2+).
+     + CD45_CHAN_DOAN: CTE AllTimeCare, CTE KyCare, Section III.3, III.4, III.4.1, III.4.2, III.4.3, III.5 (Khám SKTT & Nội trú).
+     + CD45_TU_VAN_L1 & CD45_TU_VAN_L2: CTE AllTimeCare, CTE KyCare, Section IV.1, IV.2 (Tư vấn cá nhân các lần).
+     + CD45_HO_TRO_XH: Section III.6 (BHYT), Section VI.1 (Dịch vụ chuyển gửi khác).
+     + CD45_THEO_DAU: Section I.3 (Mất dấu).
+   - Đồng bộ hóa 100% điều kiện COMPLETE_STATUS = '2' vào Stored Procedure SP_CD45_GetDrillDown (cả trong SQL_CD45_SP.sql và SQL_CD45_SP_DrillDown.sql).
+3. **Thực thi và Kiểm thử Xác minh trên CSDL DEV (BVTL_REPORTING_DEV)**:
+   - Thực thi thành công toàn bộ các batch script SQL lên máy chủ CSDL 103.77.167.206.
+   - Xác minh test case Tháng 09/2026: Bản ghi incomplete DHN010169 (ngày 24/09/2026) được loại trừ chính xác khỏi cả Báo cáo Hoạt động và DrillDown IV.5 (69 lượt), IV.6 (58 KH).
+   - Xác minh kiểm toán số học VR-01: 100% các dòng chỉ tiêu trên toàn bộ báo cáo đạt chuẩn Tổng = PUD + PLHIV + TG + SW + MSM.
+   - Xác minh Báo cáo TCV (Mã TCV = 4, nhóm 	t): Hoạt động chính xác và loại trừ hoàn toàn các bản ghi chưa hoàn thành.
+   - Đảm bảo toàn bộ file được lưu chuẩn UTF-8 with BOM (utf-8-sig).
+
+### Các tệp đã thay đổi:
+- SQL_CD45_SP.sql (Modified - UTF-8 BOM)
+- SQL_CD45_SP_DrillDown.sql (Modified - UTF-8 BOM)
+- docs/session-log.md (Modified - UTF-8 BOM)
+
+
+---
+
+## Session 34: [2026-09-30] Hoàn thành Phase 2 Refactoring: Phân quyền Người dùng theo Địa bàn Đa tỉnh (Multi-City), Quản lý Nhóm CBO và Khắc phục Triệt để Lỗ hổng Fail-Open
+
+### Mục tiêu:
+1. Nâng cấp mô hình phân quyền người dùng theo địa bàn đa tỉnh (Multi-Provinces / Multi-City) thay cho cơ chế gán đơn tỉnh cũ.
+2. Khắc phục triệt để lỗ hổng bảo mật Fail-Open: Người dùng chưa được phân quyền tỉnh sẽ không được thấy bất kỳ dữ liệu toàn quốc nào (Fail-Closed).
+3. Giải quyết dứt điểm phản ánh thực tế đối với tài khoản tuantmhcm (phân quyền NBI, HCM): Dropdown và dữ liệu báo cáo CD45 chỉ nạp đúng các tỉnh được phân quyền phụ trách.
+4. Chuẩn hóa Quản trị Nhóm xét nghiệm CBO (/TestGroup) và Quản trị Người dùng (/User): Hỗ trợ chọn nhiều tỉnh, đồng bộ dữ liệu giữa bảng chính và bảng quan hệ 1-N.
+5. Cập nhật Stored Procedures (SP_CD45_GetBaoCao, SP_CD45_GetDrillDown) nhận danh sách mã tỉnh dạng chuỗi phân cách phẩy (STRING_SPLIT).
+6. Kiểm thử tự động hóa toàn diện 100% bằng Playwright E2E và MSTest (BVTL.Tests).
+
+### Các công việc đã hoàn thành:
+1. **Kiến trúc Dữ liệu & Entity Framework**:
+   - Tạo bảng liên kết BVTL_QT_NGUOI_DUNG_CITY ánh xạ quan hệ 1-N giữa người dùng và tỉnh thành được phân quyền.
+   - Thêm lớp model Model/Model/BVTL_QT_NGUOI_DUNG_CITY.cs, cập nhật BVTL_REPORTING.edmx và Model.csproj.
+   - Refactor UserDA.cs, CityDA.cs, DuAnDA.cs, BVTL_NHOM_TBHDA.cs để hỗ trợ lưu và truy vấn danh sách tỉnh người dùng phụ trách.
+2. **Bảo mật Phân quyền & Controllers Backend**:
+   - Common/Common/HasCredentialAttribute.cs: Kiểm soát chặt chẽ quyền truy cập controller/action theo session và database.
+   - BaseController.cs: Bổ sung cơ chế ScopeCityCodeFilter áp dụng nguyên tắc Fail-Closed an toàn tuyệt đối; xử lý an toàn session trong môi trường Web và Unit Test.
+   - Áp dụng bộ lọc địa bàn theo người dùng trên toàn bộ phân hệ CD45: BaoCaoCD45Controller.cs, BaoCaoTCVCD45Controller.cs, KhachHangCD45Controller.cs, NhomTCVCD45Controller.cs, ScheduledReportController.cs, HomeController.cs.
+   - Bổ sung trang xử lý lỗi phân quyền ErrorPageController.cs, WebApp/Views/ErrorPage/Error404.cshtml.
+3. **Giao diện Người dùng & Client-side Script**:
+   - Màn hình Quản lý Người dùng: Nâng cấp modal Thêm/Sửa/Xem (_add.cshtml, _edit.cshtml, _view.cshtml), script AlpineUserController.js, UserController.js hỗ trợ chọn nhiều tỉnh.
+   - Màn hình Quản lý Nhóm CBO (/TestGroup): Chuẩn hóa giao diện Index.cshtml, _add.cshtml, _edit.cshtml, TestGroupController.js.
+   - Báo cáo Hoạt động CD45 & Báo cáo TCV CD45: Dropdown tỉnh nạp đúng phạm vi được phân quyền, chuyển đổi mượt mà giữa chế độ 34 tỉnh mới (NQ 202) và 63 tỉnh cũ lịch sử.
+   - Tinh chỉnh phong cách hiển thị CSS trong sb-admin-2.min.css và custom-style.css.
+4. **Cơ sở dữ liệu Stored Procedures**:
+   - Tạo script SQL_Phase2_Refactoring.sql: Tạo bảng BVTL_QT_NGUOI_DUNG_CITY, migrate dữ liệu đa tỉnh, thêm ràng buộc và cập nhật Stored Procedures SP_CD45_GetBaoCao, SP_CD45_GetDrillDown với STRING_SPLIT.
+5. **Kiểm thử Tự động & Nghiệm thu**:
+   - Soạn thảo tài liệu kịch bản kiểm thử docs/test-cases-phan-quyen.md.
+   - Xây dựng và thực thi 13 kịch bản kiểm thử E2E Playwright và Database trong tests/: 13/13 Test Cases PASS (100%).
+   - Toàn bộ 130 Unit Tests trong BVTL.Tests đều vượt qua thành công (130/130 PASS).
+   - Đảm bảo 100% tệp tin được lưu chuẩn UTF-8 with BOM (utf-8-sig).
+
+### Các tệp đã thay đổi/thêm mới:
+- Common/Common/HasCredentialAttribute.cs (Modified)
+- Data/Admin/BVTL_NHOM_TBHDA.cs (Modified)
+- Data/Admin/CityDA.cs (Modified)
+- Data/Admin/DuAnDA.cs (Modified)
+- Data/Admin/UserDA.cs (Modified)
+- Model/Model.csproj (Modified)
+- Model/Model/BVTL_QT_NGUOI_DUNG.cs (Modified)
+- Model/Model/BVTL_QT_NGUOI_DUNG_CITY.cs (New)
+- Model/Model/BVTL_QT_NGUOI_DUNG_NHOM_TBH.cs (Modified)
+- Model/Model/BVTL_REPORTING.edmx (Modified)
+- SQL_CD45_SP.sql (Modified - UTF-8 BOM)
+- SQL_CD45_SP_DrillDown.sql (Modified - UTF-8 BOM)
+- SQL_Phase2_Refactoring.sql (New - UTF-8 BOM)
+- WebApp/Assest/css/sb-admin-2.min.css (Modified)
+- WebApp/Content/custom-style.css (Modified)
+- WebApp/Controllers/BaoCaoCD45Controller.cs (Modified)
+- WebApp/Controllers/BaoCaoTCVCD45Controller.cs (Modified)
+- WebApp/Controllers/BaseController.cs (Modified)
+- WebApp/Controllers/ErrorPageController.cs (Modified)
+- WebApp/Controllers/HomeController.cs (Modified)
+- WebApp/Controllers/KhachHangCD45Controller.cs (Modified)
+- WebApp/Controllers/NhomTCVCD45Controller.cs (Modified)
+- WebApp/Controllers/ScheduledReportController.cs (Modified)
+- WebApp/Controllers/UserController.cs (Modified)
+- WebApp/Views/BaoCaoCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/BaoCaoTCVCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/ErrorPage/Error404.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/TestGroup/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/TestGroup/_add.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/TestGroup/_edit.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/_add.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/_edit.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/_view.cshtml (Modified - UTF-8 BOM)
+- WebApp/app/Controller/AlpineBaoCaoCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineUserController.js (Modified)
+- WebApp/app/Controller/TestGroupController.js (Modified)
+- WebApp/app/Controller/UserController.js (Modified)
+- BVTL.Tests/ExcelReportServiceTests.cs (Modified)
+- docs/session-log.md (Modified - UTF-8 BOM)
+- docs/test-cases-phan-quyen.md (New - UTF-8 BOM)
+- tests/ (New test scripts & screenshots)

@@ -20,19 +20,19 @@ BEGIN
         WHERE manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom;
     END
 
-    -- Resolve @CityCode mapping (hỗ trợ cả 34 tỉnh mới và 63 tỉnh cũ)
+    -- Resolve @CityCode mapping (hỗ trợ cả 34 tỉnh mới, 63 tỉnh cũ và chuỗi phân cách dấu phẩy)
     DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
     IF @CityCode IS NOT NULL AND @CityCode <> ''
     BEGIN
-        IF EXISTS (SELECT 1 FROM BVTL_DM_TINH_MOI WHERE Code = @CityCode)
-        BEGIN
-            INSERT INTO @MappedCityCodes(Code)
-            SELECT OldCityCode FROM BVTL_MAP_TINH_CU_MOI WHERE NewCityCode = @CityCode;
-        END
-        ELSE
-        BEGIN
-            INSERT INTO @MappedCityCodes(Code) VALUES (@CityCode);
-        END
+        INSERT INTO @MappedCityCodes(Code)
+        SELECT DISTINCT m.OldCityCode 
+        FROM STRING_SPLIT(@CityCode, ',') s
+        JOIN BVTL_MAP_TINH_CU_MOI m ON LTRIM(RTRIM(s.value)) = m.NewCityCode
+        UNION
+        SELECT DISTINCT LTRIM(RTRIM(s.value))
+        FROM STRING_SPLIT(@CityCode, ',') s
+        WHERE NOT EXISTS (SELECT 1 FROM BVTL_MAP_TINH_CU_MOI m WHERE m.NewCityCode = LTRIM(RTRIM(s.value)))
+          AND LTRIM(RTRIM(s.value)) <> '';
     END
 
     SELECT 
@@ -54,6 +54,7 @@ BEGIN
     FROM CD45_KH kh
     WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
       AND (@MaNhom IS NULL OR @MaNhom = '' OR kh.MA_NHOM IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom) OR kh.REDCAP_DAG IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom))
+      AND kh.COMPLETE_STATUS = '2'
       AND (@DoiTuong IS NULL OR @DoiTuong = 0 OR kh.DOI_TUONG = @DoiTuong);
 
     CREATE CLUSTERED INDEX IX_TmpKH_RecId ON #TmpKH(RECORD_ID);
@@ -66,27 +67,27 @@ BEGIN
         ;WITH CTE_AllCare AS (
             SELECT hd.RECORD_ID, hd.MA_TCV, hd.NGAY_HOAT_DONG AS ACT_DATE, N'Truyền thông/hoạt động' AS CHI_TIET
             FROM CD45_HOAT_DONG hd
-            WHERE (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
+            WHERE hd.COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
             UNION ALL
             SELECT qst.RECORD_ID, qst.MA_TCV, qst.NGAY_SANG_LOC AS ACT_DATE, N'Sàng lọc QST' AS CHI_TIET
             FROM CD45_QST qst
-            WHERE (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
+            WHERE qst.COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR qst.MA_TCV = @MaTCV)
             UNION ALL
             SELECT cd.RECORD_ID, cd.MA_TCV, cd.NGAY_KHAM AS ACT_DATE, N'Khám SKTT' AS CHI_TIET
             FROM CD45_CHAN_DOAN cd
-            WHERE (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
+            WHERE cd.COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
             UNION ALL
             SELECT tv1.RECORD_ID, tv1.MA_TCV, tv1.NGAY_TU_VAN AS ACT_DATE, N'Tư vấn lần 1' AS CHI_TIET
             FROM CD45_TU_VAN_L1 tv1
-            WHERE (@ToDate IS NULL OR tv1.NGAY_TU_VAN <= @ToDate)
+            WHERE tv1.COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR tv1.NGAY_TU_VAN <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR tv1.MA_TCV = @MaTCV)
             UNION ALL
             SELECT tv2.RECORD_ID, tv2.MA_TCV, tv2.NGAY_TU_VAN AS ACT_DATE, N'Tư vấn lần 2+' AS CHI_TIET
             FROM CD45_TU_VAN_L2 tv2
-            WHERE (@ToDate IS NULL OR tv2.NGAY_TU_VAN <= @ToDate)
+            WHERE tv2.COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR tv2.NGAY_TU_VAN <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR tv2.MA_TCV = @MaTCV)
         ),
         CTE_Rank AS (
@@ -111,31 +112,31 @@ BEGIN
             SELECT kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, hd.MA_TCV, kh.DOI_TUONG_TEXT,
                    hd.NGAY_HOAT_DONG AS ACT_DATE, N'Truyền thông/hoạt động' AS CHI_TIET
             FROM CD45_HOAT_DONG hd INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate) AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
+            WHERE hd.COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate) AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
             UNION ALL
             SELECT kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, qst.MA_TCV, kh.DOI_TUONG_TEXT,
                    qst.NGAY_SANG_LOC AS ACT_DATE, N'Sàng lọc QST' AS CHI_TIET
             FROM CD45_QST qst INNER JOIN #TmpKH kh ON qst.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR qst.NGAY_SANG_LOC >= @FromDate) AND (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
+            WHERE qst.COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR qst.NGAY_SANG_LOC >= @FromDate) AND (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR qst.MA_TCV = @MaTCV)
             UNION ALL
             SELECT kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, cd.MA_TCV, kh.DOI_TUONG_TEXT,
                    cd.NGAY_KHAM AS ACT_DATE, N'Khám SKTT' AS CHI_TIET
             FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate) AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
+            WHERE cd.COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate) AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
             UNION ALL
             SELECT kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, tv1.MA_TCV, kh.DOI_TUONG_TEXT,
                    tv1.NGAY_TU_VAN AS ACT_DATE, N'Tư vấn lần 1' AS CHI_TIET
             FROM CD45_TU_VAN_L1 tv1 INNER JOIN #TmpKH kh ON tv1.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR tv1.NGAY_TU_VAN >= @FromDate) AND (@ToDate IS NULL OR tv1.NGAY_TU_VAN <= @ToDate)
+            WHERE tv1.COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR tv1.NGAY_TU_VAN >= @FromDate) AND (@ToDate IS NULL OR tv1.NGAY_TU_VAN <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR tv1.MA_TCV = @MaTCV)
             UNION ALL
             SELECT kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, tv2.MA_TCV, kh.DOI_TUONG_TEXT,
                    tv2.NGAY_TU_VAN AS ACT_DATE, N'Tư vấn lần 2+' AS CHI_TIET
             FROM CD45_TU_VAN_L2 tv2 INNER JOIN #TmpKH kh ON tv2.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR tv2.NGAY_TU_VAN >= @FromDate) AND (@ToDate IS NULL OR tv2.NGAY_TU_VAN <= @ToDate)
+            WHERE tv2.COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR tv2.NGAY_TU_VAN >= @FromDate) AND (@ToDate IS NULL OR tv2.NGAY_TU_VAN <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR tv2.MA_TCV = @MaTCV)
         ),
         CTE_Rank AS (
@@ -192,6 +193,7 @@ BEGIN
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
             WHERE hd.LOAI_DV = 1
+              AND hd.COMPLETE_STATUS = '2'
               AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
@@ -215,6 +217,7 @@ BEGIN
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
             WHERE hd.LOAI_DV = 1
+              AND hd.COMPLETE_STATUS = '2'
               AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
@@ -234,6 +237,7 @@ BEGIN
         FROM CD45_HOAT_DONG hd
         INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
         WHERE hd.LOAI_DV = 1
+          AND hd.COMPLETE_STATUS = '2'
           AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
           AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
@@ -262,6 +266,7 @@ BEGIN
             FROM CD45_QST qst
             INNER JOIN #TmpKH kh ON qst.RECORD_ID = kh.RECORD_ID
             WHERE qst.REPEAT_INSTANCE = 1
+              AND qst.COMPLETE_STATUS = '2'
               AND (@FilterMuc1 IS NULL OR qst.MUC_QST = @FilterMuc1)
               AND (@FromDate IS NULL OR qst.NGAY_SANG_LOC >= @FromDate)
               AND (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
@@ -291,6 +296,7 @@ BEGIN
             FROM CD45_QST qst
             INNER JOIN #TmpKH kh ON qst.RECORD_ID = kh.RECORD_ID
             WHERE qst.REPEAT_INSTANCE > 1
+              AND qst.COMPLETE_STATUS = '2'
               AND (@FilterMuc2 IS NULL OR qst.MUC_QST = @FilterMuc2)
               AND (@FromDate IS NULL OR qst.NGAY_SANG_LOC >= @FromDate)
               AND (@ToDate IS NULL OR qst.NGAY_SANG_LOC <= @ToDate)
@@ -312,7 +318,8 @@ BEGIN
                 N'Lần khám: ' + CAST(ISNULL(cd.LAN_KHAM, 1) AS VARCHAR) + N' - Cơ sở: ' + ISNULL(cd.CO_SO_Y_TE, '') + CASE WHEN cd.CHAN_DOAN_CHINH IS NOT NULL AND cd.CHAN_DOAN_CHINH <> '' THEN N' - Chẩn đoán: ' + cd.CHAN_DOAN_CHINH ELSE N'' END AS CHI_TIET
             FROM CD45_CHAN_DOAN cd
             INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
+            WHERE cd.COMPLETE_STATUS = '2'
+              AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
               AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
               AND (@ChiTieuCode <> 'III_4_3' OR cd.LAN_KHAM > 1)
@@ -329,7 +336,8 @@ BEGIN
                     ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY cd.NGAY_KHAM DESC) AS rn
                 FROM CD45_CHAN_DOAN cd
                 INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
-                WHERE (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
+                WHERE cd.COMPLETE_STATUS = '2'
+                  AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
                   AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
                   AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
                   AND (@ChiTieuCode <> 'III_4_1' OR cd.LAN_KHAM = 1)
@@ -354,7 +362,8 @@ BEGIN
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY htxh.NGAY_HO_TRO DESC) AS rn
             FROM CD45_HO_TRO_XH htxh
             INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
-            WHERE (CHARINDEX(',1,', ',' + REPLACE(ISNULL(htxh.DICH_VU, ''), ' ', '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%')
+            WHERE htxh.COMPLETE_STATUS = '2'
+              AND (CHARINDEX(',1,', ',' + REPLACE(ISNULL(htxh.DICH_VU, ''), ' ', '') + ',') > 0 OR htxh.DICH_VU LIKE N'%BHYT%' OR htxh.DICH_VU LIKE N'%bảo hiểm%')
               AND (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
               AND (@ToDate IS NULL OR htxh.NGAY_HO_TRO <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
@@ -372,9 +381,9 @@ BEGIN
     ELSE IF @ChiTieuCode = 'IV_1'
     BEGIN
         ;WITH CTE_AllTuVan AS (
-            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV, N'Tư vấn lần 1' AS LOAI FROM CD45_TU_VAN_L1
+            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV, N'Tư vấn lần 1' AS LOAI FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
-            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV, N'Tư vấn lần 2+' AS LOAI FROM CD45_TU_VAN_L2
+            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV, N'Tư vấn lần 2+' AS LOAI FROM CD45_TU_VAN_L2 WHERE COMPLETE_STATUS = '2'
         )
         SELECT 
             kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, tv.MA_TCV, kh.DOI_TUONG_TEXT, 
@@ -391,9 +400,9 @@ BEGIN
     ELSE IF @ChiTieuCode LIKE 'IV_2%'
     BEGIN
         ;WITH CTE_AllTuVan AS (
-            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1
+            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
-            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L2
+            SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L2 WHERE COMPLETE_STATUS = '2'
         ),
         CTE_TV_Grouped AS (
             SELECT tv.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, MAX(tv.MA_TCV) AS MA_TCV, kh.DOI_TUONG_TEXT,
@@ -427,7 +436,8 @@ BEGIN
                 + ISNULL(' - ' + hd.CHU_DE, '') AS CHI_TIET
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
+            WHERE hd.COMPLETE_STATUS = '2'
+              AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
               AND ((@ChiTieuCode = 'IV_3' AND hd.LOAI_DV = 2) OR (@ChiTieuCode = 'IV_5' AND hd.LOAI_DV IN (3, 4)))
@@ -445,7 +455,8 @@ BEGIN
                     ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG DESC) AS rn
                 FROM CD45_HOAT_DONG hd
                 INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-                WHERE (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
+                WHERE hd.COMPLETE_STATUS = '2'
+                  AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
                   AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
                   AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
                   AND ((@ChiTieuCode = 'IV_4' AND hd.LOAI_DV = 2) OR (@ChiTieuCode = 'IV_6' AND hd.LOAI_DV IN (3, 4)))
@@ -491,7 +502,8 @@ BEGIN
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY htxh.NGAY_HO_TRO DESC) AS rn
             FROM CD45_HO_TRO_XH htxh
             INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
-            WHERE (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
+            WHERE htxh.COMPLETE_STATUS = '2'
+              AND (@FromDate IS NULL OR htxh.NGAY_HO_TRO >= @FromDate)
               AND (@ToDate IS NULL OR htxh.NGAY_HO_TRO <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR htxh.MA_TCV = @MaTCV)
               AND (
@@ -531,7 +543,8 @@ BEGIN
             ISNULL(hd.SO_TAI_LIEU, 0) AS SO_LUONG
         FROM CD45_HOAT_DONG hd
         INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-        WHERE ISNULL(hd.SO_TAI_LIEU, 0) > 0
+        WHERE hd.COMPLETE_STATUS = '2'
+          AND ISNULL(hd.SO_TAI_LIEU, 0) > 0
           AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
           AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)
@@ -550,7 +563,8 @@ BEGIN
                 ROW_NUMBER() OVER(PARTITION BY kh.RECORD_ID ORDER BY hd.NGAY_HOAT_DONG DESC) AS rn
             FROM CD45_HOAT_DONG hd
             INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
-            WHERE ISNULL(hd.SO_TAI_LIEU, 0) > 0
+            WHERE hd.COMPLETE_STATUS = '2'
+              AND ISNULL(hd.SO_TAI_LIEU, 0) > 0
               AND (@FromDate IS NULL OR hd.NGAY_HOAT_DONG >= @FromDate)
               AND (@ToDate IS NULL OR hd.NGAY_HOAT_DONG <= @ToDate)
               AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV)

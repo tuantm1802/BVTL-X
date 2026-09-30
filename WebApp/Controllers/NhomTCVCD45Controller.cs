@@ -3,6 +3,7 @@ using Common.Common;
 using Data.InterfaceDA.Admin;
 using Model.ModelExtend.Base;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -38,25 +39,34 @@ namespace WebApp.Controllers
         {
             try
             {
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+
+                var all6Provinces = new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+                var allowedTarget = isAdmin ? all6Provinces : all6Provinces.Where(c => allowedCodes.Contains(c)).ToArray();
+
                 var cities = _cityDA.GetAll()
-                                    .Where(x => new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }.Contains(x.Code))
+                                    .Where(x => allowedTarget.Contains(x.Code))
                                     .Select(x => new { CityCode = x.Code, CityName = x.Name })
                                     .ToList();
 
-                var nhoms = _nhomDA.GetAll()
-                                   .Where(x => x.maduan == "CD45")
-                                   .Select(x => new { 
-                                       MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
-                                       TenNhom = x.tennhom_tbh, 
-                                       CityCode = x.city_code,
-                                       Prefix = x.GetXungDanh(),
-                                       ShortPrefix = x.GetShortXungDanh(),
-                                       ChucDanh = x.GetChucDanh(),
-                                       DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
-                                   })
-                                   .ToList();
+                var nhomsQuery = _nhomDA.GetAll().Where(x => x.maduan == "CD45");
+                if (!isAdmin)
+                {
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                }
+                var nhoms = nhomsQuery.Select(x => new { 
+                                        MaNhom = !string.IsNullOrEmpty(x.manhom_tbh_map) ? x.manhom_tbh_map : x.manhom_tbh, 
+                                        TenNhom = x.tennhom_tbh, 
+                                        CityCode = x.city_code,
+                                        Prefix = x.GetXungDanh(),
+                                        ShortPrefix = x.GetShortXungDanh(),
+                                        ChucDanh = x.GetChucDanh(),
+                                        DisplayName = $"[{x.GetShortXungDanh()}] {x.tennhom_tbh}"
+                                    })
+                                    .ToList();
 
-                return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, IsAdmin = isAdmin });
             }
             catch (Exception ex)
             {
@@ -69,7 +79,12 @@ namespace WebApp.Controllers
         {
             try
             {
-                var list = _nhomTcvDA.GetListNhomTcv(cityCode, maNhom, keyword);
+                string scopedCity = ScopeCityCodeFilter(cityCode);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { Success = true, Data = new List<object>(), Kpi = (object)null });
+                }
+                var list = _nhomTcvDA.GetListNhomTcv(scopedCity, maNhom, keyword);
                 var kpi = _nhomTcvDA.GetKpiStats();
                 return Json(new { Success = true, Data = list, Kpi = kpi });
             }

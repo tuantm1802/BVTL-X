@@ -37,6 +37,7 @@ document.addEventListener('alpine:init', function () {
             filteredTCVs: [],
             checkedTCVs: [], // For batch export
             isSelectAll: false,
+            isAdmin: true,
 
             init: function () {
                 var self = this;
@@ -179,6 +180,7 @@ document.addEventListener('alpine:init', function () {
                             self.filteredNhoms = self.listNhoms;
                             self.listTCVs = res.TCVs || [];
                             self.filteredTCVs = self.listTCVs;
+                            self.isAdmin = res.IsAdmin !== undefined ? res.IsAdmin : true;
 
                             if (self.filteredTCVs.length > 0) {
                                 self.selectedTCV = self.filteredTCVs[0].ID;

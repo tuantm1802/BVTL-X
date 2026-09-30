@@ -3,6 +3,8 @@ using Data.InterfaceDA.Admin;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using log4net;
 using Model.Model;
+using Model.ModelExtend;
+using Model.ModelExtend.Base;
 
 using System;
 using System.Collections.Generic;
@@ -47,10 +49,19 @@ namespace WebApp.Controllers
         {
             try
             {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Chưa đăng nhập" });
+                var allowedCodes = GetUserAllowedCityCodes();
+                bool isAdmin = IsCurrentUserAdmin();
+
                 object cities;
                 if (string.Equals(cityMode, "OLD63", StringComparison.OrdinalIgnoreCase))
                 {
                     var allOld = _cityDA.GetAll();
+                    if (!isAdmin)
+                    {
+                        allOld = allOld.Where(x => allowedCodes.Contains(x.Code)).ToList();
+                    }
                     cities = allOld.OrderByDescending(x => !string.IsNullOrEmpty(x.Code_Map))
                                    .ThenBy(x => x.Name)
                                    .Select(x => new { 
@@ -65,7 +76,13 @@ namespace WebApp.Controllers
                 {
                     var newCities = _cityDA.GetAllNewCities();
                     var mappings = _cityDA.GetCityMappings();
-                    var mapGroup = mappings.GroupBy(m => m.NewCityCode).ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray());
+                    var mapGroup = mappings.GroupBy(m => m.NewCityCode).ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray(), StringComparer.OrdinalIgnoreCase);
+
+                    if (!isAdmin)
+                    {
+                        newCities = newCities.Where(x => allowedCodes.Contains(x.Code) || 
+                            (mapGroup.ContainsKey(x.Code) && mapGroup[x.Code].Any(old => allowedCodes.Contains(old)))).ToList();
+                    }
 
                     cities = newCities.OrderByDescending(x => x.IsKeyProvince)
                                       .ThenBy(x => x.DisplayOrder)
@@ -79,19 +96,22 @@ namespace WebApp.Controllers
                                       .ToList();
                 }
 
-                var nhoms = _nhomDA.GetAll()
-                                   .Where(x => x.maduan == "CD45")
-                                   .OrderBy(x => x.city_code)
-                                   .ThenBy(x => x.tennhom_tbh)
-                                   .Select(x => new { 
-                                       MaNhom = x.manhom_tbh, 
-                                       MaNhomMap = x.manhom_tbh_map, 
-                                       TenNhom = x.tennhom_tbh, 
-                                       CityCode = x.city_code 
-                                   })
-                                   .ToList();
+                var nhomsQuery = _nhomDA.GetAll().Where(x => x.maduan == "CD45");
+                if (!isAdmin)
+                {
+                    nhomsQuery = nhomsQuery.Where(x => !string.IsNullOrEmpty(x.city_code) && allowedCodes.Contains(x.city_code.Trim()));
+                }
+                var nhoms = nhomsQuery.OrderBy(x => x.city_code)
+                                    .ThenBy(x => x.tennhom_tbh)
+                                    .Select(x => new { 
+                                        MaNhom = x.manhom_tbh, 
+                                        MaNhomMap = x.manhom_tbh_map, 
+                                        TenNhom = x.tennhom_tbh, 
+                                        CityCode = x.city_code 
+                                    })
+                                    .ToList();
 
-                return Json(new { Success = true, Cities = cities, Nhoms = nhoms });
+                return Json(new { Success = true, Cities = cities, Nhoms = nhoms, IsAdmin = isAdmin });
             }
             catch (Exception ex)
             {
@@ -104,7 +124,13 @@ namespace WebApp.Controllers
         {
             try
             {
-                var data = _dashboardCD45DA.GetDashboardData(cityCode, maNhom, fromDate, toDate, nhomTuoiTable1, cityMode);
+                string scopedCity = ScopeCityCodeFilter(cityCode);
+                if (scopedCity == "__NO_ACCESS__")
+                {
+                    return Json(new { Success = true, Data = (object)null, Error = false, Title = "Lấy dữ liệu thành công." });
+                }
+
+                var data = _dashboardCD45DA.GetDashboardData(scopedCity, maNhom, fromDate, toDate, nhomTuoiTable1, cityMode);
                 var jsonResult = Json(new { Success = true, Data = data, Error = false, Title = "Lấy dữ liệu thành công." });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;

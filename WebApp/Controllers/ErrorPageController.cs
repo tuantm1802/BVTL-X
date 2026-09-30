@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +16,11 @@ namespace WebApp.Controllers
         public ActionResult Error404()
         {
             return View();
+        }
+        public ActionResult AccessDenied()
+        {
+            Response.StatusCode = 403;
+            return View("~/Views/ErrorPage/Error404.cshtml");
         }
         public ActionResult Error500()
         {

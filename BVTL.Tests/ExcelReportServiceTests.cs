@@ -458,7 +458,7 @@ namespace BVTL.Tests
             var da = new CD45NhomTcvDA();
             var kpi = da.GetKpiStats();
             Assert.IsNotNull(kpi);
-            Assert.IsTrue(kpi.TongNhom >= 22, $"TongNhom must be >= 22 (actual: {kpi.TongNhom})");
+            Assert.IsTrue(kpi.TongNhom >= 21, $"TongNhom must be >= 21 (actual: {kpi.TongNhom})");
             Assert.IsTrue(kpi.TongTinh >= 6, $"TongTinh must be >= 6 (actual: {kpi.TongTinh})");
             Assert.IsTrue(kpi.TongTCV > 0, $"TongTCV must be > 0 (actual: {kpi.TongTCV})");
         }

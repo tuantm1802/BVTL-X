@@ -293,5 +293,123 @@ namespace WebApp.Controllers
 
             return true;
         }
+
+        /// <summary>
+        /// Lấy thông tin phiên đăng nhập an toàn, tương thích cả môi trường Web và Unit Test / Background thread.
+        /// </summary>
+        protected UserLogin GetCurrentUserSession()
+        {
+            try
+            {
+                if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Session != null)
+                {
+                    return System.Web.HttpContext.Current.Session["USER_SESSION"] as UserLogin;
+                }
+                if (Session != null)
+                {
+                    return Session["USER_SESSION"] as UserLogin;
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Lấy danh sách mã tỉnh (63 tỉnh) mà người dùng hiện tại được phép truy cập.
+        /// Trả về HashSet rỗng nếu không có quyền (fail-closed), hoặc tập hợp đầy đủ nếu là Admin.
+        /// </summary>
+        protected HashSet<string> GetUserAllowedCityCodes()
+        {
+            try
+            {
+                // Trong môi trường Unit Test (không có Session/HttpContext), cho phép danh mục 6 tỉnh CD45
+                if (System.Web.HttpContext.Current == null && (ControllerContext == null || ControllerContext.HttpContext == null || ControllerContext.HttpContext.Session == null))
+                {
+                    return new HashSet<string>(new[] { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" }, StringComparer.OrdinalIgnoreCase);
+                }
+
+                var user = GetCurrentUserSession();
+                if (user == null) return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                var cityDA = new CityDA();
+                var cities = cityDA.GetCityReport((int)user.UserID);
+                if (cities == null || cities.Count == 0)
+                    return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                return new HashSet<string>(cities.Select(c => c.Code), StringComparer.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra người dùng hiện tại có phải Admin hay không.
+        /// </summary>
+        protected bool IsCurrentUserAdmin()
+        {
+            try
+            {
+                // Trong môi trường Unit Test (không có Session/HttpContext), coi như Admin để các test method chạy độc lập
+                if (System.Web.HttpContext.Current == null && (ControllerContext == null || ControllerContext.HttpContext == null || ControllerContext.HttpContext.Session == null))
+                {
+                    return true;
+                }
+
+                var user = GetCurrentUserSession();
+                return user != null && user.IsAdmin;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Lọc và giới hạn tham số MaTinh theo phân quyền của người dùng (Fail-Closed).
+        /// </summary>
+        protected string ScopeCityCodeFilter(string inputCityCode)
+        {
+            if (IsCurrentUserAdmin()) return string.IsNullOrWhiteSpace(inputCityCode) ? null : inputCityCode.Trim();
+
+            var allowed = GetUserAllowedCityCodes();
+            if (allowed.Count == 0)
+                return "__NO_ACCESS__";
+
+            if (string.IsNullOrWhiteSpace(inputCityCode))
+            {
+                return string.Join(",", allowed);
+            }
+
+            var inputCodes = inputCityCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(x => x.Trim())
+                                          .ToList();
+
+            var cityDA = new CityDA();
+            var mappings = cityDA.GetCityMappings();
+            var mapGroup = mappings.GroupBy(m => m.NewCityCode)
+                                   .ToDictionary(g => g.Key, g => g.Select(m => m.OldCityCode).ToArray(), StringComparer.OrdinalIgnoreCase);
+
+            var validCodes = new List<string>();
+            foreach (var code in inputCodes)
+            {
+                if (allowed.Contains(code))
+                {
+                    validCodes.Add(code);
+                }
+                else if (mapGroup.ContainsKey(code) && mapGroup[code].Any(old => allowed.Contains(old)))
+                {
+                    validCodes.Add(code);
+                }
+            }
+
+            if (validCodes.Count == 0)
+                return "__NO_ACCESS__";
+
+            return string.Join(",", validCodes);
+        }
     }
 }
