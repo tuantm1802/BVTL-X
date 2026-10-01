@@ -704,7 +704,7 @@ namespace Common.Common
             dagCollector.FlushToLogs(maDuAn, apiCode, "CD45_CHAN_DOAN", reportId, ref logs);
 
             // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ
-            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_KHAM, x => (int?)x.LAN_KHAM ?? x.REPEAT_INSTANCE, null, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
+            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_KHAM, x => x.REPEAT_INSTANCE, null, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_KHAM, x => x.COMPLETE_STATUS, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
@@ -1320,7 +1320,7 @@ namespace Common.Common
                 // VR-05(a, b, c): Kiểm tra số lần thứ và đơn điệu thời gian
                 var orderedEvents = new List<(int Order, DateTime Date)>();
                 var seenOrders = new HashSet<int>();
-                bool hasDuplicateOrder = false;
+                var duplicateOrders = new HashSet<int>();
 
                 foreach (var ev in clientEvents)
                 {
@@ -1330,15 +1330,16 @@ namespace Common.Common
                     {
                         if (!seenOrders.Add(ord.Value))
                         {
-                            hasDuplicateOrder = true;
+                            duplicateOrders.Add(ord.Value);
                         }
                         orderedEvents.Add((ord.Value, d.Value));
                     }
                 }
 
                 // VR-05(a): Trùng số lần thứ
-                if (hasDuplicateOrder)
+                if (duplicateOrders.Count > 0)
                 {
+                    string dupStr = string.Join(", ", duplicateOrders);
                     logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                     {
                         MADUAN = maDuAn,
@@ -1347,12 +1348,12 @@ namespace Common.Common
                         TABLE_NAME = tableName,
                         RECORD_ID = rid,
                         FIELD_NAME = "visit_order",
-                        OLD_VALUE = rid,
+                        OLD_VALUE = $"Lần {dupStr}",
                         NEW_VALUE = null,
                         RULE_CODE = "ERR_DUPLICATE_VISIT_ORDER",
                         SEVERITY = "ERROR",
                         ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                        MESSAGE = $"Khách hàng {rid} có các buổi dịch vụ {tableName} bị trùng số lần thứ.",
+                        MESSAGE = $"Khách hàng {rid} có các buổi dịch vụ {tableName} bị trùng số lần thứ ({dupStr}).",
                         CREATED_DATE = DateTime.Now
                     });
                 }

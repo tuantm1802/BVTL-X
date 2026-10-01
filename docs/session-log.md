@@ -1714,3 +1714,25 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - WebApp/app/Controller/AlpineTestGroupController.js (Modified)
 - WebApp/app/Controller/UserController.js (Modified)
 - Đồng bộ UTF-8 BOM trên các tệp .cshtml, .ps1 trong WebApp và WebBVTLAPI
+
+
+---
+
+## Session 36: [2026-10-01] Nâng cấp Quy tắc Tiêu chuẩn hóa Dữ liệu VR-05 & Tinh chỉnh Kiểm tra Tiến trình Dịch vụ Chẩn đoán CD45
+
+### Mục tiêu:
+1. Chuẩn hóa tiến trình kiểm tra lần thứ và đơn điệu thời gian (VR-05) cho bảng Chẩn đoán SKTT CD45 (CD45_CHAN_DOAN).
+2. Tối ưu thông điệp cảnh báo và nhật ký lỗi trùng số lần thứ (ERR_DUPLICATE_VISIT_ORDER): Ghi nhận chính xác các lần trùng thay vì chỉ ghi mã khách hàng.
+
+### Các công việc đã hoàn thành:
+1. **Core Data Standardization (ConvertCD45ApiToEntity.cs)**:
+   - Trong kiểm tra tiến trình khám chẩn đoán (CD45_CHAN_DOAN): Sử dụng trường x.REPEAT_INSTANCE để phản ánh chuẩn xác thứ tự lần khám trên REDCap.
+   - Nâng cấp quy tắc VR-05(a): Tập hợp các lần khám bị trùng lặp vào duplicateOrders, gán OLD_VALUE = 'Lần ' + dupStr và thông báo rõ ràng các lần bị trùng trong MESSAGE.
+2. **Kiểm thử & Đóng gói**:
+   - Biên dịch thành công WebApp.sln với 0 lỗi.
+   - Chạy thành công 130/130 Unit Tests trong BVTL.Tests (100% PASS).
+   - Đảm bảo tuyệt đối chuẩn UTF-8 with BOM (utf-8-sig).
+
+### Các tệp đã thay đổi:
+- Common/Common/ConvertCD45ApiToEntity.cs (Modified)
+- docs/session-log.md (Modified - UTF-8 BOM)
