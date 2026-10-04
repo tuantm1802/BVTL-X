@@ -5,6 +5,16 @@ namespace Data.InterfaceDA.Admin
 {
     public interface IDashboardCD45DA
     {
-        DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34");
+        DashboardCD45FullDataModel GetDashboardData(
+            string cityCode, 
+            string maNhom, 
+            string fromDate, 
+            string toDate, 
+            string nhomTuoiTable1 = null, 
+            string cityMode = "NEW34",
+            int? gioiTinhFilter = null,
+            string nhomTuoiFilter = null,
+            int? doiTuongFilter = null,
+            int dimensionMode = 1);
     }
 }

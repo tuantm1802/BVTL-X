@@ -47,10 +47,11 @@
         </div>
     </div>
 
-    <!-- Filter Toolbar -->
+    <!-- Filter Toolbar (Hỗ trợ Chế độ phân tích Option A & Bộ lọc phân tầng Option B) -->
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: #ffffff;">
         <div class="card-body py-3">
-            <div class="row align-items-end">
+            <!-- Hàng 1: Vùng địa lý, Nhóm CBO, Khoảng thời gian -->
+            <div class="row align-items-end mb-3">
                 <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
                     <div class="d-flex align-items-center justify-content-between mb-1">
                         <label class="small font-weight-bold text-dark mb-0"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Tỉnh / TP:</label>
@@ -97,9 +98,109 @@
 
                 <div class="col-lg-2 col-md-4 text-md-right mb-2 mb-lg-0">
                     <button type="button" class="btn btn-light btn-block font-weight-bold text-secondary border py-2" x-on:click="resetFilters()" style="border-radius: 8px;">
-                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                        <i class="fas fa-undo mr-1"></i> Đặt lại bộ lọc
                     </button>
                 </div>
+            </div>
+
+            <!-- Hàng 2: Chế độ phân tích (Option A) & Bộ lọc phân tầng tập đối tượng (Option B) -->
+            <div class="row align-items-end pt-3 border-top">
+                <!-- Option A: Chế độ phân tích (Dimension Mode Pivoting) -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <label class="small font-weight-bold text-primary mb-1">
+                        <i class="fas fa-columns mr-1"></i> Chế độ phân tích (Trục xoay):
+                    </label>
+                    <select class="form-control bg-light font-weight-bold text-primary border-primary" 
+                            x-model="dimensionMode" 
+                            x-on:change="setDimensionMode($event.target.value)" 
+                            style="border-radius: 8px; border-width: 2px;">
+                        <option value="1">1. Quần thể (PUD/PLHIV/TG/MSM/SW)</option>
+                        <option value="2">2. Giới tính (Nam / Nữ / Khác)</option>
+                        <option value="3">3. Nhóm tuổi (&lt;18 / 18-25 / 26-35 / &gt;=36)</option>
+                    </select>
+                </div>
+
+                <!-- Option B: Lọc Quần thể đích -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <label class="small font-weight-bold text-dark mb-1">
+                        <i class="fas fa-user-tag text-info mr-1"></i> Lọc Quần thể đích:
+                    </label>
+                    <select class="form-control bg-light" x-model="selectedDoiTuong" x-on:change="loadDashboardData()" style="border-radius: 8px;">
+                        <option value="">-- Tất cả Quần thể --</option>
+                        <option value="1">PUD (Sử dụng ma túy)</option>
+                        <option value="2">PLHIV (Sống với HIV)</option>
+                        <option value="3">TG (Người chuyển giới)</option>
+                        <option value="4">MSM (Nam QHTD đồng giới)</option>
+                        <option value="5">SW (Người bán dâm)</option>
+                    </select>
+                </div>
+
+                <!-- Option B: Lọc Giới tính -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <label class="small font-weight-bold text-dark mb-1">
+                        <i class="fas fa-venus-mars text-warning mr-1"></i> Lọc Giới tính:
+                    </label>
+                    <select class="form-control bg-light" x-model="selectedGioiTinh" x-on:change="loadDashboardData()" style="border-radius: 8px;">
+                        <option value="">-- Tất cả Giới tính --</option>
+                        <option value="1">Nam</option>
+                        <option value="2">Nữ</option>
+                        <option value="3">Khác</option>
+                    </select>
+                </div>
+
+                <!-- Option B: Lọc Nhóm tuổi -->
+                <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+                    <label class="small font-weight-bold text-dark mb-1">
+                        <i class="fas fa-birthday-cake text-danger mr-1"></i> Lọc Nhóm tuổi:
+                    </label>
+                    <select class="form-control bg-light" x-model="selectedNhomTuoi" x-on:change="loadDashboardData()" style="border-radius: 8px;">
+                        <option value="">-- Tất cả Độ tuổi --</option>
+                        <option value="< 18">&lt; 18 tuổi</option>
+                        <option value="18 - 25">18 - 25 tuổi</option>
+                        <option value="26 - 35">26 - 35 tuổi</option>
+                        <option value=">= 36">&gt;= 36 tuổi</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filter Badges -->
+            <div class="mt-2 pt-2 d-flex align-items-center flex-wrap" x-show="hasActiveFilters()" style="gap: 6px;">
+                <span class="text-xs text-muted font-weight-bold mr-1"><i class="fas fa-filter text-primary mr-1"></i>Đang áp dụng:</span>
+                <template x-if="dimensionMode != 1">
+                    <span class="badge badge-primary px-2 py-1 font-weight-bold">
+                        Trục: <span x-text="getDimensionLabel()"></span>
+                    </span>
+                </template>
+                <template x-if="selectedTinh">
+                    <span class="badge badge-info px-2 py-1 font-weight-bold">
+                        Tỉnh: <span x-text="selectedTinhName"></span>
+                    </span>
+                </template>
+                <template x-if="selectedNhom">
+                    <span class="badge badge-info px-2 py-1 font-weight-bold">
+                        Nhóm: <span x-text="selectedNhomName"></span>
+                    </span>
+                </template>
+                <template x-if="selectedDoiTuong">
+                    <span class="badge badge-secondary px-2 py-1 font-weight-bold">
+                        Quần thể: <span x-text="selectedDoiTuong == 1 ? 'PUD' : selectedDoiTuong == 2 ? 'PLHIV' : selectedDoiTuong == 3 ? 'TG' : selectedDoiTuong == 4 ? 'MSM' : 'SW'"></span>
+                    </span>
+                </template>
+                <template x-if="selectedGioiTinh">
+                    <span class="badge badge-warning text-dark px-2 py-1 font-weight-bold">
+                        Giới tính: <span x-text="selectedGioiTinh == 1 ? 'Nam' : selectedGioiTinh == 2 ? 'Nữ' : 'Khác'"></span>
+                    </span>
+                </template>
+                <template x-if="selectedNhomTuoi">
+                    <span class="badge badge-danger px-2 py-1 font-weight-bold">
+                        Tuổi: <span x-text="selectedNhomTuoi"></span>
+                    </span>
+                </template>
+                <template x-if="fromDate || toDate">
+                    <span class="badge badge-light border text-muted px-2 py-1 font-weight-bold">
+                        TG: <span x-text="(fromDate || '...') + ' -> ' + (toDate || '...')"></span>
+                    </span>
+                </template>
             </div>
         </div>
     </div>
@@ -177,7 +278,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-purple text-uppercase mb-1" style="color: #8b5cf6;">Tư vấn Tâm lý Chuyên sâu</div>
+                            <div class="text-xs font-weight-bold text-purple text-uppercase mb-1" style="color: #8b5cf6;">Tư vấn lần 1</div>
                             <div class="h3 mb-0 font-weight-bold text-gray-800" x-text="overview.TongTuVanL1">0</div>
                             <div class="small text-muted mt-1">Đánh giá PTSD, AUDIT-C, Kỳ thị</div>
                         </div>
@@ -259,7 +360,7 @@
                 <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: #ffffff;">
                     <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
-                            <i class="fas fa-layer-group mr-2"></i> Mức độ Nguy cơ QST theo Nhóm Đối tượng Đích
+                            <i class="fas fa-layer-group mr-2"></i> <span x-text="getChartQstTitle()">Mức độ Nguy cơ QST theo Nhóm Đối tượng Đích</span>
                         </h6>
                         <span class="badge badge-light border text-muted">Mức 1 đến Mức 4</span>
                     </div>
@@ -295,7 +396,7 @@
                 <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: #ffffff;">
                     <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-danger d-flex align-items-center">
-                            <i class="fas fa-heartbeat mr-2"></i> Đánh giá Sang chấn PTSD (Thang PCL-5)
+                            <i class="fas fa-heartbeat mr-2"></i> <span x-text="getChartPcl5Title()">Đánh giá Sang chấn PTSD (Thang PCL-5)</span>
                         </h6>
                         <span class="badge badge-light border text-muted">Dương tính vs Âm tính</span>
                     </div>
@@ -361,9 +462,9 @@
         <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
             <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
                 <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
-                    <i class="fas fa-table mr-2"></i> Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Nhóm Đối tượng Đích
+                    <i class="fas fa-table mr-2"></i> <span x-text="getTable1Title()">Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Nhóm Đối tượng Đích</span>
                 </h6>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" x-show="dimensionMode != 3">
                     <label class="small text-muted font-weight-bold mb-0 mr-2" style="white-space: nowrap;">
                         <i class="fas fa-filter text-primary mr-1"></i> Lọc độ tuổi:
                     </label>
@@ -385,7 +486,7 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                             <tr>
-                                <th class="text-secondary text-uppercase font-weight-bold py-3 pl-4" style="font-size: 0.75rem;">Nhóm đối tượng</th>
+                                <th class="text-secondary text-uppercase font-weight-bold py-3 pl-4" style="font-size: 0.75rem;" x-text="getDimensionLabel()">Nhóm đối tượng</th>
                                 <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tổng KH</th>
                                 <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Đã sàng lọc QST</th>
                                 <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem; color: #ef4444 !important;">Mức 1 (>=8)</th>
@@ -481,7 +582,7 @@
                 <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
                     <div class="card-header bg-white py-3 border-0">
                         <h6 class="m-0 font-weight-bold text-danger d-flex align-items-center">
-                            <i class="fas fa-stethoscope mr-2"></i> Bảng 3: Chỉ số Lâm sàng PTSD, Rượu &amp; Kỳ thị
+                            <i class="fas fa-stethoscope mr-2"></i> <span x-text="getTable3Title()">Bảng 3: Chỉ số Lâm sàng PTSD, Rượu &amp; Kỳ thị</span>
                         </h6>
                     </div>
                     <div class="card-body p-0">
@@ -489,7 +590,7 @@
                             <table class="table table-hover align-middle mb-0">
                                 <thead style="background-color: #f8f9fc; border-top: 1px solid #e3e6f0; border-bottom: 2px solid #e3e6f0;">
                                     <tr>
-                                        <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;">Nhóm</th>
+                                        <th class="text-secondary text-uppercase font-weight-bold py-3 pl-3" style="font-size: 0.75rem;" x-text="getDimensionLabel()">Nhóm</th>
                                         <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Ca tư vấn</th>
                                         <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">PTSD Dương</th>
                                         <th class="text-center text-secondary text-uppercase font-weight-bold py-3" style="font-size: 0.75rem;">Tỷ lệ PTSD</th>
@@ -565,4 +666,24 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/app/Controller/AlpineHomeController.js?v=@DateTime.Now.Ticks"></script>
     <script src="~/app/Controller/HomeController.js?v=@DateTime.Now.Ticks"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            }).on('changeDate', function (e) {
+                var modelName = $(this).attr('x-model');
+                var val = $(this).val();
+                if (window.alpineHomeInstance) {
+                    if (modelName === 'fromDate') {
+                        window.alpineHomeInstance.fromDate = val;
+                    } else if (modelName === 'toDate') {
+                        window.alpineHomeInstance.toDate = val;
+                    }
+                    window.alpineHomeInstance.loadDashboardData();
+                }
+            });
+        });
+    </script>
 }

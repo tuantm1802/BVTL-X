@@ -370,6 +370,20 @@ namespace WebApp.Controllers
             obj.Error = false;
             try
             {
+                if (user == null || string.IsNullOrWhiteSpace(user.Name))
+                {
+                    obj.Error = true;
+                    obj.Title = "Vui lòng nhập Họ và tên.";
+                    return Json(obj);
+                }
+
+                if (string.IsNullOrWhiteSpace(user.UserName))
+                {
+                    obj.Error = true;
+                    obj.Title = "Vui lòng nhập Tên đăng nhập.";
+                    return Json(obj);
+                }
+
                 var checkTrungUser = _userDA.GetItemByUserName(user.UserName);
                 if (checkTrungUser == null || checkTrungUser.ID == 0)
                 {
@@ -534,6 +548,13 @@ namespace WebApp.Controllers
             obj.Error = false;
             try
             {
+                if (user == null || string.IsNullOrWhiteSpace(user.Name))
+                {
+                    obj.Error = true;
+                    obj.Title = "Vui lòng nhập Họ và tên.";
+                    return Json(obj);
+                }
+
                 if (!string.IsNullOrEmpty(user.Avartar) && !string.IsNullOrEmpty(fileName))
                 {
                     // xóa file cũ

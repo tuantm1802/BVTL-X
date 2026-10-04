@@ -8,6 +8,10 @@ document.addEventListener('alpine:init', function () {
             selectedNhom: '',
             selectedNhomName: 'Toàn bộ Nhóm',
             selectedAgeTable1: '',
+            dimensionMode: 1,      // 1: Quần thể đích, 2: Giới tính, 3: Nhóm tuổi
+            selectedGioiTinh: '',  // '': Tất cả, '1': Nam, '2': Nữ, '3': Khác
+            selectedNhomTuoi: '',  // '': Tất cả, '< 18', '18 - 25', '26 - 35', '>= 36'
+            selectedDoiTuong: '',  // '': Tất cả, '1': PUD, '2': PLHIV, '3': TG, '4': MSM, '5': SW
             fromDate: '',
             toDate: '',
             ListCity: [],
@@ -117,6 +121,60 @@ document.addEventListener('alpine:init', function () {
                 this.loadDashboardData();
             },
 
+            setDimensionMode: function (mode) {
+                var m = parseInt(mode) || 1;
+                if (this.dimensionMode !== m) {
+                    this.dimensionMode = m;
+                    this.loadDashboardData();
+                }
+            },
+
+            getDimensionLabel: function () {
+                if (this.dimensionMode === 2) return 'Giới tính';
+                if (this.dimensionMode === 3) return 'Nhóm tuổi';
+                return 'Nhóm đối tượng đích';
+            },
+
+            getTable1Title: function () {
+                if (this.dimensionMode === 2) return 'Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Giới tính';
+                if (this.dimensionMode === 3) return 'Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Nhóm tuổi';
+                return 'Bảng 1: Sàng lọc Sức khỏe Tâm thần (QST) theo Nhóm Đối tượng Đích';
+            },
+
+            getChartQstTitle: function () {
+                if (this.dimensionMode === 2) return 'Mức độ Nguy cơ QST theo Giới tính';
+                if (this.dimensionMode === 3) return 'Mức độ Nguy cơ QST theo Nhóm tuổi';
+                return 'Mức độ Nguy cơ QST theo Nhóm Đối tượng Đích';
+            },
+
+            getTable3Title: function () {
+                if (this.dimensionMode === 2) return 'Bảng 3: Chỉ số Lâm sàng PTSD, Rượu & Kỳ thị theo Giới tính';
+                if (this.dimensionMode === 3) return 'Bảng 3: Chỉ số Lâm sàng PTSD, Rượu & Kỳ thị theo Nhóm tuổi';
+                return 'Bảng 3: Chỉ số Lâm sàng PTSD, Rượu & Kỳ thị theo Nhóm Đối tượng';
+            },
+
+            getChartPcl5Title: function () {
+                if (this.dimensionMode === 2) return 'Đánh giá Sang chấn PTSD (Thang PCL-5) theo Giới tính';
+                if (this.dimensionMode === 3) return 'Đánh giá Sang chấn PTSD (Thang PCL-5) theo Nhóm tuổi';
+                return 'Đánh giá Sang chấn PTSD (Thang PCL-5)';
+            },
+
+            hasActiveFilters: function () {
+                return !!(this.selectedTinh || this.selectedNhom || this.fromDate || this.toDate || this.selectedGioiTinh || this.selectedNhomTuoi || this.selectedDoiTuong || this.dimensionMode !== 1);
+            },
+
+            getActiveFilterCount: function () {
+                var count = 0;
+                if (this.selectedTinh) count++;
+                if (this.selectedNhom) count++;
+                if (this.fromDate || this.toDate) count++;
+                if (this.selectedGioiTinh) count++;
+                if (this.selectedNhomTuoi) count++;
+                if (this.selectedDoiTuong) count++;
+                if (this.dimensionMode !== 1) count++;
+                return count;
+            },
+
             resetFilters: function () {
                 this.selectedTinh = '';
                 this.selectedTinhName = 'Toàn bộ Tỉnh/Thành';
@@ -125,6 +183,10 @@ document.addEventListener('alpine:init', function () {
                 this.selectedAgeTable1 = '';
                 this.fromDate = '';
                 this.toDate = '';
+                this.selectedGioiTinh = '';
+                this.selectedNhomTuoi = '';
+                this.selectedDoiTuong = '';
+                this.dimensionMode = 1;
                 this.ListNhom = this.ListNhomAll;
                 this.loadDashboardData();
             },
@@ -140,7 +202,11 @@ document.addEventListener('alpine:init', function () {
                     fromDate: self.fromDate || null,
                     toDate: self.toDate || null,
                     nhomTuoiTable1: self.selectedAgeTable1 || null,
-                    cityMode: self.cityMode
+                    cityMode: self.cityMode,
+                    gioiTinhFilter: self.selectedGioiTinh ? parseInt(self.selectedGioiTinh) : null,
+                    nhomTuoiFilter: self.selectedNhomTuoi || null,
+                    doiTuongFilter: self.selectedDoiTuong ? parseInt(self.selectedDoiTuong) : null,
+                    dimensionMode: parseInt(self.dimensionMode) || 1
                 };
 
                 $.ajax({
@@ -290,7 +356,11 @@ document.addEventListener('alpine:init', function () {
                 var m1 = [], m2 = [], m3 = [], m4 = [];
 
                 this.byTargetGroup.forEach(function (g) {
-                    labels.push(g.TenDoiTuong ? g.TenDoiTuong.split(' ')[0] : 'Khác');
+                    var name = g.TenDoiTuong || 'Khác';
+                    if (name.indexOf('(') !== -1) {
+                        name = name.split('(')[0].trim();
+                    }
+                    labels.push(name);
                     m1.push(g.Muc1_RatCao || 0);
                     m2.push(g.Muc2_Cao || 0);
                     m3.push(g.Muc3_TrungBinh || 0);
@@ -482,7 +552,11 @@ document.addEventListener('alpine:init', function () {
                 var neg = [];
 
                 this.mentalHealth.forEach(function (m) {
-                    labels.push(m.TenDoiTuong || 'Khác');
+                    var name = m.TenDoiTuong || 'Khác';
+                    if (name.indexOf('(') !== -1) {
+                        name = name.split('(')[0].trim();
+                    }
+                    labels.push(name);
                     pos.push(m.PCL5_DuongTinh || 0);
                     neg.push(m.PCL5_AmTinh || 0);
                 });

@@ -1,0 +1,280 @@
+﻿@{
+    ViewBag.Title = "Báo cáo Thanh toán Bác sĩ (CD45 - DREAMH)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineBaoCaoBacSiCD45">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-user-md text-primary mr-2"></i>BÁO CÁO THANH TOÁN BÁC SĨ - DỰ ÁN CD45 (DREAMH)
+        </h1>
+        <div>
+            <button class="btn btn-sm btn-success shadow-sm font-weight-bold" x-on:click="exportExcel()">
+                <i class="fas fa-file-excel mr-1"></i> Xuất Báo cáo Thanh toán
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc báo cáo</h6>
+            <span class="badge badge-light text-primary font-weight-bold">Chu kỳ: Ngày 1 đến ngày cuối tháng</span>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Kỳ báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="loaiKy" x-on:change="updateDateRange()">
+                        <option value="Thang">Theo Tháng (01 - Cuối tháng)</option>
+                        <option value="TuyChon">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Thang'">
+                    <label class="font-weight-bold small">Tháng</label>
+                    <select class="form-control form-control-sm" x-model="thang" x-on:change="updateDateRange()">
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2" x-show="loaiKy === 'Thang'">
+                    <label class="font-weight-bold small">Năm</label>
+                    <input type="number" class="form-control form-control-sm" x-model="nam" x-on:change="updateDateRange()" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Từ ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Đến ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="font-weight-bold small mb-0">Tỉnh/TP</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('NEW34')" title="34 Tỉnh mới (NQ 202)">34 mới</button>
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('OLD63')" title="63 Tỉnh cũ lịch sử">63 cũ</button>
+                        </div>
+                    </div>
+                    <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
+                        <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
+                        <template x-for="c in listCities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small text-primary"><i class="fas fa-stethoscope mr-1"></i>Bác sĩ phụ trách</label>
+                    <select class="form-control form-control-sm border-primary font-weight-bold" x-model="selectedDoctor">
+                        <option value="">-- Tất cả bác sĩ --</option>
+                        <template x-for="d in filteredDoctors" :key="d.MA_BAC_SI">
+                            <option :value="d.MA_BAC_SI" x-text="d.TEN_BAC_SI + ' (' + d.TINH_THANH + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Nhóm (CBO)</label>
+                    <select class="form-control form-control-sm" x-model="selectedNhom">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-12" x-show="dateError" style="display: none;">
+                    <div class="alert alert-danger py-1 px-3 mb-2 small font-weight-bold d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle mr-2 fa-lg"></i>
+                        <span x-text="dateError"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-2 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm" x-on:click="loadData()">
+                        <i class="fas fa-search fa-sm"></i> Tìm kiếm
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm" x-on:click="exportExcel()">
+                        <i class="fas fa-file-excel fa-sm"></i> Xuất Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Selection -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+        <div class="btn-group shadow-sm">
+            <button type="button" class="btn btn-sm font-weight-bold" 
+                    :class="activeTab === 'summary' ? 'btn-primary' : 'btn-outline-primary'" 
+                    x-on:click="activeTab = 'summary'">
+                <i class="fas fa-table mr-1"></i> 1. Tổng hợp theo Bác sĩ (<span x-text="summary.length"></span>)
+            </button>
+            <button type="button" class="btn btn-sm font-weight-bold" 
+                    :class="activeTab === 'details' ? 'btn-primary' : 'btn-outline-primary'" 
+                    x-on:click="activeTab = 'details'">
+                <i class="fas fa-list-alt mr-1"></i> 2. Chi tiết từng ca khám (<span x-text="details.length"></span>)
+            </button>
+        </div>
+        <span class="badge badge-info px-3 py-2 font-weight-bold" style="font-size: 13px;" x-text="'Thời gian: ' + fromDate + ' - ' + toDate"></span>
+    </div>
+
+    <!-- TAB 1: BẢNG TỔNG HỢP THEO BÁC SĨ -->
+    <div x-show="activeTab === 'summary'" class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-clipboard-check mr-1"></i> Bảng Tổng hợp Số ca Khám & Điều trị theo Bác sĩ</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0" style="font-size: 13.5px;">
+                    <thead class="bg-primary text-white text-center">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th style="width: 80px;">Mã BS</th>
+                            <th>Bác sĩ phụ trách</th>
+                            <th style="width: 140px;">Tỉnh / Thành</th>
+                            <th style="width: 110px;" class="bg-dark text-white">Tổng số ca</th>
+                            <th style="width: 100px;">Khám lần 1</th>
+                            <th style="width: 100px;">Tái khám</th>
+                            <th style="width: 90px;">Khám khác</th>
+                            <th style="width: 110px;">Ngoại trú</th>
+                            <th style="width: 110px;">Nội trú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(s, index) in summary" :key="s.MA_BAC_SI">
+                            <tr>
+                                <td class="text-center font-weight-bold" x-text="index + 1"></td>
+                                <td class="text-center text-muted font-weight-bold" x-text="s.MA_BAC_SI"></td>
+                                <td class="font-weight-bold text-dark">
+                                    <i class="fas fa-user-md text-info mr-1"></i>
+                                    <span x-text="s.TEN_BAC_SI"></span>
+                                </td>
+                                <td x-text="s.TINH_THANH"></td>
+                                <td class="text-right font-weight-bold text-primary" x-text="formatNumber(s.TongSoCa)"></td>
+                                <td class="text-right" x-text="formatNumber(s.KhamLan1)"></td>
+                                <td class="text-right" x-text="formatNumber(s.TaiKham)"></td>
+                                <td class="text-right text-muted" x-text="formatNumber(s.KhamKhac)"></td>
+                                <td class="text-right text-success font-weight-500" x-text="formatNumber(s.NgoaiTru)"></td>
+                                <td class="text-right text-danger font-weight-500" x-text="formatNumber(s.NoiTru)"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="summary.length === 0 && !isLoading">
+                            <td colspan="10" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có dữ liệu khám bệnh của bác sĩ trong khoảng thời gian này
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="10" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tổng hợp số liệu báo cáo...
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot x-show="summary.length > 0" class="bg-light font-weight-bold" style="border-top: 2px solid #cbd5e1;">
+                        <tr>
+                            <td colspan="4" class="text-center text-primary font-weight-bold">TỔNG CỘNG</td>
+                            <td class="text-right text-primary font-weight-bold" x-text="formatNumber(getTotalSummary('TongSoCa'))"></td>
+                            <td class="text-right" x-text="formatNumber(getTotalSummary('KhamLan1'))"></td>
+                            <td class="text-right" x-text="formatNumber(getTotalSummary('TaiKham'))"></td>
+                            <td class="text-right text-muted" x-text="formatNumber(getTotalSummary('KhamKhac'))"></td>
+                            <td class="text-right text-success" x-text="formatNumber(getTotalSummary('NgoaiTru'))"></td>
+                            <td class="text-right text-danger" x-text="formatNumber(getTotalSummary('NoiTru'))"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: CHI TIẾT TỪNG CA KHÁM -->
+    <div x-show="activeTab === 'details'" class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-list mr-1"></i> Danh sách Chi tiết Ca khám (Phụ lục thanh toán)</h6>
+            <div class="w-25">
+                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh mã KH, bác sĩ, bệnh..." x-model="detailSearch" x-on:input="filterDetails()" />
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+                <table class="table table-bordered table-striped table-hover mb-0" style="font-size: 13px;">
+                    <thead class="bg-primary text-white text-center sticky-top">
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th style="width: 110px;">Mã Khách hàng</th>
+                            <th style="width: 95px;">Ngày khám</th>
+                            <th style="width: 180px;">Bác sĩ phụ trách</th>
+                            <th style="width: 180px;">Cơ sở khám</th>
+                            <th style="width: 90px;">Tỉnh</th>
+                            <th style="width: 120px;">Nhóm CBO</th>
+                            <th style="width: 100px;">TCV</th>
+                            <th style="width: 90px;">Lần khám</th>
+                            <th>Chẩn đoán chính</th>
+                            <th style="width: 100px;">Điều trị</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(d, index) in filteredDetails" :key="d.ID">
+                            <tr>
+                                <td class="text-center font-weight-bold" x-text="index + 1"></td>
+                                <td class="text-center font-weight-bold text-primary" x-text="d.RECORD_ID"></td>
+                                <td class="text-center" x-text="d.NGAY_KHAM_STR"></td>
+                                <td class="font-weight-500 text-dark" x-text="d.TEN_BAC_SI"></td>
+                                <td class="small" x-text="d.TEN_CO_SO_Y_TE"></td>
+                                <td class="text-center" x-text="d.TEN_TINH"></td>
+                                <td class="text-center small" x-text="d.TEN_NHOM"></td>
+                                <td class="text-center small" x-text="d.TEN_TCV"></td>
+                                <td class="text-center">
+                                    <span class="badge" :class="d.LAN_KHAM === 1 ? 'badge-primary' : 'badge-info'" x-text="d.TEN_LAN_KHAM"></span>
+                                </td>
+                                <td class="small" x-text="d.TEN_CHAN_DOAN"></td>
+                                <td class="text-center">
+                                    <span class="badge" :class="d.HINH_THUC_DIEU_TRI === '1' ? 'badge-success' : (d.HINH_THUC_DIEU_TRI === '2' ? 'badge-danger' : 'badge-secondary')" x-text="d.TEN_HINH_THUC_DIEU_TRI"></span>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="filteredDetails.length === 0 && !isLoading">
+                            <td colspan="11" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có bản ghi ca khám nào phù hợp
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="11" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tải danh sách ca khám...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/AlpineBaoCaoBacSiCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+}

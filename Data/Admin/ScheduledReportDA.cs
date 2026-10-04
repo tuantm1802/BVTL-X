@@ -528,40 +528,82 @@ namespace Data.Admin
                     DateTime fromDate;
                     DateTime toDate;
 
-                    if (periodType == "Quarter" || periodType == "Quy")
+                    if (reportType == "BACSI_CD45")
                     {
-                        switch (month)
+                        // Báo cáo Bác sĩ: Kỳ tính theo tháng dương lịch (từ ngày 01 đến ngày cuối tháng)
+                        if (periodType == "Quarter" || periodType == "Quy")
                         {
-                            case 1:
-                                fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
-                                toDate = new DateTime(year, 3, 25, 23, 59, 59);
-                                break;
-                            case 2:
-                                fromDate = new DateTime(year, 3, 26, 0, 0, 0);
-                                toDate = new DateTime(year, 6, 25, 23, 59, 59);
-                                break;
-                            case 3:
-                                fromDate = new DateTime(year, 6, 26, 0, 0, 0);
-                                toDate = new DateTime(year, 9, 25, 23, 59, 59);
-                                break;
-                            case 4:
-                            default:
-                                fromDate = new DateTime(year, 9, 26, 0, 0, 0);
-                                toDate = new DateTime(year, 12, 25, 23, 59, 59);
-                                break;
+                            switch (month)
+                            {
+                                case 1:
+                                    fromDate = new DateTime(year, 1, 1, 0, 0, 0);
+                                    toDate = new DateTime(year, 3, 31, 23, 59, 59);
+                                    break;
+                                case 2:
+                                    fromDate = new DateTime(year, 4, 1, 0, 0, 0);
+                                    toDate = new DateTime(year, 6, 30, 23, 59, 59);
+                                    break;
+                                case 3:
+                                    fromDate = new DateTime(year, 7, 1, 0, 0, 0);
+                                    toDate = new DateTime(year, 9, 30, 23, 59, 59);
+                                    break;
+                                case 4:
+                                default:
+                                    fromDate = new DateTime(year, 10, 1, 0, 0, 0);
+                                    toDate = new DateTime(year, 12, 31, 23, 59, 59);
+                                    break;
+                            }
+                        }
+                        else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                        {
+                            fromDate = new DateTime(year, 1, 1, 0, 0, 0);
+                            toDate = new DateTime(year, 12, 31, 23, 59, 59);
+                        }
+                        else // Month: từ ngày 01 đến ngày cuối cùng của tháng
+                        {
+                            int daysInMonth = DateTime.DaysInMonth(year, month);
+                            fromDate = new DateTime(year, month, 1, 0, 0, 0);
+                            toDate = new DateTime(year, month, daysInMonth, 23, 59, 59);
                         }
                     }
-                    else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                    else
                     {
-                        fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
-                        toDate = new DateTime(year, 12, 25, 23, 59, 59);
-                    }
-                    else // Month (Tháng: từ 26 tháng trước đến 25 tháng này)
-                    {
-                        int prevMonth = month == 1 ? 12 : month - 1;
-                        int prevYear = month == 1 ? year - 1 : year;
-                        fromDate = new DateTime(prevYear, prevMonth, 26, 0, 0, 0);
-                        toDate = new DateTime(year, month, 25, 23, 59, 59);
+                        // Các báo cáo khác (TCV, Hoạt động CD45): Chu kỳ 26 tháng trước đến 25 tháng này
+                        if (periodType == "Quarter" || periodType == "Quy")
+                        {
+                            switch (month)
+                            {
+                                case 1:
+                                    fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
+                                    toDate = new DateTime(year, 3, 25, 23, 59, 59);
+                                    break;
+                                case 2:
+                                    fromDate = new DateTime(year, 3, 26, 0, 0, 0);
+                                    toDate = new DateTime(year, 6, 25, 23, 59, 59);
+                                    break;
+                                case 3:
+                                    fromDate = new DateTime(year, 6, 26, 0, 0, 0);
+                                    toDate = new DateTime(year, 9, 25, 23, 59, 59);
+                                    break;
+                                case 4:
+                                default:
+                                    fromDate = new DateTime(year, 9, 26, 0, 0, 0);
+                                    toDate = new DateTime(year, 12, 25, 23, 59, 59);
+                                    break;
+                            }
+                        }
+                        else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                        {
+                            fromDate = new DateTime(year - 1, 12, 26, 0, 0, 0);
+                            toDate = new DateTime(year, 12, 25, 23, 59, 59);
+                        }
+                        else // Month (Tháng: từ 26 tháng trước đến 25 tháng này)
+                        {
+                            int prevMonth = month == 1 ? 12 : month - 1;
+                            int prevYear = month == 1 ? year - 1 : year;
+                            fromDate = new DateTime(prevYear, prevMonth, 26, 0, 0, 0);
+                            toDate = new DateTime(year, month, 25, 23, 59, 59);
+                        }
                     }
 
                     if (reportType == "TCV_CD45" || reportType == "HOATDONG_CD45")
@@ -582,6 +624,17 @@ namespace Data.Admin
                             }
                         }
                         return false;
+                    }
+                    else if (reportType == "BACSI_CD45")
+                    {
+                        const string sqlBacSi = "SELECT TOP 1 1 FROM [CD45_CHAN_DOAN] WHERE COMPLETE_STATUS = '2' AND NGAY_KHAM >= @FromDate AND NGAY_KHAM <= @ToDate";
+                        using (var cmdBs = new SqlCommand(sqlBacSi, conn))
+                        {
+                            cmdBs.Parameters.AddWithValue("@FromDate", fromDate);
+                            cmdBs.Parameters.AddWithValue("@ToDate", toDate);
+                            var val = cmdBs.ExecuteScalar();
+                            return val != null;
+                        }
                     }
                     else // TONGHOP_BVTL
                     {

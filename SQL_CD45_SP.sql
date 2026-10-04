@@ -31,6 +31,12 @@ BEGIN
         TG INT DEFAULT 0,
         SW INT DEFAULT 0,
         MSM INT DEFAULT 0,
+        Nam INT DEFAULT 0,
+        Nu INT DEFAULT 0,
+        Khac INT DEFAULT 0,
+        Tuoi_18_25 INT DEFAULT 0,
+        Tuoi_26_35 INT DEFAULT 0,
+        Tuoi_Tren35 INT DEFAULT 0,
         IsBold BIT DEFAULT 0,
         IndentLevel INT DEFAULT 0,
         Code NVARCHAR(50) DEFAULT NULL
@@ -58,7 +64,19 @@ BEGIN
         kh.MA_NHOM,
         kh.REDCAP_DAG,
         kh.DOI_TUONG,
-        kh.NGAY_THAM_GIA
+        kh.NGAY_THAM_GIA,
+        CASE 
+            WHEN kh.GIOI_TINH_TU_XD IN (3, 4) OR kh.GIOI_TINH_KHAI_SINH = 3 THEN 3
+            WHEN kh.GIOI_TINH_TU_XD = 1 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 1) THEN 1
+            WHEN kh.GIOI_TINH_TU_XD = 2 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 2) THEN 2
+            ELSE 3
+        END AS GIOI_TINH,
+        CASE 
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN 1
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN 2
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN 3
+            ELSE 2
+        END AS NHOM_TUOI
     INTO #TmpKH
     FROM CD45_KH kh
     WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
@@ -95,7 +113,7 @@ BEGIN
         WHERE COMPLETE_STATUS = '2' AND (@ToDate IS NULL OR NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR MA_TCV = @MaTCV)
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Tổng số KH được chăm sóc từ đầu dự án',
         COUNT(DISTINCT c.RECORD_ID),
@@ -104,6 +122,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN c.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN c.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN c.RECORD_ID END),
         0, 0, 'I_1'
     FROM CTE_AllTimeCare c
     INNER JOIN #TmpKH kh ON c.RECORD_ID = kh.RECORD_ID;
@@ -130,7 +154,7 @@ BEGIN
         WHERE COMPLETE_STATUS = '2' AND (@FromDate IS NULL OR NGAY_TU_VAN >= @FromDate) AND (@ToDate IS NULL OR NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR MA_TCV = @MaTCV)
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Tổng số KH được chăm sóc trong kỳ báo cáo',
         COUNT(DISTINCT c.RECORD_ID),
@@ -139,12 +163,18 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN c.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN c.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN c.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN c.RECORD_ID END),
         0, 0, 'I_2'
     FROM CTE_KyCare c
     INNER JOIN #TmpKH kh ON c.RECORD_ID = kh.RECORD_ID;
 
     -- 3. Số KH mất dấu trong kỳ báo cáo
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '3', N'Số KH mất dấu trong kỳ báo cáo',
         COUNT(DISTINCT td.RECORD_ID),
@@ -153,6 +183,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN td.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN td.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN td.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN td.RECORD_ID END),
         0, 0, 'I_3'
     FROM CD45_THEO_DAU td
     INNER JOIN #TmpKH kh ON td.RECORD_ID = kh.RECORD_ID
@@ -175,7 +211,7 @@ BEGIN
         WHERE hd.LOAI_DV = 1
           AND hd.COMPLETE_STATUS = '2'
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số KH được tham gia truyền thông lần 1',
         COUNT(DISTINCT tt.RECORD_ID),
@@ -184,6 +220,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN tt.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN tt.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN tt.RECORD_ID END),
         0, 0, 'II_1'
     FROM CTE_TruyenThong tt
     INNER JOIN #TmpKH kh ON tt.RECORD_ID = kh.RECORD_ID
@@ -200,7 +242,7 @@ BEGIN
         WHERE hd.LOAI_DV = 1
           AND hd.COMPLETE_STATUS = '2'
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH được tham gia truyền thông lần 2',
         COUNT(DISTINCT tt.RECORD_ID),
@@ -209,6 +251,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN tt.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN tt.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN tt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN tt.RECORD_ID END),
         0, 0, 'II_2'
     FROM CTE_TruyenThong tt
     INNER JOIN #TmpKH kh ON tt.RECORD_ID = kh.RECORD_ID
@@ -218,7 +266,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR tt.MA_TCV = @MaTCV);
 
     -- 3. Tổng lượt
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '3', N'Tổng số lượt KH tham gia truyền thông',
         COUNT(*),
@@ -227,6 +275,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 0, 'II_3'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -243,7 +297,7 @@ BEGIN
     VALUES ('III', N'SÀNG LỌC BẰNG HỎI QST VÀ CHUYỂN GỬI KHÁM, ĐIỀU TRỊ SKTT', 1, 0, 'SEC_III');
 
     -- 1. Sàng lọc QST Lần 1
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số KH được sàng lọc bằng hỏi QST lần 1',
         COUNT(DISTINCT qst.RECORD_ID),
@@ -252,6 +306,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN qst.RECORD_ID END),
         0, 0, 'III_1'
     FROM CD45_QST qst
     INNER JOIN #TmpKH kh ON qst.RECORD_ID = kh.RECORD_ID
@@ -269,7 +329,7 @@ BEGIN
         (3, N'Mức 3 (4 - 5)', 'III_1_M3'), 
         (4, N'Mức 4 (<4)', 'III_1_M4');
 
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', m.Ten,
         COUNT(DISTINCT qst.RECORD_ID),
@@ -278,6 +338,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN qst.RECORD_ID END),
         0, 1, m.Code
     FROM @MucQst m
     LEFT JOIN (
@@ -291,7 +357,7 @@ BEGIN
     ORDER BY m.Muc;
 
     -- 2. Sàng lọc QST Lần 2+
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH được sàng lọc lại bảng hỏi QST (từ lần 2 trở đi)',
         COUNT(DISTINCT qst.RECORD_ID),
@@ -300,6 +366,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN qst.RECORD_ID END),
         0, 0, 'III_2'
     FROM CD45_QST qst
     INNER JOIN #TmpKH kh ON qst.RECORD_ID = kh.RECORD_ID
@@ -310,7 +382,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR qst.MA_TCV = @MaTCV);
 
     -- 2.1 - 2.4: Mức điểm QST Lần 2+
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', m.Ten,
         COUNT(DISTINCT qst.RECORD_ID),
@@ -319,6 +391,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN qst.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN qst.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN qst.RECORD_ID END),
         0, 1, 'III_2_' + CAST(m.Muc AS VARCHAR)
     FROM @MucQst m
     LEFT JOIN (
@@ -332,7 +410,7 @@ BEGIN
     ORDER BY m.Muc;
 
     -- 3. Số lượt KH được chuyển gửi khám SKTT
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '3', N'Số lượt KH được chuyển gửi khám SKTT',
         COUNT(*),
@@ -341,6 +419,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 0, 'III_3'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -350,7 +434,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 4. Số KH được chuyển gửi khám SKTT, trong đó:
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '4', N'Số KH được chuyển gửi khám SKTT, trong đó:',
         COUNT(DISTINCT cd.RECORD_ID),
@@ -359,6 +443,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
         0, 0, 'III_4'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -368,7 +458,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 4.1 Khám lần 1
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số KH được chuyển gửi khám SKTT lần 1',
         COUNT(DISTINCT cd.RECORD_ID),
@@ -377,6 +467,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
         0, 1, 'III_4_1'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -387,7 +483,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 4.2 Tái khám SKTT (Số KH)
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số KH được tái khám SKTT',
         COUNT(DISTINCT cd.RECORD_ID),
@@ -396,6 +492,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
         0, 1, 'III_4_2'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -406,7 +508,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 4.3 Tái khám SKTT (Số lượt)
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số lượt KH được tái khám SKTT',
         COUNT(*),
@@ -415,6 +517,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 1, 'III_4_3'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -425,7 +533,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 5. Điều trị nội trú (nhập viện) - Mã '2' trong f6_treatment
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '5', N'Số KH được điều trị nội trú (nhập viện)',
         COUNT(DISTINCT cd.RECORD_ID),
@@ -434,6 +542,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
         0, 0, 'III_5'
     FROM CD45_CHAN_DOAN cd
     INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
@@ -446,7 +560,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
     -- 6. Hỗ trợ mua thẻ BHYT - Mã '1' trong f4_services
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '6', N'Số KH được hỗ trợ mua thẻ Bảo hiểm y tế',
         COUNT(DISTINCT htxh.RECORD_ID),
@@ -455,6 +569,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN htxh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN htxh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN htxh.RECORD_ID END),
         0, 0, 'III_6'
     FROM CD45_HO_TRO_XH htxh
     INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
@@ -479,7 +599,7 @@ BEGIN
         SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L2 WHERE COMPLETE_STATUS = '2'
     )
     -- 1. Số lượt KH được tư vấn cá nhân
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số lượt KH được tư vấn cá nhân',
         COUNT(*),
@@ -488,6 +608,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 0, 'IV_1'
     FROM CTE_TuVan tv
     INNER JOIN #TmpKH kh ON tv.RECORD_ID = kh.RECORD_ID
@@ -497,7 +623,7 @@ BEGIN
 
     -- 2. Số KH được tư vấn cá nhân, trong đó:
     ;WITH CTE_TuVanCount AS (
-        SELECT tv.RECORD_ID, kh.DOI_TUONG, COUNT(*) AS SoLan
+        SELECT tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI, COUNT(*) AS SoLan
         FROM (
             SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
@@ -507,9 +633,9 @@ BEGIN
         WHERE (@FromDate IS NULL OR tv.NGAY_TU_VAN >= @FromDate)
           AND (@ToDate IS NULL OR tv.NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR tv.MA_TCV = @MaTCV)
-        GROUP BY tv.RECORD_ID, kh.DOI_TUONG
+        GROUP BY tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH được tư vấn cá nhân, trong đó:',
         COUNT(DISTINCT RECORD_ID),
@@ -518,12 +644,18 @@ BEGIN
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 3 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 5 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 4 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 3 THEN RECORD_ID END),
         0, 0, 'IV_2'
     FROM CTE_TuVanCount;
 
     -- 2.1 Tư vấn 1 lần
     ;WITH CTE_TuVanCount AS (
-        SELECT tv.RECORD_ID, kh.DOI_TUONG, COUNT(*) AS SoLan
+        SELECT tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI, COUNT(*) AS SoLan
         FROM (
             SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
@@ -533,9 +665,9 @@ BEGIN
         WHERE (@FromDate IS NULL OR tv.NGAY_TU_VAN >= @FromDate)
           AND (@ToDate IS NULL OR tv.NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR tv.MA_TCV = @MaTCV)
-        GROUP BY tv.RECORD_ID, kh.DOI_TUONG
+        GROUP BY tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số KH được tư vấn 1 lần',
         COUNT(DISTINCT CASE WHEN SoLan = 1 THEN RECORD_ID END),
@@ -544,12 +676,18 @@ BEGIN
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 3 AND SoLan = 1 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 5 AND SoLan = 1 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 4 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 1 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 2 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 3 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 1 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 2 AND SoLan = 1 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 3 AND SoLan = 1 THEN RECORD_ID END),
         0, 1, 'IV_2_1'
     FROM CTE_TuVanCount;
 
     -- 2.2 Tư vấn 2 lần
     ;WITH CTE_TuVanCount AS (
-        SELECT tv.RECORD_ID, kh.DOI_TUONG, COUNT(*) AS SoLan
+        SELECT tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI, COUNT(*) AS SoLan
         FROM (
             SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
@@ -559,9 +697,9 @@ BEGIN
         WHERE (@FromDate IS NULL OR tv.NGAY_TU_VAN >= @FromDate)
           AND (@ToDate IS NULL OR tv.NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR tv.MA_TCV = @MaTCV)
-        GROUP BY tv.RECORD_ID, kh.DOI_TUONG
+        GROUP BY tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số KH được tư vấn 2 lần',
         COUNT(DISTINCT CASE WHEN SoLan = 2 THEN RECORD_ID END),
@@ -570,12 +708,18 @@ BEGIN
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 3 AND SoLan = 2 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 5 AND SoLan = 2 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 4 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 1 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 2 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 3 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 1 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 2 AND SoLan = 2 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 3 AND SoLan = 2 THEN RECORD_ID END),
         0, 1, 'IV_2_2'
     FROM CTE_TuVanCount;
 
     -- 2.3 Tư vấn từ 3 lần trở lên
     ;WITH CTE_TuVanCount AS (
-        SELECT tv.RECORD_ID, kh.DOI_TUONG, COUNT(*) AS SoLan
+        SELECT tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI, COUNT(*) AS SoLan
         FROM (
             SELECT RECORD_ID, NGAY_TU_VAN, MA_TCV FROM CD45_TU_VAN_L1 WHERE COMPLETE_STATUS = '2'
             UNION ALL
@@ -585,9 +729,9 @@ BEGIN
         WHERE (@FromDate IS NULL OR tv.NGAY_TU_VAN >= @FromDate)
           AND (@ToDate IS NULL OR tv.NGAY_TU_VAN <= @ToDate)
           AND (@MaTCV IS NULL OR @MaTCV = '' OR tv.MA_TCV = @MaTCV)
-        GROUP BY tv.RECORD_ID, kh.DOI_TUONG
+        GROUP BY tv.RECORD_ID, kh.DOI_TUONG, kh.GIOI_TINH, kh.NHOM_TUOI
     )
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', N'Số KH được tư vấn từ 3 lần trở lên',
         COUNT(DISTINCT CASE WHEN SoLan >= 3 THEN RECORD_ID END),
@@ -596,11 +740,17 @@ BEGIN
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 3 AND SoLan >= 3 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 5 AND SoLan >= 3 THEN RECORD_ID END),
         COUNT(DISTINCT CASE WHEN DOI_TUONG = 4 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 1 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 2 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN GIOI_TINH = 3 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 1 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 2 AND SoLan >= 3 THEN RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN NHOM_TUOI = 3 AND SoLan >= 3 THEN RECORD_ID END),
         0, 1, 'IV_2_3'
     FROM CTE_TuVanCount;
 
     -- 3. Số lượt KH tham gia sinh hoạt nhóm (LOAI_DV = 2)
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '3', N'Số lượt KH được tham gia sinh hoạt nhóm',
         COUNT(*),
@@ -609,6 +759,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 0, 'IV_3'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -619,7 +775,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
 
     -- 4. Số KH tham gia sinh hoạt nhóm
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '4', N'Số KH được tham gia sinh hoạt nhóm',
         COUNT(DISTINCT hd.RECORD_ID),
@@ -628,6 +784,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN hd.RECORD_ID END),
         0, 0, 'IV_4'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -638,7 +800,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
 
     -- 5. Số lượt tham gia can thiệp chữa lành (LOAI_DV = 3 hoặc 4: Vòng tròn chia sẻ & Trị liệu nghệ thuật)
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '5', N'Số lượt KH được tham gia can thiệp chữa lành',
         COUNT(*),
@@ -647,6 +809,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN 1 ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN 1 ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN 1 ELSE 0 END), 0),
         0, 0, 'IV_5'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -657,7 +825,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
 
     -- 6. Số KH tham gia can thiệp chữa lành
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '6', N'Số KH được tham gia can thiệp chữa lành',
         COUNT(DISTINCT hd.RECORD_ID),
@@ -666,6 +834,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN hd.RECORD_ID END),
         0, 0, 'IV_6'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -681,15 +855,15 @@ BEGIN
     INSERT INTO @TmpResult (STT, ChiTieu, IsBold, IndentLevel, Code)
     VALUES ('V', N'CAN THIỆP ONLINE', 1, 0, 'SEC_V');
 
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số lượt KH được can thiệp online',
-        0, 0, 0, 0, 0, 0, 0, 0, 'V_1';
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'V_1';
 
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH được can thiệp online',
-        0, 0, 0, 0, 0, 0, 0, 0, 'V_2';
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'V_2';
 
     -- =========================================================================
     -- SECTION VI: DỊCH VỤ CHUYỂN GỬI KHÁC
@@ -697,7 +871,7 @@ BEGIN
     INSERT INTO @TmpResult (STT, ChiTieu, IsBold, IndentLevel, Code)
     VALUES ('VI', N'DỊCH VỤ CHUYỂN GỬI KHÁC', 1, 0, 'SEC_VI');
 
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số KH được chuyển gửi dịch vụ/xét nghiệm thành công',
         COUNT(DISTINCT htxh.RECORD_ID),
@@ -706,6 +880,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN htxh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN htxh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN htxh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN htxh.RECORD_ID END),
         0, 0, 'VI_1'
     FROM CD45_HO_TRO_XH htxh
     INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
@@ -724,7 +904,7 @@ BEGIN
         ('GAN', N'- XN/Điều trị Viêm gan B,C', 'VI_1_HEPATITIS'),
         ('KHAC', N'- Dịch vụ hỗ trợ xã hội & y tế khác', 'VI_1_OTHER');
 
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '', dv.Ten,
         COUNT(DISTINCT kh.RECORD_ID),
@@ -733,6 +913,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN kh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN kh.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN kh.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN kh.RECORD_ID END),
         0, 1, dv.SubCode
     FROM @DvList dv
     LEFT JOIN (
@@ -769,7 +955,7 @@ BEGIN
     VALUES ('VII', N'PHÁT TÀI LIỆU TRUYỀN THÔNG', 1, 0, 'SEC_VII');
 
     -- 1. Số quyển tài liệu đã phát
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '1', N'Số quyển tài liệu đã phát',
         ISNULL(SUM(hd.SO_TAI_LIEU), 0),
@@ -778,6 +964,12 @@ BEGIN
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 3 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 5 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
         ISNULL(SUM(CASE WHEN kh.DOI_TUONG = 4 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 1 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 2 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.GIOI_TINH = 3 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 1 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 2 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
+        ISNULL(SUM(CASE WHEN kh.NHOM_TUOI = 3 THEN hd.SO_TAI_LIEU ELSE 0 END), 0),
         0, 0, 'VII_1'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -787,7 +979,7 @@ BEGIN
       AND (@MaTCV IS NULL OR @MaTCV = '' OR hd.MA_TCV = @MaTCV);
 
     -- 2. Số KH nhận tài liệu
-    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, IsBold, IndentLevel, Code)
+    INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '2', N'Số KH nhận tài liệu',
         COUNT(DISTINCT CASE WHEN ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
@@ -796,6 +988,12 @@ BEGIN
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
         COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 AND ISNULL(hd.SO_TAI_LIEU, 0) > 0 THEN hd.RECORD_ID END),
         0, 0, 'VII_2'
     FROM CD45_HOAT_DONG hd
     INNER JOIN #TmpKH kh ON hd.RECORD_ID = kh.RECORD_ID
@@ -851,6 +1049,12 @@ BEGIN
         ISNULL(TG, 0) AS TG, 
         ISNULL(SW, 0) AS SW, 
         ISNULL(MSM, 0) AS MSM, 
+        ISNULL(Nam, 0) AS Nam, 
+        ISNULL(Nu, 0) AS Nu, 
+        ISNULL(Khac, 0) AS Khac, 
+        ISNULL(Tuoi_18_25, 0) AS Tuoi_18_25, 
+        ISNULL(Tuoi_26_35, 0) AS Tuoi_26_35, 
+        ISNULL(Tuoi_Tren35, 0) AS Tuoi_Tren35, 
         ISNULL(IsBold, 0) AS IsBold, 
         ISNULL(IndentLevel, 0) AS IndentLevel,
         Code
@@ -862,21 +1066,17 @@ END
 GO
 
 
--- =========================================================================
--- SP_CD45_Dashboard: Phục vụ Dashboard Tổng quan Trang chủ Dự án CD45
--- =========================================================================
-
-GO
-
-
-
 CREATE OR ALTER PROC SP_CD45_Dashboard
     @CityCode VARCHAR(50) = NULL,
     @MaNhom VARCHAR(50) = NULL,
     @FromDate DATE = NULL,
     @ToDate DATE = NULL,
     @NhomTuoiTable1 VARCHAR(50) = NULL,
-    @CityMode VARCHAR(10) = 'NEW34'
+    @CityMode VARCHAR(10) = 'NEW34',
+    @GioiTinhFilter INT = NULL,          -- Option B: 1=Nam, 2=Nữ, 3=Khác (NULL=Tất cả)
+    @NhomTuoiFilter VARCHAR(50) = NULL,  -- Option B: '< 18', '18 - 25', '26 - 35', '>= 36' (NULL=Tất cả)
+    @DoiTuongFilter INT = NULL,          -- Option B: 1=PUD, 2=PLHIV, 3=TG, 4=MSM, 5=SW (NULL=Tất cả)
+    @DimensionMode INT = 1               -- Option A: 1=Quần thể, 2=Giới tính, 3=Nhóm tuổi
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -909,7 +1109,7 @@ BEGIN
           AND LTRIM(RTRIM(s.value)) <> '';
     END
 
-    -- Lọc danh sách KH cơ bản theo Tỉnh, Nhóm và Thời gian tham gia (nếu có)
+    -- Lọc danh sách KH cơ bản theo Tỉnh, Nhóm, Thời gian và các bộ lọc phân tầng (Option B)
     SELECT 
         kh.RECORD_ID,
         kh.CITY_CODE,
@@ -918,9 +1118,23 @@ BEGIN
         kh.DOI_TUONG,
         kh.NAM_SINH,
         kh.GIOI_TINH_TU_XD,
+        kh.GIOI_TINH_KHAI_SINH,
         kh.CO_BHYT,
         kh.CO_CCCD,
-        kh.NGAY_THAM_GIA
+        kh.NGAY_THAM_GIA,
+        CASE 
+            WHEN kh.GIOI_TINH_TU_XD IN (3, 4) OR kh.GIOI_TINH_KHAI_SINH = 3 THEN 3
+            WHEN kh.GIOI_TINH_TU_XD = 1 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 1) THEN 1
+            WHEN kh.GIOI_TINH_TU_XD = 2 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 2) THEN 2
+            ELSE 3
+        END AS GIOI_TINH,
+        CASE 
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) < 18 THEN '< 18'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
+            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
+            ELSE N'Chưa xác định'
+        END AS NHOM_TUOI
     INTO #TmpKH
     FROM CD45_KH kh
     WHERE (@CityCode IS NULL OR @CityCode = '' OR kh.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
@@ -930,7 +1144,25 @@ BEGIN
           OR kh.REDCAP_DAG IN (@Var_MaNhomStd, @Var_MaNhomMap, @MaNhom)
       )
       AND (@FromDate IS NULL OR kh.NGAY_THAM_GIA >= @FromDate)
-      AND (@ToDate IS NULL OR kh.NGAY_THAM_GIA <= @ToDate);
+      AND (@ToDate IS NULL OR kh.NGAY_THAM_GIA <= @ToDate)
+      AND (@GioiTinhFilter IS NULL OR @GioiTinhFilter = 0 OR (
+          CASE 
+              WHEN kh.GIOI_TINH_TU_XD IN (3, 4) OR kh.GIOI_TINH_KHAI_SINH = 3 THEN 3
+              WHEN kh.GIOI_TINH_TU_XD = 1 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 1) THEN 1
+              WHEN kh.GIOI_TINH_TU_XD = 2 OR (kh.GIOI_TINH_TU_XD IS NULL AND kh.GIOI_TINH_KHAI_SINH = 2) THEN 2
+              ELSE 3
+          END = @GioiTinhFilter
+      ))
+      AND (@NhomTuoiFilter IS NULL OR @NhomTuoiFilter = '' OR (
+          CASE 
+              WHEN (YEAR(GETDATE()) - kh.NAM_SINH) < 18 THEN '< 18'
+              WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
+              WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
+              WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
+              ELSE N'Chưa xác định'
+          END = @NhomTuoiFilter
+      ))
+      AND (@DoiTuongFilter IS NULL OR @DoiTuongFilter = 0 OR kh.DOI_TUONG = @DoiTuongFilter);
 
     CREATE CLUSTERED INDEX IX_TmpKH_Rec ON #TmpKH(RECORD_ID);
 
@@ -959,38 +1191,43 @@ BEGIN
         INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID
         WHERE qst.COMPLETE_STATUS = '2'
     )
-    -- 2. PHÂN TÍCH QST THEO NHÓM ĐÍCH (DOI_TUONG) - BẢNG 1
+    -- 2. PHÂN TÍCH QST THEO CHIỀU PHÂN TÍCH (@DimensionMode: 1=Quần thể, 2=Giới tính, 3=Nhóm tuổi)
     SELECT 
-        kh.DOI_TUONG AS DoiTuongId,
-        CASE 
-            WHEN kh.DOI_TUONG = 1 THEN N'PUD (Sử dụng ma túy)'
-            WHEN kh.DOI_TUONG = 2 THEN N'PLHIV (Sống với HIV)'
-            WHEN kh.DOI_TUONG = 3 THEN N'TG (Người chuyển giới)'
-            WHEN kh.DOI_TUONG = 4 THEN N'MSM (Nam QHTD đồng giới)'
-            WHEN kh.DOI_TUONG = 5 THEN N'SW (Người bán dâm)'
-            ELSE N'Khác'
-        END AS TenDoiTuong,
+        d.DoiTuongId,
+        d.TenDoiTuong,
         COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
         COUNT(DISTINCT qst.RECORD_ID) AS SoKHSangLoc,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 1 THEN qst.RECORD_ID END) AS Muc1_RatCao,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 2 THEN qst.RECORD_ID END) AS Muc2_Cao,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 3 THEN qst.RECORD_ID END) AS Muc3_TrungBinh,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 4 THEN qst.RECORD_ID END) AS Muc4_Thap
-    FROM #TmpKH kh
+    FROM (
+        SELECT 1 AS DoiTuongId, N'PUD (Sử dụng ma túy)' AS TenDoiTuong, 1 AS SortOrder WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 2, N'PLHIV (Sống với HIV)', 2 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 3, N'TG (Người chuyển giới)', 3 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 4, N'MSM (Nam QHTD đồng giới)', 4 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 5, N'SW (Người bán dâm)', 5 WHERE ISNULL(@DimensionMode, 1) = 1
+        
+        UNION ALL SELECT 1, N'Nam', 1 WHERE @DimensionMode = 2
+        UNION ALL SELECT 2, N'Nữ', 2 WHERE @DimensionMode = 2
+        UNION ALL SELECT 3, N'Khác', 3 WHERE @DimensionMode = 2
+        
+        UNION ALL SELECT 1, N'< 18', 1 WHERE @DimensionMode = 3
+        UNION ALL SELECT 2, N'18 - 25', 2 WHERE @DimensionMode = 3
+        UNION ALL SELECT 3, N'26 - 35', 3 WHERE @DimensionMode = 3
+        UNION ALL SELECT 4, N'>= 36', 4 WHERE @DimensionMode = 3
+        UNION ALL SELECT 5, N'Chưa xác định', 5 WHERE @DimensionMode = 3
+    ) d
+    LEFT JOIN #TmpKH kh ON (
+        (ISNULL(@DimensionMode, 1) = 1 AND kh.DOI_TUONG = d.DoiTuongId)
+        OR (@DimensionMode = 2 AND kh.GIOI_TINH = d.DoiTuongId)
+        OR (@DimensionMode = 3 AND kh.NHOM_TUOI = d.TenDoiTuong)
+    ) AND (@NhomTuoiTable1 IS NULL OR @NhomTuoiTable1 = '' OR kh.NHOM_TUOI = @NhomTuoiTable1)
     LEFT JOIN CTE_LatestQST qst ON kh.RECORD_ID = qst.RECORD_ID AND qst.rn = 1
-    WHERE (@NhomTuoiTable1 IS NULL OR @NhomTuoiTable1 = '' OR (
-        CASE 
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) < 18 THEN '< 18'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
-            ELSE N'Chưa xác định'
-        END = @NhomTuoiTable1
-    ))
-    GROUP BY kh.DOI_TUONG
-    ORDER BY kh.DOI_TUONG;
+    GROUP BY d.DoiTuongId, d.TenDoiTuong, d.SortOrder
+    ORDER BY d.SortOrder;
 
-    -- 3. PHÂN TÍCH QST THEO NHÓM ĐỘ TUỔI - BẢNG 2 & BIỂU ĐỒ
+    -- 3. PHÂN TÍCH QST THEO NHÓM ĐỘ TUỔI - BẢNG 2 & BIỂU ĐỒ TUỔI
     ;WITH CTE_LatestQST AS (
         SELECT 
             qst.RECORD_ID,
@@ -1001,53 +1238,62 @@ BEGIN
             ) AS rn
         FROM CD45_QST qst
         INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID
+        WHERE qst.COMPLETE_STATUS = '2'
     )
     SELECT 
-        CASE 
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) < 18 THEN '< 18'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
-            ELSE N'Chưa xác định'
-        END AS NhomTuoi,
+        ao.NhomTuoi,
         COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
         COUNT(DISTINCT qst.RECORD_ID) AS SoKHSangLoc,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 1 THEN qst.RECORD_ID END) AS Muc1,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 2 THEN qst.RECORD_ID END) AS Muc2,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 3 THEN qst.RECORD_ID END) AS Muc3,
         COUNT(DISTINCT CASE WHEN qst.MUC_QST = 4 THEN qst.RECORD_ID END) AS Muc4
-    FROM #TmpKH kh
+    FROM (
+        SELECT 1 AS AId, N'< 18' AS NhomTuoi
+        UNION ALL SELECT 2, N'18 - 25'
+        UNION ALL SELECT 3, N'26 - 35'
+        UNION ALL SELECT 4, N'>= 36'
+        UNION ALL SELECT 5, N'Chưa xác định'
+    ) ao
+    LEFT JOIN #TmpKH kh ON ao.NhomTuoi = kh.NHOM_TUOI
     LEFT JOIN CTE_LatestQST qst ON kh.RECORD_ID = qst.RECORD_ID AND qst.rn = 1
-    GROUP BY 
-        CASE 
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) < 18 THEN '< 18'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 18 AND 25 THEN '18 - 25'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) BETWEEN 26 AND 35 THEN '26 - 35'
-            WHEN (YEAR(GETDATE()) - kh.NAM_SINH) >= 36 THEN '>= 36'
-            ELSE N'Chưa xác định'
-        END
-    ORDER BY NhomTuoi;
+    GROUP BY ao.AId, ao.NhomTuoi
+    ORDER BY ao.AId;
 
     -- 4. ĐÁNH GIÁ SANG CHẤN PTSD (PCL-5), RƯỢU (AUDIT-C) & KỲ THỊ (STIGMA)
     SELECT 
-        kh.DOI_TUONG AS DoiTuongId,
-        CASE 
-            WHEN kh.DOI_TUONG = 1 THEN N'PUD'
-            WHEN kh.DOI_TUONG = 2 THEN N'PLHIV'
-            WHEN kh.DOI_TUONG = 3 THEN N'TG'
-            WHEN kh.DOI_TUONG = 4 THEN N'MSM'
-            WHEN kh.DOI_TUONG = 5 THEN N'SW'
-            ELSE N'Khác'
-        END AS TenDoiTuong,
+        d.DoiTuongId,
+        d.TenDoiTuong,
         COUNT(tv.RECORD_ID) AS SoCaTuVan,
         SUM(CASE WHEN tv.PCL5_POSITIVE = 1 THEN 1 ELSE 0 END) AS PCL5_DuongTinh,
         SUM(CASE WHEN tv.PCL5_POSITIVE = 0 THEN 1 ELSE 0 END) AS PCL5_AmTinh,
         ROUND(ISNULL(AVG(CAST(tv.AUDIT_C_SCORE AS FLOAT)), 0), 1) AS DiemAuditCTB,
         ROUND(ISNULL(AVG(CAST(tv.STIGMA_SCORE AS FLOAT)), 0), 1) AS DiemKyThiTB
-    FROM #TmpKH kh
-    INNER JOIN CD45_TU_VAN_L1 tv ON kh.RECORD_ID = tv.RECORD_ID
-    GROUP BY kh.DOI_TUONG
-    ORDER BY kh.DOI_TUONG;
+    FROM (
+        SELECT 1 AS DoiTuongId, N'PUD' AS TenDoiTuong, 1 AS SortOrder WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 2, N'PLHIV', 2 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 3, N'TG', 3 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 4, N'MSM', 4 WHERE ISNULL(@DimensionMode, 1) = 1
+        UNION ALL SELECT 5, N'SW', 5 WHERE ISNULL(@DimensionMode, 1) = 1
+        
+        UNION ALL SELECT 1, N'Nam', 1 WHERE @DimensionMode = 2
+        UNION ALL SELECT 2, N'Nữ', 2 WHERE @DimensionMode = 2
+        UNION ALL SELECT 3, N'Khác', 3 WHERE @DimensionMode = 2
+        
+        UNION ALL SELECT 1, N'< 18', 1 WHERE @DimensionMode = 3
+        UNION ALL SELECT 2, N'18 - 25', 2 WHERE @DimensionMode = 3
+        UNION ALL SELECT 3, N'26 - 35', 3 WHERE @DimensionMode = 3
+        UNION ALL SELECT 4, N'>= 36', 4 WHERE @DimensionMode = 3
+        UNION ALL SELECT 5, N'Chưa xác định', 5 WHERE @DimensionMode = 3
+    ) d
+    LEFT JOIN #TmpKH kh ON (
+        (ISNULL(@DimensionMode, 1) = 1 AND kh.DOI_TUONG = d.DoiTuongId)
+        OR (@DimensionMode = 2 AND kh.GIOI_TINH = d.DoiTuongId)
+        OR (@DimensionMode = 3 AND kh.NHOM_TUOI = d.TenDoiTuong)
+    )
+    LEFT JOIN CD45_TU_VAN_L1 tv ON kh.RECORD_ID = tv.RECORD_ID AND tv.COMPLETE_STATUS = '2'
+    GROUP BY d.DoiTuongId, d.TenDoiTuong, d.SortOrder
+    ORDER BY d.SortOrder;
 
     -- 5. PHÂN BỐ THEO TỈNH THÀNH (HỖ TRỢ 34 TỈNH MỚI HOẶC 63 TỈNH CŨ)
     IF @CityMode = 'OLD63'
@@ -1056,9 +1302,9 @@ BEGIN
             kh.CITY_CODE AS CityCode,
             ISNULL(c.Name, kh.CITY_CODE) AS CityName,
             COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
-            ISNULL((SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE), 0) AS SangLocQST,
-            ISNULL((SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE), 0) AS KhamSKTT,
-            ISNULL((SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE), 0) AS TuVanL1
+            ISNULL((SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE AND qst.COMPLETE_STATUS = '2'), 0) AS SangLocQST,
+            ISNULL((SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE AND cd.COMPLETE_STATUS = '2'), 0) AS KhamSKTT,
+            ISNULL((SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID WHERE k.CITY_CODE = kh.CITY_CODE AND tv.COMPLETE_STATUS = '2'), 0) AS TuVanL1
         FROM #TmpKH kh
         LEFT JOIN BVTL_CITES c ON kh.CITY_CODE = c.Code
         GROUP BY kh.CITY_CODE, c.Name
@@ -1072,13 +1318,13 @@ BEGIN
             COUNT(DISTINCT kh.RECORD_ID) AS TongKH,
             ISNULL((SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID 
                     LEFT JOIN BVTL_MAP_TINH_CU_MOI m2 ON k.CITY_CODE = m2.OldCityCode 
-                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE)), 0) AS SangLocQST,
+                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE) AND qst.COMPLETE_STATUS = '2'), 0) AS SangLocQST,
             ISNULL((SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID 
                     LEFT JOIN BVTL_MAP_TINH_CU_MOI m2 ON k.CITY_CODE = m2.OldCityCode 
-                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE)), 0) AS KhamSKTT,
+                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE) AND cd.COMPLETE_STATUS = '2'), 0) AS KhamSKTT,
             ISNULL((SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID 
                     LEFT JOIN BVTL_MAP_TINH_CU_MOI m2 ON k.CITY_CODE = m2.OldCityCode 
-                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE)), 0) AS TuVanL1
+                    WHERE ISNULL(m2.NewCityCode, k.CITY_CODE) = ISNULL(map.NewCityCode, kh.CITY_CODE) AND tv.COMPLETE_STATUS = '2'), 0) AS TuVanL1
         FROM #TmpKH kh
         LEFT JOIN BVTL_MAP_TINH_CU_MOI map ON kh.CITY_CODE = map.OldCityCode
         LEFT JOIN BVTL_DM_TINH_MOI newc ON map.NewCityCode = newc.Code
@@ -1088,12 +1334,12 @@ BEGIN
 
     -- 6. PHỄU DỊCH VỤ CHĂM SÓC SKTT (CASCADE FUNNEL)
     SELECT 
-        (SELECT COUNT(DISTINCT hd.RECORD_ID) FROM CD45_HOAT_DONG hd INNER JOIN #TmpKH k ON hd.RECORD_ID = k.RECORD_ID) AS Step1_TiepCanTruyenThong,
-        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID) AS Step2_SangLocQST,
-        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE qst.MUC_QST IN (1, 2)) AS Step3_NguyCoCaoQST,
-        (SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID) AS Step4_TuVanTamLy,
-        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID) AS Step5_KhamChuyenKhoa,
-        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE cd.LAN_KHAM > 1) AS Step6_TaiKhamSKTT;
+        (SELECT COUNT(DISTINCT hd.RECORD_ID) FROM CD45_HOAT_DONG hd INNER JOIN #TmpKH k ON hd.RECORD_ID = k.RECORD_ID WHERE hd.COMPLETE_STATUS = '2') AS Step1_TiepCanTruyenThong,
+        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE qst.COMPLETE_STATUS = '2') AS Step2_SangLocQST,
+        (SELECT COUNT(DISTINCT qst.RECORD_ID) FROM CD45_QST qst INNER JOIN #TmpKH k ON qst.RECORD_ID = k.RECORD_ID WHERE qst.COMPLETE_STATUS = '2' AND qst.MUC_QST IN (1, 2)) AS Step3_NguyCoCaoQST,
+        (SELECT COUNT(DISTINCT tv.RECORD_ID) FROM CD45_TU_VAN_L1 tv INNER JOIN #TmpKH k ON tv.RECORD_ID = k.RECORD_ID WHERE tv.COMPLETE_STATUS = '2') AS Step4_TuVanTamLy,
+        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE cd.COMPLETE_STATUS = '2') AS Step5_KhamChuyenKhoa,
+        (SELECT COUNT(DISTINCT cd.RECORD_ID) FROM CD45_CHAN_DOAN cd INNER JOIN #TmpKH k ON cd.RECORD_ID = k.RECORD_ID WHERE cd.COMPLETE_STATUS = '2' AND cd.LAN_KHAM > 1) AS Step6_TaiKhamSKTT;
 
     -- 7. DỊCH VỤ HỖ TRỢ CHUYỂN GỬI XÃ HỘI (CD45_HO_TRO_XH)
     SELECT 
@@ -1104,11 +1350,11 @@ BEGIN
         COUNT(DISTINCT CASE WHEN htxh.DICH_VU LIKE N'%STIs%' THEN htxh.RECORD_ID END) AS STIs,
         COUNT(DISTINCT CASE WHEN htxh.DICH_VU LIKE N'%gan%' THEN htxh.RECORD_ID END) AS ViemGan
     FROM CD45_HO_TRO_XH htxh
-    INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID;
+    INNER JOIN #TmpKH kh ON htxh.RECORD_ID = kh.RECORD_ID
+    WHERE htxh.COMPLETE_STATUS = '2';
 
     DROP TABLE #TmpKH;
 END
-
 GO
 
 
@@ -1713,3 +1959,84 @@ GO
 
 
 
+
+
+-- =========================================================================
+-- BÁO CÁO BÁC SĨ (DỰ ÁN CD45 - DREAMH) - STT 42
+-- =========================================================================
+
+CREATE OR ALTER PROC SP_CD45_GetBaoCaoBacSi
+    @FromDate DATE = NULL,
+    @ToDate DATE = NULL,
+    @CityCode VARCHAR(50) = NULL,
+    @DoctorId VARCHAR(10) = NULL,
+    @MaNhom VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        f6.ID,
+        f6.RECORD_ID,
+        f6.CITY_CODE,
+        ISNULL(cty.Name, f6.CITY_CODE) AS TEN_TINH,
+        f6.MA_NHOM,
+        ISNULL(nhom.tennhom_tbh, f6.MA_NHOM) AS TEN_NHOM,
+        f6.MA_TCV,
+        ISNULL(tcv.TEN_TCV, f6.MA_TCV) AS TEN_TCV,
+        f6.NGAY_KHAM,
+        f6.BAC_SI,
+        ISNULL(bs.TEN_BAC_SI, f6.BAC_SI) AS TEN_BAC_SI,
+        f6.CO_SO_Y_TE,
+        f6.LAN_KHAM,
+        f6.CHAN_DOAN_CHINH,
+        f6.HINH_THUC_DIEU_TRI,
+        f6.COMPLETE_STATUS
+    FROM CD45_CHAN_DOAN f6
+    LEFT JOIN CD45_DM_BAC_SI bs ON f6.BAC_SI = bs.MA_BAC_SI
+    LEFT JOIN BVTL_CITES cty ON f6.CITY_CODE = cty.Code
+    LEFT JOIN BVTL_NHOM_TBH nhom ON (f6.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND f6.MA_NHOM = nhom.manhom_tbh_map))
+    LEFT JOIN CD45_NHOM_TCV tcv ON (f6.MA_NHOM = tcv.MA_NHOM AND f6.MA_TCV = tcv.MA_TCV)
+    WHERE f6.COMPLETE_STATUS = '2'
+      AND (@FromDate IS NULL OR f6.NGAY_KHAM >= @FromDate)
+      AND (@ToDate IS NULL OR f6.NGAY_KHAM <= @ToDate)
+      AND (@CityCode IS NULL OR @CityCode = '' OR f6.CITY_CODE = @CityCode)
+      AND (@DoctorId IS NULL OR @DoctorId = '' OR f6.BAC_SI = @DoctorId)
+      AND (@MaNhom IS NULL OR @MaNhom = '' OR f6.MA_NHOM = @MaNhom)
+    ORDER BY bs.TEN_BAC_SI, f6.NGAY_KHAM, f6.RECORD_ID;
+END
+GO
+
+CREATE OR ALTER PROC SP_CD45_GetBaoCaoBacSi_TongHop
+    @FromDate DATE = NULL,
+    @ToDate DATE = NULL,
+    @CityCode VARCHAR(50) = NULL,
+    @DoctorId VARCHAR(10) = NULL,
+    @MaNhom VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        bs.MA_BAC_SI,
+        bs.TEN_BAC_SI,
+        bs.TINH_THANH,
+        bs.CITY_CODE,
+        COUNT(f6.ID) AS TongSoCa,
+        COUNT(CASE WHEN f6.LAN_KHAM = 1 THEN 1 END) AS KhamLan1,
+        COUNT(CASE WHEN f6.LAN_KHAM = 2 THEN 1 END) AS TaiKham,
+        COUNT(CASE WHEN f6.LAN_KHAM > 2 OR f6.LAN_KHAM IS NULL THEN 1 END) AS KhamKhac,
+        COUNT(CASE WHEN f6.HINH_THUC_DIEU_TRI = '1' THEN 1 END) AS NgoaiTru,
+        COUNT(CASE WHEN f6.HINH_THUC_DIEU_TRI = '2' THEN 1 END) AS NoiTru
+    FROM CD45_DM_BAC_SI bs
+    INNER JOIN CD45_CHAN_DOAN f6 ON bs.MA_BAC_SI = f6.BAC_SI
+    WHERE f6.COMPLETE_STATUS = '2'
+      AND (@FromDate IS NULL OR f6.NGAY_KHAM >= @FromDate)
+      AND (@ToDate IS NULL OR f6.NGAY_KHAM <= @ToDate)
+      AND (@CityCode IS NULL OR @CityCode = '' OR f6.CITY_CODE = @CityCode)
+      AND (@DoctorId IS NULL OR @DoctorId = '' OR f6.BAC_SI = @DoctorId)
+      AND (@MaNhom IS NULL OR @MaNhom = '' OR f6.MA_NHOM = @MaNhom)
+    GROUP BY bs.MA_BAC_SI, bs.TEN_BAC_SI, bs.TINH_THANH, bs.CITY_CODE
+    ORDER BY bs.TINH_THANH, bs.TEN_BAC_SI;
+END
+GO

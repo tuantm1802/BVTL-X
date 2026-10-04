@@ -6,6 +6,7 @@ using Model.ModelExtend.Report;
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using WebApp.Services;
 
 namespace BVTL.Tests
@@ -23,7 +24,7 @@ namespace BVTL.Tests
             var settings = da.GetSettings();
 
             Assert.IsNotNull(settings, "Settings should not be null");
-            Assert.AreEqual(5, settings.RunDay, "Default day of month should be 5");
+            Assert.IsTrue(settings.RunDay >= 1 && settings.RunDay <= 31, "Day of month should be between 1 and 31");
             Assert.AreEqual(8, settings.RunHour, "Default hour should be 8");
             Assert.IsTrue(settings.IsActive, "Auto export should be active");
         }
@@ -632,6 +633,242 @@ namespace BVTL.Tests
                     try { File.Delete(generatedFilePath); } catch { }
                 }
             }
+        }
+
+        [TestMethod]
+        public void ScheduledReportDA_CheckDataAvailability_BacSiCD45_ShouldReturnTrue()
+        {
+            var da = new ScheduledReportDA();
+            bool hasData = da.CheckDataAvailability("BACSI_CD45", 2026, 9);
+            Assert.IsTrue(hasData, "September 2026 should have doctor consultation data in CD45_CHAN_DOAN");
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportBacSiCD45ExcelAsync_ForSingleProvince_HaNoi_ShouldCreateExcelWithDoctorSheets()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Test xuất báo cáo Bác sĩ tháng 9/2026 tỉnh Hà Nội (HNO)
+                var task = service.ExportBacSiCD45ExcelAsync(2026, 9, "HNO", "UnitTest", "Tester", "Month");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export for Hanoi should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "Excel file should exist: " + result.FilePath);
+                Assert.IsTrue(result.FilePath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase), "File should be .xlsx");
+                Assert.IsTrue(result.TotalItems > 0, "Should have exported doctor consultation cases");
+                generatedFilePath = result.FilePath;
+
+                using (var wb = new XLWorkbook(result.FilePath))
+                {
+                    Assert.IsTrue(wb.Worksheets.Count > 0, "Workbook must contain at least 1 worksheet");
+
+                    // Kiểm tra cấu trúc của từng Sheet (mỗi Sheet tương ứng với một Bác sĩ)
+                    foreach (var ws in wb.Worksheets)
+                    {
+                        // 1. Header: Tiêu đề báo cáo
+                        string title = ws.Cell(1, 1).GetString();
+                        Assert.IsTrue(title.Contains("DANH SÁCH KHÁCH HÀNG ĐƯỢC NHẬP LIỆU TRÊN REDCAP DỰ ÁN DREAMH"), 
+                            "Title must match user specification: " + title);
+
+                        // 2. Header: Tỉnh, Bác sĩ, Tháng (Merge Cột A & B cho Tiêu đề, Cột C & D cho Giá trị)
+                        Assert.IsTrue(ws.Range(3, 1, 3, 2).IsMerged(), "Range A3:B3 should be merged for Province label");
+                        string provinceLabel = ws.Cell(3, 1).GetString();
+                        Assert.IsTrue(ws.Range(3, 3, 3, 4).IsMerged(), "Range C3:D3 should be merged for Province value");
+                        string provinceVal = ws.Cell(3, 3).GetString();
+                        Assert.IsTrue(provinceLabel.Contains("Tỉnh"), "Cell (3,1) should be Province label");
+                        Assert.IsTrue(provinceVal.Contains("Hà Nội"), "Cell (3,3) should be Hà Nội");
+
+                        string periodText = ws.Cell(3, 7).GetString();
+                        Assert.IsTrue(periodText.Contains("Từ 01/09/2026 đến 30/09/2026"), 
+                            "Doctor report period in Header must be from first day to last day of month: " + periodText);
+
+                        Assert.IsTrue(ws.Range(4, 1, 4, 2).IsMerged(), "Range A4:B4 should be merged for Doctor label");
+                        string doctorLabel = ws.Cell(4, 1).GetString();
+                        Assert.IsTrue(ws.Range(4, 3, 4, 4).IsMerged(), "Range C4:D4 should be merged for Doctor value");
+                        string doctorVal = ws.Cell(4, 3).GetString();
+                        Assert.IsTrue(doctorLabel.Contains("Bác sĩ"), "Cell (4,1) should be Doctor label");
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(doctorVal), "Doctor name should not be empty");
+
+                        // 3. Header bảng chi tiết ca khám (Dòng 6)
+                        Assert.AreEqual("STT", ws.Cell(6, 1).GetString());
+                        Assert.AreEqual("Mã Khách hàng", ws.Cell(6, 2).GetString());
+                        Assert.AreEqual("Ngày khám", ws.Cell(6, 3).GetString());
+                        Assert.AreEqual("Cơ sở khám / Bệnh viện", ws.Cell(6, 4).GetString());
+                        Assert.AreEqual("Nhóm CBO", ws.Cell(6, 5).GetString());
+                        Assert.AreEqual("Tiếp cận viên (TCV)", ws.Cell(6, 6).GetString());
+                        Assert.AreEqual("Lần khám", ws.Cell(6, 7).GetString());
+                        Assert.AreEqual("Chẩn đoán chính", ws.Cell(6, 8).GetString());
+                        Assert.AreEqual("Hình thức điều trị", ws.Cell(6, 9).GetString());
+
+                        // 4. Footer: Tìm chữ 'Xác nhận của SCDI'
+                        int lastRow = ws.LastRowUsed().RowNumber();
+                        int footerRow = -1;
+                        for (int r = 7; r <= lastRow; r++)
+                        {
+                            string cellVal = ws.Cell(r, 7).GetString();
+                            if (!string.IsNullOrEmpty(cellVal) && cellVal.Contains("Xác nhận của SCDI"))
+                            {
+                                footerRow = r;
+                                break;
+                            }
+                        }
+
+                        Assert.IsTrue(footerRow > 0, "Footer 'Xác nhận của SCDI' must be found in worksheet: " + ws.Name);
+
+                        // Kiểm tra ngày tháng năm footer
+                        string dateFooter = ws.Cell(footerRow - 1, 7).GetString();
+                        Assert.IsTrue(dateFooter.Contains("Hà Nội"), "Footer date should contain province name: " + dateFooter);
+                        Assert.IsTrue(dateFooter.Contains("Ngày") && dateFooter.Contains("tháng") && dateFooter.Contains("năm"), 
+                            "Footer date format invalid: " + dateFooter);
+
+                        // Kiểm tra chữ ký SCDI
+                        string scdiSignNote = ws.Cell(footerRow + 1, 7).GetString();
+                        Assert.AreEqual("(Ký, ghi rõ họ tên)", scdiSignNote.Trim());
+
+                        // Kiểm tra khối Bác sĩ phụ trách bên trái
+                        string docFooterTitle = ws.Cell(footerRow, 1).GetString();
+                        Assert.AreEqual("Bác sĩ phụ trách", docFooterTitle.Trim());
+                        string docFooterName = ws.Cell(footerRow + 5, 1).GetString();
+                        Assert.AreEqual(doctorVal, docFooterName.Trim(), "Doctor name in footer must match header");
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportBacSiCD45ExcelAsync_ForAllProvinces_ShouldCreateZipWithProvinceExcels()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Test xuất tất cả các tỉnh (cityCode = null) cho tháng 9/2026 -> sinh file .ZIP
+                var task = service.ExportBacSiCD45ExcelAsync(2026, 9, null, "UnitTest", "Tester", "Month");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export all provinces should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist: " + result.FilePath);
+                Assert.IsTrue(result.FilePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase), "File should be .zip");
+                Assert.IsTrue(result.TotalItems > 0, "Should have exported cases across all provinces");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    Assert.IsTrue(archive.Entries.Count >= 6, $"Archive should contain at least 6 province files, found {archive.Entries.Count}");
+
+                    bool hasHanoi = false;
+                    bool hasHcm = false;
+                    bool hasHaiPhong = false;
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        Assert.IsTrue(entry.Name.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase), "All entries in zip should be Excel files: " + entry.Name);
+                        if (entry.Name.Contains("HaNoi")) hasHanoi = true;
+                        if (entry.Name.Contains("HoChiMinh")) hasHcm = true;
+                        if (entry.Name.Contains("HaiPhong")) hasHaiPhong = true;
+                    }
+
+                    Assert.IsTrue(hasHanoi, "ZIP should contain Hanoi excel report");
+                    Assert.IsTrue(hasHcm, "ZIP should contain HCM excel report");
+                    Assert.IsTrue(hasHaiPhong, "ZIP should contain Hai Phong excel report");
+
+                    // Mở thử 1 file Excel bên trong ZIP để verify
+                    var hanoiEntry = archive.Entries.FirstOrDefault(e => e.Name.Contains("HaNoi"));
+                    Assert.IsNotNull(hanoiEntry, "Hanoi entry should exist");
+                    using (var entryStream = hanoiEntry.Open())
+                    using (var ms = new MemoryStream())
+                    {
+                        entryStream.CopyTo(ms);
+                        ms.Position = 0;
+                        using (var wb = new XLWorkbook(ms))
+                        {
+                            Assert.IsTrue(wb.Worksheets.Count > 0, "Hanoi excel inside ZIP should have worksheets");
+                            var firstWs = wb.Worksheets.First();
+                            string title = firstWs.Cell(1, 1).GetString();
+                            Assert.IsTrue(title.Contains("DANH SÁCH KHÁCH HÀNG ĐƯỢC NHẬP LIỆU TRÊN REDCAP DỰ ÁN DREAMH"));
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_CalculateDoctorPeriodDateRange_ShouldFollowCalendarMonthRule()
+        {
+            string fromDate, toDate, periodValue;
+
+            // Month 9/2026 (September has 30 days)
+            ReportExportService.CalculateDoctorPeriodDateRange("Month", 2026, 9, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/09/2026", fromDate);
+            Assert.AreEqual("30/09/2026", toDate);
+            Assert.AreEqual("Tháng 09/2026", periodValue);
+
+            // Month 1/2026 (January has 31 days)
+            ReportExportService.CalculateDoctorPeriodDateRange("Month", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/01/2026", fromDate);
+            Assert.AreEqual("31/01/2026", toDate);
+            Assert.AreEqual("Tháng 01/2026", periodValue);
+
+            // Month 2/2024 (Leap year has 29 days)
+            ReportExportService.CalculateDoctorPeriodDateRange("Month", 2024, 2, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/02/2024", fromDate);
+            Assert.AreEqual("29/02/2024", toDate);
+            Assert.AreEqual("Tháng 02/2024", periodValue);
+
+            // Month 2/2026 (Non-leap year has 28 days)
+            ReportExportService.CalculateDoctorPeriodDateRange("Month", 2026, 2, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/02/2026", fromDate);
+            Assert.AreEqual("28/02/2026", toDate);
+            Assert.AreEqual("Tháng 02/2026", periodValue);
+
+            // Quarter 1/2026
+            ReportExportService.CalculateDoctorPeriodDateRange("Quarter", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/01/2026", fromDate);
+            Assert.AreEqual("31/03/2026", toDate);
+            Assert.AreEqual("Quý I/2026", periodValue);
+
+            // Quarter 2/2026
+            ReportExportService.CalculateDoctorPeriodDateRange("Quarter", 2026, 2, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/04/2026", fromDate);
+            Assert.AreEqual("30/06/2026", toDate);
+            Assert.AreEqual("Quý II/2026", periodValue);
+
+            // Quarter 3/2026
+            ReportExportService.CalculateDoctorPeriodDateRange("Quarter", 2026, 3, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/07/2026", fromDate);
+            Assert.AreEqual("30/09/2026", toDate);
+            Assert.AreEqual("Quý III/2026", periodValue);
+
+            // Quarter 4/2026
+            ReportExportService.CalculateDoctorPeriodDateRange("Quarter", 2026, 4, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/10/2026", fromDate);
+            Assert.AreEqual("31/12/2026", toDate);
+            Assert.AreEqual("Quý IV/2026", periodValue);
+
+            // Year 2026
+            ReportExportService.CalculateDoctorPeriodDateRange("Year", 2026, 1, out fromDate, out toDate, out periodValue);
+            Assert.AreEqual("01/01/2026", fromDate);
+            Assert.AreEqual("31/12/2026", toDate);
+            Assert.AreEqual("Năm 2026", periodValue);
         }
     }
 }

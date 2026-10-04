@@ -25,6 +25,7 @@ document.addEventListener('alpine:init', function () {
             currentChiTieuCode: '',
             currentChiTieuUnit: '',
             isAdmin: true,
+            displayMode: '1', // '1': Quần thể (PUD/PLHIV/TG/SW/MSM), '2': Giới tính (Nam/Nữ/Khác), '3': Nhóm tuổi (18-25/26-35/>=36)
 
             init: function () {
                 var self = this;
@@ -210,7 +211,8 @@ document.addEventListener('alpine:init', function () {
                         ToDate: self.toDate,
                         MaTinh: self.selectedCity,
                         MaNhom: self.selectedNhom,
-                        LoaiBaoCao: loaiBaoCao
+                        LoaiBaoCao: loaiBaoCao,
+                        displayMode: parseInt(self.displayMode) || 1
                     },
                     success: function (res) {
                         self.isLoading = false;
@@ -241,7 +243,8 @@ document.addEventListener('alpine:init', function () {
                     '&ToDate=' + encodeURIComponent(self.toDate) +
                     '&MaTinh=' + encodeURIComponent(self.selectedCity) +
                     '&MaNhom=' + encodeURIComponent(self.selectedNhom) +
-                    '&LoaiBaoCao=' + encodeURIComponent(loaiBaoCao);
+                    '&LoaiBaoCao=' + encodeURIComponent(loaiBaoCao) +
+                    '&displayMode=' + (parseInt(self.displayMode) || 1);
                 window.location.href = url;
             },
 

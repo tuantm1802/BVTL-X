@@ -79,6 +79,12 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        onReportTypeChange() {
+            if (this.manualExport.reportType === 'BACSI_CD45') {
+                this.manualExport.maNhom = '';
+            }
+        },
+
         loadSettings() {
             this.settingsLoading = true;
             fetch('/ScheduledReport/GetSettings')
@@ -177,6 +183,24 @@ document.addEventListener('alpine:init', () => {
 
         getComputedDateRangeText() {
             var y = parseInt(this.manualExport.year) || new Date().getFullYear();
+            if (this.manualExport.reportType === 'BACSI_CD45') {
+                if (this.manualExport.periodType === 'Quarter') {
+                    var q = parseInt(this.manualExport.quarter) || 1;
+                    if (q === 1) return '01/01/' + y + ' đến 31/03/' + y + ' (Quý I/' + y + ')';
+                    if (q === 2) return '01/04/' + y + ' đến 30/06/' + y + ' (Quý II/' + y + ')';
+                    if (q === 3) return '01/07/' + y + ' đến 30/09/' + y + ' (Quý III/' + y + ')';
+                    return '01/10/' + y + ' đến 31/12/' + y + ' (Quý IV/' + y + ')';
+                } else if (this.manualExport.periodType === 'Year') {
+                    return '01/01/' + y + ' đến 31/12/' + y + ' (Cả Năm ' + y + ')';
+                } else {
+                    var m = parseInt(this.manualExport.month) || 1;
+                    var strM = m < 10 ? '0' + m : m;
+                    var lastDay = new Date(y, m, 0).getDate();
+                    var strLastDay = lastDay < 10 ? '0' + lastDay : lastDay;
+                    return '01/' + strM + '/' + y + ' đến ' + strLastDay + '/' + strM + '/' + y + ' (Tháng ' + m + '/' + y + ')';
+                }
+            }
+
             if (this.manualExport.periodType === 'Quarter') {
                 var q = parseInt(this.manualExport.quarter) || 1;
                 if (q === 1) return '26/12/' + (y - 1) + ' đến 25/03/' + y + ' (Quý I/' + y + ')';
@@ -191,6 +215,11 @@ document.addEventListener('alpine:init', () => {
                 var prevY = m === 1 ? y - 1 : y;
                 var strPrevM = prevM < 10 ? '0' + prevM : prevM;
                 var strM = m < 10 ? '0' + m : m;
+                if (this.manualExport.reportType === 'ALL') {
+                    var lastDay = new Date(y, m, 0).getDate();
+                    var strLastDay = lastDay < 10 ? '0' + lastDay : lastDay;
+                    return 'TCV/Hoạt động: 26/' + strPrevM + '/' + prevY + ' - 25/' + strM + '/' + y + ' | Bác sĩ: 01/' + strM + '/' + y + ' - ' + strLastDay + '/' + strM + '/' + y + ' (Tháng ' + m + '/' + y + ')';
+                }
                 return '26/' + strPrevM + '/' + prevY + ' đến 25/' + strM + '/' + y + ' (Tháng ' + m + '/' + y + ')';
             }
         },
@@ -203,14 +232,16 @@ document.addEventListener('alpine:init', () => {
 
             var periodDesc = this.getComputedDateRangeText();
             var scopeText = '';
-            if (this.manualExport.maNhom) {
+            if (this.manualExport.reportType !== 'BACSI_CD45' && this.manualExport.maNhom) {
                 var nhomObj = this.listNhoms.find(n => n.MaNhom === this.manualExport.maNhom);
                 scopeText = ` - Nhóm: ${nhomObj ? nhomObj.TenNhom : this.manualExport.maNhom}`;
             } else if (this.manualExport.cityCode) {
                 var cityObj = this.listCities.find(c => c.CityCode === this.manualExport.cityCode);
                 scopeText = ` - Tỉnh: ${cityObj ? cityObj.CityName : this.manualExport.cityCode}`;
+            } else {
+                scopeText = ` - Toàn bộ các Tỉnh`;
             }
-            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)}${scopeText} cho kỳ:\n${periodDesc}\nngay bây giờ không?`;
+            const confirmMsg = `Bạn có chắc chắn muốn xuất ${this.getReportTypeName(this.manualExport.reportType)}${scopeText} cho kỳ:\n👉 ${periodDesc}\nngay bây giờ không?`;
             if (!confirm(confirmMsg)) return;
 
             this.isExporting = true;
@@ -281,7 +312,8 @@ document.addEventListener('alpine:init', () => {
             switch (code) {
                 case 'TCV_CD45': return 'Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)';
                 case 'HOATDONG_CD45': return 'Báo cáo Hoạt động CD45 (.xlsx)';
-                case 'ALL': return 'Cả 2 loại báo cáo (TCV + Hoạt động)';
+                case 'BACSI_CD45': return 'Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)';
+                case 'ALL': return 'Tất cả báo cáo (TCV + Hoạt động + Bác sĩ)';
                 default: return code;
             }
         },
@@ -290,6 +322,7 @@ document.addEventListener('alpine:init', () => {
             switch (type) {
                 case 'TCV_CD45': return 'badge bg-danger text-white';
                 case 'HOATDONG_CD45': return 'badge bg-primary text-white';
+                case 'BACSI_CD45': return 'badge bg-success text-white';
                 default: return 'badge bg-secondary text-white';
             }
         },

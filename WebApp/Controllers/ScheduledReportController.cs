@@ -184,6 +184,9 @@ namespace WebApp.Controllers
                 string fromDate, toDate, pValue;
                 ReportExportService.CalculatePeriodDateRange(pType, targetYear, periodNum, out fromDate, out toDate, out pValue);
 
+                string bsFromDate, bsToDate, bsPValue;
+                ReportExportService.CalculateDoctorPeriodDateRange(pType, targetYear, periodNum, out bsFromDate, out bsToDate, out bsPValue);
+
                 cityCode = string.IsNullOrWhiteSpace(cityCode) ? null : cityCode.Trim();
                 maNhom = string.IsNullOrWhiteSpace(maNhom) ? null : maNhom.Trim();
 
@@ -197,7 +200,12 @@ namespace WebApp.Controllers
                     var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
-                else // ALL (Xuất cả TCV và Hoạt động CD45)
+                else if (reportType == "BACSI_CD45")
+                {
+                    var res = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue);
+                    return Json(new { Success = res.Success, Message = res.Message, Result = res });
+                }
+                else // ALL (Xuất cả TCV, Hoạt động CD45 & Bác sĩ CD45)
                 {
                     var results = new List<ReportExportResult>();
                     var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
@@ -206,11 +214,14 @@ namespace WebApp.Controllers
                     var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
                     results.Add(resHD);
 
+                    var resBS = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue);
+                    results.Add(resBS);
+
                     int success = results.FindAll(r => r.Success).Count;
                     return Json(new
                     {
                         Success = success > 0,
-                        Message = $"Đã hoàn thành xuất {results.Count} báo cáo cho {pValue} (Từ {fromDate} đến {toDate}) ({success} thành công).",
+                        Message = $"Đã hoàn thành xuất {results.Count} báo cáo cho {pValue} (TCV/Hoạt động: {fromDate} - {toDate} | Bác sĩ: {bsFromDate} - {bsToDate}) ({success} thành công).",
                         Results = results
                     });
                 }

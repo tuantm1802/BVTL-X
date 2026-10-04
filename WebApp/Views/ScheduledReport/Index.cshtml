@@ -10,7 +10,7 @@
             <h4 class="font-weight-bold text-gray-900 mb-1">
                 <i class="fas fa-calendar-check text-primary me-2"></i>Báo Cáo Định Kỳ & Kho Lưu Trữ
             </h4>
-            <p class="text-muted small mb-0">Tự động kết xuất số liệu hàng tháng (Báo cáo TCV CD45, Hoạt động CD45), lưu trữ snapshot lịch sử và thông báo qua Telegram</p>
+            <p class="text-muted small mb-0">Tự động kết xuất số liệu hàng tháng (Báo cáo TCV CD45, Hoạt động CD45, Bác sĩ DREAMH), lưu trữ snapshot lịch sử và thông báo qua Telegram</p>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-sm btn-outline-primary shadow-sm" @@click="loadLogs(1); loadSettings();">
@@ -115,19 +115,20 @@
                         
                         <div class="mb-3">
                             <label class="form-label small font-weight-bold text-gray-800">Loại Báo Cáo</label>
-                            <select class="form-select form-select-sm" x-model="manualExport.reportType">
-                                <option value="ALL">⭐ Xuất tất cả (TCV CD45 + Hoạt động CD45)</option>
+                            <select class="form-select form-select-sm" x-model="manualExport.reportType" @@change="onReportTypeChange()">
+                                <option value="ALL">⭐ Xuất tất cả (TCV + Hoạt động + Bác sĩ DREAMH)</option>
                                 <option value="TCV_CD45">📦 Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)</option>
                                 <option value="HOATDONG_CD45">📊 Báo cáo Hoạt động CD45 (.xlsx)</option>
+                                <option value="BACSI_CD45">👨‍⚕️ Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label small font-weight-bold text-gray-800">Kỳ Báo Cáo</label>
                             <select class="form-select form-select-sm" x-model="manualExport.periodType">
-                                <option value="Month">Theo Tháng (26 tháng trước - 25 tháng này)</option>
-                                <option value="Quarter">Theo Quý (Chu kỳ 3 tháng 26-25)</option>
-                                <option value="Year">Cả Năm (26/12 - 25/12)</option>
+                                <option value="Month" x-text="manualExport.reportType === 'BACSI_CD45' ? 'Theo Tháng (Từ ngày 01 đến ngày cuối tháng)' : 'Theo Tháng (26 tháng trước - 25 tháng này)'">Theo Tháng (26 tháng trước - 25 tháng này)</option>
+                                <option value="Quarter" x-text="manualExport.reportType === 'BACSI_CD45' ? 'Theo Quý (Dương lịch: Q1..Q4)' : 'Theo Quý (Chu kỳ 3 tháng 26-25)'">Theo Quý (Chu kỳ 3 tháng 26-25)</option>
+                                <option value="Year" x-text="manualExport.reportType === 'BACSI_CD45' ? 'Cả Năm (01/01 - 31/12)' : 'Cả Năm (26/12 - 25/12)'">Cả Năm (26/12 - 25/12)</option>
                             </select>
                         </div>
 
@@ -168,12 +169,15 @@
                             </div>
                             <div class="col-6">
                                 <label class="form-label small font-weight-bold text-gray-800">Nhóm (CBO)</label>
-                                <select class="form-select form-select-sm" x-model="manualExport.maNhom">
+                                <select class="form-select form-select-sm" x-model="manualExport.maNhom" :disabled="manualExport.reportType === 'BACSI_CD45'">
                                     <option value="">-- Toàn bộ --</option>
                                     <template x-for="nhom in filteredNhoms" :key="nhom.MaNhom">
                                         <option :value="nhom.MaNhom" x-text="nhom.TenNhom"></option>
                                     </template>
                                 </select>
+                                <div x-show="manualExport.reportType === 'BACSI_CD45'" class="text-muted fst-italic mt-1" style="font-size: 0.72rem;">
+                                    * Báo cáo Bác sĩ xuất theo Tỉnh (toàn bộ các nhóm)
+                                </div>
                             </div>
                         </div>
 
@@ -268,7 +272,8 @@
                             <select class="form-select form-select-sm" x-model="filter.reportType" @@change="loadLogs(1)">
                                 <option value="">-- Tất cả loại báo cáo --</option>
                                 <option value="TCV_CD45">Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)</option>
-                                <option value="HOATDONG_CD45">Báo cáo Hoạt động CD45</option>
+                                <option value="HOATDONG_CD45">Báo cáo Hoạt động CD45 (.xlsx)</option>
+                                <option value="BACSI_CD45">Báo cáo Bác sĩ DREAMH (Mỗi BS 1 Sheet)</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -445,5 +450,5 @@
 </div>
 
 @section Scripts{
-    <script src="~/app/Controller/AlpineScheduledReportController.js"></script>
+    <script src="~/app/Controller/AlpineScheduledReportController.js?v=@DateTime.Now.Ticks"></script>
 }

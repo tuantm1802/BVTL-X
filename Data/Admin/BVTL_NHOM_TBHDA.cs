@@ -69,7 +69,7 @@ namespace Data.Admin
         {
             try
             {
-                var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX, ISNULL(CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH FROM BVTL_NHOM_TBH";
+                var sql = "SELECT manhom_tbh, tennhom_tbh, city_code, manhom_tbh_map, maduan, ISNULL(PREFIX, N'Nhóm') AS PREFIX, ISNULL(SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX, ISNULL(CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH FROM BVTL_NHOM_TBH WHERE (maduan = 'CD45' OR maduan IS NULL) AND (maduan IS NULL OR maduan NOT IN ('CH07')) AND ISNULL(IS_ACTIVE, 1) = 1";
                 var dtoList = db.Database.SqlQuery<BVTL_NHOM_TBH_DTO>(sql).ToList();
                 return dtoList.Select(d => new BVTL_NHOM_TBH
                 {
@@ -513,8 +513,9 @@ namespace Data.Admin
 
                 if (relatedModules.Count > 0)
                 {
-                    obj.Error = true;
-                    obj.Title = $"Không thể xóa nhóm '{data.tennhom_tbh}' ({maNhom}) do đã phát sinh dữ liệu trong các phân hệ: {string.Join(", ", relatedModules)}!";
+                    db.Database.ExecuteSqlCommand("UPDATE BVTL_NHOM_TBH SET IS_ACTIVE = 0 WHERE manhom_tbh = @p0", maNhom);
+                    obj.Error = false;
+                    obj.Title = $"Nhóm '{data.tennhom_tbh}' ({maNhom}) đã có dữ liệu phát sinh ({string.Join(", ", relatedModules)}), hệ thống đã chuyển sang trạng thái Ngừng hoạt động để bảo toàn lịch sử!";
                     return obj;
                 }
 
@@ -537,9 +538,19 @@ namespace Data.Admin
             catch (DbUpdateException ex)
             {
                 log.Error($"Lỗi DbUpdateException khi xóa nhóm {maNhom}: {ex.Message}", ex);
-                obj.Error = true;
-                obj.Title = $"Không thể xóa nhóm '{maNhom}' do đang có dữ liệu liên kết trên hệ thống!";
-                return obj;
+                try
+                {
+                    db.Database.ExecuteSqlCommand("UPDATE BVTL_NHOM_TBH SET IS_ACTIVE = 0 WHERE manhom_tbh = @p0", maNhom);
+                    obj.Error = false;
+                    obj.Title = $"Nhóm '{maNhom}' đang có dữ liệu liên kết, hệ thống đã chuyển sang trạng thái Ngừng hoạt động để bảo toàn lịch sử!";
+                    return obj;
+                }
+                catch
+                {
+                    obj.Error = true;
+                    obj.Title = $"Không thể xóa nhóm '{maNhom}' do đang có dữ liệu liên kết trên hệ thống!";
+                    return obj;
+                }
             }
             catch (Exception ex)
             {

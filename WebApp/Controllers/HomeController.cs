@@ -120,7 +120,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34")
+        public JsonResult GetDashboardCD45Data(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34", int? gioiTinhFilter = null, string nhomTuoiFilter = null, int? doiTuongFilter = null, int dimensionMode = 1)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace WebApp.Controllers
                     return Json(new { Success = true, Data = (object)null, Error = false, Title = "Lấy dữ liệu thành công." });
                 }
 
-                var data = _dashboardCD45DA.GetDashboardData(scopedCity, maNhom, fromDate, toDate, nhomTuoiTable1, cityMode);
+                var data = _dashboardCD45DA.GetDashboardData(scopedCity, maNhom, fromDate, toDate, nhomTuoiTable1, cityMode, gioiTinhFilter, nhomTuoiFilter, doiTuongFilter, dimensionMode);
                 var jsonResult = Json(new { Success = true, Data = data, Error = false, Title = "Lấy dữ liệu thành công." });
                 jsonResult.MaxJsonLength = int.MaxValue;
                 return jsonResult;

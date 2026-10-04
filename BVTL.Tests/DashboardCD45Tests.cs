@@ -147,5 +147,132 @@ namespace BVTL.Tests
             var dup = da.UpdateKeyProvince("AGI", "HN", true);
             Assert.IsTrue(dup.Error, "Duplicate Code_Map must return error");
         }
+
+        [TestMethod]
+        public void GetDashboardData_Mode2_Gender_ShouldReturnMaleFemaleOtherAndBalance()
+        {
+            var da = new DashboardCD45DA();
+            var result = da.GetDashboardData(null, null, null, null, null, "NEW34", null, null, null, 2);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ByTargetGroup);
+            Assert.AreEqual(3, result.ByTargetGroup.Count, "Mode 2 must return exactly 3 genders (Nam, Nữ, Khác)");
+
+            var names = result.ByTargetGroup.Select(x => x.TenDoiTuong).ToList();
+            CollectionAssert.Contains(names, "Nam");
+            CollectionAssert.Contains(names, "Nữ");
+            CollectionAssert.Contains(names, "Khác");
+
+            int sumKH = result.ByTargetGroup.Sum(x => x.TongKH);
+            Assert.AreEqual(result.Overview.TongKhachHang, sumKH, "Sum of gender KH must match Overview.TongKhachHang");
+
+            Assert.IsNotNull(result.MentalHealth);
+            Assert.AreEqual(3, result.MentalHealth.Count, "MentalHealth must return 3 gender rows");
+        }
+
+        [TestMethod]
+        public void GetDashboardData_Mode3_AgeGroup_ShouldReturnAllAgeBucketsAndBalance()
+        {
+            var da = new DashboardCD45DA();
+            var result = da.GetDashboardData(null, null, null, null, null, "NEW34", null, null, null, 3);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ByTargetGroup);
+            Assert.AreEqual(5, result.ByTargetGroup.Count, "Mode 3 must return 5 age groups (<18, 18-25, 26-35, >=36, Chưa xác định)");
+
+            int sumKH = result.ByTargetGroup.Sum(x => x.TongKH);
+            Assert.AreEqual(result.Overview.TongKhachHang, sumKH, "Sum of age group KH must match Overview.TongKhachHang");
+        }
+
+        [TestMethod]
+        public void GetDashboardData_WithGenderFilter_Female_ShouldFilterEntireDashboard()
+        {
+            var da = new DashboardCD45DA();
+            // Filter: Female (gioiTinhFilter = 2)
+            var result = da.GetDashboardData(null, null, null, null, null, "NEW34", 2, null, null, 1);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(918, result.Overview.TongKhachHang, "Female filter should yield 918 clients");
+
+            int sumTargetGroupKH = result.ByTargetGroup.Sum(x => x.TongKH);
+            Assert.AreEqual(918, sumTargetGroupKH, "Sum across target groups for females must equal 918");
+        }
+
+        [TestMethod]
+        public void GetDashboardData_CombinedGenderFilterAndAgeDimension_ShouldBalance()
+        {
+            var da = new DashboardCD45DA();
+            // Filter: Female (2) AND DimensionMode: Age Group (3)
+            var result = da.GetDashboardData(null, null, null, null, null, "NEW34", 2, null, null, 3);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(918, result.Overview.TongKhachHang);
+
+            int sumKH = result.ByTargetGroup.Sum(x => x.TongKH);
+            Assert.AreEqual(918, sumKH, "Sum across age groups for female segment must equal 918");
+
+            int sumSangLoc = result.ByTargetGroup.Sum(x => x.SoKHSangLoc);
+            Assert.AreEqual(result.Overview.TongSangLocQST, sumSangLoc, "Sum of QST screened across age groups must match Overview.TongSangLocQST");
+        }
+
+        [TestMethod]
+        public void GetListTCV_WithNullFilters_ShouldReturnAll112TCVs()
+        {
+            var da = new BaoCaoCD45DA();
+            var list = da.GetListTCV(null, null);
+
+            Assert.IsNotNull(list);
+            Assert.AreEqual(112, list.Count, "Total TCV count in CD45_NHOM_TCV must be 112");
+            Assert.IsTrue(list.All(t => !string.IsNullOrEmpty(t.TEN_TCV)), "Every TCV must have a name");
+            Assert.IsTrue(list.All(t => !string.IsNullOrEmpty(t.MA_TCV)), "Every TCV must have an ID code");
+        }
+
+        [TestMethod]
+        public void GetListTCV_WithMultiCityString_ShouldReturnTCVsFromBothProvinces()
+        {
+            var da = new BaoCaoCD45DA();
+            // Test non-admin multi-city permission scope "HNO,HCM"
+            var list = da.GetListTCV("HNO,HCM", null);
+
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0, "Multi-city filter 'HNO,HCM' must return TCVs");
+            Assert.IsTrue(list.All(t => t.CITY_CODE == "HNO" || t.CITY_CODE == "HCM"), "Results must only contain HNO or HCM");
+            Assert.IsTrue(list.Any(t => t.CITY_CODE == "HNO"), "Must contain at least one HNO TCV");
+        }
+
+        [TestMethod]
+        public void GetListTCV_WithSingleCityString_ShouldReturnOnlyMatchingProvince()
+        {
+            var da = new BaoCaoCD45DA();
+            var list = da.GetListTCV("NAN", null);
+
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0, "Nghe An (NAN) must have TCVs");
+            Assert.IsTrue(list.All(t => t.CITY_CODE == "NAN"), "All returned TCVs must be in NAN province");
+        }
+
+        [TestMethod]
+        public void GetListTCV_WithGroupStandardCode_ShouldReturnGroupTCVs()
+        {
+            var da = new BaoCaoCD45DA();
+            // "NA_AD" (standard system code for Ánh Dương group, mapped to REDCap code 'ad')
+            var list = da.GetListTCV(null, "NA_AD");
+
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0, "Group NA_AD must return TCVs");
+            Assert.IsTrue(list.All(t => t.TEN_NHOM.Contains("Ánh Dương") || t.MA_NHOM == "ad"), "Returned TCVs must belong to Ánh Dương group");
+        }
+
+        [TestMethod]
+        public void GetListTCV_WithGroupMapCode_ShouldReturnGroupTCVs()
+        {
+            var da = new BaoCaoCD45DA();
+            // "ad" (REDCap code in CD45_NHOM_TCV.MA_NHOM)
+            var list = da.GetListTCV(null, "ad");
+
+            Assert.IsNotNull(list);
+            Assert.IsTrue(list.Count > 0, "Group 'ad' must return TCVs");
+            Assert.IsTrue(list.All(t => t.MA_NHOM == "ad"), "Returned TCVs must have MA_NHOM = 'ad'");
+        }
     }
 }

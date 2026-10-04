@@ -31,6 +31,17 @@ namespace Model.ModelExtend
         public int? TG { get; set; }
         public int? SW { get; set; }
         public int? MSM { get; set; }
+
+        // Mode Giới tính (DisplayMode = 2)
+        public int? Nam { get; set; }
+        public int? Nu { get; set; }
+        public int? Khac { get; set; }
+
+        // Mode Nhóm tuổi (DisplayMode = 3)
+        public int? Tuoi_18_25 { get; set; }
+        public int? Tuoi_26_35 { get; set; }
+        public int? Tuoi_Tren35 { get; set; }
+
         public bool IsBold { get; set; }
         public int? IndentLevel { get; set; }
         public string Code { get; set; }

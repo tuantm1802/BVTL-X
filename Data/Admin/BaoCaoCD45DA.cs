@@ -74,15 +74,27 @@ namespace Data.Admin
                     ISNULL(n.PREFIX, ISNULL(tcv.PREFIX, N'Nhóm')) AS PREFIX, 
                     ISNULL(n.SHORT_PREFIX, ISNULL(tcv.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX 
                 FROM CD45_NHOM_TCV tcv
-                LEFT JOIN BVTL_NHOM_TBH n ON (tcv.MA_NHOM = n.manhom_tbh OR (n.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = n.manhom_tbh_map))
+                LEFT JOIN BVTL_NHOM_TBH n ON (n.maduan = 'CD45' AND (tcv.MA_NHOM = n.manhom_tbh OR (n.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = n.manhom_tbh_map)))
                 WHERE 1=1";
             if (!string.IsNullOrEmpty(cityCode))
             {
-                sql += " AND (tcv.CITY_CODE = '" + cityCode.Replace("'", "''") + "')";
+                var cityList = cityCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(c => "'" + c.Trim().Replace("'", "''") + "'")
+                                       .Distinct()
+                                       .ToList();
+                if (cityList.Count == 1)
+                {
+                    sql += " AND (tcv.CITY_CODE = " + cityList[0] + ")";
+                }
+                else if (cityList.Count > 1)
+                {
+                    sql += " AND (tcv.CITY_CODE IN (" + string.Join(",", cityList) + "))";
+                }
             }
             if (!string.IsNullOrEmpty(maNhom))
             {
-                sql += " AND (tcv.MA_NHOM = '" + maNhom.Replace("'", "''") + "')";
+                var safeNhom = maNhom.Trim().Replace("'", "''");
+                sql += " AND (tcv.MA_NHOM = '" + safeNhom + "' OR n.manhom_tbh = '" + safeNhom + "' OR (n.manhom_tbh_map IS NOT NULL AND n.manhom_tbh_map = '" + safeNhom + "'))";
             }
             sql += " ORDER BY tcv.CITY_CODE, tcv.MA_NHOM, TRY_CAST(tcv.MA_TCV AS INT), tcv.TEN_TCV";
             return db.Database.SqlQuery<CD45_TCV_ItemModel>(sql).ToList();

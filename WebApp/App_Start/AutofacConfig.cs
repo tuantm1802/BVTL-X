@@ -26,6 +26,7 @@ namespace WebApp.App_Start
             builder.RegisterType<Data.Admin.ApiDA>().As<Data.InterfaceDA.Admin.IApiDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.DashboardCD45DA>().As<Data.InterfaceDA.Admin.IDashboardCD45DA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoCD45DA>().As<Data.InterfaceDA.IBaoCaoCD45DA>().InstancePerRequest();
+            builder.RegisterType<Data.Admin.BaoCaoBacSiCD45DA>().As<Data.InterfaceDA.Admin.IBaoCaoBacSiCD45DA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.CD45KhachHangDA>().As<Data.InterfaceDA.Admin.ICD45KhachHangDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.CD45NhomTcvDA>().As<Data.InterfaceDA.Admin.ICD45NhomTcvDA>().InstancePerRequest();
             builder.RegisterType<Data.Admin.BaoCaoTongHopDA>().As<Data.InterfaceDA.Admin.IBaoCaoTongHopDA>().InstancePerRequest();

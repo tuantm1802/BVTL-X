@@ -529,8 +529,8 @@ namespace Common.Common
 
             dagCollector.FlushToLogs(maDuAn, apiCode, "CD45_TUAN_THU", reportId, ref logs);
 
-            // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ
-            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HO_TRO, x => x.REPEAT_INSTANCE, null, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs);
+            // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ (F5 bỏ check nghịch đảo thời gian theo yêu cầu)
+            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HO_TRO, x => x.REPEAT_INSTANCE, null, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs, checkChronologicalInversion: false);
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
@@ -787,14 +787,24 @@ namespace Common.Common
                     e.AUDIT_C_SCORE = (qa1_1 ?? 0) + (qa1_2 ?? 0) + (qa1_3 ?? 0);
                 }
 
-                // PCL-5 score & positive
+                // PCL-5 score & positive (STT 44: Chỉ cần câu đầu tiên f7_qc1 là Có (1) thì tính là sang chấn PTSD)
                 int? pclScore = item.GetInt("f7_score");
                 if (!pclScore.HasValue && item.GetString("f7_qc1") == "1")
                 {
                     pclScore = (item.GetInt("f7_qc2") ?? 0) + (item.GetInt("f7_qc3") ?? 0) + (item.GetInt("f7_qc4") ?? 0) + (item.GetInt("f7_qc5") ?? 0) + (item.GetInt("f7_qc6") ?? 0);
                 }
                 e.PCL5_SCORE = pclScore;
-                if (pclScore.HasValue)
+
+                string qc1 = item.GetString("f7_qc1");
+                if (qc1 == "1")
+                {
+                    e.PCL5_POSITIVE = true;
+                }
+                else if (qc1 == "0")
+                {
+                    e.PCL5_POSITIVE = false;
+                }
+                else if (pclScore.HasValue)
                 {
                     e.PCL5_POSITIVE = pclScore.Value >= 3;
                 }
@@ -1017,7 +1027,7 @@ namespace Common.Common
                     continue;
                 }
 
-                if (string.IsNullOrEmpty(rawDate) && !repeatInstance.HasValue && string.IsNullOrEmpty(repeatInstrument))
+                if (string.IsNullOrEmpty(rawDate))
                 {
                     continue;
                 }
@@ -1051,9 +1061,20 @@ namespace Common.Common
                     continue;
                 }
 
-                e.HINH_THUC_LIEN_HE = item.GetByte("f9_reach");
+                // Hình thức liên hệ: checkbox f9_contact_method___1..5 hoặc fallback f9_reach
+                byte? contactMethod = null;
+                for (byte m = 1; m <= 5; m++)
+                {
+                    if (item.GetString($"f9_contact_method___{m}") == "1")
+                    {
+                        contactMethod = m;
+                        break;
+                    }
+                }
+                e.HINH_THUC_LIEN_HE = contactMethod ?? item.GetByte("f9_contact_method") ?? item.GetByte("f9_reach");
                 e.KET_QUA = item.GetByte("f9_result");
-                e.MAT_DAU = item.GetBool("f9_loss");
+                // Mất dấu: câu hỏi f9_q3___1 = '1' (Xác nhận khách hàng mất dấu)
+                e.MAT_DAU = (item.GetString("f9_q3___1") == "1") || (item.GetBool("f9_loss") == true);
 
                 // Đăng ký ngày mất dấu vào context để kiểm tra các dịch vụ sau mất dấu (VR-06d)
                 if (e.MAT_DAU == true && e.NGAY_THEO_DAU.HasValue && context != null)
@@ -1061,7 +1082,7 @@ namespace Common.Common
                     context.RegisterF9Lost(cleanRecordId, e.NGAY_THEO_DAU.Value);
                 }
 
-                e.COMPLETE_STATUS = item.GetString("f9_theo_di_khch_hng_complete") ?? item.GetString("theo_di_khch_hng_complete");
+                e.COMPLETE_STATUS = item.GetString("f9_theo_du_khch_hng_complete") ?? item.GetString("f9_theo_di_khch_hng_complete") ?? item.GetString("theo_di_khch_hng_complete");
                 e.NGAY_SYNC = DateTime.Now;
 
                 entities.Add(e);
@@ -1259,7 +1280,8 @@ namespace Common.Common
             string apiCode,
             string reportId,
             string maDuAn,
-            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs,
+            bool checkChronologicalInversion = true)
         {
             if (entities == null || entities.Count == 0 || logs == null) return;
 
@@ -1363,26 +1385,29 @@ namespace Common.Common
                     orderedEvents.Sort((a, b) => a.Order.CompareTo(b.Order));
 
                     // VR-05(b): Nghịch đảo thời gian (Ngày lần N+1 < Ngày lần N)
-                    for (int i = 0; i < orderedEvents.Count - 1; i++)
+                    if (checkChronologicalInversion)
                     {
-                        if (orderedEvents[i + 1].Date < orderedEvents[i].Date)
+                        for (int i = 0; i < orderedEvents.Count - 1; i++)
                         {
-                            logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                            if (orderedEvents[i + 1].Date < orderedEvents[i].Date)
                             {
-                                MADUAN = maDuAn,
-                                REPORT_ID = reportId,
-                                API_CODE = apiCode,
-                                TABLE_NAME = tableName,
-                                RECORD_ID = rid,
-                                FIELD_NAME = "event_date",
-                                OLD_VALUE = orderedEvents[i + 1].Date.ToString("yyyy-MM-dd"),
-                                NEW_VALUE = null,
-                                RULE_CODE = "ERR_CHRONOLOGICAL_INVERSION",
-                                SEVERITY = "ERROR",
-                                ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                                MESSAGE = $"Nghịch đảo thời gian: Buổi lần {orderedEvents[i + 1].Order} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước buổi lần {orderedEvents[i].Order} ({orderedEvents[i].Date:dd/MM/yyyy}).",
-                                CREATED_DATE = DateTime.Now
-                            });
+                                logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                                {
+                                    MADUAN = maDuAn,
+                                    REPORT_ID = reportId,
+                                    API_CODE = apiCode,
+                                    TABLE_NAME = tableName,
+                                    RECORD_ID = rid,
+                                    FIELD_NAME = "event_date",
+                                    OLD_VALUE = orderedEvents[i + 1].Date.ToString("yyyy-MM-dd"),
+                                    NEW_VALUE = null,
+                                    RULE_CODE = "ERR_CHRONOLOGICAL_INVERSION",
+                                    SEVERITY = "ERROR",
+                                    ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                                    MESSAGE = $"Nghịch đảo thời gian: Buổi lần {orderedEvents[i + 1].Order} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước buổi lần {orderedEvents[i].Order} ({orderedEvents[i].Date:dd/MM/yyyy}).",
+                                    CREATED_DATE = DateTime.Now
+                                });
+                            }
                         }
                     }
 

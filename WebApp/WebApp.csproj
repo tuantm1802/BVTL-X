@@ -223,6 +223,7 @@
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoThangCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoCD45Controller.cs" />
+    <Compile Include="Controllers\BaoCaoBacSiCD45Controller.cs" />
     <Compile Include="Controllers\BaoCaoTCVCD45Controller.cs" />
     <Compile Include="Controllers\KhachHangCD45Controller.cs" />
     <Compile Include="Controllers\NhomTCVCD45Controller.cs" />
@@ -4755,11 +4756,13 @@
     <Content Include="Views\BaoCaoCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoCD45\CauHinhChiTieu.cshtml" />
     <Content Include="Views\BaoCaoTCVCD45\Index.cshtml" />
+    <Content Include="Views\BaoCaoBacSiCD45\Index.cshtml" />
     <Content Include="Views\DataQuality\Index.cshtml" />
     <Content Include="Views\ScheduledReport\Index.cshtml" />
     <Content Include="app\Controller\AlpineKhachHangCD45Controller.js" />
     <Content Include="app\Controller\AlpineNhomTCVCD45Controller.js" />
     <Content Include="app\Controller\AlpineScheduledReportController.js" />
+    <Content Include="app\Controller\AlpineBaoCaoBacSiCD45Controller.js" />
     <None Include="WebAppDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WebAppDataSet.Designer.cs</LastGenOutput>

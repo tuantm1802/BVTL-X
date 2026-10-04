@@ -94,6 +94,54 @@ namespace BVTL.Tests
             Assert.IsNull(error);
         }
 
+        [TestMethod]
+        public void ValidateReportArithmetic_WhenDisplayMode2_GenderMatchesWithKhac_ShouldReturnTrue()
+        {
+            var rows = new List<BaoCaoCD45Model>
+            {
+                new BaoCaoCD45Model
+                {
+                    STT = "1",
+                    ChiTieu = "Tổng số KH được chăm sóc",
+                    IsBold = false,
+                    Tong = 100,
+                    Nam = 70,
+                    Nu = 25,
+                    Khac = 5
+                }
+            };
+
+            bool isValid = ReportValidatorHelper.ValidateReportArithmetic(rows, out string error, displayMode: 2);
+
+            Assert.IsTrue(isValid);
+            Assert.IsNull(error);
+        }
+
+        [TestMethod]
+        public void ValidateReportArithmetic_WhenDisplayMode2_GenderMismatch_ShouldReturnFalse()
+        {
+            var rows = new List<BaoCaoCD45Model>
+            {
+                new BaoCaoCD45Model
+                {
+                    STT = "1",
+                    ChiTieu = "Tổng số KH được chăm sóc",
+                    IsBold = false,
+                    Tong = 100, // 70 + 25 + 0 = 95 != 100
+                    Nam = 70,
+                    Nu = 25,
+                    Khac = 0
+                }
+            };
+
+            bool isValid = ReportValidatorHelper.ValidateReportArithmetic(rows, out string error, displayMode: 2);
+
+            Assert.IsFalse(isValid);
+            Assert.IsNotNull(error);
+            StringAssert.Contains(error, "VR-01 [BLOCKING]");
+            StringAssert.Contains(error, "Khác:0");
+        }
+
         #endregion
 
         #region VR-02: CleanRecordId & DAG Match Tests

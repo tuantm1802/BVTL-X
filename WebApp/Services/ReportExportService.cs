@@ -28,6 +28,7 @@ namespace WebApp.Services
         private readonly IExcelReportService _excelReportService;
         private readonly ICityDA _cityDA;
         private readonly IBVTL_NHOM_TBHDA _nhomTBHDA;
+        private readonly IBaoCaoBacSiCD45DA _baoCaoBacSiDA;
 
         public ReportExportService(
             IScheduledReportDA scheduledReportDA = null,
@@ -35,7 +36,8 @@ namespace WebApp.Services
             IBaoCaoTongHopDA baoCaoTongHopDA = null,
             IExcelReportService excelReportService = null,
             ICityDA cityDA = null,
-            IBVTL_NHOM_TBHDA nhomTBHDA = null)
+            IBVTL_NHOM_TBHDA nhomTBHDA = null,
+            IBaoCaoBacSiCD45DA baoCaoBacSiDA = null)
         {
             _scheduledReportDA = scheduledReportDA ?? new ScheduledReportDA();
             _baoCaoCD45DA = baoCaoCD45DA ?? new BaoCaoCD45DA();
@@ -43,6 +45,7 @@ namespace WebApp.Services
             _excelReportService = excelReportService ?? new ExcelReportService();
             _cityDA = cityDA ?? new CityDA();
             _nhomTBHDA = nhomTBHDA ?? new BVTL_NHOM_TBHDA();
+            _baoCaoBacSiDA = baoCaoBacSiDA ?? new BaoCaoBacSiCD45DA();
         }
 
         private string GetStorageDirectory(int year, int month)
@@ -126,6 +129,56 @@ namespace WebApp.Services
             }
         }
 
+        /// <summary>
+        /// Tính toán khoảng thời gian cho Báo cáo Bác sĩ DREAMH:
+        /// - Tháng: Luôn lấy từ ngày đầu tháng (01) đến ngày cuối cùng của tháng (28/29/30/31).
+        /// - Quý: Q1 (01/01-31/03), Q2 (01/04-30/06), Q3 (01/07-30/09), Q4 (01/10-31/12).
+        /// - Năm: 01/01 đến 31/12.
+        /// </summary>
+        public static void CalculateDoctorPeriodDateRange(string periodType, int year, int periodNumber, out string fromDate, out string toDate, out string periodValue)
+        {
+            if (periodType == "Quarter" || periodType == "Quy")
+            {
+                switch (periodNumber)
+                {
+                    case 1:
+                        fromDate = $"01/01/{year}";
+                        toDate = $"31/03/{year}";
+                        periodValue = $"Quý I/{year}";
+                        break;
+                    case 2:
+                        fromDate = $"01/04/{year}";
+                        toDate = $"30/06/{year}";
+                        periodValue = $"Quý II/{year}";
+                        break;
+                    case 3:
+                        fromDate = $"01/07/{year}";
+                        toDate = $"30/09/{year}";
+                        periodValue = $"Quý III/{year}";
+                        break;
+                    case 4:
+                    default:
+                        fromDate = $"01/10/{year}";
+                        toDate = $"31/12/{year}";
+                        periodValue = $"Quý IV/{year}";
+                        break;
+                }
+            }
+            else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+            {
+                fromDate = $"01/01/{year}";
+                toDate = $"31/12/{year}";
+                periodValue = $"Năm {year}";
+            }
+            else // Default: Month (Kỳ Báo cáo Bác sĩ: từ đầu tháng đến cuối tháng)
+            {
+                int daysInMonth = DateTime.DaysInMonth(year, periodNumber);
+                fromDate = $"01/{periodNumber:D2}/{year}";
+                toDate = $"{daysInMonth:D2}/{periodNumber:D2}/{year}";
+                periodValue = $"Tháng {periodNumber:D2}/{year}";
+            }
+        }
+
         public async Task<List<ReportExportResult>> ExecuteAllMonthlyReportsAsync(int year, int month, string triggerType = "AutoSchedule", string createdBy = "QuartzScheduler")
         {
             var results = new List<ReportExportResult>();
@@ -168,12 +221,18 @@ namespace WebApp.Services
                 return results;
             }
 
-            // 2. Xuất Báo cáo TCV CD45 & Báo cáo Hoạt động CD45
+            // 2. Xuất Báo cáo TCV CD45, Báo cáo Hoạt động CD45 & Báo cáo Bác sĩ CD45
             var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
             results.Add(resTCV);
 
             var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
             results.Add(resHD);
+
+            // Báo cáo Bác sĩ lấy theo chu kỳ từ đầu tháng đến cuối tháng
+            string bsFromDate, bsToDate, bsPValue;
+            CalculateDoctorPeriodDateRange("Month", year, month, out bsFromDate, out bsToDate, out bsPValue);
+            var resBS = await ExportBacSiCD45ExcelAsync(year, month, null, triggerType, createdBy, "Month", bsFromDate, bsToDate, bsPValue);
+            results.Add(resBS);
 
             // 3. Bắn thông báo Telegram tổng kết
             int successCount = results.Count(r => r.Success);
@@ -1159,5 +1218,491 @@ namespace WebApp.Services
             ws.PageSetup.Margins.Top = 0.6;
             ws.PageSetup.Margins.Bottom = 0.6;
         }
-    }
+    
+        public async Task<ReportExportResult> ExportBacSiCD45ExcelAsync(
+            int year, int month, string cityCode = null, 
+            string triggerType = "Manual", string createdBy = "User", 
+            string periodType = "Month", string customFromDate = null, 
+            string customToDate = null, string periodValue = null)
+        {
+            var sw = Stopwatch.StartNew();
+            var result = new ReportExportResult();
+
+            try
+            {
+                string fromDate = customFromDate;
+                string toDate = customToDate;
+                string pValue = periodValue;
+
+                if (string.IsNullOrEmpty(fromDate) || string.IsNullOrEmpty(toDate))
+                {
+                    CalculateDoctorPeriodDateRange(periodType ?? "Month", year, month, out fromDate, out toDate, out pValue);
+                }
+
+                string filterCityCode = string.IsNullOrWhiteSpace(cityCode) ? null : cityCode.Trim().ToUpper();
+
+                // Lấy danh sách chi tiết các ca khám bác sĩ
+                var allDetails = _baoCaoBacSiDA.GetBaoCaoChiTiet(fromDate, toDate, filterCityCode, null, null) ?? new List<BaoCaoBacSiDetailModel>();
+
+                string storageDir = GetStorageDirectory(year, month);
+                string periodTag;
+                if (periodType == "Quarter" || periodType == "Quy")
+                    periodTag = $"Quy{month}_{year}";
+                else if (periodType == "Year" || periodType == "Nam" || periodType == "12Thang")
+                    periodTag = $"Nam{year}";
+                else
+                    periodTag = $"Thang{month:D2}_{year}";
+
+                // 6 Tỉnh trọng điểm dự án CD45
+                var provinceMap = new Dictionary<string, (string TenTinh, string SafeName)>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "HNO", ("Hà Nội", "HaNoi") },
+                    { "HPG", ("Hải Phòng", "HaiPhong") },
+                    { "HYE", ("Hưng Yên", "HungYen") },
+                    { "NAN", ("Nghệ An", "NgheAn") },
+                    { "NBI", ("Ninh Bình", "NinhBinh") },
+                    { "HCM", ("TP. Hồ Chí Minh", "HoChiMinh") }
+                };
+
+                string GetProvinceName(string code)
+                {
+                    if (string.IsNullOrEmpty(code)) return "Chưa rõ tỉnh";
+                    if (provinceMap.TryGetValue(code, out var info)) return info.TenTinh;
+                    return code;
+                }
+
+                string GetSafeProvinceName(string code)
+                {
+                    if (string.IsNullOrEmpty(code)) return "ChuaRoTinh";
+                    if (provinceMap.TryGetValue(code, out var info)) return info.SafeName;
+                    return code;
+                }
+
+                byte[] CreateProvinceDoctorExcel(string cCode, string tenTinh, List<BaoCaoBacSiDetailModel> provCases)
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var doctorGroups = provCases
+                            .GroupBy(x => !string.IsNullOrEmpty(x.TEN_BAC_SI) ? x.TEN_BAC_SI.Trim() : (!string.IsNullOrEmpty(x.BAC_SI) ? ("BS " + x.BAC_SI.Trim()) : "BS Chưa rõ"))
+                            .OrderBy(g => g.Key)
+                            .ToList();
+
+                        if (doctorGroups.Count == 0)
+                        {
+                            var wsEmpty = workbook.Worksheets.Add("ThongBao");
+                            BuildDoctorConsultationSheet(wsEmpty, "Chưa phân công BS", cCode, tenTinh, pValue, fromDate, toDate, year, month, new List<BaoCaoBacSiDetailModel>());
+                        }
+                        else
+                        {
+                            var usedSheetNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                            foreach (var dGroup in doctorGroups)
+                            {
+                                string docName = dGroup.Key;
+                                string sheetName = SanitizeDoctorSheetName(docName, usedSheetNames);
+                                var ws = workbook.Worksheets.Add(sheetName);
+                                BuildDoctorConsultationSheet(ws, docName, cCode, tenTinh, pValue, fromDate, toDate, year, month, dGroup.ToList());
+                            }
+                        }
+
+                        using (var ms = new MemoryStream())
+                        {
+                            workbook.SaveAs(ms);
+                            return ms.ToArray();
+                        }
+                    }
+                }
+
+                // =========================================================================
+                // TRƯỜNG HỢP 1: Xuất 1 Tỉnh cụ thể (File .xlsx)
+                // =========================================================================
+                if (!string.IsNullOrEmpty(filterCityCode))
+                {
+                    string tenTinh = GetProvinceName(filterCityCode);
+                    string safeTinh = GetSafeProvinceName(filterCityCode);
+                    string outFileName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
+                    string outFilePath = Path.Combine(storageDir, outFileName);
+
+                    if (File.Exists(outFilePath))
+                    {
+                        try { File.Delete(outFilePath); } catch { }
+                    }
+
+                    var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase)).ToList();
+                    byte[] excelBytes = CreateProvinceDoctorExcel(filterCityCode, tenTinh, provCases);
+                    File.WriteAllBytes(outFilePath, excelBytes);
+
+                    var fileInfo = new FileInfo(outFilePath);
+                    long sizeKb = fileInfo.Exists ? fileInfo.Length / 1024 : 0;
+
+                    result.Success = true;
+                    result.FileName = outFileName;
+                    result.FilePath = outFilePath;
+                    result.FileSizeBytes = fileInfo.Length;
+                    result.TotalItems = provCases.Count;
+                    result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
+                    result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH tỉnh {tenTinh} ({periodTag}): {provCases.Count} ca khám ({sizeKb} KB).";
+
+                    if (triggerType != "UnitTest")
+                    {
+                        _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
+                        {
+                            ReportType = "BACSI_CD45",
+                            ReportName = $"Báo cáo Bác sĩ DREAMH - {tenTinh}",
+                            PeriodType = periodType ?? "Month",
+                            PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
+                            Year = year,
+                            Month = month,
+                            MaDuAn = "CD45",
+                            CityCode = filterCityCode,
+                            FileName = outFileName,
+                            FilePath = outFilePath,
+                            FileSizeKb = sizeKb,
+                            TotalRecords = provCases.Count,
+                            Status = "Success",
+                            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                            TelegramSent = true,
+                            TriggerType = triggerType,
+                            CreatedBy = createdBy,
+                            CreatedDate = DateTime.Now
+                        });
+                    }
+
+                    return result;
+                }
+
+                // =========================================================================
+                // TRƯỜNG HỢP 2: Xuất Toàn bộ các Tỉnh (Gói .ZIP các file .xlsx của từng Tỉnh)
+                // =========================================================================
+                string zipFileName = $"BaoCao_BacSi_DREAMH_CacTinh_{periodTag}.zip";
+                string zipFilePath = Path.Combine(storageDir, zipFileName);
+
+                if (File.Exists(zipFilePath))
+                {
+                    try { File.Delete(zipFilePath); } catch { }
+                }
+
+                var distinctProvinces = allDetails
+                    .Select(x => (x.CITY_CODE ?? "").Trim().ToUpper())
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .Distinct()
+                    .ToList();
+
+                foreach (var pCode in provinceMap.Keys)
+                {
+                    if (!distinctProvinces.Contains(pCode)) distinctProvinces.Add(pCode);
+                }
+
+                int totalProvincesExported = 0;
+                int totalCasesExported = 0;
+
+                using (var zipStream = new FileStream(zipFilePath, FileMode.Create))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+                {
+                    foreach (var pCode in distinctProvinces.OrderBy(p => p))
+                    {
+                        string tenTinh = GetProvinceName(pCode);
+                        string safeTinh = GetSafeProvinceName(pCode);
+                        var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), pCode, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                        if (provCases.Count == 0 && !provinceMap.ContainsKey(pCode)) continue;
+
+                        byte[] excelBytes = CreateProvinceDoctorExcel(pCode, tenTinh, provCases);
+                        string entryName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
+                        var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+                        using (var entryStream = entry.Open())
+                        {
+                            entryStream.Write(excelBytes, 0, excelBytes.Length);
+                        }
+
+                        totalProvincesExported++;
+                        totalCasesExported += provCases.Count;
+                    }
+                }
+
+                var zipInfo = new FileInfo(zipFilePath);
+                long zipSizeKb = zipInfo.Exists ? zipInfo.Length / 1024 : 0;
+
+                result.Success = true;
+                result.FileName = zipFileName;
+                result.FilePath = zipFilePath;
+                result.FileSizeBytes = zipInfo.Length;
+                result.TotalItems = totalCasesExported;
+                result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
+                result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH ({periodTag}): Đóng gói {totalProvincesExported} file tỉnh với {totalCasesExported} ca khám vào file ZIP ({zipSizeKb} KB).";
+
+                if (triggerType != "UnitTest")
+                {
+                    _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
+                    {
+                        ReportType = "BACSI_CD45",
+                        ReportName = "Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)",
+                        PeriodType = periodType ?? "Month",
+                        PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
+                        Year = year,
+                        Month = month,
+                        MaDuAn = "CD45",
+                        CityCode = null,
+                        FileName = zipFileName,
+                        FilePath = zipFilePath,
+                        FileSizeKb = zipSizeKb,
+                        TotalRecords = totalCasesExported,
+                        Status = "Success",
+                        ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                        TelegramSent = true,
+                        TriggerType = triggerType,
+                        CreatedBy = createdBy,
+                        CreatedDate = DateTime.Now
+                    });
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                log.Error("Lỗi ExportBacSiCD45ExcelAsync: " + ex.Message, ex);
+                result.Success = false;
+                result.Message = "Lỗi xuất Báo cáo Bác sĩ DREAMH: " + ex.Message;
+                return result;
+            }
+        }
+
+        private static string SanitizeDoctorSheetName(string rawName, HashSet<string> existingNames)
+        {
+            if (string.IsNullOrWhiteSpace(rawName)) rawName = "BacSi";
+            string clean = rawName.Replace("\\", "").Replace("/", "").Replace("?", "")
+                                  .Replace("*", "").Replace("[", "").Replace("]", "")
+                                  .Replace(":", "").Trim();
+            if (clean.Length > 28) clean = clean.Substring(0, 28).Trim();
+            if (string.IsNullOrWhiteSpace(clean)) clean = "BacSi";
+
+            string finalName = clean;
+            int counter = 2;
+            while (existingNames.Contains(finalName.ToLower()))
+            {
+                string suffix = $"_{counter++}";
+                int maxBaseLen = 31 - suffix.Length;
+                string baseName = clean.Length > maxBaseLen ? clean.Substring(0, maxBaseLen) : clean;
+                finalName = $"{baseName}{suffix}";
+            }
+            existingNames.Add(finalName.ToLower());
+            return finalName;
+        }
+
+        private static void BuildDoctorConsultationSheet(
+            IXLWorksheet ws, string doctorName, string cityCode, string tenTinh, 
+            string pValue, string fromDate, string toDate, int year, int month, 
+            List<BaoCaoBacSiDetailModel> cases)
+        {
+            // 1. Tiêu đề chính
+            ws.Cell(1, 1).Value = "DANH SÁCH KHÁCH HÀNG ĐƯỢC NHẬP LIỆU TRÊN REDCAP DỰ ÁN DREAMH";
+            ws.Cell(1, 1).Style.Font.Bold = true;
+            ws.Cell(1, 1).Style.Font.FontSize = 14;
+            ws.Cell(1, 1).Style.Font.FontColor = XLColor.FromArgb(13, 71, 161);
+            ws.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell(1, 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Range(1, 1, 1, 9).Merge();
+            ws.Row(1).Height = 28;
+
+            // 2. Header thông tin Tỉnh, Bác sĩ, Tháng
+            ws.Range(3, 1, 3, 2).Merge();
+            ws.Cell(3, 1).Value = "Tỉnh / Thành phố:";
+            ws.Cell(3, 1).Style.Font.Bold = true;
+            ws.Range(3, 3, 3, 4).Merge();
+            ws.Cell(3, 3).Value = tenTinh;
+            ws.Cell(3, 3).Style.Font.Bold = true;
+
+            ws.Cell(3, 6).Value = "Tháng / Kỳ báo cáo:";
+            ws.Cell(3, 6).Style.Font.Bold = true;
+            ws.Range(3, 7, 3, 9).Merge();
+            ws.Cell(3, 7).Value = $"{pValue} (Từ {fromDate} đến {toDate})";
+            ws.Cell(3, 7).Style.Font.Italic = true;
+
+            ws.Range(4, 1, 4, 2).Merge();
+            ws.Cell(4, 1).Value = "Bác sĩ phụ trách:";
+            ws.Cell(4, 1).Style.Font.Bold = true;
+            ws.Range(4, 3, 4, 4).Merge();
+            ws.Cell(4, 3).Value = doctorName;
+            ws.Cell(4, 3).Style.Font.Bold = true;
+            ws.Cell(4, 3).Style.Font.FontColor = XLColor.FromArgb(21, 101, 192);
+
+            // 3. Header bảng chi tiết ca khám
+            string[] headers = {
+                "STT", 
+                "Mã Khách hàng", 
+                "Ngày khám", 
+                "Cơ sở khám / Bệnh viện", 
+                "Nhóm CBO", 
+                "Tiếp cận viên (TCV)", 
+                "Lần khám", 
+                "Chẩn đoán chính", 
+                "Hình thức điều trị" 
+            };
+
+            int headerRow = 6;
+            for (int c = 0; c < headers.Length; c++)
+            {
+                var cell = ws.Cell(headerRow, c + 1);
+                cell.Value = headers[c];
+                cell.Style.Font.Bold = true;
+                cell.Style.Font.FontSize = 10;
+                cell.Style.Fill.BackgroundColor = XLColor.FromArgb(222, 235, 247);
+                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                cell.Style.Alignment.WrapText = true;
+                cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            }
+            ws.Row(headerRow).Height = 25;
+
+            // 4. Data rows
+            int dataRow = 7;
+            int stt = 1;
+            if (cases.Count == 0)
+            {
+                ws.Range(dataRow, 1, dataRow, 9).Merge();
+                ws.Cell(dataRow, 1).Value = "Không phát sinh ca khám nào trong kỳ báo cáo này.";
+                ws.Cell(dataRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws.Cell(dataRow, 1).Style.Font.Italic = true;
+                for (int col = 1; col <= 9; col++)
+                {
+                    ws.Cell(dataRow, col).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                }
+                dataRow++;
+            }
+            else
+            {
+                foreach (var item in cases)
+                {
+                    ws.Cell(dataRow, 1).Value = stt++;
+                    ws.Cell(dataRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    ws.Cell(dataRow, 2).Value = item.RECORD_ID;
+                    ws.Cell(dataRow, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Cell(dataRow, 2).Style.Font.Bold = true;
+
+                    ws.Cell(dataRow, 3).Value = item.NGAY_KHAM_STR;
+                    ws.Cell(dataRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    ws.Cell(dataRow, 4).Value = item.TEN_CO_SO_Y_TE;
+                    ws.Cell(dataRow, 5).Value = item.TEN_NHOM;
+                    ws.Cell(dataRow, 6).Value = item.TEN_TCV;
+
+                    ws.Cell(dataRow, 7).Value = item.TEN_LAN_KHAM;
+                    ws.Cell(dataRow, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    ws.Cell(dataRow, 8).Value = item.TEN_CHAN_DOAN;
+
+                    ws.Cell(dataRow, 9).Value = item.TEN_HINH_THUC_DIEU_TRI;
+                    ws.Cell(dataRow, 9).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    for (int col = 1; col <= 9; col++)
+                    {
+                        ws.Cell(dataRow, col).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        ws.Cell(dataRow, col).Style.Border.OutsideBorderColor = XLColor.FromArgb(209, 213, 219);
+                    }
+                    dataRow++;
+                }
+            }
+
+            // 5. Dòng Tổng cộng
+            if (cases.Count > 0)
+            {
+                ws.Range(dataRow, 1, dataRow, 3).Merge();
+                ws.Cell(dataRow, 1).Value = "TỔNG CỘNG SỐ CA KHÁM";
+                ws.Cell(dataRow, 1).Style.Font.Bold = true;
+                ws.Cell(dataRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+
+                ws.Cell(dataRow, 4).Value = $"{cases.Count} ca khám";
+                ws.Cell(dataRow, 4).Style.Font.Bold = true;
+                ws.Cell(dataRow, 4).Style.Font.FontColor = XLColor.FromArgb(192, 0, 0);
+
+                int kham1 = cases.Count(x => x.LAN_KHAM == 1);
+                int taiKham = cases.Count(x => x.LAN_KHAM == 2);
+                int khamKhac = cases.Count(x => x.LAN_KHAM > 2);
+                ws.Range(dataRow, 5, dataRow, 9).Merge();
+                ws.Cell(dataRow, 5).Value = $"(Khám lần 1: {kham1} ca  |  Tái khám: {taiKham} ca  |  Khám khác: {khamKhac} ca)";
+                ws.Cell(dataRow, 5).Style.Font.Italic = true;
+                ws.Cell(dataRow, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+                var totalRange = ws.Range(dataRow, 1, dataRow, 9);
+                totalRange.Style.Font.Bold = true;
+                totalRange.Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+                totalRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                totalRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                dataRow++;
+            }
+
+            // 6. Phần Footer (Tên tỉnh, Ngày tháng năm & Xác nhận của SCDI)
+            int footerStartRow = dataRow + 2;
+
+            DateTime footerDate;
+            if (DateTime.TryParseExact(toDate, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out var parsedToDate))
+            {
+                footerDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            }
+            else
+            {
+                footerDate = DateTime.Now;
+            }
+
+            string dateFooterText = $"{tenTinh}, Ngày {footerDate.Day} tháng {footerDate.Month} năm {footerDate.Year}";
+
+            // Khối SCDI (Góc phải: Cột G đến I)
+            ws.Range(footerStartRow, 7, footerStartRow, 9).Merge();
+            ws.Cell(footerStartRow, 7).Value = dateFooterText;
+            ws.Cell(footerStartRow, 7).Style.Font.Italic = true;
+            ws.Cell(footerStartRow, 7).Style.Font.FontSize = 10;
+            ws.Cell(footerStartRow, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(footerStartRow + 1, 7, footerStartRow + 1, 9).Merge();
+            ws.Cell(footerStartRow + 1, 7).Value = "Xác nhận của SCDI";
+            ws.Cell(footerStartRow + 1, 7).Style.Font.Bold = true;
+            ws.Cell(footerStartRow + 1, 7).Style.Font.FontSize = 11;
+            ws.Cell(footerStartRow + 1, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(footerStartRow + 2, 7, footerStartRow + 2, 9).Merge();
+            ws.Cell(footerStartRow + 2, 7).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(footerStartRow + 2, 7).Style.Font.Italic = true;
+            ws.Cell(footerStartRow + 2, 7).Style.Font.FontSize = 9;
+            ws.Cell(footerStartRow + 2, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Khối Bác sĩ phụ trách (Góc trái: Cột A đến C)
+            ws.Range(footerStartRow + 1, 1, footerStartRow + 1, 3).Merge();
+            ws.Cell(footerStartRow + 1, 1).Value = "Bác sĩ phụ trách";
+            ws.Cell(footerStartRow + 1, 1).Style.Font.Bold = true;
+            ws.Cell(footerStartRow + 1, 1).Style.Font.FontSize = 11;
+            ws.Cell(footerStartRow + 1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(footerStartRow + 2, 1, footerStartRow + 2, 3).Merge();
+            ws.Cell(footerStartRow + 2, 1).Value = "(Ký, ghi rõ họ tên)";
+            ws.Cell(footerStartRow + 2, 1).Style.Font.Italic = true;
+            ws.Cell(footerStartRow + 2, 1).Style.Font.FontSize = 9;
+            ws.Cell(footerStartRow + 2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            ws.Range(footerStartRow + 6, 1, footerStartRow + 6, 3).Merge();
+            ws.Cell(footerStartRow + 6, 1).Value = doctorName;
+            ws.Cell(footerStartRow + 6, 1).Style.Font.Bold = true;
+            ws.Cell(footerStartRow + 6, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // 7. Độ rộng cột
+            ws.Column(1).Width = 6.0;   // STT
+            ws.Column(2).Width = 15.0;  // Mã KH
+            ws.Column(3).Width = 13.0;  // Ngày khám
+            ws.Column(4).Width = 30.0;  // Cơ sở khám / Bệnh viện
+            ws.Column(5).Width = 20.0;  // Nhóm CBO
+            ws.Column(6).Width = 22.0;  // TCV
+            ws.Column(7).Width = 14.0;  // Lần khám
+            ws.Column(8).Width = 36.0;  // Chẩn đoán chính
+            ws.Column(9).Width = 18.0;  // Hình thức điều trị
+
+            // In A4 ngang
+            ws.PageSetup.PaperSize = XLPaperSize.A4Paper;
+            ws.PageSetup.PageOrientation = XLPageOrientation.Landscape;
+            ws.PageSetup.FitToPages(1, 0);
+            ws.PageSetup.Margins.Left = 0.4;
+            ws.PageSetup.Margins.Right = 0.4;
+            ws.PageSetup.Margins.Top = 0.6;
+            ws.PageSetup.Margins.Bottom = 0.6;
+        }
+}
 }

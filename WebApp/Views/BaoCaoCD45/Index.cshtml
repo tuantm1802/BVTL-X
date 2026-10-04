@@ -113,6 +113,15 @@
                     </select>
                 </div>
 
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small text-primary"><i class="fas fa-columns mr-1"></i>Chế độ phân loại cột</label>
+                    <select class="form-control form-control-sm border-primary font-weight-bold" x-model="displayMode" x-on:change="loadData()">
+                        <option value="1">Quần thể (PUD/PLHIV/TG/SW/MSM)</option>
+                        <option value="2">Giới tính (Nam / Nữ / Khác)</option>
+                        <option value="3">Nhóm tuổi (18-25 / 26-35 / &gt;=36)</option>
+                    </select>
+                </div>
+
                 <div class="col-12" x-show="dateError" style="display: none;">
                     <div class="alert alert-danger py-1 px-3 mb-2 small font-weight-bold d-flex align-items-center">
                         <i class="fas fa-exclamation-circle mr-2 fa-lg"></i>
@@ -146,11 +155,42 @@
                             <th style="width: 50px;">#</th>
                             <th>Thông tin báo cáo</th>
                             <th style="width: 85px;" class="bg-dark text-white">Tổng</th>
-                            <th style="width: 75px;">PUD</th>
-                            <th style="width: 75px;">PLHIV</th>
-                            <th style="width: 75px;">TG</th>
-                            <th style="width: 75px;">SW</th>
-                            <th style="width: 75px;">MSM</th>
+                            <!-- Mode 1: Quần thể -->
+                            <template x-if="displayMode === '1'">
+                                <th style="width: 75px;">PUD</th>
+                            </template>
+                            <template x-if="displayMode === '1'">
+                                <th style="width: 75px;">PLHIV</th>
+                            </template>
+                            <template x-if="displayMode === '1'">
+                                <th style="width: 75px;">TG</th>
+                            </template>
+                            <template x-if="displayMode === '1'">
+                                <th style="width: 75px;">SW</th>
+                            </template>
+                            <template x-if="displayMode === '1'">
+                                <th style="width: 75px;">MSM</th>
+                            </template>
+                            <!-- Mode 2: Giới tính -->
+                            <template x-if="displayMode === '2'">
+                                <th style="width: 100px;">Nam</th>
+                            </template>
+                            <template x-if="displayMode === '2'">
+                                <th style="width: 100px;">Nữ</th>
+                            </template>
+                            <template x-if="displayMode === '2'">
+                                <th style="width: 100px;">Khác</th>
+                            </template>
+                            <!-- Mode 3: Nhóm tuổi -->
+                            <template x-if="displayMode === '3'">
+                                <th style="width: 90px;">18 - 25</th>
+                            </template>
+                            <template x-if="displayMode === '3'">
+                                <th style="width: 90px;">26 - 35</th>
+                            </template>
+                            <template x-if="displayMode === '3'">
+                                <th style="width: 90px;">&gt;= 36</th>
+                            </template>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,36 +204,76 @@
                                     :style="item.Tong > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
                                     x-on:click="openDrillDown(item, 'Tong', 'Tổng')" 
                                     x-text="formatNumber(item.Tong)"></td>
-                                <td class="text-right" 
-                                    :style="item.PUD > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
-                                    x-on:click="openDrillDown(item, 'PUD', 'PUD')" 
-                                    x-text="formatNumber(item.PUD)"></td>
-                                <td class="text-right" 
-                                    :style="item.PLHIV > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
-                                    x-on:click="openDrillDown(item, 'PLHIV', 'PLHIV')" 
-                                    x-text="formatNumber(item.PLHIV)"></td>
-                                <td class="text-right" 
-                                    :style="item.TG > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
-                                    x-on:click="openDrillDown(item, 'TG', 'TG')" 
-                                    x-text="formatNumber(item.TG)"></td>
-                                <td class="text-right" 
-                                    :style="item.SW > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
-                                    x-on:click="openDrillDown(item, 'SW', 'SW')" 
-                                    x-text="formatNumber(item.SW)"></td>
-                                <td class="text-right" 
-                                    :style="item.MSM > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
-                                    x-on:click="openDrillDown(item, 'MSM', 'MSM')" 
-                                    x-text="formatNumber(item.MSM)"></td>
+                                
+                                <!-- Mode 1: Quần thể -->
+                                <template x-if="displayMode === '1'">
+                                    <td class="text-right" 
+                                        :style="item.PUD > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                        x-on:click="openDrillDown(item, 'PUD', 'PUD')" 
+                                        x-text="formatNumber(item.PUD)"></td>
+                                </template>
+                                <template x-if="displayMode === '1'">
+                                    <td class="text-right" 
+                                        :style="item.PLHIV > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                        x-on:click="openDrillDown(item, 'PLHIV', 'PLHIV')" 
+                                        x-text="formatNumber(item.PLHIV)"></td>
+                                </template>
+                                <template x-if="displayMode === '1'">
+                                    <td class="text-right" 
+                                        :style="item.TG > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                        x-on:click="openDrillDown(item, 'TG', 'TG')" 
+                                        x-text="formatNumber(item.TG)"></td>
+                                </template>
+                                <template x-if="displayMode === '1'">
+                                    <td class="text-right" 
+                                        :style="item.SW > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                        x-on:click="openDrillDown(item, 'SW', 'SW')" 
+                                        x-text="formatNumber(item.SW)"></td>
+                                </template>
+                                <template x-if="displayMode === '1'">
+                                    <td class="text-right" 
+                                        :style="item.MSM > 0 ? 'cursor:pointer; text-decoration:underline;' : ''" 
+                                        x-on:click="openDrillDown(item, 'MSM', 'MSM')" 
+                                        x-text="formatNumber(item.MSM)"></td>
+                                </template>
+
+                                <!-- Mode 2: Giới tính -->
+                                <template x-if="displayMode === '2'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Nam)"></td>
+                                </template>
+                                <template x-if="displayMode === '2'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Nu)"></td>
+                                </template>
+                                <template x-if="displayMode === '2'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Khac)"></td>
+                                </template>
+
+                                <!-- Mode 3: Nhóm tuổi -->
+                                <template x-if="displayMode === '3'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Tuoi_18_25)"></td>
+                                </template>
+                                <template x-if="displayMode === '3'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Tuoi_26_35)"></td>
+                                </template>
+                                <template x-if="displayMode === '3'">
+                                    <td class="text-right font-weight-500" 
+                                        x-text="formatNumber(item.Tuoi_Tren35)"></td>
+                                </template>
                             </tr>
                         </template>
                         <tr x-show="items.length === 0 && !isLoading">
-                            <td colspan="8" class="text-center py-4 text-muted">
+                            <td :colspan="displayMode === '1' ? 8 : 6" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 Không có dữ liệu trong khoảng thời gian này
                             </td>
                         </tr>
                         <tr x-show="isLoading">
-                            <td colspan="8" class="text-center py-4 text-primary">
+                            <td :colspan="displayMode === '1' ? 8 : 6" class="text-center py-4 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 Đang tổng hợp số liệu báo cáo...
                             </td>

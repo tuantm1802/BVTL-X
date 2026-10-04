@@ -489,7 +489,10 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             }
         }
 
-        showToast();
+        if (!$scope.model.Name || $scope.model.Name.trim() === '') {
+            toastr.error("Vui lòng nhập Họ và tên người dùng.");
+            return false;
+        }
 
         $("#formSubmit").validate({
             errorElement: "span",
@@ -546,6 +549,7 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
             }
         });
         if ($("#formSubmit").valid()) {
+            showToast();
             $.ajax({
                 type: 'post',
                 url: '/User/Add',
@@ -558,8 +562,14 @@ app.controller('add', function ($scope, $uibModalInstance, $ngConfirm, showToast
                         $scope.cancel();
                     }
                     hideLoading();
+                },
+                error: function () {
+                    toastr.error("Có lỗi xảy ra khi lưu người dùng.");
+                    hideLoading();
                 }
             });
+        } else {
+            hideLoading();
         }
     };
 
@@ -729,6 +739,7 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
             }
         });
         if ($("#formSubmit").valid()) {
+            showToast();
             $.ajax({
                 type: 'post',
                 url: '/User/Edit',
@@ -740,8 +751,15 @@ app.controller('edit', function ($scope, $uibModalInstance, itemId, $ngConfirm, 
                         toastr.success(data.Title);
                         $scope.cancel();
                     }
+                    hideLoading();
+                },
+                error: function () {
+                    toastr.error("Có lỗi xảy ra khi cập nhật người dùng.");
+                    hideLoading();
                 }
             });
+        } else {
+            hideLoading();
         }
     };
 

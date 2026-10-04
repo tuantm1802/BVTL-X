@@ -83,6 +83,7 @@
     <Compile Include="ModelExtend\AuditModel.cs" />
     <Compile Include="ModelExtend\BaoCaoTongHopPageModel.cs" />
     <Compile Include="ModelExtend\BaoCaoCD45Model.cs" />
+    <Compile Include="ModelExtend\BaoCaoBacSiModel.cs" />
     <Compile Include="ModelExtend\CD45KhachHangModel.cs" />
     <Compile Include="ModelExtend\BaseResult.cs" />
     <Compile Include="ModelExtend\Base\LoginModel.cs" />

@@ -37,6 +37,7 @@ document.addEventListener('alpine:init', function () {
             filteredTCVs: [],
             checkedTCVs: [], // For batch export
             isSelectAll: false,
+            searchTCVKeyword: '',
             isAdmin: true,
 
             init: function () {
@@ -222,6 +223,7 @@ document.addEventListener('alpine:init', function () {
                 var self = this;
                 var selCity = (self.selectedCity || '').trim().toUpperCase();
                 var selNhom = (self.selectedNhom || '').trim().toLowerCase();
+                var searchKw = removeVietnameseTones(self.searchTCVKeyword || '').toLowerCase().trim();
 
                 var selectedNhomObj = null;
                 if (selNhom) {
@@ -247,7 +249,17 @@ document.addEventListener('alpine:init', function () {
                             matchNhom = (tcvNhom === selNhom);
                         }
                     }
-                    return matchCity && matchNhom;
+
+                    var matchSearch = true;
+                    if (searchKw) {
+                        var name = removeVietnameseTones(x.TEN_TCV || '').toLowerCase();
+                        var ma = removeVietnameseTones(x.MA_TCV || '').toLowerCase();
+                        var nhom = removeVietnameseTones(x.TEN_NHOM || '').toLowerCase();
+                        var city = removeVietnameseTones(x.CITY_CODE || '').toLowerCase();
+                        matchSearch = (name.indexOf(searchKw) > -1) || (ma.indexOf(searchKw) > -1) || (nhom.indexOf(searchKw) > -1) || (city.indexOf(searchKw) > -1);
+                    }
+
+                    return matchCity && matchNhom && matchSearch;
                 });
 
                 var stillExists = self.selectedTCVObj && self.filteredTCVs.some(function (x) {
@@ -347,10 +359,12 @@ document.addEventListener('alpine:init', function () {
                 self.selectedTCV = id;
                 var found = self.filteredTCVs.find(function (x) {
                     return String(x.ID) === String(id);
+                }) || self.listTCVs.find(function (x) {
+                    return String(x.ID) === String(id);
                 });
                 self.selectedTCVObj = found || null;
                 var $select = $('#cboSelectedTCV');
-                if ($select.length) {
+                if ($select.length && String($select.val()) !== String(id)) {
                     $select.val(id).trigger('change.select2');
                 }
                 if (self.selectedTCVObj) {
@@ -366,6 +380,8 @@ document.addEventListener('alpine:init', function () {
                     self.selectedTCV = newVal;
                 }
                 var found = self.filteredTCVs.find(function (x) {
+                    return String(x.ID) === String(self.selectedTCV);
+                }) || self.listTCVs.find(function (x) {
                     return String(x.ID) === String(self.selectedTCV);
                 });
                 self.selectedTCVObj = found || null;

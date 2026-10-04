@@ -1736,3 +1736,77 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 ### Các tệp đã thay đổi:
 - Common/Common/ConvertCD45ApiToEntity.cs (Modified)
 - docs/session-log.md (Modified - UTF-8 BOM)
+
+
+---
+
+## Session 37: [2026-10-04] Phát triển Phân hệ Báo cáo Bác sĩ CD45, Cấu hình API F9 Theo dấu và Tối ưu hóa Xuất Báo cáo Excel / Dashboard
+
+### Mục tiêu:
+1. Xây dựng mới hoàn toàn Phân hệ Báo cáo Bác sĩ CD45 (/BaoCaoBacSiCD45): Phục vụ theo dõi, nghiệm thu và thanh toán chuyên môn cho đội ngũ Bác sĩ tham gia dự án CD45.
+2. Bổ sung menu hệ thống và phân quyền vai trò cho Báo cáo Bác sĩ CD45.
+3. Kích hoạt cấu hình API F9 (đồng bộ theo dấu khách hàng) trong bảng BVTL_API và chỉ tiêu VI_1_HIV trong bảng CD45_BCTIEU_CAU_HINH.
+4. Tối ưu hóa xuất file Excel báo cáo Bác sĩ, Báo cáo CD45, Báo cáo TCV và gói ZIP phân cấp theo tỉnh.
+5. Nâng cấp bộ test tự động BVTL.Tests lên 145 test cases (100% PASS).
+
+### Các công việc đã hoàn thành:
+1. **Phân hệ Báo cáo Bác sĩ CD45**:
+   - Thêm menu hệ thống qua SQL_Add_Menu_BaoCaoBacSi.sql (Menu cha: Báo cáo, Url: /BaoCaoBacSiCD45/Index).
+   - Backend: BaoCaoBacSiCD45Controller.cs, BaoCaoBacSiCD45DA.cs, IBaoCaoBacSiCD45DA.cs, BaoCaoBacSiModel.cs, đăng ký AutofacConfig.cs.
+   - Frontend: Views/BaoCaoBacSiCD45/Index.cshtml, app/Controller/AlpineBaoCaoBacSiCD45Controller.js.
+   - Export Service: Bổ sung ExportBacSiCD45ExcelAsync xuất Excel theo tỉnh / toàn quốc (ZIP nhiều tỉnh) với các sheet từng Bác sĩ.
+2. **Cấu hình API F9 & Chỉ tiêu HIV Mục VI (SQL_CD45_Bugs_v3_Step1.sql)**:
+   - Cấu hình API_CD45_F9 vào bảng BVTL_API lưu bảng CD45_THEO_DAU.
+   - Thêm chỉ tiêu VI_1_HIV vào CD45_BCTIEU_CAU_HINH cho các kỳ báo cáo Tháng, Quý, 6T, 12T.
+3. **Cải tiến Báo cáo CD45, Dashboard & Scheduled Report**:
+   - Cập nhật Stored Procedures trong SQL_CD45_SP.sql xử lý các chỉ tiêu và lọc hoàn thành.
+   - Nâng cấp ReportValidatorHelper.cs hỗ trợ kiểm tra cân đối giới tính (DisplayMode 2) và cảnh báo số học.
+   - Cập nhật DashboardCD45DA.cs, ScheduledReportDA.cs, UserController.cs.
+4. **Kiểm thử & Đóng gói**:
+   - Thêm mới và mở rộng test cases: DashboardCD45Tests.cs, DataValidationP0Tests.cs, ScheduledReportTests.cs.
+   - Toàn bộ 145/145 Unit Tests trong BVTL.Tests đều vượt qua thành công (100% PASS).
+   - Đăng ký đầy đủ Views và Controller JS vào WebApp.csproj.
+   - Bảo toàn tuyệt đối chuẩn UTF-8 with BOM (utf-8-sig) trên 100% tệp tin.
+
+### Các tệp đã thay đổi/thêm mới:
+- Data/Admin/BaoCaoBacSiCD45DA.cs (New)
+- Data/InterfaceDA/Admin/IBaoCaoBacSiCD45DA.cs (New)
+- Model/ModelExtend/BaoCaoBacSiModel.cs (New)
+- SQL_Add_Menu_BaoCaoBacSi.sql (New - UTF-8 BOM)
+- SQL_CD45_Bugs_v3_Step1.sql (New - UTF-8 BOM)
+- WebApp/Controllers/BaoCaoBacSiCD45Controller.cs (New)
+- WebApp/Views/BaoCaoBacSiCD45/Index.cshtml (New - UTF-8 BOM)
+- WebApp/app/Controller/AlpineBaoCaoBacSiCD45Controller.js (New)
+- BVTL.Tests/DashboardCD45Tests.cs (Modified)
+- BVTL.Tests/DataValidationP0Tests.cs (Modified)
+- BVTL.Tests/ScheduledReportTests.cs (Modified)
+- Common/Common/ConvertCD45ApiToEntity.cs (Modified)
+- Common/Common/ReportValidatorHelper.cs (Modified)
+- Data/Admin/BVTL_NHOM_TBHDA.cs (Modified)
+- Data/Admin/BaoCaoCD45DA.cs (Modified)
+- Data/Admin/DashboardCD45DA.cs (Modified)
+- Data/Admin/ScheduledReportDA.cs (Modified)
+- Data/Data.csproj (Modified)
+- Data/InterfaceDA/Admin/IDashboardCD45DA.cs (Modified)
+- Model/Model.csproj (Modified)
+- Model/ModelExtend/BaoCaoCD45Model.cs (Modified)
+- SQL_CD45_SP.sql (Modified - UTF-8 BOM)
+- WebApp/App_Start/AutofacConfig.cs (Modified)
+- WebApp/Controllers/BaoCaoCD45Controller.cs (Modified)
+- WebApp/Controllers/HomeController.cs (Modified)
+- WebApp/Controllers/ScheduledReportController.cs (Modified)
+- WebApp/Controllers/UserController.cs (Modified)
+- WebApp/Services/IReportExportService.cs (Modified)
+- WebApp/Services/ReportExportService.cs (Modified)
+- WebApp/Views/BaoCaoCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/BaoCaoTCVCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/Home/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/KhachHangCD45/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/ScheduledReport/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/WebApp.csproj (Modified)
+- WebApp/app/Controller/AlpineBaoCaoCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineBaoCaoTCVCD45Controller.js (Modified)
+- WebApp/app/Controller/AlpineHomeController.js (Modified)
+- WebApp/app/Controller/AlpineScheduledReportController.js (Modified)
+- WebApp/app/Controller/UserController.js (Modified)
+- docs/session-log.md (Modified - UTF-8 BOM)

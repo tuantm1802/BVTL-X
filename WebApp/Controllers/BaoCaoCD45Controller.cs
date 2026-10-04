@@ -109,7 +109,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao)
+        public JsonResult SearchBaoCao(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao, int displayMode = 1)
         {
             try
             {
@@ -128,8 +128,8 @@ namespace WebApp.Controllers
                 string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
                 var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, scopedCity, MaNhom, null, loaiFilter);
 
-                // VR-01: Kiểm toán cấu trúc số học (Tổng = PUD + PLHIV + TG + SW + MSM)
-                ReportValidatorHelper.ValidateReportArithmetic(data, out string arithmeticWarning);
+                // VR-01: Kiểm toán cấu trúc số học theo displayMode (1: Quần thể, 2: Giới tính, 3: Tuổi)
+                ReportValidatorHelper.ValidateReportArithmetic(data, out string arithmeticWarning, displayMode);
 
                 var jsonResult = Json(new { Success = true, Data = data, Warning = arithmeticWarning });
                 jsonResult.MaxJsonLength = int.MaxValue;
@@ -171,7 +171,7 @@ namespace WebApp.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportExcel(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao)
+        public ActionResult ExportExcel(string FromDate, string ToDate, string MaTinh, string MaNhom, string LoaiBaoCao, int displayMode = 1)
         {
             if (!ValidateDateRange(FromDate, ToDate, out var dateError))
             {
@@ -188,8 +188,8 @@ namespace WebApp.Controllers
             string loaiFilter = (LoaiBaoCao == "TuyChon" || string.IsNullOrEmpty(LoaiBaoCao)) ? null : LoaiBaoCao;
             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, scopedCity, MaNhom, null, loaiFilter);
 
-            // VR-01 [BLOCKING]: Chặn xuất báo cáo nếu có bất kỳ dòng nào vi phạm Tổng = 5 nhóm đích
-            if (!ReportValidatorHelper.ValidateReportArithmetic(data, out var arithmeticError))
+            // VR-01 [BLOCKING]: Chặn xuất báo cáo nếu có bất kỳ dòng nào vi phạm Tổng = các cột thành phần
+            if (!ReportValidatorHelper.ValidateReportArithmetic(data, out var arithmeticError, displayMode))
             {
                 return Content("<script>alert('" + arithmeticError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
             }
@@ -203,6 +203,9 @@ namespace WebApp.Controllers
                              loaiFilter == "Thang" ? "Báo cáo Tháng" :
                              loaiFilter == "Quy" ? "Báo cáo Quý" :
                              loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
+
+            string modeTitle = displayMode == 2 ? " (THEO GIỚI TÍNH)" :
+                               displayMode == 3 ? " (THEO NHÓM TUỔI)" : "";
 
             string tenTinh = "Toàn quốc";
             if (!string.IsNullOrEmpty(MaTinh))
@@ -230,28 +233,46 @@ namespace WebApp.Controllers
                 }
             }
 
+            int numCols = (displayMode == 2 || displayMode == 3) ? 6 : 8;
+
             using (var workbook = new XLWorkbook())
             {
                 var ws = workbook.Worksheets.Add("BaoCao");
-                ws.Cell(1, 1).Value = "BÁO CÁO KẾT QUẢ HOẠT ĐỘNG (DỰ ÁN CD45 - DREAMH)";
+                ws.Cell(1, 1).Value = "BÁO CÁO KẾT QUẢ HOẠT ĐỘNG (DỰ ÁN CD45 - DREAMH)" + modeTitle;
                 ws.Cell(1, 1).Style.Font.Bold = true;
                 ws.Cell(1, 1).Style.Font.FontSize = 14;
-                ws.Range("A1:H1").Row(1).Merge();
+                ws.Range(1, 1, 1, numCols).Row(1).Merge();
 
                 ws.Cell(2, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   {xungDanh}: {tenNhom}";
                 ws.Cell(2, 1).Style.Font.Italic = true;
-                ws.Range("A2:H2").Row(1).Merge();
+                ws.Range(2, 1, 2, numCols).Row(1).Merge();
 
                 ws.Cell(4, 1).Value = "STT";
                 ws.Cell(4, 2).Value = "Thông tin báo cáo";
                 ws.Cell(4, 3).Value = "Tổng";
-                ws.Cell(4, 4).Value = "PUD";
-                ws.Cell(4, 5).Value = "PLHIV";
-                ws.Cell(4, 6).Value = "TG";
-                ws.Cell(4, 7).Value = "SW";
-                ws.Cell(4, 8).Value = "MSM";
 
-                var headerRange = ws.Range("A4:H4");
+                if (displayMode == 2)
+                {
+                    ws.Cell(4, 4).Value = "Nam";
+                    ws.Cell(4, 5).Value = "Nữ";
+                    ws.Cell(4, 6).Value = "Khác";
+                }
+                else if (displayMode == 3)
+                {
+                    ws.Cell(4, 4).Value = "18-25";
+                    ws.Cell(4, 5).Value = "26-35";
+                    ws.Cell(4, 6).Value = ">=36";
+                }
+                else
+                {
+                    ws.Cell(4, 4).Value = "PUD";
+                    ws.Cell(4, 5).Value = "PLHIV";
+                    ws.Cell(4, 6).Value = "TG";
+                    ws.Cell(4, 7).Value = "SW";
+                    ws.Cell(4, 8).Value = "MSM";
+                }
+
+                var headerRange = ws.Range(4, 1, 4, numCols);
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
 
@@ -277,23 +298,38 @@ namespace WebApp.Controllers
 
                     if (item.IsBold)
                     {
-                        for (int c = 3; c <= 8; c++) ws.Cell(row, c).Value = "";
-                        ws.Range(row, 1, row, 8).Style.Font.Bold = true;
-                        ws.Range(row, 1, row, 8).Style.Fill.BackgroundColor = XLColor.Yellow;
+                        for (int c = 3; c <= numCols; c++) ws.Cell(row, c).Value = "";
+                        ws.Range(row, 1, row, numCols).Style.Font.Bold = true;
+                        ws.Range(row, 1, row, numCols).Style.Fill.BackgroundColor = XLColor.Yellow;
                     }
                     else
                     {
                         setVal(ws.Cell(row, 3), item.Tong);
-                        setVal(ws.Cell(row, 4), item.PUD);
-                        setVal(ws.Cell(row, 5), item.PLHIV);
-                        setVal(ws.Cell(row, 6), item.TG);
-                        setVal(ws.Cell(row, 7), item.SW);
-                        setVal(ws.Cell(row, 8), item.MSM);
+                        if (displayMode == 2)
+                        {
+                            setVal(ws.Cell(row, 4), item.Nam);
+                            setVal(ws.Cell(row, 5), item.Nu);
+                            setVal(ws.Cell(row, 6), item.Khac);
+                        }
+                        else if (displayMode == 3)
+                        {
+                            setVal(ws.Cell(row, 4), item.Tuoi_18_25);
+                            setVal(ws.Cell(row, 5), item.Tuoi_26_35);
+                            setVal(ws.Cell(row, 6), item.Tuoi_Tren35);
+                        }
+                        else
+                        {
+                            setVal(ws.Cell(row, 4), item.PUD);
+                            setVal(ws.Cell(row, 5), item.PLHIV);
+                            setVal(ws.Cell(row, 6), item.TG);
+                            setVal(ws.Cell(row, 7), item.SW);
+                            setVal(ws.Cell(row, 8), item.MSM);
+                        }
                     }
                     row++;
                 }
 
-                var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), 8);
+                var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), numCols);
                 dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
@@ -316,51 +352,80 @@ namespace WebApp.Controllers
                     signer1Title = !string.IsNullOrWhiteSpace(chucDanh) && chucDanh != "Trưởng nhóm" ? chucDanh : "Đại diện dự án";
                 }
 
-                // 1. Khối chữ ký "Đại diện nhóm" (Merge cột A:B)
-                ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
-                ws.Cell(signTitleRow, 1).Value = signer1Title;
-                ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
-                ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                if (displayMode == 2 || displayMode == 3)
+                {
+                    ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+                    ws.Cell(signTitleRow, 1).Value = signer1Title;
+                    ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+                    ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
-                ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
-                ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
-                ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
-                ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signTitleRow, 3, signTitleRow, 4).Merge();
+                    ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+                    ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 3, signNoteRow, 4).Merge();
+                    ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                // 2. Khối chữ ký "Cán bộ dự án" (Merge cột C:E)
-                ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
-                ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
-                ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
-                ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signTitleRow, 5, signTitleRow, 6).Merge();
+                    ws.Cell(signTitleRow, 5).Value = "MnE";
+                    ws.Cell(signTitleRow, 5).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 5, signNoteRow, 6).Merge();
+                    ws.Cell(signNoteRow, 5).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 5).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 5).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+                else
+                {
+                    ws.Range(signTitleRow, 1, signTitleRow, 2).Merge();
+                    ws.Cell(signTitleRow, 1).Value = signer1Title;
+                    ws.Cell(signTitleRow, 1).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 1, signNoteRow, 2).Merge();
+                    ws.Cell(signNoteRow, 1).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 1).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 1).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
-                ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
-                ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
-                ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
-                ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signTitleRow, 3, signTitleRow, 5).Merge();
+                    ws.Cell(signTitleRow, 3).Value = "Cán bộ dự án";
+                    ws.Cell(signTitleRow, 3).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 3, signNoteRow, 5).Merge();
+                    ws.Cell(signNoteRow, 3).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 3).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 3).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                // 3. Khối chữ ký "MnE" (Merge cột F:H)
-                ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
-                ws.Cell(signTitleRow, 6).Value = "MnE";
-                ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
-                ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
-                ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
-                ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
-                ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
-                ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signTitleRow, 6, signTitleRow, 8).Merge();
+                    ws.Cell(signTitleRow, 6).Value = "MnE";
+                    ws.Cell(signTitleRow, 6).Style.Font.Bold = true;
+                    ws.Cell(signTitleRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    ws.Range(signNoteRow, 6, signNoteRow, 8).Merge();
+                    ws.Cell(signNoteRow, 6).Value = "(Ký, ghi rõ họ tên)";
+                    ws.Cell(signNoteRow, 6).Style.Font.Italic = true;
+                    ws.Cell(signNoteRow, 6).Style.Font.FontSize = 9;
+                    ws.Cell(signNoteRow, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
 
                 // Thiết lập độ rộng cột (Column Widths)
                 ws.Column(1).Width = 5.5;  // Cột # (STT)
                 ws.Column(2).Width = 44.0; // Cột Thông tin báo cáo
                 ws.Column(2).Style.Alignment.WrapText = true;
 
-                // Các cột số liệu từ C đến H (Tổng, PUD, PLHIV, TG, SW, MSM) có khoảng cách bằng nhau tuyệt đối
-                for (int c = 3; c <= 8; c++)
+                // Các cột số liệu
+                for (int c = 3; c <= numCols; c++)
                 {
-                    ws.Column(c).Width = 10.0;
+                    ws.Column(c).Width = (displayMode == 2 || displayMode == 3) ? 12.0 : 10.0;
                 }
 
                 // Cấu hình trang in chuẩn A4 dọc vừa vặn trong 1 trang ngang

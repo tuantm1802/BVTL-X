@@ -59,7 +59,7 @@ namespace Data.Admin
             return nt;
         }
 
-        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34")
+        public DashboardCD45FullDataModel GetDashboardData(string cityCode, string maNhom, string fromDate, string toDate, string nhomTuoiTable1 = null, string cityMode = "NEW34", int? gioiTinhFilter = null, string nhomTuoiFilter = null, int? doiTuongFilter = null, int dimensionMode = 1)
         {
             var model = new DashboardCD45FullDataModel
             {
@@ -124,6 +124,10 @@ namespace Data.Admin
 
                     cmd.Parameters.Add(new SqlParameter("@NhomTuoiTable1", string.IsNullOrEmpty(nhomTuoiTable1) ? (object)DBNull.Value : nhomTuoiTable1));
                     cmd.Parameters.Add(new SqlParameter("@CityMode", string.IsNullOrEmpty(cityMode) ? "NEW34" : cityMode));
+                    cmd.Parameters.Add(new SqlParameter("@GioiTinhFilter", gioiTinhFilter.HasValue && gioiTinhFilter.Value > 0 ? (object)gioiTinhFilter.Value : DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@NhomTuoiFilter", string.IsNullOrEmpty(nhomTuoiFilter) ? (object)DBNull.Value : nhomTuoiFilter));
+                    cmd.Parameters.Add(new SqlParameter("@DoiTuongFilter", doiTuongFilter.HasValue && doiTuongFilter.Value > 0 ? (object)doiTuongFilter.Value : DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@DimensionMode", dimensionMode > 0 ? dimensionMode : 1));
 
                     using (var adapter = new SqlDataAdapter(cmd))
                     {
@@ -167,7 +171,9 @@ namespace Data.Admin
                                 var item = new DashboardCD45ByTargetGroupModel
                                 {
                                     DoiTuongId = doiTuongId,
-                                    TenDoiTuong = GetTenDoiTuong(doiTuongId),
+                                    TenDoiTuong = r.Table.Columns.Contains("TenDoiTuong") && r["TenDoiTuong"] != DBNull.Value && !string.IsNullOrWhiteSpace(r["TenDoiTuong"].ToString())
+                                        ? r["TenDoiTuong"].ToString()
+                                        : GetTenDoiTuong(doiTuongId),
                                     TongKH = r["TongKH"] != DBNull.Value ? Convert.ToInt32(r["TongKH"]) : 0,
                                     SoKHSangLoc = r["SoKHSangLoc"] != DBNull.Value ? Convert.ToInt32(r["SoKHSangLoc"]) : 0,
                                     Muc1_RatCao = r["Muc1_RatCao"] != DBNull.Value ? Convert.ToInt32(r["Muc1_RatCao"]) : 0,
@@ -214,7 +220,9 @@ namespace Data.Admin
                                 var item = new DashboardCD45MentalHealthModel
                                 {
                                     DoiTuongId = doiTuongId,
-                                    TenDoiTuong = GetTenDoiTuongNgan(doiTuongId),
+                                    TenDoiTuong = r.Table.Columns.Contains("TenDoiTuong") && r["TenDoiTuong"] != DBNull.Value && !string.IsNullOrWhiteSpace(r["TenDoiTuong"].ToString())
+                                        ? r["TenDoiTuong"].ToString()
+                                        : GetTenDoiTuongNgan(doiTuongId),
                                     SoCaTuVan = r["SoCaTuVan"] != DBNull.Value ? Convert.ToInt32(r["SoCaTuVan"]) : 0,
                                     PCL5_DuongTinh = r["PCL5_DuongTinh"] != DBNull.Value ? Convert.ToInt32(r["PCL5_DuongTinh"]) : 0,
                                     PCL5_AmTinh = r["PCL5_AmTinh"] != DBNull.Value ? Convert.ToInt32(r["PCL5_AmTinh"]) : 0,

@@ -42,6 +42,25 @@
         background-color: #0d9488 !important;
         color: white !important;
     }
+    .tcv-card-item {
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        border-radius: 5px;
+        padding: 6px 10px;
+        background: #fff;
+        border: 1px solid #d1d3e2;
+    }
+    .tcv-card-item:hover {
+        background: #f8f9fc;
+        border-color: #4e73df;
+        box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.08);
+    }
+    .tcv-card-active {
+        background-color: #e8f4fd !important;
+        border-color: #2e59d9 !important;
+        border-width: 1.5px !important;
+        box-shadow: 0 0 0 1px #2e59d9, 0 0.15rem 0.75rem rgba(46, 89, 217, 0.2);
+    }
 </style>
 
 <div class="container-fluid" x-data="alpineBaoCaoTCVCD45">
@@ -158,17 +177,30 @@
             </div>
 
             <!-- TCV Selection and Batch Actions -->
-            <div class="row pt-2 border-top">
-                <div class="col-md-6 mb-2">
-                    <label class="font-weight-bold small text-primary">
-                        <i class="fas fa-eye mr-1"></i> Chọn TCV để xem trước báo cáo: <span class="font-weight-normal text-muted font-italic">(Gõ để tìm theo tên, nhóm, mã...)</span>
+            <div class="row pt-2 border-top align-items-center">
+                <div class="col-md-5 mb-2">
+                    <label class="font-weight-bold small text-primary mb-1">
+                        <i class="fas fa-search mr-1"></i> Chọn nhanh TCV (Gõ tên / mã / nhóm để tìm kiếm):
                     </label>
                     <select id="cboSelectedTCV" class="form-control form-control-sm select2" style="width: 100%;">
                     </select>
                 </div>
-                <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end">
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small text-secondary mb-1">
+                        <i class="fas fa-filter mr-1"></i> Lọc danh sách TCV bên dưới:
+                    </label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Gõ tên TCV, mã, tỉnh..." x-model="searchTCVKeyword" x-on:input="filterTCVs()" />
+                        <div class="input-group-append" x-show="searchTCVKeyword">
+                            <button class="btn btn-outline-secondary" type="button" x-on:click="searchTCVKeyword = ''; filterTCVs();" title="Xóa tìm kiếm">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2 d-flex align-items-end justify-content-end">
                     <button class="btn btn-primary btn-sm shadow-sm mr-2" x-on:click="previewData()">
-                        <i class="fas fa-search fa-sm mr-1"></i> Tải lại số liệu
+                        <i class="fas fa-sync-alt fa-sm mr-1"></i> Tải lại số liệu
                     </button>
                     <button class="btn btn-success btn-sm shadow-sm" x-on:click="exportSingle()">
                         <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel TCV
@@ -176,40 +208,73 @@
                 </div>
             </div>
 
-            <!-- Multi-select Checklist for Batch ZIP Export -->
+            <!-- Interactive TCV List & Batch ZIP Card -->
             <div class="row pt-2">
                 <div class="col-12">
-                    <div class="card bg-light border-0">
+                    <div class="card bg-light border-0 shadow-sm">
                         <div class="card-body py-2 px-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label class="font-weight-bold small m-0 text-danger">
-                                    <i class="fas fa-tasks mr-1"></i> Danh sách TCV xuất file ZIP hàng loạt (<span x-text="checkedTCVs.length + '/' + filteredTCVs.length"></span> được chọn):
-                                </label>
-                                <div class="d-flex align-items-center">
+                            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                                <div class="d-flex align-items-center mb-1">
+                                    <label class="font-weight-bold small m-0 text-dark">
+                                        <i class="fas fa-users-cog mr-1 text-primary"></i> DANH SÁCH TIẾP CẬN VIÊN
+                                    </label>
+                                    <span class="badge badge-info ml-2" x-text="filteredTCVs.length + ' TCV'"></span>
+                                    <span class="text-primary small ml-2 font-weight-bold d-none d-md-inline">
+                                        👉 <i class="fas fa-mouse-pointer mr-1"></i>Click vào TCV bất kỳ để nạp số liệu báo cáo
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center mb-1">
                                     <label class="small m-0 text-muted cursor-pointer mr-3">
                                         <input type="checkbox" x-model="isSelectAll" x-on:change="toggleSelectAll()" />
-                                        <span class="font-weight-bold">Chọn tất cả</span>
+                                        <span class="font-weight-bold">Chọn tất cả xuất ZIP (<span x-text="checkedTCVs.length + '/' + filteredTCVs.length"></span>)</span>
                                     </label>
                                     <button type="button" class="btn btn-xs btn-danger shadow-sm font-weight-bold px-2 py-1" x-on:click="exportBatchZip()">
                                         <i class="fas fa-file-archive mr-1"></i> Xuất hàng loạt (.ZIP)
                                     </button>
                                 </div>
                             </div>
-                            <div class="border rounded p-2 bg-white" style="max-height: 140px; overflow-y: auto;">
-                                <div class="row">
+
+                            <div class="border rounded p-2 bg-white" style="max-height: 220px; overflow-y: auto;">
+                                <div class="row" x-show="filteredTCVs.length > 0">
                                     <template x-for="t in filteredTCVs" :key="t.ID">
-                                        <div class="col-md-3 col-sm-6 mb-1">
-                                            <div class="d-flex align-items-center justify-content-between border-bottom pb-1">
-                                                <div class="custom-control custom-checkbox small flex-grow-1 text-truncate">
-                                                    <input type="checkbox" class="custom-control-input" :id="'chk_tcv_' + t.ID" :value="t.ID" x-model="checkedTCVs" />
-                                                    <label class="custom-control-label cursor-pointer" :for="'chk_tcv_' + t.ID" :title="t.TEN_TCV + ' (' + t.MA_TCV + ' - ' + (t.SHORT_PREFIX || t.PREFIX || 'Nhóm') + ' ' + t.TEN_NHOM + ')'" x-text="t.TEN_TCV + ' (' + t.MA_TCV + ' - ' + (t.SHORT_PREFIX || t.PREFIX || 'Nhóm') + ' ' + t.TEN_NHOM + ')'"></label>
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-2">
+                                            <div class="tcv-card-item d-flex align-items-center justify-content-between"
+                                                 :class="{ 'tcv-card-active': String(selectedTCV) === String(t.ID) }"
+                                                 x-on:click="selectTCVForPreview(t.ID)"
+                                                 :title="'Click để xem báo cáo TCV: ' + t.TEN_TCV + ' (' + (t.SHORT_PREFIX || t.PREFIX || 'Nhóm') + ' ' + t.TEN_NHOM + ')'">
+                                                <div class="d-flex align-items-center flex-grow-1 text-truncate mr-2">
+                                                    <!-- Checkbox xuất ZIP (stop propagation để ko re-render khi tick) -->
+                                                    <div class="custom-control custom-checkbox small mr-2" x-on:click.stop>
+                                                        <input type="checkbox" class="custom-control-input" :id="'chk_tcv_' + t.ID" :value="t.ID" x-model="checkedTCVs" />
+                                                        <label class="custom-control-label cursor-pointer" :for="'chk_tcv_' + t.ID" title="Tích chọn để xuất ZIP"></label>
+                                                    </div>
+                                                    <!-- Thông tin TCV -->
+                                                    <div class="text-truncate">
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge badge-secondary mr-1 font-weight-bold" style="font-size: 10px;" x-text="t.MA_TCV"></span>
+                                                            <span class="font-weight-bold text-truncate" :class="String(selectedTCV) === String(t.ID) ? 'text-primary' : 'text-dark'" x-text="t.TEN_TCV"></span>
+                                                        </div>
+                                                        <div class="small text-muted text-truncate" style="font-size: 11px;">
+                                                            <span class="badge badge-light border text-muted px-1" x-text="t.CITY_CODE"></span>
+                                                            <span x-text="(t.SHORT_PREFIX || t.PREFIX || 'Nhóm') + ' ' + t.TEN_NHOM"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <button type="button" class="btn btn-xs btn-outline-primary ml-1 py-0 px-1" title="Xem trước báo cáo TCV này" x-on:click="selectTCVForPreview(t.ID)">
-                                                    <i class="fas fa-eye fa-xs"></i>
-                                                </button>
+                                                <div class="text-right flex-shrink-0">
+                                                    <span class="badge badge-primary font-weight-bold px-2 py-1 shadow-sm" x-show="String(selectedTCV) === String(t.ID)" style="font-size: 10px;">
+                                                        <i class="fas fa-check-circle mr-1"></i>Đang xem
+                                                    </span>
+                                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-1" x-show="String(selectedTCV) !== String(t.ID)" title="Xem trước báo cáo TCV này">
+                                                        <i class="fas fa-eye fa-xs"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </template>
+                                </div>
+                                <div class="text-center py-4 text-muted" x-show="filteredTCVs.length === 0">
+                                    <i class="fas fa-user-slash fa-2x mb-2 text-warning d-block"></i>
+                                    <span>Không tìm thấy Tiếp cận viên nào phù hợp với bộ lọc hiện tại.</span>
                                 </div>
                             </div>
                         </div>
