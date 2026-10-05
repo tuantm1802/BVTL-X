@@ -75,10 +75,16 @@ namespace Data.Admin
 
         public bool MarkResolved(long id, string note)
         {
+            return UpdateResolveStatus(id, true, note);
+        }
+
+        public bool UpdateResolveStatus(long id, bool isResolved, string note)
+        {
             var pId = new SqlParameter("@ID", id);
+            var pRes = new SqlParameter("@IsResolved", isResolved);
             var pNote = new SqlParameter("@Note", (object)note ?? DBNull.Value);
-            var sql = "UPDATE BVTL_DATA_STANDARDIZATION_LOG SET IS_RESOLVED = 1, RESOLVED_NOTE = @Note WHERE ID = @ID";
-            return db.Database.ExecuteSqlCommand(sql, pId, pNote) > 0;
+            var sql = "UPDATE BVTL_DATA_STANDARDIZATION_LOG SET IS_RESOLVED = @IsResolved, RESOLVED_NOTE = @Note WHERE ID = @ID";
+            return db.Database.ExecuteSqlCommand(sql, pId, pRes, pNote) > 0;
         }
 
         public List<GroupedDataQualityLogModel> GetGroupedLogs(string maDuAn, string severity)

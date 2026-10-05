@@ -20,5 +20,8 @@ namespace Model.ModelExtend.Base
         public string CityCode { get; set; }
         public string MaDuAn { get; set; }
         public string CityMode { get; set; }
+        public string Status { get; set; }
+        public string RoleID { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

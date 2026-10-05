@@ -1,4 +1,4 @@
-﻿using Model.Model;
+using Model.Model;
 using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using Model.ModelExtend.Report;
@@ -41,6 +41,14 @@ namespace Data.InterfaceDA.Admin
          ObjectMessage Delete(int Id);
 
         ObjectMessage ActiveUser(int Id);
+
+        ObjectMessage CheckCanDeleteUser(int id, long currentUserId);
+
+        ObjectMessage DoDeleteUser(int id, long currentUserId, string currentUserName);
+
+        ObjectMessage RestoreUser(int id, long currentUserId, string currentUserName);
+
+        ObjectMessage ToggleLockUser(int id, bool isLock, string currentUserName);
 
         /// <summary>
         /// Kiểm tra xem BVTL_QT_NGUOI_DUNG có bị khóa không

@@ -503,13 +503,13 @@ namespace Common.Common
                             OLD_VALUE = serviceDate.Value.ToString("yyyy-MM-dd"),
                             NEW_VALUE = null,
                             RULE_CODE = "ERR_SERVICE_DATE_BEFORE_F1",
-                            SEVERITY = "ERROR",
-                            ACTION_TAKEN = "QUARANTINED",
-                            MESSAGE = $"Ngày dịch vụ {serviceDate.Value:dd/MM/yyyy} ({dateFieldName}) xảy ra trước ngày khách hàng tham gia tại F1 ({f1.NgayThamGia.Value:dd/MM/yyyy}). Bắt buộc cách ly.",
+                            SEVERITY = "WARNING",
+                            ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                            MESSAGE = $"Ngày dịch vụ {serviceDate.Value:dd/MM/yyyy} ({dateFieldName}) xảy ra trước ngày khách hàng tham gia tại F1 ({f1.NgayThamGia.Value:dd/MM/yyyy}). Cần rà soát lại thông tin.",
                             CREATED_DATE = DateTime.Now
                         });
                     }
-                    return false;
+                    return true;
                 }
             }
 

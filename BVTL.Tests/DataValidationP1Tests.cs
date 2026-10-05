@@ -67,7 +67,7 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
-        public void ValidateServiceDateAgainstF1_WhenDateBeforeF1_ShouldReturnFalseAndQuarantine()
+        public void ValidateServiceDateAgainstF1_WhenDateBeforeF1_ShouldReturnTrueAndWarn()
         {
             var context = new CD45ValidationContext();
             context.RegisterClientF1("DHN010001", "2", 1, new DateTime(2026, 2, 10));
@@ -76,10 +76,10 @@ namespace BVTL.Tests
             // Dịch vụ ngày 2026-02-05 xảy ra trước ngày tham gia 2026-02-10
             bool valid = DataCleanerHelper.ValidateServiceDateAgainstF1("DHN010001", new DateTime(2026, 2, 5), "f2_date", context, "API_F2", "CD45_HOAT_DONG", "REP1", "CD45", ref logs);
 
-            Assert.IsFalse(valid);
+            Assert.IsTrue(valid);
             Assert.AreEqual(1, logs.Count);
             Assert.AreEqual("ERR_SERVICE_DATE_BEFORE_F1", logs[0].RULE_CODE);
-            Assert.AreEqual("ERROR", logs[0].SEVERITY);
+            Assert.AreEqual("WARNING", logs[0].SEVERITY);
         }
 
         [TestMethod]

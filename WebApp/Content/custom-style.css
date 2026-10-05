@@ -229,3 +229,69 @@ span.error::before,
     background-color: #fef2f2 !important;
 }
 
+/* ==========================================================================
+   Data Quality Status Pill Buttons (Chưa xong / Xong)
+   ========================================================================== */
+.btn-status-pending {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #ea580c !important; /* Warm Orange 600 */
+    border: 1px solid #c2410c !important;
+    color: #ffffff !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 0.22rem 0.65rem !important;
+    border-radius: 50rem !important;
+    box-shadow: 0 1px 3px rgba(234, 88, 12, 0.28) !important;
+    transition: all 0.2s ease-in-out !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    line-height: 1.25 !important;
+}
+
+.btn-status-pending:hover {
+    background-color: #c2410c !important;
+    border-color: #9a3412 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(194, 65, 12, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+.btn-status-pending:active {
+    transform: translateY(0);
+}
+
+.btn-status-resolved {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #10b981 !important; /* Emerald Green 500 */
+    border: 1px solid #059669 !important;
+    color: #ffffff !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 0.22rem 0.65rem !important;
+    border-radius: 50rem !important;
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.28) !important;
+    transition: all 0.2s ease-in-out !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    line-height: 1.25 !important;
+}
+
+.btn-status-resolved:hover {
+    background-color: #059669 !important;
+    border-color: #047857 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+.btn-status-resolved:active {
+    transform: translateY(0);
+}
+
+

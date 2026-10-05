@@ -102,12 +102,14 @@ namespace WebApp.Controllers
                 int systemTotalUsers = 0;
                 int systemActiveUsers = 0;
                 int systemInactiveUsers = 0;
+                int systemDeletedUsers = 0;
                 using (var dbContext = new BVTL_REPORTINGEntities())
                 {
                     var baseQuery = dbContext.BVTL_QT_NGUOI_DUNG.Where(x => (x.IsAdmin == null || x.IsAdmin == false) && (x.IsActive == null || x.IsActive == true));
                     systemTotalUsers = baseQuery.Count();
                     systemActiveUsers = baseQuery.Count(x => x.Status == true);
                     systemInactiveUsers = systemTotalUsers - systemActiveUsers;
+                    systemDeletedUsers = dbContext.BVTL_QT_NGUOI_DUNG.Count(x => (x.IsAdmin == null || x.IsAdmin == false) && x.IsActive == false);
                 }
 
                 AddLog("Lấy dữ liệu theo trang bảng Người dùng( keyword: " + modelSearch.KeyWord + ", page: " + modelSearch.currentPage + ") thành công.");
@@ -118,6 +120,7 @@ namespace WebApp.Controllers
                     systemTotalUsers = systemTotalUsers,
                     systemActiveUsers = systemActiveUsers,
                     systemInactiveUsers = systemInactiveUsers,
+                    systemDeletedUsers = systemDeletedUsers,
                     Error = false, 
                     Title = "Lấy dữ liệu thành công." 
                 });
@@ -184,12 +187,14 @@ namespace WebApp.Controllers
                 int systemTotalUsers = 0;
                 int systemActiveUsers = 0;
                 int systemInactiveUsers = 0;
+                int systemDeletedUsers = 0;
                 using (var dbContext = new BVTL_REPORTINGEntities())
                 {
                     var baseQuery = dbContext.BVTL_QT_NGUOI_DUNG.Where(x => (x.IsAdmin == null || x.IsAdmin == false) && (x.IsActive == null || x.IsActive == true));
                     systemTotalUsers = baseQuery.Count();
                     systemActiveUsers = baseQuery.Count(x => x.Status == true);
                     systemInactiveUsers = systemTotalUsers - systemActiveUsers;
+                    systemDeletedUsers = dbContext.BVTL_QT_NGUOI_DUNG.Count(x => (x.IsAdmin == null || x.IsAdmin == false) && x.IsActive == false);
                 }
 
                 return Json(new
@@ -201,6 +206,7 @@ namespace WebApp.Controllers
                     systemTotalUsers = systemTotalUsers,
                     systemActiveUsers = systemActiveUsers,
                     systemInactiveUsers = systemInactiveUsers,
+                    systemDeletedUsers = systemDeletedUsers,
                     Error = false,
                     Title = "Lấy dữ liệu thành công."
                 });
@@ -711,48 +717,101 @@ namespace WebApp.Controllers
 
 
         [HttpPost]
-        public object Delete(int Id)
+        public JsonResult CheckCanDeleteUser(int id)
         {
-            ObjectMessage obj = new ObjectMessage
-            {
-                Error = false
-            };
             try
             {
-                obj = _userDA.Delete(Id);
-                //if (obj.Error) { }
-                //    AddLog("Xóa dữ liệu bảng Người dùng(ID: " + Id + ") lỗi: " + obj.Title);
-                //else
-                //    AddLog("Xóa dữ liệu bảng Người dùng(ID: " + Id + ") thành công.");
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                long currentUserId = userSession != null ? userSession.UserID : 0;
+                var res = _userDA.CheckCanDeleteUser(id, currentUserId);
+                return Json(res);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DoDeleteUser(int id)
+        {
+            try
+            {
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                long currentUserId = userSession != null ? userSession.UserID : 0;
+                string currentUserName = userSession != null ? userSession.UserName : "System";
+                var res = _userDA.DoDeleteUser(id, currentUserId, currentUserName);
+                return Json(res);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult RestoreUser(int id)
+        {
+            try
+            {
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                long currentUserId = userSession != null ? userSession.UserID : 0;
+                string currentUserName = userSession != null ? userSession.UserName : "System";
+                var res = _userDA.RestoreUser(id, currentUserId, currentUserName);
+                return Json(res);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ToggleLockUser(int id, bool isLock)
+        {
+            try
+            {
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                string currentUserName = userSession != null ? userSession.UserName : "System";
+                var res = _userDA.ToggleLockUser(id, isLock, currentUserName);
+                return Json(res);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public object Delete(int Id)
+        {
+            try
+            {
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                long currentUserId = userSession != null ? userSession.UserID : 0;
+                string currentUserName = userSession != null ? userSession.UserName : "System";
+                var obj = _userDA.DoDeleteUser(Id, currentUserId, currentUserName);
                 return Json(obj);
             }
             catch (Exception ex)
             {
-                obj.Error = true;
-                obj.Title = ex.Message.ToString();
-                AddLog("Bỏ hiệu lực Người dùng(ID: " + Id + ") lỗi: " + ex.Message);
-                return Json(obj);
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
             }
         }
 
         [HttpPost]
         public object ActiveUser(int Id)
         {
-            ObjectMessage obj = new ObjectMessage
-            {
-                Error = false
-            };
             try
             {
-                obj = _userDA.ActiveUser(Id);
+                var userSession = Session["USER_SESSION"] as UserLogin;
+                string currentUserName = userSession != null ? userSession.UserName : "System";
+                var obj = _userDA.ToggleLockUser(Id, false, currentUserName);
                 return Json(obj);
             }
             catch (Exception ex)
             {
-                obj.Error = true;
-                obj.Title = ex.Message.ToString();
-                AddLog("Cập nhật hiệu lực Người dùng(ID: " + Id + ") lỗi: " + ex.Message);
-                return Json(obj);
+                return Json(new ObjectMessage { Error = true, Title = ex.Message });
             }
         }
 

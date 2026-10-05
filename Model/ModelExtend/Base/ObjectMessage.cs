@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,8 @@ namespace Model.ModelExtend.Base
     {
         public bool Error { get; set; }
         public string Title { get; set; }
+        public string Content { get; set; }
+        public object Object { get; set; }
         public object ObjectData { get; set; }
         public string Email { get; set; }
         public long Id { get; set; }

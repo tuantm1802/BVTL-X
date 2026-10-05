@@ -187,7 +187,8 @@ document.addEventListener('alpine:init', function () {
 
             markResolved: function (logItem) {
                 var self = this;
-                var note = prompt("Nhập ghi chú xử lý (ví dụ: Đã báo TCV sửa lại trên REDCap):", "Đã rà soát và điều chỉnh trên REDCap");
+                var defaultNote = logItem.RESOLVED_NOTE || "Đã rà soát và điều chỉnh trên REDCap";
+                var note = prompt("Chuyển trạng thái sang 'Xong' - Nhập ghi chú xử lý:", defaultNote);
                 if (note === null) return;
 
                 $.ajax({
@@ -196,7 +197,7 @@ document.addEventListener('alpine:init', function () {
                     data: { id: logItem.ID, note: note },
                     success: function (res) {
                         if (res.Success) {
-                            if (window.toastr) toastr.success("Đã đánh dấu xử lý thành công!");
+                            if (window.toastr) toastr.success("Đã chuyển trạng thái sang Xong!");
                             logItem.IS_RESOLVED = true;
                             logItem.RESOLVED_NOTE = note;
                             self.loadStats();
@@ -204,6 +205,58 @@ document.addEventListener('alpine:init', function () {
                             if (self.activeTab === 'byUnit') self.loadStatsByNhom();
                         } else {
                             if (window.toastr) toastr.error("Không thể cập nhật trạng thái: " + res.Message);
+                        }
+                    }
+                });
+            },
+
+            editResolvedNote: function (logItem) {
+                var self = this;
+                var currentNote = logItem.RESOLVED_NOTE || '';
+                var note = prompt("Chỉnh sửa Ghi chú xử lý:", currentNote);
+                if (note === null) return;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/UpdateResolveStatus',
+                    data: { id: logItem.ID, isResolved: logItem.IS_RESOLVED, note: note },
+                    success: function (res) {
+                        if (res.Success) {
+                            if (window.toastr) toastr.success("Đã cập nhật ghi chú xử lý thành công!");
+                            logItem.RESOLVED_NOTE = note;
+                            self.loadStats();
+                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
+                            if (self.activeTab === 'byUnit') self.loadStatsByNhom();
+                        } else {
+                            if (window.toastr) toastr.error("Không thể cập nhật ghi chú: " + res.Message);
+                        }
+                    }
+                });
+            },
+
+            revertResolved: function (logItem) {
+                var self = this;
+                if (!confirm("Bạn có chắc chắn muốn chuyển bản ghi này về trạng thái 'Chưa xong'?")) {
+                    return;
+                }
+                var defaultRevertNote = logItem.RESOLVED_NOTE ? ("[Mở lại] " + logItem.RESOLVED_NOTE) : "Cần rà soát lại";
+                var note = prompt("Chuyển trạng thái về 'Chưa xong' - Nhập lý do mở lại / ghi chú bổ sung (tùy chọn):", defaultRevertNote);
+                if (note === null) return;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/DataQuality/UpdateResolveStatus',
+                    data: { id: logItem.ID, isResolved: false, note: note },
+                    success: function (res) {
+                        if (res.Success) {
+                            if (window.toastr) toastr.info("Đã chuyển về trạng thái Chưa xong!");
+                            logItem.IS_RESOLVED = false;
+                            logItem.RESOLVED_NOTE = note;
+                            self.loadStats();
+                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
+                            if (self.activeTab === 'byUnit') self.loadStatsByNhom();
+                        } else {
+                            if (window.toastr) toastr.error("Không thể chuyển trạng thái: " + res.Message);
                         }
                     }
                 });
@@ -303,27 +356,7 @@ document.addEventListener('alpine:init', function () {
             },
 
             markResolvedInDrill: function (logItem) {
-                var self = this;
-                var note = prompt("Nhập ghi chú xử lý (ví dụ: Đã báo TCV sửa lại trên REDCap):", "Đã rà soát và điều chỉnh trên REDCap");
-                if (note === null) return;
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/DataQuality/ResolveLog',
-                    data: { id: logItem.ID, note: note },
-                    success: function (res) {
-                        if (res.Success) {
-                            if (window.toastr) toastr.success("Đã đánh dấu xử lý thành công!");
-                            logItem.IS_RESOLVED = true;
-                            logItem.RESOLVED_NOTE = note;
-                            self.loadStats();
-                            self.loadStatsByNhom();
-                            if (self.activeTab === 'grouped') self.loadGroupedLogs();
-                        } else {
-                            if (window.toastr) toastr.error("Không thể cập nhật trạng thái: " + res.Message);
-                        }
-                    }
-                });
+                this.markResolved(logItem);
             },
 
             jumpToDetailsTab: function () {

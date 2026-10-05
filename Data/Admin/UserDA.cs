@@ -136,12 +136,14 @@ namespace Data.Admin
             var result = new List<UserPageModel>();
             try
             {
+                bool isDeleted = modelSearch.IsDeleted ?? (modelSearch.Status == "deleted");
                 var param = new List<SqlParameter>
                 {
-                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),//System.Data.SqlDbType.NVarChar,250,
-                    new SqlParameter("OrderByName", modelSearch.SortColumn),
-                    new SqlParameter("Page", modelSearch.currentPage),
-                    new SqlParameter("PageSize", modelSearch.pageSize)
+                    new SqlParameter("Keyword", string.IsNullOrEmpty(modelSearch.KeyWord) ? DBNull.Value : (object)modelSearch.KeyWord),
+                    new SqlParameter("OrderByName", string.IsNullOrEmpty(modelSearch.SortColumn) ? "UserName" : (object)modelSearch.SortColumn),
+                    new SqlParameter("Page", modelSearch.currentPage <= 0 ? 1 : modelSearch.currentPage),
+                    new SqlParameter("PageSize", modelSearch.pageSize <= 0 ? 10 : modelSearch.pageSize),
+                    new SqlParameter("IsDeleted", isDeleted)
                 };
                 result = _DatabaseSql.ExecuteProcToList<UserPageModel>(Constants.SP_User_Get_By_Page, param).ToList();
             }
@@ -450,52 +452,329 @@ namespace Data.Admin
 
         public ObjectMessage Delete(int Id)
         {
-            ObjectMessage obj = new ObjectMessage();
-            try
-            {
-                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
-                if (data != null)
-                {
-                    data.Status = false;
-                    data.IsActive = true;
-                    db.SaveChanges();
-                }
-                obj.Error = false;
-                obj.Title = "Bỏ hiệu lực thành công!";
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                obj.Error = true;
-                obj.Title = ex.Message;
-                return obj;
-            }
-
+            return DoDeleteUser(Id, 0, "System");
         }
 
         public ObjectMessage ActiveUser(int Id)
         {
-            ObjectMessage obj = new ObjectMessage();
+            return ToggleLockUser(Id, false, "System");
+        }
+
+        public ObjectMessage CheckCanDeleteUser(int id, long currentUserId)
+        {
+            var obj = new ObjectMessage { Error = false };
             try
             {
-                var data = db.BVTL_QT_NGUOI_DUNG.FirstOrDefault(x => x.ID == Id);
-                if (data != null)
+                using (var context = new BVTL_REPORTINGEntities())
                 {
-                    data.Status = true;
-                    data.IsActive = true;
-                    db.SaveChanges();
+                    var user = context.BVTL_QT_NGUOI_DUNG.AsNoTracking().FirstOrDefault(x => x.ID == id);
+                    if (user == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy người dùng yêu cầu!";
+                        return obj;
+                    }
+
+                    if (user.IsAdmin || string.Equals(user.UserName, "admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không thể xóa tài khoản Quản trị viên hệ thống (Admin)!";
+                        return obj;
+                    }
+
+                    if (user.ID == currentUserId)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Bạn không thể tự xóa tài khoản của chính mình!";
+                        return obj;
+                    }
+
+                    int loginCount = 0;
+                    try { loginCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_LOGIN_HISTORY WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", user.UserName ?? "")).FirstOrDefault(); } catch {}
+
+                    int logCount = 0;
+                    try { logCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_QT_LOG WHERE UserName = @uName", new SqlParameter("@uName", user.UserName ?? "")).FirstOrDefault(); } catch {}
+
+                    int featCount = 0;
+                    try { featCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_FEATURE_USAGE_LOG WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", user.UserName ?? "")).FirstOrDefault(); } catch {}
+
+                    int exportCount = 0;
+                    try { exportCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_EXPORTED_REPORT_LOG WHERE CreatedBy = @uName", new SqlParameter("@uName", user.UserName ?? "")).FirstOrDefault(); } catch {}
+
+                    int groupCount = context.BVTL_QT_NGUOI_DUNG_NHOM_TBH.Count(x => x.NguoiDungId == id);
+                    int cityCount = 0;
+                    try { cityCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_QT_NGUOI_DUNG_CITY WHERE NguoiDungId = @id", new SqlParameter("@id", id)).FirstOrDefault(); } catch {}
+
+                    int totalActivity = loginCount + logCount + featCount + exportCount;
+                    string deleteType = totalActivity > 0 ? "soft" : "hard";
+
+                    obj.Error = false;
+                    obj.Title = "Kiểm tra thành công";
+                    obj.Content = deleteType;
+                    obj.Object = new
+                    {
+                        ID = user.ID,
+                        UserName = user.UserName,
+                        FullName = user.Name,
+                        DeleteType = deleteType,
+                        TotalActivity = totalActivity,
+                        LoginCount = loginCount,
+                        LogCount = logCount,
+                        FeatureCount = featCount,
+                        ExportCount = exportCount,
+                        GroupCount = groupCount,
+                        CityCount = cityCount,
+                        IsActive = user.IsActive
+                    };
+                    return obj;
                 }
-                obj.Error = false;
-                obj.Title = "Cập nhật hiệu lực thành công!";
-                return obj;
             }
             catch (Exception ex)
             {
+                log.Error("CheckCanDeleteUser error: " + ex.Message);
                 obj.Error = true;
                 obj.Title = ex.Message;
                 return obj;
             }
+        }
 
+        public ObjectMessage DoDeleteUser(int id, long currentUserId, string currentUserName)
+        {
+            var obj = new ObjectMessage { Error = false };
+            try
+            {
+                using (var context = new BVTL_REPORTINGEntities())
+                {
+                    var user = context.BVTL_QT_NGUOI_DUNG.AsNoTracking().FirstOrDefault(x => x.ID == id);
+                    if (user == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy người dùng cần xóa!";
+                        return obj;
+                    }
+
+                    if (user.IsAdmin || string.Equals(user.UserName, "admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không thể xóa tài khoản Quản trị viên hệ thống (Admin)!";
+                        return obj;
+                    }
+
+                    if (currentUserId > 0 && user.ID == currentUserId)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Bạn không thể tự xóa tài khoản của chính mình!";
+                        return obj;
+                    }
+
+                    string userName = user.UserName;
+                    string fullName = user.Name;
+
+                    int loginCount = 0;
+                    try { loginCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_LOGIN_HISTORY WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", userName ?? "")).FirstOrDefault(); } catch {}
+
+                    int logCount = 0;
+                    try { logCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_QT_LOG WHERE UserName = @uName", new SqlParameter("@uName", userName ?? "")).FirstOrDefault(); } catch {}
+
+                    int featCount = 0;
+                    try { featCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_FEATURE_USAGE_LOG WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", userName ?? "")).FirstOrDefault(); } catch {}
+
+                    int exportCount = 0;
+                    try { exportCount = context.Database.SqlQuery<int>("SELECT COUNT(*) FROM BVTL_EXPORTED_REPORT_LOG WHERE CreatedBy = @uName", new SqlParameter("@uName", userName ?? "")).FirstOrDefault(); } catch {}
+
+                    int totalActivity = loginCount + logCount + featCount + exportCount;
+
+                    if (totalActivity == 0)
+                    {
+                        // === TRƯỜNG HỢP 1: XÓA CỨNG (HARD DELETE) ===
+                        using (var trans = context.Database.BeginTransaction())
+                        {
+                            context.Database.ExecuteSqlCommand("DELETE FROM BVTL_QT_NGUOI_DUNG_NHOM_TBH WHERE NguoiDungId = @id", new SqlParameter("@id", id));
+                            context.Database.ExecuteSqlCommand("DELETE FROM BVTL_QT_NGUOI_DUNG_CITY WHERE NguoiDungId = @id", new SqlParameter("@id", id));
+                            context.Database.ExecuteSqlCommand("DELETE FROM BVTL_USER_ONLINE WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", userName ?? ""));
+
+                            if (!string.IsNullOrEmpty(user.Avartar))
+                            {
+                                try
+                                {
+                                    var fullPath = System.Web.Hosting.HostingEnvironment.MapPath(user.Avartar);
+                                    if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                                } catch {}
+                            }
+
+                            context.Database.ExecuteSqlCommand("DELETE FROM BVTL_QT_NGUOI_DUNG WHERE ID = @id", new SqlParameter("@id", id));
+                            trans.Commit();
+                        }
+
+                        try
+                        {
+                            context.BVTL_QT_LOG.Add(new BVTL_QT_LOG
+                            {
+                                ControllerName = "User",
+                                UserName = string.IsNullOrEmpty(currentUserName) ? "System" : currentUserName,
+                                DateLog = DateTime.Now,
+                                Content = "Xóa vĩnh viễn tài khoản người dùng " + userName + " (" + fullName + ", ID: " + id + ") do tài khoản chưa phát sinh dữ liệu."
+                            });
+                            context.SaveChanges();
+                        } catch {}
+
+                        obj.Error = false;
+                        obj.Content = "hard";
+                        obj.Title = "Đã xóa vĩnh viễn tài khoản " + userName + " thành công!";
+                        return obj;
+                    }
+                    else
+                    {
+                        // === TRƯỜNG HỢP 2: XÓA MỀM (SOFT DELETE) ===
+                        using (var trans = context.Database.BeginTransaction())
+                        {
+                            context.Database.ExecuteSqlCommand(
+                                "UPDATE BVTL_QT_NGUOI_DUNG SET IsActive = 0, Status = 0, ModifiedDate = GETDATE(), ModifiedBy = @modifiedBy WHERE ID = @id",
+                                new SqlParameter("@modifiedBy", (object)currentUserName ?? DBNull.Value),
+                                new SqlParameter("@id", id)
+                            );
+
+                            context.Database.ExecuteSqlCommand("DELETE FROM BVTL_USER_ONLINE WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", userName ?? ""));
+                            trans.Commit();
+                        }
+
+                        try
+                        {
+                            context.BVTL_QT_LOG.Add(new BVTL_QT_LOG
+                            {
+                                ControllerName = "User",
+                                UserName = string.IsNullOrEmpty(currentUserName) ? "System" : currentUserName,
+                                DateLog = DateTime.Now,
+                                Content = "Xóa mềm tài khoản người dùng " + userName + " (" + fullName + ", ID: " + id + ") - Đã khóa và ẩn khỏi danh sách để bảo toàn " + totalActivity + " bản ghi kiểm toán/nhật ký."
+                            });
+                            context.SaveChanges();
+                        } catch {}
+
+                        obj.Error = false;
+                        obj.Content = "soft";
+                        obj.Title = "Đã xóa mềm tài khoản " + userName + " thành công (ẩn khỏi danh sách và khóa vĩnh viễn để bảo toàn lịch sử dữ liệu).";
+                        return obj;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("DoDeleteUser error: " + ex.ToString());
+                obj.Error = true;
+                obj.Title = "Lỗi khi xóa người dùng: " + ex.Message;
+                return obj;
+            }
+        }
+
+        public ObjectMessage RestoreUser(int id, long currentUserId, string currentUserName)
+        {
+            var obj = new ObjectMessage { Error = false };
+            try
+            {
+                using (var context = new BVTL_REPORTINGEntities())
+                {
+                    var user = context.BVTL_QT_NGUOI_DUNG.AsNoTracking().FirstOrDefault(x => x.ID == id);
+                    if (user == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy người dùng cần khôi phục!";
+                        return obj;
+                    }
+
+                    string userName = user.UserName;
+
+                    context.Database.ExecuteSqlCommand(
+                        "UPDATE BVTL_QT_NGUOI_DUNG SET IsActive = 1, Status = 1, ModifiedDate = GETDATE(), ModifiedBy = @modifiedBy WHERE ID = @id",
+                        new SqlParameter("@modifiedBy", (object)currentUserName ?? DBNull.Value),
+                        new SqlParameter("@id", id)
+                    );
+
+                    try
+                    {
+                        context.BVTL_QT_LOG.Add(new BVTL_QT_LOG
+                        {
+                            ControllerName = "User",
+                            UserName = string.IsNullOrEmpty(currentUserName) ? "System" : currentUserName,
+                            DateLog = DateTime.Now,
+                            Content = "Khôi phục tài khoản người dùng " + userName + " (ID: " + id + ") từ thùng rác."
+                        });
+                        context.SaveChanges();
+                    } catch {}
+
+                    obj.Error = false;
+                    obj.Title = "Khôi phục tài khoản " + userName + " thành công!";
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("RestoreUser error: " + ex.Message);
+                obj.Error = true;
+                obj.Title = "Lỗi khi khôi phục người dùng: " + ex.Message;
+                return obj;
+            }
+        }
+
+        public ObjectMessage ToggleLockUser(int id, bool isLock, string currentUserName)
+        {
+            var obj = new ObjectMessage { Error = false };
+            try
+            {
+                using (var context = new BVTL_REPORTINGEntities())
+                {
+                    var user = context.BVTL_QT_NGUOI_DUNG.AsNoTracking().FirstOrDefault(x => x.ID == id);
+                    if (user == null)
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không tìm thấy người dùng!";
+                        return obj;
+                    }
+
+                    if (user.IsAdmin || string.Equals(user.UserName, "admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        obj.Error = true;
+                        obj.Title = "Không thể khóa tài khoản Quản trị viên hệ thống!";
+                        return obj;
+                    }
+
+                    string userName = user.UserName;
+
+                    context.Database.ExecuteSqlCommand(
+                        "UPDATE BVTL_QT_NGUOI_DUNG SET Status = @status, IsActive = 1, ModifiedDate = GETDATE(), ModifiedBy = @modifiedBy WHERE ID = @id",
+                        new SqlParameter("@status", !isLock),
+                        new SqlParameter("@modifiedBy", (object)currentUserName ?? DBNull.Value),
+                        new SqlParameter("@id", id)
+                    );
+
+                    if (isLock)
+                    {
+                        try { context.Database.ExecuteSqlCommand("DELETE FROM BVTL_USER_ONLINE WHERE UserId = @id OR UserName = @uName", new SqlParameter("@id", id), new SqlParameter("@uName", userName ?? "")); } catch {}
+                    }
+
+                    try
+                    {
+                        context.BVTL_QT_LOG.Add(new BVTL_QT_LOG
+                        {
+                            ControllerName = "User",
+                            UserName = string.IsNullOrEmpty(currentUserName) ? "System" : currentUserName,
+                            DateLog = DateTime.Now,
+                            Content = (isLock ? "Khóa tài khoản người dùng " : "Kích hoạt lại tài khoản người dùng ") + userName + " (ID: " + id + ")."
+                        });
+                        context.SaveChanges();
+                    } catch {}
+
+                    obj.Error = false;
+                    obj.Title = isLock ? "Khóa tài khoản thành công!" : "Kích hoạt tài khoản thành công!";
+                    return obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("ToggleLockUser error: " + ex.Message);
+                obj.Error = true;
+                obj.Title = ex.Message;
+                return obj;
+            }
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ document.addEventListener('alpine:init', function () {
                 total: 0,
                 active: 0,
                 inactive: 0,
+                deleted: 0,
                 rolesCount: 0
             },
 
@@ -47,95 +48,184 @@ document.addEventListener('alpine:init', function () {
 
                 var targetUser = username || (self.ListUser.find(function (u) { return u.ID === targetId; }) || {}).UserName || 'người dùng này';
 
-                var doDelete = function () {
+                if (window.showToast) showToast();
+                // 1. Kiểm tra điều kiện xóa (Hard vs Soft delete)
+                $.ajax({
+                    type: 'POST',
+                    url: '/User/CheckCanDeleteUser',
+                    data: { id: targetId },
+                    success: function (res) {
+                        if (window.hideLoading) hideLoading();
+                        if (res && res.Error) {
+                            if (window.toastr) toastr.error(res.Title || "Không thể xóa người dùng này");
+                            return;
+                        }
+
+                        var info = res.Object || {};
+                        var isHard = (res.Content === 'hard' || info.DeleteType === 'hard');
+                        var titleText = isHard ? 'Xác nhận Xóa vĩnh viễn tài khoản' : 'Xác nhận Xóa mềm tài khoản';
+                        var btnText = isHard ? 'Xóa vĩnh viễn' : 'Xác nhận xóa mềm';
+                        var iconHeader = isHard ? 'fa-trash-alt text-danger' : 'fa-user-times text-warning';
+
+                        var contentHtml = '';
+                        if (isHard) {
+                            contentHtml = '<div class="text-left py-1">' +
+                                '<p class="mb-2">Tài khoản <b>' + targetUser + '</b>' + (info.FullName ? ' (' + info.FullName + ')' : '') + ' là tài khoản mới, <b>chưa phát sinh dữ liệu lịch sử</b> trên hệ thống.</p>' +
+                                '<div class="alert alert-danger py-2 px-3 small mb-0 font-weight-bold">' +
+                                '<i class="fas fa-exclamation-triangle mr-1"></i>Hành động này sẽ XÓA VĨNH VIỄN tài khoản và các phân quyền liên quan khỏi cơ sở dữ liệu. Bạn có chắc chắn muốn xóa?' +
+                                '</div>' +
+                                '</div>';
+                        } else {
+                            contentHtml = '<div class="text-left py-1">' +
+                                '<p class="mb-2">Tài khoản <b>' + targetUser + '</b>' + (info.FullName ? ' (' + info.FullName + ')' : '') + ' đã phát sinh <b>' + (info.TotalActivity || 'nhiều') + ' bản ghi</b> hoạt động/kiểm toán (Đăng nhập: ' + (info.LoginCount || 0) + ', Nhật ký: ' + (info.LogCount || 0) + ', Tính năng: ' + (info.FeatureCount || 0) + ').</p>' +
+                                '<div class="alert alert-warning py-2 px-3 small mb-2 text-dark font-weight-bold" style="background-color: #fff3cd; border-color: #ffeeba;">' +
+                                '<i class="fas fa-shield-alt text-warning mr-1"></i>Để đảm bảo toàn vẹn dữ liệu kiểm toán (Audit Trail), hệ thống sẽ thực hiện <b>XÓA MỀM</b>.' +
+                                '</div>' +
+                                '<p class="text-muted small mb-0 font-italic">* Tài khoản sẽ bị khóa vĩnh viễn, ẩn khỏi danh sách và có thể xem lại/khôi phục trong bộ lọc "Đã xóa (Thùng rác)".</p>' +
+                                '</div>';
+                        }
+
+                        var executeDelete = function () {
+                            if (window.showToast) showToast();
+                            $.ajax({
+                                type: 'POST',
+                                url: '/User/DoDeleteUser',
+                                data: { id: targetId },
+                                success: function (delRes) {
+                                    if (window.hideLoading) hideLoading();
+                                    if (delRes && delRes.Error) {
+                                        if (window.toastr) toastr.error(delRes.Title || "Xóa thất bại");
+                                    } else {
+                                        if (window.toastr) toastr.success(delRes.Title || "Xóa người dùng thành công");
+                                        self.GetDanhMuc();
+                                        self.LoadPage(self.modelSearch.currentPage);
+                                    }
+                                },
+                                error: function () {
+                                    if (window.hideLoading) hideLoading();
+                                    if (window.toastr) toastr.error("Đã xảy ra lỗi khi xóa tài khoản");
+                                }
+                            });
+                        };
+
+                        if (window.$ngConfirm) {
+                            $ngConfirm({
+                                title: '<i class="fas ' + iconHeader + ' mr-2"></i>' + titleText,
+                                content: contentHtml,
+                                buttons: {
+                                    confirm: {
+                                        text: btnText,
+                                        btnClass: 'btn-danger font-weight-bold',
+                                        action: function () { executeDelete(); }
+                                    },
+                                    close: { text: 'Hủy bỏ', btnClass: 'btn-secondary' }
+                                }
+                            });
+                        } else if (confirm(isHard ? 'Xóa vĩnh viễn tài khoản ' + targetUser + '?' : 'Xóa mềm tài khoản ' + targetUser + '?')) {
+                            executeDelete();
+                        }
+                    },
+                    error: function () {
+                        if (window.hideLoading) hideLoading();
+                        if (window.toastr) toastr.error("Lỗi kết nối khi kiểm tra thông tin người dùng");
+                    }
+                });
+            },
+
+            restoreUser: function (id, username) {
+                var self = this;
+                var targetId = id || self.selectedUserId;
+                if (!targetId) return;
+
+                var targetUser = username || 'người dùng này';
+                var doRestore = function () {
                     if (window.showToast) showToast();
                     $.ajax({
                         type: 'POST',
-                        url: '/User/Delete',
-                        data: { Id: targetId },
-                        success: function (data) {
+                        url: '/User/RestoreUser',
+                        data: { id: targetId },
+                        success: function (res) {
                             if (window.hideLoading) hideLoading();
-                            if (data && data.Error) {
-                                if (window.toastr) toastr.error(data.Title || "Thao tác thất bại");
+                            if (res && res.Error) {
+                                if (window.toastr) toastr.error(res.Title || "Khôi phục thất bại");
                             } else {
-                                if (window.toastr) toastr.success(data.Title || "Khóa/Tạm ngừng người dùng thành công");
+                                if (window.toastr) toastr.success(res.Title || "Khôi phục tài khoản thành công!");
                                 self.GetDanhMuc();
                                 self.LoadPage(self.modelSearch.currentPage);
                             }
                         },
                         error: function () {
                             if (window.hideLoading) hideLoading();
-                            if (window.toastr) toastr.error("Đã xảy ra lỗi khi tạm ngừng tài khoản");
+                            if (window.toastr) toastr.error("Đã xảy ra lỗi khi khôi phục tài khoản");
                         }
                     });
                 };
 
                 if (window.$ngConfirm) {
                     $ngConfirm({
-                        title: 'Xác nhận Khóa / Tạm ngừng tài khoản',
-                        content: 'Bạn có chắc chắn muốn khóa/tạm ngừng tài khoản người dùng <b>' + targetUser + '</b> không?',
+                        title: '<i class="fas fa-trash-restore text-success mr-2"></i>Khôi phục tài khoản',
+                        content: 'Bạn có chắc chắn muốn khôi phục tài khoản người dùng <b>' + targetUser + '</b> về trạng thái hoạt động không?',
                         buttons: {
-                            delete: {
-                                text: 'Khóa tài khoản',
-                                btnClass: 'btn-danger',
-                                action: function () { doDelete(); }
+                            confirm: {
+                                text: 'Khôi phục tài khoản',
+                                btnClass: 'btn-success font-weight-bold',
+                                action: function () { doRestore(); }
                             },
-                            close: { text: 'Hủy', btnClass: 'btn-secondary' }
+                            close: { text: 'Hủy bỏ', btnClass: 'btn-secondary' }
                         }
                     });
-                } else if (confirm('Bạn có chắc chắn muốn khóa/tạm ngừng tài khoản người dùng ' + targetUser + ' không?')) {
-                    doDelete();
+                } else if (confirm('Khôi phục tài khoản ' + targetUser + '?')) {
+                    doRestore();
                 }
             },
 
-            activeUser: function (id, username) {
+            toggleLockUser: function (id, username, isLock) {
                 var self = this;
                 var targetId = id || self.selectedUserId;
-                if (!targetId) {
-                    if (window.toastr) toastr.error("Vui lòng chọn một người dùng.");
-                    return;
-                }
+                if (!targetId) return;
 
-                var targetUser = username || (self.ListUser.find(function (u) { return u.ID === targetId; }) || {}).UserName || 'người dùng này';
+                var targetUser = username || 'người dùng này';
+                var actionText = isLock ? 'Khóa / Tạm ngừng' : 'Kích hoạt lại';
+                var btnClass = isLock ? 'btn-danger' : 'btn-success';
 
-                var doActive = function () {
+                var doToggle = function () {
                     if (window.showToast) showToast();
                     $.ajax({
                         type: 'POST',
-                        url: '/User/ActiveUser',
-                        data: { Id: targetId },
-                        success: function (data) {
+                        url: '/User/ToggleLockUser',
+                        data: { id: targetId, isLock: isLock },
+                        success: function (res) {
                             if (window.hideLoading) hideLoading();
-                            if (data && data.Error) {
-                                if (window.toastr) toastr.error(data.Title || "Thao tác thất bại");
+                            if (res && res.Error) {
+                                if (window.toastr) toastr.error(res.Title || "Thao tác thất bại");
                             } else {
-                                if (window.toastr) toastr.success(data.Title || "Kích hoạt tài khoản thành công");
+                                if (window.toastr) toastr.success(res.Title || (actionText + " tài khoản thành công!"));
                                 self.GetDanhMuc();
                                 self.LoadPage(self.modelSearch.currentPage);
                             }
                         },
                         error: function () {
                             if (window.hideLoading) hideLoading();
-                            if (window.toastr) toastr.error("Đã xảy ra lỗi khi kích hoạt tài khoản");
+                            if (window.toastr) toastr.error("Đã xảy ra lỗi khi thao tác tài khoản");
                         }
                     });
                 };
 
                 if (window.$ngConfirm) {
                     $ngConfirm({
-                        title: 'Xác nhận Kích hoạt tài khoản',
-                        content: 'Bạn có chắc chắn muốn kích hoạt lại tài khoản người dùng <b>' + targetUser + '</b> không?',
+                        title: 'Xác nhận ' + actionText + ' tài khoản',
+                        content: 'Bạn có chắc chắn muốn ' + actionText.toLowerCase() + ' tài khoản người dùng <b>' + targetUser + '</b> không?',
                         buttons: {
-                            delete: {
-                                text: 'Kích hoạt',
-                                btnClass: 'btn-success',
-                                action: function () { doActive(); }
+                            confirm: {
+                                text: actionText,
+                                btnClass: btnClass + ' font-weight-bold',
+                                action: function () { doToggle(); }
                             },
-                            close: { text: 'Hủy', btnClass: 'btn-secondary' }
+                            close: { text: 'Hủy bỏ', btnClass: 'btn-secondary' }
                         }
                     });
-                } else if (confirm('Bạn có chắc chắn muốn kích hoạt tài khoản người dùng ' + targetUser + ' không?')) {
-                    doActive();
+                } else if (confirm(actionText + ' tài khoản ' + targetUser + '?')) {
+                    doToggle();
                 }
             },
 
@@ -178,6 +268,9 @@ document.addEventListener('alpine:init', function () {
                                 self.stats.total = response.systemTotalUsers;
                                 self.stats.active = response.systemActiveUsers;
                                 self.stats.inactive = response.systemInactiveUsers;
+                                if (response.systemDeletedUsers !== undefined) {
+                                    self.stats.deleted = response.systemDeletedUsers;
+                                }
                             }
                         }
                     },
@@ -197,6 +290,7 @@ document.addEventListener('alpine:init', function () {
                     KeyWord: (self.modelSearch.KeyWord || '').trim(),
                     Status: self.modelSearch.Status,
                     RoleID: self.modelSearch.RoleID,
+                    IsDeleted: self.modelSearch.Status === 'deleted',
                     currentPage: self.modelSearch.currentPage,
                     pageSize: self.modelSearch.pageSize,
                     SortColumn: self.modelSearch.SortColumn
@@ -249,7 +343,11 @@ document.addEventListener('alpine:init', function () {
                     });
                 }
 
-                if (self.modelSearch.Status !== '' && self.modelSearch.Status !== null && self.modelSearch.Status !== undefined) {
+                if (self.modelSearch.Status === 'deleted') {
+                    filtered = filtered.filter(function (u) {
+                        return u.IsActive === false;
+                    });
+                } else if (self.modelSearch.Status !== '' && self.modelSearch.Status !== null && self.modelSearch.Status !== undefined) {
                     var isAct = (self.modelSearch.Status === 'true' || self.modelSearch.Status === true);
                     filtered = filtered.filter(function (u) {
                         var uStatus = (u.Status === true || u.Status === 1 || u.Status === 'Active');
@@ -264,6 +362,9 @@ document.addEventListener('alpine:init', function () {
                     self.stats.total = responseObj.systemTotalUsers;
                     self.stats.active = responseObj.systemActiveUsers;
                     self.stats.inactive = responseObj.systemInactiveUsers;
+                    if (responseObj.systemDeletedUsers !== undefined) {
+                        self.stats.deleted = responseObj.systemDeletedUsers;
+                    }
                 } else {
                     self.calculateStats();
                 }

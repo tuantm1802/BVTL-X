@@ -1,4 +1,5 @@
 app.controller("UserController", function ($scope, $uibModal, $ngConfirm, showToast, hideLoading) {
+    window.$ngConfirm = $ngConfirm;
     $scope.modelSearch = {};
     $scope.modelSearch.totalItems = 0;
     $scope.modelSearch.currentPage = 1;

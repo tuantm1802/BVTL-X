@@ -65,6 +65,20 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateResolveStatus(long id, bool isResolved, string note)
+        {
+            try
+            {
+                bool ok = _dataQualityDA.UpdateResolveStatus(id, isResolved, note);
+                return Json(new { Success = ok });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPost]
         public JsonResult GetGroupedLogs(string maDuAn, string severity)
         {
             try

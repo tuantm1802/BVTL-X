@@ -3,6 +3,73 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    /* Status pill buttons for Data Quality */
+    .btn-status-pending {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #ea580c !important; /* Warm Orange 600 */
+        border: 1px solid #c2410c !important;
+        color: #ffffff !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        padding: 0.22rem 0.65rem !important;
+        border-radius: 50rem !important;
+        box-shadow: 0 1px 3px rgba(234, 88, 12, 0.28) !important;
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+        line-height: 1.25 !important;
+    }
+    .btn-status-pending:hover {
+        background-color: #c2410c !important;
+        border-color: #9a3412 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(194, 65, 12, 0.4) !important;
+        transform: translateY(-1px);
+    }
+    .btn-status-pending:active {
+        transform: translateY(0);
+    }
+
+    .btn-status-resolved {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background-color: #10b981 !important; /* Emerald Green 500 */
+        border: 1px solid #059669 !important;
+        color: #ffffff !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        padding: 0.22rem 0.65rem !important;
+        border-radius: 50rem !important;
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.28) !important;
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+        line-height: 1.25 !important;
+    }
+    .btn-status-resolved:hover {
+        background-color: #059669 !important;
+        border-color: #047857 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(5, 150, 105, 0.4) !important;
+        transform: translateY(-1px);
+    }
+    .btn-status-resolved:active {
+        transform: translateY(0);
+    }
+
+    /* Calmer styling for resolved rows so unresolved items stand out */
+    tr.row-resolved {
+        background-color: #f8fafc !important;
+        opacity: 0.92;
+    }
+</style>
+
 <div class="container-fluid" x-data="alpineDataQuality" x-init="if (!activeTab) activeTab = 'details'">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -220,12 +287,12 @@
                                 <th style="width: 150px;">Sau chuẩn hóa</th>
                                 <th style="width: 90px;">Mức độ</th>
                                 <th>Nội dung cảnh báo & Quy tắc</th>
-                                <th style="width: 110px;">Thao tác</th>
+                                 <th style="width: 120px;">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(item, index) in logs" :key="item.ID">
-                                <tr :class="item.SEVERITY === 'WARNING' ? 'table-warning' : (item.SEVERITY === 'ERROR' ? 'table-danger' : '')">
+                                <tr :class="item.IS_RESOLVED ? 'row-resolved' : (item.SEVERITY === 'WARNING' ? 'table-warning' : (item.SEVERITY === 'ERROR' ? 'table-danger' : ''))">
                                     <td class="text-center" x-text="(pageIndex - 1) * pageSize + index + 1"></td>
                                     <td class="text-center small" x-text="formatDate(item.CREATED_DATE)"></td>
                                     <td class="text-center font-weight-bold" x-text="item.API_CODE"></td>
@@ -241,19 +308,39 @@
                                     <td>
                                         <div><strong class="text-dark" x-text="item.RULE_CODE"></strong></div>
                                         <div class="small text-muted" x-text="item.MESSAGE"></div>
-                                        <div x-show="item.IS_RESOLVED" class="small text-success mt-1">
-                                            <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (item.RESOLVED_NOTE || '')"></span>
-                                        </div>
+                                        <template x-if="item.IS_RESOLVED">
+                                            <div class="small text-success mt-1 d-flex align-items-center flex-wrap">
+                                                <span><i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý' + (item.RESOLVED_NOTE ? (': ' + item.RESOLVED_NOTE) : '')"></span></span>
+                                                <a href="javascript:void(0)" class="text-primary ml-2 font-weight-bold" style="font-size: 0.75rem;" title="Chỉnh sửa ghi chú xử lý" @@click="editResolvedNote(item)">
+                                                    <i class="fas fa-pen fa-xs mr-1"></i>Sửa ghi chú
+                                                </a>
+                                            </div>
+                                        </template>
+                                        <template x-if="!item.IS_RESOLVED && item.RESOLVED_NOTE">
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-history mr-1"></i> <span x-text="'Ghi chú trước: ' + item.RESOLVED_NOTE"></span>
+                                            </div>
+                                        </template>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center" style="white-space: nowrap;">
                                         <template x-if="item.SEVERITY === 'WARNING' || item.SEVERITY === 'ERROR'">
                                             <div>
-                                                <button x-show="!item.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolved(item)">
-                                                    <i class="fas fa-check fa-xs"></i> Đã sửa
-                                                </button>
-                                                <span x-show="item.IS_RESOLVED" class="badge badge-success">
-                                                    <i class="fas fa-check"></i> Xong
-                                                </span>
+                                                <template x-if="!item.IS_RESOLVED">
+                                                    <button type="button" 
+                                                            class="btn btn-status-pending" 
+                                                            @@click="markResolved(item)" 
+                                                            title="Bấm để chuyển trạng thái sang Xong">
+                                                        <i class="fas fa-clock fa-xs mr-1 text-white"></i>Chưa xong
+                                                    </button>
+                                                </template>
+                                                <template x-if="item.IS_RESOLVED">
+                                                    <button type="button" 
+                                                            class="btn btn-status-resolved" 
+                                                            @@click="revertResolved(item)" 
+                                                            title="Đã xử lý (Bấm để chuyển lại về Chưa xong)">
+                                                        <i class="fas fa-check fa-xs mr-1 text-white"></i>Xong <i class="fas fa-undo fa-xs ml-1 opacity-75 text-white" title="Chuyển về Chưa xong"></i>
+                                                    </button>
+                                                </template>
                                             </div>
                                         </template>
                                         <template x-if="item.SEVERITY === 'INFO'">
@@ -489,12 +576,12 @@
                                     <th style="width: 130px;">Sau chuẩn hóa</th>
                                     <th style="width: 85px;">Mức độ</th>
                                     <th>Nội dung cảnh báo & Hướng xử lý</th>
-                                    <th style="width: 95px;">Thao tác</th>
+                                     <th style="width: 110px;">Trạng thái</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template x-for="(d, idx) in filteredUnitDrillItems" :key="d.ID">
-                                    <tr :class="d.SEVERITY === 'WARNING' ? 'table-warning' : (d.SEVERITY === 'ERROR' ? 'table-danger' : '')">
+                                    <tr :class="d.IS_RESOLVED ? 'row-resolved' : (d.SEVERITY === 'WARNING' ? 'table-warning' : (d.SEVERITY === 'ERROR' ? 'table-danger' : ''))">
                                         <td class="text-center text-muted" x-text="idx + 1"></td>
                                         <td class="text-center small" x-text="formatDate(d.CREATED_DATE)"></td>
                                         <td class="text-center font-weight-bold" x-text="d.API_CODE"></td>
@@ -510,19 +597,39 @@
                                         <td>
                                             <div><strong class="text-dark" x-text="d.RULE_CODE"></strong></div>
                                             <div class="small text-muted" x-text="d.MESSAGE"></div>
-                                            <div x-show="d.IS_RESOLVED" class="small text-success mt-1">
-                                                <i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý: ' + (d.RESOLVED_NOTE || '')"></span>
-                                            </div>
+                                            <template x-if="d.IS_RESOLVED">
+                                                <div class="small text-success mt-1 d-flex align-items-center flex-wrap">
+                                                    <span><i class="fas fa-check-double mr-1"></i> <span x-text="'Đã xử lý' + (d.RESOLVED_NOTE ? (': ' + d.RESOLVED_NOTE) : '')"></span></span>
+                                                    <a href="javascript:void(0)" class="text-primary ml-2 font-weight-bold" style="font-size: 0.75rem;" title="Chỉnh sửa ghi chú xử lý" @@click="editResolvedNote(d)">
+                                                        <i class="fas fa-pen fa-xs mr-1"></i>Sửa ghi chú
+                                                    </a>
+                                                </div>
+                                            </template>
+                                            <template x-if="!d.IS_RESOLVED && d.RESOLVED_NOTE">
+                                                <div class="small text-muted mt-1">
+                                                    <i class="fas fa-history mr-1"></i> <span x-text="'Ghi chú trước: ' + d.RESOLVED_NOTE"></span>
+                                                </div>
+                                            </template>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center" style="white-space: nowrap;">
                                             <template x-if="d.SEVERITY === 'WARNING' || d.SEVERITY === 'ERROR'">
                                                 <div>
-                                                    <button x-show="!d.IS_RESOLVED" class="btn btn-outline-success btn-xs" @@click="markResolvedInDrill(d)">
-                                                        <i class="fas fa-check fa-xs"></i> Đã sửa
-                                                    </button>
-                                                    <span x-show="d.IS_RESOLVED" class="badge badge-success">
-                                                        <i class="fas fa-check"></i> Xong
-                                                    </span>
+                                                    <template x-if="!d.IS_RESOLVED">
+                                                        <button type="button" 
+                                                                class="btn btn-status-pending" 
+                                                                @@click="markResolvedInDrill(d)" 
+                                                                title="Bấm để chuyển trạng thái sang Xong">
+                                                            <i class="fas fa-clock fa-xs mr-1 text-white"></i>Chưa xong
+                                                        </button>
+                                                    </template>
+                                                    <template x-if="d.IS_RESOLVED">
+                                                        <button type="button" 
+                                                                class="btn btn-status-resolved" 
+                                                                @@click="revertResolved(d)" 
+                                                                title="Đã xử lý (Bấm để chuyển lại về Chưa xong)">
+                                                            <i class="fas fa-check fa-xs mr-1 text-white"></i>Xong <i class="fas fa-undo fa-xs ml-1 opacity-75 text-white" title="Chuyển về Chưa xong"></i>
+                                                        </button>
+                                                    </template>
                                                 </div>
                                             </template>
                                             <template x-if="d.SEVERITY === 'INFO'">

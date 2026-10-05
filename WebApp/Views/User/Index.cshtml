@@ -108,8 +108,8 @@
             <p class="text-muted small mb-0">Quản lý danh sách tài khoản, phân quyền và trạng thái hoạt động hệ thống</p>
         </div>
         <div>
-            <button type="button" class="btn btn-primary btn-lg shadow-sm px-4 font-weight-bold" x-on:click="add()" x-show="RoleBtnCreate">
-                <i class="fas fa-plus-circle mr-2"></i>Thêm người dùng mới
+            <button type="button" class="btn btn-primary btn-lg shadow-sm px-4 font-weight-bold" x-on:click="add()" x-show="RoleBtnCreate" title="Thêm mới người dùng">
+                <i class="fas fa-user-plus mr-2"></i>Thêm mới
             </button>
         </div>
     </div>
@@ -222,6 +222,7 @@
                         <option value="">-- Trạng thái --</option>
                         <option value="true">Active (Đang dùng)</option>
                         <option value="false">In Active (Khóa)</option>
+                        <option value="deleted">Đã xóa (Thùng rác)</option>
                     </select>
                 </div>
 
@@ -241,6 +242,19 @@
         </div>
     </div>
 
+    <!-- Trash notification banner -->
+    <template x-if="modelSearch.Status === 'deleted'">
+        <div class="alert alert-warning border-left-warning shadow-sm d-flex align-items-center justify-content-between mb-3 py-2 px-3">
+            <div>
+                <i class="fas fa-trash-alt mr-2 text-warning"></i>
+                <span>Bạn đang xem danh sách <b>Tài khoản đã xóa mềm (Thùng rác)</b>. Các tài khoản này đã bị khóa và ẩn khỏi danh sách chính để bảo toàn dữ liệu lịch sử.</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-dark" x-on:click="resetSearch()">
+                <i class="fas fa-arrow-left mr-1"></i>Quay lại danh sách chính
+            </button>
+        </div>
+    </template>
+
     <!-- Data Table Card -->
     <div class="card shadow-sm border-0 rounded-lg mb-4">
         <div class="card-body p-0">
@@ -254,7 +268,7 @@
                             <th>Số CMND / CCCD</th>
                             <th>Nhóm quyền</th>
                             <th class="text-center" style="width: 140px;">Trạng thái</th>
-                            <th class="text-center" style="width: 160px;">Thao tác</th>
+                            <th class="text-center" style="width: 190px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -290,12 +304,17 @@
 
                                 <!-- Status Badge -->
                                 <td class="text-center">
-                                    <template x-if="user.Status === true || user.Status === 1 || user.Status === 'Active'">
+                                    <template x-if="user.IsActive === false">
+                                        <span class="status-badge-pill" style="background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;">
+                                            <span class="status-dot" style="background-color: #94a3b8;"></span>Đã xóa
+                                        </span>
+                                    </template>
+                                    <template x-if="user.IsActive !== false && (user.Status === true || user.Status === 1 || user.Status === 'Active')">
                                         <span class="status-badge-pill status-badge-active">
                                             <span class="status-dot status-dot-active"></span>Active
                                         </span>
                                     </template>
-                                    <template x-if="!(user.Status === true || user.Status === 1 || user.Status === 'Active')">
+                                    <template x-if="user.IsActive !== false && !(user.Status === true || user.Status === 1 || user.Status === 'Active')">
                                         <span class="status-badge-pill status-badge-inactive">
                                             <span class="status-dot status-dot-inactive"></span>In Active
                                         </span>
@@ -310,28 +329,47 @@
                                                 title="Xem chi tiết" x-on:click.stop="viewDetail(user.ID)" x-show="RoleBtnView">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <!-- Edit -->
-                                        <button type="button" class="btn btn-light action-btn-circle text-primary mr-1" 
-                                                title="Chỉnh sửa" x-on:click.stop="edit(user.ID)" x-show="RoleBtnUpdate">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <!-- Reset Password -->
-                                        <button type="button" class="btn btn-light action-btn-circle text-warning mr-1" 
-                                                title="Đặt lại mật khẩu" x-on:click.stop="resetPassword(user.ID)">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                        <!-- Toggle Active / Inactive -->
-                                        <template x-if="user.Status === true || user.Status === 1 || user.Status === 'Active'">
-                                            <button type="button" class="btn btn-light action-btn-circle text-danger" 
-                                                    title="Bỏ hiệu lực (In Active)" x-on:click.stop="deleteUser(user.ID, user.UserName)" x-show="RoleBtnDelete">
-                                                <i class="fas fa-user-slash"></i>
+
+                                        <!-- Khi tài khoản đã bị xóa mềm (trong Thùng rác) -->
+                                        <template x-if="user.IsActive === false">
+                                            <button type="button" class="btn btn-light action-btn-circle text-success mr-1" 
+                                                    title="Khôi phục tài khoản" x-on:click.stop="restoreUser(user.ID, user.UserName)">
+                                                <i class="fas fa-trash-restore"></i>
                                             </button>
                                         </template>
-                                        <template x-if="!(user.Status === true || user.Status === 1 || user.Status === 'Active')">
-                                            <button type="button" class="btn btn-light action-btn-circle text-success" 
-                                                    title="Kích hoạt lại (Active)" x-on:click.stop="activeUser(user.ID, user.UserName)">
-                                                <i class="fas fa-user-check"></i>
-                                            </button>
+
+                                        <!-- Khi tài khoản bình thường (Active / InActive) -->
+                                        <template x-if="user.IsActive !== false">
+                                            <div class="d-inline-flex align-items-center">
+                                                <!-- Edit -->
+                                                <button type="button" class="btn btn-light action-btn-circle text-primary mr-1" 
+                                                        title="Chỉnh sửa" x-on:click.stop="edit(user.ID)" x-show="RoleBtnUpdate">
+                                                    <i class="fas fa-pen"></i>
+                                                </button>
+                                                <!-- Reset Password -->
+                                                <button type="button" class="btn btn-light action-btn-circle text-warning mr-1" 
+                                                        title="Đặt lại mật khẩu" x-on:click.stop="resetPassword(user.ID)">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                                <!-- Toggle Active / Inactive (Khóa / Mở khóa) -->
+                                                <template x-if="user.Status === true || user.Status === 1 || user.Status === 'Active'">
+                                                    <button type="button" class="btn btn-light action-btn-circle text-secondary mr-1" 
+                                                            title="Khóa / Tạm ngừng tài khoản" x-on:click.stop="toggleLockUser(user.ID, user.UserName, true)">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                </template>
+                                                <template x-if="!(user.Status === true || user.Status === 1 || user.Status === 'Active')">
+                                                    <button type="button" class="btn btn-light action-btn-circle text-success mr-1" 
+                                                            title="Kích hoạt lại tài khoản" x-on:click.stop="toggleLockUser(user.ID, user.UserName, false)">
+                                                        <i class="fas fa-user-check"></i>
+                                                    </button>
+                                                </template>
+                                                <!-- Nút Xóa Người Dùng (Mới) -->
+                                                <button type="button" class="btn btn-light action-btn-circle text-danger" 
+                                                        title="Xóa người dùng" x-on:click.stop="deleteUser(user.ID, user.UserName)" x-show="RoleBtnDelete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
                                         </template>
                                     </div>
                                 </td>

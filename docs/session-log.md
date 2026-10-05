@@ -1810,3 +1810,49 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - WebApp/app/Controller/AlpineScheduledReportController.js (Modified)
 - WebApp/app/Controller/UserController.js (Modified)
 - docs/session-log.md (Modified - UTF-8 BOM)
+
+
+---
+
+## Session 38: [2026-10-05] Phát triển Tính năng Xóa Người dùng An toàn (/User), Nâng cấp Giám sát Chất lượng Dữ liệu (/DataQuality) và Chuẩn hóa Data Cleaner
+
+### Mục tiêu:
+1. Xây dựng tính năng Xóa người dùng an toàn trên giao diện /User: Hỗ trợ xóa mềm (ngừng hoạt động), khôi phục tài khoản, và xóa vĩnh viễn có kiểm tra ràng buộc dữ liệu ngoại, chặn tuyệt đối việc xóa tài khoản Quản trị viên/hệ thống.
+2. Nâng cấp bộ lọc và giao diện phân trang Quản lý Chất lượng Dữ liệu (/DataQuality).
+3. Điều chỉnh quy tắc DataCleanerHelper kiểm tra ngày dịch vụ so với F1 và cập nhật DataValidationP1Tests.
+4. Kiểm thử tự động toàn diện 145/145 Unit Tests trong BVTL.Tests (100% PASS).
+
+### Các công việc đã hoàn thành:
+1. **Quản trị Người dùng & Tính năng Xóa an toàn**:
+   - Cập nhật Stored Procedure User_Get_By_Page (SQL_User_Delete_Upgrade.sql) hỗ trợ tham số @IsDeleted lọc người dùng bị xóa mềm.
+   - Refactor UserDA.cs, IUserDA.cs, UserController.cs: Thêm các action kiểm tra ràng buộc dữ liệu trước khi xóa, chặn xóa tài khoản Admin, ghi nhận nhật ký thao tác.
+   - Frontend User/Index.cshtml, AlpineUserController.js: Thêm cột thao tác xóa, bộ lọc trạng thái hoạt động/xóa mềm, modal xác nhận an toàn.
+   - Kịch bản kiểm thử E2E: tests/test_user_delete_feature_e2e.py.
+2. **Quản lý Chất lượng Dữ liệu (/DataQuality)**:
+   - Cải tiến DataQualityDA.cs, DataQualityController.cs, AlpineDataQualityController.js, DataQuality/Index.cshtml về bộ lọc, hiển thị nhãn và trình bày thống kê.
+   - Tinh chỉnh custom-style.css cho các bảng biểu và nút thao tác.
+3. **Data Cleaner & Unit Tests**:
+   - Cập nhật DataCleanerHelper.cs và DataValidationP1Tests.cs.
+   - 145/145 Unit Tests trong BVTL.Tests đều vượt qua thành công (100% PASS).
+   - Đảm bảo 100% chuẩn UTF-8 with BOM (utf-8-sig) trên các tệp tin.
+
+### Các tệp đã thay đổi/thêm mới:
+- SQL_User_Delete_Upgrade.sql (New - UTF-8 BOM)
+- tests/test_user_delete_feature_e2e.py (New)
+- BVTL.Tests/DataValidationP1Tests.cs (Modified)
+- Common/Common/DataCleanerHelper.cs (Modified)
+- Data/Admin/DataQualityDA.cs (Modified)
+- Data/Admin/UserDA.cs (Modified)
+- Data/InterfaceDA/Admin/IUserDA.cs (Modified)
+- Data/InterfaceDA/IDataQualityDA.cs (Modified)
+- Model/ModelExtend/Base/ModelSearch.cs (Modified)
+- Model/ModelExtend/Base/ObjectMessage.cs (Modified)
+- WebApp/Content/custom-style.css (Modified)
+- WebApp/Controllers/DataQualityController.cs (Modified)
+- WebApp/Controllers/UserController.cs (Modified)
+- WebApp/Views/DataQuality/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/Views/User/Index.cshtml (Modified - UTF-8 BOM)
+- WebApp/app/Controller/AlpineDataQualityController.js (Modified)
+- WebApp/app/Controller/AlpineUserController.js (Modified)
+- WebApp/app/Controller/UserController.js (Modified)
+- docs/session-log.md (Modified - UTF-8 BOM)

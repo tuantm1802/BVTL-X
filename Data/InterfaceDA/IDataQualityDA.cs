@@ -11,6 +11,7 @@ namespace Data.InterfaceDA
         List<DataQualityStatsByNhomModel> GetStatsByNhom(string maDuAn);
         dynamic GetStats(string maDuAn);
         bool MarkResolved(long id, string note);
+        bool UpdateResolveStatus(long id, bool isResolved, string note);
         int ScanDuplicateClients(string maDuAn);
         List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogsByUnit(string maDuAn, string cityCode, string maNhom, string metricType);
     }
