@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- Tỉnh / Thành phố -->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label small fw-semibold mb-1">Tỉnh/Thành phố</label>
                     <select class="form-select form-select-sm" x-model="filter.CityCode" x-on:change="onCityChange()">
                         <option value="">-- Tất cả tỉnh thành --</option>
@@ -200,7 +200,7 @@
                 </div>
 
                 <!-- Nhóm CBO -->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label small fw-semibold mb-1">Nhóm CBO</label>
                     <select class="form-select form-select-sm" x-model="filter.MaNhom" x-on:change="searchCustomers(1)">
                         <option value="">-- Tất cả nhóm --</option>
@@ -211,7 +211,7 @@
                 </div>
 
                 <!-- Đối tượng đích -->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label small fw-semibold mb-1">Đối tượng đích</label>
                     <select class="form-select form-select-sm" x-model="filter.DoiTuong" x-on:change="searchCustomers(1)">
                         <option value="">-- Tất cả đối tượng --</option>
@@ -221,6 +221,39 @@
                         <option value="4">MSM (Quan hệ đồng giới nam)</option>
                         <option value="5">SW (Phụ nữ bán dâm)</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- Dòng 2: Bộ lọc Sinh hoạt nhóm, Ngày tham gia, BHYT, CCCD và Nút lọc -->
+            <div class="row g-2 mt-1">
+                <!-- Đủ điều kiện sinh hoạt nhóm -->
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold mb-1 text-primary">
+                        <i class="fas fa-users-cog me-1"></i>Đủ ĐK sinh hoạt nhóm
+                    </label>
+                    <select class="form-select form-select-sm border-primary" x-model="filter.ChuDeSinhHoatNhom" x-on:change="searchCustomers(1)">
+                        <option value="">-- Tất cả chủ đề sinh hoạt nhóm --</option>
+                        <option value="PTSD">1. PTSD (Đã từng trải qua sang chấn)</option>
+                        <option value="CHAT">2. SKTT & Rối loạn sử dụng chất (Có sử dụng chất)</option>
+                        <option value="CHEMSEX">3. SKTT & Chemsex (Có thực hành chemsex)</option>
+                        <option value="SW">4. SKTT & Trải nghiệm cuộc sống (Người bán dâm)</option>
+                        <option value="PLHIV">5. SKTT & Tuân thủ điều trị ARV (Người có HIV)</option>
+                        <option value="TG_VAN_DE">6. SKTT & Vấn đề người chuyển giới (Người chuyển giới)</option>
+                        <option value="TG_HORMONE">7. SKTT & Việc sử dụng hormone (Người chuyển giới)</option>
+                        <option value="KY_THI">8. Kỳ thị và tự kỳ thị (Tất cả KH tham gia DA)</option>
+                    </select>
+                </div>
+
+                <!-- Từ ngày tham gia -->
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Từ ngày tham gia</label>
+                    <input type="date" class="form-control form-control-sm" x-model="filter.FromDate" x-on:change="searchCustomers(1)">
+                </div>
+
+                <!-- Đến ngày tham gia -->
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Đến ngày tham gia</label>
+                    <input type="date" class="form-control form-control-sm" x-model="filter.ToDate" x-on:change="searchCustomers(1)">
                 </div>
 
                 <!-- Thẻ BHYT -->
@@ -243,10 +276,13 @@
                     </select>
                 </div>
 
-                <!-- Nút Lọc -->
-                <div class="col-md-1 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm w-100" x-on:click="searchCustomers(1)" :disabled="isLoading">
+                <!-- Nút Lọc & Đặt lại -->
+                <div class="col-md-2 d-flex align-items-end gap-1">
+                    <button class="btn btn-primary btn-sm flex-fill" x-on:click="searchCustomers(1)" :disabled="isLoading">
                         <i class="fas fa-filter me-1"></i>Lọc
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" x-on:click="resetFilters()" title="Đặt lại bộ lọc">
+                        <i class="fas fa-undo"></i>
                     </button>
                 </div>
             </div>
@@ -256,9 +292,16 @@
     <!-- Danh sách Khách hàng -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
-            <div class="fw-semibold text-secondary small">
-                <i class="fas fa-list me-1"></i>Kết quả tìm kiếm: 
-                <span class="text-primary fw-bold" x-text="Number(totalRecords).toLocaleString('vi-VN')"></span> khách hàng
+            <div class="fw-semibold text-secondary small d-flex align-items-center flex-wrap gap-2">
+                <div>
+                    <i class="fas fa-list me-1"></i>Kết quả tìm kiếm: 
+                    <span class="text-primary fw-bold" x-text="Number(totalRecords).toLocaleString('vi-VN')"></span> khách hàng
+                </div>
+                <template x-if="filter.ChuDeSinhHoatNhom">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-users-cog me-1"></i>Đang lọc theo sinh hoạt nhóm
+                    </span>
+                </template>
             </div>
             <div class="d-flex align-items-center gap-2 small">
                 <span>Hiển thị:</span>

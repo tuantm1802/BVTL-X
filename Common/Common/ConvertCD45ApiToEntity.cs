@@ -778,6 +778,10 @@ namespace Common.Common
                 }
                 e.DIA_DIEM = diaDiem;
 
+                // Bảng hỏi A: f7_qa2 (Sử dụng chất), f7_qa5 (Số bạn tình)
+                e.QA2 = item.GetByte("f7_qa2");
+                e.QA5 = item.GetByte("f7_qa5");
+
                 // AUDIT-C score (f7_qa1_1 + f7_qa1_2 + f7_qa1_3)
                 int? qa1_1 = item.GetInt("f7_qa1_1");
                 int? qa1_2 = item.GetInt("f7_qa1_2");

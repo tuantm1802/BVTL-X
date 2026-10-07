@@ -870,6 +870,94 @@ namespace BVTL.Tests
             Assert.AreEqual("31/12/2026", toDate);
             Assert.AreEqual("Năm 2026", periodValue);
         }
+
+        [TestMethod]
+        public void BaoCaoBacSiCD45_TongHop_And_ChiTiet_ShouldMatch_WithoutDuplicates()
+        {
+            var da = new BaoCaoBacSiCD45DA();
+
+            // 1. Kiểm tra toàn bộ dữ liệu dự án không filter
+            var summaryAll = da.GetBaoCaoTongHop(null, null, null, null, null);
+            var detailsAll = da.GetBaoCaoChiTiet(null, null, null, null, null);
+
+            Assert.IsNotNull(summaryAll);
+            Assert.IsNotNull(detailsAll);
+            int sumCasesAll = summaryAll.Sum(x => x.TongSoCa);
+            Assert.AreEqual(detailsAll.Count, sumCasesAll, "Tổng số ca Tổng hợp và Chi tiết toàn dự án phải khớp 100%");
+
+            // Kiểm tra không có duplicate ID trong chi tiết
+            var duplicateKeys = detailsAll
+                .GroupBy(x => x.ID)
+                .Where(g => g.Count() > 1)
+                .ToList();
+            Assert.AreEqual(0, duplicateKeys.Count, "Báo cáo chi tiết không được chứa bất kỳ bản ghi duplicate nào");
+
+            // 2. Kiểm tra theo từng tỉnh
+            string[] testCities = { "HNO", "HPG", "HYE", "NAN", "NBI", "HCM" };
+            foreach (var city in testCities)
+            {
+                var summaryCity = da.GetBaoCaoTongHop(null, null, city, null, null);
+                var detailsCity = da.GetBaoCaoChiTiet(null, null, city, null, null);
+                int sumCity = summaryCity.Sum(x => x.TongSoCa);
+                Assert.AreEqual(detailsCity.Count, sumCity, $"Số ca Tổng hợp và Chi tiết của tỉnh {city} phải khớp 100%");
+            }
+
+            // 3. Kiểm tra theo khoảng thời gian tháng 9/2026
+            var summarySep = da.GetBaoCaoTongHop("01/09/2026", "30/09/2026", null, null, null);
+            var detailsSep = da.GetBaoCaoChiTiet("01/09/2026", "30/09/2026", null, null, null);
+            Assert.AreEqual(detailsSep.Count, summarySep.Sum(x => x.TongSoCa), "Số ca Tháng 09/2026 giữa Tổng hợp và Chi tiết phải khớp 100%");
+        }
+
+        [TestMethod]
+        public void CD45KhachHangDA_FilterChuDeSinhHoatNhom_AllTopics_ShouldFilterCorrectly()
+        {
+            var khDA = new CD45KhachHangDA();
+
+            // 0. Tổng số khách hàng toàn bộ dự án
+            var allResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { PageIndex = 1, PageSize = 10 });
+            Assert.IsNotNull(allResult);
+            int totalAll = allResult.recordsTotal;
+            Assert.IsTrue(totalAll > 0, "Tổng số KH toàn dự án phải > 0");
+
+            // STT 1: PTSD (PCL5_POSITIVE = 1)
+            var ptsdResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "PTSD", PageIndex = 1, PageSize = 10 });
+            Assert.IsTrue(ptsdResult.recordsTotal > 0 && ptsdResult.recordsTotal <= totalAll, "PTSD phải có KH thỏa mãn");
+            Assert.AreEqual(569, ptsdResult.recordsTotal, "PTSD phải khớp chính xác 569 KH");
+
+            // STT 2: Rối loạn sử dụng chất (CHAT: QA2 = 1)
+            var chatResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHAT", PageIndex = 1, PageSize = 10 });
+            Assert.IsTrue(chatResult.recordsTotal > 0 && chatResult.recordsTotal <= totalAll, "CHAT phải có KH thỏa mãn");
+            Assert.AreEqual(452, chatResult.recordsTotal, "CHAT phải khớp chính xác 452 KH");
+
+            // STT 3: Chemsex (CHEMSEX: QA2 = 1 AND QA5 IN (2, 3, 4))
+            var chemsexResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHEMSEX", PageIndex = 1, PageSize = 10 });
+            Assert.IsTrue(chemsexResult.recordsTotal > 0 && chemsexResult.recordsTotal <= chatResult.recordsTotal, "CHEMSEX là tập con của CHAT");
+            Assert.AreEqual(404, chemsexResult.recordsTotal, "CHEMSEX phải khớp chính xác 404 KH");
+
+            // STT 4: Người bán dâm (SW: DOI_TUONG = 5 OR DOI_TUONG_KHAC có 5)
+            var swResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "SW", PageIndex = 1, PageSize = 10 });
+            Assert.IsTrue(swResult.recordsTotal > 0 && swResult.recordsTotal <= totalAll, "SW phải có KH thỏa mãn");
+            Assert.AreEqual(577, swResult.recordsTotal, "SW phải khớp chính xác 577 KH");
+
+            // STT 5: Người có HIV (PLHIV: DOI_TUONG = 2 OR DOI_TUONG_KHAC có 2)
+            var plhivResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "PLHIV", PageIndex = 1, PageSize = 10 });
+            Assert.IsTrue(plhivResult.recordsTotal > 0 && plhivResult.recordsTotal <= totalAll, "PLHIV phải có KH thỏa mãn");
+            Assert.AreEqual(509, plhivResult.recordsTotal, "PLHIV phải khớp chính xác 509 KH");
+
+            // STT 6 & 7: Người chuyển giới (TG_VAN_DE & TG_HORMONE: DOI_TUONG = 3 OR DOI_TUONG_KHAC có 3)
+            var tgVanDeResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "TG_VAN_DE", PageIndex = 1, PageSize = 10 });
+            var tgHormoneResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "TG_HORMONE", PageIndex = 1, PageSize = 10 });
+            Assert.AreEqual(101, tgVanDeResult.recordsTotal, "TG_VAN_DE phải khớp chính xác 101 KH");
+            Assert.AreEqual(101, tgHormoneResult.recordsTotal, "TG_HORMONE phải có cùng số lượng với TG_VAN_DE (101 KH)");
+
+            // STT 8: Kỳ thị và tự kỳ thị (KY_THI: Tất cả KH dự án)
+            var kyThiResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "KY_THI", PageIndex = 1, PageSize = 10 });
+            Assert.AreEqual(totalAll, kyThiResult.recordsTotal, "KY_THI không lọc điều kiện phụ, phải bằng tổng số KH");
+
+            // Kiểm tra hàm GetAllForExport cũng áp dụng đúng bộ lọc
+            var exportChemsex = khDA.GetAllForExport(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHEMSEX" });
+            Assert.AreEqual(404, exportChemsex.Count, "Export danh sách CHEMSEX phải đúng 404 KH");
+        }
     }
 }
 

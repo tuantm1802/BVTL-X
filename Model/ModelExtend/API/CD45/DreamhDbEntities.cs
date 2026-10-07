@@ -137,6 +137,8 @@ namespace Model.ModelExtend.API.CD45
         public string REDCAP_DAG { get; set; }
         public string MA_TCV { get; set; }
         public byte? DIA_DIEM { get; set; }
+        public byte? QA2 { get; set; }
+        public byte? QA5 { get; set; }
         public int? AUDIT_C_SCORE { get; set; }
         public int? PCL5_SCORE { get; set; }
         public bool? PCL5_POSITIVE { get; set; }

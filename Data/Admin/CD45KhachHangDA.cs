@@ -116,6 +116,42 @@ namespace Data.Admin
                     pList.Add(new SqlParameter("@ToDate", dtTo));
                 }
             }
+
+            if (!string.IsNullOrEmpty(filter.ChuDeSinhHoatNhom))
+            {
+                switch (filter.ChuDeSinhHoatNhom.Trim().ToUpper())
+                {
+                    case "PTSD":
+                        // STT 1: PTSD -> Phiếu F7 -> Bảng hỏi C câu C1 trả lời là "Có" (PCL5_POSITIVE = 1)
+                        baseWhere += " AND EXISTS (SELECT 1 FROM CD45_TU_VAN_L1 tv WHERE tv.RECORD_ID = kh.RECORD_ID AND tv.PCL5_POSITIVE = 1) ";
+                        break;
+                    case "CHAT":
+                        // STT 2: Rối loạn sử dụng chất -> Phiếu F7 -> Bảng hỏi A câu A2 trả lời là "Có" (QA2 = 1)
+                        baseWhere += " AND EXISTS (SELECT 1 FROM CD45_TU_VAN_L1 tv WHERE tv.RECORD_ID = kh.RECORD_ID AND tv.QA2 = 1) ";
+                        break;
+                    case "CHEMSEX":
+                        // STT 3: Chemsex -> Phiếu F7 -> Câu A2 = "Có" (QA2 = 1) VÀ Câu A5 (QA5) IN (2, 3, 4) (Một, 2-10 người, hơn 10 người)
+                        baseWhere += " AND EXISTS (SELECT 1 FROM CD45_TU_VAN_L1 tv WHERE tv.RECORD_ID = kh.RECORD_ID AND tv.QA2 = 1 AND tv.QA5 IN (2, 3, 4)) ";
+                        break;
+                    case "SW":
+                        // STT 4: Trải nghiệm trong cuộc sống (SW) -> Phiếu F1 -> Câu A4 hoặc A5 chọn "SW" (5)
+                        baseWhere += " AND (kh.DOI_TUONG = 5 OR CHARINDEX(',5,', ',' + ISNULL(kh.DOI_TUONG_KHAC, '') + ',') > 0) ";
+                        break;
+                    case "PLHIV":
+                        // STT 5: Tuân thủ điều trị ARV (PLHIV) -> Phiếu F1 -> Câu A4 hoặc A5 chọn "PLHIV" (2)
+                        baseWhere += " AND (kh.DOI_TUONG = 2 OR CHARINDEX(',2,', ',' + ISNULL(kh.DOI_TUONG_KHAC, '') + ',') > 0) ";
+                        break;
+                    case "TG_VAN_DE":
+                    case "TG_HORMONE":
+                    case "TG":
+                        // STT 6 & 7: Người chuyển giới (TG) -> Phiếu F1 -> Câu A4 hoặc A5 chọn "TG" (3)
+                        baseWhere += " AND (kh.DOI_TUONG = 3 OR CHARINDEX(',3,', ',' + ISNULL(kh.DOI_TUONG_KHAC, '') + ',') > 0) ";
+                        break;
+                    case "KY_THI":
+                        // STT 8: Kỳ thị và tự kỳ thị -> Dành cho tất cả KH tham gia dự án (Không cần lọc dữ liệu)
+                        break;
+                }
+            }
         }
 
         public DataTableResponse<CD45KhachHangViewModel> GetPagingCustomers(CD45KhachHangFilterModel filter)

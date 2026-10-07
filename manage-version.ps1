@@ -27,6 +27,10 @@ param (
     [string]$Command = "status",
 
     [Parameter()]
+    [ValidateSet("Prod", "Dev")]
+    [string]$Environment = "Prod",
+
+    [Parameter()]
     [string]$Version,
 
     [Parameter()]
@@ -254,18 +258,25 @@ function Invoke-PublishApp {
 }
 
 function Invoke-DeployApp {
-    param ([string]$DeployMode = "Patch")
+    param (
+        [string]$DeployMode = "Patch",
+        [string]$TargetEnv = "Prod"
+    )
 
     if (-not (Test-Path $DeployScript)) {
         throw "Khong tim thay script: $DeployScript"
     }
 
-    & $DeployScript -Mode $DeployMode
+    & $DeployScript -Mode $DeployMode -Environment $TargetEnv
 }
 
 function Compare-HostVersion {
+    param (
+        [string]$TargetEnv = "Dev"
+    )
+
     Write-Host "============================================================" -ForegroundColor Cyan
-    Write-Host "         DOI CHIEU PHIEN BAN: LOCAL vs HOST IIS            " -ForegroundColor Cyan
+    Write-Host "         DOI CHIEU PHIEN BAN: LOCAL vs HOST IIS ($TargetEnv)        " -ForegroundColor Cyan
     Write-Host "============================================================" -ForegroundColor Cyan
 
     # 1. Local info
@@ -290,7 +301,7 @@ function Compare-HostVersion {
     }
 
     # 2. Host info
-    $hostUrl = "http://103.77.167.206:8090"
+    $hostUrl = if ($TargetEnv -eq "Prod") { "http://das.scdi.org.vn" } else { "http://103.77.167.206:8090" }
     Write-Host "`n[*] Dang gui yeu cau kiem tra phien ban tren Host ($hostUrl)..." -ForegroundColor Yellow
 
     $hostInfo = $null
@@ -381,8 +392,8 @@ switch ($Command) {
     "list-patches"   { List-Patches }
     "apply-patch"    { Apply-PatchFile }
     "publish"        { Invoke-PublishApp }
-    "deploy"         { Invoke-DeployApp -DeployMode "Patch" }
-    "deploy-full"    { Invoke-DeployApp -DeployMode "Full" }
-    "deploy-package" { Invoke-DeployApp -DeployMode "Package" }
-    "compare"        { Compare-HostVersion }
+    "deploy"         { Invoke-DeployApp -DeployMode "Patch" -TargetEnv $Environment }
+    "deploy-full"    { Invoke-DeployApp -DeployMode "Full" -TargetEnv $Environment }
+    "deploy-package" { Invoke-DeployApp -DeployMode "Package" -TargetEnv $Environment }
+    "compare"        { Compare-HostVersion -TargetEnv $Environment }
 }

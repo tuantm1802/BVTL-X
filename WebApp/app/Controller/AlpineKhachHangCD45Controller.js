@@ -254,6 +254,7 @@
                     DoiTuong: '',
                     CoBHYT: '',
                     CoCCCD: '',
+                    ChuDeSinhHoatNhom: '',
                     FromDate: '',
                     ToDate: '',
                     PageIndex: 1,
@@ -324,6 +325,7 @@
                     self.filter.DoiTuong = '';
                     self.filter.CoBHYT = '';
                     self.filter.CoCCCD = '';
+                    self.filter.ChuDeSinhHoatNhom = '';
                     self.filter.FromDate = '';
                     self.filter.ToDate = '';
                     self.filter.PageIndex = 1;
@@ -343,6 +345,7 @@
                         DoiTuong: self.filter.DoiTuong ? parseInt(self.filter.DoiTuong) : null,
                         CoBHYT: self.filter.CoBHYT === '' ? null : (self.filter.CoBHYT === 'true'),
                         CoCCCD: self.filter.CoCCCD === '' ? null : (self.filter.CoCCCD === 'true'),
+                        ChuDeSinhHoatNhom: self.filter.ChuDeSinhHoatNhom || '',
                         FromDate: self.filter.FromDate || '',
                         ToDate: self.filter.ToDate || '',
                         PageIndex: self.filter.PageIndex,
@@ -448,6 +451,7 @@
                         '&doiTuong=' + encodeURIComponent(p.DoiTuong || '') +
                         '&coBHYT=' + encodeURIComponent(p.CoBHYT || '') +
                         '&coCCCD=' + encodeURIComponent(p.CoCCCD || '') +
+                        '&chuDeSinhHoatNhom=' + encodeURIComponent(p.ChuDeSinhHoatNhom || '') +
                         '&fromDate=' + encodeURIComponent(p.FromDate || '') +
                         '&toDate=' + encodeURIComponent(p.ToDate || '');
                     window.location.href = url;

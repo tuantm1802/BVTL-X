@@ -1,4 +1,4 @@
-﻿﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -1856,3 +1856,145 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 - WebApp/app/Controller/AlpineUserController.js (Modified)
 - WebApp/app/Controller/UserController.js (Modified)
 - docs/session-log.md (Modified - UTF-8 BOM)
+
+---
+
+## PhiĂªn 36: 06/10/2026 | Thá»±c hiá»‡n bá»Ÿi: Antigravity
+
+### Má»¥c tiĂªu phiĂªn:
+1. Triá»ƒn khai phÆ°Æ¡ng Ă¡n A Ä‘Æ°a há»‡ thá»‘ng BVTL-X tá»« Dev lĂªn Production trĂªn mĂ¡y chá»§ 103.77.167.206.
+2. Tá»± Ä‘á»™ng hĂ³a tá»‘i Ä‘a quy trĂ¬nh di chuyá»ƒn cÆ¡ sá»Ÿ dá»¯ liá»‡u, tĂ¡ch biá»‡t mĂ´i trÆ°á»ng Prod/Dev trĂªn C:\Publish.
+3. Cáº¥u hĂ¬nh triá»ƒn khai cho tĂªn miá»n das.scdi.org.vn tÆ°Æ¡ng thĂ­ch Cloudflare SSL (Flexible / Full).
+4. Kiá»ƒm thá»­ thĂ´ng suá»‘t há»‡ thá»‘ng Production trá»±c tiáº¿p trĂªn mĂ¡y chá»§.
+
+### CĂ¡c cĂ´ng viá»‡c Ä‘Ă£ hoĂ n thĂ nh:
+1. **Quy hoáº¡ch kiáº¿n trĂºc & ThÆ° má»¥c mĂ¡y chá»§**:
+   - MĂ¡y chá»§ chuyá»ƒn FTP root sang C:\Publish.
+   - Táº¡o láº­p cáº¥u trĂºc thÆ° má»¥c chuáº©n: Prod/ (mĂ£ nguá»“n cháº¡y tháº­t), Dev/ (cháº¡y dev 8090), Packages/ (kho lÆ°u file nĂ©n release), Backups/ (lÆ°u sao lÆ°u trÆ°á»›c update).
+2. **Äá»“ng bá»™ CÆ¡ sá»Ÿ Dá»¯ liá»‡u Production (BVTL_REPORTING)**:
+   - Bá»• sung 5 cá»™t thiáº¿u vĂ o cĂ¡c báº£ng nghiá»‡p vá»¥ (BVTL_NHOM_TBH, BVTL_DU_AN).
+   - Khá»Ÿi táº¡o 21 báº£ng má»›i thuá»™c phĂ¢n há»‡ CD45 vĂ  báº£ng giĂ¡m sĂ¡t lá»‹ch sá»­ ngÆ°á»i dĂ¹ng.
+   - Náº¡p Ä‘áº§y Ä‘á»§ 9 Stored Procedures CD45 (bĂ¡o cĂ¡o, dashboard, drilldown, bĂ¡c sÄ©).
+   - Náº¡p master data: 34 tá»‰nh má»›i, 63 tá»‰nh mapping, 50 cáº¥u hĂ¬nh chá»‰ tiĂªu CD45.
+   - Bá»• sung 8 menu má»›i vĂ o BVTL_QT_PAGE_MENU vĂ  cáº¥p quyá»n Ä‘áº§y Ä‘á»§ cho cĂ¡c vai trĂ² trong BVTL_QT_QUYEN_PAGE.
+   - Káº¿t quáº£ Ä‘á»‘i soĂ¡t: Khá»›p 100% schema vĂ  catalog so vá»›i BVTL_REPORTING_DEV.
+3. **ÄĂ³ng gĂ³i & Cáº¥u hĂ¬nh Äa mĂ´i trÆ°á»ng**:
+   - BiĂªn dá»‹ch báº£n phĂ¡t hĂ nh sáº¡ch v1.6.5 vĂ  upload gĂ³i BVTL_WebApp_Publish_v1.6.5.rar lĂªn server.
+   - Thiáº¿t láº­p cáº¥u hĂ¬nh tĂ¡ch biá»‡t táº¡i Config/Prod (compilation debug="false", IsDev=0, log4net=WARN, trá» BVTL_REPORTING) vĂ  Config/Dev.
+   - NĂ¢ng cáº¥p deploy-ftp.ps1 vĂ  manage-version.ps1 há»— trá»£ tham sá»‘ -Environment <Prod|Dev>.
+4. **Deploy & Nghiá»‡m thu Production**:
+   - Äáº©y toĂ n bá»™ runtime files (bin, Views, app, Scripts, Report, App_Assets, Content, Assest) vĂ o C:\Publish\Prod\.
+   - Kháº¯c phá»¥c cáº¥u hĂ¬nh Razor Engine Views/Web.config vĂ  náº¡p Ä‘á»§ cĂ¡c thÆ° viá»‡n ReportViewer.
+   - Kiá»ƒm tra thá»±c táº¿: http://das.scdi.org.vn/Login/Index pháº£n há»“i mĂ£ HTTP 200 OK.
+---
+
+## PhiĂªn 37: 06/10/2026 | Thá»±c hiá»‡n bá»Ÿi: Antigravity
+
+### Má»¥c tiĂªu phiĂªn:
+1. Xá»­ lĂ½ lá»—i khĂ´ng hiá»ƒn thá»‹ dá»¯ liá»‡u ngÆ°á»i dĂ¹ng táº¡i /User/Index vĂ  danh má»¥c tá»‰nh thĂ nh táº¡i /City/Index trĂªn mĂ´i trÆ°á»ng Production.
+2. Äá»‘i soĂ¡t toĂ n diá»‡n cĂ¡c Stored Procedures giá»¯a CSDL DEV (BVTL_REPORTING_DEV) vĂ  PROD (BVTL_REPORTING).
+
+### NguyĂªn nhĂ¢n gá»‘c rá»… (Root Cause):
+1. **Lá»—i Quáº£n lĂ½ ngÆ°á»i dĂ¹ng (/User)**:
+   - Stored Procedure User_Get_By_Page trĂªn CSDL PROD váº«n Ä‘ang á»Ÿ phiĂªn báº£n cÅ© chá»‰ nháº­n 4 tham sá»‘ (@Keyword, @OrderByName, @Page, @PageSize).
+   - Trong phiĂªn 35, UserDA.cs Ä‘Ă£ Ä‘Æ°á»£c cáº­p nháº­t truyá»n thĂªm tham sá»‘ thá»© 5 lĂ  @IsDeleted Ä‘á»ƒ há»— trá»£ lá»c tĂ i khoáº£n xĂ³a má»m.
+   - Do PROD thiáº¿u tham sá»‘ @IsDeleted, SQL Server bĂ¡o lá»—i *"Procedure User_Get_By_Page has too many arguments specified"*, UserDA báº¯t exception vĂ  tráº£ vá» danh sĂ¡ch rá»—ng (0 dĂ²ng) máº·c dĂ¹ tháº» thá»‘ng kĂª váº«n Ä‘áº¿m Ä‘á»§ 28 ngÆ°á»i dĂ¹ng.
+2. **Lá»—i Danh má»¥c Tá»‰nh/ThĂ nh phá»‘ (/City)**:
+   - TÆ°Æ¡ng tá»±, City_Get_By_Page trĂªn PROD chá»‰ nháº­n 4 tham sá»‘. Trong khi CityDA.cs truyá»n 6 tham sá»‘ (@IsKeyOnly, @CityMode), dáº«n Ä‘áº¿n viá»‡c truy váº¥n 34 tá»‰nh má»›i (NQ 202/2025/QH15) vĂ  63 tá»‰nh lá»‹ch sá»­ Ä‘á»u bá»‹ lá»—i quĂ¡ sá»‘ lÆ°á»£ng tham sá»‘ vĂ  tráº£ vá» 0 dĂ²ng.
+
+### CĂ¡c cĂ´ng viá»‡c Ä‘Ă£ thá»±c hiá»‡n:
+1. Äá»‘i soĂ¡t toĂ n bá»™ cĂ¡c Stored Procedures trong CSDL báº±ng script tá»± Ä‘á»™ng, phĂ¡t hiá»‡n 3 Stored Procedures bá»‹ lá»‡ch chá»¯ kĂ½ tham sá»‘: User_Get_By_Page, City_Get_By_Page, NhomTBH_Get_By_Page.
+2. Äá»“ng bá»™ 100% Ä‘á»‹nh nghÄ©a chuáº©n tá»« BVTL_REPORTING_DEV sang BVTL_REPORTING cho cáº£ 3 Stored Procedures.
+3. Kiá»ƒm thá»­ trá»±c tiáº¿p trĂªn CSDL Production:
+   - User_Get_By_Page: Tráº£ vá» Ä‘áº§y Ä‘á»§ dá»¯ liá»‡u ngÆ°á»i dĂ¹ng (phĂ¢n trang 10 dĂ²ng/trang).
+   - City_Get_By_Page: Cháº¿ Ä‘á»™ NEW34 tráº£ vá» Ä‘áº§y Ä‘á»§ 34 tá»‰nh má»›i; Cháº¿ Ä‘á»™ OLD63 tráº£ vá» Ä‘áº§y Ä‘á»§ 63 tá»‰nh cÅ©.
+   - NhomTBH_Get_By_Page: Tráº£ vá» Ä‘áº§y Ä‘á»§ 4 nhĂ³m quyá»n.
+4. Cáº­p nháº­t SQL_Sync_Dev_To_Prod.sql lÆ°u trá»¯ cá»‘ Ä‘á»‹nh báº£n vĂ¡ cho toĂ n bá»™ há»‡ thá»‘ng.
+---
+
+## Phiên 38: 06/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Phân tích nguyên nhân và khắc phục triệt để hiện tượng con số tổng cộng ở Phần 1 (Tổng hợp theo Bác sĩ) không khớp với con số chi tiết từng ca khám ở Phần 2 và File Excel xuất ra (Báo cáo Bác sĩ CD45).
+2. Xóa bỏ hoàn toàn duplicate dữ liệu ca khám.
+3. Đồng bộ danh mục Bác sĩ CD45 và Stored Procedures cho cả môi trường DEV và PROD.
+
+### Nguyên nhân gốc rễ (Root Cause):
+1. **Lỗi nhân đôi dữ liệu (Duplicates) ở Báo cáo Chi tiết (+88 ca)**:
+   - Trong SP_CD45_GetBaoCaoBacSi, câu lệnh kết nối:
+     LEFT JOIN BVTL_NHOM_TBH nhom ON (f6.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND f6.MA_NHOM = nhom.manhom_tbh_map))
+     thiếu điều kiện lọc theo dự án nhom.maduan = 'CD45'.
+   - Trong bảng BVTL_NHOM_TBH, có 2 bản ghi cùng có manhom_tbh_map = 'vn':
+     + HN_VN thuộc dự án CD45 (Nhóm Về Nhà Hà Nội).
+     + HNO18 thuộc dự án CH07.
+   - Do thiếu lọc maduan = 'CD45', tất cả 88 ca khám thực tế có MA_NHOM = 'vn' bị nhân đôi thành 176 dòng trong kết quả chi tiết (và file Excel), làm tổng số dòng chi tiết tăng từ 1.010 lên 1.098 (+88 ca).
+     + Cụ thể: BS. Phạm Thị Phương bị đội từ 108 lên 140 ca (+32 ca duplicate).
+     + BS. Nguyễn Thị Hòa bị đội từ 143 lên 199 ca (+56 ca duplicate).
+2. **Lỗi thiếu ca khám ở Báo cáo Tổng hợp (-14 ca)**:
+   - Trong SP_CD45_GetBaoCaoBacSi_TongHop, câu lệnh truy vấn dùng:
+     FROM CD45_DM_BAC_SI bs INNER JOIN CD45_CHAN_DOAN f6 ON bs.MA_BAC_SI = f6.BAC_SI
+   - Bảng danh mục CD45_DM_BAC_SI ban đầu chỉ có bác sĩ 1-23. Trong khi đó trên RedCap đã phát sinh thêm các ca khám của BS 25 (12 ca) và BS 30 (2 ca) tại Nghệ An. Do INNER JOIN, 14 ca này bị loại khỏi bảng Tổng hợp (chỉ đếm được 996 ca thay vì 1.010 ca).
+
+### Các giải pháp đã triển khai:
+1. **Khắc phục Stored Procedure Chi tiết SP_CD45_GetBaoCaoBacSi**:
+   - Thêm điều kiện nhom.maduan = 'CD45' vào LEFT JOIN BVTL_NHOM_TBH nhom.
+   - Bảo đảm quan hệ kết nối 1:1, loại bỏ hoàn toàn việc nhân đôi ca khám của nhóm vn.
+2. **Khắc phục Stored Procedure Tổng hợp SP_CD45_GetBaoCaoBacSi_TongHop**:
+   - Chuyển mệnh đề FROM sang:
+     FROM CD45_CHAN_DOAN f6 LEFT JOIN CD45_DM_BAC_SI bs ON f6.BAC_SI = bs.MA_BAC_SI LEFT JOIN BVTL_CITES cty ON f6.CITY_CODE = cty.Code
+   - Gom nhóm theo ISNULL(bs.MA_BAC_SI, f6.BAC_SI) để luôn tính đúng 100% tất cả ca khám hợp lệ, không bao giờ bị sót ca ngay cả khi RedCap phát sinh mã bác sĩ mới.
+3. **Cập nhật danh mục Bác sĩ CD45_DM_BAC_SI**:
+   - Truy vấn trực tiếp live metadata từ RedCap API (https://rcap.scdi.org.vn/api/): Cập nhật đầy đủ các bác sĩ 24 đến 30 (BS 25: BS. Trương Thị Nụ, BS 30: BS. Nguyễn Thị Minh Châu, cùng các BS 24, 26, 27, 28, 29 tại Nghệ An).
+4. **Đồng bộ Database & Mã nguồn**:
+   - Tạo script chuẩn SQL_CD45_Fix_BaoCaoBacSi_Duplicates.sql (STRICT UTF-8 with BOM).
+   - Cập nhật SQL_CD45_SP.sql và SQL_Sync_Dev_To_Prod.sql.
+   - Thực thi và đồng bộ thành công trên cả 2 cơ sở dữ liệu: BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+   - Cấp quyền thực thi GRANT EXECUTE cho vtl_app_user trên môi trường Production.
+5. **Kiểm thử tự động & Xác minh**:
+   - Đã kiểm tra đối so sánh giữa Chi tiết, Tổng hợp và dữ liệu gốc CD45_CHAN_DOAN trên 14 kịch bản khác nhau (toàn dự án, 6 tỉnh, từng nhóm, từng bác sĩ, các tháng): Tỉ lệ khớp đạt **100%**.
+   - Bổ sung unit test BaoCaoBacSiCD45_TongHop_And_ChiTiet_ShouldMatch_WithoutDuplicates vào BVTL.Tests/ScheduledReportTests.cs.
+   - Chạy kiểm thử: Toàn bộ **22/22 tests PASSED** thành công.
+
+---
+
+## Phiên 39: 07/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Triển khai tính năng bộ lọc "Khách hàng đủ điều kiện tham gia sinh hoạt nhóm nào" trong phân hệ "Danh mục - Khách hàng CD45" (Dự án DREAMH).
+2. Xây dựng logic phân loại và lọc dữ liệu cho toàn bộ 8 chủ đề sinh hoạt nhóm:
+   - 1. PTSD: KH đã từng trải qua sang chấn (Phiếu F7 -> Câu C1 = "Có", PCL5_POSITIVE = 1).
+   - 2. Sức khỏe tâm thần và rối loạn sử dụng chất: KH có sử dụng chất (Phiếu F7 -> Câu A2 = "Có", QA2 = 1).
+   - 3. Sức khỏe tâm thần và chemsex: KH có thực hành chemsex (Phiếu F7 -> Câu A2 = 1 VÀ Câu A5 IN (2, 3, 4)).
+   - 4. Sức khỏe tâm thần và những trải nghiệm trong cuộc sống: KH là người bán dâm (Phiếu F1 -> Câu A4 hoặc A5 chọn SW / 5).
+   - 5. Sức khỏe tâm thần và tuân thủ điều trị ARV: KH là người có HIV (Phiếu F1 -> Câu A4 hoặc A5 chọn PLHIV / 2).
+   - 6. Sức khỏe tâm thần và những vấn đề thường gặp ở người chuyển giới: KH là người chuyển giới (Phiếu F1 -> Câu A4 hoặc A5 chọn TG / 3).
+   - 7. Sức khỏe tâm thần và việc sử dụng hormone: KH là người chuyển giới (Phiếu F1 -> Câu A4 hoặc A5 chọn TG / 3).
+   - 8. Kỳ thị và tự kỳ thị: Dành cho tất cả KH tham gia dự án (không áp dụng điều kiện phụ).
+3. Hỗ trợ đồng bộ bộ lọc cho cả hiển thị phân trang tìm kiếm và Xuất file Excel.
+4. Bổ sung Unit Tests tự động kiểm tra toàn bộ 8 tiêu chí lọc, bảo đảm 100% tests PASSED.
+
+### Các công việc đã hoàn thành:
+1. **Cơ sở dữ liệu & Đồng bộ REDCap (Database & Sync Engine)**:
+   - Bổ sung 2 cột QA2 (TINYINT NULL) và QA5 (TINYINT NULL) vào bảng CD45_TU_VAN_L1 trên cả 2 cơ sở dữ liệu BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+   - Backfill đồng bộ thành công dữ liệu từ REDCap API live (Report 2506) cho 975 bản ghi F7:
+     + Có 451 ca trả lời f7_qa2 = 1 (Sử dụng chất).
+     + Có 403 ca trả lời f7_qa2 = 1 VÀ f7_qa5 IN (2, 3, 4) (Chemsex).
+   - Cập nhật entity Model/ModelExtend/API/CD45/DreamhDbEntities.cs và sync engine Common/Common/ConvertCD45ApiToEntity.cs.
+   - Cập nhật script đồng bộ SQL_Sync_Dev_To_Prod.sql.
+2. **Backend Data Access & Controller (C#)**:
+   - Bổ sung thuộc tính ChuDeSinhHoatNhom vào CD45KhachHangFilterModel.
+   - Thêm câu lệnh truy vấn lọc tương ứng cho 8 chủ đề trong Data/Admin/CD45KhachHangDA.cs (áp dụng đồng nhất cho cả GetPagingCustomers và GetAllForExport).
+   - Cập nhật KhachHangCD45Controller.cs: Hành động ExportExcel nhận tham số chuDeSinhHoatNhom.
+3. **Giao diện & Tương tác Frontend (HTML & Alpine.js)**:
+   - Cập nhật WebApp/Views/KhachHangCD45/Index.cshtml:
+     + Thiết kế lại card bộ lọc thành 2 dòng khoa học, gọn gàng, tương thích responsive.
+     + Thêm dropdown "Đủ ĐK sinh hoạt nhóm" với 8 chủ đề lựa chọn chuẩn xác.
+     + Bổ sung 2 trường nhập ngày "Từ ngày tham gia" và "Đến ngày tham gia".
+     + Thêm badge thông báo trạng thái đang lọc chủ đề nhóm trong header kết quả tìm kiếm.
+     + Bảo đảm strictly UTF-8 with BOM (utf-8-sig).
+   - Cập nhật WebApp/app/Controller/AlpineKhachHangCD45Controller.js: Khởi tạo state, binding trong searchCustomers, đặt lại trong resetFilters, và truyền tham số trong URL exportExcel.
+4. **Kiểm thử tự động & Nghiệm thu (Verification)**:
+   - Khắc phục cấu hình file copy appSettings.config trong BVTL.Tests.csproj.
+   - Bổ sung unit test CD45KhachHangDA_FilterChuDeSinhHoatNhom_AllTopics_ShouldFilterCorrectly trong BVTL.Tests/ScheduledReportTests.cs.
+   - Kết quả chạy toàn bộ test suite dự án: 147/147 tests PASSED thành công (100%).
+

@@ -113,7 +113,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportExcel(string keyword, string cityCode, string maNhom, byte? doiTuong, bool? coBHYT, bool? coCCCD, string fromDate, string toDate)
+        public ActionResult ExportExcel(string keyword, string cityCode, string maNhom, byte? doiTuong, bool? coBHYT, bool? coCCCD, string fromDate, string toDate, string chuDeSinhHoatNhom = null)
         {
             try
             {
@@ -125,6 +125,7 @@ namespace WebApp.Controllers
                     DoiTuong = doiTuong,
                     CoBHYT = coBHYT,
                     CoCCCD = coCCCD,
+                    ChuDeSinhHoatNhom = chuDeSinhHoatNhom,
                     FromDate = fromDate,
                     ToDate = toDate
                 };

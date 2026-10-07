@@ -36,6 +36,7 @@ namespace Model.ModelExtend
         public byte? DoiTuong { get; set; }
         public bool? CoBHYT { get; set; }
         public bool? CoCCCD { get; set; }
+        public string ChuDeSinhHoatNhom { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public int PageIndex { get; set; } = 1;
