@@ -1997,4 +1997,32 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Khắc phục cấu hình file copy appSettings.config trong BVTL.Tests.csproj.
    - Bổ sung unit test CD45KhachHangDA_FilterChuDeSinhHoatNhom_AllTopics_ShouldFilterCorrectly trong BVTL.Tests/ScheduledReportTests.cs.
    - Kết quả chạy toàn bộ test suite dự án: 147/147 tests PASSED thành công (100%).
+---
 
+## Phiên 40: 09/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Triển khai phát hành phiên bản mới nhất v1.6.6 từ môi trường DEV sang môi trường Production (das.scdi.org.vn).
+2. Kiểm tra và đồng bộ toàn diện cơ sở dữ liệu giữa BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+3. Thực hiện sao lưu an toàn phiên bản v1.6.5 trước khi cập nhật.
+4. Deploy bản vá v1.6.6 lên Production qua FTP, kiểm tra đối soát phiên bản và nghiệm thu sức khỏe website.
+
+### Các công việc đã hoàn thành:
+1. **Kiểm tra và Đồng bộ Cơ sở dữ liệu Production (BVTL_REPORTING_PROD)**:
+   - Xác nhận bảng CD45_TU_VAN_L1 có đầy đủ 2 cột QA2 và QA5 (TINYINT).
+   - Đồng bộ thành công dữ liệu QA2, QA5 cho 50 bản ghi còn thiếu từ DEV sang PROD (đạt 1.025 / 1.025 bản ghi đầy đủ 100%).
+   - Danh mục Bác sĩ CD45_DM_BAC_SI khớp 100% (7 bác sĩ bổ sung từ BS 24 đến 30).
+   - Kiểm tra định nghĩa các Stored Procedures (SP_CD45_GetBaoCaoBacSi, SP_CD45_GetBaoCaoBacSi_TongHop, SP_CD45_UpdateNhomPrefix, User_Get_By_Page, City_Get_By_Page, NhomTBH_Get_By_Page) khớp 100% giữa DEV và PROD.
+   - Phân quyền thực thi đầy đủ (GRANT EXECUTE, SELECT, INSERT, UPDATE, DELETE) cho người dùng bvtl_app_user trên BVTL_REPORTING_PROD.
+2. **Sao lưu Dự phòng (Safety Backup)**:
+   - Tạo bản sao lưu an toàn thư mục bin và version.json của phiên bản v1.6.5 tại c:\publish\backups\v1.6.5 trước khi tiến hành cập nhật.
+3. **Triển khai Bản vá v1.6.6 lên Production (c:\publish\prod)**:
+   - Sử dụng script tự động manage-version.ps1 deploy -Environment Prod qua FTP (/Prod).
+   - Kích hoạt chế độ bảo trì tạm thời (app_offline.htm) để giải phóng file lock trong bin/.
+   - Tải lên an toàn toàn bộ 92 tệp tin cập nhật (bin/, Views/, app/, Scripts/, version.json).
+   - Bảo toàn 100% các tệp cấu hình đặc thù Production (BVTL_REPORTING_PROD, debug="false", IsDev=0).
+   - Tự động gỡ bỏ app_offline.htm và mở lại website.
+4. **Nghiệm thu & Đối soát Phiên bản (Verification)**:
+   - Đối chiếu phiên bản qua manage-version.ps1 compare -Environment Prod: Khớp 100% (Commit 4eadc91, Tag v1.6.6, Build 2026-10-07 14:50:06).
+   - Kiểm tra sức khỏe hệ thống: http://das.scdi.org.vn/Login/Index phản hồi mã HTTP 200 OK.
+   - Cả 2 môi trường DEV (Port 8090) và PROD (das.scdi.org.vn) hiện đều đồng bộ 100% trên phiên bản v1.6.6.
