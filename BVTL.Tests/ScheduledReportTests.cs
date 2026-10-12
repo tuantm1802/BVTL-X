@@ -163,7 +163,7 @@ namespace BVTL.Tests
                         Assert.IsTrue(hasG3vn, "ZIP should contain Group summary report for G3VN");
                         Assert.IsTrue(hasMyhands, "ZIP should contain Group summary report for Myhands");
                         Assert.IsTrue(hasTheGate, "ZIP should contain Group summary report for The Gate");
-                        Assert.AreEqual(0, tcvFileCount, "HCM should have 0 TCV detail files since it has no individual TCV data in database");
+                        Assert.AreEqual(17, tcvFileCount, "HCM should have 17 TCV detail files for the 17 active TCVs in database");
                     }
                 }
             }

@@ -2026,3 +2026,31 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đối chiếu phiên bản qua manage-version.ps1 compare -Environment Prod: Khớp 100% (Commit 4eadc91, Tag v1.6.6, Build 2026-10-07 14:50:06).
    - Kiểm tra sức khỏe hệ thống: http://das.scdi.org.vn/Login/Index phản hồi mã HTTP 200 OK.
    - Cả 2 môi trường DEV (Port 8090) và PROD (das.scdi.org.vn) hiện đều đồng bộ 100% trên phiên bản v1.6.6.
+---
+
+## Phiên 41: 12/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Đồng bộ 17 Tiếp cận viên (TCV) của 3 nhóm/DNXH TP. Hồ Chí Minh (The Gate, G3VN, Alocare) vào hệ thống danh mục CD45_NHOM_TCV.
+2. Chuẩn hóa logic nhận diện và mapping TCV từ các trường REDCap (f2_person_tg, f2_person_g3, f2_person_ac) trong CD45Helper.cs.
+3. Cập nhật và mở rộng kiểm thử tự động VSTest bảo đảm bao phủ 100% các kịch bản ánh xạ nhóm TCV và xuất báo cáo ZIP TP.HCM.
+4. Đóng gói phát hành phiên bản v1.6.7, cập nhật Git và Deploy đồng bộ lên cả hai môi trường DEV (Port 8090) và PROD (das.scdi.org.vn).
+
+### Các công việc đã hoàn thành:
+1. **Cơ sở dữ liệu & Danh mục TCV (Database Layer)**:
+   - Tạo script chuẩn SQL_CD45_Insert_TCV_HCM.sql (STRICT UTF-8 with BOM).
+   - Thực thi chèn 17 TCV của 3 nhóm TP.HCM (The Gate: 4 TCV, G3VN: 5 TCV, Alocare: 8 TCV) đồng bộ trên cả 2 cơ sở dữ liệu BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+   - Tổng số TCV dự án CD45 tăng từ 112 lên 129 TCV. Phân quyền đầy đủ cho người dùng ứng dụng bvtl_app_user.
+2. **Backend Engine Ánh xạ REDCap (CD45Helper.cs)**:
+   - Bổ sung hàm NormalizeGroupSuffix chuẩn hóa hậu tố trường person về mã nhóm chuẩn (tg -> tg, g3 -> g3vn, ac/alocare -> alo).
+   - Tối ưu hàm ExtractNhomTCV tự động nhận diện chính xác mã nhóm CBO kể cả khi dữ liệu RedCap thiếu trường redcap_data_access_group (DAG).
+3. **Kiểm thử tự động (Unit Tests & VSTest)**:
+   - Bổ sung unit test ExtractNhomTCV_HCM_Fields_f2_person_tg_g3_ac_ShouldMapCorrectly kiểm tra toàn bộ 3 nhóm TP.HCM.
+   - Cập nhật test DashboardCD45Tests.cs kiểm tra đủ 129 TCV toàn hệ thống.
+   - Cập nhật test ScheduledReportTests.cs xuất đúng 17 file TCV chi tiết khi nén ZIP báo cáo TP.HCM.
+   - Toàn bộ test cases đều PASSED 100%.
+4. **Đóng gói Phát hành & Triển khai Đa Môi trường (v1.6.7)**:
+   - Biên dịch Release sạch, đóng dấu version.json với tag v1.6.7.
+   - Đóng gói file nén phát hành BVTL_WebApp_Publish_v1.6.7.rar.
+   - Deploy đồng bộ thành công lên DEV (c:\publish\dev) và PROD (c:\publish\prod) qua FTP.
+   - Nghiệm thu: Cả 2 môi trường DEV (Port 8090) và PROD (das.scdi.org.vn) đều phản hồi mã HTTP 200 OK và đối soát khớp 100%.

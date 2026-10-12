@@ -230,5 +230,42 @@ namespace BVTL.Tests
             Assert.IsTrue(logs.Exists(l => l.RULE_CODE == "R_QST_SCORE_STANDARDIZED"));
             Assert.IsTrue(logs.Exists(l => l.RULE_CODE == "R_QST_MUC_STANDARDIZED"));
         }
+
+        [TestMethod]
+        public void ExtractNhomTCV_HCM_Fields_f2_person_tg_g3_ac_ShouldMapCorrectly()
+        {
+            // Test 1: The Gate (f2_person_tg)
+            string jsonTG = @"[{ ""record_id"": ""DHC060001"", ""redcap_data_access_group"": ""the_gate"", ""f2_person_tg"": ""2"" }]";
+            var modelTG = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonTG)[0];
+            var resTG = CD45Helper.ExtractNhomTCV(modelTG, "f2");
+            Assert.AreEqual("tg", resTG.maNhom);
+            Assert.AreEqual("2", resTG.maTcv);
+
+            // Test 2: G3VN (f2_person_g3) có và không có DAG
+            string jsonG3WithDag = @"[{ ""record_id"": ""DHC080001"", ""redcap_data_access_group"": ""g3vn"", ""f2_person_g3"": ""4"" }]";
+            var modelG3WithDag = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonG3WithDag)[0];
+            var resG3WithDag = CD45Helper.ExtractNhomTCV(modelG3WithDag, "f2");
+            Assert.AreEqual("g3vn", resG3WithDag.maNhom);
+            Assert.AreEqual("4", resG3WithDag.maTcv);
+
+            string jsonG3NoDag = @"[{ ""record_id"": ""DHC080002"", ""f2_person_g3"": ""5"" }]";
+            var modelG3NoDag = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonG3NoDag)[0];
+            var resG3NoDag = CD45Helper.ExtractNhomTCV(modelG3NoDag, "f2");
+            Assert.AreEqual("g3vn", resG3NoDag.maNhom); // g3 tự động map về g3vn
+            Assert.AreEqual("5", resG3NoDag.maTcv);
+
+            // Test 3: Alocare (f2_person_ac) có và không có DAG
+            string jsonAcWithDag = @"[{ ""record_id"": ""DHC070001"", ""redcap_data_access_group"": ""alocare"", ""f2_person_ac"": ""1"" }]";
+            var modelAcWithDag = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonAcWithDag)[0];
+            var resAcWithDag = CD45Helper.ExtractNhomTCV(modelAcWithDag, "f2");
+            Assert.AreEqual("alo", resAcWithDag.maNhom);
+            Assert.AreEqual("1", resAcWithDag.maTcv);
+
+            string jsonAcNoDag = @"[{ ""record_id"": ""DHC070002"", ""f2_person_ac"": ""8"" }]";
+            var modelAcNoDag = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonAcNoDag)[0];
+            var resAcNoDag = CD45Helper.ExtractNhomTCV(modelAcNoDag, "f2");
+            Assert.AreEqual("alo", resAcNoDag.maNhom); // ac tự động map về alo
+            Assert.AreEqual("8", resAcNoDag.maTcv);
+        }
     }
 }

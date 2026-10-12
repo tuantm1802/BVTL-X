@@ -222,7 +222,7 @@ namespace BVTL.Tests
             var list = da.GetListTCV(null, null);
 
             Assert.IsNotNull(list);
-            Assert.AreEqual(112, list.Count, "Total TCV count in CD45_NHOM_TCV must be 112");
+            Assert.AreEqual(129, list.Count, "Total TCV count in CD45_NHOM_TCV must be 129 (112 previously + 17 newly added for HCM)");
             Assert.IsTrue(list.All(t => !string.IsNullOrEmpty(t.TEN_TCV)), "Every TCV must have a name");
             Assert.IsTrue(list.All(t => !string.IsNullOrEmpty(t.MA_TCV)), "Every TCV must have an ID code");
         }

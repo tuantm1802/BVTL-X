@@ -122,6 +122,35 @@ namespace Model.ModelExtend.API.CD45
             return false;
         }
 
+        /// <summary>
+        /// Chuẩn hóa hậu tố trường person/tcv từ REDCap về mã nhóm CBO chuẩn trong CD45_NHOM_TCV
+        /// Ví dụ: f2_person_ac -> ac -> alo (Alocare)
+        ///        f2_person_g3 -> g3 -> g3vn (G3VN)
+        ///        f3_person_lmmsm -> lmmsm -> lmm (Liên Minh MSM)
+        /// </summary>
+        public static string NormalizeGroupSuffix(string rawSuffix)
+        {
+            if (string.IsNullOrWhiteSpace(rawSuffix)) return rawSuffix;
+            string s = rawSuffix.Trim().ToLower();
+            switch (s)
+            {
+                case "ac":
+                case "alocare":
+                    return "alo";
+                case "g3":
+                    return "g3vn";
+                case "the_gate":
+                case "thegate":
+                    return "tg";
+                case "myhands":
+                    return "myh";
+                case "lmmsm":
+                    return "lmm";
+                default:
+                    return s;
+            }
+        }
+
         // 3. Trich xuat Nhóm và TCV tu JSON
         public static (string maNhom, string maTcv) ExtractNhomTCV(DreamhBaseApiModel model, string formPrefix)
         {
@@ -133,7 +162,7 @@ namespace Model.ModelExtend.API.CD45
             {
                 if (NormalizeDagToGroupCode(model.redcap_data_access_group, out string std, out string map, out string city))
                 {
-                    detectedGroup = map; // Luu ma ngan 'vn', 'lmhp' de match CD45_NHOM_TCV
+                    detectedGroup = map; // Luu ma ngan 'vn', 'lmhp', 'alo', 'tg', 'g3vn' de match CD45_NHOM_TCV
                 }
             }
 
@@ -150,7 +179,8 @@ namespace Model.ModelExtend.API.CD45
                         {
                             if (string.IsNullOrEmpty(detectedGroup))
                             {
-                                detectedGroup = kvp.Key.Substring(searchPrefix.Length);
+                                string rawSuffix = kvp.Key.Substring(searchPrefix.Length);
+                                detectedGroup = NormalizeGroupSuffix(rawSuffix);
                             }
                             detectedTcv = val;
                             break;
@@ -171,7 +201,11 @@ namespace Model.ModelExtend.API.CD45
                             string val = kvp.Value?.ToString();
                             if (!string.IsNullOrEmpty(val))
                             {
-                                if (string.IsNullOrEmpty(detectedGroup)) detectedGroup = kvp.Key.Substring(searchPrefix2.Length);
+                                if (string.IsNullOrEmpty(detectedGroup))
+                                {
+                                    string rawSuffix = kvp.Key.Substring(searchPrefix2.Length);
+                                    detectedGroup = NormalizeGroupSuffix(rawSuffix);
+                                }
                                 detectedTcv = val;
                                 break;
                             }
@@ -181,13 +215,22 @@ namespace Model.ModelExtend.API.CD45
                             string val = kvp.Value?.ToString();
                             if (!string.IsNullOrEmpty(val))
                             {
-                                if (string.IsNullOrEmpty(detectedGroup)) detectedGroup = kvp.Key.Substring(searchPrefix3.Length);
+                                if (string.IsNullOrEmpty(detectedGroup))
+                                {
+                                    string rawSuffix = kvp.Key.Substring(searchPrefix3.Length);
+                                    detectedGroup = NormalizeGroupSuffix(rawSuffix);
+                                }
                                 detectedTcv = val;
                                 break;
                             }
                         }
                     }
                 }
+            }
+
+            if (!string.IsNullOrEmpty(detectedGroup))
+            {
+                detectedGroup = NormalizeGroupSuffix(detectedGroup);
             }
 
             return (detectedGroup, detectedTcv);
