@@ -29,6 +29,7 @@ namespace WebApp.Services
         private readonly ICityDA _cityDA;
         private readonly IBVTL_NHOM_TBHDA _nhomTBHDA;
         private readonly IBaoCaoBacSiCD45DA _baoCaoBacSiDA;
+        private readonly IBaoCaoTuVanCD45DA _baoCaoTuVanDA;
 
         public ReportExportService(
             IScheduledReportDA scheduledReportDA = null,
@@ -37,7 +38,8 @@ namespace WebApp.Services
             IExcelReportService excelReportService = null,
             ICityDA cityDA = null,
             IBVTL_NHOM_TBHDA nhomTBHDA = null,
-            IBaoCaoBacSiCD45DA baoCaoBacSiDA = null)
+            IBaoCaoBacSiCD45DA baoCaoBacSiDA = null,
+            IBaoCaoTuVanCD45DA baoCaoTuVanDA = null)
         {
             _scheduledReportDA = scheduledReportDA ?? new ScheduledReportDA();
             _baoCaoCD45DA = baoCaoCD45DA ?? new BaoCaoCD45DA();
@@ -46,6 +48,7 @@ namespace WebApp.Services
             _cityDA = cityDA ?? new CityDA();
             _nhomTBHDA = nhomTBHDA ?? new BVTL_NHOM_TBHDA();
             _baoCaoBacSiDA = baoCaoBacSiDA ?? new BaoCaoBacSiCD45DA();
+            _baoCaoTuVanDA = baoCaoTuVanDA ?? new BaoCaoTuVanCD45DA();
         }
 
         private string GetStorageDirectory(int year, int month)
@@ -538,6 +541,17 @@ namespace WebApp.Services
                                         {
                                             var ws = wb.Worksheets.Add("BaoCao");
                                             BuildTCVWorksheet(ws, data, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+
+                                            if (_baoCaoTuVanDA != null)
+                                            {
+                                                var dataL1 = _baoCaoTuVanDA.GetBaoCaoTuVanL1(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                                var wsL1 = wb.Worksheets.Add("TuVan_L1");
+                                                ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+
+                                                var dataL2 = _baoCaoTuVanDA.GetBaoCaoTuVanL2(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                                var wsL2 = wb.Worksheets.Add("TuVan_L2");
+                                                ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+                                            }
 
                                             var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
                                             var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);

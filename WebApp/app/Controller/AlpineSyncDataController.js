@@ -195,15 +195,18 @@ document.addEventListener('alpine:init', function () {
                 }
             },
 
-            triggerJobNow: function (reportId, apiName) {
+            triggerJobNow: function (reportId, apiName, apiCode) {
                 var self = this;
                 $.ajax({
                     type: 'POST',
                     url: '/SyncData/TriggerJobNow',
-                    data: { reportId: reportId },
+                    data: {
+                        reportId: reportId || '',
+                        apiCode: apiCode || ''
+                    },
                     success: function (res) {
                         if (res && res.success) {
-                            toastr.info("Đã kích hoạt chạy ngầm cho: " + (apiName || reportId));
+                            toastr.info("Đã kích hoạt chạy ngầm cho: " + (apiName || apiCode || reportId));
                             setTimeout(function () {
                                 self.loadData();
                                 self.loadSchedulerStatus();
@@ -290,7 +293,29 @@ document.addEventListener('alpine:init', function () {
                 }
 
                 this.editScheduleModal.isOpen = true;
-                $('#scheduleConfigModal').modal('show');
+                try {
+                    var el = document.getElementById('scheduleConfigModal');
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        var inst = window.bootstrap.Modal.getOrCreateInstance(el);
+                        if (inst) inst.show();
+                    } else {
+                        $('#scheduleConfigModal').modal('show');
+                    }
+                } catch (e) {
+                    $('#scheduleConfigModal').modal('show');
+                }
+            },
+
+            closeScheduleModal: function () {
+                this.editScheduleModal.isOpen = false;
+                try {
+                    var el = document.getElementById('scheduleConfigModal');
+                    if (window.bootstrap && window.bootstrap.Modal) {
+                        var inst = window.bootstrap.Modal.getInstance(el);
+                        if (inst) inst.hide();
+                    }
+                } catch (e) { }
+                $('#scheduleConfigModal').modal('hide');
             },
 
             saveScheduleConfig: function () {
@@ -319,7 +344,7 @@ document.addEventListener('alpine:init', function () {
                     success: function (res) {
                         if (res && res.success) {
                             toastr.success(res.message);
-                            $('#scheduleConfigModal').modal('hide');
+                            self.closeScheduleModal();
                             self.loadData();
                             self.loadSchedulerStatus();
                         } else {
@@ -373,11 +398,13 @@ document.addEventListener('alpine:init', function () {
                 return val;
             },
 
-            getNextRunTime: function (reportId) {
-                if (!reportId || !this.scheduler.jobs) return '—';
-                var jobKey = reportId + "_Job";
+            getNextRunTime: function (apiCode, reportId) {
+                if (!this.scheduler.jobs || this.scheduler.jobs.length === 0) return '—';
                 var matched = this.scheduler.jobs.find(function (j) {
-                    return j.JobName === jobKey;
+                    if (!j || !j.JobName) return false;
+                    if (apiCode && (j.JobName === apiCode + "_Job" || j.JobName === apiCode)) return true;
+                    if (reportId && (j.JobName === reportId + "_Job" || j.JobName === reportId)) return true;
+                    return false;
                 });
                 return matched ? matched.NextFireTime : '—';
             }

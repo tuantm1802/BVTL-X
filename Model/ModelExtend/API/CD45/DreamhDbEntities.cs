@@ -148,6 +148,16 @@ namespace Model.ModelExtend.API.CD45
         public DateTime? LICH_HEN_TIEP { get; set; }
         public string COMPLETE_STATUS { get; set; }
         public DateTime NGAY_SYNC { get; set; }
+
+        public string DIA_DIEM_TEXT { get; set; }
+        public string Q3A_TEXT { get; set; }
+        public string Q3A_KHAC { get; set; }
+        public string Q3B_TEXT { get; set; }
+        public string Q3B_KHAC { get; set; }
+        public string Q3C_NHU_CAU { get; set; }
+        public string Q41_CAN_THIEP_GTH { get; set; }
+        public string Q42_NHU_CAU_TG { get; set; }
+        public string Q42_KHAC { get; set; }
     }
 
     public class CD45_TU_VAN_L2_Entity {
@@ -165,6 +175,22 @@ namespace Model.ModelExtend.API.CD45
         public DateTime? NGAY_HEN_TIEP { get; set; }
         public string COMPLETE_STATUS { get; set; }
         public DateTime NGAY_SYNC { get; set; }
+
+        public string DIA_DIEM_TEXT { get; set; }
+        public string Q21A_CAM_THAY { get; set; }
+        public string Q21A_KHAC { get; set; }
+        public string Q21B_CHIA_SE { get; set; }
+        public string Q22_VAN_DE { get; set; }
+        public string Q31A_CAM_XUC { get; set; }
+        public string Q31B_CANG_THANG_NGAN { get; set; }
+        public string Q31C_CANG_THANG_DAI { get; set; }
+        public string Q31D_THOI_QUEN { get; set; }
+        public string Q31E_NOI_DUNG_KHAC { get; set; }
+        public string Q31E1_KHAC { get; set; }
+        public string Q32_CAN_THIEP_CHINH { get; set; }
+        public string Q41_DONG_Y { get; set; }
+        public string Q421_VIEC_LAM { get; set; }
+        public string Q422_TAN_SUAT { get; set; }
     }
 
     public class CD45_THEO_DAU_Entity {

@@ -12,6 +12,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Web.Mvc;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
@@ -20,15 +21,26 @@ namespace WebApp.Controllers
         readonly ICityDA _CityDA;
         readonly IBVTL_NHOM_TBHDA _BVTL_NHOM_TBHDA;
         readonly IBaoCaoCD45DA _BaoCaoCD45DA;
+        readonly IBaoCaoTuVanCD45DA _BaoCaoTuVanCD45DA;
 
         public BaoCaoTCVCD45Controller(
             ICityDA cityDA,
             IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
             IBaoCaoCD45DA baoCaoCD45DA)
+            : this(cityDA, bvtlNhomTbhDA, baoCaoCD45DA, new Data.Admin.BaoCaoTuVanCD45DA())
+        {
+        }
+
+        public BaoCaoTCVCD45Controller(
+            ICityDA cityDA,
+            IBVTL_NHOM_TBHDA bvtlNhomTbhDA,
+            IBaoCaoCD45DA baoCaoCD45DA,
+            IBaoCaoTuVanCD45DA baoCaoTuVanDA)
         {
             _CityDA = cityDA;
             _BVTL_NHOM_TBHDA = bvtlNhomTbhDA;
             _BaoCaoCD45DA = baoCaoCD45DA;
+            _BaoCaoTuVanCD45DA = baoCaoTuVanDA ?? new Data.Admin.BaoCaoTuVanCD45DA();
         }
 
         [HasCredential(ControllerName = "BaoCaoTCVCD45")]
@@ -166,6 +178,17 @@ namespace WebApp.Controllers
                 var ws = wb.Worksheets.Add("BaoCao");
                 BuildTCVWorksheet(ws, data, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, kyTitle, xungDanh);
 
+                if (_BaoCaoTuVanCD45DA != null)
+                {
+                    var dataL1 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL1(FromDate, ToDate, null, MaNhom, MaTCV);
+                    var wsL1 = wb.Worksheets.Add("TuVan_L1");
+                    ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, xungDanh);
+
+                    var dataL2 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL2(FromDate, ToDate, null, MaNhom, MaTCV);
+                    var wsL2 = wb.Worksheets.Add("TuVan_L2");
+                    ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2, FromDate, ToDate, TenNhom ?? MaNhom, TenTCV ?? MaTCV, xungDanh);
+                }
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -234,6 +257,17 @@ namespace WebApp.Controllers
                             {
                                 var ws = wb.Worksheets.Add("BaoCao");
                                 BuildTCVWorksheet(ws, data, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, kyTitle, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
+
+                                if (_BaoCaoTuVanCD45DA != null)
+                                {
+                                    var dataL1 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL1(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                    var wsL1 = wb.Worksheets.Add("TuVan_L1");
+                                    ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
+
+                                    var dataL2 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL2(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                    var wsL2 = wb.Worksheets.Add("TuVan_L2");
+                                    ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
+                                }
 
                                 var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
                                 var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + "_" + kyLabel + ".xlsx", CompressionLevel.Fastest);

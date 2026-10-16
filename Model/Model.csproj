@@ -123,6 +123,7 @@
     <Compile Include="ModelExtend\Report\BaoCaoModel.cs" />
     <Compile Include="ModelExtend\Report\KetQuaSangLocModel.cs" />
     <Compile Include="ModelExtend\Report\ReportSearchModel.cs" />
+    <Compile Include="ModelExtend\Report\CD45BaoCaoTuVanModel.cs" />
     <Compile Include="ModelExtend\RolePageModel.cs" />
     <Compile Include="ModelExtend\SysParameterPageModel.cs" />
     <Compile Include="ModelExtend\TreeModel.cs" />

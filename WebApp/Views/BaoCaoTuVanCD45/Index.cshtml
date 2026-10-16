@@ -1,0 +1,343 @@
+﻿@{
+    ViewBag.Title = "Báo cáo Tư vấn (CD45 - DREAMH)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" x-data="alpineBaoCaoTuVanCD45">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
+                <i class="fas fa-comments text-primary mr-2"></i>BÁO CÁO CHI TIẾT TƯ VẤN - DỰ ÁN CD45 (DREAMH)
+            </h1>
+            <p class="mb-0 text-muted small">
+                Chi tiết các ca tư vấn Lần 1 (F7) và từ Lần 2 trở đi (F8) theo Tiếp cận viên (TCV)
+            </p>
+        </div>
+        <div>
+            <button class="btn btn-sm btn-success shadow-sm font-weight-bold" x-on:click="exportExcel()">
+                <i class="fas fa-file-excel mr-1"></i> Xuất Excel Báo cáo Tư vấn
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc báo cáo tư vấn</h6>
+            <span class="badge badge-light text-primary font-weight-bold">Chu kỳ REDCap: Ngày 26 đến ngày 25</span>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <!-- Kỳ báo cáo -->
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Kỳ báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="loaiKy" x-on:change="updateDateRange()">
+                        <option value="Thang">Theo Tháng (26 - 25)</option>
+                        <option value="Quy">Theo Quý</option>
+                        <option value="6Thang">Theo 6 Tháng</option>
+                        <option value="12Thang">Theo Năm (12T)</option>
+                        <option value="TuyChon">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Thang'">
+                    <label class="font-weight-bold small">Tháng</label>
+                    <select class="form-control form-control-sm" x-model="thang" x-on:change="updateDateRange()">
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === 'Quy'">
+                    <label class="font-weight-bold small">Quý</label>
+                    <select class="form-control form-control-sm" x-model="quy" x-on:change="updateDateRange()">
+                        <option value="I">Quý I (26/12 - 25/03)</option>
+                        <option value="II">Quý II (26/03 - 25/06)</option>
+                        <option value="III">Quý III (26/06 - 25/09)</option>
+                        <option value="IV">Quý IV (26/09 - 25/12)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="loaiKy === '6Thang'">
+                    <label class="font-weight-bold small">Kỳ 6 Tháng</label>
+                    <select class="form-control form-control-sm" x-model="ky6Thang" x-on:change="updateDateRange()">
+                        <option value="1">6 Tháng đầu (26/12 - 25/06)</option>
+                        <option value="2">6 Tháng cuối (26/06 - 25/12)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2" x-show="loaiKy !== 'TuyChon'">
+                    <label class="font-weight-bold small">Năm</label>
+                    <input type="number" class="form-control form-control-sm" x-model="nam" x-on:change="updateDateRange()" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Từ ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Đến ngày</label>
+                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <!-- Tỉnh / Thành -->
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
+                        <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
+                        <template x-for="c in listCities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Nhóm CBO -->
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Nhóm (CBO)</label>
+                    <select class="form-control form-control-sm" x-model="selectedNhom" x-on:change="onNhomChange()">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.DisplayName"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Tiếp cận viên -->
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small text-primary"><i class="fas fa-user mr-1"></i>Tiếp cận viên (TCV)</label>
+                    <select class="form-control form-control-sm border-primary" x-model="selectedTCV">
+                        <option value="">-- Tất cả TCV --</option>
+                        <template x-for="t in filteredTCVs" :key="t.MA_TCV">
+                            <option :value="t.MA_TCV" x-text="t.TEN_TCV + ' (' + t.MA_TCV + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- Loại tư vấn -->
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Loại tư vấn</label>
+                    <select class="form-control form-control-sm" x-model="loaiTuVan">
+                        <option value="ALL">-- Tất cả (Lần 1 & Từ lần 2+) --</option>
+                        <option value="L1">Chỉ Tư vấn Lần 1 (F7)</option>
+                        <option value="L2">Chỉ Tư vấn từ Lần 2+ (F8)</option>
+                    </select>
+                </div>
+
+                <div class="col-12" x-show="dateError" style="display: none;">
+                    <div class="alert alert-danger py-1 px-3 mb-2 small font-weight-bold d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle mr-2 fa-lg"></i>
+                        <span x-text="dateError"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-1 d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm px-3" x-on:click="loadData()">
+                        <i class="fas fa-search fa-sm mr-1"></i> Tìm kiếm dữ liệu
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm px-3" x-on:click="exportExcel()">
+                        <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất file Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Selection -->
+    <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap">
+        <div class="btn-group shadow-sm mb-2">
+            <button type="button" class="btn btn-sm font-weight-bold" 
+                    :class="activeTab === 'l1' ? 'btn-primary' : 'btn-outline-primary'" 
+                    x-on:click="activeTab = 'l1'"
+                    x-show="loaiTuVan === 'ALL' || loaiTuVan === 'L1'">
+                <i class="fas fa-user-check mr-1"></i> 1. Tư vấn Lần 1 (F7) (<span x-text="filteredL1.length"></span> ca)
+            </button>
+            <button type="button" class="btn btn-sm font-weight-bold" 
+                    :class="activeTab === 'l2' ? 'btn-primary' : 'btn-outline-primary'" 
+                    x-on:click="activeTab = 'l2'"
+                    x-show="loaiTuVan === 'ALL' || loaiTuVan === 'L2'">
+                <i class="fas fa-user-clock mr-1"></i> 2. Tư vấn từ Lần 2+ (F8) (<span x-text="filteredL2.length"></span> ca)
+            </button>
+        </div>
+        <span class="badge badge-info px-3 py-2 font-weight-bold mb-2" style="font-size: 13px;" x-text="'Khoảng thời gian: ' + fromDate + ' - ' + toDate"></span>
+    </div>
+
+    <!-- TAB 1: DANH SÁCH TƯ VẤN LẦN 1 (F7) -->
+    <div x-show="activeTab === 'l1'" class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-table mr-1"></i> Danh sách Ca Tư vấn Lần 1 (REDCap F7)
+            </h6>
+            <div style="width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, mã KH, TCV, vấn đề..." x-model="searchL1Keyword" x-on:input="filterL1()" />
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 560px; overflow-y: auto;">
+                <table class="table table-bordered table-striped table-hover mb-0" style="font-size: 12.5px;">
+                    <thead class="bg-primary text-white text-center sticky-top">
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th style="width: 95px;">Record ID</th>
+                            <th style="width: 105px;">Mã KH</th>
+                            <th style="width: 110px;">Tỉnh / TP</th>
+                            <th style="width: 130px;">Nhóm CBO</th>
+                            <th style="width: 120px;">TCV tư vấn</th>
+                            <th style="width: 95px;">Ngày TV</th>
+                            <th style="width: 130px;">Địa điểm</th>
+                            <th style="width: 180px;">3a. Tình trạng SKTT hiện tại</th>
+                            <th style="width: 180px;">3b. Các yếu tố liên quan</th>
+                            <th style="width: 180px;">3c. Nhu cầu hỗ trợ chính</th>
+                            <th style="width: 180px;">4.1 Can thiệp giới thiệu</th>
+                            <th style="width: 180px;">4.2 Nhu cầu tham gia</th>
+                            <th style="width: 95px;">Ngày hẹn tiếp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, index) in filteredL1" :key="item.ID">
+                            <tr>
+                                <td class="text-center font-weight-bold" x-text="index + 1"></td>
+                                <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID"></td>
+                                <td class="text-center font-weight-bold" x-text="item.MA_KH_NGHIEN_CUU || '-'"></td>
+                                <td x-text="item.CITY_NAME || item.CITY_CODE"></td>
+                                <td class="small" x-text="item.TEN_NHOM || item.MA_NHOM"></td>
+                                <td class="font-weight-500" x-text="item.TEN_TCV || item.MA_TCV"></td>
+                                <td class="text-center font-weight-bold" x-text="item.NGAY_TU_VAN_STR"></td>
+                                <td class="small" x-text="item.DIA_DIEM_TEXT || '-'"></td>
+                                <td class="small">
+                                    <div x-text="item.Q3A_TEXT || '-'"></div>
+                                    <div x-show="item.Q3A_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q3A_KHAC"></div>
+                                </td>
+                                <td class="small">
+                                    <div x-text="item.Q3B_TEXT || '-'"></div>
+                                    <div x-show="item.Q3B_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q3B_KHAC"></div>
+                                </td>
+                                <td class="small" x-text="item.Q3C_NHU_CAU || '-'"></td>
+                                <td class="small" x-text="item.Q41_CAN_THIEP_GTH || '-'"></td>
+                                <td class="small">
+                                    <div x-text="item.Q42_NHU_CAU_TG || '-'"></div>
+                                    <div x-show="item.Q42_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q42_KHAC"></div>
+                                </td>
+                                <td class="text-center small" x-text="item.NGAY_HEN_TIEP_STR || '-'"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="filteredL1.length === 0 && !isLoading">
+                            <td colspan="14" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có bản ghi ca tư vấn Lần 1 nào trong kỳ này
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="14" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tải danh sách ca tư vấn Lần 1...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: DANH SÁCH TƯ VẤN TỪ LẦN 2+ (F8) -->
+    <div x-show="activeTab === 'l2'" class="card shadow mb-4">
+        <div class="card-header py-2 bg-light d-flex justify-content-between align-items-center flex-wrap">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-table mr-1"></i> Danh sách Ca Tư vấn từ Lần 2 trở đi (REDCap F8)
+            </h6>
+            <div style="width: 300px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, mã KH, TCV, nội dung..." x-model="searchL2Keyword" x-on:input="filterL2()" />
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 560px; overflow-y: auto;">
+                <table class="table table-bordered table-striped table-hover mb-0" style="font-size: 12.5px;">
+                    <thead class="bg-primary text-white text-center sticky-top">
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th style="width: 95px;">Record ID</th>
+                            <th style="width: 105px;">Mã KH</th>
+                            <th style="width: 80px;">Lần TV</th>
+                            <th style="width: 110px;">Tỉnh / TP</th>
+                            <th style="width: 130px;">Nhóm CBO</th>
+                            <th style="width: 120px;">TCV tư vấn</th>
+                            <th style="width: 95px;">Ngày TV</th>
+                            <th style="width: 120px;">Địa điểm</th>
+                            <th style="width: 180px;">2.1.a Cảm thấy dạo gần đây</th>
+                            <th style="width: 180px;">2.2 Vấn đề muốn tập trung</th>
+                            <th style="width: 220px;">3.1 Kỹ năng / Can thiệp trao đổi</th>
+                            <th style="width: 180px;">3.2 Nội dung can thiệp chính</th>
+                            <th style="width: 180px;">4.1 Can thiệp đồng ý áp dụng</th>
+                            <th style="width: 160px;">4.2 Kế hoạch (Việc làm & Tần suất)</th>
+                            <th style="width: 95px;">Ngày hẹn tiếp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item, index) in filteredL2" :key="item.ID">
+                            <tr>
+                                <td class="text-center font-weight-bold" x-text="index + 1"></td>
+                                <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID"></td>
+                                <td class="text-center font-weight-bold" x-text="item.MA_KH_NGHIEN_CUU || '-'"></td>
+                                <td class="text-center">
+                                    <span class="badge badge-info" x-text="item.LAN_TU_VAN"></span>
+                                </td>
+                                <td x-text="item.CITY_NAME || item.CITY_CODE"></td>
+                                <td class="small" x-text="item.TEN_NHOM || item.MA_NHOM"></td>
+                                <td class="font-weight-500" x-text="item.TEN_TCV || item.MA_TCV"></td>
+                                <td class="text-center font-weight-bold" x-text="item.NGAY_TU_VAN_STR"></td>
+                                <td class="small" x-text="item.DIA_DIEM_TEXT || '-'"></td>
+                                <td class="small">
+                                    <div x-text="item.Q21A_CAM_THAY || '-'"></div>
+                                    <div x-show="item.Q21A_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q21A_KHAC"></div>
+                                    <div x-show="item.Q21B_CHIA_SE" class="text-primary font-italic mt-1" x-text="'Chia sẻ: ' + item.Q21B_CHIA_SE"></div>
+                                </td>
+                                <td class="small" x-text="item.Q22_VAN_DE || '-'"></td>
+                                <td class="small">
+                                    <div x-show="item.Q31A_CAM_XUC"><strong>Cảm xúc:</strong> <span x-text="item.Q31A_CAM_XUC"></span></div>
+                                    <div x-show="item.Q31B_CANG_THANG_NGAN" class="mt-1"><strong>Stress ngắn:</strong> <span x-text="item.Q31B_CANG_THANG_NGAN"></span></div>
+                                    <div x-show="item.Q31C_CANG_THANG_DAI" class="mt-1"><strong>Stress dài:</strong> <span x-text="item.Q31C_CANG_THANG_DAI"></span></div>
+                                    <div x-show="item.Q31D_THOI_QUEN" class="mt-1"><strong>Thói quen:</strong> <span x-text="item.Q31D_THOI_QUEN"></span></div>
+                                    <div x-show="item.Q31E_NOI_DUNG_KHAC" class="mt-1"><strong>Khác:</strong> <span x-text="item.Q31E_NOI_DUNG_KHAC"></span></div>
+                                </td>
+                                <td class="small" x-text="item.Q32_CAN_THIEP_CHINH || '-'"></td>
+                                <td class="small" x-text="item.Q41_DONG_Y || '-'"></td>
+                                <td class="small">
+                                    <div x-show="item.Q421_VIEC_LAM"><strong>Việc:</strong> <span x-text="item.Q421_VIEC_LAM"></span></div>
+                                    <div x-show="item.Q422_TAN_SUAT" class="mt-1"><strong>Tần suất:</strong> <span x-text="item.Q422_TAN_SUAT"></span></div>
+                                </td>
+                                <td class="text-center small" x-text="item.NGAY_HEN_TIEP_STR || '-'"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="filteredL2.length === 0 && !isLoading">
+                            <td colspan="16" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x d-block mb-2"></i>
+                                Không có bản ghi ca tư vấn Lần 2+ nào trong kỳ này
+                            </td>
+                        </tr>
+                        <tr x-show="isLoading">
+                            <td colspan="16" class="text-center py-4 text-primary">
+                                <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                Đang tải danh sách ca tư vấn Lần 2+...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/app/Controller/AlpineBaoCaoTuVanCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+}

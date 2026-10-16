@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using Data.Admin;
 using WebApp.Controllers;
 using WebApp.Service;
+using System.IO;
+using ClosedXML.Excel;
 
 namespace BVTL.Tests
 {
@@ -144,6 +146,15 @@ namespace BVTL.Tests
             Assert.IsNotNull(result, "Export result should be FileContentResult");
             Assert.IsNotNull(result.FileContents, "FileContents should not be null");
             Assert.IsTrue(result.FileContents.Length > 0, "FileContents should not be empty");
+
+            using (var ms = new MemoryStream(result.FileContents))
+            using (var wb = new XLWorkbook(ms))
+            {
+                Assert.AreEqual(3, wb.Worksheets.Count, "Export TCV Excel must have 3 worksheets: BaoCao, TuVan_L1, TuVan_L2");
+                Assert.IsNotNull(wb.Worksheet("BaoCao"), "Must contain BaoCao worksheet");
+                Assert.IsNotNull(wb.Worksheet("TuVan_L1"), "Must contain TuVan_L1 worksheet");
+                Assert.IsNotNull(wb.Worksheet("TuVan_L2"), "Must contain TuVan_L2 worksheet");
+            }
         }
 
         [TestMethod]
@@ -288,7 +299,7 @@ namespace BVTL.Tests
                     Assert.AreEqual("Hải Phòng", hpItem.TEN_TINH);
                     Assert.AreEqual("Hải Đăng", hpItem.TEN_NHOM);
                     Assert.AreEqual("Nguyễn Hoàng Long", hpItem.TEN_TCV);
-                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: Khác", hpItem.CHI_TIET);
+                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện SKTT Hải Phòng - Chẩn đoán: F41- Các rối loạn lo âu khác", hpItem.CHI_TIET);
                 }
 
                 var hpItem2 = list.FirstOrDefault(x => x.RECORD_ID == "DHP090053");
@@ -300,7 +311,7 @@ namespace BVTL.Tests
                 var naItem = list.FirstOrDefault(x => x.RECORD_ID == "DNA210040");
                 if (naItem != null)
                 {
-                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện tâm thần Nghệ An - Chẩn đoán: Khác", naItem.CHI_TIET);
+                    Assert.AreEqual("Lần khám: 2 - Cơ sở: Bệnh viện tâm thần Nghệ An - Chẩn đoán: F41- Các rối loạn lo âu khác", naItem.CHI_TIET);
                 }
             }
         }
@@ -445,11 +456,14 @@ namespace BVTL.Tests
 
             var alocare = list.FirstOrDefault(x => x.MA_NHOM == "HC_ALO" || x.MA_NHOM == "alo");
             Assert.IsNotNull(alocare, "Alocare group should exist in HCM list");
-            Assert.IsNull(alocare.MA_TCV, "MA_TCV should be null for groups without TCV");
-            Assert.IsNull(alocare.TEN_TCV, "TEN_TCV should be null for groups without TCV");
+            Assert.IsNotNull(alocare.MA_TCV, "MA_TCV should not be null for Alocare after adding TCVs");
             Assert.AreEqual("Doanh nghiệp xã hội", alocare.PREFIX);
             Assert.AreEqual("DNXH", alocare.SHORT_PREFIX);
             Assert.AreEqual("TP Hồ Chí Minh", alocare.CityName);
+
+            var myhands = list.FirstOrDefault(x => x.MA_NHOM == "HC_MYH" || x.MA_NHOM == "myh");
+            Assert.IsNotNull(myhands, "Myhands group should exist in HCM list");
+            Assert.IsNull(myhands.MA_TCV, "MA_TCV should be null for Myhands without TCV");
         }
 
         [TestMethod]

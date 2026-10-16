@@ -19,7 +19,7 @@ namespace WebApp.Services.ScheduleTasks
 
         public static async Task ChangeTimeloop(ProcessModel item)
         {
-            if (item == null || string.IsNullOrEmpty(item.ReportId)) return;
+            if (item == null || (string.IsNullOrEmpty(item.ReportId) && string.IsNullOrEmpty(item.Code))) return;
 
             try
             {
@@ -37,8 +37,18 @@ namespace WebApp.Services.ScheduleTasks
                     JobScheduler.Scheduler = scheduler;
                 }
 
-                JobKey jobKey = new JobKey(item.ReportId + "_Job", "AutoSyncGroup");
-                TriggerKey triggerKey = new TriggerKey("trigger_" + item.ReportId + "Job", "AutoSyncGroup");
+                string jobIdentifier = !string.IsNullOrEmpty(item.Code) ? item.Code : item.ReportId;
+                JobKey jobKey = new JobKey(jobIdentifier + "_Job", "AutoSyncGroup");
+                TriggerKey triggerKey = new TriggerKey("trigger_" + jobIdentifier + "Job", "AutoSyncGroup");
+
+                // Dọn dẹp cả key legacy nếu trước đó dùng ReportId
+                if (!string.IsNullOrEmpty(item.ReportId) && item.ReportId != jobIdentifier)
+                {
+                    JobKey legacyJobKey = new JobKey(item.ReportId + "_Job", "AutoSyncGroup");
+                    TriggerKey legacyTriggerKey = new TriggerKey("trigger_" + item.ReportId + "Job", "AutoSyncGroup");
+                    if (await scheduler.CheckExists(legacyTriggerKey)) await scheduler.UnscheduleJob(legacyTriggerKey);
+                    if (await scheduler.CheckExists(legacyJobKey)) await scheduler.DeleteJob(legacyJobKey);
+                }
 
                 // Xóa Trigger và Job cũ nếu đã có
                 if (await scheduler.CheckExists(triggerKey))

@@ -314,7 +314,7 @@ namespace WebApp.Controllers
 
                     // Cập nhật Trigger của Quartz
                     var processList = _processService.GetListProcess();
-                    var processItem = processList.FirstOrDefault(x => x.ReportId == api.ReportId || x.Code == api.Api_Code);
+                    var processItem = processList.FirstOrDefault(x => x.Code == api.Api_Code || x.ReportId == api.ReportId);
                     if (processItem != null)
                     {
                         processItem.TimeLoop = timeLoop;
@@ -337,19 +337,20 @@ namespace WebApp.Controllers
         /// Kích hoạt chạy ngay trong luồng ngầm cho 1 API
         /// </summary>
         [HttpPost]
-        public async Task<JsonResult> TriggerJobNow(string reportId)
+        public async Task<JsonResult> TriggerJobNow(string reportId, string apiCode = "")
         {
             try
             {
-                if (string.IsNullOrEmpty(reportId))
+                string targetKey = !string.IsNullOrEmpty(apiCode) ? apiCode : reportId;
+                if (string.IsNullOrEmpty(targetKey))
                 {
-                    return Json(new { success = false, message = "Mã ReportId không hợp lệ." });
+                    return Json(new { success = false, message = "Mã tiến trình không hợp lệ." });
                 }
 
-                await JobScheduler.TriggerJobNow(reportId);
-                AddLog($"Kích hoạt chạy ngay tiến trình ngầm cho API [{reportId}].");
+                await JobScheduler.TriggerJobNow(targetKey);
+                AddLog($"Kích hoạt chạy ngay tiến trình ngầm cho API [{targetKey}].");
 
-                return Json(new { success = true, message = $"Tiến trình {reportId} đã được đưa vào hàng đợi thực thi ngay!" });
+                return Json(new { success = true, message = $"Tiến trình {targetKey} đã được đưa vào hàng đợi thực thi ngay!" });
             }
             catch (Exception ex)
             {

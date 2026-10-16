@@ -1,4 +1,4 @@
-﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -2054,3 +2054,46 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đóng gói file nén phát hành BVTL_WebApp_Publish_v1.6.7.rar.
    - Deploy đồng bộ thành công lên DEV (c:\publish\dev) và PROD (c:\publish\prod) qua FTP.
    - Nghiệm thu: Cả 2 môi trường DEV (Port 8090) và PROD (das.scdi.org.vn) đều phản hồi mã HTTP 200 OK và đối soát khớp 100%.
+
+
+---
+
+## Phiên 42: 16/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Triển khai trọn gói tính năng **"Báo cáo Tư vấn" (Dự án CD45 - DREAMH)** theo bảng đặc tả yêu cầu:
+   - Tách làm 2 mẫu báo cáo chi tiết:
+     + **Báo cáo tư vấn Lần 1 (F7 - REDCap Report 2506)**: Record ID, Mã KH, Nhóm CBO, TCV tư vấn, Ngày tư vấn, Địa điểm, 3a. Tình trạng SKTT hiện tại, 3a.1 Khác, 3b. Các yếu tố liên quan, 3b.1 Khác, 3c. Nhu cầu hỗ trợ chính, 4.1 Can thiệp giới thiệu, 4.2 Nhu cầu tham gia, 4.2.1 Khác, 6.1 Ngày hẹn tiếp theo.
+     + **Báo cáo tư vấn từ Lần 2+ (F8 - REDCap Report 2507)**: Record ID, Mã KH, Lần tư vấn, Nhóm CBO, TCV tư vấn, Ngày tư vấn, Địa điểm, 2.1.a Cảm thấy, 2.1.a.1 Khác, 2.1.b Chia sẻ ngắn, 2.2 Vấn đề muốn tập trung, 3.1.a Nhận diện cảm xúc, 3.1.b Stress ngắn hạn, 3.1.c Stress dài hạn, 3.1.d Thói quen sinh hoạt, 3.1.e Khác, 3.1.e.1 Khác, 3.2 Nội dung can thiệp chính, 4.1 Can thiệp đồng ý, 4.2.1 Việc sẽ làm, 4.2.2 Tần suất, Ngày hẹn tiếp theo.
+2. Tích hợp **tự động xuất kèm 2 Sheet `TuVan_L1` và `TuVan_L2` vào tệp Excel của từng Tiếp cận viên (TCV)** (cả xuất trực tiếp trên web và xuất hàng loạt tự động định kỳ dạng file ZIP).
+3. Xây dựng giao diện tra cứu trực tuyến Báo cáo Tư vấn (`BaoCaoTuVanCD45`) trên Web với đầy đủ bộ lọc (Kỳ báo cáo, Tỉnh/TP, Nhóm CBO, TCV, Loại tư vấn L1/L2+) và xuất file Excel độc lập.
+4. Đồng bộ 100% CSDL (Database Schema, Stored Procedures, Dữ liệu Backfill, Menu Phân quyền) trên cả DEV và PROD.
+5. Viết Unit Tests tự động, biên dịch sạch và nghiệm thu 100% test cases PASSED.
+
+### Các công việc đã hoàn thành:
+1. **Cơ sở dữ liệu & Đồng bộ Dữ liệu REDCap (Database & Sync Engine)**:
+   - Bổ sung 9 cột mới vào bảng `CD45_TU_VAN_L1` và 15 cột mới vào `CD45_TU_VAN_L2` trên cả 2 database `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD`.
+   - Cập nhật entity `CD45_TU_VAN_L1_Entity` và `CD45_TU_VAN_L2_Entity` trong `Model/ModelExtend/API/CD45/DreamhDbEntities.cs`.
+   - Cập nhật ánh xạ text và checkbox tiếng Việt trong `Common/Common/ConvertCD45ApiToEntity.cs` (`ConvertF7`, `ConvertF8`).
+   - Backfill đồng bộ thành công 100% dữ liệu lịch sử từ REDCap API (4.200 ca F7, 4.833 ca F8) vào cả DEV và PROD.
+   - Tạo 2 Stored Procedures tối ưu `SP_CD45_GetBaoCaoTuVan_L1` và `SP_CD45_GetBaoCaoTuVan_L2` hỗ trợ lọc theo ngày, tỉnh, nhóm CBO, TCV. Phân quyền `GRANT EXECUTE` cho `bvtl_app_user`.
+   - Đăng ký menu hệ thống `BaoCaoTuVanCD45` trong `BVTL_QT_PAGE_MENU` và cấp quyền cho 4 role báo cáo trong `BVTL_QT_QUYEN_PAGE`.
+2. **Backend & Tích hợp Xuất Excel đính kèm (Service & Controller Layer)**:
+   - Tạo model `Model/ModelExtend/Report/CD45BaoCaoTuVanModel.cs` (`CD45BaoCaoTuVanL1Model`, `CD45BaoCaoTuVanL2Model`, `CD45BaoCaoTuVanFilterModel`).
+   - Tạo interface `IBaoCaoTuVanCD45DA` và class `BaoCaoTuVanCD45DA` trong `Data/`, đăng ký vào `AutofacConfig.cs`.
+   - Xây dựng `WebApp/Services/ExcelTuVanHelper.cs`: hàm `BuildTuVanL1Worksheet` (17 cột) và `BuildTuVanL2Worksheet` (24 cột) với định dạng chuẩn ClosedXML.
+   - Tích hợp đính kèm Sheet 2 (`TuVan_L1`) và Sheet 3 (`TuVan_L2`) vào file Excel của từng TCV trong `WebApp/Controllers/BaoCaoTCVCD45Controller.cs` (cả xuất lẻ và xuất ZIP).
+   - Tích hợp đính kèm Sheet 2 & 3 vào từng file Excel TCV trong luồng xuất định kỳ tự động `ExportTCVCD45ZipAsync` tại `WebApp/Services/ReportExportService.cs`.
+3. **Giao diện Web Tra cứu Báo cáo Tư vấn (Web UI Layer)**:
+   - Tạo `WebApp/Controllers/BaoCaoTuVanCD45Controller.cs` kế thừa `BaseController` với phân quyền `[HasCredential(ControllerName = "BaoCaoTuVanCD45")]`.
+   - Tạo giao diện `WebApp/Views/BaoCaoTuVanCD45/Index.cshtml` (STRICT UTF-8 WITH BOM): Bộ lọc linh hoạt theo kỳ REDCap (26 - 25), Tỉnh/TP, Nhóm CBO, TCV, Loại tư vấn (L1/L2+/Tất cả), 2 tab danh sách có thanh tìm kiếm nhanh và nút xuất Excel.
+   - Tạo `WebApp/app/Controller/AlpineBaoCaoTuVanCD45Controller.js` quản lý state và tương tác mượt mà.
+4. **Kiểm thử tự động & Nghiệm thu (Unit Tests & VSTest)**:
+   - Bổ sung 3 test cases vào `BVTL.Tests/ScheduledReportTests.cs`:
+     + `BaoCaoTuVanCD45DA_GetBaoCaoTuVan_L1_And_L2_ShouldReturnData`: Kiểm tra dữ liệu L1 và L2 trả về đầy đủ.
+     + `ExcelTuVanHelper_BuildWorksheets_ShouldCreateExpectedSheetsAndColumns`: Kiểm tra định dạng và số lượng cột 2 sheet.
+     + `BaoCaoTuVanCD45Controller_SearchTuVan_ShouldReturnJsonWithBothTypes`: Kiểm tra API controller trả về đúng dữ liệu.
+   - Cập nhật test `BaoCaoTCVCD45_ExportExcel_ShouldSupportBothGetAndPost` trong `ExcelReportServiceTests.cs` xác nhận mỗi file TCV xuất ra có đầy đủ 3 Sheet (`BaoCao`, `TuVan_L1`, `TuVan_L2`).
+   - Chạy `vstest.console.exe`: 100% tests PASSED.
+   - Cập nhật file đồng bộ `SQL_Sync_Dev_To_Prod.sql` (STRICT UTF-8 WITH BOM).
+   - Điều chỉnh cấu trúc menu: Đưa menu "Báo cáo tư vấn CD45" lên cùng cấp và ngay sau "Báo cáo TCV CD45" trong nhóm menu cha "Dự án CD45 (DREAMH)" (`ORDER_BY = 32`), đồng thời cập nhật "Báo cáo Bác sĩ CD45" (`ORDER_BY = 33`) đồng bộ trên cả DEV và PROD.

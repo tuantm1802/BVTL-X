@@ -81,32 +81,39 @@ namespace SyncBVTL.Push.ScheduleTasks
             {
                 if (item.Active)
                 {
-                    IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(item.ReportId + "_Job").Build();
-                    job_GetDataAPIJob.JobDataMap["Data"] = item;
-                    ITrigger trigger_GetDataAPIJob;
-                    if (item.TimeLoop <= 23 && item.TimeLoop >= 0)
+                    try
                     {
-                        // Chạy theo giờ cố định mỗi ngày (ví dụ: TimeLoop = 23 -> chạy lúc 23:00)
-                        trigger_GetDataAPIJob = TriggerBuilder.Create()
-                            .WithIdentity("trigger_" + item.ReportId + "Job")
-                            .StartNow()
-                            .WithCronSchedule($"0 0 {item.TimeLoop} * * ?")
-                            .Build();
+                        string jobIdentifier = !string.IsNullOrEmpty(item.Code) ? item.Code : item.ReportId;
+                        IJobDetail job_GetDataAPIJob = JobBuilder.Create<GetDataAPIJob>().WithIdentity(jobIdentifier + "_Job").Build();
+                        job_GetDataAPIJob.JobDataMap["Data"] = item;
+                        ITrigger trigger_GetDataAPIJob;
+                        if (item.TimeLoop <= 23 && item.TimeLoop >= 0)
+                        {
+                            // Chạy theo giờ cố định mỗi ngày (ví dụ: TimeLoop = 23 -> chạy lúc 23:00)
+                            trigger_GetDataAPIJob = TriggerBuilder.Create()
+                                .WithIdentity("trigger_" + jobIdentifier + "Job")
+                                .StartNow()
+                                .WithCronSchedule($"0 0 {item.TimeLoop} * * ?")
+                                .Build();
+                        }
+                        else
+                        {
+                            // Chạy lặp lại theo khoảng thời gian giây
+                            trigger_GetDataAPIJob = TriggerBuilder.Create()
+                                .WithIdentity("trigger_" + jobIdentifier + "Job")
+                                .StartNow()
+                                .WithSimpleSchedule(x => x
+                                .WithIntervalInSeconds(item.TimeLoop)
+                                .RepeatForever())
+                                .Build();
+                        }
+                        await Scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
                     }
-                    else
+                    catch (Exception exItem)
                     {
-                        // Chạy lặp lại theo khoảng thời gian giây
-                        trigger_GetDataAPIJob = TriggerBuilder.Create()
-                            .WithIdentity("trigger_" + item.ReportId + "Job")
-                            .StartNow()
-                            .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(item.TimeLoop)
-                            .RepeatForever())
-                            .Build();
+                        // Ghi log lỗi nếu một API không lập lịch được để không chặn toàn bộ tiến trình
                     }
-                    await Scheduler.ScheduleJob(job_GetDataAPIJob, trigger_GetDataAPIJob);
                 }
-
             }
             
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 title IIS Express - WebApp CD45 (DREAMH)
 echo ========================================================
 echo   KHOI DONG IIS EXPRESS CHO DU AN BVTL - WEBAPP CD45

@@ -175,7 +175,7 @@
                                     </template>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge badge-light border text-info font-weight-bold" x-text="getNextRunTime(item.ReportId)"></span>
+                                    <span class="badge badge-light border text-info font-weight-bold" x-text="getNextRunTime(item.Api_Code, item.ReportId)"></span>
                                 </td>
                                 <td class="text-center pr-3">
                                     <div class="btn-group btn-group-sm" role="group">
@@ -188,7 +188,7 @@
 
                                         <!-- Nút Kích hoạt ngầm -->
                                         <button type="button" class="btn btn-outline-warning text-dark font-weight-bold"
-                                                x-on:click="triggerJobNow(item.ReportId, item.NameSyncdata)"
+                                                x-on:click="triggerJobNow(item.ReportId, item.NameSyncdata, item.Api_Code)"
                                                 title="Kích hoạt chạy luồng ngầm">
                                             <i class="fas fa-bolt mr-1"></i> Chạy ngầm
                                         </button>
@@ -279,7 +279,7 @@
                     <h5 class="modal-title font-weight-bold text-gray-800">
                         <i class="fas fa-clock text-primary mr-2"></i> Cấu hình Chu kỳ Tự động Đồng bộ
                     </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-secondary" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" x-on:click="closeScheduleModal()" style="background: none; border: none; font-size: 1.5rem; line-height: 1; padding: 0.25rem 0.5rem; opacity: 0.7; cursor: pointer;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -346,7 +346,7 @@
                     </template>
                 </div>
                 <div class="modal-footer bg-light border-0 py-3">
-                    <button type="button" class="btn btn-secondary font-weight-bold px-3" data-dismiss="modal" style="border-radius: 8px;">Hủy bỏ</button>
+                    <button type="button" class="btn btn-secondary font-weight-bold px-3" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeScheduleModal()" style="border-radius: 8px;">Hủy bỏ</button>
                     <button type="button" class="btn btn-primary font-weight-bold px-4" x-on:click="saveScheduleConfig()" :disabled="editScheduleModal.isSaving" style="border-radius: 8px;">
                         <i class="fas fa-save mr-1" :class="{'fa-spin fa-spinner': editScheduleModal.isSaving}"></i> Lưu Cấu Hình
                     </button>

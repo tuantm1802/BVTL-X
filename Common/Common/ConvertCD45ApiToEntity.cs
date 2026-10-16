@@ -764,10 +764,12 @@ namespace Common.Common
                 DataCleanerHelper.ValidateServiceAfterLostToFollowUp(cleanRecordId, e.NGAY_TU_VAN, context, apiCode, "CD45_TU_VAN_L1", reportId, maDuAn, ref logs);
 
                 // Địa điểm
+                string rawLocation = item.GetString("f7_location");
+                e.DIA_DIEM_TEXT = rawLocation;
                 byte? diaDiem = item.GetByte("f7_location");
                 if (!diaDiem.HasValue)
                 {
-                    string locStr = item.GetString("f7_location");
+                    string locStr = rawLocation;
                     if (!string.IsNullOrEmpty(locStr))
                     {
                         if (locStr.IndexOf("văn phòng", StringComparison.OrdinalIgnoreCase) >= 0 || locStr.IndexOf("nhóm", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -834,7 +836,51 @@ namespace Common.Common
                     }
                 }
 
-                e.NHU_CAU_HO_TRO = DataCleanerHelper.CleanString(item.GetString("f7_q3c"), "f7_q3c", cleanRecordId, apiCode, "CD45_TU_VAN_L1", reportId, maDuAn, ref logs);
+                // 3a. Tình trạng sức khỏe tâm thần hiện tại (checkbox nhãn)
+                var q3aList = new List<string>();
+                if (item.GetBool("f7_q3a___1") == true || item.GetString("f7_q3a___1") == "1") q3aList.Add("Lo âu");
+                if (item.GetBool("f7_q3a___2") == true || item.GetString("f7_q3a___2") == "1") q3aList.Add("Căng thẳng");
+                if (item.GetBool("f7_q3a___3") == true || item.GetString("f7_q3a___3") == "1") q3aList.Add("Trầm cảm");
+                if (item.GetBool("f7_q3a___4") == true || item.GetString("f7_q3a___4") == "1") q3aList.Add("Mất ngủ");
+                if (item.GetBool("f7_q3a___5") == true || item.GetString("f7_q3a___5") == "1") q3aList.Add("Khác");
+                e.Q3A_TEXT = q3aList.Count > 0 ? string.Join(", ", q3aList) : null;
+                e.Q3A_KHAC = item.GetString("f7_q3a_1");
+
+                // 3b. Các yếu tố liên quan (checkbox nhãn)
+                var q3bList = new List<string>();
+                if (item.GetBool("f7_q3b___1") == true || item.GetString("f7_q3b___1") == "1") q3bList.Add("Sử dụng chất");
+                if (item.GetBool("f7_q3b___2") == true || item.GetString("f7_q3b___2") == "1") q3bList.Add("HIV / bệnh mãn tính");
+                if (item.GetBool("f7_q3b___3") == true || item.GetString("f7_q3b___3") == "1") q3bList.Add("Hormone");
+                if (item.GetBool("f7_q3b___4") == true || item.GetString("f7_q3b___4") == "1") q3bList.Add("Bạo lực / sang chấn");
+                if (item.GetBool("f7_q3b___5") == true || item.GetString("f7_q3b___5") == "1") q3bList.Add("Kỳ thị");
+                if (item.GetBool("f7_q3b___6") == true || item.GetString("f7_q3b___6") == "1") q3bList.Add("Khác");
+                e.Q3B_TEXT = q3bList.Count > 0 ? string.Join(", ", q3bList) : null;
+                e.Q3B_KHAC = item.GetString("f7_q3b_1");
+
+                // 3c. Nhu cầu hỗ trợ chính
+                e.Q3C_NHU_CAU = item.GetString("f7_q3c");
+                e.NHU_CAU_HO_TRO = DataCleanerHelper.CleanString(e.Q3C_NHU_CAU, "f7_q3c", cleanRecordId, apiCode, "CD45_TU_VAN_L1", reportId, maDuAn, ref logs);
+
+                // 4.1. Các can thiệp đã được giới thiệu (checkbox nhãn)
+                var q41List = new List<string>();
+                if (item.GetBool("f7_q41___1") == true || item.GetString("f7_q41___1") == "1") q41List.Add("Tư vấn cá nhân (1-1)");
+                if (item.GetBool("f7_q41___2") == true || item.GetString("f7_q41___2") == "1") q41List.Add("Sinh hoạt nhóm");
+                if (item.GetBool("f7_q41___3") == true || item.GetString("f7_q41___3") == "1") q41List.Add("Can thiệp chữa lành (sang chấn)");
+                if (item.GetBool("f7_q41___4") == true || item.GetString("f7_q41___4") == "1") q41List.Add("Ứng dụng Intellect (trực tuyến)");
+                if (item.GetBool("f7_q41___5") == true || item.GetString("f7_q41___5") == "1") q41List.Add("Chuyển gửi đến cơ sở chăm sóc SKTT");
+                e.Q41_CAN_THIEP_GTH = q41List.Count > 0 ? string.Join(", ", q41List) : null;
+
+                // 4.2. Nhu cầu tham gia của khách hàng (checkbox nhãn)
+                var q42List = new List<string>();
+                if (item.GetBool("f7_q42___1") == true || item.GetString("f7_q42___1") == "1") q42List.Add("Tư vấn cá nhân");
+                if (item.GetBool("f7_q42___2") == true || item.GetString("f7_q42___2") == "1") q42List.Add("Sinh hoạt nhóm");
+                if (item.GetBool("f7_q42___3") == true || item.GetString("f7_q42___3") == "1") q42List.Add("Can thiệp chữa lành");
+                if (item.GetBool("f7_q42___4") == true || item.GetString("f7_q42___4") == "1") q42List.Add("Dùng ứng dụng Intellect");
+                if (item.GetBool("f7_q42___5") == true || item.GetString("f7_q42___5") == "1") q42List.Add("Chuyển gửi đến cơ sở chăm sóc SKTT");
+                if (item.GetBool("f7_q42___6") == true || item.GetString("f7_q42___6") == "1") q42List.Add("Khác");
+                e.Q42_NHU_CAU_TG = q42List.Count > 0 ? string.Join(", ", q42List) : null;
+                e.Q42_KHAC = item.GetString("f7_q42_1");
+
                 e.LICH_HEN_TIEP = DataCleanerHelper.CleanDate(item.GetString("f7_q61"), "f7_q61", cleanRecordId, apiCode, "CD45_TU_VAN_L1", reportId, maDuAn, ref logs, allowFutureDate: true);
 
                 // VR-03(c) [BLOCKING]: Chặn ngày hẹn tiếp theo trước ngày tư vấn
@@ -948,10 +994,12 @@ namespace Common.Common
                 // VR-06(d): Kiểm tra sau ngày mất dấu
                 DataCleanerHelper.ValidateServiceAfterLostToFollowUp(cleanRecordId, e.NGAY_TU_VAN, context, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs);
 
+                string rawLocation = item.GetString("f8_location");
+                e.DIA_DIEM_TEXT = rawLocation;
                 byte? diaDiem = item.GetByte("f8_location");
                 if (!diaDiem.HasValue)
                 {
-                    string locStr = item.GetString("f8_location");
+                    string locStr = rawLocation;
                     if (!string.IsNullOrEmpty(locStr))
                     {
                         if (locStr.IndexOf("văn phòng", StringComparison.OrdinalIgnoreCase) >= 0 || locStr.IndexOf("nhóm", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -962,11 +1010,80 @@ namespace Common.Common
                 }
                 e.DIA_DIEM = diaDiem;
 
-                // Đánh giá hiện tại
-                e.DANH_GIA_HIEN_TAI = DataCleanerHelper.CleanString(item.GetString("f8_q2_1_a_1") ?? item.GetString("f8_q2_1_a_2") ?? item.GetString("f8_q2_2"), "f8_q2", cleanRecordId, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs);
+                // 2.1.a Dạo gần đây KH cảm thấy (checkbox nhãn)
+                var q21aList = new List<string>();
+                if (item.GetBool("f8_q2_1_a___1") == true || item.GetString("f8_q2_1_a___1") == "1") q21aList.Add("Ổn định");
+                if (item.GetBool("f8_q2_1_a___2") == true || item.GetString("f8_q2_1_a___2") == "1") q21aList.Add("Căng thẳng");
+                if (item.GetBool("f8_q2_1_a___3") == true || item.GetString("f8_q2_1_a___3") == "1") q21aList.Add("Lo âu");
+                if (item.GetBool("f8_q2_1_a___4") == true || item.GetString("f8_q2_1_a___4") == "1") q21aList.Add("Buồn chán");
+                if (item.GetBool("f8_q2_1_a___5") == true || item.GetString("f8_q2_1_a___5") == "1") q21aList.Add("Khác");
+                e.Q21A_CAM_THAY = q21aList.Count > 0 ? string.Join(", ", q21aList) : null;
+                e.Q21A_KHAC = item.GetString("f8_q2_1_a_1");
 
-                // Can thiệp áp dụng
-                e.CAN_THIEP_AP_DUNG = DataCleanerHelper.CleanString(item.GetString("f8_q32") ?? item.GetString("f8_q41"), "f8_q32", cleanRecordId, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs);
+                // 2.1.b KH chia sẻ ngắn
+                e.Q21B_CHIA_SE = item.GetString("f8_q2_1_a_2");
+
+                // 2.2. Vấn đề KH muốn tập trung
+                e.Q22_VAN_DE = item.GetString("f8_q2_2");
+
+                // 3.1.a Nhận diện cảm xúc (checkbox nhãn)
+                var q31aList = new List<string>();
+                if (item.GetBool("f8_q3_1_a___1") == true || item.GetString("f8_q3_1_a___1") == "1") q31aList.Add("Thang đo mức độ hạnh phúc");
+                if (item.GetBool("f8_q3_1_a___2") == true || item.GetString("f8_q3_1_a___2") == "1") q31aList.Add("Bánh xe cảm xúc");
+                if (item.GetBool("f8_q3_1_a___3") == true || item.GetString("f8_q3_1_a___3") == "1") q31aList.Add("Không cung cấp can thiệp nào");
+                e.Q31A_CAM_XUC = q31aList.Count > 0 ? string.Join(", ", q31aList) : null;
+
+                // 3.1.b Quản lý căng thẳng (ngắn hạn) (checkbox nhãn)
+                var q31bList = new List<string>();
+                if (item.GetBool("f8_q31b___1") == true || item.GetString("f8_q31b___1") == "1") q31bList.Add("Tự làm dịu");
+                if (item.GetBool("f8_q31b___2") == true || item.GetString("f8_q31b___2") == "1") q31bList.Add("Tiếp đất/Kỹ thuật kết nối thực tại");
+                if (item.GetBool("f8_q31b___4") == true || item.GetString("f8_q31b___4") == "1") q31bList.Add("Kỹ thuật STOP");
+                if (item.GetBool("f8_q31b___3") == true || item.GetString("f8_q31b___3") == "1") q31bList.Add("Không cung cấp can thiệp nào");
+                e.Q31B_CANG_THANG_NGAN = q31bList.Count > 0 ? string.Join(", ", q31bList) : null;
+
+                // 3.1.c Quản lý căng thẳng (dài hạn) (checkbox nhãn)
+                var q31cList = new List<string>();
+                if (item.GetBool("f8_q31c___1") == true || item.GetString("f8_q31c___1") == "1") q31cList.Add("Thiền / chánh niệm");
+                if (item.GetBool("f8_q31c___2") == true || item.GetString("f8_q31c___2") == "1") q31cList.Add("10 nhu cầu dài hạn");
+                if (item.GetBool("f8_q31c___3") == true || item.GetString("f8_q31c___3") == "1") q31cList.Add("Tái định hình nhận thức");
+                if (item.GetBool("f8_q31c___5") == true || item.GetString("f8_q31c___5") == "1") q31cList.Add("Bài học về lòng biết ơn");
+                if (item.GetBool("f8_q31c___4") == true || item.GetString("f8_q31c___4") == "1") q31cList.Add("Không cung cấp can thiệp nào");
+                e.Q31C_CANG_THANG_DAI = q31cList.Count > 0 ? string.Join(", ", q31cList) : null;
+
+                // 3.1.d Thói quen sinh hoạt (checkbox nhãn)
+                var q31dList = new List<string>();
+                if (item.GetBool("f8_q31d___1") == true || item.GetString("f8_q31d___1") == "1") q31dList.Add("Ăn - Uống - Ngủ - Lặp lại");
+                if (item.GetBool("f8_q31d___2") == true || item.GetString("f8_q31d___2") == "1") q31dList.Add("Tập thể dục");
+                if (item.GetBool("f8_q31d___3") == true || item.GetString("f8_q31d___3") == "1") q31dList.Add("Không cung cấp can thiệp nào");
+                e.Q31D_THOI_QUEN = q31dList.Count > 0 ? string.Join(", ", q31dList) : null;
+
+                // 3.1.e Nội dung khác (checkbox nhãn)
+                var q31eList = new List<string>();
+                if (item.GetBool("f8_q31e___1") == true || item.GetString("f8_q31e___1") == "1") q31eList.Add("Sử dụng chất & SKTT");
+                if (item.GetBool("f8_q31e___2") == true || item.GetString("f8_q31e___2") == "1") q31eList.Add("HIV / Lao / HCV");
+                if (item.GetBool("f8_q31e___3") == true || item.GetString("f8_q31e___3") == "1") q31eList.Add("Methadone");
+                if (item.GetBool("f8_q31e___4") == true || item.GetString("f8_q31e___4") == "1") q31eList.Add("STIs");
+                if (item.GetBool("f8_q31e___5") == true || item.GetString("f8_q31e___5") == "1") q31eList.Add("SKSS & Tình dục");
+                if (item.GetBool("f8_q31e___6") == true || item.GetString("f8_q31e___6") == "1") q31eList.Add("Khác");
+                if (item.GetBool("f8_q31e___7") == true || item.GetString("f8_q31e___7") == "1") q31eList.Add("Không cung cấp can thiệp nào");
+                e.Q31E_NOI_DUNG_KHAC = q31eList.Count > 0 ? string.Join(", ", q31eList) : null;
+                e.Q31E1_KHAC = item.GetString("f8_q31e1");
+
+                // 3.2. Nội dung can thiệp chính (ghi ngắn)
+                e.Q32_CAN_THIEP_CHINH = item.GetString("f8_q32");
+
+                // 4.1. Can thiệp KH đồng ý áp dụng
+                e.Q41_DONG_Y = item.GetString("f8_q41");
+
+                // 4.2.1 Việc sẽ làm
+                e.Q421_VIEC_LAM = item.GetString("f8_q421");
+
+                // 4.2.2 Tần suất
+                e.Q422_TAN_SUAT = item.GetString("f8_q422");
+
+                // Đánh giá hiện tại & Can thiệp áp dụng (giữ tương thích các trường cũ)
+                e.DANH_GIA_HIEN_TAI = DataCleanerHelper.CleanString(e.Q21A_KHAC ?? e.Q21B_CHIA_SE ?? e.Q22_VAN_DE, "f8_q2", cleanRecordId, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs);
+                e.CAN_THIEP_AP_DUNG = DataCleanerHelper.CleanString(e.Q32_CAN_THIEP_CHINH ?? e.Q41_DONG_Y, "f8_q32", cleanRecordId, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs);
 
                 e.NGAY_HEN_TIEP = DataCleanerHelper.CleanDate(item.GetString("f8_q61"), "f8_q61", cleanRecordId, apiCode, "CD45_TU_VAN_L2", reportId, maDuAn, ref logs, allowFutureDate: true);
 

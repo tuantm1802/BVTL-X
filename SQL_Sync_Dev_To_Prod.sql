@@ -1,4 +1,4 @@
-﻿-- ============================================================
+﻿﻿﻿-- ============================================================
 
 -- SYNC SCRIPT: DEV -> PROD (BVTL_REPORTING)
 
@@ -5844,3 +5844,304 @@ GO
 
 
 
+
+
+-- ============================================================
+-- 2026-10-16: BAO CAO TU VAN CHI TIET CD45 (F7 & F8)
+-- ============================================================
+
+-- 1. ADD NEW COLUMNS TO CD45_TU_VAN_L1 (F7)
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'DIA_DIEM_TEXT')
+    ALTER TABLE CD45_TU_VAN_L1 ADD DIA_DIEM_TEXT NVARCHAR(250) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q3A_TEXT')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q3A_TEXT NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q3A_KHAC')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q3A_KHAC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q3B_TEXT')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q3B_TEXT NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q3B_KHAC')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q3B_KHAC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q3C_NHU_CAU')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q3C_NHU_CAU NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q41_CAN_THIEP_GTH')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q41_CAN_THIEP_GTH NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q42_NHU_CAU_TG')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q42_NHU_CAU_TG NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L1') AND name = 'Q42_KHAC')
+    ALTER TABLE CD45_TU_VAN_L1 ADD Q42_KHAC NVARCHAR(500) NULL;
+GO
+
+-- 2. ADD NEW COLUMNS TO CD45_TU_VAN_L2 (F8)
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'DIA_DIEM_TEXT')
+    ALTER TABLE CD45_TU_VAN_L2 ADD DIA_DIEM_TEXT NVARCHAR(250) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q21A_CAM_THAY')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q21A_CAM_THAY NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q21A_KHAC')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q21A_KHAC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q21B_CHIA_SE')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q21B_CHIA_SE NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q22_VAN_DE')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q22_VAN_DE NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31A_CAM_XUC')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31A_CAM_XUC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31B_CANG_THANG_NGAN')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31B_CANG_THANG_NGAN NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31C_CANG_THANG_DAI')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31C_CANG_THANG_DAI NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31D_THOI_QUEN')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31D_THOI_QUEN NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31E_NOI_DUNG_KHAC')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31E_NOI_DUNG_KHAC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q31E1_KHAC')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q31E1_KHAC NVARCHAR(500) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q32_CAN_THIEP_CHINH')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q32_CAN_THIEP_CHINH NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q41_DONG_Y')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q41_DONG_Y NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q421_VIEC_LAM')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q421_VIEC_LAM NVARCHAR(1000) NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('CD45_TU_VAN_L2') AND name = 'Q422_TAN_SUAT')
+    ALTER TABLE CD45_TU_VAN_L2 ADD Q422_TAN_SUAT NVARCHAR(500) NULL;
+GO
+
+-- 3. STORED PROCEDURE: SP_CD45_GetBaoCaoTuVan_L1
+CREATE OR ALTER PROCEDURE SP_CD45_GetBaoCaoTuVan_L1
+    @FromDate VARCHAR(20) = NULL,
+    @ToDate VARCHAR(20) = NULL,
+    @CityCode VARCHAR(100) = NULL,
+    @MaNhom VARCHAR(50) = NULL,
+    @MaTCV VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @DtFrom DATE = NULL;
+    DECLARE @DtTo DATE = NULL;
+
+    IF @FromDate IS NOT NULL AND RTRIM(@FromDate) <> ''
+    BEGIN
+        IF CHARINDEX('/', @FromDate) > 0
+            SET @DtFrom = CONVERT(DATE, @FromDate, 103);
+        ELSE
+            SET @DtFrom = CONVERT(DATE, @FromDate, 120);
+    END
+
+    IF @ToDate IS NOT NULL AND RTRIM(@ToDate) <> ''
+    BEGIN
+        IF CHARINDEX('/', @ToDate) > 0
+            SET @DtTo = CONVERT(DATE, @ToDate, 103);
+        ELSE
+            SET @DtTo = CONVERT(DATE, @ToDate, 120);
+    END
+
+    -- Resolve @CityCode mapping
+    DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
+    IF @CityCode IS NOT NULL AND RTRIM(@CityCode) <> ''
+    BEGIN
+        INSERT INTO @MappedCityCodes(Code)
+        SELECT DISTINCT m.OldCityCode 
+        FROM STRING_SPLIT(@CityCode, ',') s
+        JOIN BVTL_MAP_TINH_CU_MOI m ON LTRIM(RTRIM(s.value)) = m.NewCityCode
+        UNION
+        SELECT DISTINCT LTRIM(RTRIM(s.value))
+        FROM STRING_SPLIT(@CityCode, ',') s
+        WHERE NOT EXISTS (SELECT 1 FROM BVTL_MAP_TINH_CU_MOI m WHERE m.NewCityCode = LTRIM(RTRIM(s.value)))
+          AND LTRIM(RTRIM(s.value)) <> '';
+    END
+
+    -- Resolve @MaNhom
+    DECLARE @Var_MaNhomStd VARCHAR(50) = @MaNhom;
+    DECLARE @Var_MaNhomMap VARCHAR(50) = @MaNhom;
+    IF @MaNhom IS NOT NULL AND RTRIM(@MaNhom) <> ''
+    BEGIN
+        SELECT TOP 1 @Var_MaNhomStd = manhom_tbh, @Var_MaNhomMap = manhom_tbh_map
+        FROM BVTL_NHOM_TBH
+        WHERE (manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom) AND maduan = 'CD45';
+    END
+
+    SELECT 
+        tv.ID,
+        tv.RECORD_ID,
+        kh.MA_KH_NGHIEN_CUU,
+        tv.CITY_CODE,
+        ISNULL(cty.[Name], tv.CITY_CODE) AS CITY_NAME,
+        tv.MA_NHOM,
+        ISNULL(tcv.TEN_NHOM, ISNULL(nhom.tennhom_tbh, tv.MA_NHOM)) AS TEN_NHOM,
+        ISNULL(tcv.PREFIX, ISNULL(nhom.PREFIX, N'Nhóm')) AS PREFIX,
+        ISNULL(tcv.SHORT_PREFIX, ISNULL(nhom.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX,
+        ISNULL(tcv.CHUC_DANH, ISNULL(nhom.CHUC_DANH, N'Trưởng nhóm')) AS CHUC_DANH,
+        tv.MA_TCV,
+        ISNULL(tcv.TEN_TCV, tv.MA_TCV) AS TEN_TCV,
+        tv.NGAY_TU_VAN,
+        ISNULL(NULLIF(RTRIM(tv.DIA_DIEM_TEXT), ''), 
+               CASE tv.DIA_DIEM 
+                    WHEN 1 THEN N'Văn phòng nhóm' 
+                    WHEN 2 THEN N'Điểm hẹn / Ngoài cộng đồng' 
+                    ELSE N'' 
+               END) AS DIA_DIEM_TEXT,
+        tv.Q3A_TEXT,
+        tv.Q3A_KHAC,
+        tv.Q3B_TEXT,
+        tv.Q3B_KHAC,
+        ISNULL(tv.Q3C_NHU_CAU, tv.NHU_CAU_HO_TRO) AS Q3C_NHU_CAU,
+        tv.Q41_CAN_THIEP_GTH,
+        tv.Q42_NHU_CAU_TG,
+        tv.Q42_KHAC,
+        tv.LICH_HEN_TIEP AS NGAY_HEN_TIEP,
+        tv.COMPLETE_STATUS
+    FROM CD45_TU_VAN_L1 tv
+    LEFT JOIN CD45_KH kh ON tv.RECORD_ID = kh.RECORD_ID
+    LEFT JOIN BVTL_CITES cty ON tv.CITY_CODE = cty.Code
+    LEFT JOIN BVTL_NHOM_TBH nhom ON (tv.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND tv.MA_NHOM = nhom.manhom_tbh_map)) AND nhom.maduan = 'CD45'
+    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND tv.MA_TCV = tcv.MA_TCV)
+    WHERE (@DtFrom IS NULL OR tv.NGAY_TU_VAN >= @DtFrom)
+      AND (@DtTo IS NULL OR tv.NGAY_TU_VAN <= @DtTo)
+      AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR tv.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
+      AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR tv.MA_NHOM = @Var_MaNhomStd OR tv.MA_NHOM = @Var_MaNhomMap)
+      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR tv.MA_TCV = @MaTCV)
+    ORDER BY tv.NGAY_TU_VAN ASC, tv.RECORD_ID ASC;
+END
+GO
+
+-- 4. STORED PROCEDURE: SP_CD45_GetBaoCaoTuVan_L2
+CREATE OR ALTER PROCEDURE SP_CD45_GetBaoCaoTuVan_L2
+    @FromDate VARCHAR(20) = NULL,
+    @ToDate VARCHAR(20) = NULL,
+    @CityCode VARCHAR(100) = NULL,
+    @MaNhom VARCHAR(50) = NULL,
+    @MaTCV VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @DtFrom DATE = NULL;
+    DECLARE @DtTo DATE = NULL;
+
+    IF @FromDate IS NOT NULL AND RTRIM(@FromDate) <> ''
+    BEGIN
+        IF CHARINDEX('/', @FromDate) > 0
+            SET @DtFrom = CONVERT(DATE, @FromDate, 103);
+        ELSE
+            SET @DtFrom = CONVERT(DATE, @FromDate, 120);
+    END
+
+    IF @ToDate IS NOT NULL AND RTRIM(@ToDate) <> ''
+    BEGIN
+        IF CHARINDEX('/', @ToDate) > 0
+            SET @DtTo = CONVERT(DATE, @ToDate, 103);
+        ELSE
+            SET @DtTo = CONVERT(DATE, @ToDate, 120);
+    END
+
+    -- Resolve @CityCode mapping
+    DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
+    IF @CityCode IS NOT NULL AND RTRIM(@CityCode) <> ''
+    BEGIN
+        INSERT INTO @MappedCityCodes(Code)
+        SELECT DISTINCT m.OldCityCode 
+        FROM STRING_SPLIT(@CityCode, ',') s
+        JOIN BVTL_MAP_TINH_CU_MOI m ON LTRIM(RTRIM(s.value)) = m.NewCityCode
+        UNION
+        SELECT DISTINCT LTRIM(RTRIM(s.value))
+        FROM STRING_SPLIT(@CityCode, ',') s
+        WHERE NOT EXISTS (SELECT 1 FROM BVTL_MAP_TINH_CU_MOI m WHERE m.NewCityCode = LTRIM(RTRIM(s.value)))
+          AND LTRIM(RTRIM(s.value)) <> '';
+    END
+
+    -- Resolve @MaNhom
+    DECLARE @Var_MaNhomStd VARCHAR(50) = @MaNhom;
+    DECLARE @Var_MaNhomMap VARCHAR(50) = @MaNhom;
+    IF @MaNhom IS NOT NULL AND RTRIM(@MaNhom) <> ''
+    BEGIN
+        SELECT TOP 1 @Var_MaNhomStd = manhom_tbh, @Var_MaNhomMap = manhom_tbh_map
+        FROM BVTL_NHOM_TBH
+        WHERE (manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom) AND maduan = 'CD45';
+    END
+
+    SELECT 
+        tv.ID,
+        tv.RECORD_ID,
+        kh.MA_KH_NGHIEN_CUU,
+        ISNULL(tv.REPEAT_INSTANCE, 1) AS REPEAT_INSTANCE,
+        N'Lần ' + CAST(ISNULL(tv.REPEAT_INSTANCE, 1) + 1 AS NVARCHAR(10)) AS LAN_TU_VAN,
+        tv.CITY_CODE,
+        ISNULL(cty.[Name], tv.CITY_CODE) AS CITY_NAME,
+        tv.MA_NHOM,
+        ISNULL(tcv.TEN_NHOM, ISNULL(nhom.tennhom_tbh, tv.MA_NHOM)) AS TEN_NHOM,
+        ISNULL(tcv.PREFIX, ISNULL(nhom.PREFIX, N'Nhóm')) AS PREFIX,
+        ISNULL(tcv.SHORT_PREFIX, ISNULL(nhom.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX,
+        ISNULL(tcv.CHUC_DANH, ISNULL(nhom.CHUC_DANH, N'Trưởng nhóm')) AS CHUC_DANH,
+        tv.MA_TCV,
+        ISNULL(tcv.TEN_TCV, tv.MA_TCV) AS TEN_TCV,
+        tv.NGAY_TU_VAN,
+        ISNULL(NULLIF(RTRIM(tv.DIA_DIEM_TEXT), ''), 
+               CASE tv.DIA_DIEM 
+                    WHEN 1 THEN N'Văn phòng nhóm' 
+                    WHEN 2 THEN N'Điểm hẹn / Ngoài cộng đồng' 
+                    ELSE N'' 
+               END) AS DIA_DIEM_TEXT,
+        tv.Q21A_CAM_THAY,
+        tv.Q21A_KHAC,
+        tv.Q21B_CHIA_SE,
+        tv.Q22_VAN_DE,
+        tv.Q31A_CAM_XUC,
+        tv.Q31B_CANG_THANG_NGAN,
+        tv.Q31C_CANG_THANG_DAI,
+        tv.Q31D_THOI_QUEN,
+        tv.Q31E_NOI_DUNG_KHAC,
+        tv.Q31E1_KHAC,
+        ISNULL(tv.Q32_CAN_THIEP_CHINH, tv.DANH_GIA_HIEN_TAI) AS Q32_CAN_THIEP_CHINH,
+        ISNULL(tv.Q41_DONG_Y, tv.CAN_THIEP_AP_DUNG) AS Q41_DONG_Y,
+        tv.Q421_VIEC_LAM,
+        tv.Q422_TAN_SUAT,
+        tv.NGAY_HEN_TIEP,
+        tv.COMPLETE_STATUS
+    FROM CD45_TU_VAN_L2 tv
+    LEFT JOIN CD45_KH kh ON tv.RECORD_ID = kh.RECORD_ID
+    LEFT JOIN BVTL_CITES cty ON tv.CITY_CODE = cty.Code
+    LEFT JOIN BVTL_NHOM_TBH nhom ON (tv.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND tv.MA_NHOM = nhom.manhom_tbh_map)) AND nhom.maduan = 'CD45'
+    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND tv.MA_TCV = tcv.MA_TCV)
+    WHERE (@DtFrom IS NULL OR tv.NGAY_TU_VAN >= @DtFrom)
+      AND (@DtTo IS NULL OR tv.NGAY_TU_VAN <= @DtTo)
+      AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR tv.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
+      AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR tv.MA_NHOM = @Var_MaNhomStd OR tv.MA_NHOM = @Var_MaNhomMap)
+      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR tv.MA_TCV = @MaTCV)
+    ORDER BY tv.NGAY_TU_VAN ASC, tv.RECORD_ID ASC, tv.REPEAT_INSTANCE ASC;
+END
+GO
+
+-- 5. PERMISSIONS GRANT
+GRANT EXECUTE ON SP_CD45_GetBaoCaoTuVan_L1 TO bvtl_app_user;
+GRANT EXECUTE ON SP_CD45_GetBaoCaoTuVan_L2 TO bvtl_app_user;
+GO
+
+-- 6. PAGE MENU & PERMISSIONS FOR BaoCaoTuVanCD45 (Dự án CD45 (DREAMH))
+IF NOT EXISTS (SELECT 1 FROM BVTL_QT_PAGE_MENU WHERE CONTROLLER_NAME = 'BaoCaoTuVanCD45')
+BEGIN
+    INSERT INTO BVTL_QT_PAGE_MENU (NAME, DESCRIPTION, IS_ACTIVE, ORDER_BY, CONTROLLER_NAME, HREF_URL, PARENT_PAGE_ID, IS_SYSTEM_ROLE, TEN_DU_AN, TITLE_GROUP_MENU)
+    VALUES (N'Báo cáo tư vấn CD45', N'Báo cáo chi tiết tư vấn L1 và L2+ dự án CD45', 1, 32, 'BaoCaoTuVanCD45', '/BaoCaoTuVanCD45/Index', 22, 0, 'CD45', N'Dự án CD45 (DREAMH)');
+
+    DECLARE @NewPageId INT = SCOPE_IDENTITY();
+    INSERT INTO BVTL_QT_QUYEN_PAGE (RoleID, PageID, CONTROL_STRING, IS_ACTIVE)
+    SELECT r.RoleID, @NewPageId, '', 1
+    FROM (VALUES ('QT'), ('QUYENBC_DM'), ('QUYENDANHMUC'), ('QUYNBAOCAO')) AS r(RoleID);
+END
+ELSE
+BEGIN
+    UPDATE BVTL_QT_PAGE_MENU
+    SET TITLE_GROUP_MENU = N'Dự án CD45 (DREAMH)',
+        ORDER_BY = 32,
+        NAME = N'Báo cáo tư vấn CD45',
+        PARENT_PAGE_ID = 22,
+        TEN_DU_AN = 'CD45'
+    WHERE CONTROLLER_NAME = 'BaoCaoTuVanCD45';
+END
+
+UPDATE BVTL_QT_PAGE_MENU
+SET ORDER_BY = 33
+WHERE CONTROLLER_NAME = 'BaoCaoBacSiCD45' AND PARENT_PAGE_ID = 22;
+
+UPDATE BVTL_QT_PAGE_MENU
+SET ORDER_BY = 34
+WHERE CONTROLLER_NAME = 'ScheduledReport' AND PARENT_PAGE_ID = 22;
+GO

@@ -59,44 +59,54 @@ namespace WebApp.Services.ScheduleTasks
                 LastStartedTime = DateTime.Now;
 
                 // Lên lịch cho các API active
+                // Lên lịch cho các API active
                 int scheduledCount = 0;
                 foreach (ProcessModel item in processModels)
                 {
                     if (item.Active)
                     {
-                        JobKey jobKey = new JobKey(item.ReportId + "_Job", "AutoSyncGroup");
-                        TriggerKey triggerKey = new TriggerKey("trigger_" + item.ReportId + "Job", "AutoSyncGroup");
-
-                        IJobDetail job = JobBuilder.Create<GetDataAPIJob>()
-                            .WithIdentity(jobKey)
-                            .Build();
-                        job.JobDataMap["Data"] = item;
-
-                        ITrigger trigger;
-                        if (item.TimeLoop <= 23 && item.TimeLoop >= 0)
+                        try
                         {
-                            // Chạy theo giờ cố định mỗi ngày (VD: 23 = 23:00)
-                            trigger = TriggerBuilder.Create()
-                                .WithIdentity(triggerKey)
-                                .StartNow()
-                                .WithCronSchedule($"0 0 {item.TimeLoop} * * ?")
-                                .Build();
-                        }
-                        else
-                        {
-                            // Chạy lặp lại theo giây (hoặc tối thiểu 30s)
-                            int interval = item.TimeLoop >= 30 ? item.TimeLoop : 60;
-                            trigger = TriggerBuilder.Create()
-                                .WithIdentity(triggerKey)
-                                .StartNow()
-                                .WithSimpleSchedule(x => x
-                                    .WithIntervalInSeconds(interval)
-                                    .RepeatForever())
-                                .Build();
-                        }
+                            // Ưu tiên dùng Mã API (Code) duy nhất để tránh xung đột JobKey khi các API có chung ReportId
+                            string jobIdentifier = !string.IsNullOrEmpty(item.Code) ? item.Code : item.ReportId;
+                            JobKey jobKey = new JobKey(jobIdentifier + "_Job", "AutoSyncGroup");
+                            TriggerKey triggerKey = new TriggerKey("trigger_" + jobIdentifier + "Job", "AutoSyncGroup");
 
-                        await Scheduler.ScheduleJob(job, trigger);
-                        scheduledCount++;
+                            IJobDetail job = JobBuilder.Create<GetDataAPIJob>()
+                                .WithIdentity(jobKey)
+                                .Build();
+                            job.JobDataMap["Data"] = item;
+
+                            ITrigger trigger;
+                            if (item.TimeLoop <= 23 && item.TimeLoop >= 0)
+                            {
+                                // Chạy theo giờ cố định mỗi ngày (VD: 23 = 23:00)
+                                trigger = TriggerBuilder.Create()
+                                    .WithIdentity(triggerKey)
+                                    .StartNow()
+                                    .WithCronSchedule($"0 0 {item.TimeLoop} * * ?")
+                                    .Build();
+                            }
+                            else
+                            {
+                                // Chạy lặp lại theo giây (hoặc tối thiểu 30s)
+                                int interval = item.TimeLoop >= 30 ? item.TimeLoop : 60;
+                                trigger = TriggerBuilder.Create()
+                                    .WithIdentity(triggerKey)
+                                    .StartNow()
+                                    .WithSimpleSchedule(x => x
+                                        .WithIntervalInSeconds(interval)
+                                        .RepeatForever())
+                                    .Build();
+                            }
+
+                            await Scheduler.ScheduleJob(job, trigger);
+                            scheduledCount++;
+                        }
+                        catch (Exception exItem)
+                        {
+                            log.Error($"[JobScheduler.StartAll] Lỗi khi đăng ký Job cho API [{item.Code}] (ReportId: {item.ReportId}): {exItem.Message}", exItem);
+                        }
                     }
                 }
 
@@ -183,30 +193,38 @@ namespace WebApp.Services.ScheduleTasks
             }
         }
 
-        public static async Task TriggerJobNow(string reportId)
+        public static async Task TriggerJobNow(string key)
         {
             if (Scheduler != null)
             {
-                JobKey jobKey = new JobKey(reportId + "_Job", "AutoSyncGroup");
+                // Thử tìm theo Key chính (Code_Job hoặc ReportId_Job)
+                JobKey jobKey = new JobKey(key + "_Job", "AutoSyncGroup");
+                if (!await Scheduler.CheckExists(jobKey))
+                {
+                    jobKey = new JobKey(key, "AutoSyncGroup");
+                }
+
                 if (await Scheduler.CheckExists(jobKey))
                 {
                     await Scheduler.TriggerJob(jobKey);
                 }
                 else
                 {
-                    // Tạo job tạm thời để chạy ngay
+                    // Tạo job tạm thời để chạy ngay nếu chưa có trong Scheduler
                     ProcessService processService = new ProcessService();
                     var list = processService.GetListProcess();
-                    var item = list.Find(x => x.ReportId == reportId);
+                    var item = list.Find(x => x.Code == key || x.ReportId == key);
                     if (item != null)
                     {
+                        string jobIdentifier = !string.IsNullOrEmpty(item.Code) ? item.Code : item.ReportId;
+                        JobKey tempJobKey = new JobKey(jobIdentifier + "_Job", "AutoSyncGroup");
                         IJobDetail job = JobBuilder.Create<GetDataAPIJob>()
-                            .WithIdentity(jobKey)
+                            .WithIdentity(tempJobKey)
                             .Build();
                         job.JobDataMap["Data"] = item;
 
                         ITrigger trigger = TriggerBuilder.Create()
-                            .WithIdentity("temp_trigger_" + reportId, "AutoSyncGroup")
+                            .WithIdentity("temp_trigger_" + jobIdentifier, "AutoSyncGroup")
                             .StartNow()
                             .Build();
 

@@ -23,7 +23,7 @@ namespace SyncBVTL.Push.ScheduleTasks
 
         public static async Task ChangeTimeloop(ProcessModel item)
         {
-            if (item == null || string.IsNullOrEmpty(item.ReportId)) return;
+            if (item == null || (string.IsNullOrEmpty(item.ReportId) && string.IsNullOrEmpty(item.Code))) return;
 
             try
             {
@@ -38,8 +38,18 @@ namespace SyncBVTL.Push.ScheduleTasks
                     JobScheduler.Scheduler = scheduler;
                 }
 
-                JobKey jobKey = new JobKey(item.ReportId + "_Job");
-                TriggerKey triggerKey = new TriggerKey("trigger_" + item.ReportId + "Job");
+                string jobIdentifier = !string.IsNullOrEmpty(item.Code) ? item.Code : item.ReportId;
+                JobKey jobKey = new JobKey(jobIdentifier + "_Job");
+                TriggerKey triggerKey = new TriggerKey("trigger_" + jobIdentifier + "Job");
+
+                // Dọn dẹp cả key legacy nếu trước đó dùng ReportId
+                if (!string.IsNullOrEmpty(item.ReportId) && item.ReportId != jobIdentifier)
+                {
+                    JobKey legacyJobKey = new JobKey(item.ReportId + "_Job");
+                    TriggerKey legacyTriggerKey = new TriggerKey("trigger_" + item.ReportId + "Job");
+                    if (await scheduler.CheckExists(legacyTriggerKey)) await scheduler.UnscheduleJob(legacyTriggerKey);
+                    if (await scheduler.CheckExists(legacyJobKey)) await scheduler.DeleteJob(legacyJobKey);
+                }
 
                 // Xóa Trigger và Job cũ nếu đã có
                 if (await scheduler.CheckExists(triggerKey))
