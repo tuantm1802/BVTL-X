@@ -300,34 +300,69 @@
 
         <!-- Row 1: Cascade Funnel & Province Distribution -->
         <div class="row">
-            <!-- Cascade Funnel -->
+            <!-- Cascade Funnel (Care Cascade 1 & 2) -->
             <div class="col-xl-8 col-lg-8 mb-4">
                 <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: #ffffff;">
-                    <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
-                            <i class="fas fa-filter mr-2"></i> Phễu Dịch vụ Chăm sóc SKTT Toàn diện (Care Cascade)
-                        </h6>
-                        <span class="badge badge-light border text-muted">Luồng can thiệp liên tục</span>
+                    <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between flex-wrap" style="gap: 10px;">
+                        <div>
+                            <h6 class="m-0 font-weight-bold text-primary d-flex align-items-center">
+                                <i class="fas fa-filter mr-2"></i> Phễu Dịch vụ Chăm sóc SKTT (Care Cascade)
+                            </h6>
+                            <span class="small text-muted" x-text="activeCascade === 1 ? 'Luồng Chuyên khoa Y tế (5 bước can thiệp)' : 'Luồng Can thiệp Cộng đồng (6 bước can thiệp)'"></span>
+                        </div>
+                        <div class="btn-group btn-group-sm p-1 rounded-pill border" style="background: #f1f5f9;">
+                            <button type="button" class="btn btn-sm rounded-pill px-3 font-weight-bold transition-all"
+                                    :class="activeCascade === 1 ? 'btn-primary shadow-sm text-white' : 'btn-light text-muted border-0 bg-transparent'"
+                                    x-on:click="setCascadeMode(1)">
+                                <i class="fas fa-hospital-user mr-1"></i> Cascade 1: Y tế
+                            </button>
+                            <button type="button" class="btn btn-sm rounded-pill px-3 font-weight-bold transition-all"
+                                    :class="activeCascade === 2 ? 'btn-primary shadow-sm text-white' : 'btn-light text-muted border-0 bg-transparent'"
+                                    x-on:click="setCascadeMode(2)">
+                                <i class="fas fa-users mr-1"></i> Cascade 2: Cộng đồng
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div style="height: 280px; position: relative;">
                             <canvas id="chartFunnel"></canvas>
                         </div>
-                        <div class="row text-center mt-3 pt-2 border-top">
+
+                        <!-- Chỉ số chuyển đổi Cascade 1: Chuyên khoa Y tế -->
+                        <div class="row text-center mt-3 pt-2 border-top" x-show="activeCascade === 1">
                             <div class="col-4 border-right">
-                                <div class="text-xs text-muted">Tỷ lệ Sàng lọc QST</div>
+                                <div class="text-xs text-muted">Tỷ lệ Sàng lọc / Tiếp cận</div>
                                 <div class="h6 font-weight-bold text-info mb-0" 
-                                     x-text="cascadeFunnel.Step1_TiepCanTruyenThong > 0 ? ((cascadeFunnel.Step2_SangLocQST / cascadeFunnel.Step1_TiepCanTruyenThong) * 100).toFixed(1) + '%' : '0%'"></div>
+                                     x-text="(cascadeFunnel.C1_Step1_TiepCanTruyenThong || cascadeFunnel.Step1_TiepCanTruyenThong) > 0 ? (((cascadeFunnel.C1_Step2_SangLocQST || cascadeFunnel.Step2_SangLocQST) / (cascadeFunnel.C1_Step1_TiepCanTruyenThong || cascadeFunnel.Step1_TiepCanTruyenThong)) * 100).toFixed(1) + '%' : '0%'"></div>
                             </div>
                             <div class="col-4 border-right">
-                                <div class="text-xs text-muted">Tỷ lệ Nguy cơ cao / Sàng lọc</div>
+                                <div class="text-xs text-muted">Tỷ lệ Cần chuyển gửi / Sàng lọc</div>
                                 <div class="h6 font-weight-bold text-warning mb-0" 
-                                     x-text="cascadeFunnel.Step2_SangLocQST > 0 ? ((cascadeFunnel.Step3_NguyCoCaoQST / cascadeFunnel.Step2_SangLocQST) * 100).toFixed(1) + '%' : '0%'"></div>
+                                     x-text="(cascadeFunnel.C1_Step2_SangLocQST || cascadeFunnel.Step2_SangLocQST) > 0 ? ((cascadeFunnel.C1_Step3_CanChuyenGui / (cascadeFunnel.C1_Step2_SangLocQST || cascadeFunnel.Step2_SangLocQST)) * 100).toFixed(1) + '%' : '0%'"></div>
                             </div>
                             <div class="col-4">
-                                <div class="text-xs text-muted">Tỷ lệ Tái khám SKTT</div>
+                                <div class="text-xs text-muted">Tỷ lệ Tái khám / Khám SKTT</div>
                                 <div class="h6 font-weight-bold text-success mb-0" 
-                                     x-text="cascadeFunnel.Step5_KhamChuyenKhoa > 0 ? ((cascadeFunnel.Step6_TaiKhamSKTT / cascadeFunnel.Step5_KhamChuyenKhoa) * 100).toFixed(1) + '%' : '0%'"></div>
+                                     x-text="(cascadeFunnel.C1_Step4_KhamSKTT || cascadeFunnel.Step5_KhamChuyenKhoa) > 0 ? (((cascadeFunnel.C1_Step5_TaiKham || cascadeFunnel.Step6_TaiKhamSKTT) / (cascadeFunnel.C1_Step4_KhamSKTT || cascadeFunnel.Step5_KhamChuyenKhoa)) * 100).toFixed(1) + '%' : '0%'"></div>
+                            </div>
+                        </div>
+
+                        <!-- Chỉ số chuyển đổi Cascade 2: Can thiệp Cộng đồng -->
+                        <div class="row text-center mt-3 pt-2 border-top" x-show="activeCascade === 2" style="display: none;">
+                            <div class="col-4 border-right">
+                                <div class="text-xs text-muted">Tỷ lệ Sàng lọc / Tiếp cận</div>
+                                <div class="h6 font-weight-bold text-info mb-0" 
+                                     x-text="(cascadeFunnel.C2_Step1_TiepCanTruyenThong || cascadeFunnel.Step1_TiepCanTruyenThong) > 0 ? (((cascadeFunnel.C2_Step2_SangLocQST || cascadeFunnel.Step2_SangLocQST) / (cascadeFunnel.C2_Step1_TiepCanTruyenThong || cascadeFunnel.Step1_TiepCanTruyenThong)) * 100).toFixed(1) + '%' : '0%'"></div>
+                            </div>
+                            <div class="col-4 border-right">
+                                <div class="text-xs text-muted">Tỷ lệ Được tư vấn / Đủ tiêu chí CĐ</div>
+                                <div class="h6 font-weight-bold text-purple mb-0" style="color: #8b5cf6;" 
+                                     x-text="cascadeFunnel.C2_Step3_CanThiepCongDong > 0 ? (((cascadeFunnel.C2_Step4_TuVan || cascadeFunnel.Step4_TuVanTamLy) / cascadeFunnel.C2_Step3_CanThiepCongDong) * 100).toFixed(1) + '%' : '0%'"></div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-xs text-muted">Tỷ lệ SHN &amp; Hỗ trợ / Tư vấn</div>
+                                <div class="h6 font-weight-bold text-success mb-0" 
+                                     x-text="(cascadeFunnel.C2_Step4_TuVan || cascadeFunnel.Step4_TuVanTamLy) > 0 ? ((cascadeFunnel.C2_Step5_SinhHoatNhomHoTro / (cascadeFunnel.C2_Step4_TuVan || cascadeFunnel.Step4_TuVanTamLy)) * 100).toFixed(1) + '%' : '0%'"></div>
                             </div>
                         </div>
                     </div>

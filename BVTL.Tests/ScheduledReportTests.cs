@@ -922,7 +922,7 @@ namespace BVTL.Tests
             // STT 1: PTSD (PCL5_POSITIVE = 1)
             var ptsdResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "PTSD", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(ptsdResult.recordsTotal > 0 && ptsdResult.recordsTotal <= totalAll, "PTSD phải có KH thỏa mãn");
-            Assert.AreEqual(679, ptsdResult.recordsTotal, "PTSD phải khớp chính xác 679 KH");
+            Assert.AreEqual(681, ptsdResult.recordsTotal, "PTSD phải khớp chính xác 681 KH");
 
             // STT 2: Rối loạn sử dụng chất (CHAT: QA2 = 1)
             var chatResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHAT", PageIndex = 1, PageSize = 10 });

@@ -257,16 +257,44 @@ namespace Data.Admin
                             }
                         }
 
-                        // Table 5: Cascade Funnel
+                        // Table 5: Cascade Funnel (Care Cascade 1 & 2)
                         if (ds.Tables.Count > 5 && ds.Tables[5].Rows.Count > 0)
                         {
                             var r = ds.Tables[5].Rows[0];
-                            model.CascadeFunnel.Step1_TiepCanTruyenThong = r["Step1_TiepCanTruyenThong"] != DBNull.Value ? Convert.ToInt32(r["Step1_TiepCanTruyenThong"]) : 0;
-                            model.CascadeFunnel.Step2_SangLocQST = r["Step2_SangLocQST"] != DBNull.Value ? Convert.ToInt32(r["Step2_SangLocQST"]) : 0;
-                            model.CascadeFunnel.Step3_NguyCoCaoQST = r["Step3_NguyCoCaoQST"] != DBNull.Value ? Convert.ToInt32(r["Step3_NguyCoCaoQST"]) : 0;
-                            model.CascadeFunnel.Step4_TuVanTamLy = r["Step4_TuVanTamLy"] != DBNull.Value ? Convert.ToInt32(r["Step4_TuVanTamLy"]) : 0;
-                            model.CascadeFunnel.Step5_KhamChuyenKhoa = r["Step5_KhamChuyenKhoa"] != DBNull.Value ? Convert.ToInt32(r["Step5_KhamChuyenKhoa"]) : 0;
-                            model.CascadeFunnel.Step6_TaiKhamSKTT = r["Step6_TaiKhamSKTT"] != DBNull.Value ? Convert.ToInt32(r["Step6_TaiKhamSKTT"]) : 0;
+                            if (r.Table.Columns.Contains("C1_Step1_TiepCanTruyenThong"))
+                            {
+                                model.CascadeFunnel.C1_Step1_TiepCanTruyenThong = r["C1_Step1_TiepCanTruyenThong"] != DBNull.Value ? Convert.ToInt32(r["C1_Step1_TiepCanTruyenThong"]) : 0;
+                                model.CascadeFunnel.C1_Step2_SangLocQST = r["C1_Step2_SangLocQST"] != DBNull.Value ? Convert.ToInt32(r["C1_Step2_SangLocQST"]) : 0;
+                                model.CascadeFunnel.C1_Step3_CanChuyenGui = r["C1_Step3_CanChuyenGui"] != DBNull.Value ? Convert.ToInt32(r["C1_Step3_CanChuyenGui"]) : 0;
+                                model.CascadeFunnel.C1_Step4_KhamSKTT = r["C1_Step4_KhamSKTT"] != DBNull.Value ? Convert.ToInt32(r["C1_Step4_KhamSKTT"]) : 0;
+                                model.CascadeFunnel.C1_Step5_TaiKham = r["C1_Step5_TaiKham"] != DBNull.Value ? Convert.ToInt32(r["C1_Step5_TaiKham"]) : 0;
+
+                                model.CascadeFunnel.C2_Step1_TiepCanTruyenThong = r["C2_Step1_TiepCanTruyenThong"] != DBNull.Value ? Convert.ToInt32(r["C2_Step1_TiepCanTruyenThong"]) : 0;
+                                model.CascadeFunnel.C2_Step2_SangLocQST = r["C2_Step2_SangLocQST"] != DBNull.Value ? Convert.ToInt32(r["C2_Step2_SangLocQST"]) : 0;
+                                model.CascadeFunnel.C2_Step3_CanThiepCongDong = r["C2_Step3_CanThiepCongDong"] != DBNull.Value ? Convert.ToInt32(r["C2_Step3_CanThiepCongDong"]) : 0;
+                                model.CascadeFunnel.C2_Step4_TuVan = r["C2_Step4_TuVan"] != DBNull.Value ? Convert.ToInt32(r["C2_Step4_TuVan"]) : 0;
+                                model.CascadeFunnel.C2_Step5_SinhHoatNhomHoTro = r["C2_Step5_SinhHoatNhomHoTro"] != DBNull.Value ? Convert.ToInt32(r["C2_Step5_SinhHoatNhomHoTro"]) : 0;
+                                model.CascadeFunnel.C2_Step6_KhamSKTT = r["C2_Step6_KhamSKTT"] != DBNull.Value ? Convert.ToInt32(r["C2_Step6_KhamSKTT"]) : 0;
+                            }
+
+                            model.CascadeFunnel.Step1_TiepCanTruyenThong = r.Table.Columns.Contains("Step1_TiepCanTruyenThong") && r["Step1_TiepCanTruyenThong"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step1_TiepCanTruyenThong"]) 
+                                : model.CascadeFunnel.C1_Step1_TiepCanTruyenThong;
+                            model.CascadeFunnel.Step2_SangLocQST = r.Table.Columns.Contains("Step2_SangLocQST") && r["Step2_SangLocQST"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step2_SangLocQST"]) 
+                                : model.CascadeFunnel.C1_Step2_SangLocQST;
+                            model.CascadeFunnel.Step3_NguyCoCaoQST = r.Table.Columns.Contains("Step3_NguyCoCaoQST") && r["Step3_NguyCoCaoQST"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step3_NguyCoCaoQST"]) 
+                                : 0;
+                            model.CascadeFunnel.Step4_TuVanTamLy = r.Table.Columns.Contains("Step4_TuVanTamLy") && r["Step4_TuVanTamLy"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step4_TuVanTamLy"]) 
+                                : model.CascadeFunnel.C2_Step4_TuVan;
+                            model.CascadeFunnel.Step5_KhamChuyenKhoa = r.Table.Columns.Contains("Step5_KhamChuyenKhoa") && r["Step5_KhamChuyenKhoa"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step5_KhamChuyenKhoa"]) 
+                                : model.CascadeFunnel.C1_Step4_KhamSKTT;
+                            model.CascadeFunnel.Step6_TaiKhamSKTT = r.Table.Columns.Contains("Step6_TaiKhamSKTT") && r["Step6_TaiKhamSKTT"] != DBNull.Value 
+                                ? Convert.ToInt32(r["Step6_TaiKhamSKTT"]) 
+                                : model.CascadeFunnel.C1_Step5_TaiKham;
                         }
 
                         // Table 6: Social Support

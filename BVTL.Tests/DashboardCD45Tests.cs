@@ -274,5 +274,30 @@ namespace BVTL.Tests
             Assert.IsTrue(list.Count > 0, "Group 'ad' must return TCVs");
             Assert.IsTrue(list.All(t => t.MA_NHOM == "ad"), "Returned TCVs must have MA_NHOM = 'ad'");
         }
+
+        [TestMethod]
+        public void GetDashboardData_CareCascade1And2_ShouldReturnValidCounts()
+        {
+            var da = new DashboardCD45DA();
+            var result = da.GetDashboardData(null, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.CascadeFunnel);
+
+            // Cascade 1 (Chuyên khoa Y tế - 5 bước)
+            Assert.IsTrue(result.CascadeFunnel.C1_Step1_TiepCanTruyenThong > 0, "C1 Step1 Tiếp cận > 0");
+            Assert.IsTrue(result.CascadeFunnel.C1_Step2_SangLocQST > 0, "C1 Step2 Sàng lọc > 0");
+            Assert.IsTrue(result.CascadeFunnel.C1_Step3_CanChuyenGui > 0, "C1 Step3 Cần chuyển gửi > 0");
+            Assert.IsTrue(result.CascadeFunnel.C1_Step4_KhamSKTT > 0, "C1 Step4 Khám SKTT > 0");
+            Assert.IsTrue(result.CascadeFunnel.C1_Step5_TaiKham > 0, "C1 Step5 Tái khám > 0");
+
+            // Cascade 2 (Can thiệp Cộng đồng - 6 bước)
+            Assert.IsTrue(result.CascadeFunnel.C2_Step1_TiepCanTruyenThong > 0, "C2 Step1 Tiếp cận > 0");
+            Assert.IsTrue(result.CascadeFunnel.C2_Step2_SangLocQST > 0, "C2 Step2 Sàng lọc > 0");
+            Assert.IsTrue(result.CascadeFunnel.C2_Step3_CanThiepCongDong > 0, "C2 Step3 Đủ tiêu chí CĐ > 0");
+            Assert.IsTrue(result.CascadeFunnel.C2_Step4_TuVan > 0, "C2 Step4 Tư vấn L1, L2+ > 0");
+            Assert.IsTrue(result.CascadeFunnel.C2_Step5_SinhHoatNhomHoTro > 0, "C2 Step5 SHN & Hỗ trợ > 0");
+            Assert.IsTrue(result.CascadeFunnel.C2_Step6_KhamSKTT > 0, "C2 Step6 Khám SKTT > 0");
+        }
     }
 }

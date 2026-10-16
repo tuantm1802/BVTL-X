@@ -2,6 +2,7 @@ document.addEventListener('alpine:init', function () {
     Alpine.data('alpineHome', function () {
         return {
             activeTab: 'visual', // 'visual' | 'tables'
+            activeCascade: 1,    // 1: Chuyên khoa Y tế (5 bước), 2: Can thiệp Cộng đồng (6 bước)
             cityMode: 'NEW34',   // 'NEW34' (NQ 202/2025) hoặc 'OLD63' (Lịch sử)
             selectedTinh: '',
             selectedTinhName: 'Toàn bộ Tỉnh/Thành',
@@ -37,6 +38,17 @@ document.addEventListener('alpine:init', function () {
             mentalHealth: [],
             byProvince: [],
             cascadeFunnel: {
+                C1_Step1_TiepCanTruyenThong: 0,
+                C1_Step2_SangLocQST: 0,
+                C1_Step3_CanChuyenGui: 0,
+                C1_Step4_KhamSKTT: 0,
+                C1_Step5_TaiKham: 0,
+                C2_Step1_TiepCanTruyenThong: 0,
+                C2_Step2_SangLocQST: 0,
+                C2_Step3_CanThiepCongDong: 0,
+                C2_Step4_TuVan: 0,
+                C2_Step5_SinhHoatNhomHoTro: 0,
+                C2_Step6_KhamSKTT: 0,
                 Step1_TiepCanTruyenThong: 0,
                 Step2_SangLocQST: 0,
                 Step3_NguyCoCaoQST: 0,
@@ -71,6 +83,17 @@ document.addEventListener('alpine:init', function () {
                     this.selectedNhomName = 'Toàn bộ Nhóm';
                     this.loadFilterData();
                     this.loadDashboardData();
+                }
+            },
+
+            setCascadeMode: function (mode) {
+                var m = parseInt(mode) || 1;
+                if (this.activeCascade !== m) {
+                    this.activeCascade = m;
+                    var self = this;
+                    this.$nextTick(function () {
+                        self.renderFunnelChart();
+                    });
                 }
             },
 
@@ -271,29 +294,67 @@ document.addEventListener('alpine:init', function () {
                 this.renderPcl5Chart();
             },
 
-            // 1. Phễu dịch vụ chăm sóc SKTT
+            // 1. Phễu dịch vụ chăm sóc SKTT (Care Cascade 1 & 2)
             renderFunnelChart: function () {
                 var el = document.getElementById('chartFunnel');
                 if (!el) return;
                 this.destroyChart('funnel');
 
                 var f = this.cascadeFunnel;
-                var labels = [
-                    '1. Tiếp cận TT',
-                    '2. Sàng lọc QST',
-                    '3. QST Nguy cơ cao',
-                    '4. Tư vấn L1',
-                    '5. Khám SKTT',
-                    '6. Tái khám'
-                ];
-                var dataVals = [
-                    f.Step1_TiepCanTruyenThong || 0,
-                    f.Step2_SangLocQST || 0,
-                    f.Step3_NguyCoCaoQST || 0,
-                    f.Step4_TuVanTamLy || 0,
-                    f.Step5_KhamChuyenKhoa || 0,
-                    f.Step6_TaiKhamSKTT || 0
-                ];
+                var labels = [];
+                var dataVals = [];
+                var bgColors = [];
+
+                if (this.activeCascade === 1) {
+                    // Cascade 1: Luồng Chuyên khoa Y tế (5 bước)
+                    labels = [
+                        '1. Tiếp cận TT',
+                        '2. Sàng lọc QST',
+                        '3. Cần chuyển gửi',
+                        '4. Khám SKTT',
+                        '5. Tái khám'
+                    ];
+                    dataVals = [
+                        f.C1_Step1_TiepCanTruyenThong || f.Step1_TiepCanTruyenThong || 0,
+                        f.C1_Step2_SangLocQST || f.Step2_SangLocQST || 0,
+                        f.C1_Step3_CanChuyenGui || 0,
+                        f.C1_Step4_KhamSKTT || f.Step5_KhamChuyenKhoa || 0,
+                        f.C1_Step5_TaiKham || f.Step6_TaiKhamSKTT || 0
+                    ];
+                    bgColors = [
+                        '#3b82f6', // Blue (Tiếp cận)
+                        '#06b6d4', // Cyan (Sàng lọc)
+                        '#f97316', // Orange (Cần chuyển gửi)
+                        '#10b981', // Emerald (Khám SKTT)
+                        '#ec4899'  // Pink (Tái khám)
+                    ];
+                } else {
+                    // Cascade 2: Luồng Can thiệp Cộng đồng (6 bước)
+                    labels = [
+                        '1. Tiếp cận TT',
+                        '2. Sàng lọc QST',
+                        '3. Chăm sóc tại CĐ',
+                        '4. Tư vấn (L1, L2+)',
+                        '5. SH nhóm & Hỗ trợ',
+                        '6. Khám SKTT'
+                    ];
+                    dataVals = [
+                        f.C2_Step1_TiepCanTruyenThong || f.Step1_TiepCanTruyenThong || 0,
+                        f.C2_Step2_SangLocQST || f.Step2_SangLocQST || 0,
+                        f.C2_Step3_CanThiepCongDong || 0,
+                        f.C2_Step4_TuVan || f.Step4_TuVanTamLy || 0,
+                        f.C2_Step5_SinhHoatNhomHoTro || 0,
+                        f.C2_Step6_KhamSKTT || f.Step5_KhamChuyenKhoa || 0
+                    ];
+                    bgColors = [
+                        '#3b82f6', // Blue (Tiếp cận)
+                        '#06b6d4', // Cyan (Sàng lọc)
+                        '#f59e0b', // Amber (Đủ tiêu chí chăm sóc tại CĐ)
+                        '#8b5cf6', // Violet (Tư vấn L1, L2+)
+                        '#14b8a6', // Teal (Sinh hoạt nhóm & Hỗ trợ)
+                        '#10b981'  // Emerald (Khám SKTT)
+                    ];
+                }
 
                 var ctx = el.getContext('2d');
                 this.chartInstances['funnel'] = new Chart(ctx, {
@@ -303,14 +364,7 @@ document.addEventListener('alpine:init', function () {
                         datasets: [{
                             label: 'Số khách hàng',
                             data: dataVals,
-                            backgroundColor: [
-                                '#3b82f6', // Blue
-                                '#06b6d4', // Cyan
-                                '#f59e0b', // Amber
-                                '#8b5cf6', // Violet
-                                '#10b981', // Emerald
-                                '#ec4899'  // Pink
-                            ],
+                            backgroundColor: bgColors,
                             borderRadius: 6,
                             borderSkipped: false
                         }]
@@ -322,6 +376,9 @@ document.addEventListener('alpine:init', function () {
                             legend: { display: false },
                             tooltip: {
                                 callbacks: {
+                                    label: function (context) {
+                                        return 'Số khách hàng: ' + (context.parsed.y || 0).toLocaleString('vi-VN');
+                                    },
                                     afterLabel: function (context) {
                                         var total = dataVals[0];
                                         if (total > 0) {
@@ -336,13 +393,37 @@ document.addEventListener('alpine:init', function () {
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                grid: { color: '#f1f5f9' }
+                                grid: { color: '#f1f5f9' },
+                                grace: '8%'
                             },
                             x: {
                                 grid: { display: false }
                             }
                         }
-                    }
+                    },
+                    plugins: [{
+                        id: 'funnelBarLabels',
+                        afterDatasetsDraw: function (chart) {
+                            var ctx = chart.ctx;
+                            chart.data.datasets.forEach(function (dataset, dIdx) {
+                                var meta = chart.getDatasetMeta(dIdx);
+                                if (!meta.hidden) {
+                                    meta.data.forEach(function (element, index) {
+                                        var val = dataset.data[index] || 0;
+                                        if (val > 0) {
+                                            ctx.save();
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'bottom';
+                                            ctx.font = 'bold 11px "Segoe UI", sans-serif';
+                                            ctx.fillStyle = '#1e293b';
+                                            ctx.fillText(val.toLocaleString('vi-VN'), element.x, element.y - 3);
+                                            ctx.restore();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }]
                 });
             },
 
@@ -445,6 +526,10 @@ document.addEventListener('alpine:init', function () {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
                         plugins: {
                             tooltip: {
                                 callbacks: {
@@ -453,7 +538,7 @@ document.addEventListener('alpine:init', function () {
                                         tooltipItems.forEach(function (ti) {
                                             sum += ti.parsed.y;
                                         });
-                                        return 'Tổng cộng: ' + sum.toLocaleString();
+                                        return 'Tổng cộng: ' + sum.toLocaleString('vi-VN');
                                     }
                                 }
                             }
@@ -477,10 +562,15 @@ document.addEventListener('alpine:init', function () {
                                 var barX = null;
                                 var minY = null;
                                 chart.data.datasets.forEach(function (dataset, dIdx) {
+                                    var isVisible = typeof chart.isDatasetVisible === 'function'
+                                        ? chart.isDatasetVisible(dIdx)
+                                        : (!chart.getDatasetMeta(dIdx).hidden && !dataset.hidden);
+                                    if (!isVisible) return;
+
                                     var val = dataset.data[index] || 0;
                                     total += val;
                                     var meta = chart.getDatasetMeta(dIdx);
-                                    if (meta && meta.data[index] && !meta.hidden && val > 0) {
+                                    if (meta && meta.data && meta.data[index] && val > 0) {
                                         var el = meta.data[index];
                                         barX = el.x;
                                         if (minY === null || el.y < minY) {
@@ -494,7 +584,7 @@ document.addEventListener('alpine:init', function () {
                                     ctx.textBaseline = 'bottom';
                                     ctx.font = 'bold 11px "Segoe UI", sans-serif';
                                     ctx.fillStyle = '#1e293b';
-                                    ctx.fillText(total.toLocaleString(), barX, minY - 3);
+                                    ctx.fillText(total.toLocaleString('vi-VN'), barX, minY - 3);
                                     ctx.restore();
                                 }
                             });

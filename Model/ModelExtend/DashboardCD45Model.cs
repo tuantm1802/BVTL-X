@@ -67,6 +67,22 @@ namespace Model.ModelExtend
 
     public class DashboardCD45CascadeFunnelModel
     {
+        // Cascade 1: Luồng Chuyên khoa Y tế (5 bước)
+        public int C1_Step1_TiepCanTruyenThong { get; set; }
+        public int C1_Step2_SangLocQST { get; set; }
+        public int C1_Step3_CanChuyenGui { get; set; }
+        public int C1_Step4_KhamSKTT { get; set; }
+        public int C1_Step5_TaiKham { get; set; }
+
+        // Cascade 2: Luồng Can thiệp Cộng đồng (6 bước)
+        public int C2_Step1_TiepCanTruyenThong { get; set; }
+        public int C2_Step2_SangLocQST { get; set; }
+        public int C2_Step3_CanThiepCongDong { get; set; }
+        public int C2_Step4_TuVan { get; set; }
+        public int C2_Step5_SinhHoatNhomHoTro { get; set; }
+        public int C2_Step6_KhamSKTT { get; set; }
+
+        // Tương thích ngược (Legacy Funnel)
         public int Step1_TiepCanTruyenThong { get; set; }
         public int Step2_SangLocQST { get; set; }
         public int Step3_NguyCoCaoQST { get; set; }

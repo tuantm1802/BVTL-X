@@ -2097,3 +2097,38 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Chạy `vstest.console.exe`: 100% tests PASSED.
    - Cập nhật file đồng bộ `SQL_Sync_Dev_To_Prod.sql` (STRICT UTF-8 WITH BOM).
    - Điều chỉnh cấu trúc menu: Đưa menu "Báo cáo tư vấn CD45" lên cùng cấp và ngay sau "Báo cáo TCV CD45" trong nhóm menu cha "Dự án CD45 (DREAMH)" (`ORDER_BY = 32`), đồng thời cập nhật "Báo cáo Bác sĩ CD45" (`ORDER_BY = 33`) đồng bộ trên cả DEV và PROD.
+---
+
+## Phiên 43: 16/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Triển khai nâng cấp **Phễu Dịch vụ Chăm sóc SKTT (Care Cascade)** trên Dashboard CD45 (Home/Index):
+   - Phân tách thành 2 luồng can thiệp chuyên biệt với nút chuyển đổi trực quan (Pill Button Switcher):
+     + **Cascade 1: Luồng Chuyên khoa Y tế (5 bước)**: Tiếp cận truyền thông -> Sàng lọc QST -> Cần chuyển gửi (QST Mức 1) -> Khám SKTT -> Tái khám (Lần khám > 1).
+     + **Cascade 2: Luồng Can thiệp Cộng đồng (6 bước)**: Tiếp cận truyền thông -> Sàng lọc QST -> Đủ tiêu chí chăm sóc tại CĐ (QST Mức 2, 3, 4) -> Tư vấn (L1, L2+) -> Sinh hoạt nhóm & Hỗ trợ xã hội -> Khám SKTT.
+   - Bổ sung 3 chỉ số chuyển đổi động dưới chân phễu tương ứng với từng luồng can thiệp.
+2. Tối ưu hóa hiển thị biểu đồ Chart.js (AlpineHomeController.js):
+   - Hiển thị nhãn số liệu trực tiếp trên đầu từng cột (unnelBarLabels).
+   - Tối ưu nhãn tổng cộng biểu đồ cột xếp chồng phân bố tỉnh (	otalTopLabels) khi bật/tắt ẩn hiện legend.
+3. Đồng bộ CSDL (SP_CD45_Dashboard), Stored Procedure SQL_Sync_Dev_To_Prod.sql và SQL_CD45_SP_CityMapping_Upgrade.sql trên DEV và PROD.
+4. Bổ sung Unit Test GetDashboardData_CareCascade1And2_ShouldReturnValidCounts và cập nhật kiểm thử đạt 152/152 tests PASSED 100%.
+5. Đóng gói phát hành bản vá 1.6.9, đẩy lên Git và triển khai đồng bộ lên cả 2 môi trường DEV (c:\publish\dev) và PROD (c:\publish\prod).
+
+### Các công việc đã hoàn thành:
+1. **Cơ sở dữ liệu & Backend Engine**:
+   - Cập nhật SP_CD45_Dashboard trả về đầy đủ 11 cột mới cho Care Cascade 1 (C1_Step1 đến C1_Step5) và Care Cascade 2 (C2_Step1 đến C2_Step6) bên cạnh các cột legacy giữ tương thích ngược.
+   - Cập nhật model DashboardCD45CascadeFunnelModel trong Model/ModelExtend/DashboardCD45Model.cs.
+   - Cập nhật mapping dữ liệu Table 5 trong Data/Admin/DashboardCD45DA.cs.
+   - Xác nhận SP_CD45_Dashboard khớp 100% trên cả 2 cơ sở dữ liệu BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+2. **Giao diện Web & Biểu đồ (UI/UX)**:
+   - Cập nhật WebApp/Views/Home/Index.cshtml bổ sung bộ chuyển đổi Luồng Y tế / Luồng Cộng đồng và 2 bộ chỉ số tỷ lệ chuyển đổi.
+   - Cập nhật WebApp/app/Controller/AlpineHomeController.js cấu hình nhãn, màu sắc biểu đồ động cho 2 luồng và plugin vẽ nhãn số lượng trên đầu thanh bar.
+3. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Thêm unit test GetDashboardData_CareCascade1And2_ShouldReturnValidCounts trong BVTL.Tests/DashboardCD45Tests.cs.
+   - Cập nhật test ScheduledReportTests.cs khớp số lượng khách hàng PTSD (681 KH).
+   - Biên dịch Release sạch, chạy stest.console.exe: Đạt 152/152 tests PASSED 100%.
+4. **Triển khai & Phát hành (v1.6.9)**:
+   - Tạo tag Git 1.6.9, push lên nhánh TUANTM_BVTL_V1.0 kèm tags.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.6.9.rar và tải lên Packages/ trên máy chủ FTP.
+   - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
+   - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản 1.6.9 và trả về HTTP 200 OK.
