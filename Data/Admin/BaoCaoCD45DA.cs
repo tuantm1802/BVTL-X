@@ -1,4 +1,4 @@
-using Common.Common;
+﻿using Common.Common;
 using Data.InterfaceDA;
 using Model.Model;
 using Model.ModelExtend;
@@ -347,7 +347,7 @@ namespace Data.Admin
         }
 
 
-        private static readonly Dictionary<string, string> DictHospital = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, string> DictHospital = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "1", "Hà Nội - Bệnh viện Lão khoa" },
             { "2", "Hưng Yên - BV SKTT Thái Bình" },
@@ -360,7 +360,7 @@ namespace Data.Admin
             { "9", "Bệnh viện Thủ Đức" }
         };
 
-﻿        private static readonly Dictionary<string, string> DictDiagnose = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, string> DictDiagnose = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "1", "F00- Sa sút trí tuệ (bệnh Alzheimer, sa sút trí tuệ do mạch máu, sa sút trí tuệ trong các bệnh lý khác)" },
             { "2", "F10- Rối loạn tâm thần và hành vi do sử dụng rượu" },

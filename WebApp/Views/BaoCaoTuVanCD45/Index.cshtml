@@ -84,12 +84,12 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Từ ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Đến ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <!-- Tỉnh / Thành -->
@@ -196,7 +196,6 @@
                             <th style="width: 95px;">Ngày TV</th>
                             <th style="width: 130px;">Địa điểm</th>
                             <th style="width: 180px;">3a. Tình trạng SKTT hiện tại</th>
-                            <th style="width: 180px;">3b. Các yếu tố liên quan</th>
                             <th style="width: 180px;">3c. Nhu cầu hỗ trợ chính</th>
                             <th style="width: 180px;">4.1 Can thiệp giới thiệu</th>
                             <th style="width: 180px;">4.2 Nhu cầu tham gia</th>
@@ -217,10 +216,6 @@
                                     <div x-text="item.Q3A_TEXT || '-'"></div>
                                     <div x-show="item.Q3A_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q3A_KHAC"></div>
                                 </td>
-                                <td class="small">
-                                    <div x-text="item.Q3B_TEXT || '-'"></div>
-                                    <div x-show="item.Q3B_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q3B_KHAC"></div>
-                                </td>
                                 <td class="small" x-text="item.Q3C_NHU_CAU || '-'"></td>
                                 <td class="small" x-text="item.Q41_CAN_THIEP_GTH || '-'"></td>
                                 <td class="small">
@@ -231,13 +226,13 @@
                             </tr>
                         </template>
                         <tr x-show="filteredL1.length === 0 && !isLoading">
-                            <td colspan="13" class="text-center py-4 text-muted">
+                            <td colspan="12" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 Không có bản ghi ca tư vấn Lần 1 nào trong kỳ này
                             </td>
                         </tr>
                         <tr x-show="isLoading">
-                            <td colspan="13" class="text-center py-4 text-primary">
+                            <td colspan="12" class="text-center py-4 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 Đang tải danh sách ca tư vấn Lần 1...
                             </td>
@@ -273,10 +268,8 @@
                             <th style="width: 120px;">Địa điểm</th>
                             <th style="width: 180px;">2.1.a Cảm thấy dạo gần đây</th>
                             <th style="width: 180px;">2.2 Vấn đề muốn tập trung</th>
-                            <th style="width: 220px;">3.1 Kỹ năng / Can thiệp trao đổi</th>
                             <th style="width: 180px;">3.2 Nội dung can thiệp chính</th>
                             <th style="width: 180px;">4.1 Can thiệp đồng ý áp dụng</th>
-                            <th style="width: 160px;">4.2 Kế hoạch (Việc làm & Tần suất)</th>
                             <th style="width: 95px;">Ngày hẹn tiếp</th>
                         </tr>
                     </thead>
@@ -295,34 +288,22 @@
                                 <td class="small" x-text="item.DIA_DIEM_TEXT || '-'"></td>
                                 <td class="small">
                                     <div x-text="item.Q21A_CAM_THAY || '-'"></div>
-                                    <div x-show="item.Q21A_KHAC" class="text-muted font-italic mt-1" x-text="'Khác: ' + item.Q21A_KHAC"></div>
                                     <div x-show="item.Q21B_CHIA_SE" class="text-primary font-italic mt-1" x-text="'Chia sẻ: ' + item.Q21B_CHIA_SE"></div>
                                 </td>
                                 <td class="small" x-text="item.Q22_VAN_DE || '-'"></td>
-                                <td class="small">
-                                    <div x-show="item.Q31A_CAM_XUC"><strong>Cảm xúc:</strong> <span x-text="item.Q31A_CAM_XUC"></span></div>
-                                    <div x-show="item.Q31B_CANG_THANG_NGAN" class="mt-1"><strong>Stress ngắn:</strong> <span x-text="item.Q31B_CANG_THANG_NGAN"></span></div>
-                                    <div x-show="item.Q31C_CANG_THANG_DAI" class="mt-1"><strong>Stress dài:</strong> <span x-text="item.Q31C_CANG_THANG_DAI"></span></div>
-                                    <div x-show="item.Q31D_THOI_QUEN" class="mt-1"><strong>Thói quen:</strong> <span x-text="item.Q31D_THOI_QUEN"></span></div>
-                                    <div x-show="item.Q31E_NOI_DUNG_KHAC" class="mt-1"><strong>Khác:</strong> <span x-text="item.Q31E_NOI_DUNG_KHAC"></span></div>
-                                </td>
                                 <td class="small" x-text="item.Q32_CAN_THIEP_CHINH || '-'"></td>
                                 <td class="small" x-text="item.Q41_DONG_Y || '-'"></td>
-                                <td class="small">
-                                    <div x-show="item.Q421_VIEC_LAM"><strong>Việc:</strong> <span x-text="item.Q421_VIEC_LAM"></span></div>
-                                    <div x-show="item.Q422_TAN_SUAT" class="mt-1"><strong>Tần suất:</strong> <span x-text="item.Q422_TAN_SUAT"></span></div>
-                                </td>
                                 <td class="text-center small" x-text="item.NGAY_HEN_TIEP_STR || '-'"></td>
                             </tr>
                         </template>
                         <tr x-show="filteredL2.length === 0 && !isLoading">
-                            <td colspan="15" class="text-center py-4 text-muted">
+                            <td colspan="13" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 Không có bản ghi ca tư vấn Lần 2+ nào trong kỳ này
                             </td>
                         </tr>
                         <tr x-show="isLoading">
-                            <td colspan="15" class="text-center py-4 text-primary">
+                            <td colspan="13" class="text-center py-4 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 Đang tải danh sách ca tư vấn Lần 2+...
                             </td>
@@ -336,4 +317,9 @@
 
 @section Scripts{
     <script src="~/app/Controller/AlpineBaoCaoTuVanCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+    <script>
+        $(document).ready(function () {
+            window.initSmartDateInputs();
+        });
+    </script>
 }

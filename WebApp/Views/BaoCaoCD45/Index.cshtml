@@ -75,12 +75,12 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Từ ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Đến ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
@@ -391,21 +391,7 @@
     <script src="~/app/Controller/AlpineBaoCaoCD45Controller.js?v=@DateTime.Now.Ticks"></script>
     <script>
         $(document).ready(function () {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            }).on('changeDate', function (e) {
-                var modelName = $(this).attr('x-model');
-                var val = $(this).val();
-                var comp = document.querySelector('[x-data=alpineBaoCaoCD45]')._x_dataStack[0];
-                if (modelName === 'fromDate') {
-                    comp.fromDate = val;
-                } else if (modelName === 'toDate') {
-                    comp.toDate = val;
-                }
-                comp.validateDateRange(false);
-            });
+            window.initSmartDateInputs();
         });
     </script>
 }

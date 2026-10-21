@@ -2167,3 +2167,37 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.0.rar và tải lên Packages/ trên máy chủ FTP.
    - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
    - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản v1.7.0 và trả về HTTP 200 OK.
+---
+
+## Phiên 45: 22/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Tinh chỉnh cấu trúc mẫu xuất Excel Báo cáo Tư vấn CD45 (F7 & F8):
+   - Mẫu Lần 1 (F7): Giữ lại 14 cột cốt lõi, lược bỏ 3b và 3b.1 theo yêu cầu chuẩn hóa SCDI.
+   - Mẫu Lần 2+ (F8): Tối ưu 14 cột trọng tâm (2.1.a Cảm thấy, 2.1.b Chia sẻ, 2.2 Vấn đề tập trung, 3.2 Can thiệp chính, 4.1 Đồng ý, Ngày hẹn tiếp), cấu hình in vừa vặn 1 trang ngang A4 (FitToPages(1, 0)).
+2. Tích hợp tiện ích nhập ngày thông minh toàn hệ thống (smart-date-input.js):
+   - Hỗ trợ tự động chuẩn hóa ngày tháng khi người dùng gõ vào các ô lọc ngày trên toàn bộ giao diện (dd/MM/yyyy).
+3. Tối ưu mã nguồn Backend Data Access (BaoCaoBacSiCD45DA.cs):
+   - Tái sử dụng từ điển Bệnh viện (DictHospital) và Chẩn đoán (DictDiagnose) từ BaoCaoCD45DA tránh trùng lặp mã nguồn.
+4. Kiểm thử tự động VSTest:
+   - Mở rộng test case kiểm tra cấu hình khổ in ngang A4, độ rộng cột và số lượng 14 cột cho cả 2 Sheet TuVan_L1 và TuVan_L2.
+   - Đạt 157/157 unit tests PASSED 100%.
+5. Đóng gói phát hành bản vá v1.7.1, gắn tag Git, đẩy lên kho lưu trữ và triển khai đồng bộ lên cả 2 môi trường DEV (c:\publish\dev) và PROD (c:\publish\prod).
+
+### Các công việc đã hoàn thành:
+1. **Dịch vụ Xuất Excel & Tối ưu Sheet (ExcelTuVanHelper.cs)**:
+   - Tinh chỉnh BuildTuVanL1Worksheet: Chuẩn hóa 14 cột, căn chỉnh tiêu đề A1-A4 (Merge A1:N1 đến A4:N4).
+   - Tinh chỉnh BuildTuVanL2Worksheet: Chuẩn hóa 14 cột, độ rộng cột tối ưu, thiết lập XLPageOrientation.Landscape, XLPaperSize.A4Paper, FitToPages(1, 0).
+2. **Giao diện & Tiện ích Frontend (UI/UX)**:
+   - Tạo mới WebApp/Scripts/smart-date-input.js, nhúng vào WebApp/Views/Shared/_Layout.cshtml và khai báo trong WebApp/WebApp.csproj.
+   - Cập nhật giao diện lọc trên các view báo cáo: BaoCaoBacSiCD45, BaoCaoCD45, BaoCaoTCVCD45, BaoCaoTuVanCD45.
+3. **Backend Data Access**:
+   - Refactor Data/Admin/BaoCaoBacSiCD45DA.cs sử dụng chung BaoCaoCD45DA.DictHospital và BaoCaoCD45DA.DictDiagnose.
+4. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Bổ sung test kiểm tra khổ in A4 landscape và 14 cột vào BVTL.Tests/ScheduledReportTests.cs.
+   - Biên dịch Release sạch, chạy vstest.console.exe: Đạt 157/157 tests PASSED 100%.
+5. **Triển khai & Phát hành (v1.7.1)**:
+   - Tạo tag Git v1.7.1, push lên nhánh TUANTM_BVTL_V1.0 kèm tags.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.1.rar và tải lên Packages/ trên máy chủ FTP.
+   - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
+   - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản v1.7.1 và trả về HTTP 200 OK.

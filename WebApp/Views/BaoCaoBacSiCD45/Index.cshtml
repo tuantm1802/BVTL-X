@@ -57,12 +57,12 @@
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Từ ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="fromDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="fromDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-2 mb-2">
                     <label class="font-weight-bold small">Đến ngày</label>
-                    <input type="text" class="form-control form-control-sm datepicker" :class="{ 'is-invalid': dateError }" x-model="toDate" placeholder="dd/mm/yyyy" />
+                    <input type="text" class="form-control form-control-sm datepicker smart-date" :class="{ 'is-invalid': dateError }" x-model="toDate" x-on:input="validateDateRange(false)" x-on:change="validateDateRange(false)" autocomplete="off" placeholder="dd/mm/yyyy" />
                 </div>
 
                 <div class="col-md-3 mb-2">
@@ -277,4 +277,9 @@
 
 @section Scripts{
     <script src="~/app/Controller/AlpineBaoCaoBacSiCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+    <script>
+        $(document).ready(function () {
+            window.initSmartDateInputs();
+        });
+    </script>
 }
