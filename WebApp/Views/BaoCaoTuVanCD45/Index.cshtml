@@ -95,7 +95,7 @@
                 <!-- Tỉnh / Thành -->
                 <div class="col-md-3 mb-2">
                     <label class="font-weight-bold small">Tỉnh / Thành phố</label>
-                    <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange()">
+                    <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange($event.target.value)">
                         <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
                             <option :value="c.CityCode" x-text="c.CityName + ' (' + c.CityCode + ')'"></option>
@@ -106,7 +106,7 @@
                 <!-- Nhóm CBO -->
                 <div class="col-md-3 mb-2">
                     <label class="font-weight-bold small">Nhóm (CBO)</label>
-                    <select class="form-control form-control-sm" x-model="selectedNhom" x-on:change="onNhomChange()">
+                    <select class="form-control form-control-sm" x-model="selectedNhom" x-on:change="onNhomChange($event.target.value)">
                         <option value="">-- Tất cả nhóm --</option>
                         <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
                             <option :value="n.manhom_tbh" x-text="n.DisplayName"></option>
@@ -117,10 +117,10 @@
                 <!-- Tiếp cận viên -->
                 <div class="col-md-3 mb-2">
                     <label class="font-weight-bold small text-primary"><i class="fas fa-user mr-1"></i>Tiếp cận viên (TCV)</label>
-                    <select class="form-control form-control-sm border-primary" x-model="selectedTCV">
+                    <select class="form-control form-control-sm border-primary" x-model="selectedTCV" x-on:change="onTCVChange($event.target.value)">
                         <option value="">-- Tất cả TCV --</option>
-                        <template x-for="t in filteredTCVs" :key="t.MA_TCV">
-                            <option :value="t.MA_TCV" x-text="t.TEN_TCV + ' (' + t.MA_TCV + ')'"></option>
+                        <template x-for="t in filteredTCVs" :key="t.ID">
+                            <option :value="String(t.ID)" x-text="formatTCVOptionLabel(t)"></option>
                         </template>
                     </select>
                 </div>
@@ -180,7 +180,7 @@
                 <i class="fas fa-table mr-1"></i> Danh sách Ca Tư vấn Lần 1 (REDCap F7)
             </h6>
             <div style="width: 300px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, mã KH, TCV, vấn đề..." x-model="searchL1Keyword" x-on:input="filterL1()" />
+                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, TCV, vấn đề..." x-model="searchL1Keyword" x-on:input="filterL1()" />
             </div>
         </div>
         <div class="card-body p-0">
@@ -190,7 +190,6 @@
                         <tr>
                             <th style="width: 40px;">#</th>
                             <th style="width: 95px;">Record ID</th>
-                            <th style="width: 105px;">Mã KH</th>
                             <th style="width: 110px;">Tỉnh / TP</th>
                             <th style="width: 130px;">Nhóm CBO</th>
                             <th style="width: 120px;">TCV tư vấn</th>
@@ -209,7 +208,6 @@
                             <tr>
                                 <td class="text-center font-weight-bold" x-text="index + 1"></td>
                                 <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID"></td>
-                                <td class="text-center font-weight-bold" x-text="item.MA_KH_NGHIEN_CUU || '-'"></td>
                                 <td x-text="item.CITY_NAME || item.CITY_CODE"></td>
                                 <td class="small" x-text="item.TEN_NHOM || item.MA_NHOM"></td>
                                 <td class="font-weight-500" x-text="item.TEN_TCV || item.MA_TCV"></td>
@@ -233,13 +231,13 @@
                             </tr>
                         </template>
                         <tr x-show="filteredL1.length === 0 && !isLoading">
-                            <td colspan="14" class="text-center py-4 text-muted">
+                            <td colspan="13" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 Không có bản ghi ca tư vấn Lần 1 nào trong kỳ này
                             </td>
                         </tr>
                         <tr x-show="isLoading">
-                            <td colspan="14" class="text-center py-4 text-primary">
+                            <td colspan="13" class="text-center py-4 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 Đang tải danh sách ca tư vấn Lần 1...
                             </td>
@@ -257,7 +255,7 @@
                 <i class="fas fa-table mr-1"></i> Danh sách Ca Tư vấn từ Lần 2 trở đi (REDCap F8)
             </h6>
             <div style="width: 300px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, mã KH, TCV, nội dung..." x-model="searchL2Keyword" x-on:input="filterL2()" />
+                <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh Record ID, TCV, nội dung..." x-model="searchL2Keyword" x-on:input="filterL2()" />
             </div>
         </div>
         <div class="card-body p-0">
@@ -267,7 +265,6 @@
                         <tr>
                             <th style="width: 40px;">#</th>
                             <th style="width: 95px;">Record ID</th>
-                            <th style="width: 105px;">Mã KH</th>
                             <th style="width: 80px;">Lần TV</th>
                             <th style="width: 110px;">Tỉnh / TP</th>
                             <th style="width: 130px;">Nhóm CBO</th>
@@ -288,7 +285,6 @@
                             <tr>
                                 <td class="text-center font-weight-bold" x-text="index + 1"></td>
                                 <td class="text-center font-weight-bold text-primary" x-text="item.RECORD_ID"></td>
-                                <td class="text-center font-weight-bold" x-text="item.MA_KH_NGHIEN_CUU || '-'"></td>
                                 <td class="text-center">
                                     <span class="badge badge-info" x-text="item.LAN_TU_VAN"></span>
                                 </td>
@@ -320,13 +316,13 @@
                             </tr>
                         </template>
                         <tr x-show="filteredL2.length === 0 && !isLoading">
-                            <td colspan="16" class="text-center py-4 text-muted">
+                            <td colspan="15" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x d-block mb-2"></i>
                                 Không có bản ghi ca tư vấn Lần 2+ nào trong kỳ này
                             </td>
                         </tr>
                         <tr x-show="isLoading">
-                            <td colspan="16" class="text-center py-4 text-primary">
+                            <td colspan="15" class="text-center py-4 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 Đang tải danh sách ca tư vấn Lần 2+...
                             </td>

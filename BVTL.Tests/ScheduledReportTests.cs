@@ -326,13 +326,13 @@ namespace BVTL.Tests
                     var ws = wb.Worksheets.Worksheet(1);
                     Assert.IsNotNull(ws, "Worksheet must exist");
 
-                    // Dòng 5 là Section I (tiêu đề bold) -> các ô cột 3..8 phải để trống
-                    string headerTong = ws.Cell(5, 3).GetString();
+                    // Dòng 6 là Section I (tiêu đề bold) -> các ô cột 3..8 phải để trống
+                    string headerTong = ws.Cell(6, 3).GetString();
                     Assert.AreEqual(string.Empty, headerTong, "Header Section cell should be empty");
 
                     // Kiểm tra các dòng dữ liệu: nếu giá trị bằng 0 phải hiển thị ký tự '-'
                     bool foundDash = false;
-                    for (int r = 6; r <= 30; r++)
+                    for (int r = 7; r <= 31; r++)
                     {
                         string valTong = ws.Cell(r, 3).GetString();
                         if (valTong == "-")
@@ -474,7 +474,9 @@ namespace BVTL.Tests
                     var ws = wb.Worksheets.Worksheet(1);
                     Assert.IsNotNull(ws, "Worksheet must exist");
 
-                    string subtitle = ws.Cell(2, 1).GetString();
+                    string monthTitle = ws.Cell(2, 1).GetString();
+                    Assert.AreEqual("Báo cáo tháng 08/2026", monthTitle);
+                    string subtitle = ws.Cell(3, 1).GetString();
                     Assert.IsTrue(subtitle.Contains("Nghệ An"), "Subtitle must mention Nghệ An: " + subtitle);
 
                     // Verify equal column width 10.0 for C..H
@@ -518,7 +520,9 @@ namespace BVTL.Tests
                     var ws = wb.Worksheets.Worksheet(1);
                     Assert.IsNotNull(ws, "Worksheet must exist");
 
-                    string subtitle = ws.Cell(2, 1).GetString();
+                    string monthTitle = ws.Cell(2, 1).GetString();
+                    Assert.AreEqual("Báo cáo tháng 08/2026", monthTitle);
+                    string subtitle = ws.Cell(3, 1).GetString();
                     Assert.IsTrue(subtitle.Contains("Bình Minh") || subtitle.Contains("Hải Phòng"), "Subtitle must mention Binh Minh or Hai Phong: " + subtitle);
 
                     // Verify equal column width 10.0 for C..H
@@ -668,45 +672,48 @@ namespace BVTL.Tests
                     // Kiểm tra cấu trúc của từng Sheet (mỗi Sheet tương ứng với một Bác sĩ)
                     foreach (var ws in wb.Worksheets)
                     {
-                        // 1. Header: Tiêu đề báo cáo
+                        // 1. Header: Tiêu đề báo cáo & Tháng báo cáo
                         string title = ws.Cell(1, 1).GetString();
                         Assert.IsTrue(title.Contains("DANH SÁCH KHÁCH HÀNG ĐƯỢC NHẬP LIỆU TRÊN REDCAP DỰ ÁN DREAMH"), 
                             "Title must match user specification: " + title);
 
-                        // 2. Header: Tỉnh, Bác sĩ, Tháng (Merge Cột A & B cho Tiêu đề, Cột C & D cho Giá trị)
-                        Assert.IsTrue(ws.Range(3, 1, 3, 2).IsMerged(), "Range A3:B3 should be merged for Province label");
-                        string provinceLabel = ws.Cell(3, 1).GetString();
-                        Assert.IsTrue(ws.Range(3, 3, 3, 4).IsMerged(), "Range C3:D3 should be merged for Province value");
-                        string provinceVal = ws.Cell(3, 3).GetString();
-                        Assert.IsTrue(provinceLabel.Contains("Tỉnh"), "Cell (3,1) should be Province label");
-                        Assert.IsTrue(provinceVal.Contains("Hà Nội"), "Cell (3,3) should be Hà Nội");
+                        string reportMonth = ws.Cell(2, 1).GetString();
+                        Assert.IsTrue(reportMonth.Contains("Báo cáo tháng 09/2026"), "Cell A2 must contain 'Báo cáo tháng 09/2026'");
 
-                        string periodText = ws.Cell(3, 7).GetString();
+                        // 2. Header: Tỉnh, Bác sĩ, Tháng (Merge Cột A & B cho Tiêu đề, Cột C & D cho Giá trị)
+                        Assert.IsTrue(ws.Range(4, 1, 4, 2).IsMerged(), "Range A4:B4 should be merged for Province label");
+                        string provinceLabel = ws.Cell(4, 1).GetString();
+                        Assert.IsTrue(ws.Range(4, 3, 4, 4).IsMerged(), "Range C4:D4 should be merged for Province value");
+                        string provinceVal = ws.Cell(4, 3).GetString();
+                        Assert.IsTrue(provinceLabel.Contains("Tỉnh"), "Cell (4,1) should be Province label");
+                        Assert.IsTrue(provinceVal.Contains("Hà Nội"), "Cell (4,3) should be Hà Nội");
+
+                        string periodText = ws.Cell(4, 7).GetString();
                         Assert.IsTrue(periodText.Contains("Từ 01/09/2026 đến 30/09/2026"), 
                             "Doctor report period in Header must be from first day to last day of month: " + periodText);
 
-                        Assert.IsTrue(ws.Range(4, 1, 4, 2).IsMerged(), "Range A4:B4 should be merged for Doctor label");
-                        string doctorLabel = ws.Cell(4, 1).GetString();
-                        Assert.IsTrue(ws.Range(4, 3, 4, 4).IsMerged(), "Range C4:D4 should be merged for Doctor value");
-                        string doctorVal = ws.Cell(4, 3).GetString();
-                        Assert.IsTrue(doctorLabel.Contains("Bác sĩ"), "Cell (4,1) should be Doctor label");
+                        Assert.IsTrue(ws.Range(5, 1, 5, 2).IsMerged(), "Range A5:B5 should be merged for Doctor label");
+                        string doctorLabel = ws.Cell(5, 1).GetString();
+                        Assert.IsTrue(ws.Range(5, 3, 5, 4).IsMerged(), "Range C5:D5 should be merged for Doctor value");
+                        string doctorVal = ws.Cell(5, 3).GetString();
+                        Assert.IsTrue(doctorLabel.Contains("Bác sĩ"), "Cell (5,1) should be Doctor label");
                         Assert.IsFalse(string.IsNullOrWhiteSpace(doctorVal), "Doctor name should not be empty");
 
-                        // 3. Header bảng chi tiết ca khám (Dòng 6)
-                        Assert.AreEqual("STT", ws.Cell(6, 1).GetString());
-                        Assert.AreEqual("Mã Khách hàng", ws.Cell(6, 2).GetString());
-                        Assert.AreEqual("Ngày khám", ws.Cell(6, 3).GetString());
-                        Assert.AreEqual("Cơ sở khám / Bệnh viện", ws.Cell(6, 4).GetString());
-                        Assert.AreEqual("Nhóm CBO", ws.Cell(6, 5).GetString());
-                        Assert.AreEqual("Tiếp cận viên (TCV)", ws.Cell(6, 6).GetString());
-                        Assert.AreEqual("Lần khám", ws.Cell(6, 7).GetString());
-                        Assert.AreEqual("Chẩn đoán chính", ws.Cell(6, 8).GetString());
-                        Assert.AreEqual("Hình thức điều trị", ws.Cell(6, 9).GetString());
+                        // 3. Header bảng chi tiết ca khám (Dòng 7)
+                        Assert.AreEqual("STT", ws.Cell(7, 1).GetString());
+                        Assert.AreEqual("Mã Khách hàng", ws.Cell(7, 2).GetString());
+                        Assert.AreEqual("Ngày khám", ws.Cell(7, 3).GetString());
+                        Assert.AreEqual("Cơ sở khám / Bệnh viện", ws.Cell(7, 4).GetString());
+                        Assert.AreEqual("Nhóm CBO", ws.Cell(7, 5).GetString());
+                        Assert.AreEqual("Tiếp cận viên (TCV)", ws.Cell(7, 6).GetString());
+                        Assert.AreEqual("Lần khám", ws.Cell(7, 7).GetString());
+                        Assert.AreEqual("Chẩn đoán chính", ws.Cell(7, 8).GetString());
+                        Assert.AreEqual("Hình thức điều trị", ws.Cell(7, 9).GetString());
 
                         // 4. Footer: Tìm chữ 'Xác nhận của SCDI'
                         int lastRow = ws.LastRowUsed().RowNumber();
                         int footerRow = -1;
-                        for (int r = 7; r <= lastRow; r++)
+                        for (int r = 8; r <= lastRow; r++)
                         {
                             string cellVal = ws.Cell(r, 7).GetString();
                             if (!string.IsNullOrEmpty(cellVal) && cellVal.Contains("Xác nhận của SCDI"))
@@ -909,6 +916,82 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
+        public void BaoCaoBacSiDetailModel_FormatHinhThucDieuTri_ShouldMapCorrectly()
+        {
+            // Đơn giá trị
+            Assert.AreEqual("Ngoại trú", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("1"));
+            Assert.AreEqual("Nội trú", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("2"));
+            Assert.AreEqual("Tư vấn tâm lý", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("3"));
+            Assert.AreEqual("Khác", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("4"));
+
+            // Đa giá trị phân tách dấu phẩy hoặc chấm phẩy
+            Assert.AreEqual("Ngoại trú, Tư vấn tâm lý", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("1,3"));
+            Assert.AreEqual("Ngoại trú, Tư vấn tâm lý", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("1, 3"));
+            Assert.AreEqual("Ngoại trú, Nội trú, Tư vấn tâm lý", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("1,2,3"));
+            Assert.AreEqual("Ngoại trú, Khác", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("1;4"));
+
+            // Trường hợp null, rỗng, khoảng trắng
+            Assert.AreEqual("-", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri(null));
+            Assert.AreEqual("-", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri(""));
+            Assert.AreEqual("-", BaoCaoBacSiDetailModel.FormatHinhThucDieuTri("   "));
+
+            // Property TEN_HINH_THUC_DIEU_TRI trên instance
+            var model = new BaoCaoBacSiDetailModel { HINH_THUC_DIEU_TRI = "1,3" };
+            Assert.AreEqual("Ngoại trú, Tư vấn tâm lý", model.TEN_HINH_THUC_DIEU_TRI);
+        }
+
+        [TestMethod]
+        public void BaoCaoBacSiCD45_GroupFilter_ShouldReturnDoctorsAndMatchDetail()
+        {
+            var da = new BaoCaoBacSiCD45DA();
+
+            // 1. Lọc theo nhóm chuẩn The Times (HN_TT)
+            var summaryHnTT = da.GetBaoCaoTongHop(null, null, null, null, "HN_TT");
+            var detailsHnTT = da.GetBaoCaoChiTiet(null, null, null, null, "HN_TT");
+
+            Assert.IsNotNull(summaryHnTT);
+            Assert.IsNotNull(detailsHnTT);
+            Assert.IsTrue(summaryHnTT.Count > 0, "Nhóm HN_TT phải có bác sĩ tham gia khám");
+            Assert.IsTrue(detailsHnTT.Count > 0, "Nhóm HN_TT phải có ca khám chi tiết");
+            Assert.AreEqual(detailsHnTT.Count, summaryHnTT.Sum(x => x.TongSoCa), "Tổng số ca giữa Tổng hợp và Chi tiết của nhóm HN_TT phải khớp 100%");
+            Assert.IsTrue(detailsHnTT.All(x => x.MA_NHOM == "tt" || x.TEN_NHOM == "The Times"), "Tất cả ca khám phải thuộc nhóm The Times (tt)");
+
+            // 2. Lọc theo nhóm REDCap map code (tt) - kết quả phải đồng nhất
+            var summaryTT = da.GetBaoCaoTongHop(null, null, null, null, "tt");
+            var detailsTT = da.GetBaoCaoChiTiet(null, null, null, null, "tt");
+            Assert.AreEqual(summaryHnTT.Count, summaryTT.Count, "Lọc theo mã chuẩn hay mã map phải trả về cùng số lượng bác sĩ");
+            Assert.AreEqual(detailsHnTT.Count, detailsTT.Count, "Lọc theo mã chuẩn hay mã map phải trả về cùng số lượng ca khám chi tiết");
+
+            // 3. Lọc theo nhóm Alocare (HC_ALO)
+            var summaryAlo = da.GetBaoCaoTongHop(null, null, null, null, "HC_ALO");
+            var detailsAlo = da.GetBaoCaoChiTiet(null, null, null, null, "HC_ALO");
+            Assert.IsNotNull(summaryAlo);
+            Assert.IsNotNull(detailsAlo);
+            Assert.IsTrue(summaryAlo.Count > 0, "Nhóm HC_ALO phải có bác sĩ tham gia khám");
+            Assert.IsTrue(detailsAlo.Count > 0, "Nhóm HC_ALO phải có ca khám chi tiết");
+            Assert.AreEqual(detailsAlo.Count, summaryAlo.Sum(x => x.TongSoCa), "Tổng số ca giữa Tổng hợp và Chi tiết của nhóm HC_ALO phải khớp 100%");
+            Assert.IsTrue(detailsAlo.All(x => x.MA_NHOM == "alo" || x.TEN_NHOM == "Alocare"), "Tất cả ca khám phải thuộc nhóm Alocare (alo)");
+        }
+
+        [TestMethod]
+        public void BaoCaoBacSiCD45Controller_SearchBaoCao_WithGroupFilter_ShouldReturnSummaryAndDetails()
+        {
+            var cityDa = new CityDA();
+            var nhomDa = new BVTL_NHOM_TBHDA();
+            var bsDa = new BaoCaoBacSiCD45DA();
+            var controller = new WebApp.Controllers.BaoCaoBacSiCD45Controller(cityDa, nhomDa, bsDa);
+
+            var result = controller.SearchBaoCao("01/01/2024", "31/12/2026", null, null, "HN_TT") as System.Web.Mvc.JsonResult;
+            Assert.IsNotNull(result);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(result.Data);
+            Assert.IsTrue(json.Contains("\"Success\":true"));
+            Assert.IsTrue(json.Contains("Summary"));
+            Assert.IsTrue(json.Contains("Details"));
+            Assert.IsFalse(json.Contains("\"Summary\":[]"), "Summary khi lọc nhóm HN_TT không được rỗng");
+            Assert.IsFalse(json.Contains("\"Details\":[]"), "Details khi lọc nhóm HN_TT không được rỗng");
+        }
+
+        [TestMethod]
         public void CD45KhachHangDA_FilterChuDeSinhHoatNhom_AllTopics_ShouldFilterCorrectly()
         {
             var khDA = new CD45KhachHangDA();
@@ -922,33 +1005,33 @@ namespace BVTL.Tests
             // STT 1: PTSD (PCL5_POSITIVE = 1)
             var ptsdResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "PTSD", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(ptsdResult.recordsTotal > 0 && ptsdResult.recordsTotal <= totalAll, "PTSD phải có KH thỏa mãn");
-            Assert.AreEqual(681, ptsdResult.recordsTotal, "PTSD phải khớp chính xác 681 KH");
+            Assert.AreEqual(718, ptsdResult.recordsTotal, "PTSD phải khớp chính xác 718 KH");
 
             // STT 2: Rối loạn sử dụng chất (CHAT: QA2 = 1)
             var chatResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHAT", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(chatResult.recordsTotal > 0 && chatResult.recordsTotal <= totalAll, "CHAT phải có KH thỏa mãn");
-            Assert.AreEqual(523, chatResult.recordsTotal, "CHAT phải khớp chính xác 523 KH");
+            Assert.AreEqual(541, chatResult.recordsTotal, "CHAT phải khớp chính xác 541 KH");
 
             // STT 3: Chemsex (CHEMSEX: QA2 = 1 AND QA5 IN (2, 3, 4))
             var chemsexResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHEMSEX", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(chemsexResult.recordsTotal > 0 && chemsexResult.recordsTotal <= chatResult.recordsTotal, "CHEMSEX là tập con của CHAT");
-            Assert.AreEqual(469, chemsexResult.recordsTotal, "CHEMSEX phải khớp chính xác 469 KH");
+            Assert.AreEqual(484, chemsexResult.recordsTotal, "CHEMSEX phải khớp chính xác 484 KH");
 
             // STT 4: Người bán dâm (SW: DOI_TUONG = 5 OR DOI_TUONG_KHAC có 5)
             var swResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "SW", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(swResult.recordsTotal > 0 && swResult.recordsTotal <= totalAll, "SW phải có KH thỏa mãn");
-            Assert.AreEqual(602, swResult.recordsTotal, "SW phải khớp chính xác 602 KH");
+            Assert.AreEqual(611, swResult.recordsTotal, "SW phải khớp chính xác 611 KH");
 
             // STT 5: Người có HIV (PLHIV: DOI_TUONG = 2 OR DOI_TUONG_KHAC có 2)
             var plhivResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "PLHIV", PageIndex = 1, PageSize = 10 });
             Assert.IsTrue(plhivResult.recordsTotal > 0 && plhivResult.recordsTotal <= totalAll, "PLHIV phải có KH thỏa mãn");
-            Assert.AreEqual(559, plhivResult.recordsTotal, "PLHIV phải khớp chính xác 559 KH");
+            Assert.AreEqual(580, plhivResult.recordsTotal, "PLHIV phải khớp chính xác 580 KH");
 
             // STT 6 & 7: Người chuyển giới (TG_VAN_DE & TG_HORMONE: DOI_TUONG = 3 OR DOI_TUONG_KHAC có 3)
             var tgVanDeResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "TG_VAN_DE", PageIndex = 1, PageSize = 10 });
             var tgHormoneResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "TG_HORMONE", PageIndex = 1, PageSize = 10 });
-            Assert.AreEqual(122, tgVanDeResult.recordsTotal, "TG_VAN_DE phải khớp chính xác 122 KH");
-            Assert.AreEqual(122, tgHormoneResult.recordsTotal, "TG_HORMONE phải có cùng số lượng với TG_VAN_DE (122 KH)");
+            Assert.AreEqual(135, tgVanDeResult.recordsTotal, "TG_VAN_DE phải khớp chính xác 135 KH");
+            Assert.AreEqual(135, tgHormoneResult.recordsTotal, "TG_HORMONE phải có cùng số lượng với TG_VAN_DE (135 KH)");
 
             // STT 8: Kỳ thị và tự kỳ thị (KY_THI: Tất cả KH dự án)
             var kyThiResult = khDA.GetPagingCustomers(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "KY_THI", PageIndex = 1, PageSize = 10 });
@@ -956,7 +1039,7 @@ namespace BVTL.Tests
 
             // Kiểm tra hàm GetAllForExport cũng áp dụng đúng bộ lọc
             var exportChemsex = khDA.GetAllForExport(new CD45KhachHangFilterModel { ChuDeSinhHoatNhom = "CHEMSEX" });
-            Assert.AreEqual(469, exportChemsex.Count, "Export danh sách CHEMSEX phải đúng 469 KH");
+            Assert.AreEqual(484, exportChemsex.Count, "Export danh sách CHEMSEX phải đúng 484 KH");
         }
 
         [TestMethod]
@@ -994,20 +1077,25 @@ namespace BVTL.Tests
                 ExcelTuVanHelper.BuildTuVanL1Worksheet(ws1, listL1.Take(5).ToList(), "01/01/2024", "31/12/2026", "Nhóm Test", "TCV Test");
 
                 Assert.AreEqual("BÁO CÁO CHI TIẾT TƯ VẤN LẦN 1 (F7) - DỰ ÁN CD45", ws1.Cell("A1").GetString());
-                Assert.AreEqual("STT", ws1.Cell("A5").GetString());
-                Assert.AreEqual("Record ID", ws1.Cell("B5").GetString());
-                Assert.AreEqual("6.1 Ngày hẹn tiếp theo", ws1.Cell("Q5").GetString());
-                Assert.AreEqual(17, ws1.Range("A5:Q5").ColumnCount(), "Sheet L1 phải có đủ 17 cột");
+                Assert.AreEqual("Báo cáo tháng 12/2026", ws1.Cell("A2").GetString());
+                Assert.AreEqual("Kỳ báo cáo: Từ 01/01/2024 đến 31/12/2026", ws1.Cell("A3").GetString());
+                Assert.AreEqual("STT", ws1.Cell("A6").GetString());
+                Assert.AreEqual("Record ID", ws1.Cell("B6").GetString());
+                Assert.AreEqual("Tỉnh / Thành phố", ws1.Cell("C6").GetString());
+                Assert.AreEqual("6.1 Ngày hẹn tiếp theo", ws1.Cell("P6").GetString());
+                Assert.AreEqual(16, ws1.Range("A6:P6").ColumnCount(), "Sheet L1 phải có đủ 16 cột sau khi bỏ Mã KH");
 
                 var ws2 = wb.Worksheets.Add("TuVan_L2");
                 ExcelTuVanHelper.BuildTuVanL2Worksheet(ws2, listL2.Take(5).ToList(), "01/01/2024", "31/12/2026", "Nhóm Test", "TCV Test");
 
                 Assert.AreEqual("BÁO CÁO CHI TIẾT TƯ VẤN TỪ LẦN 2 TRỞ ĐI (F8) - DỰ ÁN CD45", ws2.Cell("A1").GetString());
-                Assert.AreEqual("STT", ws2.Cell("A5").GetString());
-                Assert.AreEqual("Record ID", ws2.Cell("B5").GetString());
-                Assert.AreEqual("Lần tư vấn", ws2.Cell("D5").GetString());
-                Assert.AreEqual("Ngày hẹn tiếp theo", ws2.Cell("X5").GetString());
-                Assert.AreEqual(24, ws2.Range("A5:X5").ColumnCount(), "Sheet L2 phải có đủ 24 cột");
+                Assert.AreEqual("Báo cáo tháng 12/2026", ws2.Cell("A2").GetString());
+                Assert.AreEqual("Kỳ báo cáo: Từ 01/01/2024 đến 31/12/2026", ws2.Cell("A3").GetString());
+                Assert.AreEqual("STT", ws2.Cell("A6").GetString());
+                Assert.AreEqual("Record ID", ws2.Cell("B6").GetString());
+                Assert.AreEqual("Lần tư vấn", ws2.Cell("C6").GetString());
+                Assert.AreEqual("Ngày hẹn tiếp theo", ws2.Cell("W6").GetString());
+                Assert.AreEqual(23, ws2.Range("A6:W6").ColumnCount(), "Sheet L2 phải có đủ 23 cột sau khi bỏ Mã KH");
 
                 using (var ms = new MemoryStream())
                 {
@@ -1031,6 +1119,27 @@ namespace BVTL.Tests
             Assert.IsTrue(json.Contains("\"CountL2\":"), "CountL2 phải có trong kết quả");
             Assert.IsFalse(json.Contains("\"CountL1\":0"), "Dự án phải có ca tư vấn L1");
             Assert.IsFalse(json.Contains("\"CountL2\":0"), "Dự án phải có ca tư vấn L2+");
+        }
+
+        [TestMethod]
+        public void BaoCaoTuVanCD45Controller_SearchTuVan_WithSpecificTcv_ShouldFilterOnlyTargetTcv()
+        {
+            var tcvDa = new BaoCaoCD45DA();
+            var allTcvs = tcvDa.GetListTCV(null, null);
+            var tcvLuan = allTcvs.FirstOrDefault(x => x.TEN_TCV != null && x.TEN_TCV.Contains("Luận"));
+            Assert.IsNotNull(tcvLuan, "Phải tìm thấy TCV Đỗ Thị Luận trong danh mục");
+
+            var da = new BaoCaoTuVanCD45DA();
+            var controller = new WebApp.Controllers.BaoCaoTuVanCD45Controller(new CityDA(), new BVTL_NHOM_TBHDA(), tcvDa, da);
+            
+            // Tìm theo tcvId của Đỗ Thị Luận khi chưa chọn nhóm và tỉnh
+            var result = controller.SearchTuVan("26/09/2026", "25/10/2026", null, null, null, "ALL", tcvLuan.ID) as System.Web.Mvc.JsonResult;
+            Assert.IsNotNull(result, "Result must not be null");
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(result.Data);
+            Assert.IsTrue(json.Contains("\"Success\":true"), "SearchTuVan phải thành công");
+            Assert.IsTrue(json.Contains("DHN020066"), "Phải chứa Record ID của Đỗ Thị Luận (DHN020066)");
+            Assert.IsFalse(json.Contains("Nguyễn Thị Xuân Phúc"), "Tuyệt đối không được chứa ca của TCV khác (Nguyễn Thị Xuân Phúc)");
+            Assert.IsFalse(json.Contains("Nguyễn Thị Loan"), "Tuyệt đối không được chứa ca của TCV khác (Nguyễn Thị Loan)");
         }
     }
 }

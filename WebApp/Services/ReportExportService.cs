@@ -937,27 +937,33 @@ namespace WebApp.Services
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A2").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate}";
+            ws.Cell("A2").Value = ExcelTuVanHelper.FormatReportMonth(toDate, fromDate);
             ws.Range("A2:H2").Row(1).Merge();
-            ws.Cell("A2").Style.Font.Italic = true;
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A2").Style.Font.FontSize = 12;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
-            ws.Cell("A3").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            ws.Cell("A3").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate}";
             ws.Range("A3:H3").Row(1).Merge();
-            ws.Cell("A3").Style.Font.Bold = true;
+            ws.Cell("A3").Style.Font.Italic = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A5").Value = "#";
-            ws.Cell("B5").Value = "Thông tin báo cáo";
-            ws.Cell("C5").Value = "Tổng";
-            ws.Cell("D5").Value = "PUD";
-            ws.Cell("E5").Value = "PLHIV";
-            ws.Cell("F5").Value = "TG";
-            ws.Cell("G5").Value = "SW";
-            ws.Cell("H5").Value = "MSM";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A4").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            ws.Range("A4:H4").Row(1).Merge();
+            ws.Cell("A4").Style.Font.Bold = true;
+            ws.Cell("A4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            var headerRange = ws.Range("A5:H5");
+            ws.Cell("A6").Value = "#";
+            ws.Cell("B6").Value = "Thông tin báo cáo";
+            ws.Cell("C6").Value = "Tổng";
+            ws.Cell("D6").Value = "PUD";
+            ws.Cell("E6").Value = "PLHIV";
+            ws.Cell("F6").Value = "TG";
+            ws.Cell("G6").Value = "SW";
+            ws.Cell("H6").Value = "MSM";
+
+            var headerRange = ws.Range("A6:H6");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#E8ECEF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -976,7 +982,7 @@ namespace WebApp.Services
                 }
             };
 
-            int row = 6;
+            int row = 7;
             if (data != null)
             {
                 foreach (var item in data)
@@ -1006,7 +1012,7 @@ namespace WebApp.Services
                 }
             }
 
-            var dataTableRange = ws.Range(5, 1, Math.Max(row - 1, 6), 8);
+            var dataTableRange = ws.Range(6, 1, Math.Max(row - 1, 7), 8);
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
@@ -1089,22 +1095,28 @@ namespace WebApp.Services
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
-            ws.Cell("A2").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate} | Tỉnh/Thành: {tenTinh} | {prefixText}: {tenNhom}";
+            ws.Cell("A2").Value = ExcelTuVanHelper.FormatReportMonth(toDate, fromDate);
             ws.Range("A2:H2").Row(1).Merge();
-            ws.Cell("A2").Style.Font.Italic = true;
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A2").Style.Font.FontSize = 12;
             ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A4").Value = "#";
-            ws.Cell("B4").Value = "Chỉ tiêu báo cáo";
-            ws.Cell("C4").Value = "Tổng";
-            ws.Cell("D4").Value = "PUD";
-            ws.Cell("E4").Value = "PLHIV";
-            ws.Cell("F4").Value = "TG";
-            ws.Cell("G4").Value = "SW";
-            ws.Cell("H4").Value = "MSM";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A3").Value = $"Kỳ báo cáo: Từ {fromDate} đến {toDate} | Tỉnh/Thành: {tenTinh} | {prefixText}: {tenNhom}";
+            ws.Range("A3:H3").Row(1).Merge();
+            ws.Cell("A3").Style.Font.Italic = true;
+            ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            var headerRange = ws.Range("A4:H4");
+            ws.Cell("A5").Value = "#";
+            ws.Cell("B5").Value = "Chỉ tiêu báo cáo";
+            ws.Cell("C5").Value = "Tổng";
+            ws.Cell("D5").Value = "PUD";
+            ws.Cell("E5").Value = "PLHIV";
+            ws.Cell("F5").Value = "TG";
+            ws.Cell("G5").Value = "SW";
+            ws.Cell("H5").Value = "MSM";
+
+            var headerRange = ws.Range("A5:H5");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#CCE5FF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -1123,7 +1135,7 @@ namespace WebApp.Services
                 }
             };
 
-            int row = 5;
+            int row = 6;
             if (data != null)
             {
                 foreach (var item in data)
@@ -1153,7 +1165,7 @@ namespace WebApp.Services
                 }
             }
 
-            var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), 8);
+            var dataTableRange = ws.Range(5, 1, Math.Max(row - 1, 6), 8);
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
@@ -1518,27 +1530,34 @@ namespace WebApp.Services
             ws.Range(1, 1, 1, 9).Merge();
             ws.Row(1).Height = 28;
 
+            ws.Cell(2, 1).Value = ExcelTuVanHelper.FormatReportMonth(toDate, fromDate, year, month);
+            ws.Cell(2, 1).Style.Font.Bold = true;
+            ws.Cell(2, 1).Style.Font.FontSize = 12;
+            ws.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Cell(2, 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ws.Range(2, 1, 2, 9).Merge();
+
             // 2. Header thông tin Tỉnh, Bác sĩ, Tháng
-            ws.Range(3, 1, 3, 2).Merge();
-            ws.Cell(3, 1).Value = "Tỉnh / Thành phố:";
-            ws.Cell(3, 1).Style.Font.Bold = true;
-            ws.Range(3, 3, 3, 4).Merge();
-            ws.Cell(3, 3).Value = tenTinh;
-            ws.Cell(3, 3).Style.Font.Bold = true;
-
-            ws.Cell(3, 6).Value = "Tháng / Kỳ báo cáo:";
-            ws.Cell(3, 6).Style.Font.Bold = true;
-            ws.Range(3, 7, 3, 9).Merge();
-            ws.Cell(3, 7).Value = $"{pValue} (Từ {fromDate} đến {toDate})";
-            ws.Cell(3, 7).Style.Font.Italic = true;
-
             ws.Range(4, 1, 4, 2).Merge();
-            ws.Cell(4, 1).Value = "Bác sĩ phụ trách:";
+            ws.Cell(4, 1).Value = "Tỉnh / Thành phố:";
             ws.Cell(4, 1).Style.Font.Bold = true;
             ws.Range(4, 3, 4, 4).Merge();
-            ws.Cell(4, 3).Value = doctorName;
+            ws.Cell(4, 3).Value = tenTinh;
             ws.Cell(4, 3).Style.Font.Bold = true;
-            ws.Cell(4, 3).Style.Font.FontColor = XLColor.FromArgb(21, 101, 192);
+
+            ws.Cell(4, 6).Value = "Tháng / Kỳ báo cáo:";
+            ws.Cell(4, 6).Style.Font.Bold = true;
+            ws.Range(4, 7, 4, 9).Merge();
+            ws.Cell(4, 7).Value = $"{pValue} (Từ {fromDate} đến {toDate})";
+            ws.Cell(4, 7).Style.Font.Italic = true;
+
+            ws.Range(5, 1, 5, 2).Merge();
+            ws.Cell(5, 1).Value = "Bác sĩ phụ trách:";
+            ws.Cell(5, 1).Style.Font.Bold = true;
+            ws.Range(5, 3, 5, 4).Merge();
+            ws.Cell(5, 3).Value = doctorName;
+            ws.Cell(5, 3).Style.Font.Bold = true;
+            ws.Cell(5, 3).Style.Font.FontColor = XLColor.FromArgb(21, 101, 192);
 
             // 3. Header bảng chi tiết ca khám
             string[] headers = {
@@ -1553,7 +1572,7 @@ namespace WebApp.Services
                 "Hình thức điều trị" 
             };
 
-            int headerRow = 6;
+            int headerRow = 7;
             for (int c = 0; c < headers.Length; c++)
             {
                 var cell = ws.Cell(headerRow, c + 1);
@@ -1569,7 +1588,7 @@ namespace WebApp.Services
             ws.Row(headerRow).Height = 25;
 
             // 4. Data rows
-            int dataRow = 7;
+            int dataRow = 8;
             int stt = 1;
             if (cases.Count == 0)
             {

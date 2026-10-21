@@ -37,6 +37,7 @@ document.addEventListener('alpine:init', function () {
             selectedCity: '',
             selectedNhom: '',
             selectedTCV: '',
+            selectedTCVObj: null,
             loaiTuVan: 'ALL', // 'ALL' | 'L1' | 'L2'
 
             listCities: [],
@@ -172,50 +173,156 @@ document.addEventListener('alpine:init', function () {
                 });
             },
 
-            onCityChange: function () {
+            onCityChange: function (newCity) {
+                if (newCity !== undefined) this.selectedCity = newCity;
                 this.selectedNhom = '';
                 this.selectedTCV = '';
+                this.selectedTCVObj = null;
                 this.applyFilterCascades();
-                this.fetchTCVs();
             },
 
-            onNhomChange: function () {
+            onNhomChange: function (newNhom) {
+                if (newNhom !== undefined) this.selectedNhom = newNhom;
                 this.selectedTCV = '';
+                this.selectedTCVObj = null;
                 this.applyFilterCascades();
-                this.fetchTCVs();
+            },
+
+            onTCVChange: function (newTCV) {
+                var self = this;
+                if (newTCV !== undefined) self.selectedTCV = newTCV;
+                var found = self.filteredTCVs.find(function (t) {
+                    return String(t.ID) === String(self.selectedTCV);
+                });
+                self.selectedTCVObj = found || null;
+
+                if (found) {
+                    var needCascade = false;
+                    if (!self.selectedCity && found.CITY_CODE) {
+                        self.selectedCity = found.CITY_CODE;
+                        needCascade = true;
+                    }
+                    if (!self.selectedNhom && found.MA_NHOM) {
+                        var g = self.listNhoms.find(function (n) {
+                            var std = (n.manhom_tbh || '').trim().toLowerCase();
+                            var map = (n.manhom_tbh_map || '').trim().toLowerCase();
+                            var m = (found.MA_NHOM || '').trim().toLowerCase();
+                            return std === m || map === m;
+                        });
+                        if (g) {
+                            self.selectedNhom = g.manhom_tbh;
+                            needCascade = true;
+                        }
+                    }
+                    if (needCascade) {
+                        self.applyFilterCascades();
+                        self.selectedTCV = String(found.ID);
+                        self.selectedTCVObj = found;
+                    }
+                }
+            },
+
+            formatTCVOptionLabel: function (t) {
+                var self = this;
+                if (self.selectedNhom) {
+                    return t.TEN_TCV + ' (' + t.MA_TCV + ')';
+                }
+                var prefix = t.SHORT_PREFIX ? t.SHORT_PREFIX + ' ' : '';
+                var groupName = t.TEN_NHOM || t.MA_NHOM;
+                return t.TEN_TCV + ' (' + t.MA_TCV + ') - [' + prefix + groupName + ']';
             },
 
             applyFilterCascades: function () {
                 var self = this;
+
+                // 1. Lọc danh sách Nhóm theo selectedCity
                 if (!self.selectedCity) {
                     self.filteredNhoms = self.listNhoms;
                 } else {
+                    var selCity = self.selectedCity.trim().toUpperCase();
                     self.filteredNhoms = self.listNhoms.filter(function (n) {
-                        return n.city_code === self.selectedCity;
+                        return (n.city_code || '').trim().toUpperCase() === selCity;
                     });
                 }
-            },
 
-            fetchTCVs: function () {
-                var self = this;
-                $.ajax({
-                    url: '/BaoCaoTuVanCD45/GetTCVsByFilter',
-                    type: 'POST',
-                    data: {
-                        cityCode: self.selectedCity,
-                        maNhom: self.selectedNhom
-                    },
-                    success: function (res) {
-                        if (res.Success) {
-                            self.filteredTCVs = res.TCVs || [];
+                // Nếu nhóm đã chọn trước đó không còn nằm trong filteredNhoms thì reset
+                if (self.selectedNhom) {
+                    var nhomExists = self.filteredNhoms.some(function (n) {
+                        return n.manhom_tbh === self.selectedNhom;
+                    });
+                    if (!nhomExists) {
+                        self.selectedNhom = '';
+                    }
+                }
+
+                // 2. Lọc danh sách TCV theo selectedCity và selectedNhom
+                var selCity = (self.selectedCity || '').trim().toUpperCase();
+                var selNhom = (self.selectedNhom || '').trim().toLowerCase();
+                var selectedNhomObj = null;
+
+                if (selNhom) {
+                    selectedNhomObj = self.listNhoms.find(function (n) {
+                        var std = (n.manhom_tbh || '').trim().toLowerCase();
+                        var map = (n.manhom_tbh_map || '').trim().toLowerCase();
+                        return std === selNhom || map === selNhom;
+                    });
+                }
+
+                self.filteredTCVs = self.listTCVs.filter(function (x) {
+                    var tcvCity = (x.CITY_CODE || '').trim().toUpperCase();
+                    var matchCity = !selCity || tcvCity === selCity;
+
+                    var matchNhom = true;
+                    if (selNhom) {
+                        var tcvNhom = (x.MA_NHOM || '').trim().toLowerCase();
+                        if (selectedNhomObj) {
+                            var codeStd = (selectedNhomObj.manhom_tbh || '').trim().toLowerCase();
+                            var codeMap = (selectedNhomObj.manhom_tbh_map || '').trim().toLowerCase();
+                            matchNhom = (tcvNhom === codeStd || tcvNhom === codeMap || tcvNhom === selNhom);
+                        } else {
+                            matchNhom = (tcvNhom === selNhom);
                         }
                     }
+                    return matchCity && matchNhom;
                 });
+
+                // Kiểm tra xem TCV đang chọn có còn trong danh sách không
+                if (self.selectedTCV) {
+                    var tcvExists = self.filteredTCVs.some(function (t) {
+                        return String(t.ID) === String(self.selectedTCV);
+                    });
+                    if (!tcvExists) {
+                        self.selectedTCV = '';
+                        self.selectedTCVObj = null;
+                    } else {
+                        self.selectedTCVObj = self.filteredTCVs.find(function (t) {
+                            return String(t.ID) === String(self.selectedTCV);
+                        }) || null;
+                    }
+                } else {
+                    self.selectedTCVObj = null;
+                }
             },
 
             loadData: function () {
                 var self = this;
                 if (!self.validateDateRange(true)) return;
+
+                var queryCity = self.selectedCity || '';
+                var queryNhom = self.selectedNhom || '';
+                var queryTCV = '';
+                var tcvId = null;
+
+                if (self.selectedTCVObj) {
+                    tcvId = self.selectedTCVObj.ID;
+                    queryTCV = self.selectedTCVObj.MA_TCV;
+                    if (!queryNhom) {
+                        queryNhom = self.selectedTCVObj.MA_NHOM;
+                    }
+                    if (!queryCity) {
+                        queryCity = self.selectedTCVObj.CITY_CODE;
+                    }
+                }
 
                 self.isLoading = true;
                 $.ajax({
@@ -224,10 +331,11 @@ document.addEventListener('alpine:init', function () {
                     data: {
                         fromDate: self.fromDate,
                         toDate: self.toDate,
-                        cityCode: self.selectedCity,
-                        maNhom: self.selectedNhom,
-                        maTCV: self.selectedTCV,
-                        loaiTuVan: self.loaiTuVan
+                        cityCode: queryCity,
+                        maNhom: queryNhom,
+                        maTCV: queryTCV,
+                        loaiTuVan: self.loaiTuVan,
+                        tcvId: tcvId
                     },
                     success: function (res) {
                         self.isLoading = false;
@@ -309,21 +417,39 @@ document.addEventListener('alpine:init', function () {
                 var self = this;
                 if (!self.validateDateRange(true)) return;
 
-                var selectedNhomObj = self.listNhoms.find(function (n) { return n.manhom_tbh === self.selectedNhom; });
-                var tenNhom = selectedNhomObj ? selectedNhomObj.tennhom_tbh : '';
+                var queryCity = self.selectedCity || '';
+                var queryNhom = self.selectedNhom || '';
+                var queryTCV = '';
+                var tenTCV = '';
+                var tenNhom = '';
+                var tcvId = '';
 
-                var selectedTcvObj = self.filteredTCVs.find(function (t) { return t.MA_TCV === self.selectedTCV; });
-                var tenTCV = selectedTcvObj ? selectedTcvObj.TEN_TCV : '';
+                if (self.selectedTCVObj) {
+                    tcvId = self.selectedTCVObj.ID;
+                    queryTCV = self.selectedTCVObj.MA_TCV;
+                    tenTCV = self.selectedTCVObj.TEN_TCV;
+                    if (!queryNhom) {
+                        queryNhom = self.selectedTCVObj.MA_NHOM;
+                    }
+                    if (!queryCity) {
+                        queryCity = self.selectedTCVObj.CITY_CODE;
+                    }
+                    tenNhom = self.selectedTCVObj.TEN_NHOM;
+                } else if (self.selectedNhom) {
+                    var selectedNhomObj = self.listNhoms.find(function (n) { return n.manhom_tbh === self.selectedNhom; });
+                    tenNhom = selectedNhomObj ? selectedNhomObj.tennhom_tbh : '';
+                }
 
                 var url = '/BaoCaoTuVanCD45/ExportExcel?' +
                     'FromDate=' + encodeURIComponent(self.fromDate) +
                     '&ToDate=' + encodeURIComponent(self.toDate) +
-                    '&CityCode=' + encodeURIComponent(self.selectedCity || '') +
-                    '&MaNhom=' + encodeURIComponent(self.selectedNhom || '') +
-                    '&MaTCV=' + encodeURIComponent(self.selectedTCV || '') +
+                    '&CityCode=' + encodeURIComponent(queryCity || '') +
+                    '&MaNhom=' + encodeURIComponent(queryNhom || '') +
+                    '&MaTCV=' + encodeURIComponent(queryTCV || '') +
                     '&LoaiTuVan=' + encodeURIComponent(self.loaiTuVan || 'ALL') +
                     '&TenNhom=' + encodeURIComponent(tenNhom || '') +
-                    '&TenTCV=' + encodeURIComponent(tenTCV || '');
+                    '&TenTCV=' + encodeURIComponent(tenTCV || '') +
+                    (tcvId ? ('&tcvId=' + encodeURIComponent(tcvId)) : '');
 
                 window.location.href = url;
             }

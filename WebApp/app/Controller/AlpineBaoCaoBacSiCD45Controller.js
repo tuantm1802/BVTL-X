@@ -195,8 +195,40 @@ document.addEventListener('alpine:init', function () {
                            (d.TEN_TINH && d.TEN_TINH.toLowerCase().indexOf(q) !== -1) ||
                            (d.TEN_NHOM && d.TEN_NHOM.toLowerCase().indexOf(q) !== -1) ||
                            (d.TEN_CO_SO_Y_TE && d.TEN_CO_SO_Y_TE.toLowerCase().indexOf(q) !== -1) ||
-                           (d.TEN_CHAN_DOAN && d.TEN_CHAN_DOAN.toLowerCase().indexOf(q) !== -1);
+                           (d.TEN_CHAN_DOAN && d.TEN_CHAN_DOAN.toLowerCase().indexOf(q) !== -1) ||
+                           (d.TEN_HINH_THUC_DIEU_TRI && d.TEN_HINH_THUC_DIEU_TRI.toLowerCase().indexOf(q) !== -1);
                 });
+            },
+
+            getTreatmentBadgeClass: function (val) {
+                if (!val) return 'badge-secondary';
+                var s = String(val).replace(/\s+/g, '');
+                if (s.indexOf('2') !== -1) return 'badge-danger'; // Nội trú
+                if (s.indexOf('1') !== -1) return 'badge-success'; // Ngoại trú (hoặc Ngoại trú kết hợp)
+                if (s.indexOf('3') !== -1) return 'badge-info'; // Tư vấn tâm lý
+                return 'badge-secondary';
+            },
+
+            formatTreatment: function (val, defaultTen) {
+                if (defaultTen && defaultTen !== '-' && defaultTen !== val) {
+                    return defaultTen;
+                }
+                if (!val) return '-';
+                var dict = {
+                    "1": "Ngoại trú",
+                    "2": "Nội trú",
+                    "3": "Tư vấn tâm lý",
+                    "4": "Khác"
+                };
+                var parts = String(val).split(/[,;]/);
+                var names = [];
+                for (var i = 0; i < parts.length; i++) {
+                    var k = parts[i].trim();
+                    if (k) {
+                        names.push(dict[k] || k);
+                    }
+                }
+                return names.length > 0 ? names.join(', ') : '-';
             },
 
             exportExcel: function () {

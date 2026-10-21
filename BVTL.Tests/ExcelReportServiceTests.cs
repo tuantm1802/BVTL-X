@@ -497,7 +497,7 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
-        public void ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA3()
+        public void ReportExportService_BuildTCVWorksheet_WithCustomPrefix_ShouldRenderInCellA4AndBaoCaoThangInA2()
         {
             using (var wb = new ClosedXML.Excel.XLWorkbook())
             {
@@ -514,9 +514,15 @@ namespace BVTL.Tests
                 // Invoke with custom prefix "Doanh nghiệp xã hội"
                 method.Invoke(svc, new object[] { ws, listData, "26/07/2026", "25/08/2026", "Alocare", "Nguyễn Văn A", "Doanh nghiệp xã hội" });
 
+                string cellA2 = ws.Cell("A2").GetString();
+                Assert.AreEqual("Báo cáo tháng 08/2026", cellA2, $"Cell A2 must contain 'Báo cáo tháng 08/2026'. Actual: '{cellA2}'");
+
                 string cellA3 = ws.Cell("A3").GetString();
-                Assert.IsTrue(cellA3.Contains("Doanh nghiệp xã hội: Alocare"), $"Cell A3 must contain custom prefix 'Doanh nghiệp xã hội: Alocare'. Actual: '{cellA3}'");
-                Assert.IsTrue(cellA3.Contains("Tiếp cận viên: Nguyễn Văn A"), $"Cell A3 must contain 'Tiếp cận viên: Nguyễn Văn A'. Actual: '{cellA3}'");
+                Assert.IsTrue(cellA3.Contains("Kỳ báo cáo: Từ 26/07/2026 đến 25/08/2026"), $"Cell A3 must contain kỳ báo cáo. Actual: '{cellA3}'");
+
+                string cellA4 = ws.Cell("A4").GetString();
+                Assert.IsTrue(cellA4.Contains("Doanh nghiệp xã hội: Alocare"), $"Cell A4 must contain custom prefix 'Doanh nghiệp xã hội: Alocare'. Actual: '{cellA4}'");
+                Assert.IsTrue(cellA4.Contains("Tiếp cận viên: Nguyễn Văn A"), $"Cell A4 must contain 'Tiếp cận viên: Nguyễn Văn A'. Actual: '{cellA4}'");
             }
         }
     }

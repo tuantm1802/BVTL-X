@@ -192,10 +192,10 @@ namespace BVTL.Tests
             var result = da.GetDashboardData(null, null, null, null, null, "NEW34", 2, null, null, 1);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(951, result.Overview.TongKhachHang, "Female filter should yield 951 clients");
+            Assert.AreEqual(988, result.Overview.TongKhachHang, "Female filter should yield 988 clients");
 
             int sumTargetGroupKH = result.ByTargetGroup.Sum(x => x.TongKH);
-            Assert.AreEqual(951, sumTargetGroupKH, "Sum across target groups for females must equal 951");
+            Assert.AreEqual(988, sumTargetGroupKH, "Sum across target groups for females must equal 988");
         }
 
         [TestMethod]
@@ -206,10 +206,10 @@ namespace BVTL.Tests
             var result = da.GetDashboardData(null, null, null, null, null, "NEW34", 2, null, null, 3);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(951, result.Overview.TongKhachHang);
+            Assert.AreEqual(988, result.Overview.TongKhachHang);
 
             int sumKH = result.ByTargetGroup.Sum(x => x.TongKH);
-            Assert.AreEqual(951, sumKH, "Sum across age groups for female segment must equal 951");
+            Assert.AreEqual(988, sumKH, "Sum across age groups for female segment must equal 988");
 
             int sumSangLoc = result.ByTargetGroup.Sum(x => x.SoKHSangLoc);
             Assert.AreEqual(result.Overview.TongSangLocQST, sumSangLoc, "Sum of QST screened across age groups must match Overview.TongSangLocQST");

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
@@ -243,36 +244,42 @@ namespace WebApp.Controllers
                 ws.Cell(1, 1).Style.Font.FontSize = 14;
                 ws.Range(1, 1, 1, numCols).Row(1).Merge();
 
-                ws.Cell(2, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   {xungDanh}: {tenNhom}";
-                ws.Cell(2, 1).Style.Font.Italic = true;
+                ws.Cell(2, 1).Value = ExcelTuVanHelper.FormatReportMonth(ToDate, FromDate);
+                ws.Cell(2, 1).Style.Font.Bold = true;
+                ws.Cell(2, 1).Style.Font.FontSize = 12;
+                ws.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 ws.Range(2, 1, 2, numCols).Row(1).Merge();
 
-                ws.Cell(4, 1).Value = "STT";
-                ws.Cell(4, 2).Value = "Thông tin báo cáo";
-                ws.Cell(4, 3).Value = "Tổng";
+                ws.Cell(3, 1).Value = $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {FromDate} đến ngày: {ToDate}   |   Tỉnh/Thành: {tenTinh}   |   {xungDanh}: {tenNhom}";
+                ws.Cell(3, 1).Style.Font.Italic = true;
+                ws.Range(3, 1, 3, numCols).Row(1).Merge();
+
+                ws.Cell(5, 1).Value = "STT";
+                ws.Cell(5, 2).Value = "Thông tin báo cáo";
+                ws.Cell(5, 3).Value = "Tổng";
 
                 if (displayMode == 2)
                 {
-                    ws.Cell(4, 4).Value = "Nam";
-                    ws.Cell(4, 5).Value = "Nữ";
-                    ws.Cell(4, 6).Value = "Khác";
+                    ws.Cell(5, 4).Value = "Nam";
+                    ws.Cell(5, 5).Value = "Nữ";
+                    ws.Cell(5, 6).Value = "Khác";
                 }
                 else if (displayMode == 3)
                 {
-                    ws.Cell(4, 4).Value = "18-25";
-                    ws.Cell(4, 5).Value = "26-35";
-                    ws.Cell(4, 6).Value = ">=36";
+                    ws.Cell(5, 4).Value = "18-25";
+                    ws.Cell(5, 5).Value = "26-35";
+                    ws.Cell(5, 6).Value = ">=36";
                 }
                 else
                 {
-                    ws.Cell(4, 4).Value = "PUD";
-                    ws.Cell(4, 5).Value = "PLHIV";
-                    ws.Cell(4, 6).Value = "TG";
-                    ws.Cell(4, 7).Value = "SW";
-                    ws.Cell(4, 8).Value = "MSM";
+                    ws.Cell(5, 4).Value = "PUD";
+                    ws.Cell(5, 5).Value = "PLHIV";
+                    ws.Cell(5, 6).Value = "TG";
+                    ws.Cell(5, 7).Value = "SW";
+                    ws.Cell(5, 8).Value = "MSM";
                 }
 
-                var headerRange = ws.Range(4, 1, 4, numCols);
+                var headerRange = ws.Range(5, 1, 5, numCols);
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
 
@@ -290,7 +297,7 @@ namespace WebApp.Controllers
                     }
                 };
 
-                int row = 5;
+                int row = 6;
                 foreach (var item in data)
                 {
                     ws.Cell(row, 1).Value = item.STT;
@@ -329,7 +336,7 @@ namespace WebApp.Controllers
                     row++;
                 }
 
-                var dataTableRange = ws.Range(4, 1, Math.Max(row - 1, 5), numCols);
+                var dataTableRange = ws.Range(5, 1, Math.Max(row - 1, 6), numCols);
                 dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 

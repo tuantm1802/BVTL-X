@@ -1,4 +1,4 @@
-﻿﻿﻿-- ============================================================
+﻿-- ============================================================
 
 -- SYNC SCRIPT: DEV -> PROD (BVTL_REPORTING)
 
@@ -4024,83 +4024,69 @@ GO
 
 
 CREATE   PROC SP_CD45_GetBaoCaoBacSi
-
     @FromDate DATE = NULL,
-
     @ToDate DATE = NULL,
-
     @CityCode VARCHAR(50) = NULL,
-
     @DoctorId VARCHAR(10) = NULL,
-
     @MaNhom VARCHAR(50) = NULL
-
 AS
-
 BEGIN
-
     SET NOCOUNT ON;
 
+    -- Resolve @CityCode mapping
+    DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
+    IF @CityCode IS NOT NULL AND RTRIM(@CityCode) <> ''
+    BEGIN
+        INSERT INTO @MappedCityCodes(Code)
+        SELECT DISTINCT m.OldCityCode 
+        FROM STRING_SPLIT(@CityCode, ',') s
+        JOIN BVTL_MAP_TINH_CU_MOI m ON LTRIM(RTRIM(s.value)) = m.NewCityCode
+        UNION
+        SELECT DISTINCT LTRIM(RTRIM(s.value))
+        FROM STRING_SPLIT(@CityCode, ',') s
+        WHERE NOT EXISTS (SELECT 1 FROM BVTL_MAP_TINH_CU_MOI m WHERE m.NewCityCode = LTRIM(RTRIM(s.value)))
+          AND LTRIM(RTRIM(s.value)) <> '';
+    END
 
+    -- Resolve @MaNhom
+    DECLARE @Var_MaNhomStd VARCHAR(50) = @MaNhom;
+    DECLARE @Var_MaNhomMap VARCHAR(50) = @MaNhom;
+    IF @MaNhom IS NOT NULL AND RTRIM(@MaNhom) <> ''
+    BEGIN
+        SELECT TOP 1 @Var_MaNhomStd = manhom_tbh, @Var_MaNhomMap = manhom_tbh_map
+        FROM BVTL_NHOM_TBH
+        WHERE (manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom) AND maduan = 'CD45';
+    END
 
     SELECT 
-
         f6.ID,
-
         f6.RECORD_ID,
-
         f6.CITY_CODE,
-
         ISNULL(cty.Name, f6.CITY_CODE) AS TEN_TINH,
-
         f6.MA_NHOM,
-
         ISNULL(nhom.tennhom_tbh, f6.MA_NHOM) AS TEN_NHOM,
-
         f6.MA_TCV,
-
         ISNULL(tcv.TEN_TCV, f6.MA_TCV) AS TEN_TCV,
-
         f6.NGAY_KHAM,
-
         f6.BAC_SI,
-
         ISNULL(bs.TEN_BAC_SI, N'Bác sĩ ' + f6.BAC_SI) AS TEN_BAC_SI,
-
         f6.CO_SO_Y_TE,
-
         f6.LAN_KHAM,
-
         f6.CHAN_DOAN_CHINH,
-
         f6.HINH_THUC_DIEU_TRI,
-
         f6.COMPLETE_STATUS
-
     FROM CD45_CHAN_DOAN f6
-
     LEFT JOIN CD45_DM_BAC_SI bs ON f6.BAC_SI = bs.MA_BAC_SI
-
     LEFT JOIN BVTL_CITES cty ON f6.CITY_CODE = cty.Code
-
     LEFT JOIN BVTL_NHOM_TBH nhom ON nhom.maduan = 'CD45' AND (f6.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND f6.MA_NHOM = nhom.manhom_tbh_map))
-
-    LEFT JOIN CD45_NHOM_TCV tcv ON (f6.MA_NHOM = tcv.MA_NHOM AND f6.MA_TCV = tcv.MA_TCV)
-
+    LEFT JOIN CD45_NHOM_TCV tcv ON ((f6.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND RTRIM(LTRIM(f6.MA_TCV)) = RTRIM(LTRIM(tcv.MA_TCV)) AND (f6.CITY_CODE = tcv.CITY_CODE OR tcv.CITY_CODE IS NULL))
     WHERE f6.COMPLETE_STATUS = '2'
-
       AND (@FromDate IS NULL OR f6.NGAY_KHAM >= @FromDate)
-
       AND (@ToDate IS NULL OR f6.NGAY_KHAM <= @ToDate)
-
-      AND (@CityCode IS NULL OR @CityCode = '' OR f6.CITY_CODE = @CityCode)
-
-      AND (@DoctorId IS NULL OR @DoctorId = '' OR f6.BAC_SI = @DoctorId)
-
-      AND (@MaNhom IS NULL OR @MaNhom = '' OR f6.MA_NHOM = @MaNhom)
-
+      AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR f6.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
+      AND (@DoctorId IS NULL OR RTRIM(@DoctorId) = '' OR f6.BAC_SI = @DoctorId)
+      AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR f6.MA_NHOM = @Var_MaNhomStd OR f6.MA_NHOM = @Var_MaNhomMap)
     ORDER BY ISNULL(bs.TEN_BAC_SI, f6.BAC_SI), f6.NGAY_KHAM, f6.RECORD_ID;
-
 END
 
 GO
@@ -4112,69 +4098,62 @@ IF OBJECT_ID('SP_CD45_GetBaoCaoBacSi_TongHop', 'P') IS NOT NULL DROP PROCEDURE [
 GO
 
 CREATE   PROC SP_CD45_GetBaoCaoBacSi_TongHop
-
     @FromDate DATE = NULL,
-
     @ToDate DATE = NULL,
-
     @CityCode VARCHAR(50) = NULL,
-
     @DoctorId VARCHAR(10) = NULL,
-
     @MaNhom VARCHAR(50) = NULL
-
 AS
-
 BEGIN
-
     SET NOCOUNT ON;
 
+    -- Resolve @CityCode mapping
+    DECLARE @MappedCityCodes TABLE (Code VARCHAR(10));
+    IF @CityCode IS NOT NULL AND RTRIM(@CityCode) <> ''
+    BEGIN
+        INSERT INTO @MappedCityCodes(Code)
+        SELECT DISTINCT m.OldCityCode 
+        FROM STRING_SPLIT(@CityCode, ',') s
+        JOIN BVTL_MAP_TINH_CU_MOI m ON LTRIM(RTRIM(s.value)) = m.NewCityCode
+        UNION
+        SELECT DISTINCT LTRIM(RTRIM(s.value))
+        FROM STRING_SPLIT(@CityCode, ',') s
+        WHERE NOT EXISTS (SELECT 1 FROM BVTL_MAP_TINH_CU_MOI m WHERE m.NewCityCode = LTRIM(RTRIM(s.value)))
+          AND LTRIM(RTRIM(s.value)) <> '';
+    END
 
+    -- Resolve @MaNhom
+    DECLARE @Var_MaNhomStd VARCHAR(50) = @MaNhom;
+    DECLARE @Var_MaNhomMap VARCHAR(50) = @MaNhom;
+    IF @MaNhom IS NOT NULL AND RTRIM(@MaNhom) <> ''
+    BEGIN
+        SELECT TOP 1 @Var_MaNhomStd = manhom_tbh, @Var_MaNhomMap = manhom_tbh_map
+        FROM BVTL_NHOM_TBH
+        WHERE (manhom_tbh = @MaNhom OR manhom_tbh_map = @MaNhom) AND maduan = 'CD45';
+    END
 
     SELECT 
-
         ISNULL(bs.MA_BAC_SI, f6.BAC_SI) AS MA_BAC_SI,
-
         ISNULL(bs.TEN_BAC_SI, N'Bác sĩ ' + f6.BAC_SI) AS TEN_BAC_SI,
-
         ISNULL(bs.TINH_THANH, ISNULL(cty.Name, f6.CITY_CODE)) AS TINH_THANH,
-
         ISNULL(bs.CITY_CODE, f6.CITY_CODE) AS CITY_CODE,
-
         COUNT(f6.ID) AS TongSoCa,
-
         COUNT(CASE WHEN f6.LAN_KHAM = 1 THEN 1 END) AS KhamLan1,
-
         COUNT(CASE WHEN f6.LAN_KHAM = 2 THEN 1 END) AS TaiKham,
-
         COUNT(CASE WHEN f6.LAN_KHAM > 2 OR f6.LAN_KHAM IS NULL THEN 1 END) AS KhamKhac,
-
-        COUNT(CASE WHEN f6.HINH_THUC_DIEU_TRI = '1' THEN 1 END) AS NgoaiTru,
-
-        COUNT(CASE WHEN f6.HINH_THUC_DIEU_TRI = '2' THEN 1 END) AS NoiTru
-
+        COUNT(CASE WHEN (',' + REPLACE(ISNULL(f6.HINH_THUC_DIEU_TRI, ''), ' ', '') + ',') LIKE '%,1,%' THEN 1 END) AS NgoaiTru,
+        COUNT(CASE WHEN (',' + REPLACE(ISNULL(f6.HINH_THUC_DIEU_TRI, ''), ' ', '') + ',') LIKE '%,2,%' THEN 1 END) AS NoiTru
     FROM CD45_CHAN_DOAN f6
-
     LEFT JOIN CD45_DM_BAC_SI bs ON f6.BAC_SI = bs.MA_BAC_SI
-
     LEFT JOIN BVTL_CITES cty ON f6.CITY_CODE = cty.Code
-
     WHERE f6.COMPLETE_STATUS = '2'
-
       AND (@FromDate IS NULL OR f6.NGAY_KHAM >= @FromDate)
-
       AND (@ToDate IS NULL OR f6.NGAY_KHAM <= @ToDate)
-
-      AND (@CityCode IS NULL OR @CityCode = '' OR f6.CITY_CODE = @CityCode)
-
-      AND (@DoctorId IS NULL OR @DoctorId = '' OR f6.BAC_SI = @DoctorId)
-
-      AND (@MaNhom IS NULL OR @MaNhom = '' OR f6.MA_NHOM = @MaNhom)
-
+      AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR f6.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
+      AND (@DoctorId IS NULL OR RTRIM(@DoctorId) = '' OR f6.BAC_SI = @DoctorId)
+      AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR f6.MA_NHOM = @Var_MaNhomStd OR f6.MA_NHOM = @Var_MaNhomMap)
     GROUP BY ISNULL(bs.MA_BAC_SI, f6.BAC_SI), ISNULL(bs.TEN_BAC_SI, N'Bác sĩ ' + f6.BAC_SI), ISNULL(bs.TINH_THANH, ISNULL(cty.Name, f6.CITY_CODE)), ISNULL(bs.CITY_CODE, f6.CITY_CODE)
-
     ORDER BY TINH_THANH, TEN_BAC_SI;
-
 END
 
 GO
@@ -6026,12 +6005,12 @@ BEGIN
     LEFT JOIN CD45_KH kh ON tv.RECORD_ID = kh.RECORD_ID
     LEFT JOIN BVTL_CITES cty ON tv.CITY_CODE = cty.Code
     LEFT JOIN BVTL_NHOM_TBH nhom ON (tv.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND tv.MA_NHOM = nhom.manhom_tbh_map)) AND nhom.maduan = 'CD45'
-    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND tv.MA_TCV = tcv.MA_TCV)
+    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND RTRIM(LTRIM(tv.MA_TCV)) = RTRIM(LTRIM(tcv.MA_TCV)) AND (tv.CITY_CODE = tcv.CITY_CODE OR tcv.CITY_CODE IS NULL))
     WHERE (@DtFrom IS NULL OR tv.NGAY_TU_VAN >= @DtFrom)
       AND (@DtTo IS NULL OR tv.NGAY_TU_VAN <= @DtTo)
       AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR tv.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
       AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR tv.MA_NHOM = @Var_MaNhomStd OR tv.MA_NHOM = @Var_MaNhomMap)
-      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR tv.MA_TCV = @MaTCV)
+      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR RTRIM(LTRIM(tv.MA_TCV)) = RTRIM(LTRIM(@MaTCV)))
     ORDER BY tv.NGAY_TU_VAN ASC, tv.RECORD_ID ASC;
 END
 GO
@@ -6133,12 +6112,12 @@ BEGIN
     LEFT JOIN CD45_KH kh ON tv.RECORD_ID = kh.RECORD_ID
     LEFT JOIN BVTL_CITES cty ON tv.CITY_CODE = cty.Code
     LEFT JOIN BVTL_NHOM_TBH nhom ON (tv.MA_NHOM = nhom.manhom_tbh OR (nhom.manhom_tbh_map IS NOT NULL AND tv.MA_NHOM = nhom.manhom_tbh_map)) AND nhom.maduan = 'CD45'
-    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND tv.MA_TCV = tcv.MA_TCV)
+    LEFT JOIN CD45_NHOM_TCV tcv ON ((tv.MA_NHOM = tcv.MA_NHOM OR (nhom.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = nhom.manhom_tbh_map)) AND RTRIM(LTRIM(tv.MA_TCV)) = RTRIM(LTRIM(tcv.MA_TCV)) AND (tv.CITY_CODE = tcv.CITY_CODE OR tcv.CITY_CODE IS NULL))
     WHERE (@DtFrom IS NULL OR tv.NGAY_TU_VAN >= @DtFrom)
       AND (@DtTo IS NULL OR tv.NGAY_TU_VAN <= @DtTo)
       AND (@CityCode IS NULL OR RTRIM(@CityCode) = '' OR tv.CITY_CODE IN (SELECT Code FROM @MappedCityCodes))
       AND (@MaNhom IS NULL OR RTRIM(@MaNhom) = '' OR tv.MA_NHOM = @Var_MaNhomStd OR tv.MA_NHOM = @Var_MaNhomMap)
-      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR tv.MA_TCV = @MaTCV)
+      AND (@MaTCV IS NULL OR RTRIM(@MaTCV) = '' OR RTRIM(LTRIM(tv.MA_TCV)) = RTRIM(LTRIM(@MaTCV)))
     ORDER BY tv.NGAY_TU_VAN ASC, tv.RECORD_ID ASC, tv.REPEAT_INSTANCE ASC;
 END
 GO

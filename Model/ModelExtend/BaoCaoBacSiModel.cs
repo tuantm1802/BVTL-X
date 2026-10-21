@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Model.ModelExtend
 {
@@ -45,7 +46,42 @@ namespace Model.ModelExtend
         public string CHAN_DOAN_CHINH { get; set; }
         public string TEN_CHAN_DOAN { get; set; }
         public string HINH_THUC_DIEU_TRI { get; set; }
-        public string TEN_HINH_THUC_DIEU_TRI => HINH_THUC_DIEU_TRI == "1" ? "Ngoại trú" : (HINH_THUC_DIEU_TRI == "2" ? "Nội trú" : (HINH_THUC_DIEU_TRI == "3" ? "Chuyển viện" : (HINH_THUC_DIEU_TRI ?? "-")));
+        public string TEN_HINH_THUC_DIEU_TRI => FormatHinhThucDieuTri(HINH_THUC_DIEU_TRI);
         public string COMPLETE_STATUS { get; set; }
+
+        public static string FormatHinhThucDieuTri(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "-";
+
+            var parts = raw.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return "-";
+
+            var names = new List<string>();
+            foreach (var part in parts)
+            {
+                var code = part.Trim();
+                switch (code)
+                {
+                    case "1":
+                        names.Add("Ngoại trú");
+                        break;
+                    case "2":
+                        names.Add("Nội trú");
+                        break;
+                    case "3":
+                        names.Add("Tư vấn tâm lý");
+                        break;
+                    case "4":
+                        names.Add("Khác");
+                        break;
+                    default:
+                        if (!string.IsNullOrEmpty(code))
+                            names.Add(code);
+                        break;
+                }
+            }
+
+            return names.Count > 0 ? string.Join(", ", names) : "-";
+        }
     }
 }

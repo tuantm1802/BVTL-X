@@ -2132,3 +2132,38 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.6.9.rar và tải lên Packages/ trên máy chủ FTP.
    - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
    - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản 1.6.9 và trả về HTTP 200 OK.
+---
+
+## Phiên 44: 21/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Chuẩn hóa định dạng xuất Excel toàn diện trên tất cả các phân hệ báo cáo dự án CD45:
+   - Thêm tiêu đề chuẩn "Báo cáo tháng MM/yyyy" tại ô A2 (FormatReportMonth) cho: Báo cáo TCV, Báo cáo Bác sĩ CD45, Báo cáo Tư vấn (L1 & L2+), Báo cáo CD45 hoạt động và báo cáo định kỳ tự động.
+   - Tinh chỉnh mẫu Báo cáo Tư vấn L1 & L2+: Bỏ cột "Mã KH nghiên cứu", giữ lại "Record ID" làm định danh chuẩn, tối ưu độ rộng cột và căn chỉnh dòng tiêu đề.
+2. Nâng cấp bộ lọc và xử lý dữ liệu:
+   - Hỗ trợ tham số tcvId trực tiếp trên API SearchTuVan và ExportExcel của BaoCaoTuVanCD45Controller.
+   - Nâng cấp BaoCaoBacSiModel: Hàm FormatHinhThucDieuTri hỗ trợ đa lựa chọn checkbox cho Hình thức điều trị (1: Ngoại trú, 2: Nội trú, 3: Tư vấn tâm lý, 4: Khác).
+3. Cập nhật và tối ưu 4 Stored Procedures:
+   - SP_CD45_GetBaoCaoBacSi, SP_CD45_GetBaoCaoBacSi_TongHop, SP_CD45_GetBaoCaoTuVan_L1, SP_CD45_GetBaoCaoTuVan_L2: Ánh xạ mã tỉnh mới qua bảng BVTL_MAP_TINH_CU_MOI, chuẩn hóa mã nhóm CBO và tiếp cận viên.
+4. Cập nhật và mở rộng bộ kiểm thử tự động VSTest đạt 156/156 tests PASSED 100%.
+5. Đóng gói phát hành phiên bản v1.7.0, gắn tag Git, đẩy lên kho lưu trữ và triển khai đồng bộ lên cả 2 môi trường DEV (c:\publish\dev) và PROD (c:\publish\prod).
+
+### Các công việc đã hoàn thành:
+1. **Cơ sở dữ liệu & Stored Procedures**:
+   - Cập nhật định nghĩa 4 Stored Procedures đồng bộ 100% trên cả 2 cơ sở dữ liệu BVTL_REPORTING_DEV và BVTL_REPORTING_PROD.
+   - Cập nhật tệp đồng bộ SQL_Sync_Dev_To_Prod.sql (STRICT UTF-8 WITH BOM).
+2. **Backend & Dịch vụ Xuất Excel**:
+   - Xây dựng hàm FormatReportMonth trong WebApp/Services/ExcelTuVanHelper.cs.
+   - Cập nhật WebApp/Services/ReportExportService.cs, BaoCaoTCVCD45Controller.cs, BaoCaoBacSiCD45Controller.cs, BaoCaoCD45Controller.cs, BaoCaoTuVanCD45Controller.cs.
+   - Cập nhật Model/ModelExtend/BaoCaoBacSiModel.cs xử lý đa lựa chọn hình thức điều trị.
+3. **Giao diện Web UI (AngularJS / AlpineJS)**:
+   - Cập nhật WebApp/Views/BaoCaoBacSiCD45/Index.cshtml, WebApp/Views/BaoCaoTuVanCD45/Index.cshtml.
+   - Cập nhật AlpineBaoCaoBacSiCD45Controller.js, AlpineBaoCaoTuVanCD45Controller.js.
+4. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Cập nhật BVTL.Tests/ExcelReportServiceTests.cs, BVTL.Tests/ScheduledReportTests.cs, BVTL.Tests/DashboardCD45Tests.cs.
+   - Biên dịch Release sạch, chạy vstest.console.exe: Đạt 156/156 tests PASSED 100%.
+5. **Triển khai & Phát hành (v1.7.0)**:
+   - Tạo tag Git v1.7.0, push lên nhánh TUANTM_BVTL_V1.0 kèm tags.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.0.rar và tải lên Packages/ trên máy chủ FTP.
+   - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
+   - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản v1.7.0 và trả về HTTP 200 OK.

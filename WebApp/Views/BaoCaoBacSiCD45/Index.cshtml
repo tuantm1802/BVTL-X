@@ -252,7 +252,7 @@
                                 </td>
                                 <td class="small" x-text="d.TEN_CHAN_DOAN"></td>
                                 <td class="text-center">
-                                    <span class="badge" :class="d.HINH_THUC_DIEU_TRI === '1' ? 'badge-success' : (d.HINH_THUC_DIEU_TRI === '2' ? 'badge-danger' : 'badge-secondary')" x-text="d.TEN_HINH_THUC_DIEU_TRI"></span>
+                                    <span class="badge" :class="getTreatmentBadgeClass(d.HINH_THUC_DIEU_TRI)" x-text="formatTreatment(d.HINH_THUC_DIEU_TRI, d.TEN_HINH_THUC_DIEU_TRI)"></span>
                                 </td>
                             </tr>
                         </template>

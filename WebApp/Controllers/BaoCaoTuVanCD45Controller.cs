@@ -99,13 +99,25 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult SearchTuVan(string fromDate, string toDate, string cityCode, string maNhom, string maTCV, string loaiTuVan = "ALL")
+        public JsonResult SearchTuVan(string fromDate, string toDate, string cityCode, string maNhom, string maTCV, string loaiTuVan = "ALL", int? tcvId = null)
         {
             try
             {
                 if (!ValidateDateRange(fromDate, toDate, out var dateError))
                 {
                     return Json(new { Success = false, Message = dateError });
+                }
+
+                if (tcvId.HasValue && tcvId.Value > 0)
+                {
+                    var allTcvs = _BaoCaoCD45DA.GetListTCV(null, null);
+                    var tcv = allTcvs.FirstOrDefault(x => x.ID == tcvId.Value);
+                    if (tcv != null)
+                    {
+                        maTCV = (tcv.MA_TCV ?? "").Trim();
+                        if (string.IsNullOrEmpty(maNhom)) maNhom = (tcv.MA_NHOM ?? "").Trim();
+                        if (string.IsNullOrEmpty(cityCode)) cityCode = (tcv.CITY_CODE ?? "").Trim();
+                    }
                 }
 
                 string scopedCity = ScopeCityCodeFilter(cityCode);
@@ -144,13 +156,27 @@ namespace WebApp.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get | HttpVerbs.Post)]
-        public ActionResult ExportExcel(string FromDate, string ToDate, string CityCode, string MaNhom, string MaTCV, string LoaiTuVan = "ALL", string TenNhom = null, string TenTCV = null)
+        public ActionResult ExportExcel(string FromDate, string ToDate, string CityCode, string MaNhom, string MaTCV, string LoaiTuVan = "ALL", string TenNhom = null, string TenTCV = null, int? tcvId = null)
         {
             try
             {
                 if (!ValidateDateRange(FromDate, ToDate, out var dateError))
                 {
                     return Content("<script>alert('" + dateError.Replace("'", "\\'") + "'); window.history.back();</script>", "text/html; charset=utf-8");
+                }
+
+                if (tcvId.HasValue && tcvId.Value > 0)
+                {
+                    var allTcvs = _BaoCaoCD45DA.GetListTCV(null, null);
+                    var tcv = allTcvs.FirstOrDefault(x => x.ID == tcvId.Value);
+                    if (tcv != null)
+                    {
+                        MaTCV = (tcv.MA_TCV ?? "").Trim();
+                        if (string.IsNullOrEmpty(MaNhom)) MaNhom = (tcv.MA_NHOM ?? "").Trim();
+                        if (string.IsNullOrEmpty(CityCode)) CityCode = (tcv.CITY_CODE ?? "").Trim();
+                        if (string.IsNullOrEmpty(TenTCV)) TenTCV = tcv.TEN_TCV;
+                        if (string.IsNullOrEmpty(TenNhom)) TenNhom = tcv.TEN_NHOM;
+                    }
                 }
 
                 string scopedCity = ScopeCityCodeFilter(CityCode);

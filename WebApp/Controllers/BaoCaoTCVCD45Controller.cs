@@ -296,31 +296,37 @@ namespace WebApp.Controllers
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            ws.Cell("A2").Value = ExcelTuVanHelper.FormatReportMonth(toDate, fromDate);
+            ws.Range("A2:H2").Row(1).Merge();
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A2").Style.Font.FontSize = 12;
+            ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
             string kyLine = string.IsNullOrEmpty(kyTitle)
                 ? $"Kỳ báo cáo: Từ {fromDate} đến {toDate}"
                 : $"Kỳ báo cáo: {kyTitle}   |   Từ ngày: {fromDate} đến ngày: {toDate}";
-            ws.Cell("A2").Value = kyLine;
-            ws.Range("A2:H2").Row(1).Merge();
-            ws.Cell("A2").Style.Font.Italic = true;
-            ws.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
-            ws.Cell("A3").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            ws.Cell("A3").Value = kyLine;
             ws.Range("A3:H3").Row(1).Merge();
-            ws.Cell("A3").Style.Font.Bold = true;
+            ws.Cell("A3").Style.Font.Italic = true;
             ws.Cell("A3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            // Header Table
-            ws.Cell("A5").Value = "#";
-            ws.Cell("B5").Value = "Thông tin báo cáo";
-            ws.Cell("C5").Value = "Tổng";
-            ws.Cell("D5").Value = "PUD";
-            ws.Cell("E5").Value = "PLHIV";
-            ws.Cell("F5").Value = "TG";
-            ws.Cell("G5").Value = "SW";
-            ws.Cell("H5").Value = "MSM";
+            string prefixText = !string.IsNullOrWhiteSpace(xungDanh) ? xungDanh.Trim() : "Nhóm";
+            ws.Cell("A4").Value = $"{prefixText}: {tenNhom} | Tiếp cận viên: {tenTCV}";
+            ws.Range("A4:H4").Row(1).Merge();
+            ws.Cell("A4").Style.Font.Bold = true;
+            ws.Cell("A4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            var headerRange = ws.Range("A5:H5");
+            // Header Table
+            ws.Cell("A6").Value = "#";
+            ws.Cell("B6").Value = "Thông tin báo cáo";
+            ws.Cell("C6").Value = "Tổng";
+            ws.Cell("D6").Value = "PUD";
+            ws.Cell("E6").Value = "PLHIV";
+            ws.Cell("F6").Value = "TG";
+            ws.Cell("G6").Value = "SW";
+            ws.Cell("H6").Value = "MSM";
+
+            var headerRange = ws.Range("A6:H6");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#E8ECEF");
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -339,7 +345,7 @@ namespace WebApp.Controllers
                 }
             };
 
-            int row = 6;
+            int row = 7;
             foreach (var item in data)
             {
                 ws.Cell(row, 1).Value = item.STT;
@@ -367,7 +373,7 @@ namespace WebApp.Controllers
             }
 
             // Borders
-            var dataTableRange = ws.Range(5, 1, row - 1, 8);
+            var dataTableRange = ws.Range(6, 1, row - 1, 8);
             dataTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             dataTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 

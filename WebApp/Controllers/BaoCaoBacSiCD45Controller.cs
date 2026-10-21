@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
@@ -180,21 +181,27 @@ namespace WebApp.Controllers
                 wsSum.Cell(1, 1).Style.Font.FontSize = 14;
                 wsSum.Range("A1:J1").Row(1).Merge();
 
-                wsSum.Cell(2, 1).Value = $"Thời gian khám: Từ ngày {FromDate} đến ngày {ToDate}   |   Địa bàn: {tenTinh}";
-                wsSum.Cell(2, 1).Style.Font.Italic = true;
+                wsSum.Cell(2, 1).Value = ExcelTuVanHelper.FormatReportMonth(ToDate, FromDate);
+                wsSum.Cell(2, 1).Style.Font.Bold = true;
+                wsSum.Cell(2, 1).Style.Font.FontSize = 12;
+                wsSum.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 wsSum.Range("A2:J2").Row(1).Merge();
+
+                wsSum.Cell(3, 1).Value = $"Thời gian khám: Từ ngày {FromDate} đến ngày {ToDate}   |   Địa bàn: {tenTinh}";
+                wsSum.Cell(3, 1).Style.Font.Italic = true;
+                wsSum.Range("A3:J3").Row(1).Merge();
 
                 string[] sumHeaders = { "STT", "Mã BS", "Bác sĩ phụ trách", "Tỉnh / Thành", "Tổng số ca", "Khám lần 1", "Tái khám", "Khám khác", "Ngoại trú", "Nội trú" };
                 for (int i = 0; i < sumHeaders.Length; i++)
                 {
-                    wsSum.Cell(4, i + 1).Value = sumHeaders[i];
+                    wsSum.Cell(5, i + 1).Value = sumHeaders[i];
                 }
-                var sumHeaderRange = wsSum.Range("A4:J4");
+                var sumHeaderRange = wsSum.Range("A5:J5");
                 sumHeaderRange.Style.Font.Bold = true;
                 sumHeaderRange.Style.Fill.BackgroundColor = XLColor.LightGray;
                 sumHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                int rowSum = 5;
+                int rowSum = 6;
                 int sttSum = 1;
                 foreach (var s in summary)
                 {
@@ -243,7 +250,7 @@ namespace WebApp.Controllers
                     rowSum++;
                 }
 
-                var sumTableRange = wsSum.Range(4, 1, Math.Max(rowSum - 1, 5), 10);
+                var sumTableRange = wsSum.Range(5, 1, Math.Max(rowSum - 1, 6), 10);
                 sumTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 sumTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
@@ -290,21 +297,27 @@ namespace WebApp.Controllers
                 wsDet.Cell(1, 1).Style.Font.FontSize = 14;
                 wsDet.Range("A1:K1").Row(1).Merge();
 
-                wsDet.Cell(2, 1).Value = $"Thời gian: Từ ngày {FromDate} đến ngày {ToDate}   |   Địa bàn: {tenTinh}";
-                wsDet.Cell(2, 1).Style.Font.Italic = true;
+                wsDet.Cell(2, 1).Value = ExcelTuVanHelper.FormatReportMonth(ToDate, FromDate);
+                wsDet.Cell(2, 1).Style.Font.Bold = true;
+                wsDet.Cell(2, 1).Style.Font.FontSize = 12;
+                wsDet.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 wsDet.Range("A2:K2").Row(1).Merge();
+
+                wsDet.Cell(3, 1).Value = $"Thời gian: Từ ngày {FromDate} đến ngày {ToDate}   |   Địa bàn: {tenTinh}";
+                wsDet.Cell(3, 1).Style.Font.Italic = true;
+                wsDet.Range("A3:K3").Row(1).Merge();
 
                 string[] detHeaders = { "STT", "Mã Khách hàng", "Ngày khám", "Bác sĩ phụ trách", "Cơ sở khám / Bệnh viện", "Tỉnh / Thành", "Nhóm CBO", "TCV", "Lần khám", "Chẩn đoán chính", "Hình thức điều trị" };
                 for (int i = 0; i < detHeaders.Length; i++)
                 {
-                    wsDet.Cell(4, i + 1).Value = detHeaders[i];
+                    wsDet.Cell(5, i + 1).Value = detHeaders[i];
                 }
-                var detHeaderRange = wsDet.Range("A4:K4");
+                var detHeaderRange = wsDet.Range("A5:K5");
                 detHeaderRange.Style.Font.Bold = true;
                 detHeaderRange.Style.Fill.BackgroundColor = XLColor.LightGray;
                 detHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                int rowDet = 5;
+                int rowDet = 6;
                 int sttDet = 1;
                 foreach (var d in details)
                 {
@@ -327,7 +340,7 @@ namespace WebApp.Controllers
                     rowDet++;
                 }
 
-                var detTableRange = wsDet.Range(4, 1, Math.Max(rowDet - 1, 5), 11);
+                var detTableRange = wsDet.Range(5, 1, Math.Max(rowDet - 1, 6), 11);
                 detTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 detTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                 wsDet.Columns().AdjustToContents();
