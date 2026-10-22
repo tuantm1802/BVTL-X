@@ -94,7 +94,17 @@
 
                 <!-- Tỉnh / Thành -->
                 <div class="col-md-3 mb-2">
-                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="font-weight-bold small mb-0">Tỉnh/TP</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('NEW34')" title="34 Tỉnh mới (NQ 202)">34 mới</button>
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('OLD63')" title="63 Tỉnh cũ lịch sử">63 cũ</button>
+                        </div>
+                    </div>
                     <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange($event.target.value)">
                         <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
@@ -143,11 +153,14 @@
                 </div>
 
                 <div class="col-12 mt-1 d-flex justify-content-end">
-                    <button class="btn btn-primary btn-sm mr-2 shadow-sm px-3" x-on:click="loadData()">
-                        <i class="fas fa-search fa-sm mr-1"></i> Tìm kiếm dữ liệu
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm px-3 font-weight-bold" x-on:click="loadData()">
+                        <i class="fas fa-search fa-sm mr-1"></i> Tìm kiếm
                     </button>
-                    <button class="btn btn-success btn-sm shadow-sm px-3" x-on:click="exportExcel()">
-                        <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất file Excel
+                    <button class="btn btn-secondary btn-sm mr-2 shadow-sm px-3 font-weight-bold" x-on:click="clearFilter()" title="Xóa tất cả bộ lọc và tải lại">
+                        <i class="fas fa-undo fa-sm mr-1"></i> Clear filter
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm px-3 font-weight-bold" x-on:click="exportExcel()">
+                        <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel
                     </button>
                 </div>
             </div>

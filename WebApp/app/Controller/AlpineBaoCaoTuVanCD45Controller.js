@@ -34,6 +34,7 @@ document.addEventListener('alpine:init', function () {
             toDate: '',
             dateError: '',
 
+            cityMode: 'NEW34',
             selectedCity: '',
             selectedNhom: '',
             selectedTCV: '',
@@ -150,11 +151,60 @@ document.addEventListener('alpine:init', function () {
                 return null;
             },
 
+            setCityMode: function (mode) {
+                if (this.cityMode !== mode) {
+                    this.cityMode = mode;
+                    this.selectedCity = '';
+                    this.selectedNhom = '';
+                    this.selectedTCV = '';
+                    this.selectedTCVObj = null;
+                    this.loadDanhMuc();
+                }
+            },
+
+            findCityCodeByRawCode: function (rawCode) {
+                if (!rawCode) return '';
+                var code = String(rawCode).trim().toUpperCase();
+                var self = this;
+
+                // 1. Tìm trực tiếp theo CityCode
+                var direct = self.listCities.find(function (c) {
+                    return (c.CityCode || '').trim().toUpperCase() === code;
+                });
+                if (direct) return direct.CityCode;
+
+                // 2. Tìm trong danh sách OldCodes (nếu đang ở chế độ tỉnh gộp NEW34)
+                var oldMatch = self.listCities.find(function (c) {
+                    if (!c.OldCodes || !c.OldCodes.length) return false;
+                    return c.OldCodes.some(function (oc) {
+                        return (oc || '').trim().toUpperCase() === code;
+                    });
+                });
+                if (oldMatch) return oldMatch.CityCode;
+
+                return '';
+            },
+
+            getMappedCodesForCity: function (cityCode) {
+                if (!cityCode) return [];
+                var self = this;
+                var foundCity = self.listCities.find(function (c) {
+                    return (c.CityCode || '').trim().toUpperCase() === String(cityCode).trim().toUpperCase();
+                });
+                if (foundCity && foundCity.OldCodes && foundCity.OldCodes.length) {
+                    return foundCity.OldCodes.map(function (c) {
+                        return (c || '').trim().toUpperCase();
+                    });
+                }
+                return [String(cityCode).trim().toUpperCase()];
+            },
+
             loadDanhMuc: function () {
                 var self = this;
                 $.ajax({
                     url: '/BaoCaoTuVanCD45/GetFilterData',
                     type: 'POST',
+                    data: { cityMode: self.cityMode },
                     success: function (res) {
                         if (res.Success) {
                             self.listCities = res.Cities || [];
@@ -182,10 +232,25 @@ document.addEventListener('alpine:init', function () {
             },
 
             onNhomChange: function (newNhom) {
-                if (newNhom !== undefined) this.selectedNhom = newNhom;
-                this.selectedTCV = '';
-                this.selectedTCVObj = null;
-                this.applyFilterCascades();
+                var self = this;
+                if (newNhom !== undefined) self.selectedNhom = newNhom;
+                if (self.selectedNhom) {
+                    var nhomObj = self.listNhoms.find(function (n) {
+                        var std = (n.manhom_tbh || '').trim().toLowerCase();
+                        var map = (n.manhom_tbh_map || '').trim().toLowerCase();
+                        var cur = self.selectedNhom.trim().toLowerCase();
+                        return std === cur || map === cur;
+                    });
+                    if (nhomObj && nhomObj.city_code) {
+                        var matchedCity = self.findCityCodeByRawCode(nhomObj.city_code);
+                        if (matchedCity) {
+                            self.selectedCity = matchedCity;
+                        }
+                    }
+                }
+                self.selectedTCV = '';
+                self.selectedTCVObj = null;
+                self.applyFilterCascades();
             },
 
             onTCVChange: function (newTCV) {
@@ -239,16 +304,20 @@ document.addEventListener('alpine:init', function () {
                 if (!self.selectedCity) {
                     self.filteredNhoms = self.listNhoms;
                 } else {
-                    var selCity = self.selectedCity.trim().toUpperCase();
+                    var mappedCodes = self.getMappedCodesForCity(self.selectedCity);
                     self.filteredNhoms = self.listNhoms.filter(function (n) {
-                        return (n.city_code || '').trim().toUpperCase() === selCity;
+                        if (!n.city_code) return true;
+                        return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
                     });
                 }
 
                 // Nếu nhóm đã chọn trước đó không còn nằm trong filteredNhoms thì reset
                 if (self.selectedNhom) {
                     var nhomExists = self.filteredNhoms.some(function (n) {
-                        return n.manhom_tbh === self.selectedNhom;
+                        var std = (n.manhom_tbh || '').trim().toLowerCase();
+                        var map = (n.manhom_tbh_map || '').trim().toLowerCase();
+                        var cur = self.selectedNhom.trim().toLowerCase();
+                        return std === cur || map === cur;
                     });
                     if (!nhomExists) {
                         self.selectedNhom = '';
@@ -256,7 +325,7 @@ document.addEventListener('alpine:init', function () {
                 }
 
                 // 2. Lọc danh sách TCV theo selectedCity và selectedNhom
-                var selCity = (self.selectedCity || '').trim().toUpperCase();
+                var mappedCodes = self.selectedCity ? self.getMappedCodesForCity(self.selectedCity) : [];
                 var selNhom = (self.selectedNhom || '').trim().toLowerCase();
                 var selectedNhomObj = null;
 
@@ -270,7 +339,7 @@ document.addEventListener('alpine:init', function () {
 
                 self.filteredTCVs = self.listTCVs.filter(function (x) {
                     var tcvCity = (x.CITY_CODE || '').trim().toUpperCase();
-                    var matchCity = !selCity || tcvCity === selCity;
+                    var matchCity = !self.selectedCity || mappedCodes.indexOf(tcvCity) !== -1;
 
                     var matchNhom = true;
                     if (selNhom) {
@@ -302,6 +371,33 @@ document.addEventListener('alpine:init', function () {
                 } else {
                     self.selectedTCVObj = null;
                 }
+            },
+
+            clearFilter: function () {
+                var self = this;
+                var now = new Date();
+                var curMonth = now.getMonth() + 1;
+                self.loaiKy = 'Thang';
+                self.thang = curMonth.toString();
+                self.nam = now.getFullYear();
+                if (curMonth >= 1 && curMonth <= 3) self.quy = 'I';
+                else if (curMonth >= 4 && curMonth <= 6) self.quy = 'II';
+                else if (curMonth >= 7 && curMonth <= 9) self.quy = 'III';
+                else if (curMonth >= 10 && curMonth <= 12) self.quy = 'IV';
+                self.ky6Thang = curMonth <= 6 ? '1' : '2';
+                self.updateDateRange();
+
+                self.selectedCity = '';
+                self.selectedNhom = '';
+                self.selectedTCV = '';
+                self.selectedTCVObj = null;
+                self.loaiTuVan = 'ALL';
+                self.searchL1Keyword = '';
+                self.searchL2Keyword = '';
+                self.dateError = '';
+
+                self.applyFilterCascades();
+                self.loadData();
             },
 
             loadData: function () {

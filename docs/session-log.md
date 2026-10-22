@@ -2201,3 +2201,34 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.1.rar và tải lên Packages/ trên máy chủ FTP.
    - Deploy đồng bộ lên DEV (c:\publish\dev) và PROD (c:\publish\prod).
    - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản v1.7.1 và trả về HTTP 200 OK.
+---
+
+## Phiên 46: 22/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Nâng cấp bộ lọc đa chế độ Tỉnh/Thành phố (`34 Tỉnh mới` / `63 Tỉnh cũ`):
+   - Tích hợp công tắc chuyển đổi chế độ địa bàn tỉnh trên Báo cáo TCV (`BaoCaoTCVCD45`) và Báo cáo Tư vấn (`BaoCaoTuVanCD45`), kế thừa phân quyền người dùng và ánh xạ bảng `BVTL_MAP_TINH_CU_MOI`.
+2. Bổ sung nút **"Clear filter"** (Xóa tất cả bộ lọc) kèm icon và phím tắt tiện lợi trên 3 màn hình báo cáo:
+   - Báo cáo Bác sĩ CD45 (`BaoCaoBacSiCD45`)
+   - Báo cáo Tiếp cận viên CD45 (`BaoCaoTCVCD45`)
+   - Báo cáo Tư vấn CD45 (`BaoCaoTuVanCD45`)
+3. Tối ưu liên kết bộ lọc cascade tự động (`onDoctorChange`, `onNhomChange`) và đồng bộ dữ liệu TCV theo Tỉnh/Nhóm đã chọn.
+4. Cập nhật số liệu kiểm thử tự động, 157/157 tests PASSED 100%.
+5. Đóng gói phát hành bản vá `v1.7.2`, gắn tag Git, đẩy lên kho lưu trữ và triển khai đồng bộ lên cả 2 môi trường DEV (`c:\publish\dev`) và PROD (`c:\publish\prod`).
+
+### Các công việc đã hoàn thành:
+1. **Backend Controller & Service Layer**:
+   - Cập nhật API `GetFilterData(string cityMode = "NEW34")` trong `BaoCaoTCVCD45Controller.cs` và `BaoCaoTuVanCD45Controller.cs`, trả về danh sách tỉnh kèm biểu tượng `⭐` cho tỉnh trọng điểm và số lượng tỉnh gộp.
+2. **Giao diện Web UI & Alpine.js**:
+   - Cập nhật giao diện View và Controller AlpineJS của 3 phân hệ báo cáo:
+     + `WebApp/Views/BaoCaoBacSiCD45/Index.cshtml` & `AlpineBaoCaoBacSiCD45Controller.js`: Thêm nút Clear filter, hàm `clearFilter()` đặt lại ngày mặc định và tải lại dữ liệu.
+     + `WebApp/Views/BaoCaoTCVCD45/Index.cshtml` & `AlpineBaoCaoTCVCD45Controller.js`: Thêm nút chuyển 34 mới / 63 cũ, nút Clear filter, tự động đồng bộ TCV theo nhóm/tỉnh.
+     + `WebApp/Views/BaoCaoTuVanCD45/Index.cshtml` & `AlpineBaoCaoTuVanCD45Controller.js`: Thêm nút chuyển 34 mới / 63 cũ, nút Clear filter, đồng bộ cascade bộ lọc.
+3. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Cập nhật số liệu khách hàng Nữ trong `BVTL.Tests/DashboardCD45Tests.cs` (989 KH).
+   - Biên dịch Release sạch, chạy `vstest.console.exe`: Đạt 157/157 tests PASSED 100%.
+4. **Triển khai & Phát hành (v1.7.2)**:
+   - Tạo tag Git `v1.7.2`, push lên nhánh `TUANTM_BVTL_V1.0` kèm tags.
+   - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.2.rar` và tải lên `Packages/` trên máy chủ FTP.
+   - Deploy đồng bộ lên DEV (`c:\publish\dev`) và PROD (`c:\publish\prod`).
+   - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản `v1.7.2` và trả về `HTTP 200 OK`.

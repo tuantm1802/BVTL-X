@@ -130,24 +130,230 @@ document.addEventListener('alpine:init', function () {
                 });
             },
 
+            findCityCodeByRawCode: function (rawCode) {
+                if (!rawCode) return '';
+                var code = String(rawCode).trim().toUpperCase();
+                var self = this;
+
+                // 1. Tìm trực tiếp theo CityCode
+                var direct = self.listCities.find(function (c) {
+                    return (c.CityCode || '').trim().toUpperCase() === code;
+                });
+                if (direct) return direct.CityCode;
+
+                // 2. Tìm trong danh sách OldCodes (nếu đang ở chế độ tỉnh gộp NEW34)
+                var oldMatch = self.listCities.find(function (c) {
+                    if (!c.OldCodes || !c.OldCodes.length) return false;
+                    return c.OldCodes.some(function (oc) {
+                        return (oc || '').trim().toUpperCase() === code;
+                    });
+                });
+                if (oldMatch) return oldMatch.CityCode;
+
+                return '';
+            },
+
+            getMappedCodesForCity: function (cityCode) {
+                if (!cityCode) return [];
+                var self = this;
+                var foundCity = self.listCities.find(function (c) {
+                    return (c.CityCode || '').trim().toUpperCase() === String(cityCode).trim().toUpperCase();
+                });
+                if (foundCity && foundCity.OldCodes && foundCity.OldCodes.length) {
+                    return foundCity.OldCodes.map(function (c) {
+                        return (c || '').trim().toUpperCase();
+                    });
+                }
+                return [String(cityCode).trim().toUpperCase()];
+            },
+
             onCityChange: function () {
                 var self = this;
                 if (!self.selectedCity) {
                     self.filteredDoctors = self.listDoctors;
                     self.filteredNhoms = self.listNhoms;
                 } else {
-                    var foundCity = self.listCities.find(function (c) { return c.CityCode === self.selectedCity; });
-                    var mappedCodes = (foundCity && foundCity.OldCodes && foundCity.OldCodes.length) ? foundCity.OldCodes : [self.selectedCity];
+                    var mappedCodes = self.getMappedCodesForCity(self.selectedCity);
 
                     self.filteredDoctors = self.listDoctors.filter(function (d) {
-                        return !d.CITY_CODE || mappedCodes.indexOf(d.CITY_CODE) !== -1;
+                        if (!d.CITY_CODE) return true;
+                        return mappedCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
                     });
                     self.filteredNhoms = self.listNhoms.filter(function (n) {
-                        return !n.city_code || mappedCodes.indexOf(n.city_code) !== -1;
+                        if (!n.city_code) return true;
+                        return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
                     });
                 }
+
+                // Nếu Bác sĩ đang chọn không thuộc Tỉnh/TP mới thì reset
+                if (self.selectedDoctor) {
+                    var docExists = self.filteredDoctors.some(function (d) {
+                        return d.MA_BAC_SI === self.selectedDoctor;
+                    });
+                    if (!docExists) {
+                        self.selectedDoctor = '';
+                    }
+                }
+
+                // Nếu Nhóm đang chọn không thuộc Tỉnh/TP mới thì reset
+                if (self.selectedNhom) {
+                    var nhomExists = self.filteredNhoms.some(function (n) {
+                        return n.manhom_tbh === self.selectedNhom;
+                    });
+                    if (!nhomExists) {
+                        self.selectedNhom = '';
+                    }
+                }
+            },
+
+            onDoctorChange: function () {
+                var self = this;
+                if (!self.selectedDoctor) {
+                    // Khi người dùng chọn lại "-- Tất cả bác sĩ --"
+                    if (self.selectedCity) {
+                        var mappedCodes = self.getMappedCodesForCity(self.selectedCity);
+                        self.filteredDoctors = self.listDoctors.filter(function (d) {
+                            if (!d.CITY_CODE) return true;
+                            return mappedCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
+                        });
+                        self.filteredNhoms = self.listNhoms.filter(function (n) {
+                            if (!n.city_code) return true;
+                            return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
+                        });
+                    } else {
+                        self.filteredDoctors = self.listDoctors;
+                        if (self.selectedNhom) {
+                            var nhomObj = self.listNhoms.find(function (n) { return n.manhom_tbh === self.selectedNhom; });
+                            if (nhomObj && nhomObj.city_code) {
+                                var nCodes = self.getMappedCodesForCity(self.findCityCodeByRawCode(nhomObj.city_code) || nhomObj.city_code);
+                                self.filteredDoctors = self.listDoctors.filter(function (d) {
+                                    if (!d.CITY_CODE) return true;
+                                    return nCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
+                                });
+                            }
+                        } else {
+                            self.filteredNhoms = self.listNhoms;
+                        }
+                    }
+                    return;
+                }
+
+                var doc = self.listDoctors.find(function (d) { return d.MA_BAC_SI === self.selectedDoctor; });
+                if (doc && doc.CITY_CODE) {
+                    var matchedCity = self.findCityCodeByRawCode(doc.CITY_CODE);
+                    if (matchedCity) {
+                        self.selectedCity = matchedCity;
+                    }
+
+                    var mappedCodes = matchedCity ? self.getMappedCodesForCity(matchedCity) : [String(doc.CITY_CODE).trim().toUpperCase()];
+
+                    // Lọc nhóm theo Tỉnh/TP của bác sĩ
+                    self.filteredNhoms = self.listNhoms.filter(function (n) {
+                        if (!n.city_code) return true;
+                        return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
+                    });
+
+                    // Lọc danh sách bác sĩ cùng Tỉnh/TP (vẫn giữ bác sĩ hiện tại)
+                    self.filteredDoctors = self.listDoctors.filter(function (d) {
+                        if (!d.CITY_CODE) return true;
+                        return mappedCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
+                    });
+
+                    // Nếu nhóm đang chọn không thuộc Tỉnh/TP này thì reset
+                    if (self.selectedNhom) {
+                        var nhomExists = self.filteredNhoms.some(function (n) {
+                            return n.manhom_tbh === self.selectedNhom;
+                        });
+                        if (!nhomExists) {
+                            self.selectedNhom = '';
+                        }
+                    }
+                }
+            },
+
+            onNhomChange: function () {
+                var self = this;
+                if (!self.selectedNhom) {
+                    // Khi người dùng chọn lại "-- Tất cả nhóm --"
+                    if (self.selectedCity) {
+                        var mappedCodes = self.getMappedCodesForCity(self.selectedCity);
+                        self.filteredDoctors = self.listDoctors.filter(function (d) {
+                            if (!d.CITY_CODE) return true;
+                            return mappedCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
+                        });
+                        self.filteredNhoms = self.listNhoms.filter(function (n) {
+                            if (!n.city_code) return true;
+                            return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
+                        });
+                    } else {
+                        self.filteredNhoms = self.listNhoms;
+                        if (self.selectedDoctor) {
+                            var docObj = self.listDoctors.find(function (d) { return d.MA_BAC_SI === self.selectedDoctor; });
+                            if (docObj && docObj.CITY_CODE) {
+                                var dCodes = self.getMappedCodesForCity(self.findCityCodeByRawCode(docObj.CITY_CODE) || docObj.CITY_CODE);
+                                self.filteredNhoms = self.listNhoms.filter(function (n) {
+                                    if (!n.city_code) return true;
+                                    return dCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
+                                });
+                            }
+                        } else {
+                            self.filteredDoctors = self.listDoctors;
+                        }
+                    }
+                    return;
+                }
+
+                var nhom = self.listNhoms.find(function (n) { return n.manhom_tbh === self.selectedNhom; });
+                if (nhom && nhom.city_code) {
+                    var matchedCity = self.findCityCodeByRawCode(nhom.city_code);
+                    if (matchedCity) {
+                        self.selectedCity = matchedCity;
+                    }
+
+                    var mappedCodes = matchedCity ? self.getMappedCodesForCity(matchedCity) : [String(nhom.city_code).trim().toUpperCase()];
+
+                    // Lọc bác sĩ theo Tỉnh/TP của nhóm
+                    self.filteredDoctors = self.listDoctors.filter(function (d) {
+                        if (!d.CITY_CODE) return true;
+                        return mappedCodes.indexOf(String(d.CITY_CODE).trim().toUpperCase()) !== -1;
+                    });
+
+                    // Lọc danh sách nhóm cùng Tỉnh/TP (vẫn giữ nhóm hiện tại)
+                    self.filteredNhoms = self.listNhoms.filter(function (n) {
+                        if (!n.city_code) return true;
+                        return mappedCodes.indexOf(String(n.city_code).trim().toUpperCase()) !== -1;
+                    });
+
+                    // Nếu bác sĩ đang chọn không thuộc Tỉnh/TP này thì reset
+                    if (self.selectedDoctor) {
+                        var docExists = self.filteredDoctors.some(function (d) {
+                            return d.MA_BAC_SI === self.selectedDoctor;
+                        });
+                        if (!docExists) {
+                            self.selectedDoctor = '';
+                        }
+                    }
+                }
+            },
+
+            clearFilter: function () {
+                var self = this;
+                var now = new Date();
+                self.loaiKy = 'Thang';
+                self.thang = (now.getMonth() + 1).toString();
+                self.nam = now.getFullYear();
+                self.updateDateRange();
+
+                self.selectedCity = '';
                 self.selectedDoctor = '';
                 self.selectedNhom = '';
+                self.detailSearch = '';
+                self.dateError = '';
+
+                self.filteredDoctors = self.listDoctors;
+                self.filteredNhoms = self.listNhoms;
+
+                self.loadData();
             },
 
             loadData: function () {

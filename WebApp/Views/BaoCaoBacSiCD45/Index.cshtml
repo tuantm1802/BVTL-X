@@ -87,7 +87,7 @@
 
                 <div class="col-md-3 mb-2">
                     <label class="font-weight-bold small text-primary"><i class="fas fa-stethoscope mr-1"></i>Bác sĩ phụ trách</label>
-                    <select class="form-control form-control-sm border-primary font-weight-bold" x-model="selectedDoctor">
+                    <select class="form-control form-control-sm border-primary font-weight-bold" x-model="selectedDoctor" x-on:change="onDoctorChange()">
                         <option value="">-- Tất cả bác sĩ --</option>
                         <template x-for="d in filteredDoctors" :key="d.MA_BAC_SI">
                             <option :value="d.MA_BAC_SI" x-text="d.TEN_BAC_SI + ' (' + d.TINH_THANH + ')'"></option>
@@ -97,7 +97,7 @@
 
                 <div class="col-md-3 mb-2">
                     <label class="font-weight-bold small">Nhóm (CBO)</label>
-                    <select class="form-control form-control-sm" x-model="selectedNhom">
+                    <select class="form-control form-control-sm" x-model="selectedNhom" x-on:change="onNhomChange()">
                         <option value="">-- Tất cả nhóm --</option>
                         <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
                             <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
@@ -112,12 +112,15 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 mb-2 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm mr-2 shadow-sm" x-on:click="loadData()">
-                        <i class="fas fa-search fa-sm"></i> Tìm kiếm
+                <div class="col-md-6 mb-2 d-flex align-items-end">
+                    <button class="btn btn-primary btn-sm mr-2 shadow-sm font-weight-bold" x-on:click="loadData()">
+                        <i class="fas fa-search fa-sm mr-1"></i> Tìm kiếm
                     </button>
-                    <button class="btn btn-success btn-sm shadow-sm" x-on:click="exportExcel()">
-                        <i class="fas fa-file-excel fa-sm"></i> Xuất Excel
+                    <button class="btn btn-secondary btn-sm mr-2 shadow-sm font-weight-bold" x-on:click="clearFilter()" title="Xóa tất cả bộ lọc và tải lại">
+                        <i class="fas fa-undo fa-sm mr-1"></i> Clear filter
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm font-weight-bold" x-on:click="exportExcel()">
+                        <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel
                     </button>
                 </div>
             </div>

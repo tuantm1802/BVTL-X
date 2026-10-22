@@ -149,7 +149,17 @@
                 </div>
 
                 <div class="col-md-2 mb-2">
-                    <label class="font-weight-bold small">Tỉnh / Thành phố</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="font-weight-bold small mb-0">Tỉnh/TP</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('NEW34')" title="34 Tỉnh mới (NQ 202)">34 mới</button>
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="setCityMode('OLD63')" title="63 Tỉnh cũ lịch sử">63 cũ</button>
+                        </div>
+                    </div>
                     <select class="form-control form-control-sm" x-model="selectedCity" x-on:change="onCityChange($event.target.value)">
                         <option value="" x-text="isAdmin ? '-- Tất cả tỉnh --' : '-- Tất cả tỉnh được phân quyền --'">-- Tất cả tỉnh --</option>
                         <template x-for="c in listCities" :key="c.CityCode">
@@ -178,7 +188,7 @@
 
             <!-- TCV Selection and Batch Actions -->
             <div class="row pt-2 border-top align-items-center">
-                <div class="col-md-5 mb-2">
+                <div class="col-md-4 mb-2">
                     <label class="font-weight-bold small text-primary mb-1">
                         <i class="fas fa-search mr-1"></i> Chọn nhanh TCV (Gõ tên / mã / nhóm để tìm kiếm):
                     </label>
@@ -198,11 +208,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-2 d-flex align-items-end justify-content-end">
-                    <button class="btn btn-primary btn-sm shadow-sm mr-2" x-on:click="previewData()">
+                <div class="col-md-5 mb-2 d-flex align-items-end justify-content-end">
+                    <button class="btn btn-primary btn-sm shadow-sm mr-2 font-weight-bold" x-on:click="previewData()">
                         <i class="fas fa-sync-alt fa-sm mr-1"></i> Tải lại số liệu
                     </button>
-                    <button class="btn btn-success btn-sm shadow-sm" x-on:click="exportSingle()">
+                    <button class="btn btn-secondary btn-sm shadow-sm mr-2 font-weight-bold" x-on:click="clearFilter()" title="Xóa tất cả bộ lọc và tải lại">
+                        <i class="fas fa-undo fa-sm mr-1"></i> Clear filter
+                    </button>
+                    <button class="btn btn-success btn-sm shadow-sm font-weight-bold" x-on:click="exportSingle()">
                         <i class="fas fa-file-excel fa-sm mr-1"></i> Xuất Excel TCV
                     </button>
                 </div>
