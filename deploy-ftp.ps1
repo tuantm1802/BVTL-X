@@ -196,6 +196,12 @@ if ($Mode -eq "Status") {
 }
 
 if ($Mode -eq "Package") {
+    if (-not (Test-Path $PackagePath) -or $PackagePath -eq "D:\Deploy\BVTL_WebApp_Publish_v1.1.0.rar") {
+        $latestRar = Get-ChildItem "D:\Deploy\BVTL_WebApp_Publish_*.rar" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        if ($latestRar) {
+            $PackagePath = $latestRar.FullName
+        }
+    }
     if (-not (Test-Path $PackagePath)) {
         throw "Khong tim thay file goi nen release tai: $PackagePath"
     }
