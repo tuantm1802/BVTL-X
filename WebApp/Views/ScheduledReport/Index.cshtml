@@ -124,6 +124,17 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label small font-weight-bold text-gray-800">Định Dạng Đầu Ra</label>
+                            <select class="form-select form-select-sm" x-model="manualExport.format">
+                                <option value="EXCEL">📗 Bảng tính Excel (.xlsx / .zip)</option>
+                                <option value="PDF">📕 Tài liệu PDF (.pdf / .zip)</option>
+                            </select>
+                            <div class="form-text small text-muted mt-1" x-show="manualExport.format === 'PDF'" style="font-size: 0.74rem;">
+                                ℹ️ Chuyển đổi chuẩn A4 sang PDF (mỗi TCV, Bác sĩ, DNXH là 1 file PDF riêng; chỉ xuất đối tượng có dữ liệu).
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label small font-weight-bold text-gray-800">Kỳ Báo Cáo</label>
                             <select class="form-select form-select-sm" x-model="manualExport.periodType">
                                 <option value="Month" x-text="manualExport.reportType === 'BACSI_CD45' ? 'Theo Tháng (Từ ngày 01 đến ngày cuối tháng)' : 'Theo Tháng (26 tháng trước - 25 tháng này)'">Theo Tháng (26 tháng trước - 25 tháng này)</option>

@@ -147,7 +147,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL", string periodType = "Month", int? quarter = null, string cityCode = null, string maNhom = null)
+        public async Task<JsonResult> TriggerExportNow(int? year = null, int? month = null, string reportType = "ALL", string periodType = "Month", int? quarter = null, string cityCode = null, string maNhom = null, string format = "EXCEL")
         {
             try
             {
@@ -192,29 +192,29 @@ namespace WebApp.Controllers
 
                 if (reportType == "TCV_CD45")
                 {
-                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var res = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue, format);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else if (reportType == "HOATDONG_CD45")
                 {
-                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var res = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue, format);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else if (reportType == "BACSI_CD45")
                 {
-                    var res = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue);
+                    var res = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue, format);
                     return Json(new { Success = res.Success, Message = res.Message, Result = res });
                 }
                 else // ALL (Xuất cả TCV, Hoạt động CD45 & Bác sĩ CD45)
                 {
                     var results = new List<ReportExportResult>();
-                    var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var resTCV = await _reportExportService.ExportTCVCD45ZipAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue, format);
                     results.Add(resTCV);
 
-                    var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue);
+                    var resHD = await _reportExportService.ExportHoatDongCD45ExcelAsync(targetYear, periodNum, cityCode, maNhom, "Manual", userName, pType, fromDate, toDate, pValue, format);
                     results.Add(resHD);
 
-                    var resBS = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue);
+                    var resBS = await _reportExportService.ExportBacSiCD45ExcelAsync(targetYear, periodNum, cityCode, "Manual", userName, pType, bsFromDate, bsToDate, bsPValue, format);
                     results.Add(resBS);
 
                     int success = results.FindAll(r => r.Success).Count;
@@ -341,6 +341,10 @@ namespace WebApp.Controllers
                 else if (logItem.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
                 {
                     contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                }
+                else if (logItem.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    contentType = "application/pdf";
                 }
 
                 return File(fileBytes, contentType, logItem.FileName);

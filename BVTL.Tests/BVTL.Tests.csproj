@@ -53,6 +53,12 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+        <Reference Include="Spire.Pdf">
+      <HintPath>..\packages\FreeSpire.XLS.12.7.0\lib\net40\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.XLS">
+      <HintPath>..\packages\FreeSpire.XLS.12.7.0\lib\net40\Spire.XLS.dll</HintPath>
+    </Reference>
     <Reference Include="ClosedXML">
       <HintPath>..\packages\ClosedXML.0.95.3\lib\net46\ClosedXML.dll</HintPath>
     </Reference>

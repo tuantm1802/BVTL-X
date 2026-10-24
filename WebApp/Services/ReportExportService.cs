@@ -182,7 +182,7 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<List<ReportExportResult>> ExecuteAllMonthlyReportsAsync(int year, int month, string triggerType = "AutoSchedule", string createdBy = "QuartzScheduler")
+        public async Task<List<ReportExportResult>> ExecuteAllMonthlyReportsAsync(int year, int month, string triggerType = "AutoSchedule", string createdBy = "QuartzScheduler", string format = "EXCEL")
         {
             var results = new List<ReportExportResult>();
             var settings = _scheduledReportDA.GetSettings();
@@ -225,16 +225,16 @@ namespace WebApp.Services
             }
 
             // 2. Xuất Báo cáo TCV CD45, Báo cáo Hoạt động CD45 & Báo cáo Bác sĩ CD45
-            var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
+            var resTCV = await ExportTCVCD45ZipAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue, format);
             results.Add(resTCV);
 
-            var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue);
+            var resHD = await ExportHoatDongCD45ExcelAsync(year, month, null, null, triggerType, createdBy, "Month", fromDate, toDate, pValue, format);
             results.Add(resHD);
 
             // Báo cáo Bác sĩ lấy theo chu kỳ từ đầu tháng đến cuối tháng
             string bsFromDate, bsToDate, bsPValue;
             CalculateDoctorPeriodDateRange("Month", year, month, out bsFromDate, out bsToDate, out bsPValue);
-            var resBS = await ExportBacSiCD45ExcelAsync(year, month, null, triggerType, createdBy, "Month", bsFromDate, bsToDate, bsPValue);
+            var resBS = await ExportBacSiCD45ExcelAsync(year, month, null, triggerType, createdBy, "Month", bsFromDate, bsToDate, bsPValue, format);
             results.Add(resBS);
 
             // 3. Bắn thông báo Telegram tổng kết
@@ -259,7 +259,7 @@ namespace WebApp.Services
             public List<CD45_TCV_ItemModel> TcvList { get; set; }
         }
 
-        public async Task<ReportExportResult> ExportTCVCD45ZipAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null)
+        public async Task<ReportExportResult> ExportTCVCD45ZipAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null, string format = "EXCEL")
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
@@ -310,6 +310,8 @@ namespace WebApp.Services
                 string storageDir = GetStorageDirectory(year, month);
                 string suffix = !string.IsNullOrEmpty(filterCityCode) ? $"_{filterCityCode}" : "_ALL";
                 if (!string.IsNullOrEmpty(filterMaNhom)) suffix += $"_{filterMaNhom}";
+                bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
+                if (isPdf) suffix += "_PDF";
 
                 string periodTag;
                 if (periodType == "Quarter" || periodType == "Quy")
@@ -396,16 +398,29 @@ namespace WebApp.Services
                             try
                             {
                                 var cityData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, currentCityCode, null, null, loaiBaoCaoFilter);
-                                if (cityData != null && cityData.Count > 0)
+                                bool hasCityData = isPdf ? (cityData != null && cityData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0)) : (cityData != null && cityData.Count > 0);
+                                if (hasCityData)
                                 {
                                     using (var wbCity = new XLWorkbook())
                                     {
                                         var wsCity = wbCity.Worksheets.Add("TongHop_" + currentCityCode);
                                         BuildHoatDongCD45Worksheet(wsCity, cityData, fromDate, toDate, currentCityName, "Toàn tỉnh (" + currentCityCode + ")", "Nhóm");
-                                        var cityEntry = archive.CreateEntry($"{cleanCityFolder}/BaoCao_TongHop_{sanitize(currentCityCode)}.xlsx", CompressionLevel.Fastest);
-                                        using (var zipStream = cityEntry.Open())
+                                        if (isPdf)
                                         {
-                                            wbCity.SaveAs(zipStream);
+                                            var cityEntry = archive.CreateEntry($"{cleanCityFolder}/BaoCao_TongHop_{sanitize(currentCityCode)}.pdf", CompressionLevel.Fastest);
+                                            using (var zipStream = cityEntry.Open())
+                                            {
+                                                var pdfBytes = ExcelToPdfHelper.ConvertClosedXmlToPdf(wbCity);
+                                                zipStream.Write(pdfBytes, 0, pdfBytes.Length);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var cityEntry = archive.CreateEntry($"{cleanCityFolder}/BaoCao_TongHop_{sanitize(currentCityCode)}.xlsx", CompressionLevel.Fastest);
+                                            using (var zipStream = cityEntry.Open())
+                                            {
+                                                wbCity.SaveAs(zipStream);
+                                            }
                                         }
                                         totalSummaries++;
                                     }
@@ -506,22 +521,35 @@ namespace WebApp.Services
                             {
                                 string cleanGroupFolder = sanitize($"{groupItem.ShortPrefix} {groupItem.TenNhom}");
 
-                                // Báo cáo tổng hợp cấp Nhóm CBO
+                                // Báo cáo tổng hợp cấp Nhóm CBO / Doanh nghiệp xã hội
                                 try
                                 {
                                     var nhomData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, groupItem.QueryCode, null, loaiBaoCaoFilter);
-                                    if (nhomData != null && nhomData.Count > 0)
+                                    bool hasNhomData = isPdf ? (nhomData != null && nhomData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0)) : (nhomData != null && nhomData.Count > 0);
+                                    if (hasNhomData)
                                     {
                                         using (var wbNhom = new XLWorkbook())
                                         {
                                              var wsNhom = wbNhom.Worksheets.Add("TongHop_Nhom");
                                              BuildHoatDongCD45Worksheet(wsNhom, nhomData, fromDate, toDate, currentCityName, groupItem.TenNhom, groupItem.XungDanh, groupItem.ChucDanh);
-                                             var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.xlsx", CompressionLevel.Fastest);
-                                            using (var zipStream = nhomEntry.Open())
-                                            {
-                                                wbNhom.SaveAs(zipStream);
-                                            }
-                                            totalSummaries++;
+                                             if (isPdf)
+                                             {
+                                                 var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.pdf", CompressionLevel.Fastest);
+                                                 using (var zipStream = nhomEntry.Open())
+                                                 {
+                                                     var pdfBytes = ExcelToPdfHelper.ConvertClosedXmlToPdf(wbNhom);
+                                                     zipStream.Write(pdfBytes, 0, pdfBytes.Length);
+                                                 }
+                                             }
+                                             else
+                                             {
+                                                 var nhomEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TongHop_{sanitize(groupItem.ShortPrefix)}_{sanitize(groupItem.TenNhom)}.xlsx", CompressionLevel.Fastest);
+                                                 using (var zipStream = nhomEntry.Open())
+                                                 {
+                                                     wbNhom.SaveAs(zipStream);
+                                                 }
+                                             }
+                                             totalSummaries++;
                                         }
                                     }
                                 }
@@ -536,6 +564,24 @@ namespace WebApp.Services
                                     foreach (var tcv in groupItem.TcvList)
                                     {
                                         var data = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiBaoCaoFilter);
+                                        List<CD45BaoCaoTuVanL1Model> dataL1 = null;
+                                        List<CD45BaoCaoTuVanL2Model> dataL2 = null;
+                                        if (_baoCaoTuVanDA != null)
+                                        {
+                                            dataL1 = _baoCaoTuVanDA.GetBaoCaoTuVanL1(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                            dataL2 = _baoCaoTuVanDA.GetBaoCaoTuVanL2(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                        }
+
+                                        bool hasActivityData = data != null && data.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
+                                        bool hasTuVanL1 = dataL1 != null && dataL1.Count > 0;
+                                        bool hasTuVanL2 = dataL2 != null && dataL2.Count > 0;
+                                        bool hasTcvData = hasActivityData || hasTuVanL1 || hasTuVanL2;
+
+                                        // QUY TẮC: Chỉ những Nhóm/TCV có dữ liệu thì mới xuất file báo cáo, nếu không có dữ liệu thì không cần xuất (áp dụng cho PDF)
+                                        if (isPdf && !hasTcvData)
+                                        {
+                                            continue;
+                                        }
 
                                         using (var wb = new XLWorkbook())
                                         {
@@ -544,20 +590,30 @@ namespace WebApp.Services
 
                                             if (_baoCaoTuVanDA != null)
                                             {
-                                                var dataL1 = _baoCaoTuVanDA.GetBaoCaoTuVanL1(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
                                                 var wsL1 = wb.Worksheets.Add("TuVan_L1");
-                                                ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+                                                ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1 ?? new List<CD45BaoCaoTuVanL1Model>(), fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
 
-                                                var dataL2 = _baoCaoTuVanDA.GetBaoCaoTuVanL2(fromDate, toDate, null, tcv.MA_NHOM, tcv.MA_TCV);
                                                 var wsL2 = wb.Worksheets.Add("TuVan_L2");
-                                                ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2, fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
+                                                ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2 ?? new List<CD45BaoCaoTuVanL2Model>(), fromDate, toDate, tcv.TEN_NHOM ?? groupItem.TenNhom, tcv.TEN_TCV ?? tcv.MA_TCV, groupItem.XungDanh);
                                             }
 
                                             var cleanTcvName = sanitize(tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV));
-                                            var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
-                                            using (var zipStream = zipEntry.Open())
+                                            if (isPdf)
                                             {
-                                                wb.SaveAs(zipStream);
+                                                var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.pdf", CompressionLevel.Fastest);
+                                                using (var zipStream = zipEntry.Open())
+                                                {
+                                                    var pdfBytes = ExcelToPdfHelper.ConvertClosedXmlToPdf(wb);
+                                                    zipStream.Write(pdfBytes, 0, pdfBytes.Length);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                var zipEntry = archive.CreateEntry($"{cleanCityFolder}/{cleanGroupFolder}/BaoCao_TCV_{cleanTcvName}.xlsx", CompressionLevel.Fastest);
+                                                using (var zipStream = zipEntry.Open())
+                                                {
+                                                    wb.SaveAs(zipStream);
+                                                }
                                             }
                                             totalTcvExported++;
                                         }
@@ -595,7 +651,7 @@ namespace WebApp.Services
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
-                        ReportName = "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
+                        ReportName = isPdf ? "Báo cáo TCV CD45 (PDF theo Tỉnh/Nhóm)" : "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
                         PeriodType = periodType ?? "Month",
                         PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
@@ -649,7 +705,7 @@ namespace WebApp.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<ReportExportResult> ExportHoatDongCD45ExcelAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null)
+        public async Task<ReportExportResult> ExportHoatDongCD45ExcelAsync(int year, int month, string cityCode = null, string maNhom = null, string triggerType = "Manual", string createdBy = "User", string periodType = "Month", string customFromDate = null, string customToDate = null, string periodValue = null, string format = "EXCEL")
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
@@ -787,14 +843,33 @@ namespace WebApp.Services
                 else
                     periodTag = $"Thang{month:D2}_{year}";
 
-                string fileName = $"BaoCao_HoatDong_CD45_{periodTag}{suffix}.xlsx";
+                bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
+                bool hasData = data != null && data.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
+                if (isPdf && !hasData)
+                {
+                    sw.Stop();
+                    result.Success = false;
+                    result.Message = $"Không có dữ liệu phát sinh cho {scopeDesc} trong kỳ {pValue}.";
+                    return await Task.FromResult(result);
+                }
+
+                string ext = isPdf ? ".pdf" : ".xlsx";
+                string fileName = $"BaoCao_HoatDong_CD45_{periodTag}{suffix}{ext}";
                 string filePath = Path.Combine(storageDir, fileName);
 
                 using (var wb = new XLWorkbook())
                 {
                     var ws = wb.Worksheets.Add($"CD45_{periodTag}");
                     BuildHoatDongCD45Worksheet(ws, data, fromDate, toDate, resolvedCityName, resolvedTenNhom, resolvedXungDanh, resolvedChucDanh);
-                    wb.SaveAs(filePath);
+                    if (isPdf)
+                    {
+                        var pdfBytes = ExcelToPdfHelper.ConvertClosedXmlToPdf(wb);
+                        File.WriteAllBytes(filePath, pdfBytes);
+                    }
+                    else
+                    {
+                        wb.SaveAs(filePath);
+                    }
                 }
 
                 sw.Stop();
@@ -807,7 +882,9 @@ namespace WebApp.Services
                 result.FileSizeBytes = fileInfo.Length;
                 result.TotalItems = data != null ? data.Count : 0;
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                result.Message = $"Báo cáo Hoạt động CD45 ({scopeDesc}): Xuất thành công file Excel ({sizeKb} KB).";
+                result.Message = isPdf
+                    ? $"Báo cáo Hoạt động CD45 ({scopeDesc}): Xuất thành công file PDF ({sizeKb} KB)."
+                    : $"Báo cáo Hoạt động CD45 ({scopeDesc}): Xuất thành công file Excel ({sizeKb} KB).";
 
                 if (triggerType != "UnitTest")
                 {
@@ -1249,7 +1326,7 @@ namespace WebApp.Services
             int year, int month, string cityCode = null, 
             string triggerType = "Manual", string createdBy = "User", 
             string periodType = "Month", string customFromDate = null, 
-            string customToDate = null, string periodValue = null)
+            string customToDate = null, string periodValue = null, string format = "EXCEL")
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
@@ -1339,67 +1416,180 @@ namespace WebApp.Services
                 }
 
                 // =========================================================================
-                // TRƯỜNG HỢP 1: Xuất 1 Tỉnh cụ thể (File .xlsx)
+                bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
+
+                byte[] CreateSingleDoctorPdf(string cCode, string tenTinh, string docName, List<BaoCaoBacSiDetailModel> docCases)
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var ws = workbook.Worksheets.Add("BaoCao");
+                        BuildDoctorConsultationSheet(ws, docName, cCode, tenTinh, pValue, fromDate, toDate, year, month, docCases);
+                        return ExcelToPdfHelper.ConvertClosedXmlToPdf(workbook);
+                    }
+                }
+
+                Func<string, string> sanitize = (input) =>
+                {
+                    if (string.IsNullOrWhiteSpace(input)) return "Unknown";
+                    var invalid = Path.GetInvalidFileNameChars();
+                    var clean = new string(input.Where(ch => !invalid.Contains(ch) && ch != '/' && ch != '\\').ToArray()).Trim();
+                    return string.IsNullOrWhiteSpace(clean) ? "Unknown" : clean;
+                };
+
+                // =========================================================================
+                // TRƯỜNG HỢP 1: Xuất 1 Tỉnh cụ thể (File .xlsx hoặc File .zip chứa từng PDF)
                 // =========================================================================
                 if (!string.IsNullOrEmpty(filterCityCode))
                 {
                     string tenTinh = GetProvinceName(filterCityCode);
                     string safeTinh = GetSafeProvinceName(filterCityCode);
-                    string outFileName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
-                    string outFilePath = Path.Combine(storageDir, outFileName);
 
-                    if (File.Exists(outFilePath))
+                    if (isPdf)
                     {
-                        try { File.Delete(outFilePath); } catch { }
-                    }
+                        string outFileName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}_PDF.zip";
+                        string outFilePath = Path.Combine(storageDir, outFileName);
 
-                    var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase)).ToList();
-                    byte[] excelBytes = CreateProvinceDoctorExcel(filterCityCode, tenTinh, provCases);
-                    File.WriteAllBytes(outFilePath, excelBytes);
-
-                    var fileInfo = new FileInfo(outFilePath);
-                    long sizeKb = fileInfo.Exists ? fileInfo.Length / 1024 : 0;
-
-                    result.Success = true;
-                    result.FileName = outFileName;
-                    result.FilePath = outFilePath;
-                    result.FileSizeBytes = fileInfo.Length;
-                    result.TotalItems = provCases.Count;
-                    result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                    result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH tỉnh {tenTinh} ({periodTag}): {provCases.Count} ca khám ({sizeKb} KB).";
-
-                    if (triggerType != "UnitTest")
-                    {
-                        _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
+                        if (File.Exists(outFilePath))
                         {
-                            ReportType = "BACSI_CD45",
-                            ReportName = $"Báo cáo Bác sĩ DREAMH - {tenTinh}",
-                            PeriodType = periodType ?? "Month",
-                            PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
-                            Year = year,
-                            Month = month,
-                            MaDuAn = "CD45",
-                            CityCode = filterCityCode,
-                            FileName = outFileName,
-                            FilePath = outFilePath,
-                            FileSizeKb = sizeKb,
-                            TotalRecords = provCases.Count,
-                            Status = "Success",
-                            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                            TelegramSent = true,
-                            TriggerType = triggerType,
-                            CreatedBy = createdBy,
-                            CreatedDate = DateTime.Now
-                        });
-                    }
+                            try { File.Delete(outFilePath); } catch { }
+                        }
 
-                    return result;
+                        var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase)).ToList();
+                        var doctorGroups = provCases
+                            .GroupBy(x => !string.IsNullOrEmpty(x.TEN_BAC_SI) ? x.TEN_BAC_SI.Trim() : (!string.IsNullOrEmpty(x.BAC_SI) ? ("BS " + x.BAC_SI.Trim()) : "BS Chưa rõ"))
+                            .OrderBy(g => g.Key)
+                            .ToList();
+
+                        int doctorsExported = 0;
+                        int casesExported = 0;
+
+                        using (var fs = new FileStream(outFilePath, FileMode.Create))
+                        using (var archive = new ZipArchive(fs, ZipArchiveMode.Create))
+                        {
+                            foreach (var dGroup in doctorGroups)
+                            {
+                                var docCases = dGroup.ToList();
+                                if (docCases.Count == 0) continue; // Chỉ bác sĩ có dữ liệu mới xuất
+
+                                string docName = dGroup.Key;
+                                byte[] pdfBytes = CreateSingleDoctorPdf(filterCityCode, tenTinh, docName, docCases);
+                                string pdfEntryName = $"BaoCao_BacSi_{sanitize(docName)}_{periodTag}.pdf";
+                                var entry = archive.CreateEntry(pdfEntryName, CompressionLevel.Optimal);
+                                using (var es = entry.Open())
+                                {
+                                    es.Write(pdfBytes, 0, pdfBytes.Length);
+                                }
+                                doctorsExported++;
+                                casesExported += docCases.Count;
+                            }
+                        }
+
+                        if (doctorsExported == 0)
+                        {
+                            try { File.Delete(outFilePath); } catch { }
+                            result.Success = false;
+                            result.Message = $"Không có ca khám bác sĩ nào trong kỳ {pValue} tại tỉnh {tenTinh}.";
+                            return result;
+                        }
+
+                        var fileInfo = new FileInfo(outFilePath);
+                        long sizeKb = fileInfo.Exists ? fileInfo.Length / 1024 : 0;
+
+                        result.Success = true;
+                        result.FileName = outFileName;
+                        result.FilePath = outFilePath;
+                        result.FileSizeBytes = fileInfo.Length;
+                        result.TotalItems = casesExported;
+                        result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
+                        result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH định dạng PDF tỉnh {tenTinh} ({periodTag}): Đóng gói {doctorsExported} file PDF của {doctorsExported} bác sĩ ({casesExported} ca khám) vào file ZIP ({sizeKb} KB).";
+
+                        if (triggerType != "UnitTest")
+                        {
+                            _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
+                            {
+                                ReportType = "BACSI_CD45",
+                                ReportName = $"Báo cáo Bác sĩ DREAMH (PDF theo Bác sĩ) - {tenTinh}",
+                                PeriodType = periodType ?? "Month",
+                                PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
+                                Year = year,
+                                Month = month,
+                                MaDuAn = "CD45",
+                                CityCode = filterCityCode,
+                                FileName = outFileName,
+                                FilePath = outFilePath,
+                                FileSizeKb = sizeKb,
+                                TotalRecords = casesExported,
+                                Status = "Success",
+                                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                                TelegramSent = true,
+                                TriggerType = triggerType,
+                                CreatedBy = createdBy,
+                                CreatedDate = DateTime.Now
+                            });
+                        }
+
+                        return result;
+                    }
+                    else
+                    {
+                        string outFileName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
+                        string outFilePath = Path.Combine(storageDir, outFileName);
+
+                        if (File.Exists(outFilePath))
+                        {
+                            try { File.Delete(outFilePath); } catch { }
+                        }
+
+                        var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase)).ToList();
+                        byte[] excelBytes = CreateProvinceDoctorExcel(filterCityCode, tenTinh, provCases);
+                        File.WriteAllBytes(outFilePath, excelBytes);
+
+                        var fileInfo = new FileInfo(outFilePath);
+                        long sizeKb = fileInfo.Exists ? fileInfo.Length / 1024 : 0;
+
+                        result.Success = true;
+                        result.FileName = outFileName;
+                        result.FilePath = outFilePath;
+                        result.FileSizeBytes = fileInfo.Length;
+                        result.TotalItems = provCases.Count;
+                        result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
+                        result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH tỉnh {tenTinh} ({periodTag}): {provCases.Count} ca khám ({sizeKb} KB).";
+
+                        if (triggerType != "UnitTest")
+                        {
+                            _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
+                            {
+                                ReportType = "BACSI_CD45",
+                                ReportName = $"Báo cáo Bác sĩ DREAMH - {tenTinh}",
+                                PeriodType = periodType ?? "Month",
+                                PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
+                                Year = year,
+                                Month = month,
+                                MaDuAn = "CD45",
+                                CityCode = filterCityCode,
+                                FileName = outFileName,
+                                FilePath = outFilePath,
+                                FileSizeKb = sizeKb,
+                                TotalRecords = provCases.Count,
+                                Status = "Success",
+                                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                                TelegramSent = true,
+                                TriggerType = triggerType,
+                                CreatedBy = createdBy,
+                                CreatedDate = DateTime.Now
+                            });
+                        }
+
+                        return result;
+                    }
                 }
 
                 // =========================================================================
-                // TRƯỜNG HỢP 2: Xuất Toàn bộ các Tỉnh (Gói .ZIP các file .xlsx của từng Tỉnh)
+                // TRƯỜNG HỢP 2: Xuất Toàn bộ các Tỉnh (Gói .ZIP các file .xlsx hoặc .pdf)
                 // =========================================================================
-                string zipFileName = $"BaoCao_BacSi_DREAMH_CacTinh_{periodTag}.zip";
+                string zipFileName = isPdf 
+                    ? $"BaoCao_BacSi_DREAMH_CacTinh_{periodTag}_PDF.zip"
+                    : $"BaoCao_BacSi_DREAMH_CacTinh_{periodTag}.zip";
                 string zipFilePath = Path.Combine(storageDir, zipFileName);
 
                 if (File.Exists(zipFilePath))
@@ -1420,6 +1610,7 @@ namespace WebApp.Services
 
                 int totalProvincesExported = 0;
                 int totalCasesExported = 0;
+                int totalDoctorsExported = 0;
 
                 using (var zipStream = new FileStream(zipFilePath, FileMode.Create))
                 using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
@@ -1430,19 +1621,63 @@ namespace WebApp.Services
                         string safeTinh = GetSafeProvinceName(pCode);
                         var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), pCode, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                        if (provCases.Count == 0 && !provinceMap.ContainsKey(pCode)) continue;
-
-                        byte[] excelBytes = CreateProvinceDoctorExcel(pCode, tenTinh, provCases);
-                        string entryName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
-                        var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
-                        using (var entryStream = entry.Open())
+                        if (isPdf)
                         {
-                            entryStream.Write(excelBytes, 0, excelBytes.Length);
-                        }
+                            if (provCases.Count == 0) continue; // Chỉ xuất tỉnh có ca khám
 
-                        totalProvincesExported++;
-                        totalCasesExported += provCases.Count;
+                            var doctorGroups = provCases
+                                .GroupBy(x => !string.IsNullOrEmpty(x.TEN_BAC_SI) ? x.TEN_BAC_SI.Trim() : (!string.IsNullOrEmpty(x.BAC_SI) ? ("BS " + x.BAC_SI.Trim()) : "BS Chưa rõ"))
+                                .OrderBy(g => g.Key)
+                                .ToList();
+
+                            int provDocs = 0;
+                            foreach (var dGroup in doctorGroups)
+                            {
+                                var docCases = dGroup.ToList();
+                                if (docCases.Count == 0) continue; // Chỉ bác sĩ có ca khám
+
+                                string docName = dGroup.Key;
+                                byte[] pdfBytes = CreateSingleDoctorPdf(pCode, tenTinh, docName, docCases);
+                                string entryName = $"{safeTinh}/BaoCao_BacSi_{sanitize(docName)}_{periodTag}.pdf";
+                                var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+                                using (var entryStream = entry.Open())
+                                {
+                                    entryStream.Write(pdfBytes, 0, pdfBytes.Length);
+                                }
+                                provDocs++;
+                                totalDoctorsExported++;
+                                totalCasesExported += docCases.Count;
+                            }
+
+                            if (provDocs > 0)
+                            {
+                                totalProvincesExported++;
+                            }
+                        }
+                        else
+                        {
+                            if (provCases.Count == 0 && !provinceMap.ContainsKey(pCode)) continue;
+
+                            byte[] excelBytes = CreateProvinceDoctorExcel(pCode, tenTinh, provCases);
+                            string entryName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";
+                            var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+                            using (var entryStream = entry.Open())
+                            {
+                                entryStream.Write(excelBytes, 0, excelBytes.Length);
+                            }
+
+                            totalProvincesExported++;
+                            totalCasesExported += provCases.Count;
+                        }
                     }
+                }
+
+                if (isPdf && totalDoctorsExported == 0)
+                {
+                    try { File.Delete(zipFilePath); } catch { }
+                    result.Success = false;
+                    result.Message = $"Không có ca khám bác sĩ nào trong kỳ {pValue}.";
+                    return result;
                 }
 
                 var zipInfo = new FileInfo(zipFilePath);
@@ -1454,14 +1689,16 @@ namespace WebApp.Services
                 result.FileSizeBytes = zipInfo.Length;
                 result.TotalItems = totalCasesExported;
                 result.ExecutionTimeMs = (int)sw.ElapsedMilliseconds;
-                result.Message = $"Xuất thành công Báo cáo Bác sĩ DREAMH ({periodTag}): Đóng gói {totalProvincesExported} file tỉnh với {totalCasesExported} ca khám vào file ZIP ({zipSizeKb} KB).";
+                result.Message = isPdf
+                    ? $"Xuất thành công Báo cáo Bác sĩ DREAMH định dạng PDF ({periodTag}): Đóng gói {totalDoctorsExported} file PDF của {totalDoctorsExported} bác sĩ tại {totalProvincesExported} tỉnh ({totalCasesExported} ca khám) vào file ZIP ({zipSizeKb} KB)."
+                    : $"Xuất thành công Báo cáo Bác sĩ DREAMH ({periodTag}): Đóng gói {totalProvincesExported} file tỉnh với {totalCasesExported} ca khám vào file ZIP ({zipSizeKb} KB).";
 
                 if (triggerType != "UnitTest")
                 {
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "BACSI_CD45",
-                        ReportName = "Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)",
+                        ReportName = isPdf ? "Báo cáo Bác sĩ DREAMH (PDF theo Bác sĩ các Tỉnh)" : "Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)",
                         PeriodType = periodType ?? "Month",
                         PeriodValue = pValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,

@@ -2232,3 +2232,36 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
    - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.2.rar` và tải lên `Packages/` trên máy chủ FTP.
    - Deploy đồng bộ lên DEV (`c:\publish\dev`) và PROD (`c:\publish\prod`).
    - Nghiệm thu đối soát: Cả DEV và PROD đều khớp 100% phiên bản `v1.7.2` và trả về `HTTP 200 OK`.
+---
+
+## Phiên 47: 24/10/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu phiên:
+1. Phát triển tính năng xuất báo cáo định kỳ định dạng PDF chuẩn A4:
+   - Tích hợp thư viện Spire.XLS (`FreeSpire.XLS 12.7.0`) hỗ trợ chuyển đổi bảng tính Excel sang tài liệu PDF hoàn chỉnh.
+   - Bổ sung tùy chọn định dạng đầu ra (Excel `.xlsx` / PDF `.pdf`) trên modal "Xuất Báo Cáo Ngay" tại giao diện Báo cáo định kỳ (`ScheduledReport`).
+   - Cung cấp tính năng tải file PDF riêng cho từng Tiếp cận viên, Bác sĩ, Nhóm DNXH và Tỉnh/Thành phố (tự động loại trừ các đối tượng không phát sinh dữ liệu trong kỳ báo cáo).
+2. Tối ưu cấu hình hệ thống & kiểm soát dependencies:
+   - Thêm bindingRedirect cho `System.Text.Encoding.CodePages` trong `Web.config` và `App.config`.
+   - Bổ sung quy tắc bỏ qua `*.nupkg` trong `.gitignore` nhằm tối ưu dung lượng kho mã nguồn Git.
+3. Cập nhật và mở rộng bộ kiểm thử tự động (Unit Tests):
+   - Bổ sung 4 bài test PDF toàn diện trong `ScheduledReportTests.cs`.
+   - Cập nhật số liệu khách hàng Nữ thực tế theo tiến trình đồng bộ REDCap (1000 KH) trong `DashboardCD45Tests.cs`.
+   - Đạt 161/161 tests PASSED 100%.
+4. Đóng gói phát hành bản vá `v1.7.3`, gắn tag Git, đẩy lên kho lưu trữ và triển khai đồng bộ lên cả 2 môi trường DEV (`c:\publish\dev`) và PROD (`c:\publish\prod`).
+
+### Các công việc đã hoàn thành:
+1. **Dịch vụ Chuyển đổi PDF & Backend Service**:
+   - Xây dựng helper `WebApp/Services/ExcelToPdfHelper.cs`: Chuyển đổi trực tiếp ClosedXML workbook sang mảng byte PDF hoặc lưu file PDF chuẩn A4, bảo toàn định dạng Landscape/Portrait và căn lề in ấn.
+   - Cập nhật interface `IReportExportService.cs` và implementation `ReportExportService.cs`: Hỗ trợ tham số `format = "EXCEL" | "PDF"` trên toàn bộ luồng xuất báo cáo Tiếp cận viên, Bác sĩ và Hoạt động CD45.
+   - Nâng cấp `ScheduledReportController.cs`: Tiếp nhận tham số `format` từ client và hỗ trợ tải về file `.pdf` với ContentType `application/pdf`.
+2. **Giao diện Web UI & Alpine.js**:
+   - `WebApp/Views/ScheduledReport/Index.cshtml`: Bổ sung dropdown chọn định dạng đầu ra kèm ghi chú hướng dẫn chi tiết.
+   - `WebApp/app/Controller/AlpineScheduledReportController.js`: Bổ sung thuộc tính `manualExport.format` (mặc định `'EXCEL'`) và đẩy vào payload `TriggerExportNow`.
+3. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Bổ sung 4 unit tests kiểm tra tính toàn vẹn cấu trúc ZIP PDF và file PDF độc lập.
+   - Cập nhật ngưỡng kiểm tra khách hàng Nữ đạt 1000 KH trong `DashboardCD45Tests.cs`.
+   - Toàn bộ 161/161 tests PASSED 100%.
+4. **Triển khai & Phát hành (v1.7.3)**:
+   - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.3.rar`.
+   - Triển khai và kiểm tra sức khỏe thành công trên DEV và PROD.

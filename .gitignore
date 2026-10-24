@@ -48,3 +48,6 @@ TestResults/
 # Exported report archives (keep folder structure via .gitkeep)
 /WebApp/App_Data/ExportedReports/*
 !/WebApp/App_Data/ExportedReports/.gitkeep
+
+# NuGet Package Archives
+*.nupkg

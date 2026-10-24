@@ -39,6 +39,7 @@ document.addEventListener('alpine:init', () => {
         // Trigger Run Now Modal State
         manualExport: {
             reportType: 'ALL',
+            format: 'EXCEL',
             periodType: 'Month',
             quarter: Math.floor((new Date().getMonth() - 1) / 3) + 1,
             year: new Date().getFullYear(),
@@ -253,6 +254,7 @@ document.addEventListener('alpine:init', () => {
             formData.append('periodType', this.manualExport.periodType);
             formData.append('quarter', this.manualExport.quarter);
             formData.append('reportType', this.manualExport.reportType);
+            formData.append('format', this.manualExport.format || 'EXCEL');
             formData.append('cityCode', this.manualExport.cityCode || '');
             formData.append('maNhom', this.manualExport.maNhom || '');
 

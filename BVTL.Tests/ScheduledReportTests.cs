@@ -1174,6 +1174,187 @@ namespace BVTL.Tests
             Assert.IsFalse(json.Contains("Nguyễn Thị Xuân Phúc"), "Tuyệt đối không được chứa ca của TCV khác (Nguyễn Thị Xuân Phúc)");
             Assert.IsFalse(json.Contains("Nguyễn Thị Loan"), "Tuyệt đối không được chứa ca của TCV khác (Nguyễn Thị Loan)");
         }
+
+        [TestMethod]
+        public void ReportExportService_ExportTCVCD45PdfZipAsync_ShouldFilterEmptyAndExportPdf()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Xuất thử nghiệm PDF cho The Times group (HNO - tt) tháng 08/2026
+                var task = service.ExportTCVCD45ZipAsync(2026, 8, "HNO", "tt", "UnitTest", "Tester", format: "PDF");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export PDF should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileName.EndsWith("_PDF.zip", StringComparison.OrdinalIgnoreCase), "File name should end with _PDF.zip");
+                Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file size > 0");
+                Assert.IsTrue(result.TotalItems > 0, "Total items exported > 0");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    Assert.IsTrue(archive.Entries.Count > 0, "ZIP must contain entries");
+
+                    bool hasProvincePdf = false;
+                    bool hasGroupPdf = false;
+                    bool hasTcvPdf = false;
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        Assert.IsTrue(entry.FullName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase), $"Every entry inside PDF zip must be .pdf, found: {entry.FullName}");
+                        Assert.IsFalse(entry.FullName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase), $"No .xlsx file should be in PDF zip: {entry.FullName}");
+
+                        if (entry.FullName.Contains("BaoCao_TongHop_HNO.pdf")) hasProvincePdf = true;
+                        if (entry.FullName.Contains("BaoCao_TongHop_") && !entry.FullName.Contains("BaoCao_TongHop_HNO")) hasGroupPdf = true;
+                        if (entry.FullName.Contains("BaoCao_TCV_")) hasTcvPdf = true;
+                    }
+
+                    Assert.IsTrue(hasProvincePdf, "ZIP should contain Province PDF report (BaoCao_TongHop_HNO.pdf)");
+                    Assert.IsTrue(hasGroupPdf, "ZIP should contain Group PDF report (BaoCao_TongHop_...)");
+                    Assert.IsTrue(hasTcvPdf, "ZIP should contain individual TCV PDF reports (BaoCao_TCV_...)");
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportBacSiCD45PdfZipAsync_SingleProvince_EachDoctorOnePdf()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Xuất PDF Bác sĩ tỉnh Hà Nội tháng 08/2026
+                var task = service.ExportBacSiCD45ExcelAsync(2026, 8, "HNO", "UnitTest", "Tester", format: "PDF");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export Doctor PDF for HNO should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileName.EndsWith("_PDF.zip", StringComparison.OrdinalIgnoreCase), "File name should end with _PDF.zip");
+                Assert.IsTrue(result.TotalItems > 0, "Total doctor consultation cases should be > 0");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    Assert.IsTrue(archive.Entries.Count > 0, "ZIP must contain doctor PDF entries");
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        Assert.IsTrue(entry.FullName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase), $"Entry must be .pdf: {entry.FullName}");
+                        Assert.IsTrue(entry.FullName.StartsWith("BaoCao_BacSi_", StringComparison.OrdinalIgnoreCase), $"Entry must be doctor report: {entry.FullName}");
+                        
+                        // Kiểm tra file PDF không rỗng (magic header %PDF-)
+                        using (var es = entry.Open())
+                        {
+                            byte[] header = new byte[5];
+                            int read = es.Read(header, 0, 5);
+                            Assert.AreEqual(5, read, "Must read 5 bytes header");
+                            string magic = System.Text.Encoding.ASCII.GetString(header);
+                            Assert.AreEqual("%PDF-", magic, "Entry must be a valid PDF file");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportBacSiCD45PdfZipAsync_AllProvinces_HierarchicalPdfs()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                // Xuất PDF Bác sĩ toàn bộ các tỉnh tháng 08/2026
+                var task = service.ExportBacSiCD45ExcelAsync(2026, 8, null, "UnitTest", "Tester", format: "PDF");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export Doctor PDF all provinces should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk");
+                Assert.IsTrue(result.FileName.Contains("_PDF.zip"), "File name should contain _PDF.zip");
+                generatedFilePath = result.FilePath;
+
+                using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    Assert.IsTrue(archive.Entries.Count > 0, "ZIP must contain doctor PDF entries");
+
+                    bool hasFolderStructure = false;
+                    foreach (var entry in archive.Entries)
+                    {
+                        Assert.IsTrue(entry.FullName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase), $"Entry must be .pdf: {entry.FullName}");
+                        if (entry.FullName.Contains("/"))
+                        {
+                            hasFolderStructure = true;
+                        }
+                    }
+
+                    Assert.IsTrue(hasFolderStructure, "Doctor PDFs in multi-province zip must be categorized into province folders");
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportHoatDongCD45Pdf_ShouldCreateValidPdf()
+        {
+            var service = new ReportExportService();
+            string generatedFilePath = null;
+            try
+            {
+                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HNO", "tt", "UnitTest", "Tester", format: "PDF");
+                var result = task.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(result, "Result must not be null");
+                Assert.IsTrue(result.Success, "Export Hoat Dong CD45 PDF should succeed: " + result.Message);
+                Assert.IsTrue(File.Exists(result.FilePath), "PDF file should exist on disk: " + result.FilePath);
+                Assert.IsTrue(result.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase), "File name must end with .pdf");
+                Assert.IsTrue(result.FileSizeBytes > 0, "PDF size must be > 0");
+                generatedFilePath = result.FilePath;
+
+                // Kiểm tra magic header %PDF-
+                byte[] header = new byte[5];
+                using (var fs = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    int read = fs.Read(header, 0, 5);
+                    Assert.AreEqual(5, read, "Must read 5 bytes header");
+                }
+                string magic = System.Text.Encoding.ASCII.GetString(header);
+                Assert.AreEqual("%PDF-", magic, "File must be valid PDF");
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
+                {
+                    try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
     }
 }
 
