@@ -25,6 +25,22 @@ namespace Model.ModelExtend.Report
         public string TriggerType { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string FileFormat { get; set; }
+
+        public string Format
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(FileFormat)) return FileFormat.ToUpperInvariant();
+                if (!string.IsNullOrEmpty(FileName))
+                {
+                    if (FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ||
+                        FileName.EndsWith("_PDF.zip", StringComparison.OrdinalIgnoreCase))
+                        return "PDF";
+                }
+                return "EXCEL";
+            }
+        }
 
         // Helper properties for display
         public string CreatedDateFormatted => CreatedDate.ToString("dd/MM/yyyy HH:mm:ss");

@@ -123,12 +123,12 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetLogs(string reportType = null, int? year = null, int? month = null, int pageIndex = 1, int pageSize = 15, string periodType = null)
+        public JsonResult GetLogs(string reportType = null, int? year = null, int? month = null, int pageIndex = 1, int pageSize = 15, string periodType = null, string format = null)
         {
             try
             {
                 int totalRows = 0;
-                var logs = _scheduledReportDA.GetExportLogs(reportType, year, month, pageIndex, pageSize, out totalRows, periodType);
+                var logs = _scheduledReportDA.GetExportLogs(reportType, year, month, pageIndex, pageSize, out totalRows, periodType, format);
                 return Json(new
                 {
                     Success = true,

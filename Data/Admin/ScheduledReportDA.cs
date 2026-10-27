@@ -1,4 +1,4 @@
-using Data.InterfaceDA.Admin;
+﻿using Data.InterfaceDA.Admin;
 using log4net;
 using Model.ModelExtend.Report;
 using System;
@@ -46,14 +46,14 @@ namespace Data.Admin
                         [ReportType], [ReportName], [PeriodType], [PeriodValue], [Year], [Month],
                         [MaDuAn], [CityCode], [MaNhom], [FileName], [FilePath], [FileSizeKb],
                         [TotalRecords], [Status], [ErrorMessage], [ExecutionTimeMs], [TelegramSent],
-                        [TriggerType], [CreatedBy], [CreatedDate]
+                        [TriggerType], [CreatedBy], [CreatedDate], [FileFormat]
                     )
                     VALUES
                     (
                         @ReportType, @ReportName, @PeriodType, @PeriodValue, @Year, @Month,
                         @MaDuAn, @CityCode, @MaNhom, @FileName, @FilePath, @FileSizeKb,
                         @TotalRecords, @Status, @ErrorMessage, @ExecutionTimeMs, @TelegramSent,
-                        @TriggerType, @CreatedBy, @CreatedDate
+                        @TriggerType, @CreatedBy, @CreatedDate, @FileFormat
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
@@ -79,6 +79,8 @@ namespace Data.Admin
                         cmd.Parameters.AddWithValue("@TriggerType", (object)model.TriggerType ?? "AutoSchedule");
                         cmd.Parameters.AddWithValue("@CreatedBy", (object)model.CreatedBy ?? "QuartzScheduler");
                         cmd.Parameters.AddWithValue("@CreatedDate", model.CreatedDate == DateTime.MinValue ? DateTime.Now : model.CreatedDate);
+                        string fFormat = !string.IsNullOrEmpty(model.FileFormat) ? model.FileFormat.ToUpperInvariant() : model.Format;
+                        cmd.Parameters.AddWithValue("@FileFormat", (object)fFormat ?? "EXCEL");
 
                         var id = Convert.ToInt64(cmd.ExecuteScalar());
                         model.Id = id;
@@ -101,7 +103,9 @@ namespace Data.Admin
                 {
                     conn.Open();
 
-                    // Tìm các bản ghi cũ cùng kỳ & cùng loại báo cáo & bộ lọc
+                    string reqFormat = !string.IsNullOrEmpty(model.FileFormat) ? model.FileFormat.ToUpperInvariant() : model.Format;
+
+                    // Tìm các bản ghi cũ cùng kỳ & cùng loại báo cáo & bộ lọc & CÙNG ĐỊNH DẠNG (Excel hoặc PDF)
                     const string findSql = @"
                     SELECT [Id], [FilePath], [FileName]
                     FROM [dbo].[BVTL_EXPORTED_REPORT_LOG]
@@ -112,6 +116,11 @@ namespace Data.Admin
                       AND ISNULL([MaDuAn], '') = ISNULL(@MaDuAn, '')
                       AND ISNULL([CityCode], '') = ISNULL(@CityCode, '')
                       AND ISNULL([MaNhom], '') = ISNULL(@MaNhom, '')
+                      AND (
+                          (@ReqFormat = 'PDF' AND (ISNULL([FileFormat], '') = 'PDF' OR [FileName] LIKE '%_PDF.zip' OR [FileName] LIKE '%.pdf'))
+                          OR
+                          (@ReqFormat <> 'PDF' AND (ISNULL([FileFormat], 'EXCEL') <> 'PDF' AND [FileName] NOT LIKE '%_PDF.zip' AND [FileName] NOT LIKE '%.pdf'))
+                      )
                     ORDER BY [Id] DESC;";
 
                     var existingLogs = new List<Tuple<long, string, string>>();
@@ -124,6 +133,7 @@ namespace Data.Admin
                         findCmd.Parameters.AddWithValue("@MaDuAn", (object)model.MaDuAn ?? DBNull.Value);
                         findCmd.Parameters.AddWithValue("@CityCode", (object)model.CityCode ?? DBNull.Value);
                         findCmd.Parameters.AddWithValue("@MaNhom", (object)model.MaNhom ?? DBNull.Value);
+                        findCmd.Parameters.AddWithValue("@ReqFormat", reqFormat);
 
                         using (var r = findCmd.ExecuteReader())
                         {
@@ -200,7 +210,8 @@ namespace Data.Admin
                             [TelegramSent] = @TelegramSent,
                             [TriggerType] = @TriggerType,
                             [CreatedBy] = @CreatedBy,
-                            [CreatedDate] = @CreatedDate
+                            [CreatedDate] = @CreatedDate,
+                            [FileFormat] = @FileFormat
                         WHERE [Id] = @Id;";
 
                         using (var upCmd = new SqlCommand(updateSql, conn))
@@ -220,6 +231,7 @@ namespace Data.Admin
                             upCmd.Parameters.AddWithValue("@TriggerType", (object)model.TriggerType ?? "AutoSchedule");
                             upCmd.Parameters.AddWithValue("@CreatedBy", (object)model.CreatedBy ?? "QuartzScheduler");
                             upCmd.Parameters.AddWithValue("@CreatedDate", model.CreatedDate == DateTime.MinValue ? DateTime.Now : model.CreatedDate);
+                            upCmd.Parameters.AddWithValue("@FileFormat", reqFormat);
 
                             upCmd.ExecuteNonQuery();
                         }
@@ -276,7 +288,7 @@ namespace Data.Admin
             }
         }
 
-        public List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows, string periodType = null)
+        public List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows, string periodType = null, string format = null)
         {
             var list = new List<ExportedReportLogModel>();
             totalRows = 0;
@@ -312,6 +324,18 @@ namespace Data.Admin
                     {
                         filter += " AND [Month] = @Month";
                         parameters.Add(new SqlParameter("@Month", month.Value));
+                    }
+                    if (!string.IsNullOrEmpty(format))
+                    {
+                        string fmtUpper = format.ToUpperInvariant();
+                        if (fmtUpper == "PDF")
+                        {
+                            filter += " AND ((FileFormat = 'PDF') OR [FileName] LIKE '%_PDF.zip' OR [FileName] LIKE '%.pdf')";
+                        }
+                        else if (fmtUpper == "EXCEL")
+                        {
+                            filter += " AND ((FileFormat = 'EXCEL' OR FileFormat IS NULL) AND [FileName] NOT LIKE '%_PDF.zip' AND [FileName] NOT LIKE '%.pdf')";
+                        }
                     }
 
                     countSql += filter;
@@ -354,7 +378,8 @@ namespace Data.Admin
                                     TelegramSent = Convert.ToBoolean(reader["TelegramSent"]),
                                     TriggerType = reader["TriggerType"]?.ToString(),
                                     CreatedBy = reader["CreatedBy"]?.ToString(),
-                                    CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
+                                    CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
+                                    FileFormat = HasColumn(reader, "FileFormat") && reader["FileFormat"] != DBNull.Value ? reader["FileFormat"].ToString() : null
                                 });
                             }
                         }
@@ -406,7 +431,8 @@ namespace Data.Admin
                                     TelegramSent = Convert.ToBoolean(reader["TelegramSent"]),
                                     TriggerType = reader["TriggerType"]?.ToString(),
                                     CreatedBy = reader["CreatedBy"]?.ToString(),
-                                    CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
+                                    CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
+                                    FileFormat = HasColumn(reader, "FileFormat") && reader["FileFormat"] != DBNull.Value ? reader["FileFormat"].ToString() : null
                                 };
                             }
                         }
@@ -515,6 +541,16 @@ namespace Data.Admin
                 log.Error("Lỗi UpdateSettings: " + ex.Message, ex);
                 return false;
             }
+        }
+
+        private static bool HasColumn(IDataRecord dr, string columnName)
+        {
+            for (int i = 0; i < dr.FieldCount; i++)
+            {
+                if (dr.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
 
         public bool CheckDataAvailability(string reportType, int year, int month, string periodType = "Month")

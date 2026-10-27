@@ -305,6 +305,166 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
+        public void ScheduledReportDA_ExcelAndPdf_SamePeriod_ShouldPreserveBothRecords()
+        {
+            var da = new ScheduledReportDA();
+            long excelId = 0;
+            long pdfId = 0;
+
+            try
+            {
+                // 1. Tạo bản ghi định dạng EXCEL
+                var modelExcel = new ExportedReportLogModel
+                {
+                    ReportType = "TEST_FORMAT_DIFF",
+                    ReportName = "Báo cáo Test Excel",
+                    PeriodType = "Month",
+                    PeriodValue = "Tháng 05/2099",
+                    Year = 2099,
+                    Month = 5,
+                    FileName = "Test_Report_Thang05_2099.xlsx",
+                    FilePath = "C:\\Temp\\Test_Report_Thang05_2099.xlsx",
+                    FileFormat = "EXCEL",
+                    Status = "Success",
+                    TriggerType = "UnitTest",
+                    CreatedBy = "Tester",
+                    CreatedDate = DateTime.Now
+                };
+                excelId = da.SaveOrUpdateExportLog(modelExcel);
+                Assert.IsTrue(excelId > 0, "Insert Excel record should succeed");
+
+                // 2. Tạo bản ghi định dạng PDF cùng loại & cùng kỳ
+                var modelPdf = new ExportedReportLogModel
+                {
+                    ReportType = "TEST_FORMAT_DIFF",
+                    ReportName = "Báo cáo Test PDF",
+                    PeriodType = "Month",
+                    PeriodValue = "Tháng 05/2099",
+                    Year = 2099,
+                    Month = 5,
+                    FileName = "Test_Report_Thang05_2099.pdf",
+                    FilePath = "C:\\Temp\\Test_Report_Thang05_2099.pdf",
+                    FileFormat = "PDF",
+                    Status = "Success",
+                    TriggerType = "UnitTest",
+                    CreatedBy = "Tester",
+                    CreatedDate = DateTime.Now
+                };
+                pdfId = da.SaveOrUpdateExportLog(modelPdf);
+                Assert.IsTrue(pdfId > 0, "Insert PDF record should succeed");
+
+                // 3. Khẳng định 2 bản ghi có ID khác nhau (không bị ghi đè lẫn nhau)
+                Assert.AreNotEqual(excelId, pdfId, "Excel and PDF for the same period should have distinct IDs and not overwrite each other");
+
+                // 4. Kiểm tra dữ liệu từng bản ghi trong DB
+                var fetchedExcel = da.GetById(excelId);
+                var fetchedPdf = da.GetById(pdfId);
+
+                Assert.IsNotNull(fetchedExcel, "Excel log should exist");
+                Assert.AreEqual("EXCEL", fetchedExcel.Format, "Format should be EXCEL");
+                Assert.AreEqual("Test_Report_Thang05_2099.xlsx", fetchedExcel.FileName);
+
+                Assert.IsNotNull(fetchedPdf, "PDF log should exist");
+                Assert.AreEqual("PDF", fetchedPdf.Format, "Format should be PDF");
+                Assert.AreEqual("Test_Report_Thang05_2099.pdf", fetchedPdf.FileName);
+
+                // 5. Xuất lại Excel lần 2 -> chỉ cập nhật bản ghi Excel, bản ghi PDF vẫn giữ nguyên
+                var modelExcelV2 = new ExportedReportLogModel
+                {
+                    ReportType = "TEST_FORMAT_DIFF",
+                    ReportName = "Báo cáo Test Excel V2",
+                    PeriodType = "Month",
+                    PeriodValue = "Tháng 05/2099",
+                    Year = 2099,
+                    Month = 5,
+                    FileName = "Test_Report_Thang05_2099_V2.xlsx",
+                    FilePath = "C:\\Temp\\Test_Report_Thang05_2099_V2.xlsx",
+                    FileFormat = "EXCEL",
+                    Status = "Success",
+                    TriggerType = "UnitTest",
+                    CreatedBy = "Tester",
+                    CreatedDate = DateTime.Now
+                };
+                long updatedExcelId = da.SaveOrUpdateExportLog(modelExcelV2);
+                Assert.AreEqual(excelId, updatedExcelId, "Re-exporting Excel should update the existing Excel record");
+
+                var fetchedPdfAfter = da.GetById(pdfId);
+                Assert.IsNotNull(fetchedPdfAfter, "PDF log must still exist after Excel re-export");
+                Assert.AreEqual("Test_Report_Thang05_2099.pdf", fetchedPdfAfter.FileName, "PDF FileName should be unchanged");
+            }
+            finally
+            {
+                string p;
+                if (excelId > 0) da.DeleteExportLog(excelId, out p);
+                if (pdfId > 0) da.DeleteExportLog(pdfId, out p);
+            }
+        }
+
+        [TestMethod]
+        public void ScheduledReportDA_GetExportLogs_WithFormatFilter_ShouldFilterAccurately()
+        {
+            var da = new ScheduledReportDA();
+            long excelId = 0;
+            long pdfId = 0;
+
+            try
+            {
+                var modelExcel = new ExportedReportLogModel
+                {
+                    ReportType = "TEST_FORMAT_FILTER",
+                    ReportName = "Test Filter Excel",
+                    PeriodType = "Month",
+                    PeriodValue = "Tháng 06/2099",
+                    Year = 2099,
+                    Month = 6,
+                    FileName = "Test_Filter_Thang06_2099.xlsx",
+                    FilePath = "C:\\Temp\\Test_Filter_Thang06_2099.xlsx",
+                    FileFormat = "EXCEL",
+                    Status = "Success",
+                    TriggerType = "TestFilter",
+                    CreatedBy = "Tester",
+                    CreatedDate = DateTime.Now
+                };
+                excelId = da.AddExportLog(modelExcel);
+
+                var modelPdf = new ExportedReportLogModel
+                {
+                    ReportType = "TEST_FORMAT_FILTER",
+                    ReportName = "Test Filter PDF",
+                    PeriodType = "Month",
+                    PeriodValue = "Tháng 06/2099",
+                    Year = 2099,
+                    Month = 6,
+                    FileName = "Test_Filter_Thang06_2099.pdf",
+                    FilePath = "C:\\Temp\\Test_Filter_Thang06_2099.pdf",
+                    FileFormat = "PDF",
+                    Status = "Success",
+                    TriggerType = "TestFilter",
+                    CreatedBy = "Tester",
+                    CreatedDate = DateTime.Now
+                };
+                pdfId = da.AddExportLog(modelPdf);
+
+                int total;
+                // Lọc EXCEL
+                var excelLogs = da.GetExportLogs("TEST_FORMAT_FILTER", 2099, 6, 1, 10, out total, "Month", "EXCEL");
+                Assert.IsTrue(excelLogs.Count >= 1, "Should find Excel logs");
+                Assert.IsTrue(excelLogs.TrueForAll(x => x.Format == "EXCEL"), "All returned logs should have EXCEL format");
+
+                // Lọc PDF
+                var pdfLogs = da.GetExportLogs("TEST_FORMAT_FILTER", 2099, 6, 1, 10, out total, "Month", "PDF");
+                Assert.IsTrue(pdfLogs.Count >= 1, "Should find PDF logs");
+                Assert.IsTrue(pdfLogs.TrueForAll(x => x.Format == "PDF"), "All returned logs should have PDF format");
+            }
+            finally
+            {
+                string p;
+                if (excelId > 0) da.DeleteExportLog(excelId, out p);
+                if (pdfId > 0) da.DeleteExportLog(pdfId, out p);
+            }
+        }
+
+        [TestMethod]
         public void ReportExportService_ExportHoatDongCD45ExcelAsync_ShouldSucceedAndDisplayDashesForZero()
         {
             var service = new ReportExportService();

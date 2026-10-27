@@ -8,7 +8,7 @@ namespace Data.InterfaceDA.Admin
         long AddExportLog(ExportedReportLogModel model);
         long SaveOrUpdateExportLog(ExportedReportLogModel model);
         bool DeleteExportLog(long id, out string filePath);
-        List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows, string periodType = null);
+        List<ExportedReportLogModel> GetExportLogs(string reportType, int? year, int? month, int pageIndex, int pageSize, out int totalRows, string periodType = null, string format = null);
         ExportedReportLogModel GetById(long id);
         ScheduledReportSettingModel GetSettings();
         bool UpdateSettings(int runDay, int runHour, bool isActive);

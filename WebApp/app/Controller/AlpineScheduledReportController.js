@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () => {
         // Filter & Paging State
         filter: {
             reportType: '',
+            format: '',
             periodType: '',
             year: new Date().getFullYear(),
             month: ''
@@ -155,6 +156,7 @@ document.addEventListener('alpine:init', () => {
 
             const params = new URLSearchParams({
                 reportType: this.filter.reportType || '',
+                format: this.filter.format || '',
                 periodType: this.filter.periodType || '',
                 year: this.filter.year || '',
                 month: this.filter.month || '',
@@ -312,9 +314,9 @@ document.addEventListener('alpine:init', () => {
 
         getReportTypeName(code) {
             switch (code) {
-                case 'TCV_CD45': return 'Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)';
-                case 'HOATDONG_CD45': return 'Báo cáo Hoạt động CD45 (.xlsx)';
-                case 'BACSI_CD45': return 'Báo cáo Bác sĩ DREAMH (Theo Tỉnh, mỗi BS 1 Sheet)';
+                case 'TCV_CD45': return 'Báo cáo TCV CD45';
+                case 'HOATDONG_CD45': return 'Báo cáo Hoạt động CD45';
+                case 'BACSI_CD45': return 'Báo cáo Bác sĩ DREAMH';
                 case 'ALL': return 'Tất cả báo cáo (TCV + Hoạt động + Bác sĩ)';
                 default: return code;
             }

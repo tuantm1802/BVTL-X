@@ -217,7 +217,8 @@ namespace WebApp.Services
                     ErrorMessage = "Chưa có dữ liệu từ các tỉnh trong CSDL",
                     TriggerType = triggerType,
                     CreatedBy = createdBy,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    FileFormat = format ?? "EXCEL"
                 });
 
                 results.Add(new ReportExportResult { Success = false, Message = warnMsg });
@@ -263,6 +264,7 @@ namespace WebApp.Services
         {
             var sw = Stopwatch.StartNew();
             var result = new ReportExportResult();
+            bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
 
             try
             {
@@ -310,7 +312,7 @@ namespace WebApp.Services
                 string storageDir = GetStorageDirectory(year, month);
                 string suffix = !string.IsNullOrEmpty(filterCityCode) ? $"_{filterCityCode}" : "_ALL";
                 if (!string.IsNullOrEmpty(filterMaNhom)) suffix += $"_{filterMaNhom}";
-                bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
+                isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
                 if (isPdf) suffix += "_PDF";
 
                 string periodTag;
@@ -668,7 +670,8 @@ namespace WebApp.Services
                         TelegramSent = true,
                         TriggerType = triggerType,
                         CreatedBy = createdBy,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileFormat = isPdf ? "PDF" : "EXCEL"
                     });
                 }
             }
@@ -684,7 +687,7 @@ namespace WebApp.Services
                     _scheduledReportDA.SaveOrUpdateExportLog(new ExportedReportLogModel
                     {
                         ReportType = "TCV_CD45",
-                        ReportName = "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
+                        ReportName = isPdf ? "Báo cáo TCV CD45 (PDF theo Tỉnh/Nhóm)" : "Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)",
                         PeriodType = periodType ?? "Month",
                         PeriodValue = periodValue ?? $"Tháng {month:D2}/{year}",
                         Year = year,
@@ -697,7 +700,8 @@ namespace WebApp.Services
                         ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                         TriggerType = triggerType,
                         CreatedBy = createdBy,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileFormat = isPdf ? "PDF" : "EXCEL"
                     });
                 }
             }
@@ -908,7 +912,8 @@ namespace WebApp.Services
                         TelegramSent = true,
                         TriggerType = triggerType,
                         CreatedBy = createdBy,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileFormat = isPdf ? "PDF" : "EXCEL"
                     });
                 }
             }
@@ -991,7 +996,8 @@ namespace WebApp.Services
                         TelegramSent = true,
                         TriggerType = triggerType,
                         CreatedBy = createdBy,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileFormat = "EXCEL"
                     });
                 }
             }
@@ -1524,7 +1530,8 @@ namespace WebApp.Services
                                 TelegramSent = true,
                                 TriggerType = triggerType,
                                 CreatedBy = createdBy,
-                                CreatedDate = DateTime.Now
+                                CreatedDate = DateTime.Now,
+                                FileFormat = "PDF"
                             });
                         }
 
@@ -1576,7 +1583,8 @@ namespace WebApp.Services
                                 TelegramSent = true,
                                 TriggerType = triggerType,
                                 CreatedBy = createdBy,
-                                CreatedDate = DateTime.Now
+                                CreatedDate = DateTime.Now,
+                                FileFormat = "EXCEL"
                             });
                         }
 
@@ -1714,7 +1722,8 @@ namespace WebApp.Services
                         TelegramSent = true,
                         TriggerType = triggerType,
                         CreatedBy = createdBy,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileFormat = isPdf ? "PDF" : "EXCEL"
                     });
                 }
 

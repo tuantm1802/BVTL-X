@@ -282,9 +282,16 @@
                         <div class="col-md-3">
                             <select class="form-select form-select-sm" x-model="filter.reportType" @@change="loadLogs(1)">
                                 <option value="">-- Tất cả loại báo cáo --</option>
-                                <option value="TCV_CD45">Báo cáo TCV CD45 (.ZIP theo Tỉnh/Nhóm)</option>
-                                <option value="HOATDONG_CD45">Báo cáo Hoạt động CD45 (.xlsx)</option>
-                                <option value="BACSI_CD45">Báo cáo Bác sĩ DREAMH (Mỗi BS 1 Sheet)</option>
+                                <option value="TCV_CD45">Báo cáo TCV CD45</option>
+                                <option value="HOATDONG_CD45">Báo cáo Hoạt động CD45</option>
+                                <option value="BACSI_CD45">Báo cáo Bác sĩ DREAMH</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" x-model="filter.format" @@change="loadLogs(1)">
+                                <option value="">-- Tất cả định dạng --</option>
+                                <option value="EXCEL">📗 Excel (.xlsx / .zip)</option>
+                                <option value="PDF">📕 PDF (.pdf / .zip)</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -302,7 +309,7 @@
                                 <option value="2024">Năm 2024</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <select class="form-select form-select-sm" x-model="filter.month" @@change="loadLogs(1)" :disabled="filter.periodType === 'Quarter' || filter.periodType === 'Year'">
                                 <option value="">-- Tất cả tháng --</option>
                                 <template x-for="m in 12" :key="m">
@@ -310,9 +317,9 @@
                                 </template>
                             </select>
                         </div>
-                        <div class="col-md-2 d-grid">
-                            <button class="btn btn-sm btn-secondary" @@click="filter.reportType=''; filter.periodType=''; filter.month=''; loadLogs(1)">
-                                <i class="fas fa-redo me-1"></i> Đặt lại
+                        <div class="col-md-1 d-grid">
+                            <button class="btn btn-sm btn-secondary" @@click="filter.reportType=''; filter.format=''; filter.periodType=''; filter.month=''; loadLogs(1)" title="Đặt lại bộ lọc">
+                                <i class="fas fa-redo"></i>
                             </button>
                         </div>
                     </div>
@@ -360,7 +367,19 @@
                                             </td>
                                             <td class="font-weight-semibold text-gray-900" x-text="item.PeriodValue"></td>
                                             <td>
-                                                <div class="font-weight-bold text-primary" x-text="item.FileName"></div>
+                                                <div class="d-flex align-items-center gap-1 mb-1">
+                                                    <template x-if="item.Format === 'PDF' || (item.FileName && (item.FileName.endsWith('.pdf') || item.FileName.includes('_PDF.zip')))">
+                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle py-0 px-1" style="font-size: 0.72rem;">
+                                                            <i class="fas fa-file-pdf me-1"></i>PDF
+                                                        </span>
+                                                    </template>
+                                                    <template x-if="item.Format !== 'PDF' && !(item.FileName && (item.FileName.endsWith('.pdf') || item.FileName.includes('_PDF.zip')))">
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle py-0 px-1" style="font-size: 0.72rem;">
+                                                            <i class="fas fa-file-excel me-1"></i>Excel
+                                                        </span>
+                                                    </template>
+                                                    <span class="font-weight-bold text-primary" x-text="item.FileName"></span>
+                                                </div>
                                                 <div class="text-xs text-secondary mb-1" x-show="item.ReportName" x-text="item.ReportName"></div>
                                                 <div class="text-xs text-muted" x-text="'Dung lượng: ' + formatFileSize(item.FileSizeKb) + (item.TotalRecords ? ' | ' + item.TotalRecords + ' bản ghi' : '')"></div>
                                             </td>
