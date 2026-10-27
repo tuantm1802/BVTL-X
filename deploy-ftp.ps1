@@ -230,6 +230,37 @@ if ($Mode -eq "Patch") {
     $filesToDeploy = $allFiles | Where-Object {
         $_.LastWriteTime -gt $SinceDate
     }
+
+    # Tu dong phat hien va bo sung cac DLL moi trong bin/ chua co tren may chu IIS
+    try {
+        $binUrl = "$(Get-FtpBaseUrl)/bin"
+        $reqBin = [System.Net.FtpWebRequest]::Create($binUrl)
+        $reqBin.Credentials = New-Object System.Net.NetworkCredential($FtpUser, $FtpPass)
+        $reqBin.Method = [System.Net.WebRequestMethods+Ftp]::ListDirectory
+        $reqBin.UsePassive = $true
+        $reqBin.Timeout = 8000
+        $respBin = $reqBin.GetResponse()
+        $readerBin = New-Object System.IO.StreamReader($respBin.GetResponseStream())
+        $remoteBinFiles = ($readerBin.ReadToEnd() -split "`r?`n") | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+        $readerBin.Close()
+        $respBin.Close()
+
+        $localBinFiles = $allFiles | Where-Object { $_.Extension -eq ".dll" -and $_.Directory.Name -eq "bin" }
+        $missingDlls = @()
+        foreach ($binFile in $localBinFiles) {
+            if ($remoteBinFiles -notcontains $binFile.Name) {
+                $missingDlls += $binFile
+                if ($filesToDeploy.FullName -notcontains $binFile.FullName) {
+                    $filesToDeploy = @($binFile) + $filesToDeploy
+                }
+            }
+        }
+        if ($missingDlls.Count -gt 0) {
+            Write-Host "    [+] Phat hien $($missingDlls.Count) DLL moi chua co tren host bin/: $($missingDlls.Name -join ', ')" -ForegroundColor Cyan
+        }
+    } catch {
+        Write-Host "    [!] Khong the doi chieu DLL moi tren host bin/: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
 } elseif ($Mode -eq "Full") {
     Write-Host "[*] Che do FULL: Chuan bi day toan bo tap tin ($($allFiles.Count) files)..." -ForegroundColor Yellow
     $filesToDeploy = $allFiles

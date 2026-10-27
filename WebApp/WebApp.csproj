@@ -45,11 +45,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-        <Reference Include="Spire.Pdf">
+    <Reference Include="Spire.Pdf">
       <HintPath>..\packages\FreeSpire.XLS.12.7.0\lib\net40\Spire.Pdf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Spire.XLS">
       <HintPath>..\packages\FreeSpire.XLS.12.7.0\lib\net40\Spire.XLS.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.95.3\lib\net46\ClosedXML.dll</HintPath>
