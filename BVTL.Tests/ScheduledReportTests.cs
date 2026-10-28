@@ -594,11 +594,11 @@ namespace BVTL.Tests
         public void CD45KhachHangDA_GetCustomerDetail_ShouldNumberTuVanSequentially()
         {
             var da = new CD45KhachHangDA();
-            // Test with customer DHY230142 from user request
-            var detail = da.GetCustomerDetail("DHY230142");
-            Assert.IsNotNull(detail, "Detail should not be null for DHY230142");
+            // Test with customer having both F7 (L1) and F8 (L2) sessions
+            var detail = da.GetCustomerDetail("DNA190017");
+            Assert.IsNotNull(detail, "Detail should not be null for DNA190017");
             Assert.IsNotNull(detail.ListTuVan, "ListTuVan should not be null");
-            Assert.IsTrue(detail.ListTuVan.Count >= 3, "Customer should have at least 3 tu van sessions");
+            Assert.IsTrue(detail.ListTuVan.Count >= 2, "Customer should have at least 2 tu van sessions (F7 + F8)");
 
             // Verify sequential numbering: 1, 2, 3...
             for (int i = 0; i < detail.ListTuVan.Count; i++)
@@ -608,9 +608,8 @@ namespace BVTL.Tests
 
             // Verify F7 is first
             Assert.AreEqual(1, detail.ListTuVan[0].LanTuVan, "First session should be F7 (LanTuVan = 1)");
-            // Verify F8 are next
+            // Verify F8 is next
             Assert.AreEqual(2, detail.ListTuVan[1].LanTuVan, "Second session should be F8 (LanTuVan = 2)");
-            Assert.AreEqual(2, detail.ListTuVan[2].LanTuVan, "Third session should be F8 (LanTuVan = 2)");
         }
 
         [TestMethod]

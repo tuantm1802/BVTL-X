@@ -2265,3 +2265,29 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 4. **Triển khai & Phát hành (v1.7.3)**:
    - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.3.rar`.
    - Triển khai và kiểm tra sức khỏe thành công trên DEV và PROD.
+
+
+---
+
+## [2026-10-28] Vá logic Phễu Dịch vụ Chăm sóc SKTT (Care Cascade 1) trên Dashboard CD45
+
+### Mục tiêu & Bối cảnh:
+- Người dùng phản ánh trên Dashboard CD45: **Phễu Dịch vụ Chăm sóc SKTT (Care Cascade 1: Y tế)** gặp lỗi bước 3 ("3. Cần chuyển gửi" = 588) lại ít hơn bước 4 ("4. Khám SKTT" = 786).
+- Quy chuẩn y tế dự án: Người cần chuyển gửi là người có điểm sàng lọc QST >= 6 (gồm Mức 1: Rất cao & Mức 2: Cao, hoặc có nguy cơ tự hại Q2=2), tổng số khoảng ~1.391 người.
+
+### Nguyên nhân gốc rễ (Root Cause):
+- Trong Stored Procedure `SP_CD45_Dashboard` (Section 6), cột `C1_Step3_CanChuyenGui` đang lọc điều kiện `WHERE qst.COMPLETE_STATUS = '2' AND qst.MUC_QST = 1`.
+- Do chỉ lấy `MUC_QST = 1` (Mức rất cao), số lượng chỉ đạt 588 người, bỏ sót 807 người ở Mức 2 (điểm 6-7). Khi các bác sĩ khám cho các trường hợp QST >= 6 (786 người), bước 3 bị nhỏ hơn bước 4, làm vỡ hình thái phễu chuyển đổi.
+
+### Các công việc đã hoàn thành:
+1. **Cập nhật Stored Procedure & Kịch bản CSDL**:
+   - Nâng cấp điều kiện lọc `C1_Step3_CanChuyenGui` trong `SP_CD45_Dashboard`:
+     `WHERE qst.COMPLETE_STATUS = '2' AND (ISNULL(qst.DIEM_QST, 0) >= 6 OR qst.MUC_QST IN (1, 2))`
+   - Kết quả trả về: **1.394 khách hàng** (~1.391), đưa phễu Cascade 1 về đúng hình thái chuẩn giảm dần đều:
+     `4.298 (Tiếp cận) -> 3.390 (Sàng lọc QST) -> 1.394 (Cần chuyển gửi) -> 786 (Khám SKTT) -> 395 (Tái khám)`.
+   - Tỷ lệ Cần chuyển gửi / Sàng lọc tăng từ `17.3%` lên `41.1%`.
+   - Đồng bộ 100% số liệu giữa Care Cascade 1 với thẻ KPI *"QST Nguy cơ cao"* (1.394) và Báo cáo Hoạt động CD45 Mục III_2.
+   - Deploy trực tiếp lên CSDL `BVTL_REPORTING_DEV` và đồng bộ vào `SQL_CD45_SP_CityMapping_Upgrade.sql`, `SQL_Sync_Dev_To_Prod.sql`.
+2. **Kiểm thử tự động (Unit Tests)**:
+   - Thêm assertion kiểm tra `C1_Step3_CanChuyenGui >= C1_Step4_KhamSKTT` trong `DashboardCD45Tests.cs`.
+   - Chạy 19/19 Dashboard tests và 25/25 Báo cáo tests đều PASSED 100%.

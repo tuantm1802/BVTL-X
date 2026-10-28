@@ -226,18 +226,25 @@
 
             var val = input.value || '';
 
-            // Nếu người dùng nhập 1 chữ số 1, 2, 3 ở ô ngày:
-            // Chờ 500ms, nếu không gõ tiếp thì tự động chuyển thành 01/, 02/, 03/
+            // 1. Nếu ngày là 4..9 (ngày không thể là 40..99) -> tự chuyển 04/..09/ ngay lập tức
+            if (['4', '5', '6', '7', '8', '9'].includes(val)) {
+                applyVal('0' + val + '/', 3);
+                return;
+            }
+
+            // 2. Nếu ngày là 1, 2, 3:
+            // Chờ 1000ms (1 giây), nếu người dùng không gõ tiếp thì mới tự động chuyển thành 01/, 02/, 03/
+            // Điều này cho phép người dùng thoải mái gõ các ngày 10..19, 20..29, 30..31
             if (['1', '2', '3'].includes(val)) {
                 timer = setTimeout(function () {
                     if (['1', '2', '3'].includes(input.value)) {
                         applyVal('0' + input.value + '/', 3);
                     }
-                }, 500);
+                }, 1000);
                 return;
             }
 
-            // Nếu nhập xong 2 chữ số ngày (vd: 15) -> tự động thêm '/'
+            // 3. Nếu nhập xong 2 chữ số ngày (vd: 15) -> tự động thêm '/'
             if (/^\d{2}$/.test(val)) {
                 var d = parseInt(val, 10);
                 if (d > 31) d = 31;
@@ -247,19 +254,27 @@
                 return;
             }
 
-            // Nếu tháng đang là 1 chữ số sau "dd/1" (vd "15/1"):
-            // Chờ 500ms, nếu không gõ tiếp thì tự động chuyển thành "dd/01/"
+            // 4. Nếu tháng là 2..9 sau "dd/" (tháng không thể là 20..99) -> tự thành "dd/0x/" ngay
+            var mSingle29 = val.match(/^(\d{2}\/)([2-9])$/);
+            if (mSingle29) {
+                applyVal(mSingle29[1] + '0' + mSingle29[2] + '/', 6);
+                return;
+            }
+
+            // 5. Nếu tháng đang là 1 chữ số sau "dd/1" (vd "15/1"):
+            // Chờ 1000ms (1 giây), nếu người dùng không gõ tiếp thì mới tự động chuyển thành "dd/01/"
+            // Điều này cho phép người dùng thoải mái gõ các tháng 10, 11, 12
             if (/^\d{2}\/1$/.test(val)) {
                 timer = setTimeout(function () {
                     if (/^\d{2}\/1$/.test(input.value)) {
                         var parts = input.value.split('/');
                         applyVal(parts[0] + '/01/', 6);
                     }
-                }, 500);
+                }, 1000);
                 return;
             }
 
-            // Nếu nhập xong 2 chữ số tháng (vd: "15/10") -> tự động thêm '/'
+            // 6. Nếu nhập xong 2 chữ số tháng (vd: "15/10") -> tự động thêm '/'
             if (/^\d{2}\/\d{2}$/.test(val)) {
                 var partsM = val.split('/');
                 var m = parseInt(partsM[1], 10);
@@ -270,14 +285,40 @@
                 return;
             }
 
+            // 7. Nếu chuỗi có dạng "1/mm/yyyy", "2/mm/yyyy", "3/mm/yyyy" khi đang sửa ngày trong chuỗi đầy đủ:
+            // Chờ 1000ms để xem có gõ tiếp ngày 2 chữ số (10..19, 20..29, 30..31) không, tránh ép ngay về 01/..03/
+            var editDay13 = val.match(/^([1-3])(\/\d{1,2}\/\d{4})$/);
+            if (editDay13) {
+                timer = setTimeout(function () {
+                    var curM = (input.value || '').match(/^([1-3])(\/\d{1,2}\/\d{4})$/);
+                    if (curM) {
+                        applyVal('0' + curM[1] + curM[2], 3);
+                    }
+                }, 1000);
+                return;
+            }
+
+            // 8. Nếu chuỗi có dạng "dd/1/yyyy" khi đang sửa tháng trong chuỗi đầy đủ:
+            // Chờ 1000ms để xem có gõ tiếp tháng 10..12 không
+            var editMonth1 = val.match(/^(\d{2}\/)1(\/\d{4})$/);
+            if (editMonth1) {
+                timer = setTimeout(function () {
+                    var curM = (input.value || '').match(/^(\d{2}\/)1(\/\d{4})$/);
+                    if (curM) {
+                        applyVal(curM[1] + '01' + curM[2], 6);
+                    }
+                }, 1000);
+                return;
+            }
+
             // Giới hạn tối đa 10 ký tự (dd/mm/yyyy)
             if (val.length > 10) {
                 input.value = val.substring(0, 10);
                 val = input.value;
             }
 
-            // Nếu đã nhập đủ định dạng dd/mm/yyyy
-            if (/^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4}$/.test(val)) {
+            // 9. Nếu đã là định dạng chuẩn hoàn chỉnh dd/mm/yyyy (đủ 2 số ngày và 2 số tháng)
+            if (/^\d{2}[\/\-\.]\d{2}[\/\-\.]\d{4}$/.test(val)) {
                 var norm = normalizeDateString(val);
                 if (norm !== val) {
                     applyVal(norm, norm.length);
