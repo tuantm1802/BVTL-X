@@ -1119,8 +1119,9 @@ namespace WebApp.Services
 
             if (!string.IsNullOrEmpty(tenTCV))
             {
+                string cleanTcv = (tenTCV ?? "").Replace("\"", "").Trim();
                 ws.Range(signNameRow, 1, signNameRow, 2).Merge();
-                ws.Cell(signNameRow, 1).Value = tenTCV;
+                ws.Cell(signNameRow, 1).Value = cleanTcv;
                 ws.Cell(signNameRow, 1).Style.Font.Bold = true;
                 ws.Cell(signNameRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             }
@@ -1260,7 +1261,8 @@ namespace WebApp.Services
             string signer1Title;
             if (!string.IsNullOrEmpty(tenNhom) && tenNhom != "Tất cả nhóm" && !tenNhom.StartsWith("Toàn tỉnh"))
             {
-                signer1Title = $"{chucDanh ?? "Trưởng nhóm"} \"{tenNhom}\"";
+                string cleanTen = (tenNhom ?? "").Replace("\"", "").Trim();
+                signer1Title = $"{chucDanh ?? "Trưởng nhóm"} {cleanTen}".Trim();
             }
             else if (!string.IsNullOrEmpty(tenTinh) && tenTinh != "Toàn quốc")
             {
@@ -1958,8 +1960,9 @@ namespace WebApp.Services
             ws.Cell(footerStartRow + 2, 1).Style.Font.FontSize = 9;
             ws.Cell(footerStartRow + 2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            string cleanDoctorName = (doctorName ?? "").Replace("\"", "").Trim();
             ws.Range(footerStartRow + 6, 1, footerStartRow + 6, 3).Merge();
-            ws.Cell(footerStartRow + 6, 1).Value = doctorName;
+            ws.Cell(footerStartRow + 6, 1).Value = cleanDoctorName;
             ws.Cell(footerStartRow + 6, 1).Style.Font.Bold = true;
             ws.Cell(footerStartRow + 6, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 

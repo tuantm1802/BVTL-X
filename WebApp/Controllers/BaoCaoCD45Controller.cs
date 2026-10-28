@@ -348,7 +348,8 @@ namespace WebApp.Controllers
                 string signer1Title;
                 if (!string.IsNullOrEmpty(MaNhom) && tenNhom != "Tất cả nhóm" && !tenNhom.StartsWith("Toàn tỉnh"))
                 {
-                    signer1Title = $"{chucDanh ?? "Trưởng nhóm"} \"{tenNhom}\"";
+                    string cleanTen = (tenNhom ?? "").Replace("\"", "").Trim();
+                    signer1Title = $"{chucDanh ?? "Trưởng nhóm"} {cleanTen}".Trim();
                 }
                 else if (!string.IsNullOrEmpty(MaTinh) && tenTinh != "Toàn quốc")
                 {

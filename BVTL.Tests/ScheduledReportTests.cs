@@ -704,34 +704,39 @@ namespace BVTL.Tests
         [TestMethod]
         public void NhomChucDanh_DefaultValues_And_SignerFormatting_ShouldBeAccurate()
         {
-            // HCM default is Giam doc
+            // HCM default is Giam doc (no double quotes)
             var nhomHcm = new Model.Model.BVTL_NHOM_TBH { city_code = "HCM", tennhom_tbh = "Bầu Trời Xanh" };
             Assert.AreEqual("Giám đốc", nhomHcm.GetChucDanh());
-            Assert.AreEqual("Giám đốc \"Bầu Trời Xanh\"", nhomHcm.GetDaiDienNhomSigner());
+            Assert.AreEqual("Giám đốc Bầu Trời Xanh", nhomHcm.GetDaiDienNhomSigner());
 
-            // The Time default is Giam doc
+            // The Gate (HCM) default is Giam doc without double quotes
+            var nhomTheGate = new Model.Model.BVTL_NHOM_TBH { city_code = "HCM", tennhom_tbh = "The Gate", CHUC_DANH = "Giám đốc" };
+            Assert.AreEqual("Giám đốc", nhomTheGate.GetChucDanh());
+            Assert.AreEqual("Giám đốc The Gate", nhomTheGate.GetDaiDienNhomSigner());
+
+            // The Time default is Giam doc (no double quotes)
             var nhomTheTime = new Model.Model.BVTL_NHOM_TBH { manhom_tbh = "HN_TT", tennhom_tbh = "The Time" };
             Assert.AreEqual("Giám đốc", nhomTheTime.GetChucDanh());
-            Assert.AreEqual("Giám đốc \"The Time\"", nhomTheTime.GetDaiDienNhomSigner());
+            Assert.AreEqual("Giám đốc The Time", nhomTheTime.GetDaiDienNhomSigner());
 
-            // Other groups default is Truong nhom
+            // Other groups default is Truong nhom (no double quotes)
             var nhomHaiDang = new Model.Model.BVTL_NHOM_TBH { city_code = "HPG", tennhom_tbh = "Hải Đăng" };
             Assert.AreEqual("Trưởng nhóm", nhomHaiDang.GetChucDanh());
-            Assert.AreEqual("Trưởng nhóm \"Hải Đăng\"", nhomHaiDang.GetDaiDienNhomSigner());
+            Assert.AreEqual("Trưởng nhóm Hải Đăng", nhomHaiDang.GetDaiDienNhomSigner());
 
-            // Custom ChucDanh override
+            // Custom ChucDanh override (no double quotes)
             var nhomCustom = new Model.Model.BVTL_NHOM_TBH { CHUC_DANH = "Điều phối viên", tennhom_tbh = "Khát Vọng Sống" };
             Assert.AreEqual("Điều phối viên", nhomCustom.GetChucDanh());
-            Assert.AreEqual("Điều phối viên \"Khát Vọng Sống\"", nhomCustom.GetDaiDienNhomSigner());
+            Assert.AreEqual("Điều phối viên Khát Vọng Sống", nhomCustom.GetDaiDienNhomSigner());
 
             // CD45_NhomTcvViewModel tests
             var vmHcm = new CD45_NhomTcvViewModel { CITY_CODE = "HCM", TEN_NHOM = "Alocare" };
             Assert.AreEqual("Giám đốc", vmHcm.GetChucDanh());
-            Assert.AreEqual("Giám đốc \"Alocare\"", vmHcm.GetDaiDienNhomSigner());
+            Assert.AreEqual("Giám đốc Alocare", vmHcm.GetDaiDienNhomSigner());
 
             var vmOther = new CD45_NhomTcvViewModel { CITY_CODE = "DNA", TEN_NHOM = "Sông Hàn" };
             Assert.AreEqual("Trưởng nhóm", vmOther.GetChucDanh());
-            Assert.AreEqual("Trưởng nhóm \"Sông Hàn\"", vmOther.GetDaiDienNhomSigner());
+            Assert.AreEqual("Trưởng nhóm Sông Hàn", vmOther.GetDaiDienNhomSigner());
         }
 
         [TestMethod]
@@ -770,10 +775,11 @@ namespace BVTL.Tests
 
                     Assert.IsTrue(signRow > 0, "Signature block must be found in sheet");
 
-                    // 1. Signer 1: Dai dien nhom (Col A:B) -> Giám đốc "The Time"
+                    // 1. Signer 1: Dai dien nhom (Col A:B) -> Giám đốc The Time (No double quotes)
                     string signer1 = ws.Cell(signRow, 1).GetString();
                     Assert.IsTrue(signer1.Contains("Giám đốc"), "Signer 1 should contain Giám đốc: " + signer1);
                     Assert.IsTrue(signer1.Contains("The Time") || signer1.Contains("Time"), "Signer 1 should contain group name: " + signer1);
+                    Assert.IsFalse(signer1.Contains("\""), "Signer 1 must NOT contain double quotes: " + signer1);
                     string signer1Note = ws.Cell(signRow + 1, 1).GetString();
                     Assert.AreEqual("(Ký, ghi rõ họ tên)", signer1Note.Trim());
 
@@ -795,6 +801,70 @@ namespace BVTL.Tests
                 if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
                 {
                     try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportExportService_ExportHoatDongCD45_TheGate_Footer_ShouldBeGiamDocTheGate_WithoutQuotes()
+        {
+            var service = new ReportExportService();
+            string generatedExcelPath = null;
+            string generatedPdfPath = null;
+            try
+            {
+                // Test for The Gate in HCM (HCM, HC_TGA)
+                var taskExcel = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HCM", "HC_TGA", "UnitTest", "Tester", "EXCEL");
+                var resultExcel = taskExcel.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(resultExcel);
+                Assert.IsTrue(resultExcel.Success, "Export Excel for The Gate should succeed: " + resultExcel.Message);
+                Assert.IsTrue(File.Exists(resultExcel.FilePath));
+                generatedExcelPath = resultExcel.FilePath;
+
+                using (var wb = new XLWorkbook(resultExcel.FilePath))
+                {
+                    var ws = wb.Worksheets.Worksheet(1);
+                    Assert.IsNotNull(ws);
+
+                    int lastRow = ws.LastRowUsed().RowNumber();
+                    int signRow = -1;
+                    for (int r = 5; r <= lastRow; r++)
+                    {
+                        string cellVal = ws.Cell(r, 1).GetString();
+                        if (!string.IsNullOrEmpty(cellVal) && (cellVal.Contains("Giám đốc") || cellVal.Contains("Trưởng nhóm")))
+                        {
+                            signRow = r;
+                            break;
+                        }
+                    }
+
+                    Assert.IsTrue(signRow > 0, "Signature block must be found in sheet");
+
+                    string signer1 = ws.Cell(signRow, 1).GetString();
+                    // Must be 'Giám đốc The Gate' exactly without any double quotes
+                    Assert.AreEqual("Giám đốc The Gate", signer1.Trim(), "Signer 1 must be 'Giám đốc The Gate' without double quotes");
+                    Assert.IsFalse(signer1.Contains("\""), "Signer 1 must NOT contain double quotes: " + signer1);
+                }
+
+                // For The Gate in HCM, if no data in period, PDF correctly skips per business rules
+                var taskPdf = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HCM", "HC_TGA", "UnitTest", "Tester", "PDF");
+                var resultPdf = taskPdf.GetAwaiter().GetResult();
+                Assert.IsNotNull(resultPdf);
+                if (resultPdf.Success && File.Exists(resultPdf.FilePath))
+                {
+                    generatedPdfPath = resultPdf.FilePath;
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedExcelPath) && File.Exists(generatedExcelPath))
+                {
+                    try { File.Delete(generatedExcelPath); } catch { }
+                }
+                if (!string.IsNullOrEmpty(generatedPdfPath) && File.Exists(generatedPdfPath))
+                {
+                    try { File.Delete(generatedPdfPath); } catch { }
                 }
             }
         }

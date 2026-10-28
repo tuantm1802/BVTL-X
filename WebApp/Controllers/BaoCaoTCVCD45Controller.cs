@@ -437,8 +437,9 @@ namespace WebApp.Controllers
 
             if (!string.IsNullOrEmpty(tenTCV))
             {
+                string cleanTcv = (tenTCV ?? "").Replace("\"", "").Trim();
                 ws.Range(signNameRow, 1, signNameRow, 2).Merge();
-                ws.Cell(signNameRow, 1).Value = tenTCV;
+                ws.Cell(signNameRow, 1).Value = cleanTcv;
                 ws.Cell(signNameRow, 1).Style.Font.Bold = true;
                 ws.Cell(signNameRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             }

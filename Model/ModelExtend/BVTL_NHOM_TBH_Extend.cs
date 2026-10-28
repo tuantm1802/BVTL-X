@@ -36,7 +36,8 @@ namespace Model.Model
 
         public string GetDaiDienNhomSigner()
         {
-            return $"{GetChucDanh()} \"{tennhom_tbh}\"";
+            string cleanTen = (tennhom_tbh ?? "").Replace("\"", "").Trim();
+            return $"{GetChucDanh()} {cleanTen}".Trim();
         }
 
         public string GetFullDisplayName()

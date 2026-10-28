@@ -184,7 +184,11 @@ namespace Model.ModelExtend
         public string GetXungDanh() => !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
         public string GetShortXungDanh() => !string.IsNullOrWhiteSpace(SHORT_PREFIX) ? SHORT_PREFIX.Trim() : GetXungDanh();
         public string GetChucDanh() => !string.IsNullOrWhiteSpace(CHUC_DANH) ? CHUC_DANH.Trim() : (CITY_CODE == "HCM" || MA_NHOM == "HN_TT" || MA_NHOM == "tt" || (TEN_NHOM != null && TEN_NHOM.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0) ? "Giám đốc" : "Trưởng nhóm");
-        public string GetDaiDienNhomSigner() => $"{GetChucDanh()} \"{TEN_NHOM}\"";
+        public string GetDaiDienNhomSigner()
+        {
+            string cleanTen = (TEN_NHOM ?? "").Replace("\"", "").Trim();
+            return $"{GetChucDanh()} {cleanTen}".Trim();
+        }
     }
 
     public class CD45_NhomTcvKpiModel
