@@ -285,6 +285,7 @@ namespace WebApp.Controllers
                                  loaiFilter == "Quy" ? "Báo cáo Quý" :
                                  loaiFilter == "6T" ? "Báo cáo 6 Tháng" : "Báo cáo Năm (12T)";
 
+                int totalExported = 0;
                 using (var memoryStream = new MemoryStream())
                 {
                     using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -292,6 +293,24 @@ namespace WebApp.Controllers
                         foreach (var tcv in listTCV)
                         {
                             var data = _BaoCaoCD45DA.GetBaoCao(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV, loaiFilter);
+                            List<CD45BaoCaoTuVanL1Model> dataL1 = null;
+                            List<CD45BaoCaoTuVanL2Model> dataL2 = null;
+                            if (_BaoCaoTuVanCD45DA != null)
+                            {
+                                dataL1 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL1(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                                dataL2 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL2(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
+                            }
+
+                            bool hasActivityData = data != null && data.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
+                            bool hasTuVanL1 = dataL1 != null && dataL1.Count > 0;
+                            bool hasTuVanL2 = dataL2 != null && dataL2.Count > 0;
+                            bool hasTcvData = hasActivityData || hasTuVanL1 || hasTuVanL2;
+
+                            // QUY TẮC: Chỉ những TCV có dữ liệu mới xuất file báo cáo
+                            if (!hasTcvData)
+                            {
+                                continue;
+                            }
 
                             using (var wb = new XLWorkbook())
                             {
@@ -300,24 +319,29 @@ namespace WebApp.Controllers
 
                                 if (_BaoCaoTuVanCD45DA != null)
                                 {
-                                    var dataL1 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL1(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
                                     var wsL1 = wb.Worksheets.Add("TuVan_L1");
                                     ExcelTuVanHelper.BuildTuVanL1Worksheet(wsL1, dataL1, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
 
-                                    var dataL2 = _BaoCaoTuVanCD45DA.GetBaoCaoTuVanL2(FromDate, ToDate, null, tcv.MA_NHOM, tcv.MA_TCV);
                                     var wsL2 = wb.Worksheets.Add("TuVan_L2");
                                     ExcelTuVanHelper.BuildTuVanL2Worksheet(wsL2, dataL2, FromDate, ToDate, tcv.TEN_NHOM ?? tcv.MA_NHOM, tcv.TEN_TCV ?? tcv.MA_TCV, getXungDanh(tcv.MA_NHOM, tcv.PREFIX));
                                 }
 
-                                var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_");
+                                var cleanName = (tcv.TEN_TCV ?? ("TCV_" + tcv.MA_TCV)).Replace("/", "_").Replace("\\", "_").Replace("\"", "").Trim();
                                 var zipEntry = archive.CreateEntry("BaoCao_" + (tcv.MA_NHOM ?? "CD45") + "_" + cleanName + "_" + kyLabel + ".xlsx", CompressionLevel.Fastest);
                                 using (var zipStream = zipEntry.Open())
                                 {
                                     wb.SaveAs(zipStream);
                                 }
+                                totalExported++;
                             }
                         }
                     }
+
+                    if (totalExported == 0)
+                    {
+                        return Content("<script>alert('Không có TCV nào phát sinh dữ liệu trong kỳ báo cáo đã chọn.'); window.history.back();</script>", "text/html; charset=utf-8");
+                    }
+
                     return File(memoryStream.ToArray(), "application/zip", "BaoCao_TCV_CD45_" + kyLabel + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip");
                 }
             }

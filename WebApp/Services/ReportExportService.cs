@@ -400,7 +400,7 @@ namespace WebApp.Services
                             try
                             {
                                 var cityData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, currentCityCode, null, null, loaiBaoCaoFilter);
-                                bool hasCityData = isPdf ? (cityData != null && cityData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0)) : (cityData != null && cityData.Count > 0);
+                                bool hasCityData = cityData != null && cityData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
                                 if (hasCityData)
                                 {
                                     using (var wbCity = new XLWorkbook())
@@ -527,7 +527,7 @@ namespace WebApp.Services
                                 try
                                 {
                                     var nhomData = _baoCaoCD45DA.GetBaoCao(fromDate, toDate, null, groupItem.QueryCode, null, loaiBaoCaoFilter);
-                                    bool hasNhomData = isPdf ? (nhomData != null && nhomData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0)) : (nhomData != null && nhomData.Count > 0);
+                                    bool hasNhomData = nhomData != null && nhomData.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
                                     if (hasNhomData)
                                     {
                                         using (var wbNhom = new XLWorkbook())
@@ -579,8 +579,8 @@ namespace WebApp.Services
                                         bool hasTuVanL2 = dataL2 != null && dataL2.Count > 0;
                                         bool hasTcvData = hasActivityData || hasTuVanL1 || hasTuVanL2;
 
-                                        // QUY TẮC: Chỉ những Nhóm/TCV có dữ liệu thì mới xuất file báo cáo, nếu không có dữ liệu thì không cần xuất (áp dụng cho PDF)
-                                        if (isPdf && !hasTcvData)
+                                        // QUY TẮC: Chỉ những Nhóm/TCV có dữ liệu thì mới xuất file báo cáo, nếu không có dữ liệu thì không cần xuất (áp dụng cho cả Excel và PDF)
+                                        if (!hasTcvData)
                                         {
                                             continue;
                                         }
@@ -849,7 +849,7 @@ namespace WebApp.Services
 
                 bool isPdf = string.Equals(format, "PDF", StringComparison.OrdinalIgnoreCase);
                 bool hasData = data != null && data.Any(x => !x.IsBold && x.Tong.GetValueOrDefault(0) > 0);
-                if (isPdf && !hasData)
+                if (!hasData)
                 {
                     sw.Stop();
                     result.Success = false;
@@ -1550,6 +1550,13 @@ namespace WebApp.Services
                         }
 
                         var provCases = allDetails.Where(x => string.Equals((x.CITY_CODE ?? "").Trim(), filterCityCode, StringComparison.OrdinalIgnoreCase)).ToList();
+                        if (provCases.Count == 0)
+                        {
+                            sw.Stop();
+                            result.Success = false;
+                            result.Message = $"Không có ca khám bác sĩ nào trong kỳ {pValue} tại tỉnh {tenTinh}.";
+                            return result;
+                        }
                         byte[] excelBytes = CreateProvinceDoctorExcel(filterCityCode, tenTinh, provCases);
                         File.WriteAllBytes(outFilePath, excelBytes);
 
@@ -1666,7 +1673,7 @@ namespace WebApp.Services
                         }
                         else
                         {
-                            if (provCases.Count == 0 && !provinceMap.ContainsKey(pCode)) continue;
+                            if (provCases.Count == 0) continue; // Chỉ xuất tỉnh có ca khám (áp dụng cho cả Excel và PDF)
 
                             byte[] excelBytes = CreateProvinceDoctorExcel(pCode, tenTinh, provCases);
                             string entryName = $"BaoCao_BacSi_DREAMH_{safeTinh}_{periodTag}.xlsx";

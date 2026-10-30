@@ -130,14 +130,14 @@ namespace BVTL.Tests
                 Assert.IsTrue(result.Success, "Export should succeed for HCM: " + result.Message);
                 Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk: " + result.FilePath);
                 Assert.IsTrue(result.FileSizeBytes > 0, "ZIP file should have size > 0");
-                Assert.IsTrue(result.TotalItems >= 5, $"Should have exported at least 5 summaries for HCM (actual: {result.TotalItems})");
+                Assert.IsTrue(result.TotalItems >= 3, $"Should have exported active groups/summaries for HCM (actual: {result.TotalItems})");
                 generatedFilePath = result.FilePath;
 
                 using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
                 {
                     using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
                     {
-                        Assert.IsTrue(archive.Entries.Count >= 5, $"ZIP must contain at least 5 entries (actual: {archive.Entries.Count})");
+                        Assert.IsTrue(archive.Entries.Count >= 3, $"ZIP must contain active entries (actual: {archive.Entries.Count})");
 
                         bool hasProvinceSummary = false;
                         bool hasAlocare = false;
@@ -159,11 +159,11 @@ namespace BVTL.Tests
                         }
 
                         Assert.IsTrue(hasProvinceSummary, "ZIP should contain Province summary report for HCM (BaoCao_TongHop_HCM.xlsx)");
-                        Assert.IsTrue(hasAlocare, "ZIP should contain Group summary report for Alocare");
-                        Assert.IsTrue(hasG3vn, "ZIP should contain Group summary report for G3VN");
-                        Assert.IsTrue(hasMyhands, "ZIP should contain Group summary report for Myhands");
-                        Assert.IsTrue(hasTheGate, "ZIP should contain Group summary report for The Gate");
-                        Assert.AreEqual(17, tcvFileCount, "HCM should have 17 TCV detail files for the 17 active TCVs in database");
+                        Assert.IsTrue(hasAlocare, "ZIP should contain Group summary report for Alocare (has data)");
+                        Assert.IsTrue(hasG3vn, "ZIP should contain Group summary report for G3VN (has data)");
+                        Assert.IsFalse(hasMyhands, "Myhands has 0 data and must NOT be exported per data-filtering rules");
+                        Assert.IsTrue(hasTheGate, "ZIP should contain Group summary report for The Gate (has data)");
+                        Assert.AreEqual(0, tcvFileCount, "HCM TCVs have 0 data in period and must NOT generate empty TCV files");
                     }
                 }
             }
@@ -189,14 +189,19 @@ namespace BVTL.Tests
                 Assert.IsNotNull(result, "Result must not be null");
                 Assert.IsTrue(result.Success, "Export should succeed: " + result.Message);
                 Assert.IsTrue(File.Exists(result.FilePath), "ZIP file should exist on disk");
-                Assert.IsTrue(result.TotalItems >= 100, $"Total exported TCVs should be >= 100 (actual: {result.TotalItems})");
+                Assert.IsTrue(result.TotalItems >= 80, $"Total exported active TCVs should be >= 80 (actual: {result.TotalItems})");
                 generatedFilePath = result.FilePath;
 
                 using (var zipStream = new FileStream(result.FilePath, FileMode.Open, FileAccess.Read))
                 {
                     using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
                     {
-                        Assert.IsTrue(archive.Entries.Count > 100, "ZIP should contain > 100 entries");
+                        Assert.IsTrue(archive.Entries.Count > 80, "ZIP should contain > 80 entries");
+
+                        // Quy tắc lọc dữ liệu: Các TCV không có dữ liệu tại LMHP (Hưng Yên) không được sinh file rác
+                        Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Quang Hiep") || e.FullName.Contains("Vũ Quang Hiệp")), "TCV Vu Quang Hiep (0 data) must NOT be in ZIP");
+                        Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Trong Thuy") || e.FullName.Contains("Vũ Trọng Thủy")), "TCV Vu Trong Thuy (0 data) must NOT be in ZIP");
+                        Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Thi Thuy") || e.FullName.Contains("Vũ Thị Thúy")), "TCV Vu Thi Thuy (0 data) must NOT be in ZIP");
 
                         bool hasHanoi = false;
                         bool hasHaiPhong = false;
@@ -1581,6 +1586,67 @@ namespace BVTL.Tests
                 if (!string.IsNullOrEmpty(generatedFilePath) && File.Exists(generatedFilePath))
                 {
                     try { File.Delete(generatedFilePath); } catch { }
+                }
+            }
+        }
+        [TestMethod]
+        public void ReportExportService_ExportTCVCD45ZipAsync_LMHP_TCVsWithoutData_MustNotBeExportedInZip_ExcelAndPdf()
+        {
+            var service = new ReportExportService();
+            string generatedExcelPath = null;
+            string generatedPdfPath = null;
+
+            try
+            {
+                // 1. Kiểm tra xuất định dạng EXCEL
+                var taskExcel = service.ExportTCVCD45ZipAsync(2026, 8, "HYE", "lmhp", "UnitTest", "Tester", "Month", format: "EXCEL");
+                var resultExcel = taskExcel.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(resultExcel, "Excel result must not be null");
+                Assert.IsTrue(resultExcel.Success, "Export Excel for LMHP should succeed: " + resultExcel.Message);
+                Assert.IsTrue(File.Exists(resultExcel.FilePath), "Excel ZIP should exist");
+                generatedExcelPath = resultExcel.FilePath;
+
+                using (var zipStream = new FileStream(resultExcel.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    // Các TCV có dữ liệu thực tế tại LMHP phải có file
+                    Assert.IsTrue(archive.Entries.Any(e => e.FullName.Contains("Ngo Duc Toan") || e.FullName.Contains("Ngô Đức Toàn")), "TCV Ngo Duc Toan (has data) must be exported");
+                    Assert.IsTrue(archive.Entries.Any(e => e.FullName.Contains("Nguyen Van Quang") || e.FullName.Contains("Nguyễn Văn Quang")), "TCV Nguyen Van Quang (has data) must be exported");
+
+                    // Các TCV hoàn toàn không có dữ liệu (Tong=0, L1=0, L2=0) tuyệt đối không được sinh file rác
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Quang Hiep") || e.FullName.Contains("Vũ Quang Hiệp")), "TCV Vu Quang Hiep (0 data) must NOT be in Excel ZIP");
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Trong Thuy") || e.FullName.Contains("Vũ Trọng Thủy")), "TCV Vu Trong Thuy (0 data) must NOT be in Excel ZIP");
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Thi Thuy") || e.FullName.Contains("Vũ Thị Thúy")), "TCV Vu Thi Thuy (0 data) must NOT be in Excel ZIP");
+                }
+
+                // 2. Kiểm tra xuất định dạng PDF
+                var taskPdf = service.ExportTCVCD45ZipAsync(2026, 8, "HYE", "lmhp", "UnitTest", "Tester", "Month", format: "PDF");
+                var resultPdf = taskPdf.GetAwaiter().GetResult();
+
+                Assert.IsNotNull(resultPdf, "PDF result must not be null");
+                Assert.IsTrue(resultPdf.Success, "Export PDF for LMHP should succeed: " + resultPdf.Message);
+                Assert.IsTrue(File.Exists(resultPdf.FilePath), "PDF ZIP should exist");
+                generatedPdfPath = resultPdf.FilePath;
+
+                using (var zipStream = new FileStream(resultPdf.FilePath, FileMode.Open, FileAccess.Read))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    Assert.IsTrue(archive.Entries.Any(e => e.FullName.Contains("Ngo Duc Toan") || e.FullName.Contains("Ngô Đức Toàn")), "TCV Ngo Duc Toan (has data) must be exported in PDF");
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Quang Hiep") || e.FullName.Contains("Vũ Quang Hiệp")), "TCV Vu Quang Hiep (0 data) must NOT be in PDF ZIP");
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Trong Thuy") || e.FullName.Contains("Vũ Trọng Thủy")), "TCV Vu Trong Thuy (0 data) must NOT be in PDF ZIP");
+                    Assert.IsFalse(archive.Entries.Any(e => e.FullName.Contains("Vu Thi Thuy") || e.FullName.Contains("Vũ Thị Thúy")), "TCV Vu Thi Thuy (0 data) must NOT be in PDF ZIP");
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(generatedExcelPath) && File.Exists(generatedExcelPath))
+                {
+                    try { File.Delete(generatedExcelPath); } catch { }
+                }
+                if (!string.IsNullOrEmpty(generatedPdfPath) && File.Exists(generatedPdfPath))
+                {
+                    try { File.Delete(generatedPdfPath); } catch { }
                 }
             }
         }
