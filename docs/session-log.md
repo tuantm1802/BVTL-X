@@ -2291,3 +2291,31 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 2. **Kiểm thử tự động (Unit Tests)**:
    - Thêm assertion kiểm tra `C1_Step3_CanChuyenGui >= C1_Step4_KhamSKTT` trong `DashboardCD45Tests.cs`.
    - Chạy 19/19 Dashboard tests và 25/25 Báo cáo tests đều PASSED 100%.
+---
+
+## Phiên 48: 01/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Lọc bỏ file rác khi xuất báo cáo định kỳ (Excel & PDF)**:
+   - Áp dụng triệt để quy tắc: Chỉ những Nhóm/TCV có dữ liệu thực tế trong kỳ báo cáo mới được xuất file; nếu không phát sinh dữ liệu (0 lượt tiếp cận, sàng lọc, tư vấn hoặc ca khám) thì không xuất file rác vào gói ZIP hoặc tải đơn lẻ.
+   - Áp dụng đồng bộ cho cả định dạng Bảng tính Excel (`.xlsx` / `.zip`) và Tài liệu PDF (`.pdf` / `.zip`) trên các phân hệ Báo cáo TCV CD45, Báo cáo Hoạt động CD45 và Báo cáo Bác sĩ CD45.
+2. **Chuẩn hóa kiểm thử tự động (Unit Tests)**:
+   - Cập nhật các bộ test case kiểm tra gói xuất báo cáo toàn quốc và từng nhóm trong `ScheduledReportTests.cs` phù hợp với quy tắc lọc dữ liệu thực tế (92 TCV có dữ liệu trong kỳ).
+   - Đạt 165/165 tests PASSED 100%.
+3. **Phát hành & Triển khai (v1.7.5)**:
+   - Tạo tag Git `v1.7.5`, push lên kho remote `origin/TUANTM_BVTL_V1.0 --tags`.
+   - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.5.rar` và tải lên `Packages/` trên máy chủ FTP.
+   - Triển khai bản vá đồng bộ lên cả 2 môi trường **DEV** (`c:\publish\dev`) và **PROD** (`c:\publish\prod`).
+   - Nghiệm thu đối soát phiên bản và kiểm tra sức khỏe HTTP 200 OK trên cả 2 môi trường.
+
+### Các công việc đã hoàn thành:
+1. **Backend Service & Controller Layer**:
+   - `ReportExportService.cs`: Bổ sung kiểm tra `hasTcvData` và `hasNhomData` cho cả luồng Excel và PDF; chỉ đóng gói các tệp phát sinh dữ liệu vào ZIP.
+   - `BaoCaoTCVCD45Controller.cs`: Chuẩn hóa tên chữ ký đại diện và người lập báo cáo, loại bỏ ký tự nháy kép thừa.
+2. **Kiểm thử tự động & Nghiệm thu (VSTest)**:
+   - Cập nhật assertion cho `ReportExportService_ExportTCVCD45ZipAsync_AllProvinces_ShouldCreateHierarchicalStructure` (tcvCount >= 80, thực tế 92).
+   - Bổ sung test case `ReportExportService_ExportHoatDongCD45ExcelAsync_GroupScope_HaiDang_ShouldSucceed` kiểm tra cả nhóm có dữ liệu và xác nhận nhóm không có dữ liệu trả về `Success = false` kèm thông báo thân thiện.
+   - 165/165 tests PASSED 100%.
+4. **Triển khai & Phát hành (v1.7.5)**:
+   - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.5.rar`.
+   - Triển khai và đối chiếu thành công 100% trên DEV và PROD.

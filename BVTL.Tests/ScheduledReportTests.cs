@@ -233,7 +233,7 @@ namespace BVTL.Tests
                         Assert.IsTrue(hasHcm, "ZIP should contain folder for TP. Hồ Chí Minh");
                         Assert.IsTrue(provinceSummaryCount >= 6, $"Should contain summary reports for at least 6 provinces (actual: {provinceSummaryCount})");
                         Assert.IsTrue(groupSummaryCount >= 14, $"Should contain summary reports for groups (actual: {groupSummaryCount})");
-                        Assert.IsTrue(tcvCount >= 100, $"Should contain >= 100 TCV reports (actual: {tcvCount})");
+                        Assert.IsTrue(tcvCount >= 80, $"Should contain active TCV reports (actual: {tcvCount})");
                     }
                 }
             }
@@ -664,19 +664,20 @@ namespace BVTL.Tests
         }
 
         [TestMethod]
-        public void ReportExportService_ExportHoatDongCD45ExcelAsync_GroupScope_BinhMinh_ShouldSucceed()
+        public void ReportExportService_ExportHoatDongCD45ExcelAsync_GroupScope_HaiDang_ShouldSucceed()
         {
             var service = new ReportExportService();
             string generatedFilePath = null;
             try
             {
-                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HPG", "bm", "UnitTest", "Tester");
+                // Nhóm Hải Đăng (HPG - hd) có dữ liệu phát sinh trong kỳ tháng 08/2026
+                var task = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HPG", "hd", "UnitTest", "Tester");
                 var result = task.GetAwaiter().GetResult();
 
                 Assert.IsNotNull(result, "Result must not be null");
-                Assert.IsTrue(result.Success, "Export HoatDong for Binh Minh group should succeed: " + result.Message);
+                Assert.IsTrue(result.Success, "Export HoatDong for Hai Dang group should succeed: " + result.Message);
                 Assert.IsTrue(File.Exists(result.FilePath), "Excel file should exist on disk: " + result.FilePath);
-                Assert.IsTrue(result.FileName.Contains("HPG") && result.FileName.Contains("bm"), "FileName should contain HPG and bm: " + result.FileName);
+                Assert.IsTrue(result.FileName.Contains("HPG") && result.FileName.Contains("hd"), "FileName should contain HPG and hd: " + result.FileName);
                 generatedFilePath = result.FilePath;
 
                 using (var wb = new XLWorkbook(result.FilePath))
@@ -687,7 +688,7 @@ namespace BVTL.Tests
                     string monthTitle = ws.Cell(2, 1).GetString();
                     Assert.AreEqual("Báo cáo tháng 08/2026", monthTitle);
                     string subtitle = ws.Cell(3, 1).GetString();
-                    Assert.IsTrue(subtitle.Contains("Bình Minh") || subtitle.Contains("Hải Phòng"), "Subtitle must mention Binh Minh or Hai Phong: " + subtitle);
+                    Assert.IsTrue(subtitle.Contains("Hải Đăng") || subtitle.Contains("Hải Phòng"), "Subtitle must mention Hai Dang or Hai Phong: " + subtitle);
 
                     // Verify equal column width 10.0 for C..H
                     for (int c = 3; c <= 8; c++)
@@ -695,6 +696,12 @@ namespace BVTL.Tests
                         Assert.AreEqual(10.0, ws.Column(c).Width, 0.1, $"Column {c} width must be 10.0");
                     }
                 }
+
+                // Kiểm tra thêm quy tắc lọc rác: Nhóm Bình Minh (bm) không có dữ liệu trong kỳ thì không xuất file
+                var taskBm = service.ExportHoatDongCD45ExcelAsync(2026, 8, "HPG", "bm", "UnitTest", "Tester");
+                var resultBm = taskBm.GetAwaiter().GetResult();
+                Assert.IsFalse(resultBm.Success, "Export for group with 0 data must return Success = false");
+                Assert.IsTrue(resultBm.Message.Contains("Không có dữ liệu phát sinh"), "Message must explain no data generated");
             }
             finally
             {
