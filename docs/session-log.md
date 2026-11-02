@@ -1,4 +1,4 @@
-﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
+﻿﻿# Nhật ký Phiên làm việc (Session Log) — BVTL-X Upgrade
 
 Tệp tin này dùng để lưu trữ và bàn giao ngữ cảnh giữa các phiên làm việc của **Antigravity (Gemini)** và **Claude Code**.
 
@@ -2319,3 +2319,58 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 4. **Triển khai & Phát hành (v1.7.5)**:
    - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.5.rar`.
    - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
+
+---
+
+## Phiên 49: 02/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Khắc phục lỗi thiếu dữ liệu Form F8 (Tư vấn L2+) trên Báo cáo TCV**:
+   - Người dùng phản ánh trên phân hệ "Báo cáo TCV" -> "Xuất báo cáo" (kỳ Tháng 10: 26/09/2026 - 25/10/2026):
+     - Mục IV.1 (Số lượt KH được tư vấn cá nhân): Nhóm The Times chỉ hiển thị 11 lượt thay vì 131 lượt thực tế.
+     - Mục I.2 (Tổng số KH được chăm sóc trong kỳ): Nhóm The Times chỉ hiển thị 104 KH thay vì 177 KH (thiếu số KH cũ quay lại thực hiện Form F8).
+2. **Đối soát & Xác nhận logic Phễu Dịch vụ Chăm sóc SKTT (Care Cascade 1) trên Dashboard CD45**:
+   - Kiểm tra logic bước 3 ("3. Cần chuyển gửi") so với bước 4 ("4. Khám SKTT").
+   - Xác nhận bộ lọc QST >= 6 hoạt động chuẩn xác, bảo đảm số lượng bước 3 (1.451 KH) luôn lớn hơn bước 4 (796 KH).
+
+### Nguyên nhân gốc rễ (Root Cause):
+1. **Lỗi bộ lọc Report 2507 trên REDCap API**:
+   - Trong bảng cấu hình `BVTL_API`, `API_CD45_F8` sử dụng `ReportId = 2507`.
+   - Trên hệ thống REDCap, Report 2507 bị cài đặt bộ lọc giới hạn duy nhất 1 DAG là `nh_dng` (Ánh Dương - 58 bản ghi complete).
+   - Toàn bộ 20 nhóm CBO khác (`the_times`, `lin_minh_hnh_phc`, `v_nh`, `lin_minh_msm`, `qunh_hng_xanh`,...) bị loại bỏ khỏi Report 2507, dẫn đến bảng `CD45_TU_VAN_L2` trên cả 2 cơ sở dữ liệu `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD` chỉ có vỏn vẹn 58 bản ghi của Ánh Dương.
+2. **Cơ chế gọi API trong `ApiBase.cs`**:
+   - `PostJsonAsyncRaw` mặc định gọi REDCap với `content = "report"`. Khi report bị cấu hình sai bộ lọc phía REDCap, hệ thống không thể lấy được bản ghi của các DAG khác.
+
+### Các công việc đã hoàn thành:
+1. **Nâng cấp mã nguồn Backend & Đồng bộ REDCap API**:
+   - `Common/Common/ApiBase.cs`: Tinh chỉnh `PostJsonAsyncRaw` để khi `reportId == "2507"` hoặc `reportId == "f8_phiu_t_vn_t_ln_2"`, tự động chuyển sang gọi REDCap với `content = "record"`, `type = "flat"`, `forms[0] = "f8_phiu_t_vn_t_ln_2"`, `fields[0] = "record_id"`, `exportDataAccessGroups = "true"`. Qua đó trích xuất đầy đủ 100% dữ liệu F8 của tất cả các nhóm CBO mà không phụ thuộc vào bộ lọc Report trên REDCap.
+   - `Common/Common/ConvertCD45ApiToEntity.cs`: Thêm điều kiện `if (string.IsNullOrEmpty(rawDate)) continue;` trong `ConvertF8` để lọc nhanh 4.512 bản ghi khách hàng không phát sinh tư vấn F8.
+2. **Đồng bộ toàn diện dữ liệu F8 lên Cơ sở dữ liệu DEV & PROD**:
+   - Trích xuất và chuẩn hóa đầy đủ **988 bản ghi F8 hợp lệ** (100% đã hoàn thành hồ sơ gốc F1 và F7 complete) trên toàn bộ các nhóm CBO:
+     - `the_times` (tt): **349 bản ghi**
+     - `lin_minh_hnh_phc` (lmhp): 223 bản ghi
+     - `v_nh` (vn): 142 bản ghi
+     - `lin_minh_msm` (lmm): 77 bản ghi
+     - `qunh_hng_xanh` (qhx): 69 bản ghi
+     - `nh_dng` (ad): 58 bản ghi
+     - `hoa_nng` (hn): 26 bản ghi
+     - `hoa_trinh_n` (htn): 15 bản ghi
+     - `its_t_time` (itt): 9 bản ghi
+     - `gi_mi` (gm): 8 bản ghi
+     - `hi_ng` (hd): 8 bản ghi
+     - `hi_vng` (hv): 4 bản ghi
+   - Nạp thành công toàn bộ 988 bản ghi vào bảng `CD45_TU_VAN_L2` trên cả **BVTL_REPORTING_DEV** và **BVTL_REPORTING_PROD**.
+3. **Nghiệm thu đối soát số liệu thực tế (Khớp 100%)**:
+   - Chạy kiểm tra `SP_CD45_GetBaoCao` cho nhóm The Times (`tt`) trong kỳ báo cáo Tháng 10 (`26/09/2026` đến `25/10/2026`):
+     - **Mục IV.1 (Số lượt KH được tư vấn cá nhân)**: $11	ext{ (F7)} + 120	ext{ (F8)} =$ **131 lượt** (trước đây chỉ có 11).
+     - **Mục IV.2 (Số KH được tư vấn cá nhân)**: **128 khách hàng** (125 KH 1 lần, 3 KH 2 lần: $125 + 3	imes 2 = 131$).
+     - **Mục I.2 (Tổng số KH được chăm sóc trong kỳ)**: $104 + 73	ext{ (KH cũ Form F8)} =$ **177 khách hàng** (trước đây chỉ có 104).
+   - Kiểm tra **Dashboard Care Cascade 1**:
+     - Bước 1 (Tiếp cận): 4.409
+     - Bước 2 (Sàng lọc QST): 3.487
+     - Bước 3 (Cần chuyển gửi QST >= 6): **1.451** (> 796, đúng hình thái phễu chuẩn)
+     - Bước 4 (Khám SKTT): 796
+     - Bước 5 (Tái khám): 417
+4. **Kiểm thử tự động (Unit Tests)**:
+   - Bổ sung bài test `BaoCaoTCVCD45_TheTimes_PeriodOct2026_ShouldIncludeF8_In_IV1_And_I2` trong `ScheduledReportTests.cs`.
+   - Chạy toàn bộ 58/58 tests kiểm thử Dashboard & Báo cáo: **PASSED 100%**.

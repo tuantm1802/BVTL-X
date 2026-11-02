@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+﻿﻿using ClosedXML.Excel;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend;
@@ -1657,6 +1657,29 @@ namespace BVTL.Tests
                 }
             }
         }
+[TestMethod]
+        public void BaoCaoTCVCD45_TheTimes_PeriodOct2026_ShouldIncludeF8_In_IV1_And_I2()
+        {
+            var da = new BaoCaoCD45DA();
+            var report = da.GetBaoCao("26/09/2026", "25/10/2026", null, "tt", null, null);
+
+            Assert.IsNotNull(report, "Báo cáo không được null");
+            Assert.IsTrue(report.Count > 0, "Báo cáo The Times phải có dữ liệu");
+
+            // Chỉ số I.2: Tổng số KH được chăm sóc trong kỳ báo cáo (gồm 104 từ các dịch vụ khác + 73 KH cũ Form F8 = 177)
+            var itemI2 = report.FirstOrDefault(x => x.Code == "I_2");
+            Assert.IsNotNull(itemI2, "Chỉ số I.2 phải tồn tại trong báo cáo");
+            Assert.AreEqual(177, itemI2.Tong, "Chỉ số I.2 phải đạt đúng 177 khách hàng khi tính đầy đủ Form F8");
+
+            // Chỉ số IV.1: Số lượt KH được tư vấn cá nhân (11 lượt F7 L1 + 120 lượt F8 L2 = 131 lượt)
+            var itemIV1 = report.FirstOrDefault(x => x.Code == "IV_1");
+            Assert.IsNotNull(itemIV1, "Chỉ số IV.1 phải tồn tại trong báo cáo");
+            Assert.AreEqual(131, itemIV1.Tong, "Chỉ số IV.1 phải đạt đúng 131 lượt tư vấn khi cộng hợp F7 và F8");
+
+            // Chỉ số IV.2: Số KH được tư vấn cá nhân
+            var itemIV2 = report.FirstOrDefault(x => x.Code == "IV_2");
+            Assert.IsNotNull(itemIV2, "Chỉ số IV.2 phải tồn tại trong báo cáo");
+            Assert.AreEqual(128, itemIV2.Tong, "Chỉ số IV.2 phải đạt 128 KH");
+        }
     }
 }
-

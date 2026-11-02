@@ -203,18 +203,32 @@ namespace Common.Common
         {
             return await HttpRetryHelper.ExecuteWithRetryAsync(async () =>
             {
-                var data = new[]
+                var data = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("token", token),
-                    new KeyValuePair<string, string>("content", "report"),
                     new KeyValuePair<string, string>("format", "json"),
-                    new KeyValuePair<string, string>("report_id", reportId),
                     new KeyValuePair<string, string>("csvDelimiter", ""),
                     new KeyValuePair<string, string>("rawOrLabel", rawOrLabel),
                     new KeyValuePair<string, string>("rawOrLabelHeaders", "raw"),
                     new KeyValuePair<string, string>("exportCheckboxLabel", "false"),
                     new KeyValuePair<string, string>("returnFormat", "json")
                 };
+
+                // Nếu là Form F8 (reportId 2507 bị lỗi cấu hình bộ lọc trên REDCap, chỉ chứa 1 DAG nh_dng)
+                // Cần xuất content=record cho form f8_phiu_t_vn_t_ln_2 để lấy đầy đủ cả 21 DAGs
+                if (reportId == "2507" || reportId == "f8_phiu_t_vn_t_ln_2")
+                {
+                    data.Add(new KeyValuePair<string, string>("content", "record"));
+                    data.Add(new KeyValuePair<string, string>("type", "flat"));
+                    data.Add(new KeyValuePair<string, string>("forms[0]", "f8_phiu_t_vn_t_ln_2"));
+                    data.Add(new KeyValuePair<string, string>("fields[0]", "record_id"));
+                    data.Add(new KeyValuePair<string, string>("exportDataAccessGroups", "true"));
+                }
+                else
+                {
+                    data.Add(new KeyValuePair<string, string>("content", "report"));
+                    data.Add(new KeyValuePair<string, string>("report_id", reportId));
+                }
 
                 using (var content = new FormUrlEncodedContent(data))
                 {

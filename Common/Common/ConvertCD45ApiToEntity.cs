@@ -947,7 +947,7 @@ namespace Common.Common
                     continue;
                 }
 
-                if (string.IsNullOrEmpty(rawDate) && !repeatInstance.HasValue && string.IsNullOrEmpty(repeatInstrument))
+                if (string.IsNullOrEmpty(rawDate))
                 {
                     continue;
                 }
