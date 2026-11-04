@@ -15,6 +15,9 @@
             </div>
         </div>
         <div class="d-flex gap-2">
+            <button class="btn btn-primary" x-on:click="openAddTcvModal()">
+                <i class="fas fa-user-plus me-1"></i>Thêm mới TCV
+            </button>
             <button class="btn btn-outline-secondary" x-on:click="resetFilters()">
                 <i class="fas fa-sync-alt me-1"></i>Đặt lại
             </button>
@@ -156,20 +159,21 @@
                     <thead class="table-light text-nowrap">
                         <tr>
                             <th class="text-center" style="width: 50px;">STT</th>
-                            <th style="width: 140px;">Tỉnh / Thành phố</th>
-                            <th style="width: 110px;">Mã Nhóm</th>
-                            <th style="width: 170px;">Loại hình / Xưng danh</th>
-                            <th style="width: 150px;">Chức danh người ký</th>
+                            <th style="width: 130px;">Tỉnh / Thành phố</th>
+                            <th style="width: 100px;">Mã Nhóm</th>
+                            <th style="width: 160px;">Loại hình / Xưng danh</th>
+                            <th style="width: 140px;">Chức danh người ký</th>
                             <th>Tên Nhóm CBO</th>
-                            <th class="text-center" style="width: 100px;">Mã TCV</th>
+                            <th class="text-center" style="width: 90px;">Mã TCV</th>
                             <th>Họ và Tên Tiếp Cận Viên</th>
-                            <th class="text-center" style="width: 140px;">Trạng thái</th>
-                            <th style="width: 140px;">Ngày cập nhật</th>
+                            <th class="text-center" style="width: 130px;">Trạng thái</th>
+                            <th style="width: 130px;">Ngày cập nhật</th>
+                            <th class="text-center" style="width: 120px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr x-show="isLoading">
-                            <td colspan="10" class="text-center py-5 text-primary">
+                            <td colspan="11" class="text-center py-5 text-primary">
                                 <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
                                 <span class="fw-semibold">Đang tải danh sách tiếp cận viên...</span>
                             </td>
@@ -230,10 +234,39 @@
                                     </template>
                                 </td>
                                 <td class="text-muted" x-text="item.MA_TCV ? formatDateTime(item.CreatedDate) : '-'"></td>
+                                <td class="text-center text-nowrap">
+                                    <template x-if="item.ID > 0">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-outline-primary" 
+                                                    title="Chỉnh sửa thông tin TCV" 
+                                                    x-on:click="openEditTcvModal(item)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn" 
+                                                    :class="item.IsActive ? 'btn-outline-warning' : 'btn-outline-success'" 
+                                                    :title="item.IsActive ? 'Chuyển sang Ngừng hoạt động' : 'Kích hoạt lại TCV'" 
+                                                    x-on:click="toggleTcvStatus(item)">
+                                                <i class="fas" :class="item.IsActive ? 'fa-pause' : 'fa-play'"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    title="Xóa TCV" 
+                                                    x-on:click="deleteTcv(item)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </template>
+                                    <template x-if="item.ID <= 0">
+                                        <button type="button" class="btn btn-sm btn-outline-success" 
+                                                title="Thêm TCV đầu tiên cho nhóm này" 
+                                                x-on:click="openAddTcvModalForNhom(item)">
+                                            <i class="fas fa-plus me-1"></i>Thêm TCV
+                                        </button>
+                                    </template>
+                                </td>
                             </tr>
                         </template>
                         <tr x-show="!isLoading && totalRecords === 0">
-                            <td colspan="10" class="text-center py-4 text-muted">
+                            <td colspan="11" class="text-center py-4 text-muted">
                                 <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                 Không tìm thấy tiếp cận viên nào!
                             </td>
@@ -269,6 +302,129 @@
                     </li>
                 </ul>
             </nav>
+        </div>
+    </div>
+
+    <!-- Modal Thêm mới / Chỉnh sửa Tiếp cận viên (TCV) -->
+    <div class="modal fade" :class="{ 'show d-block': tcvModal.show }" tabindex="-1" style="background: rgba(0,0,0,0.5);" x-show="tcvModal.show" x-cloak>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header bg-light border-0 py-3">
+                    <h5 class="modal-title font-weight-bold text-primary fs-6">
+                        <i class="fas fa-user-plus me-2" x-show="!tcvModal.isEdit"></i>
+                        <i class="fas fa-user-edit me-2" x-show="tcvModal.isEdit"></i>
+                        <span x-text="tcvModal.isEdit ? 'Chỉnh sửa thông tin Tiếp cận viên (TCV)' : 'Thêm mới Tiếp cận viên (TCV)'"></span>
+                    </h5>
+                    <button type="button" class="btn-close" x-on:click="closeTcvModal()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <!-- Hộp chỉ dẫn quan trọng cho Quản trị viên Dự án -->
+                    <div class="alert alert-info border-info-subtle shadow-sm py-2 px-3 small mb-3" style="background-color: #f0f7ff; border-left: 4px solid #0d6efd;">
+                        <div class="fw-bold text-primary mb-1">
+                            <i class="fas fa-info-circle me-1"></i>Chỉ dẫn quan trọng cho Quản trị viên Dự án:
+                        </div>
+                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.84rem; line-height: 1.5;">
+                            <li><strong>Mã TCV (Khớp nối REDCap)</strong>: Nhập số nguyên dương (VD: <code>1</code>, <code>2</code>, <code>15</code>...) đúng bằng <strong>Raw Value</strong> đã thiết lập trong câu hỏi <code>f2_person_{nhóm}</code> trên biểu mẫu REDCap. <em>Hệ thống tự chuẩn hóa bỏ số 0 ở đầu (lưu <code>1</code> thay vì <code>01</code>) để đồng bộ API hoàn toàn chính xác.</em></li>
+                            <li><strong>Họ và Tên TCV</strong>: Nhập họ và tên đầy đủ bằng Tiếng Việt có dấu để hiển thị chuẩn xác trên toàn bộ báo cáo và bảng biểu công khai.</li>
+                            <li><strong>Nhóm CBO</strong>: Khi chọn Nhóm CBO quản lý, Tỉnh/thành phố và tiền tố chức danh sẽ tự động gán đồng bộ.</li>
+                            <li><strong>Ngừng hoạt động thay vì Xóa</strong>: Nếu TCV đã nghỉ việc hoặc chuyển nhóm nhưng <strong>đã phát sinh dữ liệu hoạt động/tư vấn</strong>, hệ thống sẽ bảo vệ và yêu cầu giữ lại lịch sử. Hãy chuyển trạng thái sang <strong>Ngừng hoạt động</strong> thay vì Xóa.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Thông báo lỗi nếu có -->
+                    <div class="alert alert-danger py-2 small mb-3" x-show="tcvModal.errorMsg" x-text="tcvModal.errorMsg"></div>
+
+                    <div class="row g-3">
+                        <!-- Chọn Nhóm CBO -->
+                        <div class="col-md-7">
+                            <label class="form-label small fw-semibold mb-1">
+                                Nhóm CBO quản lý <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-sm" x-model="tcvModal.maNhom" x-on:change="onTcvModalGroupChange()" :disabled="tcvModal.isEdit">
+                                <option value="">-- Chọn nhóm CBO quản lý --</option>
+                                <template x-for="n in listNhoms" :key="n.MaNhom">
+                                    <option :value="n.MaNhom" x-text="n.DisplayName || n.TenNhom"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <!-- Tỉnh / Thành phố (Tự động theo nhóm) -->
+                        <div class="col-md-5">
+                            <label class="form-label small fw-semibold mb-1">Tỉnh / Thành phố</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light text-muted"><i class="fas fa-map-marker-alt"></i></span>
+                                <input type="text" class="form-control bg-light" :value="tcvModal.cityName ? (tcvModal.cityName + ' (' + tcvModal.cityCode + ')') : 'Tự động theo nhóm'" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Mã TCV -->
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-semibold mb-0">
+                                    Mã TCV (Raw Value REDCap) <span class="text-danger">*</span>
+                                </label>
+                                <template x-if="tcvModal.suggestedCode && !tcvModal.isEdit">
+                                    <button type="button" class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 text-decoration-none py-1 px-2"
+                                            x-on:click="applySuggestedCode()" title="Bấm để tự động điền mã gợi ý tiếp theo">
+                                        Gợi ý tiếp theo: <strong x-text="tcvModal.suggestedCode"></strong> (chọn)
+                                    </button>
+                                </template>
+                            </div>
+                            <input type="text" class="form-control form-control-sm font-monospace"
+                                   placeholder="VD: 1, 2, 3..."
+                                   maxlength="5" x-model="tcvModal.maTcv">
+                            <div class="form-text small text-muted">
+                                Mã số TCV trên REDCap (1, 2, 3...). Không nhập chữ cái hoặc ký hiệu lạ.
+                            </div>
+                        </div>
+
+                        <!-- Họ và Tên TCV -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold mb-1">
+                                Họ và Tên Tiếp Cận Viên <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-sm"
+                                   placeholder="VD: Nguyễn Văn A"
+                                   maxlength="150" x-model="tcvModal.tenTcv">
+                            <div class="form-text small text-muted">
+                                Nhập đầy đủ họ và tên có dấu tiếng Việt.
+                            </div>
+                        </div>
+
+                        <!-- Trạng thái hoạt động -->
+                        <div class="col-12">
+                            <div class="card bg-light border p-3">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="tcvIsActiveSwitch" x-model="tcvModal.isActive">
+                                    <label class="form-check-label small fw-semibold" for="tcvIsActiveSwitch">
+                                        <span x-show="tcvModal.isActive" class="text-success">
+                                            <i class="fas fa-check-circle me-1"></i>Đang hoạt động (Tham gia tiếp cận & thu thập số liệu dự án)
+                                        </span>
+                                        <span x-show="!tcvModal.isActive" class="text-danger">
+                                            <i class="fas fa-ban me-1"></i>Ngừng hoạt động (Tạm dừng làm việc / Đã nghỉ / Bảo lưu)
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="text-muted small mt-1" style="font-size: 0.8rem;">
+                                    TCV ngừng hoạt động sẽ không hiển thị trong danh mục lựa chọn mới nhưng vẫn bảo toàn số liệu trong các báo cáo định kỳ đã phát sinh.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 bg-light py-2">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" x-on:click="closeTcvModal()" :disabled="tcvModal.isSaving">
+                        Hủy bỏ
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm px-4" x-on:click="saveTcv()" :disabled="tcvModal.isSaving">
+                        <span x-show="!tcvModal.isSaving">
+                            <i class="fas fa-save me-1"></i><span x-text="tcvModal.isEdit ? 'Lưu thay đổi' : 'Thêm TCV'"></span>
+                        </span>
+                        <span x-show="tcvModal.isSaving"><i class="fas fa-spinner fa-spin me-1"></i>Đang lưu...</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

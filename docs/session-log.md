@@ -2374,3 +2374,42 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 4. **Kiểm thử tự động (Unit Tests)**:
    - Bổ sung bài test `BaoCaoTCVCD45_TheTimes_PeriodOct2026_ShouldIncludeF8_In_IV1_And_I2` trong `ScheduledReportTests.cs`.
    - Chạy toàn bộ 58/58 tests kiểm thử Dashboard & Báo cáo: **PASSED 100%**.
+
+---
+
+## Phiên 50: 04/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Nâng cấp toàn diện tính năng Quản lý Danh mục TCV CD45**:
+   - Cung cấp đầy đủ tính năng CRUD (Thêm mới, Cập nhật thông tin, Chuyển đổi trạng thái Hoạt động/Tạm dừng, Xóa) cho danh mục Tiếp cận viên (TCV) trên màn hình Quản lý Nhóm & TCV (NhomTCVCD45).
+   - Tự động gợi ý mã TCV tiếp theo theo từng nhóm để hỗ trợ người dùng nhập liệu nhanh chóng và tránh trùng lặp.
+   - Bảo đảm kiểm tra ràng buộc toàn vẹn dữ liệu khi xóa TCV (không cho phép xóa TCV đã phát sinh dữ liệu khách hàng hoặc hoạt động tiếp cận trong hệ thống).
+
+### Các công việc đã hoàn thành:
+1. **Backend & Data Access Layer**:
+   - Model/ModelExtend/CD45KhachHangModel.cs: Định nghĩa CD45_TcvSaveModel đóng gói dữ liệu TCV.
+   - Data/InterfaceDA/Admin/ICD45NhomTcvDA.cs & Data/Admin/CD45NhomTcvDA.cs:
+     - Triển khai SaveTcv: Kiểm tra trùng mã TCV trong nhóm, validate bắt buộc các trường thông tin.
+     - Triển khai ToggleStatus: Bật/tắt trạng thái hoạt động của TCV.
+     - Triển khai DeleteTcv: Kiểm tra ràng buộc dữ liệu tại các bảng liên quan trước khi xóa; nếu đã có dữ liệu sẽ trả về thông báo lỗi hướng dẫn người dùng chuyển sang trạng thái Tạm dừng.
+     - Triển khai GetNextTcvCode: Tự động tìm số thứ tự TCV lớn nhất trong nhóm và sinh mã kế tiếp.
+   - WebApp/Controllers/NhomTCVCD45Controller.cs: Bổ sung các Action SaveTcv, ToggleTcvStatus, DeleteTcv, GetNextTcvCode kèm kiểm tra phiên đăng nhập và phân quyền tỉnh/thành (ScopeCityCodeFilter).
+2. **Frontend & Giao diện người dùng**:
+   - WebApp/Views/NhomTCVCD45/Index.cshtml:
+     - Bổ sung Modal thêm mới/chỉnh sửa TCV chuẩn SB-Admin-2.
+     - Nút Thao tác trên từng TCV: Chỉnh sửa, Đổi trạng thái, Xóa kèm xác nhận.
+     - Tích hợp Alpine.js binding mượt mà, phản hồi ngay lập tức.
+   - WebApp/app/Controller/AlpineNhomTCVCD45Controller.js:
+     - Xử lý mở modal, lấy mã TCV gợi ý tự động khi chọn nhóm.
+     - Client-side validation và gửi Ajax request an toàn.
+3. **Kiểm thử tự động (Unit Tests)**:
+   - Thêm bộ test BVTL.Tests/NhomTcvCD45Tests.cs (5 bài test):
+     - GetListNhomTcv_ShouldReturnActiveRecords: Đảm bảo nạp danh sách TCV chuẩn xác.
+     - GetNextTcvCode_WithExistingGroup_ShouldReturnPositiveInteger: Kiểm tra sinh mã tự động.
+     - SaveTcv_EmptyFields_ShouldReturnValidationFailure: Kiểm tra validation dữ liệu trống.
+     - Tcv_FullLifecycle_Insert_Update_Toggle_Delete_ShouldSucceed: Vòng đời trọn vẹn CRUD.
+     - DeleteTcv_WithActivityReferences_ShouldBeBlockedFromDeletion: Chặn xóa an toàn khi TCV đã có dữ liệu.
+   - Kết quả: **5/5 tests PASSED (100%)**.
+4. **Phát hành & Triển khai (v1.7.7)**:
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.7.rar.
+   - Triển khai và đối chiếu thành công 100% trên DEV và PROD.

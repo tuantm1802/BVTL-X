@@ -31,6 +31,22 @@
                     errorMsg: ''
                 },
 
+                tcvModal: {
+                    show: false,
+                    isEdit: false,
+                    id: 0,
+                    maNhom: '',
+                    tenNhom: '',
+                    cityCode: '',
+                    cityName: '',
+                    maTcv: '',
+                    tenTcv: '',
+                    isActive: true,
+                    suggestedCode: '',
+                    isSaving: false,
+                    errorMsg: ''
+                },
+
                 pageIndex: 1,
                 pageSize: 15,
 
@@ -217,6 +233,233 @@
                     if (chucDanh) {
                         this.editModal.chucDanh = chucDanh;
                     }
+                },
+
+                openAddTcvModal: function () {
+                    var self = this;
+                    self.tcvModal.isEdit = false;
+                    self.tcvModal.id = 0;
+                    self.tcvModal.maNhom = self.selectedNhom || '';
+                    self.tcvModal.tenNhom = '';
+                    self.tcvModal.cityCode = '';
+                    self.tcvModal.cityName = '';
+                    self.tcvModal.maTcv = '';
+                    self.tcvModal.tenTcv = '';
+                    self.tcvModal.isActive = true;
+                    self.tcvModal.suggestedCode = '';
+                    self.tcvModal.errorMsg = '';
+                    self.tcvModal.isSaving = false;
+
+                    if (self.tcvModal.maNhom) {
+                        var nhom = self.listNhoms.find(function (x) { return x.MaNhom === self.tcvModal.maNhom; });
+                        if (nhom) {
+                            self.tcvModal.tenNhom = nhom.TenNhom;
+                            self.tcvModal.cityCode = nhom.CityCode;
+                            var city = self.listCities.find(function (c) { return c.CityCode === nhom.CityCode; });
+                            self.tcvModal.cityName = city ? city.CityName : nhom.CityCode;
+                        }
+                        self.fetchNextTcvCode(self.tcvModal.maNhom);
+                    }
+
+                    self.tcvModal.show = true;
+                },
+
+                openAddTcvModalForNhom: function (item) {
+                    var self = this;
+                    if (!item) return;
+                    self.tcvModal.isEdit = false;
+                    self.tcvModal.id = 0;
+                    self.tcvModal.maNhom = item.MA_NHOM || '';
+                    self.tcvModal.tenNhom = item.TEN_NHOM || '';
+                    self.tcvModal.cityCode = item.CITY_CODE || '';
+                    self.tcvModal.cityName = item.CityName || item.CITY_CODE || '';
+                    self.tcvModal.maTcv = '';
+                    self.tcvModal.tenTcv = '';
+                    self.tcvModal.isActive = true;
+                    self.tcvModal.suggestedCode = '';
+                    self.tcvModal.errorMsg = '';
+                    self.tcvModal.isSaving = false;
+
+                    self.fetchNextTcvCode(self.tcvModal.maNhom);
+                    self.tcvModal.show = true;
+                },
+
+                openEditTcvModal: function (item) {
+                    var self = this;
+                    if (!item || item.ID <= 0) return;
+                    self.tcvModal.isEdit = true;
+                    self.tcvModal.id = item.ID;
+                    self.tcvModal.maNhom = item.MA_NHOM || '';
+                    self.tcvModal.tenNhom = item.TEN_NHOM || '';
+                    self.tcvModal.cityCode = item.CITY_CODE || '';
+                    self.tcvModal.cityName = item.CityName || item.CITY_CODE || '';
+                    self.tcvModal.maTcv = item.MA_TCV || '';
+                    self.tcvModal.tenTcv = item.TEN_TCV || '';
+                    self.tcvModal.isActive = item.IsActive !== false;
+                    self.tcvModal.suggestedCode = '';
+                    self.tcvModal.errorMsg = '';
+                    self.tcvModal.isSaving = false;
+                    self.tcvModal.show = true;
+                },
+
+                closeTcvModal: function () {
+                    this.tcvModal.show = false;
+                    this.tcvModal.errorMsg = '';
+                    this.tcvModal.isSaving = false;
+                },
+
+                onTcvModalGroupChange: function () {
+                    var self = this;
+                    var nhom = self.listNhoms.find(function (x) { return x.MaNhom === self.tcvModal.maNhom; });
+                    if (nhom) {
+                        self.tcvModal.tenNhom = nhom.TenNhom;
+                        self.tcvModal.cityCode = nhom.CityCode;
+                        var city = self.listCities.find(function (c) { return c.CityCode === nhom.CityCode; });
+                        self.tcvModal.cityName = city ? city.CityName : nhom.CityCode;
+                    } else {
+                        self.tcvModal.tenNhom = '';
+                        self.tcvModal.cityCode = '';
+                        self.tcvModal.cityName = '';
+                    }
+
+                    if (self.tcvModal.maNhom) {
+                        self.fetchNextTcvCode(self.tcvModal.maNhom);
+                    } else {
+                        self.tcvModal.suggestedCode = '';
+                    }
+                },
+
+                fetchNextTcvCode: function (maNhom) {
+                    var self = this;
+                    if (!maNhom) return;
+                    $.ajax({
+                        type: 'GET',
+                        url: '/NhomTCVCD45/GetNextTcvCode?maNhom=' + encodeURIComponent(maNhom),
+                        success: function (res) {
+                            if (res.Success && res.NextCode) {
+                                self.tcvModal.suggestedCode = res.NextCode;
+                                if (!self.tcvModal.isEdit && !self.tcvModal.maTcv) {
+                                    self.tcvModal.maTcv = res.NextCode;
+                                }
+                            }
+                        }
+                    });
+                },
+
+                applySuggestedCode: function () {
+                    if (this.tcvModal.suggestedCode) {
+                        this.tcvModal.maTcv = this.tcvModal.suggestedCode;
+                    }
+                },
+
+                saveTcv: function () {
+                    var self = this;
+                    if (!self.tcvModal.maNhom || !self.tcvModal.maNhom.trim()) {
+                        self.tcvModal.errorMsg = 'Vui lòng chọn Nhóm CBO quản lý!';
+                        return;
+                    }
+                    if (!self.tcvModal.maTcv || !self.tcvModal.maTcv.trim()) {
+                        self.tcvModal.errorMsg = 'Vui lòng nhập Mã TCV!';
+                        return;
+                    }
+                    if (!self.tcvModal.tenTcv || !self.tcvModal.tenTcv.trim()) {
+                        self.tcvModal.errorMsg = 'Vui lòng nhập Họ và Tên TCV!';
+                        return;
+                    }
+
+                    self.tcvModal.isSaving = true;
+                    self.tcvModal.errorMsg = '';
+
+                    var payload = {
+                        ID: self.tcvModal.id,
+                        MA_NHOM: self.tcvModal.maNhom.trim(),
+                        TEN_NHOM: (self.tcvModal.tenNhom || '').trim(),
+                        CITY_CODE: (self.tcvModal.cityCode || '').trim(),
+                        MA_TCV: self.tcvModal.maTcv.trim(),
+                        TEN_TCV: self.tcvModal.tenTcv.trim(),
+                        IsActive: self.tcvModal.isActive
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/NhomTCVCD45/SaveTcv',
+                        data: payload,
+                        success: function (res) {
+                            self.tcvModal.isSaving = false;
+                            if (res.Success) {
+                                if (window.toastr) {
+                                    toastr.success(res.Message);
+                                } else {
+                                    alert(res.Message);
+                                }
+                                self.closeTcvModal();
+                                self.loadData();
+                            } else {
+                                self.tcvModal.errorMsg = res.Message || 'Lỗi khi lưu thông tin TCV!';
+                                if (window.toastr) toastr.error(self.tcvModal.errorMsg);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            self.tcvModal.isSaving = false;
+                            self.tcvModal.errorMsg = 'Lỗi kết nối máy chủ: ' + error;
+                            if (window.toastr) toastr.error(self.tcvModal.errorMsg);
+                        }
+                    });
+                },
+
+                toggleTcvStatus: function (item) {
+                    var self = this;
+                    if (!item || item.ID <= 0) return;
+                    var actionText = item.IsActive ? 'ngừng hoạt động' : 'kích hoạt lại';
+                    if (!confirm('Bạn có chắc chắn muốn ' + actionText + ' Tiếp cận viên "' + item.TEN_TCV + '" (Mã ' + item.MA_TCV + ')?')) {
+                        return;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/NhomTCVCD45/ToggleTcvStatus',
+                        data: { id: item.ID },
+                        success: function (res) {
+                            if (res.Success) {
+                                if (window.toastr) toastr.success(res.Message);
+                                self.loadData();
+                            } else {
+                                if (window.toastr) toastr.error(res.Message);
+                                else alert(res.Message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            if (window.toastr) toastr.error('Lỗi khi đổi trạng thái TCV: ' + error);
+                        }
+                    });
+                },
+
+                deleteTcv: function (item) {
+                    var self = this;
+                    if (!item || item.ID <= 0) return;
+
+                    var confirmMsg = 'Bạn có chắc chắn muốn xóa Tiếp cận viên "' + item.TEN_TCV + '" (Mã ' + item.MA_TCV + ' - Nhóm ' + item.TEN_NHOM + ')?\n\nLưu ý: Nếu TCV đã có dữ liệu hoạt động/tư vấn trong hệ thống, hệ thống sẽ ngăn chặn việc xóa để bảo vệ số liệu lịch sử.';
+                    if (!confirm(confirmMsg)) {
+                        return;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/NhomTCVCD45/DeleteTcv',
+                        data: { id: item.ID },
+                        success: function (res) {
+                            if (res.Success) {
+                                if (window.toastr) toastr.success(res.Message);
+                                self.loadData();
+                            } else {
+                                if (window.toastr) toastr.error(res.Message);
+                                else alert(res.Message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            if (window.toastr) toastr.error('Lỗi khi xóa TCV: ' + error);
+                        }
+                    });
                 },
 
                 saveNhomPrefix: function () {

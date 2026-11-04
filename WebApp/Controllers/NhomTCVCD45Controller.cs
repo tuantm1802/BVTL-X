@@ -1,6 +1,7 @@
 using ClosedXML.Excel;
 using Common.Common;
 using Data.InterfaceDA.Admin;
+using Model.ModelExtend;
 using Model.ModelExtend.Base;
 using System;
 using System.Collections.Generic;
@@ -172,6 +173,83 @@ namespace WebApp.Controllers
             catch (Exception ex)
             {
                 return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SaveTcv(CD45_TcvSaveModel model)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!" });
+
+                if (!IsCurrentUserAdmin() && !string.IsNullOrEmpty(model?.CITY_CODE))
+                {
+                    var allowedCodes = GetUserAllowedCityCodes();
+                    if (!allowedCodes.Any(a => string.Equals(a, model.CITY_CODE.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return Json(new { Success = false, Message = "Bạn không có quyền quản lý TCV tại tỉnh/thành này!" });
+                    }
+                }
+
+                string msg;
+                bool ok = _nhomTcvDA.SaveTcv(model, user.UserName, out msg);
+                return Json(new { Success = ok, Message = msg });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ToggleTcvStatus(int id)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!" });
+
+                string msg;
+                bool ok = _nhomTcvDA.ToggleStatus(id, user.UserName, out msg);
+                return Json(new { Success = ok, Message = msg });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTcv(int id)
+        {
+            try
+            {
+                var user = Session["USER_SESSION"] as UserLogin;
+                if (user == null) return Json(new { Success = false, Message = "Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!" });
+
+                string msg;
+                bool ok = _nhomTcvDA.DeleteTcv(id, user.UserName, out msg);
+                return Json(new { Success = ok, Message = msg });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetNextTcvCode(string maNhom)
+        {
+            try
+            {
+                string nextCode = _nhomTcvDA.GetNextTcvCode(maNhom);
+                return Json(new { Success = true, NextCode = nextCode }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = ex.Message, NextCode = "1" }, JsonRequestBehavior.AllowGet);
             }
         }
     }
