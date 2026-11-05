@@ -2942,60 +2942,49 @@ BEGIN
       AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
 
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
-
-
-
-    -- 5. Điều trị nội trú (nhập viện) - Mã '2' trong f6_treatment
-
+    -- 5. Điều trị nội trú (nhập viện) - Form F5 (CD45_TUAN_THU) và F6 (CD45_CHAN_DOAN)
+    ;WITH CTE_NoiTru AS (
+        SELECT 
+            tt.RECORD_ID, 
+            tt.NGAY_HO_TRO AS NGAY_DIEU_TRI, 
+            tt.MA_TCV,
+            tt.MA_NHOM
+        FROM CD45_TUAN_THU tt
+        WHERE tt.COMPLETE_STATUS = '2'
+          AND tt.HINH_THUC_DIEU_TRI = 2
+        UNION
+        SELECT 
+            cd.RECORD_ID, 
+            cd.NGAY_KHAM AS NGAY_DIEU_TRI, 
+            cd.MA_TCV,
+            cd.MA_NHOM
+        FROM CD45_CHAN_DOAN cd
+        WHERE cd.COMPLETE_STATUS = '2'
+          AND (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 
+               OR cd.HINH_THUC_DIEU_TRI LIKE '%2%' 
+               OR cd.HINH_THUC_DIEU_TRI LIKE N'%nội trú%')
+    )
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
-
     SELECT 
-
         '5', N'Số KH được điều trị nội trú (nhập viện)',
-
-        COUNT(DISTINCT cd.RECORD_ID),
-
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
-
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
-
+        COUNT(DISTINCT nt.RECORD_ID),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN nt.RECORD_ID END),
         0, 0, 'III_5'
-
-    FROM CD45_CHAN_DOAN cd
-
-    INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
-
-    WHERE cd.COMPLETE_STATUS = '2'
-
-      AND (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 
-
-           OR cd.HINH_THUC_DIEU_TRI LIKE '%2%' 
-
-           OR cd.HINH_THUC_DIEU_TRI LIKE N'%nội trú%')
-
-      AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
-
-      AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
-
-      AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
+    FROM CTE_NoiTru nt
+    INNER JOIN #TmpKH kh ON nt.RECORD_ID = kh.RECORD_ID
+    WHERE (@FromDate IS NULL OR nt.NGAY_DIEU_TRI >= @FromDate)
+      AND (@ToDate IS NULL OR nt.NGAY_DIEU_TRI <= @ToDate)
+      AND (@MaTCV IS NULL OR @MaTCV = '' OR nt.MA_TCV = @MaTCV);
 
 
 

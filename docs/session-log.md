@@ -2413,3 +2413,38 @@ Nâng cấp hiển thị trên Tab 3 (*Thống kê theo Đơn vị - Tỉnh / CB
 4. **Phát hành & Triển khai (v1.7.7)**:
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.7.rar.
    - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
+
+---
+
+## Phiên 51: 05/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+Xử lý trọn vẹn 3 nội dung phản ánh lỗi từ người dùng kèm 3 ảnh đính kèm:
+1. **Ảnh 1 (Dashboard Care Cascade 1 - Y tế)**: Bước 3 ("3. Cần chuyển gửi" = 588) ít hơn bước 4 ("4. Khám SKTT" = 786). Quy chuẩn QST >= 6 (~1.391 người). *(Đã được xử lý ở phiên 48/49, xác nhận dữ liệu hiện tại QST >= 6 đạt 1.457 > 806 ca khám SKTT)*.
+2. **Ảnh 2 (Báo cáo TCV - Mục IV & Mục I.2)**: The Times hiển thị IV.1 = 11 (thực tế 131) do thiếu F8; và I.2 hiển thị 104 (thực tế 177) do thiếu KH cũ quay lại làm F8. *(Đã được xử lý ở phiên 49, xác nhận dữ liệu hiện tại IV.1 = 131 và I.2 = 177)*.
+3. **Ảnh 3 (Báo cáo TCV ngày 04/11/2026 - Yêu cầu trọng tâm)**:
+   - **Bug 3.1 - Mục III.5 (Điều trị nội trú)**: TCV Nguyễn Thị Xuân Phúc (`MA_NHOM = 'itt'`, `MA_TCV = '3'`) có khách hàng điều trị nội trú (`DHN040002` ghi nhận ngày 05/10/2026 tại Form F5 `CD45_TUAN_THU`) nhưng Báo cáo TCV Mục III_5 trước đây chỉ query `CD45_CHAN_DOAN` (F6 của Bác sĩ) nên trả về 0. Yêu cầu: Báo cáo lấy phần nội trú/ngoại trú từ Form F5 kết hợp F6.
+   - **Bug 3.2 - Mục VI.1 BHYT & III.6**: TCV Chu Thanh Hà (`MA_NHOM = 'itt'`, `MA_TCV = '1'`) có ca hỗ trợ mua BHYT (`DHN040002` ngày 22/10/2026 tại Form F4 `CD45_HO_TRO_XH`), khi xem/xuất Báo cáo Tháng (`LoaiBaoCao = 'Thang'`) thì dòng `- Thẻ bảo hiểm y tế` (Mã `VI_1_BHYT`) bị xóa khỏi Mục VI do bảng cấu hình `dbo.CD45_BCTIEU_CAU_HINH` bị thiếu mã `VI_1_BHYT`.
+
+### Các công việc đã hoàn thành:
+1. **Cấu hình CSDL (`dbo.CD45_BCTIEU_CAU_HINH`)**:
+   - Thêm mã chỉ tiêu `VI_1_BHYT` (`- Thẻ bảo hiểm y tế`, `SectionCode = 'VI'`, `SortOrder = 403`, `HienThi_Thang = 1`, `HienThi_Quy = 1`, `HienThi_6T = 1`, `HienThi_12T = 1`, `IsActive = 1`) trên cả 2 môi trường `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD`.
+   - Đảm bảo câu lệnh lọc hiển thị theo kỳ không xóa mất dòng Thẻ BHYT khi chạy báo cáo Tháng.
+2. **Nâng cấp Stored Procedure `SP_CD45_GetBaoCao` (Chỉ tiêu III_5)**:
+   - Bổ sung `CTE_NoiTru` gộp cả `CD45_TUAN_THU` (Form F5 nơi `HINH_THUC_DIEU_TRI = 2` và `COMPLETE_STATUS = '2'`) và `CD45_CHAN_DOAN` (Form F6 nơi `HINH_THUC_DIEU_TRI LIKE '%2%'`).
+   - Đã triển khai và cập nhật đồng bộ lên `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD`.
+3. **Nâng cấp Stored Procedure `SP_CD45_GetDrillDown` (Drill-down cho III_5)**:
+   - Tách riêng nhánh `@ChiTieuCode = 'III_5'` trong `SP_CD45_GetDrillDown`, truy vấn hợp nhất từ cả F5 (`CD45_TUAN_THU`) và F6 (`CD45_CHAN_DOAN`), ưu tiên sắp xếp theo ngày thực hiện mới nhất.
+   - Đã triển khai và cập nhật đồng bộ lên `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD`.
+4. **Đồng bộ mã nguồn CSDL trong Repository**:
+   - Cập nhật `SQL_CD45_SP.sql` (bảo toàn UTF-8 with BOM và định dạng dòng).
+   - Cập nhật `SQL_CD45_SP_DrillDown.sql`.
+   - Cập nhật `SQL_Sync_Dev_To_Prod.sql`.
+5. **Kiểm thử tự động (Unit Tests)**:
+   - Bổ sung 2 bài test trong `BVTL.Tests/ScheduledReportTests.cs`:
+     - `BaoCaoTCVCD45_NguyenThiXuanPhuc_ShouldIncludeInpatientTreatmentF5_In_III5`: Xác nhận TCV Nguyễn Thị Xuân Phúc có đúng 1 ca điều trị nội trú `DHN040002` (nhóm TG) ở kỳ Tháng 10/2026.
+     - `BaoCaoTCVCD45_ChuThanhHa_ShouldIncludeBHYT_In_VI1BHYT_And_III6_PeriodMonth`: Xác nhận TCV Chu Thanh Hà có đúng 1 ca BHYT ở cả chỉ tiêu III.6 và chỉ tiêu VI_1_BHYT khi chạy kỳ Báo cáo Tháng.
+   - Kết quả: **Tất cả bài test PASSED 100%**.
+6. **Đóng gói và phát hành (v1.7.8)**:
+   - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.8.rar`.
+   - Triển khai và kiểm tra đối soát trực tiếp trên hệ thống DEV và PROD.

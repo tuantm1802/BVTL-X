@@ -532,32 +532,49 @@ BEGIN
       AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
       AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
 
-    -- 5. Điều trị nội trú (nhập viện) - Mã '2' trong f6_treatment
+    -- 5. Điều trị nội trú (nhập viện) - Form F5 (CD45_TUAN_THU) và F6 (CD45_CHAN_DOAN)
+    ;WITH CTE_NoiTru AS (
+        SELECT 
+            tt.RECORD_ID, 
+            tt.NGAY_HO_TRO AS NGAY_DIEU_TRI, 
+            tt.MA_TCV,
+            tt.MA_NHOM
+        FROM CD45_TUAN_THU tt
+        WHERE tt.COMPLETE_STATUS = '2'
+          AND tt.HINH_THUC_DIEU_TRI = 2
+        UNION
+        SELECT 
+            cd.RECORD_ID, 
+            cd.NGAY_KHAM AS NGAY_DIEU_TRI, 
+            cd.MA_TCV,
+            cd.MA_NHOM
+        FROM CD45_CHAN_DOAN cd
+        WHERE cd.COMPLETE_STATUS = '2'
+          AND (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 
+               OR cd.HINH_THUC_DIEU_TRI LIKE '%2%' 
+               OR cd.HINH_THUC_DIEU_TRI LIKE N'%nội trú%')
+    )
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
     SELECT 
         '5', N'Số KH được điều trị nội trú (nhập viện)',
-        COUNT(DISTINCT cd.RECORD_ID),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN cd.RECORD_ID END),
-        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN cd.RECORD_ID END),
+        COUNT(DISTINCT nt.RECORD_ID),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 3 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 5 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.DOI_TUONG = 4 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.GIOI_TINH = 3 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 1 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 2 THEN nt.RECORD_ID END),
+        COUNT(DISTINCT CASE WHEN kh.NHOM_TUOI = 3 THEN nt.RECORD_ID END),
         0, 0, 'III_5'
-    FROM CD45_CHAN_DOAN cd
-    INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
-    WHERE cd.COMPLETE_STATUS = '2'
-      AND (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 
-           OR cd.HINH_THUC_DIEU_TRI LIKE '%2%' 
-           OR cd.HINH_THUC_DIEU_TRI LIKE N'%nội trú%')
-      AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
-      AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
-      AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV);
+    FROM CTE_NoiTru nt
+    INNER JOIN #TmpKH kh ON nt.RECORD_ID = kh.RECORD_ID
+    WHERE (@FromDate IS NULL OR nt.NGAY_DIEU_TRI >= @FromDate)
+      AND (@ToDate IS NULL OR nt.NGAY_DIEU_TRI <= @ToDate)
+      AND (@MaTCV IS NULL OR @MaTCV = '' OR nt.MA_TCV = @MaTCV);
 
     -- 6. Hỗ trợ mua thẻ BHYT - Mã '1' trong f4_services
     INSERT INTO @TmpResult (STT, ChiTieu, Tong, PUD, PLHIV, TG, SW, MSM, Nam, Nu, Khac, Tuoi_18_25, Tuoi_26_35, Tuoi_Tren35, IsBold, IndentLevel, Code)
@@ -1673,8 +1690,8 @@ BEGIN
         WHERE rn = 1
         ORDER BY NGAY_SANG_LOC DESC, RECORD_ID;
     END
-    -- III.3, III.4, III.4.1, III.4.2, III.4.3, III.5: Khám SKTT
-    ELSE IF @ChiTieuCode IN ('III_3', 'III_4', 'III_4_1', 'III_4_2', 'III_4_3', 'III_5')
+    -- III.3, III.4, III.4.1, III.4.2, III.4.3: Khám SKTT
+    ELSE IF @ChiTieuCode IN ('III_3', 'III_4', 'III_4_1', 'III_4_2', 'III_4_3')
     BEGIN
         IF @ChiTieuCode IN ('III_3', 'III_4_3') -- Lượt
         BEGIN
@@ -1708,13 +1725,55 @@ BEGIN
                   AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
                   AND (@ChiTieuCode <> 'III_4_1' OR cd.LAN_KHAM = 1)
                   AND (@ChiTieuCode <> 'III_4_2' OR cd.LAN_KHAM > 1)
-                  AND (@ChiTieuCode <> 'III_5' OR (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 OR cd.HINH_THUC_DIEU_TRI LIKE '%2%'))
             )
             SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET
             FROM CTE
             WHERE rn = 1
             ORDER BY NGAY_KHAM DESC, RECORD_ID;
         END
+    END
+    -- III.5 Điều trị nội trú (nhập viện) - F5 (CD45_TUAN_THU) và F6 (CD45_CHAN_DOAN)
+    ELSE IF @ChiTieuCode = 'III_5'
+    BEGIN
+        ;WITH CTE_NoiTru AS (
+            SELECT 
+                kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, tt.MA_TCV, kh.DOI_TUONG_TEXT, 
+                tt.NGAY_HO_TRO AS NGAY_THUC_HIEN_DATE,
+                CONVERT(VARCHAR(10), tt.NGAY_HO_TRO, 103) AS NGAY_THUC_HIEN,
+                N'Hỗ trợ tuân thủ điều trị nội trú (F5)' AS CHI_TIET
+            FROM CD45_TUAN_THU tt
+            INNER JOIN #TmpKH kh ON tt.RECORD_ID = kh.RECORD_ID
+            WHERE tt.COMPLETE_STATUS = '2'
+              AND tt.HINH_THUC_DIEU_TRI = 2
+              AND (@FromDate IS NULL OR tt.NGAY_HO_TRO >= @FromDate)
+              AND (@ToDate IS NULL OR tt.NGAY_HO_TRO <= @ToDate)
+              AND (@MaTCV IS NULL OR @MaTCV = '' OR tt.MA_TCV = @MaTCV)
+            UNION ALL
+            SELECT 
+                kh.RECORD_ID, kh.CITY_CODE, kh.MA_NHOM, cd.MA_TCV, kh.DOI_TUONG_TEXT, 
+                cd.NGAY_KHAM AS NGAY_THUC_HIEN_DATE,
+                CONVERT(VARCHAR(10), cd.NGAY_KHAM, 103) AS NGAY_THUC_HIEN,
+                N'Khám SKTT điều trị nội trú (F6) - ' + ISNULL(cd.CO_SO_Y_TE, '') AS CHI_TIET
+            FROM CD45_CHAN_DOAN cd
+            INNER JOIN #TmpKH kh ON cd.RECORD_ID = kh.RECORD_ID
+            WHERE cd.COMPLETE_STATUS = '2'
+              AND (CHARINDEX(',2,', ',' + ISNULL(cd.HINH_THUC_DIEU_TRI, '') + ',') > 0 
+                   OR cd.HINH_THUC_DIEU_TRI LIKE '%2%' 
+                   OR cd.HINH_THUC_DIEU_TRI LIKE N'%nội trú%')
+              AND (@FromDate IS NULL OR cd.NGAY_KHAM >= @FromDate)
+              AND (@ToDate IS NULL OR cd.NGAY_KHAM <= @ToDate)
+              AND (@MaTCV IS NULL OR @MaTCV = '' OR cd.MA_TCV = @MaTCV)
+        ),
+        CTE_Ranked AS (
+            SELECT 
+                RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET,
+                ROW_NUMBER() OVER(PARTITION BY RECORD_ID ORDER BY NGAY_THUC_HIEN_DATE DESC) AS rn
+            FROM CTE_NoiTru
+        )
+        SELECT RECORD_ID, CITY_CODE, MA_NHOM, MA_TCV, DOI_TUONG_TEXT, NGAY_THUC_HIEN, CHI_TIET
+        FROM CTE_Ranked
+        WHERE rn = 1
+        ORDER BY NGAY_THUC_HIEN DESC, RECORD_ID;
     END
     -- III.6 Thẻ BHYT
     ELSE IF @ChiTieuCode = 'III_6'

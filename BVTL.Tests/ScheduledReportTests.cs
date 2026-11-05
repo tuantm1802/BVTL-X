@@ -1,4 +1,4 @@
-﻿﻿using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend;
@@ -1680,6 +1680,46 @@ namespace BVTL.Tests
             var itemIV2 = report.FirstOrDefault(x => x.Code == "IV_2");
             Assert.IsNotNull(itemIV2, "Chỉ số IV.2 phải tồn tại trong báo cáo");
             Assert.AreEqual(128, itemIV2.Tong, "Chỉ số IV.2 phải đạt 128 KH");
+        }
+
+        [TestMethod]
+        public void BaoCaoTCVCD45_NguyenThiXuanPhuc_ShouldIncludeInpatientTreatmentF5_In_III5()
+        {
+            var da = new BaoCaoCD45DA();
+            // Kỳ Tháng 10: 26/09/2026 - 25/10/2026, nhóm Its T Time (itt), TCV Nguyễn Thị Xuân Phúc (MA_TCV = 3)
+            var report = da.GetBaoCao("26/09/2026", "25/10/2026", null, "itt", "3", "Thang");
+
+            Assert.IsNotNull(report, "Báo cáo TCV Nguyễn Thị Xuân Phúc không được null");
+            Assert.IsTrue(report.Count > 0, "Báo cáo phải có các dòng chỉ tiêu");
+
+            // Chỉ tiêu III.5: Số KH được điều trị nội trú (nhập viện)
+            // Khách hàng DHN040002 (TG) được TCV Phúc ghi nhận điều trị nội trú tại F5 ngày 05/10/2026
+            var itemIII5 = report.FirstOrDefault(x => x.Code == "III_5");
+            Assert.IsNotNull(itemIII5, "Chỉ tiêu III.5 phải tồn tại trong báo cáo");
+            Assert.AreEqual(1, itemIII5.Tong, "TCV Nguyễn Thị Xuân Phúc phải có 1 ca điều trị nội trú (DHN040002)");
+            Assert.AreEqual(1, itemIII5.TG, "Ca điều trị nội trú DHN040002 thuộc nhóm đối tượng TG");
+        }
+
+        [TestMethod]
+        public void BaoCaoTCVCD45_ChuThanhHa_ShouldIncludeBHYT_In_VI1BHYT_And_III6_PeriodMonth()
+        {
+            var da = new BaoCaoCD45DA();
+            // Kỳ Tháng 10: 26/09/2026 - 25/10/2026, nhóm Its T Time (itt), TCV Chu Thanh Hà (MA_TCV = 1)
+            var report = da.GetBaoCao("26/09/2026", "25/10/2026", null, "itt", "1", "Thang");
+
+            Assert.IsNotNull(report, "Báo cáo TCV Chu Thanh Hà không được null");
+            Assert.IsTrue(report.Count > 0, "Báo cáo phải có các dòng chỉ tiêu");
+
+            // Chỉ tiêu III.6: Số KH được hỗ trợ mua thẻ Bảo hiểm y tế
+            var itemIII6 = report.FirstOrDefault(x => x.Code == "III_6");
+            Assert.IsNotNull(itemIII6, "Chỉ tiêu III.6 phải tồn tại trong báo cáo");
+            Assert.AreEqual(1, itemIII6.Tong, "Chỉ tiêu III.6 của Chu Thanh Hà phải ghi nhận 1 ca mua BHYT (DHN040002)");
+
+            // Chỉ tiêu VI_1_BHYT: - Thẻ bảo hiểm y tế thuộc Mục VI (Dịch vụ chuyển gửi khác)
+            // Phải tồn tại và không bị xóa khi chạy kỳ Báo cáo Tháng ('Thang')
+            var itemVI_BHYT = report.FirstOrDefault(x => x.Code == "VI_1_BHYT");
+            Assert.IsNotNull(itemVI_BHYT, "Chỉ tiêu VI_1_BHYT phải hiển thị trên Báo cáo Tháng sau khi cấu hình");
+            Assert.AreEqual(1, itemVI_BHYT.Tong, "Chỉ tiêu VI_1_BHYT của Chu Thanh Hà phải đạt đúng 1 ca BHYT");
         }
     }
 }
