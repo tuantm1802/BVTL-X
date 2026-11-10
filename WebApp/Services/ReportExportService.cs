@@ -1920,7 +1920,7 @@ namespace WebApp.Services
                 dataRow++;
             }
 
-            // 6. Phần Footer (Tên tỉnh, Ngày tháng năm & Xác nhận của SCDI)
+            // 6. Phần Footer (Tên tỉnh, Ngày tháng năm & MnE ở bên phải)
             int footerStartRow = dataRow + 2;
 
             DateTime footerDate;
@@ -1935,7 +1935,7 @@ namespace WebApp.Services
 
             string dateFooterText = $"{tenTinh}, Ngày {footerDate.Day} tháng {footerDate.Month} năm {footerDate.Year}";
 
-            // Khối SCDI (Góc phải: Cột G đến I)
+            // Khối MnE (Góc phải: Cột G đến I)
             ws.Range(footerStartRow, 7, footerStartRow, 9).Merge();
             ws.Cell(footerStartRow, 7).Value = dateFooterText;
             ws.Cell(footerStartRow, 7).Style.Font.Italic = true;
@@ -1943,7 +1943,7 @@ namespace WebApp.Services
             ws.Cell(footerStartRow, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Range(footerStartRow + 1, 7, footerStartRow + 1, 9).Merge();
-            ws.Cell(footerStartRow + 1, 7).Value = "Xác nhận của SCDI";
+            ws.Cell(footerStartRow + 1, 7).Value = "MnE";
             ws.Cell(footerStartRow + 1, 7).Style.Font.Bold = true;
             ws.Cell(footerStartRow + 1, 7).Style.Font.FontSize = 11;
             ws.Cell(footerStartRow + 1, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -1953,25 +1953,6 @@ namespace WebApp.Services
             ws.Cell(footerStartRow + 2, 7).Style.Font.Italic = true;
             ws.Cell(footerStartRow + 2, 7).Style.Font.FontSize = 9;
             ws.Cell(footerStartRow + 2, 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-            // Khối Bác sĩ phụ trách (Góc trái: Cột A đến C)
-            ws.Range(footerStartRow + 1, 1, footerStartRow + 1, 3).Merge();
-            ws.Cell(footerStartRow + 1, 1).Value = "Bác sĩ phụ trách";
-            ws.Cell(footerStartRow + 1, 1).Style.Font.Bold = true;
-            ws.Cell(footerStartRow + 1, 1).Style.Font.FontSize = 11;
-            ws.Cell(footerStartRow + 1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-            ws.Range(footerStartRow + 2, 1, footerStartRow + 2, 3).Merge();
-            ws.Cell(footerStartRow + 2, 1).Value = "(Ký, ghi rõ họ tên)";
-            ws.Cell(footerStartRow + 2, 1).Style.Font.Italic = true;
-            ws.Cell(footerStartRow + 2, 1).Style.Font.FontSize = 9;
-            ws.Cell(footerStartRow + 2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-            string cleanDoctorName = (doctorName ?? "").Replace("\"", "").Trim();
-            ws.Range(footerStartRow + 6, 1, footerStartRow + 6, 3).Merge();
-            ws.Cell(footerStartRow + 6, 1).Value = cleanDoctorName;
-            ws.Cell(footerStartRow + 6, 1).Style.Font.Bold = true;
-            ws.Cell(footerStartRow + 6, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             // 7. Độ rộng cột
             ws.Column(1).Width = 6.0;   // STT

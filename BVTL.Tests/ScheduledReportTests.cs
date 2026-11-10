@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Data.Admin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.ModelExtend;
@@ -951,20 +951,20 @@ namespace BVTL.Tests
                         Assert.AreEqual("Chẩn đoán chính", ws.Cell(7, 8).GetString());
                         Assert.AreEqual("Hình thức điều trị", ws.Cell(7, 9).GetString());
 
-                        // 4. Footer: Tìm chữ 'Xác nhận của SCDI'
+                        // 4. Footer: Tìm chữ 'MnE' ở bên phải chân trang
                         int lastRow = ws.LastRowUsed().RowNumber();
                         int footerRow = -1;
                         for (int r = 8; r <= lastRow; r++)
                         {
                             string cellVal = ws.Cell(r, 7).GetString();
-                            if (!string.IsNullOrEmpty(cellVal) && cellVal.Contains("Xác nhận của SCDI"))
+                            if (!string.IsNullOrEmpty(cellVal) && cellVal.Trim() == "MnE")
                             {
                                 footerRow = r;
                                 break;
                             }
                         }
 
-                        Assert.IsTrue(footerRow > 0, "Footer 'Xác nhận của SCDI' must be found in worksheet: " + ws.Name);
+                        Assert.IsTrue(footerRow > 0, "Footer 'MnE' must be found in worksheet: " + ws.Name);
 
                         // Kiểm tra ngày tháng năm footer
                         string dateFooter = ws.Cell(footerRow - 1, 7).GetString();
@@ -972,15 +972,13 @@ namespace BVTL.Tests
                         Assert.IsTrue(dateFooter.Contains("Ngày") && dateFooter.Contains("tháng") && dateFooter.Contains("năm"), 
                             "Footer date format invalid: " + dateFooter);
 
-                        // Kiểm tra chữ ký SCDI
-                        string scdiSignNote = ws.Cell(footerRow + 1, 7).GetString();
-                        Assert.AreEqual("(Ký, ghi rõ họ tên)", scdiSignNote.Trim());
+                        // Kiểm tra chữ ký MnE
+                        string mneSignNote = ws.Cell(footerRow + 1, 7).GetString();
+                        Assert.AreEqual("(Ký, ghi rõ họ tên)", mneSignNote.Trim());
 
-                        // Kiểm tra khối Bác sĩ phụ trách bên trái
+                        // Kiểm tra khối bên trái: không còn chữ ký của Bác sĩ phụ trách
                         string docFooterTitle = ws.Cell(footerRow, 1).GetString();
-                        Assert.AreEqual("Bác sĩ phụ trách", docFooterTitle.Trim());
-                        string docFooterName = ws.Cell(footerRow + 5, 1).GetString();
-                        Assert.AreEqual(doctorVal, docFooterName.Trim(), "Doctor name in footer must match header");
+                        Assert.IsTrue(string.IsNullOrWhiteSpace(docFooterTitle), "Khối bên trái phải để trống (đã bỏ thông tin Bác sĩ phụ trách)");
                     }
                 }
             }
@@ -1230,6 +1228,58 @@ namespace BVTL.Tests
             Assert.IsTrue(json.Contains("Details"));
             Assert.IsFalse(json.Contains("\"Summary\":[]"), "Summary khi lọc nhóm HN_TT không được rỗng");
             Assert.IsFalse(json.Contains("\"Details\":[]"), "Details khi lọc nhóm HN_TT không được rỗng");
+        }
+
+        [TestMethod]
+        public void BaoCaoBacSiCD45Controller_ExportExcel_ShouldHaveOnlyMnEFooterOnRight()
+        {
+            var cityDa = new CityDA();
+            var nhomDa = new BVTL_NHOM_TBHDA();
+            var bsDa = new BaoCaoBacSiCD45DA();
+            var controller = new WebApp.Controllers.BaoCaoBacSiCD45Controller(cityDa, nhomDa, bsDa);
+
+            var actionResult = controller.ExportExcel("01/10/2026", "31/10/2026", null, null, null);
+            var fileResult = actionResult as System.Web.Mvc.FileContentResult;
+            Assert.IsNotNull(fileResult, "ExportExcel must return FileContentResult");
+            Assert.IsTrue(fileResult.FileDownloadName.StartsWith("BaoCao_BacSi_CD45_"));
+
+            using (var ms = new MemoryStream(fileResult.FileContents))
+            using (var workbook = new ClosedXML.Excel.XLWorkbook(ms))
+            {
+                var wsSum = workbook.Worksheet("TongHop_ThanhToan");
+                Assert.IsNotNull(wsSum, "Worksheet TongHop_ThanhToan must exist");
+
+                // Tìm dòng footer có chứa "MnE"
+                int lastRow = wsSum.LastRowUsed().RowNumber();
+                int mneRow = -1;
+                for (int r = 6; r <= lastRow; r++)
+                {
+                    string cellVal = wsSum.Cell(r, 8).GetString();
+                    if (!string.IsNullOrEmpty(cellVal) && cellVal.Trim() == "MnE")
+                    {
+                        mneRow = r;
+                        break;
+                    }
+                }
+
+                Assert.IsTrue(mneRow > 0, "Footer 'MnE' must be found in column 8 (H) of TongHop_ThanhToan");
+
+                // Kiểm tra dòng ghi chú ngay bên dưới
+                string noteVal = wsSum.Cell(mneRow + 1, 8).GetString();
+                Assert.AreEqual("(Ký, ghi rõ họ tên)", noteVal.Trim());
+
+                // Đảm bảo các khối chữ ký cũ đã bị gỡ bỏ hoàn toàn
+                for (int r = 6; r <= lastRow; r++)
+                {
+                    for (int c = 1; c <= 10; c++)
+                    {
+                        string val = wsSum.Cell(r, c).GetString();
+                        Assert.IsFalse(val.Contains("Người lập biểu"), "Không được còn chữ 'Người lập biểu' ở footer");
+                        Assert.IsFalse(val.Contains("Cán bộ dự án CD45"), "Không được còn chữ 'Cán bộ dự án CD45' ở footer");
+                        Assert.IsFalse(val.Contains("Kế toán / Phụ trách thanh toán"), "Không được còn chữ 'Kế toán / Phụ trách thanh toán' ở footer");
+                    }
+                }
+            }
         }
 
         [TestMethod]

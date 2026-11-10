@@ -254,30 +254,10 @@ namespace WebApp.Controllers
                 sumTableRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 sumTableRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-                // Signatures
+                // Signatures: Chỉ để MnE ở bên phải chân trang (Cột 8 đến 10)
                 rowSum += 2;
-                wsSum.Range(rowSum, 1, rowSum, 3).Merge();
-                wsSum.Cell(rowSum, 1).Value = "Người lập biểu";
-                wsSum.Cell(rowSum, 1).Style.Font.Bold = true;
-                wsSum.Cell(rowSum, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                wsSum.Range(rowSum + 1, 1, rowSum + 1, 3).Merge();
-                wsSum.Cell(rowSum + 1, 1).Value = "(Ký, ghi rõ họ tên)";
-                wsSum.Cell(rowSum + 1, 1).Style.Font.Italic = true;
-                wsSum.Cell(rowSum + 1, 1).Style.Font.FontSize = 9;
-                wsSum.Cell(rowSum + 1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                wsSum.Range(rowSum, 4, rowSum, 7).Merge();
-                wsSum.Cell(rowSum, 4).Value = "Cán bộ dự án CD45";
-                wsSum.Cell(rowSum, 4).Style.Font.Bold = true;
-                wsSum.Cell(rowSum, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                wsSum.Range(rowSum + 1, 4, rowSum + 1, 7).Merge();
-                wsSum.Cell(rowSum + 1, 4).Value = "(Ký, ghi rõ họ tên)";
-                wsSum.Cell(rowSum + 1, 4).Style.Font.Italic = true;
-                wsSum.Cell(rowSum + 1, 4).Style.Font.FontSize = 9;
-                wsSum.Cell(rowSum + 1, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
                 wsSum.Range(rowSum, 8, rowSum, 10).Merge();
-                wsSum.Cell(rowSum, 8).Value = "Kế toán / Phụ trách thanh toán";
+                wsSum.Cell(rowSum, 8).Value = "MnE";
                 wsSum.Cell(rowSum, 8).Style.Font.Bold = true;
                 wsSum.Cell(rowSum, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 wsSum.Range(rowSum + 1, 8, rowSum + 1, 10).Merge();
