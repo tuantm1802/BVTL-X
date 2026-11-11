@@ -2461,3 +2461,26 @@ Xử lý trọn vẹn 3 nội dung phản ánh lỗi từ người dùng kèm 3 
 2. **Chuẩn hóa toàn diện quy trình Release & Triển khai hệ thống (SOP)**:
    - Khắc phục tình trạng triển khai đơn lẻ (chỉ đưa lên Prod mà bỏ sót Dev và không nâng version Git).
    - Thiết lập và tuân thủ quy trình 7 bước chuẩn: Kiểm thử tự động -> Ghi nhận Session Log -> Gắn Git Tag SemVer (v1.7.9) -> Publish & Đóng dấu version.json -> Upload gói nén .rar lên FTP (/Packages/ và /Prod/Packages/) -> Deploy Patch tuần tự DEV và PROD -> Đối chiếu compare và Healthcheck xác nhận 100% khớp.
+
+---
+
+## Phiên 53: 11/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Tăng cường bảo mật đăng nhập & Chống tấn công Brute-force / SQL Injection scanning**:
+   - Triển khai bộ bảo vệ LoginGuard (Common/Common/LoginGuard.cs) quản lý rate limiting:
+     - Giới hạn tối đa 5 lần đăng nhập thất bại trên mỗi IP / Username trong vòng 15 phút.
+     - Tạm khóa truy cập 15 phút khi phát hiện hành vi brute-force.
+     - Tự động dọn dẹp các mục hết hạn nhằm tối ưu bộ nhớ.
+   - Chuẩn hóa LoginController:
+     - Áp dụng HttpPost + ValidateAntiForgeryToken chống CSRF.
+     - Thông báo lỗi chung thống nhất (tránh lộ thông tin user enumeration).
+     - Rà soát chống SQL injection scanning tại form đăng nhập.
+     - Đồng bộ ghi nhận log bảo mật vào SystemMonitorDA.
+   - Đồng bộ kế thừa BaseController cho các Controller còn thiếu (BaoCaoChiSoController, DGHLVIIVController, KetQuaBHDGController, KetQuaXNNTController, NotificationController, TTKHMaDaVIIVController, TTTruyenThongVIIVController, TrainingDataCollVIIVController).
+2. **Kiểm thử tự động (Unit Tests)**:
+   - Bổ sung bộ kiểm thử BVTL.Tests/LoginGuardTests.cs (7 bài test) kiểm thử toàn diện cơ chế khóa IP, khóa tài khoản, giải phóng khóa sau khi đăng nhập thành công và hết hạn thời gian.
+3. **Phát hành & Triển khai (v1.7.10)**:
+   - Nâng tag Git SemVer v1.7.10.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.10.rar.
+   - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
