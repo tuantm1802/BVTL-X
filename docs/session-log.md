@@ -2448,3 +2448,16 @@ Xử lý trọn vẹn 3 nội dung phản ánh lỗi từ người dùng kèm 3 
 6. **Đóng gói và phát hành (v1.7.8)**:
    - Đóng gói bản phát hành `BVTL_WebApp_Publish_v1.7.8.rar`.
    - Triển khai và kiểm tra đối soát trực tiếp trên hệ thống DEV và PROD.
+
+---
+
+## Phiên 52: 10/11/2026 - 11/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Chuẩn hóa chân trang chữ ký trên Báo cáo Bác sĩ CD45**:
+   - Theo yêu cầu từ người dùng, lược bỏ các thông tin chân trang ký cũ trên các báo cáo Bác sĩ (cả Excel và PDF), thay thế bằng duy nhất chữ ký MnE (Ký, ghi rõ họ tên) và đặt ở phía bên phải.
+   - Cập nhật hàm tạo chân trang trong ReportExportService.cs và BaoCaoBacSiCD45Controller.cs.
+   - Cập nhật toàn bộ bài kiểm thử trong ScheduledReportTests.cs để xác thực định dạng chữ ký mới (11/11 tests PASSED).
+2. **Chuẩn hóa toàn diện quy trình Release & Triển khai hệ thống (SOP)**:
+   - Khắc phục tình trạng triển khai đơn lẻ (chỉ đưa lên Prod mà bỏ sót Dev và không nâng version Git).
+   - Thiết lập và tuân thủ quy trình 7 bước chuẩn: Kiểm thử tự động -> Ghi nhận Session Log -> Gắn Git Tag SemVer (v1.7.9) -> Publish & Đóng dấu version.json -> Upload gói nén .rar lên FTP (/Packages/ và /Prod/Packages/) -> Deploy Patch tuần tự DEV và PROD -> Đối chiếu compare và Healthcheck xác nhận 100% khớp.

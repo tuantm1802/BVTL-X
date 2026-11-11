@@ -1,0 +1,804 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup Giao Diện: Báo Cáo Chỉ Số Dự Án DREAMH (CD45)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 13.5px;
+            color: #212529;
+        }
+        .topbar-banner {
+            background: linear-gradient(135deg, #1f4e78 0%, #2f5597 100%);
+            color: #fff;
+            padding: 14px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .topbar-banner h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+        .topbar-banner .sub {
+            font-size: 12.5px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+        .card-filter {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .kpi-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            border-left: 4px solid #1f4e78;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .kpi-card.c2 { border-left-color: #2f5597; }
+        .kpi-card.c3 { border-left-color: #385723; }
+        .kpi-card.c4 { border-left-color: #d97706; }
+        .kpi-card.c5 { border-left-color: #c00000; }
+        .kpi-code { font-size: 11px; font-weight: 700; color: #6c757d; text-transform: uppercase; }
+        .kpi-val { font-size: 22px; font-weight: 800; color: #1f4e78; margin: 2px 0; }
+        .kpi-sub { font-size: 11.5px; color: #495057; }
+        .table-container {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            max-height: 74vh;
+        }
+        table.tbl-chiso {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 0;
+        }
+        table.tbl-chiso thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: #fff;
+            font-weight: 600;
+            font-size: 12.5px;
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        table.tbl-chiso thead tr:nth-child(2) th {
+            top: 37px;
+            z-index: 9;
+        }
+        .th-main { background-color: #1f4e78; }
+        .th-kp { background-color: #2f5597; }
+        .th-gt { background-color: #385723; }
+        .th-age { background-color: #833c0c; }
+        .th-meta { background-color: #4a5568; }
+        table.tbl-chiso tbody td {
+            padding: 7px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+        .row-section td {
+            background-color: #d9e1f2 !important;
+            color: #1f4e78;
+            font-size: 13.5px;
+            padding: 9px 10px !important;
+        }
+        .row-pct td {
+            background-color: #fff9db;
+            font-weight: 700;
+        }
+        .row-pct .cell-num {
+            color: #c00000;
+            font-size: 13.5px;
+        }
+        .row-main td {
+            background-color: #f8fafc;
+            font-weight: 700;
+        }
+        .row-org td, .row-tcv td {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .row-sub td {
+            background-color: #ffffff;
+            color: #334155;
+            font-size: 12.5px;
+        }
+        .row-sub .col-name {
+            padding-left: 22px !important;
+            font-style: italic;
+        }
+        .cell-num {
+            text-align: right;
+            white-space: nowrap;
+        }
+        .cell-num.clickable {
+            cursor: pointer;
+            color: #1d4ed8;
+            transition: background 0.15s;
+        }
+        .cell-num.clickable:hover {
+            background-color: #dbeafe !important;
+            text-decoration: underline;
+        }
+        .sub-frac {
+            font-size: 10.5px;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .code-pill {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #1e293b;
+            font-family: Consolas, monospace;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .badge-confirm {
+            background-color: #fef3c7;
+            color: #b45309;
+            border: 1px solid #f59e0b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+        }
+        .badge-ok {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #22c55e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+        }
+        .badge-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+        }
+        .col-name { min-width: 340px; max-width: 420px; }
+        .col-meta { min-width: 240px; max-width: 300px; font-size: 12px; }
+        .form-label-sm { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="topbar-banner d-flex justify-content-between align-items-center">
+    <div>
+        <h4><i class="fas fa-chart-pie mr-2"></i>BÁO CÁO CHỈ SỐ DỰ ÁN DREAMH (CD45) — MẪU ĐỀ XUẤT DUYỆT KHÁCH HÀNG</h4>
+        <div class="sub">Hệ thống Quản lý & Báo cáo Dữ liệu Dự án CD45 (REDCap Sync) — Tích hợp Phân tách KP, Giới tính, Nhóm tuổi & Drill-down</div>
+    </div>
+    <div>
+        <span class="badge badge-light p-2"><i class="fas fa-database text-primary mr-1"></i>Dữ liệu thực tế: BVTL_REPORTING_DEV (4,520 KH)</span>
+    </div>
+</div>
+
+<div class="container-fluid py-3">
+    <!-- FILTER BAR -->
+    <div class="card-filter">
+        <div class="row align-items-end">
+            <div class="col-md-2">
+                <label class="form-label-sm"><i class="far fa-calendar-alt mr-1"></i>Loại kỳ báo cáo</label>
+                <select class="form-control form-control-sm" id="selKyBaoCao" onchange="updatePeriodLabel()">
+                    <option value="6T">Báo cáo 6 tháng (6T)</option>
+                    <option value="12T" selected>Báo cáo Năm (12 tháng)</option>
+                    <option value="ALL">Lũy kế từ đầu dự án</option>
+                    <option value="CUSTOM">Tùy chọn Từ ngày - Đến ngày</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-sm">Kỳ / Năm báo cáo</label>
+                <select class="form-control form-control-sm" id="selNam">
+                    <option value="2026" selected>Năm 2026 (01/01/2026 - 31/12/2026)</option>
+                    <option value="2026_H1">6 Tháng đầu năm 2026</option>
+                    <option value="2026_H2">6 Tháng cuối năm 2026</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-sm"><i class="fas fa-map-marker-alt mr-1"></i>Tỉnh / Thành phố (6 tỉnh)</label>
+                <select class="form-control form-control-sm">
+                    <option value="">-- Toàn dự án (6 Tỉnh/TP) --</option>
+                    <option value="HNO">Hà Nội (3 CBO/DNXH)</option>
+                    <option value="HPG">Hải Phòng (6 CBO)</option>
+                    <option value="HYE">Hưng Yên (1 CBO)</option>
+                    <option value="NAN">Nghệ An (5 CBO)</option>
+                    <option value="NBI">Ninh Bình (3 CBO)</option>
+                    <option value="HCM">TP. Hồ Chí Minh (4 DNXH)</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-sm"><i class="fas fa-users mr-1"></i>Nhóm CBO / DNXH</label>
+                <select class="form-control form-control-sm">
+                    <option value="">-- Tất cả 21 CBO/DNXH --</option>
+                    <option>Hà Nội - Về Nhà</option>
+                    <option>Hà Nội - The Times</option>
+                    <option>Hà Nội - It's T Time</option>
+                    <option>Hưng Yên - Liên Minh Hạnh Phúc</option>
+                    <option>Hải Phòng - Hải Đăng</option>
+                    <option>TP.HCM - Alocare</option>
+                </select>
+            </div>
+            <div class="col-md-4 text-right">
+                <button class="btn btn-primary btn-sm mr-1" onclick="alert('Truy vấn dữ liệu thời gian thực từ SP_CD45_GetBaoCaoChiSo!')"><i class="fas fa-sync-alt mr-1"></i>Xem báo cáo</button>
+                <button class="btn btn-success btn-sm mr-1" onclick="alert('Xuất file Excel chuẩn định dạng: Mau_De_Xuat_Bao_Cao_Chi_So_DREAMH.xlsx')"><i class="fas fa-file-excel mr-1"></i>Xuất Excel</button>
+                <button class="btn btn-warning btn-sm mr-1" data-toggle="modal" data-target="#modalConfig"><i class="fas fa-sliders-h mr-1"></i>Cấu hình Chỉ số Dự án (KQ5)</button>
+            </div>
+        </div>
+        <div class="row mt-2 pt-2 border-top align-items-center">
+            <div class="col-md-8">
+                <div class="custom-control custom-switch custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" id="swSubRows" checked onchange="toggleSubRows()">
+                    <label class="custom-control-label font-weight-bold text-secondary" for="swSubRows">Hiển thị dòng chi tiết (Tử số / Mẫu số / Phân loại can thiệp)</label>
+                </div>
+                <div class="custom-control custom-switch custom-control-inline ml-3">
+                    <input type="checkbox" class="custom-control-input" id="swMetaCols" checked onchange="toggleMetaCols()">
+                    <label class="custom-control-label font-weight-bold text-secondary" for="swMetaCols">Hiển thị cột Nguồn dữ liệu & Ghi chú chốt KH</label>
+                </div>
+            </div>
+            <div class="col-md-4 text-right text-muted small">
+                <i class="fas fa-mouse-pointer mr-1 text-primary"></i><em>Mẹo: Click vào bất kỳ con số nào trong bảng để xem danh sách KH (Drill-down)</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5 KPI SUMMARY CARDS FOR MTCT 1.1 - 1.5 -->
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-code">MTCT 1.1 — Nhận thông tin truyền thông</div>
+            <div class="kpi-val">97.0%</div>
+            <div class="kpi-sub"><b>4,386</b> / 4,520 KH tiếp cận</div>
+        </div>
+        <div class="kpi-card c2">
+            <div class="kpi-code">MTCT 1.2 — Sàng lọc SKTT (QST)</div>
+            <div class="kpi-val">77.6%</div>
+            <div class="kpi-sub"><b>3,508</b> / 4,520 KH tiếp cận</div>
+        </div>
+        <div class="kpi-card c3">
+            <div class="kpi-code">MTCT 1.3 — Nhận >=1 Can thiệp CBO</div>
+            <div class="kpi-val">3,471 <small style="font-size:13px">KH (98.9%)</small></div>
+            <div class="kpi-sub">Sau sàng lọc (trừ TT): <b>1,878 KH (53.5%)</b></div>
+        </div>
+        <div class="kpi-card c4">
+            <div class="kpi-code">MTCT 1.4 — Chuyển gửi khám (QST+)</div>
+            <div class="kpi-val">53.6%</div>
+            <div class="kpi-sub"><b>781</b> / 1,457 KH QST Dương tính (M1, M2)</div>
+        </div>
+        <div class="kpi-card c5">
+            <div class="kpi-code">MTCT 1.5 — Cải thiện trong điều trị</div>
+            <div class="kpi-val">88.0%</div>
+            <div class="kpi-sub"><b>381</b> / 433 KH theo dõi điều trị (Phiếu F5)</div>
+        </div>
+    </div>
+
+    <!-- MAIN REPORT TABLE -->
+    <div class="table-container">
+        <table class="tbl-chiso" id="tblChiSo">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="th-main" style="width:45px">STT</th>
+                    <th rowspan="2" class="th-main" style="width:110px">Mã chỉ số</th>
+                    <th rowspan="2" class="th-main">Tên chỉ số / Chỉ tiêu thành phần</th>
+                    <th rowspan="2" class="th-main" style="width:95px">Đơn vị</th>
+                    <th rowspan="2" class="th-main" style="width:90px">Tổng số</th>
+                    <th colspan="5" class="th-kp">Phân tách theo Nhóm đối tượng đích (KP)</th>
+                    <th colspan="3" class="th-gt">Phân tách theo Giới tính</th>
+                    <th colspan="3" class="th-age">Phân tách theo Nhóm tuổi</th>
+                    <th rowspan="2" class="th-meta col-meta">Nguồn dữ liệu / Công thức</th>
+                    <th rowspan="2" class="th-meta col-meta">Ghi chú / Điểm cần chốt với KH</th>
+                </tr>
+                <tr>
+                    <th class="th-kp">PUD</th>
+                    <th class="th-kp">PLHIV</th>
+                    <th class="th-kp">TG</th>
+                    <th class="th-kp">SW</th>
+                    <th class="th-kp">MSM</th>
+                    <th class="th-gt">Nam</th>
+                    <th class="th-gt">Nữ</th>
+                    <th class="th-gt">Khác</th>
+                    <th class="th-age">18 - 25</th>
+                    <th class="th-age">26 - 35</th>
+                    <th class="th-age">Trên 35</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr class="row-section">
+            <td class="text-center font-weight-bold">I</td>
+            <td colspan="17" class="font-weight-bold">NHÓM I: CÁC CHỈ SỐ MỤC TIÊU CỤ THỂ (MTCT 1.1 – MTCT 1.5)</td>
+        </tr>
+        <tr class="row-pct" data-rowtype="pct">
+            <td class="text-center font-weight-bold">1</td>
+            <td class="text-center"><span class="code-pill">MTCT1.1</span></td>
+            <td class="col-name">Tỷ lệ KH được tiếp cận, được nâng cao nhận thức về sức khoẻ tâm thần (= được nhận thông tin)</td>
+            <td class="text-center">Tỷ lệ (%)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.0%')">97.0%<div class='sub-frac'>(4,386/4,520)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '96.5%')">96.5%<div class='sub-frac'>(1,774/1,839)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '96.1%')">96.1%<div class='sub-frac'>(419/436)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '95.6%')">95.6%<div class='sub-frac'>(129/135)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.1%')">97.1%<div class='sub-frac'>(566/583)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '98.1%')">98.1%<div class='sub-frac'>(1,498/1,527)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.3%')">97.3%<div class='sub-frac'>(3,338/3,429)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '96.0%')">96.0%<div class='sub-frac'>(1,006/1,048)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.7%')">97.7%<div class='sub-frac'>(42/43)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.4%')">97.4%<div class='sub-frac'>(1,597/1,640)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '97.1%')">97.1%<div class='sub-frac'>(920/947)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1', 'Tỷ lệ KH được tiếp cận, được nâng cao nhận th...', '96.7%')">96.7%<div class='sub-frac'>(1,869/1,933)</div></td>
+            <td class="col-meta">Tử số: Phiếu F2 (LOAI_DV=1) / Mẫu số: Tổng KH tiếp cận (F1)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Giữ tử số là KH có phiếu Truyền thông F2 (4,386 KH) hay gộp cả 124 KH làm QST thẳng?</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.1_NUM</span></td>
+            <td class="col-name">+ Tử số: Số KH được tham gia truyền thông nâng cao nhận thức SKTT</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '4,386')">4,386</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '1,774')">1,774</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '419')">419</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '129')">129</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '566')">566</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '1,498')">1,498</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '3,338')">3,338</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '1,006')">1,006</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '42')">42</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '1,597')">1,597</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '920')">920</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_NUM', '+ Tử số: Số KH được tham gia truyền thông nân...', '1,869')">1,869</td>
+            <td class="col-meta">CD45_HOAT_DONG (LOAI_DV = 1, Complete)</td>
+            <td class="col-meta">Click vào số liệu để xem danh sách KH</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.1_DEN</span></td>
+            <td class="col-name">+ Mẫu số: Tổng số KH được tiếp cận bởi dự án trong kỳ báo cáo</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '4,520')">4,520</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '1,839')">1,839</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '436')">436</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '135')">135</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '583')">583</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '1,527')">1,527</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '3,429')">3,429</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '1,048')">1,048</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '43')">43</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '1,640')">1,640</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '947')">947</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.1_DEN', '+ Mẫu số: Tổng số KH được tiếp cận bởi dự án ...', '1,933')">1,933</td>
+            <td class="col-meta">CD45_KH (COMPLETE_STATUS = '2')</td>
+            <td class="col-meta">Tổng KH tiếp cận tại 6 tỉnh dự án</td>
+        </tr>
+        <tr class="row-pct" data-rowtype="pct">
+            <td class="text-center font-weight-bold">2</td>
+            <td class="text-center"><span class="code-pill">MTCT1.2</span></td>
+            <td class="col-name">Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so với tổng số KH được tiếp cận bởi dự án Quỹ toàn cầu tại 6 tỉnh</td>
+            <td class="text-center">Tỷ lệ (%)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '77.6%')">77.6%<div class='sub-frac'>(3,508/4,520)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '72.6%')">72.6%<div class='sub-frac'>(1,336/1,839)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '83.9%')">83.9%<div class='sub-frac'>(366/436)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '97.0%')">97.0%<div class='sub-frac'>(131/135)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '72.0%')">72.0%<div class='sub-frac'>(420/583)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '82.2%')">82.2%<div class='sub-frac'>(1,255/1,527)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '78.0%')">78.0%<div class='sub-frac'>(2,676/3,429)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '75.7%')">75.7%<div class='sub-frac'>(793/1,048)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '90.7%')">90.7%<div class='sub-frac'>(39/43)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '77.5%')">77.5%<div class='sub-frac'>(1,271/1,640)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '79.1%')">79.1%<div class='sub-frac'>(749/947)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2', 'Tỷ lệ KH được sàng lọc sức khoẻ tâm thần so v...', '77.0%')">77.0%<div class='sub-frac'>(1,488/1,933)</div></td>
+            <td class="col-meta">Tử số: Phiếu F3 (QST) / Mẫu số: Tổng KH tiếp cận (F1 hoặc Cấu hình GF)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Mẫu số lấy tự động từ F1 (4,520 KH) hay nhập chỉ tiêu Quỹ Toàn Cầu?</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.2_NUM</span></td>
+            <td class="col-name">+ Tử số: Số KH được sàng lọc bảng hỏi QST ít nhất 1 lần</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '3,508')">3,508</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '1,336')">1,336</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '366')">366</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '131')">131</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '420')">420</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '1,255')">1,255</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '2,676')">2,676</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '793')">793</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '39')">39</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '1,271')">1,271</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '749')">749</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.2_NUM', '+ Tử số: Số KH được sàng lọc bảng hỏi QST ít ...', '1,488')">1,488</td>
+            <td class="col-meta">CD45_QST (COMPLETE_STATUS = '2')</td>
+            <td class="col-meta"></td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">3</td>
+            <td class="text-center"><span class="code-pill">MTCT1.3</span></td>
+            <td class="col-name">Số KH được nhận ít nhất một can thiệp cung cấp bởi CBO trong số những KH được sàng lọc SKTT (1/truyền thông, 2/tư vấn cá nhân & chữa lành, 3/chuyển gửi, 4/hỗ trợ tuân thủ)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '3,471')">3,471</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '1,315')">1,315</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '360')">360</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '130')">130</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '413')">413</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '1,253')">1,253</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '2,656')">2,656</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '776')">776</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '39')">39</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '1,259')">1,259</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '746')">746</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3', 'Số KH được nhận ít nhất một can thiệp cung cấ...', '1,466')">1,466</td>
+            <td class="col-meta">KH thuộc F3 (QST) ∩ (F2 ∪ F7 ∪ F8 ∪ F6 ∪ F5 ∪ F4)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Đề xuất hiển thị kèm dòng phụ trừ Truyền thông ban đầu bên dưới</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.3_SUB</span></td>
+            <td class="col-name">+ Trong đó: Số KH nhận ít nhất 1 can thiệp chuyên sâu sau sàng lọc (không tính truyền thông ban đầu)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '1,878')">1,878</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '732')">732</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '201')">201</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '73')">73</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '255')">255</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '617')">617</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '1,396')">1,396</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '463')">463</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '19')">19</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '641')">641</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '393')">393</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.3_SUB', '+ Trong đó: Số KH nhận ít nhất 1 can thiệp ch...', '844')">844</td>
+            <td class="col-meta">KH thuộc F3 (QST) ∩ (F2[2,3,4] ∪ F7 ∪ F8 ∪ F6 ∪ F5 ∪ F4)</td>
+            <td class="col-meta">Đạt 53.5% (1,878 / 3,508 KH đã sàng lọc QST)</td>
+        </tr>
+        <tr class="row-pct" data-rowtype="pct">
+            <td class="text-center font-weight-bold">4</td>
+            <td class="text-center"><span class="code-pill">MTCT1.4</span></td>
+            <td class="col-name">Tỷ lệ KH có kết quả sàng lọc QST dương tính (mức 1 và mức 2) đồng ý và được chuyển gửi khám SKTT ít nhất 1 lần</td>
+            <td class="text-center">Tỷ lệ (%)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '53.6%')">53.6%<div class='sub-frac'>(781/1,457)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '58.2%')">58.2%<div class='sub-frac'>(346/595)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '54.4%')">54.4%<div class='sub-frac'>(86/158)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '53.8%')">53.8%<div class='sub-frac'>(35/65)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '54.5%')">54.5%<div class='sub-frac'>(84/154)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '47.4%')">47.4%<div class='sub-frac'>(230/485)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '53.1%')">53.1%<div class='sub-frac'>(595/1,120)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '55.1%')">55.1%<div class='sub-frac'>(177/321)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '56.2%')">56.2%<div class='sub-frac'>(9/16)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '43.9%')">43.9%<div class='sub-frac'>(218/497)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '49.5%')">49.5%<div class='sub-frac'>(161/325)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4', 'Tỷ lệ KH có kết quả sàng lọc QST dương tính (...', '63.3%')">63.3%<div class='sub-frac'>(402/635)</div></td>
+            <td class="col-meta">Tử số: QST Mức 1,2 có Phiếu F6 / Mẫu số: Tổng KH QST Mức 1,2</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> Tự động tính từ bảng CD45_QST và CD45_CHAN_DOAN</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.4_NUM</span></td>
+            <td class="col-name">+ Tử số: Số KH có QST dương tính (Mức 1, 2) đã được chuyển gửi và khám SKTT (Phiếu F6)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '781')">781</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '346')">346</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '86')">86</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '35')">35</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '84')">84</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '230')">230</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '595')">595</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '177')">177</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '218')">218</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '161')">161</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_NUM', '+ Tử số: Số KH có QST dương tính (Mức 1, 2) đ...', '402')">402</td>
+            <td class="col-meta">CD45_QST (MUC_QST IN 1,2) ∩ CD45_CHAN_DOAN</td>
+            <td class="col-meta"></td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.4_DEN</span></td>
+            <td class="col-name">+ Mẫu số: Tổng số KH có kết quả sàng lọc QST dương tính (Mức 1 và Mức 2)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '1,457')">1,457</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '595')">595</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '158')">158</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '65')">65</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '154')">154</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '485')">485</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '1,120')">1,120</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '321')">321</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '16')">16</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '497')">497</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '325')">325</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.4_DEN', '+ Mẫu số: Tổng số KH có kết quả sàng lọc QST ...', '635')">635</td>
+            <td class="col-meta">CD45_QST (MUC_QST IN 1,2, Complete)</td>
+            <td class="col-meta"></td>
+        </tr>
+        <tr class="row-pct" data-rowtype="pct">
+            <td class="text-center font-weight-bold">5</td>
+            <td class="text-center"><span class="code-pill">MTCT1.5</span></td>
+            <td class="col-name">Tỷ lệ KH cải thiện vấn đề SKTT trong quá trình điều trị</td>
+            <td class="text-center">Tỷ lệ (%)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '88.0%')">88.0%<div class='sub-frac'>(381/433)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '90.7%')">90.7%<div class='sub-frac'>(186/205)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '85.1%')">85.1%<div class='sub-frac'>(57/67)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '89.5%')">89.5%<div class='sub-frac'>(17/19)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '76.9%')">76.9%<div class='sub-frac'>(40/52)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '90.0%')">90.0%<div class='sub-frac'>(81/90)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '90.1%')">90.1%<div class='sub-frac'>(290/322)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '81.5%')">81.5%<div class='sub-frac'>(88/108)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '100.0%')">100.0%<div class='sub-frac'>(3/3)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '91.9%')">91.9%<div class='sub-frac'>(91/99)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '76.1%')">76.1%<div class='sub-frac'>(54/71)</div></td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5', 'Tỷ lệ KH cải thiện vấn đề SKTT trong quá trìn...', '89.7%')">89.7%<div class='sub-frac'>(236/263)</div></td>
+            <td class="col-meta">Tử số: KH có f5_feeling = 1 ('Tốt hơn') / Mẫu số: Tổng KH đang điều trị có F5</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Đồng bộ thêm câu 5 Phiếu F5 (f5_feeling: 1=Tốt hơn, 2=Không đổi, 3=Xấu hơn)</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.5_NUM</span></td>
+            <td class="col-name">+ Tử số: Số KH đang điều trị có đánh giá tình trạng SKTT cải thiện ('Tốt hơn' trên Phiếu F5)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '381')">381</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '186')">186</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '57')">57</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '17')">17</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '40')">40</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '81')">81</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '290')">290</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '88')">88</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '3')">3</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '91')">91</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '54')">54</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_NUM', '+ Tử số: Số KH đang điều trị có đánh giá tình...', '236')">236</td>
+            <td class="col-meta">CD45_TUAN_THU (f5_feeling = 1)</td>
+            <td class="col-meta">Số liệu minh họa theo F5 tuân thủ tốt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">MTCT1.5_DEN</span></td>
+            <td class="col-name">+ Mẫu số: Tổng số KH đang trong quá trình điều trị được theo dõi (có Phiếu F5)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '433')">433</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '205')">205</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '67')">67</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '19')">19</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '52')">52</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '90')">90</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '322')">322</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '108')">108</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '3')">3</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '99')">99</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '71')">71</td><td class='cell-num clickable' onclick="openDrillDown('MTCT1.5_DEN', '+ Mẫu số: Tổng số KH đang trong quá trình điề...', '263')">263</td>
+            <td class="col-meta">CD45_TUAN_THU (COMPLETE_STATUS = '2')</td>
+            <td class="col-meta"></td>
+        </tr>
+        <tr class="row-section">
+            <td class="text-center font-weight-bold">II</td>
+            <td colspan="17" class="font-weight-bold">NHÓM II: CÁC CHỈ SỐ KẾT QUẢ ĐẦU RA (MTCT-KQ1.1 – MTCT-KQ5.3)</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">6</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ1.1</span></td>
+            <td class="col-name">Số đơn vị đang tích cực áp dụng mô hình mới, bao gồm các công cụ, quy trình chuẩn (SOP) và tài liệu có nhạy cảm giới và các nhóm KP khác</td>
+            <td class="text-center">Đơn vị</td>
+            <td class='cell-num' >21</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">Đếm số CBO/DNXH hoạt động (21 CBO/DNXH; hoặc 30 nếu cộng 9 CSYT)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Tính 21 CBO/DNXH hay gộp cả 9 Cơ sở y tế (= 30 đơn vị)?</td>
+        </tr>
+        <tr class="row-tcv" data-rowtype="tcv">
+            <td class="text-center font-weight-bold">7</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ1.2</span></td>
+            <td class="col-name">Số lượng TCV đã tham gia xây dựng mô hình can thiệp và các công cụ của dự án (phân tách theo giới tính)</td>
+            <td class="text-center">Tiếp cận viên</td>
+            <td class='cell-num' >130</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='cell-num' >72</td><td class='cell-num' >55</td><td class='cell-num' >3</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">CD45_NHOM_TCV (Cờ 'Tham gia XD mô hình Năm 1' = 1)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Bổ sung cột Giới tính & Cờ Năm 1 vào Danh mục TCV</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">8</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ1.3</span></td>
+            <td class="col-name">Số lượng chuyên gia y tế tham gia xây dựng mô hình can thiệp và các công cụ của dự án</td>
+            <td class="text-center">Chuyên gia</td>
+            <td class='cell-num' >30</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">CD45_DM_BAC_SI / Cấu hình Chỉ số Dự án</td>
+            <td class="col-meta"><span class='badge-info'>Cấu hình Web</span> Cho phép cập nhật trên Form Cấu hình Chỉ số Dự án</td>
+        </tr>
+        <tr class="row-tcv" data-rowtype="tcv">
+            <td class="text-center font-weight-bold">9</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ2.1</span></td>
+            <td class="col-name">Số lượng TCV đáp ứng tiêu chí của dự án để cung cấp các can thiệp SKTT cơ bản theo mô hình mới (phân tách theo giới tính)</td>
+            <td class="text-center">Tiếp cận viên</td>
+            <td class='cell-num' >130</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='cell-num' >72</td><td class='cell-num' >55</td><td class='cell-num' >3</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">CD45_NHOM_TCV (IsActive = 1 tại thời điểm báo cáo)</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> Tự động đếm tất cả TCV hoạt động chia theo Giới tính</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">10</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ2.2</span></td>
+            <td class="col-name">Số lượng CBO/DNXH được SCDI nâng cao năng lực để triển khai các can thiệp SKTT theo mô hình mới thông qua các TCV</td>
+            <td class="text-center">CBO/DNXH</td>
+            <td class='cell-num' >21</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">BVTL_NHOM_TBH / CD45_NHOM_TCV (21 CBO/DNXH tại 6 tỉnh)</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> HN: 3, HP: 6, HY: 1, NA: 5, NB: 3, HCM: 4</td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">11</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ3.1</span></td>
+            <td class="col-name">Số lượng can thiệp được TCV triển khai theo mô hình SKTT mới (phân tách theo giới tính & loại can thiệp: 1/sàng lọc, 2/truyền thông, 3/tư vấn cá nhân, 4/chuyển gửi, 5/hỗ trợ tuân thủ)</td>
+            <td class="text-center">Lượt (Tổng)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '13,221')">13,221</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '5,235')">5,235</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '1,341')">1,341</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '496')">496</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '1,713')">1,713</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '4,436')">4,436</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '9,953')">9,953</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '3,104')">3,104</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '164')">164</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '4,687')">4,687</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '2,775')">2,775</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.1', 'Số lượng can thiệp được TCV triển khai theo m...', '5,759')">5,759</td>
+            <td class="col-meta">Tổng hợp 5 loại can thiệp cơ bản (Hiển thị cả Số KH và Số lượt bên dưới)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Hiển thị song song Số KH (người) & Số lượt cho mỗi can thiệp</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.1_1</span></td>
+            <td class="col-name">+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số lượt: 3,661 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '3,508')">3,508</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '1,336')">1,336</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '366')">366</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '131')">131</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '420')">420</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '1,255')">1,255</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '2,676')">2,676</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '793')">793</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '39')">39</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '1,271')">1,271</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '749')">749</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_1', '+ 1/ Sàng lọc SKTT (QST) — Số khách hàng (Số ...', '1,488')">1,488</td>
+            <td class="col-meta">Phiếu F3 (CD45_QST)</td>
+            <td class="col-meta">3,508 KH / 3,661 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.1_2</span></td>
+            <td class="col-name">+ 2/ Truyền thông SKTT — Số khách hàng (Số lượt: 4,871 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '4,386')">4,386</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '1,774')">1,774</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '419')">419</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '129')">129</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '566')">566</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '1,498')">1,498</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '3,338')">3,338</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '1,006')">1,006</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '42')">42</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '1,597')">1,597</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '920')">920</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_2', '+ 2/ Truyền thông SKTT — Số khách hàng (Số lư...', '1,869')">1,869</td>
+            <td class="col-meta">Phiếu F2 (CD45_HOAT_DONG, LOAI_DV = 1)</td>
+            <td class="col-meta">4,386 KH / 4,871 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.1_3</span></td>
+            <td class="col-name">+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt: 2,500 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '1,443')">1,443</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '520')">520</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '146')">146</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '53')">53</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '211')">211</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '513')">513</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '1,057')">1,057</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '371')">371</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '15')">15</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '556')">556</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '314')">314</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_3', '+ 3/ Tư vấn cá nhân — Số khách hàng (Số lượt:...', '573')">573</td>
+            <td class="col-meta">Phiếu F7 (Tư vấn L1) ∪ Phiếu F8 (Tư vấn L2+)</td>
+            <td class="col-meta">1,443 KH / 2,500 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.1_4</span></td>
+            <td class="col-name">+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số lượt: 1,578 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '806')">806</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '353')">353</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '91')">91</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '35')">35</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '87')">87</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '240')">240</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '614')">614</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '183')">183</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '229')">229</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '166')">166</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_4', '+ 4/ Chuyển gửi khám SKTT — Số khách hàng (Số...', '411')">411</td>
+            <td class="col-meta">Phiếu F6 (CD45_CHAN_DOAN)</td>
+            <td class="col-meta">806 KH / 1,578 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.1_5</span></td>
+            <td class="col-name">+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng (Số lượt: 616 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '433')">433</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '205')">205</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '67')">67</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '19')">19</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '52')">52</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '90')">90</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '322')">322</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '108')">108</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '3')">3</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '99')">99</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '71')">71</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.1_5', '+ 5/ Hỗ trợ tuân thủ điều trị — Số khách hàng...', '263')">263</td>
+            <td class="col-meta">Phiếu F5 (CD45_TUAN_THU)</td>
+            <td class="col-meta">433 KH / 616 lượt</td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">12</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ3.2</span></td>
+            <td class="col-name">Số can thiệp chữa lành theo mô hình mới được CBO/DNXH thực hiện (phân tách theo giới và loại can thiệp: 1/vòng tròn chia sẻ, 2/sinh hoạt dựa vào nghệ thuật, 3/các can thiệp khác khi có)</td>
+            <td class="text-center">Lượt (Tổng)</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '937')">937</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '366')">366</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '108')">108</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '45')">45</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '133')">133</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '285')">285</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '659')">659</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '269')">269</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '368')">368</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '191')">191</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ3.2', 'Số can thiệp chữa lành theo mô hình mới được ...', '378')">378</td>
+            <td class="col-meta">Phiếu F2 (CD45_HOAT_DONG: LOAI_DV IN 3, 4, 2)</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Xếp 'Sinh hoạt nhóm (LOAI_DV=2)' vào mục 3 hay tách riêng?</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.2_1</span></td>
+            <td class="col-name">+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lượt: 206 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '175')">175</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '37')">37</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '13')">13</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '26')">26</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '90')">90</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '132')">132</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '41')">41</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '2')">2</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '107')">107</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '44')">44</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_1', '+ 1/ Vòng tròn chia sẻ — Số khách hàng (Số lư...', '24')">24</td>
+            <td class="col-meta">Phiếu F2 (LOAI_DV = 3)</td>
+            <td class="col-meta">175 KH / 206 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.2_2</span></td>
+            <td class="col-name">+ 2/ Sinh hoạt dựa vào nghệ thuật (Trị liệu nghệ thuật) — Số KH (Số lượt: 0)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td><td class='cell-num' >0</td>
+            <td class="col-meta">Phiếu F2 (LOAI_DV = 4)</td>
+            <td class="col-meta">0 KH / 0 lượt</td>
+        </tr>
+        <tr class="row-sub" data-rowtype="sub">
+            <td class="text-center font-weight-bold"></td>
+            <td class="text-center"><span class="code-pill">KQ3.2_3</span></td>
+            <td class="col-name">+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số khách hàng (Số lượt: 731 lượt)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '650')">650</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '284')">284</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '84')">84</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '11')">11</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '110')">110</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '161')">161</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '461')">461</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '184')">184</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '5')">5</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '201')">201</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '129')">129</td><td class='cell-num clickable' onclick="openDrillDown('KQ3.2_3', '+ 3/ Các can thiệp khác (Sinh hoạt nhóm) — Số...', '320')">320</td>
+            <td class="col-meta">Phiếu F2 (LOAI_DV = 2 - Sinh hoạt nhóm)</td>
+            <td class="col-meta">650 KH / 731 lượt</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">13</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ4.1</span></td>
+            <td class="col-name">Số lượng cơ sở khám chữa bệnh về sức khoẻ tâm thần phối hợp với dự án và thường xuyên tiếp nhận KH dự án tại mỗi tỉnh</td>
+            <td class="text-center">Cơ sở KCB</td>
+            <td class='cell-num' >9</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">Danh mục CSYT trên REDCap (f6_hospital): 9 cơ sở tại 6 tỉnh</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> HN (2), HY (2), NB (1), NA (1), HP (1), HCM (2)</td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">14</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ4.2</span></td>
+            <td class="col-name">Số lượng KH do CBO/DNXH chuyển gửi và được các bác sĩ của dự án tiếp nhận tại 6 tỉnh (phân tách theo nhóm KP, độ tuổi và giới tính)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '806')">806</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '353')">353</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '91')">91</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '35')">35</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '87')">87</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '240')">240</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '614')">614</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '183')">183</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '229')">229</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '166')">166</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.2', 'Số lượng KH do CBO/DNXH chuyển gửi và được cá...', '411')">411</td>
+            <td class="col-meta">Phiếu F6 (CD45_CHAN_DOAN Complete): COUNT(DISTINCT RECORD_ID)</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> Đồng nhất với chỉ tiêu III.4 Báo cáo hoạt động</td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">15</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ4.3</span></td>
+            <td class="col-name">Số lượng KH được bác sĩ phản hồi/lưu ý cho TCV sau khám và trong quá trình tuân thủ điều trị (phân tách theo nhóm KP, độ tuổi và giới tính)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '806')">806</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '353')">353</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '91')">91</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '35')">35</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '87')">87</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '240')">240</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '614')">614</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '183')">183</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '9')">9</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '229')">229</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '166')">166</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.3', 'Số lượng KH được bác sĩ phản hồi/lưu ý cho TC...', '411')">411</td>
+            <td class="col-meta">Phiếu F6 (CD45_CHAN_DOAN Complete) — Mục 5 & 7 bắt buộc nhập trên REDCap</td>
+            <td class="col-meta"><span class='badge-ok'>Đã rõ</span> 100% phiếu khám F6 đều có lưu ý của bác sĩ cho TCV</td>
+        </tr>
+        <tr class="row-main" data-rowtype="main">
+            <td class="text-center font-weight-bold">16</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ4.4</span></td>
+            <td class="col-name">Số lượng KH được chỉ định điều trị (ngoại trú + nội trú) được TCV hỗ trợ tuân thủ điều trị (phân tách theo nhóm KP, độ tuổi và giới tính)</td>
+            <td class="text-center">Khách hàng</td>
+            <td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '433')">433</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '205')">205</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '67')">67</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '19')">19</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '52')">52</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '90')">90</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '322')">322</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '108')">108</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '3')">3</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '99')">99</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '71')">71</td><td class='cell-num clickable' onclick="openDrillDown('MTCT-KQ4.4', 'Số lượng KH được chỉ định điều trị (ngoại trú...', '263')">263</td>
+            <td class="col-meta">KH có Phiếu khám F6 (Ngoại/Nội trú) VÀ có Phiếu hỗ trợ tuân thủ F5</td>
+            <td class="col-meta"><span class='badge-confirm'>Cần chốt</span> Tính KH có cả F6 & F5 (433 KH) hay lấy toàn bộ F6 có chỉ định (801 KH)?</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">17</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ5.1</span></td>
+            <td class="col-name">Số lượng đối tác ký biên bản ghi nhớ (MOU) để phối hợp triển khai dự án</td>
+            <td class="text-center">Đối tác</td>
+            <td class='cell-num' >9</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">Bảng Cấu hình Chỉ số Dự án (Số CSYT / Đơn vị đã ký MOU)</td>
+            <td class="col-meta"><span class='badge-info'>Cấu hình Web</span> Nhập/cập nhật trong Modal Cấu hình Chỉ số Dự án</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">18</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ5.2</span></td>
+            <td class="col-name">Số lượng đối tác/các bên liên quan tham gia dự án thông qua việc thường xuyên đóng góp ý kiến, tham gia triển khai, rà soát và phản hồi cho dự án (Phân tách: TW: 3, Địa phương: 12 | Y tế: 9, Chính quyền: 3, Công an: 1, Học thuật: 2)</td>
+            <td class="text-center">Đối tác</td>
+            <td class='cell-num' >15</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">Bảng Cấu hình Chỉ số Dự án (Phân tách theo cấp TW/ĐP & Lĩnh vực)</td>
+            <td class="col-meta"><span class='badge-info'>Cấu hình Web</span> Nhập/cập nhật trong Modal Cấu hình Chỉ số Dự án</td>
+        </tr>
+        <tr class="row-org" data-rowtype="org">
+            <td class="text-center font-weight-bold">19</td>
+            <td class="text-center"><span class="code-pill">MTCT-KQ5.3</span></td>
+            <td class="col-name">Số tài liệu dự án được xây dựng liên quan đến M&E, tài liệu kỹ thuật, giới, vận động chính sách và truyền thông đã được thẩm định bởi các đối tác và phổ biến tới các bên liên quan</td>
+            <td class="text-center">Tài liệu</td>
+            <td class='cell-num' >8</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td><td class='text-center text-muted' >-</td>
+            <td class="col-meta">Bảng Cấu hình Chỉ số Dự án (Quản lý danh mục tài liệu đã thẩm định)</td>
+            <td class="col-meta"><span class='badge-info'>Cấu hình Web</span> Nhập/cập nhật trong Modal Cấu hình Chỉ số Dự án</td>
+        </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL 1: CẤU HÌNH CHỈ SỐ QUẢN TRỊ DỰ ÁN (KQ1.1, KQ1.3, KQ5.1, KQ5.2, KQ5.3) -->
+<div class="modal fade" id="modalConfig" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white py-2">
+                <h6 class="modal-title font-weight-bold"><i class="fas fa-sliders-h mr-2"></i>Cấu hình Chỉ số Quản trị Dự án & Đối tác (Kỳ báo cáo: Năm 2026)</h6>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info py-2 small">
+                    <i class="fas fa-info-circle mr-1"></i>Các chỉ số cấp Tổ chức / Đối tác MOU / Tài liệu dự án (không thu thập qua phiếu khách hàng F1–F10 trên REDCap) được cán bộ M&E cập nhật tại đây theo từng kỳ báo cáo 6 tháng / Năm.
+                </div>
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width:120px">Mã chỉ số</th>
+                            <th>Nội dung chỉ tiêu cấu hình</th>
+                            <th style="width:110px">Kỳ 6 Tháng</th>
+                            <th style="width:110px">Kỳ Năm (12T)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold">MTCT1.2 (Mẫu)</td>
+                            <td>Tổng số KH tiếp cận bởi dự án Quỹ Toàn Cầu tại 6 tỉnh <em>(Để = 4520 nếu lấy tự động từ F1)</em></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="4520"></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="4520"></td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">MTCT-KQ1.1</td>
+                            <td>Số đơn vị đang tích cực áp dụng mô hình mới, SOP và tài liệu <em>(Gợi ý tự động: 21 CBO + 9 CSYT)</em></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="21"></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="21"></td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">MTCT-KQ1.3</td>
+                            <td>Số lượng chuyên gia y tế tham gia xây dựng mô hình can thiệp và bộ công cụ dự án</td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="30"></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="30"></td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">MTCT-KQ5.1</td>
+                            <td>Số lượng đối tác (Cơ sở y tế / Đơn vị) ký Biên bản ghi nhớ (MOU)</td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="9"></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="9"></td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td class="font-weight-bold">MTCT-KQ5.2</td>
+                            <td class="font-weight-bold">Số lượng đối tác / các bên liên quan tham gia đóng góp, rà soát dự án (Tổng)</td>
+                            <td><input type="number" class="form-control form-control-sm text-right font-weight-bold" value="15" readonly></td>
+                            <td><input type="number" class="form-control form-control-sm text-right font-weight-bold" value="15" readonly></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted pl-3">├─ Theo cấp</td>
+                            <td>+ Đối tác cấp Trung ương / Đối tác cấp Địa phương</td>
+                            <td><input type="text" class="form-control form-control-sm text-center" value="TW: 3 | ĐP: 12"></td>
+                            <td><input type="text" class="form-control form-control-sm text-center" value="TW: 3 | ĐP: 12"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted pl-3">└─ Lĩnh vực</td>
+                            <td>+ Y tế / Chính quyền / Cảnh sát / Giới học thuật</td>
+                            <td><input type="text" class="form-control form-control-sm text-center" value="YT:9 | CQ:3 | CA:1 | HT:2"></td>
+                            <td><input type="text" class="form-control form-control-sm text-center" value="YT:9 | CQ:3 | CA:1 | HT:2"></td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">MTCT-KQ5.3</td>
+                            <td>Số tài liệu dự án (M&E, kỹ thuật, giới, truyền thông, MSC) đã được thẩm định & phổ biến</td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="8"></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="8"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="alert('Đã lưu cấu hình chỉ số dự án!')"><i class="fas fa-save mr-1"></i>Lưu cấu hình</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 2: DRILL-DOWN DANH SÁCH KHÁCH HÀNG -->
+<div class="modal fade" id="modalDrillDown" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white py-2">
+                <h6 class="modal-title font-weight-bold" id="ddTitle"><i class="fas fa-list-ul mr-2"></i>Chi tiết danh sách khách hàng (Drill-down)</h6>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <div>Chỉ tiêu đang xem: <strong class="text-primary" id="ddSubTitle"></strong> — Số lượng: <span class="badge badge-danger" id="ddCount"></span></div>
+                    <button class="btn btn-outline-success btn-sm"><i class="fas fa-file-excel mr-1"></i>Xuất danh sách chi tiết</button>
+                </div>
+                <table class="table table-sm table-striped table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Mã KH (Record ID)</th>
+                            <th>Tỉnh/TP</th>
+                            <th>Nhóm CBO/DNXH</th>
+                            <th>Tiếp cận viên</th>
+                            <th>Nhóm KP</th>
+                            <th>Giới tính</th>
+                            <th>Năm sinh</th>
+                            <th>Ngày thực hiện</th>
+                            <th>Chi tiết dịch vụ / Kết quả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><b>DHN020001</b></td><td>Hà Nội</td><td>Về Nhà</td><td>Đỗ Thị Luận</td><td>PUD</td><td>Nam</td><td>2007</td><td>16/06/2026</td><td>Hoàn thành (Complete)</td></tr>
+                        <tr><td>2</td><td><b>DHN020005</b></td><td>Hà Nội</td><td>Về Nhà</td><td>Chu Thanh Hà</td><td>PLHIV</td><td>Nam</td><td>1979</td><td>16/06/2026</td><td>Hoàn thành (Complete)</td></tr>
+                        <tr><td>3</td><td><b>DHN020008</b></td><td>Hà Nội</td><td>Về Nhà</td><td>Đỗ Thị Luận</td><td>PUD</td><td>Nam</td><td>1976</td><td>16/06/2026</td><td>Khám lần 1 - BV Lão khoa - F51 Mất ngủ</td></tr>
+                        <tr><td>4</td><td><b>DHY230012</b></td><td>Hưng Yên</td><td>Liên Minh Hạnh Phúc</td><td>Nguyễn Hải Hưng</td><td>MSM</td><td>Nam</td><td>1998</td><td>21/07/2026</td><td>Hoàn thành (Complete)</td></tr>
+                        <tr><td>5</td><td><b>DHP090003</b></td><td>Hải Phòng</td><td>Hải Đăng</td><td>Bùi Văn Bằng</td><td>PUD</td><td>Nam</td><td>1985</td><td>05/08/2026</td><td>Hoàn thành (Complete)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleSubRows() {
+        var show = document.getElementById('swSubRows').checked;
+        var rows = document.querySelectorAll('tr[data-rowtype="sub"]');
+        rows.forEach(function(r) { r.style.display = show ? '' : 'none'; });
+    }
+    function toggleMetaCols() {
+        var show = document.getElementById('swMetaCols').checked;
+        var cells = document.querySelectorAll('.col-meta');
+        cells.forEach(function(c) { c.style.display = show ? '' : 'none'; });
+    }
+    function openDrillDown(code, name, count) {
+        document.getElementById('ddSubTitle').innerText = '[' + code + '] ' + name;
+        document.getElementById('ddCount').innerText = count;
+        $('#modalDrillDown').modal('show');
+    }
+</script>
+</body>
+</html>
