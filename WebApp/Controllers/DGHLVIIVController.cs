@@ -15,7 +15,7 @@ using log4net;
 
 namespace WebApp.Controllers
 {
-    public class DGHLVIIVController : Controller
+    public class DGHLVIIVController : BaseController
     {
         // GET: DGHLVIIV
         readonly IDGHLVIIVDA _DGHLVIIVDA;

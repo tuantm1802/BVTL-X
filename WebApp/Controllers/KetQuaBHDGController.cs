@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class KetQuaBHDGController : Controller
+    public class KetQuaBHDGController : BaseController
     {
         readonly IKetQuaBHDGDA _KetQuaBHDGDA;
         readonly ISysLogDA _sysLogDA;

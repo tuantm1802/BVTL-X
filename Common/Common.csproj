@@ -106,6 +106,7 @@
     <Compile Include="Common\ConvertResultApiToEntity.cs" />
     <Compile Include="Common\DatabaseSql.cs" />
     <Compile Include="Common\Encryptor.cs" />
+    <Compile Include="Common\LoginGuard.cs" />
     <Compile Include="Common\ExportExcel.cs" />
     <Compile Include="Common\HasCredentialAttribute.cs" />
     <Compile Include="Common\HelperFileAttachment.cs" />

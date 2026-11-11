@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class TTTruyenThongVIIVController : Controller
+    public class TTTruyenThongVIIVController : BaseController
     {
         readonly ITTTruyenThongVIIVDA _TTTruyenThongVIIVDA;
         readonly ISysLogDA _sysLogDA;

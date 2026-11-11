@@ -15,7 +15,7 @@ using Model.ModelExtend;
 
 namespace WebApp.Controllers
 {
-    public class KetQuaXNNTController : Controller
+    public class KetQuaXNNTController : BaseController
     {
         readonly IKetQuaXNNTDA _KetQuaXNNTDA;
         readonly ISysLogDA _sysLogDA;

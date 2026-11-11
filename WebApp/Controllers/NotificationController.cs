@@ -17,7 +17,7 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class NotificationController : Controller
+    public class NotificationController : BaseController
     {
         readonly ISysLogDA _sysLogDA;
 

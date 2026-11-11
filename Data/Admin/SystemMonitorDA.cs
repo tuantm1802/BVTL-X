@@ -1,4 +1,4 @@
-using Common.Common;
+﻿using Common.Common;
 using Common.ICommon;
 using Data.InterfaceDA.Admin;
 using log4net;
@@ -69,6 +69,14 @@ namespace Data.Admin
                         CREATE INDEX IX_LOGIN_HIST_USER ON [dbo].[BVTL_LOGIN_HISTORY](UserName);
                     END
 
+                    -- 1b. Nâng cấp cột UserName (VARCHAR(50) -> NVARCHAR(255)) để không mất dấu vết khi bị gửi payload dài
+                    IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.BVTL_LOGIN_HISTORY') AND name = 'UserName' AND max_length < 510)
+                    BEGIN
+                        IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_LOGIN_HIST_USER' AND object_id = OBJECT_ID('dbo.BVTL_LOGIN_HISTORY'))
+                            DROP INDEX IX_LOGIN_HIST_USER ON [dbo].[BVTL_LOGIN_HISTORY];
+                        ALTER TABLE [dbo].[BVTL_LOGIN_HISTORY] ALTER COLUMN [UserName] NVARCHAR(255) NOT NULL;
+                        CREATE INDEX IX_LOGIN_HIST_USER ON [dbo].[BVTL_LOGIN_HISTORY](UserName);
+                    END
                     -- 2. Bảng Phiên hoạt động Real-time (Online/Offline)
                     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'BVTL_USER_ONLINE')
                     BEGIN
@@ -177,6 +185,7 @@ namespace Data.Admin
                 ParseUserAgent(userAgent, out browser, out os, out deviceType);
 
                 string userName = user != null ? user.UserName : "Anonymous";
+                if (userName != null && userName.Length > 255) userName = userName.Substring(0, 255);
                 string fullName = user != null ? user.Name : "";
                 long? userId = user != null ? (long?)user.UserID : null;
 

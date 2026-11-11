@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class BaoCaoChiSoController : Controller
+    public class BaoCaoChiSoController : BaseController
     {
         readonly ICityDA _CityDA;
         readonly IDuAnDA _DuAnDA;

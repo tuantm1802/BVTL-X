@@ -14,7 +14,7 @@ using System.IO;
 
 namespace WebApp.Controllers
 {
-    public class TTKHMaDaVIIVController : Controller
+    public class TTKHMaDaVIIVController : BaseController
     {
         // GET: TTKHMaDaVIIV
         readonly ITTKHMaDaVIIVDA _TTKHMaDaVIIVDA;

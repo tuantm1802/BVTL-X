@@ -14,7 +14,7 @@ using System.IO;
 
 namespace WebApp.Controllers
 {
-    public class TrainingDataCollVIIVController : Controller
+    public class TrainingDataCollVIIVController : BaseController
     {
         // GET: TrainingDataColl
         readonly ITrainingDataCollVIIVDA _TrainingDataCollVIIVDA;

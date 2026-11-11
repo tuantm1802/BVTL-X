@@ -380,6 +380,10 @@ document.addEventListener('alpine:init', () => {
                 case 'WrongPassword': return 'badge bg-danger text-white';
                 case 'AccountLocked': return 'badge bg-dark text-white';
                 case 'UserNotFound': return 'badge bg-secondary text-white';
+                case 'AttackBlocked': return 'badge bg-danger text-white';
+                case 'InvalidFormat': return 'badge bg-warning text-dark';
+                case 'IpBlocked': return 'badge bg-dark text-white';
+                case 'AccountTempLocked': return 'badge bg-dark text-white';
                 default: return 'badge bg-secondary text-white';
             }
         },
@@ -392,6 +396,10 @@ document.addEventListener('alpine:init', () => {
                 case 'WrongPassword': return 'Sai mật khẩu';
                 case 'AccountLocked': return 'Tài khoản bị khóa';
                 case 'UserNotFound': return 'Không tồn tại';
+                case 'AttackBlocked': return '⚠ Nghi tấn công (đã chặn)';
+                case 'InvalidFormat': return 'Sai định dạng';
+                case 'IpBlocked': return 'IP bị khóa tạm';
+                case 'AccountTempLocked': return 'Khóa tạm (sai nhiều lần)';
                 default: return status || 'Không xác định';
             }
         }
