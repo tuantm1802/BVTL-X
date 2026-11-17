@@ -2484,3 +2484,24 @@ Xử lý trọn vẹn 3 nội dung phản ánh lỗi từ người dùng kèm 3 
    - Nâng tag Git SemVer v1.7.10.
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.10.rar.
    - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
+---
+
+## Phiên 54: 17/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Nâng cấp bộ lọc Chất lượng dữ liệu (Data Quality) & Drill-down theo đơn vị**:
+   - **DataQualityDA.cs & IDataQualityDA.cs**:
+     - Mở rộng GetLogs với tham số lọc cityCode và maNhom thông qua CTE CTE_LogNhom (kết nối với CD45_KH và suy luận CITY_CODE từ RECORD_ID).
+     - Hỗ trợ bộ lọc mức độ tổng hợp WARNING_ERROR (gồm cả WARNING và ERROR) và mở rộng tìm kiếm từ khóa theo RULE_CODE, FIELD_NAME.
+   - **DataQualityController.cs**:
+     - Bổ sung tham số cityCode, maNhom vào GetLogs và ExportExcel (các tab Tổng quan, Cảnh báo, Chi tiết) kèm mô tả bộ lọc khi xuất Excel.
+   - **Views/DataQuality/Index.cshtml & AlpineDataQualityController.js**:
+     - Hiển thị badge lọc đơn vị (Tỉnh / Nhóm) ở tab Chi tiết cùng nút Bỏ lọc đơn vị.
+     - Bổ sung tùy chọn WARNING & ERROR (Cần xử lý) và bộ lọc trạng thái (Tất cả, Chưa xong, Xong) trong modal drill-down đơn vị.
+     - Cập nhật jumpToDetailsTab() và liên kết xuất Excel truyền đầy đủ cityCode, maNhom.
+2. **Kiểm thử tự động (Unit Tests)**:
+   - Chạy toàn bộ bộ kiểm thử BVTL.Tests.dll: 181/181 tests PASSED (100%).
+3. **Phát hành & Triển khai (v1.7.11)**:
+   - Nâng tag Git SemVer 1.7.11 và đồng bộ lên origin/TUANTM_BVTL_V1.0.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.11.rar.
+   - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
