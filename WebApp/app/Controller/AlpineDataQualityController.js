@@ -23,12 +23,16 @@ document.addEventListener('alpine:init', function () {
             unitDrillItems: [],
             filteredUnitDrillItems: [],
             unitDrillSearchText: '',
+            unitDrillStatusFilter: '',
             isUnitDrillLoading: false,
             filterMaDuAn: 'CD45',
             filterApiCode: '',
             filterSeverity: 'WARNING',
             filterIsResolved: '',
             filterKeyword: '',
+            filterCityCode: '',
+            filterMaNhom: '',
+            filterUnitLabel: '',
             pageIndex: 1,
             pageSize: 20,
             totalRows: 0,
@@ -82,6 +86,8 @@ document.addEventListener('alpine:init', function () {
                         severity: self.filterSeverity,
                         keyword: self.filterKeyword,
                         isResolved: isRes,
+                        cityCode: self.filterCityCode,
+                        maNhom: self.filterMaNhom,
                         pageIndex: self.pageIndex,
                         pageSize: self.pageSize
                     },
@@ -200,6 +206,7 @@ document.addEventListener('alpine:init', function () {
                             if (window.toastr) toastr.success("Đã chuyển trạng thái sang Xong!");
                             logItem.IS_RESOLVED = true;
                             logItem.RESOLVED_NOTE = note;
+                            if (self.unitDrillItems && self.unitDrillItems.length > 0) self.filterUnitDrill();
                             self.loadStats();
                             if (self.activeTab === 'grouped') self.loadGroupedLogs();
                             if (self.activeTab === 'byUnit') self.loadStatsByNhom();
@@ -252,6 +259,7 @@ document.addEventListener('alpine:init', function () {
                             if (window.toastr) toastr.info("Đã chuyển về trạng thái Chưa xong!");
                             logItem.IS_RESOLVED = false;
                             logItem.RESOLVED_NOTE = note;
+                            if (self.unitDrillItems && self.unitDrillItems.length > 0) self.filterUnitDrill();
                             self.loadStats();
                             if (self.activeTab === 'grouped') self.loadGroupedLogs();
                             if (self.activeTab === 'byUnit') self.loadStatsByNhom();
@@ -270,12 +278,14 @@ document.addEventListener('alpine:init', function () {
                 if (metricType === 'PENDING') count = unit.TotalPending;
                 else if (metricType === 'WARNING') count = unit.TotalWarnings;
                 else if (metricType === 'ERROR') count = unit.TotalErrors;
+                else if (metricType === 'RESOLVED') count = unit.TotalResolved;
                 var cityDisplay = unit.TEN_TINH ? (unit.TEN_TINH + (unit.CITY_CODE && unit.CITY_CODE !== unit.TEN_TINH ? ' (' + unit.CITY_CODE + ')' : '')) : (unit.CITY_CODE || '-');
                 var nhomDisplay = unit.TEN_NHOM ? (unit.TEN_NHOM + (unit.MA_NHOM && unit.MA_NHOM !== 'UNKNOWN' && unit.MA_NHOM !== unit.TEN_NHOM ? ' (' + unit.MA_NHOM + ')' : '')) : (unit.MA_NHOM || 'CHƯA PHÂN NHÓM');
                 self.unitDrillModalTitle = 'Chi tiết Cảnh báo: Tỉnh [' + cityDisplay + '] - Nhóm [' + nhomDisplay + '] | ' + metricLabel + ' (' + (count || 0) + ' bản ghi)';
                 self.unitDrillItems = [];
                 self.filteredUnitDrillItems = [];
                 self.unitDrillSearchText = '';
+                self.unitDrillStatusFilter = '';
                 self.isUnitDrillLoading = true;
 
                 // Show modal safely for Bootstrap 5, Bootstrap 4/jQuery, or CSS fallback
@@ -339,14 +349,20 @@ document.addEventListener('alpine:init', function () {
                 }
             },
 
+            setUnitDrillStatusFilter: function (status) {
+                this.unitDrillStatusFilter = status;
+                this.filterUnitDrill();
+            },
+
             filterUnitDrill: function () {
                 var self = this;
                 var kw = (self.unitDrillSearchText || '').trim().toLowerCase();
-                if (!kw) {
-                    self.filteredUnitDrillItems = self.unitDrillItems;
-                    return;
-                }
-                self.filteredUnitDrillItems = self.unitDrillItems.filter(function (x) {
+                var st = self.unitDrillStatusFilter || '';
+
+                self.filteredUnitDrillItems = (self.unitDrillItems || []).filter(function (x) {
+                    if (st === 'true' && !x.IS_RESOLVED) return false;
+                    if (st === 'false' && x.IS_RESOLVED) return false;
+                    if (!kw) return true;
                     return (x.RECORD_ID && x.RECORD_ID.toLowerCase().indexOf(kw) >= 0)
                         || (x.RULE_CODE && x.RULE_CODE.toLowerCase().indexOf(kw) >= 0)
                         || (x.MESSAGE && x.MESSAGE.toLowerCase().indexOf(kw) >= 0)
@@ -359,24 +375,43 @@ document.addEventListener('alpine:init', function () {
                 this.markResolved(logItem);
             },
 
+            clearUnitFilter: function () {
+                this.filterCityCode = '';
+                this.filterMaNhom = '';
+                this.filterUnitLabel = '';
+                this.loadLogs(1);
+            },
+
             jumpToDetailsTab: function () {
                 var self = this;
                 self.closeUnitDrillDown();
                 self.activeTab = 'details';
-                if (self.currentDrillUnit && self.currentDrillUnit.CITY_CODE && self.currentDrillUnit.CITY_CODE !== '-') {
-                    self.filterKeyword = self.currentDrillUnit.CITY_CODE;
+                self.filterKeyword = '';
+                self.filterApiCode = '';
+
+                if (self.currentDrillUnit) {
+                    self.filterCityCode = (self.currentDrillUnit.CITY_CODE && self.currentDrillUnit.CITY_CODE !== '-') ? self.currentDrillUnit.CITY_CODE : '';
+                    self.filterMaNhom = self.currentDrillUnit.MA_NHOM || '';
+                    var cityDisplay = self.currentDrillUnit.TEN_TINH || self.filterCityCode || '';
+                    var nhomDisplay = self.currentDrillUnit.TEN_NHOM || self.filterMaNhom || '';
+                    self.filterUnitLabel = (cityDisplay ? ('Tỉnh ' + cityDisplay) : '') + (nhomDisplay ? ((cityDisplay ? ' - ' : '') + 'Nhóm ' + nhomDisplay) : '');
+                } else {
+                    self.filterCityCode = '';
+                    self.filterMaNhom = '';
+                    self.filterUnitLabel = '';
                 }
+
                 if (self.currentDrillMetric === 'ERROR') {
                     self.filterSeverity = 'ERROR';
-                    self.filterIsResolved = 'false';
+                    self.filterIsResolved = '';
                 } else if (self.currentDrillMetric === 'WARNING') {
                     self.filterSeverity = 'WARNING';
-                    self.filterIsResolved = 'false';
+                    self.filterIsResolved = '';
                 } else if (self.currentDrillMetric === 'RESOLVED') {
                     self.filterSeverity = '';
                     self.filterIsResolved = 'true';
                 } else if (self.currentDrillMetric === 'PENDING') {
-                    self.filterSeverity = '';
+                    self.filterSeverity = 'WARNING_ERROR';
                     self.filterIsResolved = 'false';
                 }
                 self.loadLogs(1);
@@ -414,7 +449,9 @@ document.addEventListener('alpine:init', function () {
                         '&apiCode=' + encodeURIComponent(self.filterApiCode || '') +
                         '&severity=' + encodeURIComponent(self.filterSeverity || '') +
                         '&isResolved=' + encodeURIComponent(self.filterIsResolved || '') +
-                        '&keyword=' + encodeURIComponent(self.filterKeyword || '');
+                        '&keyword=' + encodeURIComponent(self.filterKeyword || '') +
+                        '&cityCode=' + encodeURIComponent(self.filterCityCode || '') +
+                        '&maNhom=' + encodeURIComponent(self.filterMaNhom || '');
                 }
             },
 
@@ -424,7 +461,9 @@ document.addEventListener('alpine:init', function () {
                     '&apiCode=' + encodeURIComponent(self.filterApiCode || '') +
                     '&severity=' + encodeURIComponent(self.filterSeverity || '') +
                     '&isResolved=' + encodeURIComponent(self.filterIsResolved || '') +
-                    '&keyword=' + encodeURIComponent(self.filterKeyword || '');
+                    '&keyword=' + encodeURIComponent(self.filterKeyword || '') +
+                    '&cityCode=' + encodeURIComponent(self.filterCityCode || '') +
+                    '&maNhom=' + encodeURIComponent(self.filterMaNhom || '');
             },
 
             exportWarningsOnly: function () {

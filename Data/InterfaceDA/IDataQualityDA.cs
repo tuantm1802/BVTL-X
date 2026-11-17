@@ -6,7 +6,7 @@ namespace Data.InterfaceDA
 {
     public interface IDataQualityDA
     {
-        List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, int pageIndex, int pageSize, out int totalRows);
+        List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, int pageIndex, int pageSize, out int totalRows, string cityCode = null, string maNhom = null);
         List<GroupedDataQualityLogModel> GetGroupedLogs(string maDuAn, string severity);
         List<DataQualityStatsByNhomModel> GetStatsByNhom(string maDuAn);
         dynamic GetStats(string maDuAn);

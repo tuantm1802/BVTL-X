@@ -20,13 +20,13 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, int pageIndex = 1, int pageSize = 20)
+        public JsonResult GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, string cityCode = null, string maNhom = null, int pageIndex = 1, int pageSize = 20)
         {
             try
             {
                 if (string.IsNullOrEmpty(maDuAn)) maDuAn = "CD45";
                 int totalRows = 0;
-                var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, isResolved, pageIndex, pageSize, out totalRows);
+                var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, isResolved, pageIndex, pageSize, out totalRows, cityCode, maNhom);
                 return Json(new { Success = true, Data = logs, TotalRows = totalRows, PageIndex = pageIndex, PageSize = pageSize });
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportExcel(string tabType, string maDuAn, string apiCode, string severity, string keyword, string isResolved)
+        public ActionResult ExportExcel(string tabType, string maDuAn, string apiCode, string severity, string keyword, string isResolved, string cityCode = null, string maNhom = null)
         {
             try
             {
@@ -187,7 +187,7 @@ namespace WebApp.Controllers
 
                         // 3. Sheet Chi tiết Sự kiện & Cảnh báo (Cấp chi tiết bản ghi)
                         int totalRows = 0;
-                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, resolvedBool, 1, 10000, out totalRows);
+                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, resolvedBool, 1, 10000, out totalRows, cityCode, maNhom);
                         var wsDetails = workbook.Worksheets.Add("ChiTiet_CanhBao");
                         string subtitle = $"Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số bản ghi chi tiết: {logs.Count}";
                         BuildSheetDetails(wsDetails, logs, subtitle);
@@ -197,7 +197,7 @@ namespace WebApp.Controllers
                     else if (tabType == "warnings")
                     {
                         int totalRows = 0;
-                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, "WARNING", null, false, 1, 10000, out totalRows);
+                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, "WARNING", null, false, 1, 10000, out totalRows, cityCode, maNhom);
                         var ws = workbook.Worksheets.Add("CanhBaoDuLieu");
                         string subtitle = $"Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Danh sách cảnh báo chưa xử lý (cho M&E) | Tổng số: {logs.Count}";
                         BuildSheetDetails(ws, logs, subtitle);
@@ -206,9 +206,11 @@ namespace WebApp.Controllers
                     else // "details"
                     {
                         int totalRows = 0;
-                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, resolvedBool, 1, 10000, out totalRows);
+                        var logs = _dataQualityDA.GetLogs(maDuAn, apiCode, severity, keyword, resolvedBool, 1, 10000, out totalRows, cityCode, maNhom);
                         var ws = workbook.Worksheets.Add("ChiTiet_SuKien");
                         string filterDesc = $"Biểu mẫu: {(string.IsNullOrEmpty(apiCode) ? "Tất cả" : apiCode)}, Mức độ: {(string.IsNullOrEmpty(severity) ? "Tất cả" : severity)}, Trạng thái: {(resolvedBool.HasValue ? (resolvedBool.Value ? "Đã sửa" : "Chưa sửa") : "Tất cả")}";
+                        if (!string.IsNullOrEmpty(cityCode)) filterDesc += $", Tỉnh: {cityCode}";
+                        if (!string.IsNullOrEmpty(maNhom)) filterDesc += $", Nhóm: {maNhom}";
                         if (!string.IsNullOrEmpty(keyword)) filterDesc += $", Từ khóa: '{keyword}'";
                         string subtitle = $"Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Bộ lọc: [{filterDesc}] | Tổng số bản ghi: {logs.Count}";
                         BuildSheetDetails(ws, logs, subtitle);

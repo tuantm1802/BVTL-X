@@ -212,8 +212,17 @@
     <div x-show="!activeTab || activeTab === 'details'">
         <!-- Filter Card -->
         <div class="card shadow mb-4">
-            <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
                 <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc tra cứu nhật ký</h6>
+                <template x-if="filterCityCode || filterMaNhom">
+                    <div class="d-flex align-items-center bg-white text-dark rounded px-2 py-1 small shadow-sm">
+                        <i class="fas fa-map-marker-alt text-primary mr-1"></i>
+                        <span class="font-weight-bold mr-2" x-text="'Đơn vị: ' + (filterUnitLabel || (filterCityCode + ' / ' + filterMaNhom))"></span>
+                        <button type="button" class="btn btn-xs btn-outline-danger py-0 px-1" style="font-size: 11px;" @@click="clearUnitFilter()" title="Bỏ lọc theo đơn vị">
+                            <i class="fas fa-times mr-1"></i>Bỏ lọc đơn vị
+                        </button>
+                    </div>
+                </template>
             </div>
             <div class="card-body py-3">
                 <div class="row">
@@ -239,6 +248,7 @@
                         <select class="form-control form-control-sm" x-model="filterSeverity" @@change="loadLogs(1)">
                             <option value="WARNING">WARNING (Cảnh báo nghi vấn)</option>
                             <option value="ERROR">ERROR (Lỗi nghiêm trọng / Chặn)</option>
+                            <option value="WARNING_ERROR">WARNING &amp; ERROR (Cần xử lý)</option>
                             <option value="INFO">INFO (Tự động chuẩn hóa tóm tắt)</option>
                             <option value="">-- Tất cả mức độ --</option>
                         </select>
@@ -554,9 +564,20 @@
                     </button>
                 </div>
                 <div class="modal-body py-2">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="w-50">
-                            <input type="text" class="form-control form-control-sm" placeholder="Tìm nhanh mã KH, thông báo, quy tắc, trường..." x-model="unitDrillSearchText" x-on:input="filterUnitDrill()" />
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 8px;">
+                        <div class="d-flex align-items-center flex-grow-1" style="gap: 8px;">
+                            <input type="text" class="form-control form-control-sm" style="max-width: 340px;" placeholder="Tìm nhanh mã KH, thông báo, quy tắc, trường..." x-model="unitDrillSearchText" x-on:input="filterUnitDrill()" />
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Lọc theo trạng thái">
+                                <button type="button" class="btn" :class="unitDrillStatusFilter === '' ? 'btn-primary font-weight-bold' : 'btn-outline-secondary'" x-on:click="setUnitDrillStatusFilter('')">
+                                    Tất cả
+                                </button>
+                                <button type="button" class="btn" :class="unitDrillStatusFilter === 'false' ? 'btn-warning text-dark font-weight-bold' : 'btn-outline-secondary'" x-on:click="setUnitDrillStatusFilter('false')">
+                                    <i class="fas fa-clock fa-xs mr-1"></i>Chưa xong
+                                </button>
+                                <button type="button" class="btn" :class="unitDrillStatusFilter === 'true' ? 'btn-success font-weight-bold' : 'btn-outline-secondary'" x-on:click="setUnitDrillStatusFilter('true')">
+                                    <i class="fas fa-check fa-xs mr-1"></i>Xong
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <span class="badge badge-primary font-weight-bold py-1 px-2" x-text="'Đang hiển thị: ' + filteredUnitDrillItems.length + ' / ' + unitDrillItems.length + ' bản ghi'"></span>

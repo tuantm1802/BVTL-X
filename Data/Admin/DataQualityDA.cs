@@ -12,47 +12,73 @@ namespace Data.Admin
     {
         BVTL_REPORTINGEntities db = new BVTL_REPORTINGEntities();
 
-        public List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, int pageIndex, int pageSize, out int totalRows)
+        public List<BVTL_DATA_STANDARDIZATION_LOG_Entity> GetLogs(string maDuAn, string apiCode, string severity, string keyword, bool? isResolved, int pageIndex, int pageSize, out int totalRows, string cityCode = null, string maNhom = null)
         {
-            var pDuAn1 = new SqlParameter("@MaDuAn", string.IsNullOrEmpty(maDuAn) ? DBNull.Value : (object)maDuAn);
-            var pApi1 = new SqlParameter("@ApiCode", string.IsNullOrEmpty(apiCode) ? DBNull.Value : (object)apiCode);
-            var pSev1 = new SqlParameter("@Severity", string.IsNullOrEmpty(severity) ? DBNull.Value : (object)severity);
-            var pKey1 = new SqlParameter("@Keyword", string.IsNullOrEmpty(keyword) ? DBNull.Value : (object)keyword);
-            var pRes1 = new SqlParameter("@IsResolved", (object)isResolved ?? DBNull.Value);
+            string cleanCity = string.IsNullOrEmpty(cityCode) || cityCode == "-" ? null : cityCode.Trim();
+            string cleanNhom = string.IsNullOrEmpty(maNhom) ? null : maNhom.Trim();
 
-            var sqlCount = @"
-                SELECT COUNT(1)
-                FROM BVTL_DATA_STANDARDIZATION_LOG
-                WHERE (@MaDuAn IS NULL OR MADUAN = @MaDuAn)
-                  AND (@ApiCode IS NULL OR API_CODE = @ApiCode)
-                  AND (@Severity IS NULL OR SEVERITY = @Severity)
+            const string cteSql = @"
+                ;WITH CTE_LogNhom AS (
+                    SELECT 
+                        log.ID, log.MADUAN, log.REPORT_ID, log.API_CODE, log.TABLE_NAME, log.RECORD_ID, log.FIELD_NAME, 
+                        log.OLD_VALUE, log.NEW_VALUE, log.RULE_CODE, log.SEVERITY, log.ACTION_TAKEN, log.MESSAGE, 
+                        log.CREATED_DATE, log.IS_RESOLVED, log.RESOLVED_NOTE,
+                        COALESCE(log.MA_NHOM, kh.MA_NHOM, 'UNKNOWN') AS MA_NHOM,
+                        COALESCE(log.CITY_CODE, kh.CITY_CODE, 
+                            CASE WHEN log.RECORD_ID LIKE 'D[A-Z][A-Z]%' THEN SUBSTRING(log.RECORD_ID, 2, 2) ELSE NULL END, 
+                            'UNKNOWN') AS CITY_CODE
+                    FROM BVTL_DATA_STANDARDIZATION_LOG log
+                    LEFT JOIN CD45_KH kh ON log.RECORD_ID = kh.RECORD_ID AND log.MADUAN = kh.MADUAN
+                    WHERE (@MaDuAn IS NULL OR log.MADUAN = @MaDuAn)
+                )";
+
+            const string whereSql = @"
+                WHERE (@ApiCode IS NULL OR API_CODE = @ApiCode)
+                  AND (
+                      @Severity IS NULL 
+                      OR (@Severity = 'WARNING_ERROR' AND (SEVERITY = 'WARNING' OR SEVERITY = 'ERROR'))
+                      OR (@Severity <> 'WARNING_ERROR' AND SEVERITY = @Severity)
+                  )
                   AND (@IsResolved IS NULL OR IS_RESOLVED = @IsResolved)
-                  AND (@Keyword IS NULL OR RECORD_ID LIKE '%' + @Keyword + '%' OR MESSAGE LIKE '%' + @Keyword + '%')";
+                  AND (@CityCode IS NULL OR CITY_CODE = @CityCode)
+                  AND (@MaNhom IS NULL OR MA_NHOM = @MaNhom)
+                  AND (@Keyword IS NULL OR RECORD_ID LIKE '%' + @Keyword + '%' OR MESSAGE LIKE '%' + @Keyword + '%' OR RULE_CODE LIKE '%' + @Keyword + '%' OR FIELD_NAME LIKE '%' + @Keyword + '%')";
 
-            totalRows = db.Database.SqlQuery<int>(sqlCount, pDuAn1, pApi1, pSev1, pRes1, pKey1).FirstOrDefault();
+            var pCount = new[]
+            {
+                new SqlParameter("@MaDuAn", string.IsNullOrEmpty(maDuAn) ? DBNull.Value : (object)maDuAn),
+                new SqlParameter("@ApiCode", string.IsNullOrEmpty(apiCode) ? DBNull.Value : (object)apiCode),
+                new SqlParameter("@Severity", string.IsNullOrEmpty(severity) ? DBNull.Value : (object)severity),
+                new SqlParameter("@Keyword", string.IsNullOrEmpty(keyword) ? DBNull.Value : (object)keyword),
+                new SqlParameter("@IsResolved", (object)isResolved ?? DBNull.Value),
+                new SqlParameter("@CityCode", (object)cleanCity ?? DBNull.Value),
+                new SqlParameter("@MaNhom", (object)cleanNhom ?? DBNull.Value)
+            };
 
-            var pDuAn2 = new SqlParameter("@MaDuAn", string.IsNullOrEmpty(maDuAn) ? DBNull.Value : (object)maDuAn);
-            var pApi2 = new SqlParameter("@ApiCode", string.IsNullOrEmpty(apiCode) ? DBNull.Value : (object)apiCode);
-            var pSev2 = new SqlParameter("@Severity", string.IsNullOrEmpty(severity) ? DBNull.Value : (object)severity);
-            var pKey2 = new SqlParameter("@Keyword", string.IsNullOrEmpty(keyword) ? DBNull.Value : (object)keyword);
-            var pRes2 = new SqlParameter("@IsResolved", (object)isResolved ?? DBNull.Value);
-            var pOffset = new SqlParameter("@Offset", (pageIndex - 1) * pageSize);
-            var pSize = new SqlParameter("@PageSize", pageSize);
+            totalRows = db.Database.SqlQuery<int>(cteSql + " SELECT COUNT(1) FROM CTE_LogNhom " + whereSql, pCount).FirstOrDefault();
 
-            var sql = @"
+            var pList = new[]
+            {
+                new SqlParameter("@MaDuAn", string.IsNullOrEmpty(maDuAn) ? DBNull.Value : (object)maDuAn),
+                new SqlParameter("@ApiCode", string.IsNullOrEmpty(apiCode) ? DBNull.Value : (object)apiCode),
+                new SqlParameter("@Severity", string.IsNullOrEmpty(severity) ? DBNull.Value : (object)severity),
+                new SqlParameter("@Keyword", string.IsNullOrEmpty(keyword) ? DBNull.Value : (object)keyword),
+                new SqlParameter("@IsResolved", (object)isResolved ?? DBNull.Value),
+                new SqlParameter("@CityCode", (object)cleanCity ?? DBNull.Value),
+                new SqlParameter("@MaNhom", (object)cleanNhom ?? DBNull.Value),
+                new SqlParameter("@Offset", (pageIndex - 1) * pageSize),
+                new SqlParameter("@PageSize", pageSize)
+            };
+
+            var sql = cteSql + @"
                 SELECT ID, MADUAN, REPORT_ID, API_CODE, TABLE_NAME, RECORD_ID, FIELD_NAME, 
                        OLD_VALUE, NEW_VALUE, RULE_CODE, SEVERITY, ACTION_TAKEN, MESSAGE, 
                        CREATED_DATE, IS_RESOLVED, RESOLVED_NOTE, MA_NHOM, CITY_CODE
-                FROM BVTL_DATA_STANDARDIZATION_LOG
-                WHERE (@MaDuAn IS NULL OR MADUAN = @MaDuAn)
-                  AND (@ApiCode IS NULL OR API_CODE = @ApiCode)
-                  AND (@Severity IS NULL OR SEVERITY = @Severity)
-                  AND (@IsResolved IS NULL OR IS_RESOLVED = @IsResolved)
-                  AND (@Keyword IS NULL OR RECORD_ID LIKE '%' + @Keyword + '%' OR MESSAGE LIKE '%' + @Keyword + '%')
+                FROM CTE_LogNhom " + whereSql + @"
                 ORDER BY CREATED_DATE DESC, ID DESC
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
-            return db.Database.SqlQuery<BVTL_DATA_STANDARDIZATION_LOG_Entity>(sql, pDuAn2, pApi2, pSev2, pRes2, pKey2, pOffset, pSize).ToList();
+            return db.Database.SqlQuery<BVTL_DATA_STANDARDIZATION_LOG_Entity>(sql, pList).ToList();
         }
 
         public dynamic GetStats(string maDuAn)
