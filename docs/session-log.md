@@ -2505,3 +2505,19 @@ Xử lý trọn vẹn 3 nội dung phản ánh lỗi từ người dùng kèm 3 
    - Nâng tag Git SemVer 1.7.11 và đồng bộ lên origin/TUANTM_BVTL_V1.0.
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.11.rar.
    - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
+---
+
+## Phiên 55: 19/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Chuẩn hóa kiểm tra thứ tự tái khám biểu mẫu F6 (ConvertCD45ApiToEntity.cs)**:
+   - Xử lý trường hợp 
+edcap_repeat_instance trên REDCap không khớp thứ tự thời gian thực tế nhưng 6_examination_retry lại đúng trình tự ngày khám.
+   - Bổ sung tham số orderFieldName và ormatOrderLabel vào cơ chế kiểm tra nghịch đảo thời gian (ERR_CHRONOLOGICAL_INVERSION), trùng lặp (ERR_DUPLICATE_VISIT_ORDER), nhảy cóc (WARN_SKIPPED_VISIT_ORDER) và sai loại lần khám (WARN_F6_VISIT_TYPE_MISMATCH) để hiển thị nhãn chính xác theo lần tái khám.
+2. **Kiểm thử tự động (BVTL.Tests/DataValidationP1Tests.cs)**:
+   - Bổ sung 3 bài test cho ConvertF6 (instance lệch thứ tự nhưng đúng 6_examination_retry, nghịch đảo thời gian thực tế, và trường hợp chỉ có tái khám chưa có khám lần đầu).
+   - Chạy toàn bộ bộ kiểm thử BVTL.Tests.dll: 184/184 tests PASSED (100%).
+3. **Phát hành & Triển khai (1.7.12)**:
+   - Nâng tag Git SemVer 1.7.12 và đồng bộ lên origin/TUANTM_BVTL_V1.0.
+   - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.7.12.rar.
+   - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
