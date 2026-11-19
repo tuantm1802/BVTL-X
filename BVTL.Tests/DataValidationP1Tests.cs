@@ -267,5 +267,93 @@ namespace BVTL.Tests
             Assert.AreEqual("alo", resAcNoDag.maNhom); // ac tự động map về alo
             Assert.AreEqual("8", resAcNoDag.maTcv);
         }
+
+        [TestMethod]
+        public void ConvertF6_WhenInstancesOutOfOrderButRetryOrderMatchesChronology_ShouldNotLogInversion()
+        {
+            var converter = new ConvertCD45ApiToEntity();
+            // Mô phỏng dữ liệu thực tế của DHN040002: Instance 5 là Tái khám lần 5 (15/10), Instance 6 là Tái khám lần 4 (05/10)
+            string json = @"[
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""1"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-07-01"", ""f6_examination"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""2"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-07-15"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""3"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-08-14"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""2"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""4"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-09-21"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""3"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""5"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-10-15"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""5"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""6"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-10-05"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""4"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""7"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-11-03"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""6"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040002"", ""redcap_repeat_instance"": ""8"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-11-18"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""7"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" }
+            ]";
+            var apiData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json);
+
+            var context = new CD45ValidationContext();
+            context.RegisterClientF1("DHN040002", "2", 1, new DateTime(2026, 6, 15));
+
+            var entities = new List<CD45_CHAN_DOAN_Entity>();
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+
+            converter.ConvertF6(apiData, "CD45", "API_CD45_F6", "REP1", ref entities, ref logs, context);
+
+            Assert.AreEqual(8, entities.Count);
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "ERR_CHRONOLOGICAL_INVERSION"), "Should not report chronological inversion when retry order matches dates");
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "ERR_DUPLICATE_VISIT_ORDER"));
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "WARN_SKIPPED_VISIT_ORDER"));
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "WARN_F6_VISIT_TYPE_MISMATCH"));
+        }
+
+        [TestMethod]
+        public void ConvertF6_WhenRetryOrderHasRealChronologicalInversion_ShouldLogErrorWithRetryLabels()
+        {
+            var converter = new ConvertCD45ApiToEntity();
+            string json = @"[
+              { ""record_id"": ""DHN040099"", ""redcap_repeat_instance"": ""1"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-07-01"", ""f6_examination"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040099"", ""redcap_repeat_instance"": ""2"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-10-05"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""4"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040099"", ""redcap_repeat_instance"": ""3"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-10-01"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""5"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" }
+            ]";
+            var apiData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json);
+
+            var context = new CD45ValidationContext();
+            context.RegisterClientF1("DHN040099", "2", 1, new DateTime(2026, 6, 15));
+
+            var entities = new List<CD45_CHAN_DOAN_Entity>();
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+
+            converter.ConvertF6(apiData, "CD45", "API_CD45_F6", "REP1", ref entities, ref logs, context);
+
+            var inv = logs.Find(l => l.RULE_CODE == "ERR_CHRONOLOGICAL_INVERSION");
+            Assert.IsNotNull(inv);
+            StringAssert.Contains(inv.MESSAGE, "Tái khám lần 5");
+            StringAssert.Contains(inv.MESSAGE, "Tái khám lần 4");
+
+            var skipped = logs.Find(l => l.RULE_CODE == "WARN_SKIPPED_VISIT_ORDER");
+            Assert.IsNotNull(skipped);
+            Assert.AreEqual("f6_examination_retry", skipped.FIELD_NAME);
+        }
+
+        [TestMethod]
+        public void ConvertF6_WhenOnlyRetryWithoutFirstVisit_ShouldWarnMismatch_AndBackfilledFirstVisitShouldNotWarn()
+        {
+            var converter = new ConvertCD45ApiToEntity();
+            var context = new CD45ValidationContext();
+            context.RegisterClientF1("DHN040100", "2", 1, new DateTime(2026, 6, 15));
+            context.RegisterClientF1("DHN040101", "2", 1, new DateTime(2026, 6, 15));
+
+            // Case 1: Chỉ có Tái khám (Instance #1), không có Khám lần đầu -> phải cảnh báo
+            string jsonNoFirst = @"[{ ""record_id"": ""DHN040100"", ""redcap_repeat_instance"": ""1"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-08-01"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" }]";
+            var entities1 = new List<CD45_CHAN_DOAN_Entity>();
+            var logs1 = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            converter.ConvertF6(Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonNoFirst), "CD45", "API_CD45_F6", "REP1", ref entities1, ref logs1, context);
+            Assert.IsTrue(logs1.Exists(l => l.RULE_CODE == "WARN_F6_VISIT_TYPE_MISMATCH"));
+
+            // Case 2: Nhập bù Khám lần đầu ở Instance #2 nhưng đúng ngày sớm hơn -> không cảnh báo giả
+            string jsonBackfilled = @"[
+              { ""record_id"": ""DHN040101"", ""redcap_repeat_instance"": ""1"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-08-01"", ""f6_examination"": ""2"", ""f6_examination_retry"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" },
+              { ""record_id"": ""DHN040101"", ""redcap_repeat_instance"": ""2"", ""redcap_data_access_group"": ""its_t_time"", ""f6_date"": ""2026-07-01"", ""f6_examination"": ""1"", ""f6_thng_tin_chn_on_v_iu_tr_complete"": ""2"" }
+            ]";
+            var entities2 = new List<CD45_CHAN_DOAN_Entity>();
+            var logs2 = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            converter.ConvertF6(Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonBackfilled), "CD45", "API_CD45_F6", "REP1", ref entities2, ref logs2, context);
+            Assert.IsFalse(logs2.Exists(l => l.RULE_CODE == "WARN_F6_VISIT_TYPE_MISMATCH"));
+            Assert.IsFalse(logs2.Exists(l => l.RULE_CODE == "ERR_CHRONOLOGICAL_INVERSION"));
+        }
     }
 }

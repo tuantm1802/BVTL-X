@@ -540,6 +540,7 @@ namespace Common.Common
             ref List<CD45_CHAN_DOAN_Entity> entities, ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs, CD45ValidationContext context = null)
         {
             var dagCollector = new DagSummaryCollector();
+            var f6OrderMeta = new Dictionary<CD45_CHAN_DOAN_Entity, (int? ExamRetry, int? EffectiveOrder)>();
 
             foreach (var item in apiData)
             {
@@ -602,45 +603,28 @@ namespace Common.Common
                 e.BAC_SI = DataCleanerHelper.CleanString(item.GetString("f6_doctor"), "f6_doctor", cleanRecordId, apiCode, "CD45_CHAN_DOAN", reportId, maDuAn, ref logs);
                 e.LAN_KHAM = item.GetByte("f6_examination");
 
-                // VR-06(b) [WARNING]: Kiểm tra lần khám đầu tiên phải là Khám đầu (1), các lần sau phải là Tái khám (2)
-                if (e.LAN_KHAM == 1 && e.REPEAT_INSTANCE > 1)
+                // Đọc "2.1 Tái khám lần thứ" (f6_examination_retry) để xác định thứ tự lần khám thực tế thay cho redcap_repeat_instance
+                int? examRetry = item.GetInt("f6_examination_retry");
+                int? effectiveOrder;
+                if (e.LAN_KHAM == 1)
                 {
-                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
-                    {
-                        MADUAN = maDuAn,
-                        REPORT_ID = reportId,
-                        API_CODE = apiCode,
-                        TABLE_NAME = "CD45_CHAN_DOAN",
-                        RECORD_ID = cleanRecordId,
-                        FIELD_NAME = "f6_examination",
-                        OLD_VALUE = "1 (Khám lần đầu)",
-                        NEW_VALUE = null,
-                        RULE_CODE = "WARN_F6_VISIT_TYPE_MISMATCH",
-                        SEVERITY = "WARNING",
-                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                        MESSAGE = $"Khách hàng {cleanRecordId} tại Instance #{e.REPEAT_INSTANCE} vẫn ghi nhận 'Khám lần đầu'. Theo logic cần là 'Tái khám'.",
-                        CREATED_DATE = DateTime.Now
-                    });
+                    effectiveOrder = 1; // Khám lần đầu
                 }
-                else if (e.LAN_KHAM == 2 && e.REPEAT_INSTANCE == 1)
+                else if (e.LAN_KHAM == 2)
                 {
-                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
-                    {
-                        MADUAN = maDuAn,
-                        REPORT_ID = reportId,
-                        API_CODE = apiCode,
-                        TABLE_NAME = "CD45_CHAN_DOAN",
-                        RECORD_ID = cleanRecordId,
-                        FIELD_NAME = "f6_examination",
-                        OLD_VALUE = "2 (Tái khám)",
-                        NEW_VALUE = null,
-                        RULE_CODE = "WARN_F6_VISIT_TYPE_MISMATCH",
-                        SEVERITY = "WARNING",
-                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                        MESSAGE = $"Khách hàng {cleanRecordId} tại Instance #1 lại ghi nhận 'Tái khám'. Theo logic cần là 'Khám lần đầu'.",
-                        CREATED_DATE = DateTime.Now
-                    });
+                    effectiveOrder = (examRetry.HasValue && examRetry.Value >= 1)
+                        ? examRetry.Value + 1
+                        : (e.REPEAT_INSTANCE.HasValue && e.REPEAT_INSTANCE.Value >= 2 ? e.REPEAT_INSTANCE.Value : 2);
                 }
+                else if (examRetry.HasValue && examRetry.Value >= 1)
+                {
+                    effectiveOrder = examRetry.Value + 1;
+                }
+                else
+                {
+                    effectiveOrder = e.REPEAT_INSTANCE;
+                }
+                f6OrderMeta[e] = (examRetry, effectiveOrder);
 
                 e.TRIEU_CHUNG = DataCleanerHelper.CleanString(item.GetString("f6_symptom") ?? item.GetString("f6_symptom_other"), "f6_symptom", cleanRecordId, apiCode, "CD45_CHAN_DOAN", reportId, maDuAn, ref logs);
                 e.CHAN_DOAN_CHINH = DataCleanerHelper.CleanString(item.GetString("f6_diagnose_pri"), "f6_diagnose_pri", cleanRecordId, apiCode, "CD45_CHAN_DOAN", reportId, maDuAn, ref logs);
@@ -703,8 +687,98 @@ namespace Common.Common
 
             dagCollector.FlushToLogs(maDuAn, apiCode, "CD45_CHAN_DOAN", reportId, ref logs);
 
-            // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ
-            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_KHAM, x => x.REPEAT_INSTANCE, null, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
+            // VR-06(b) [WARNING]: Kiểm tra tính hợp lệ của Khám lần đầu (1) và Tái khám (2) theo tập bản ghi thực tế của khách hàng
+            foreach (var grp in entities.GroupBy(x => x.RECORD_ID, StringComparer.OrdinalIgnoreCase))
+            {
+                string rid = grp.Key;
+                var clientVisits = grp.ToList();
+                var firstVisits = clientVisits.Where(x => x.LAN_KHAM == 1).ToList();
+                var retryVisits = clientVisits.Where(x => x.LAN_KHAM == 2).ToList();
+
+                foreach (var fv in firstVisits)
+                {
+                    if (f6OrderMeta.TryGetValue(fv, out var meta) && meta.ExamRetry.HasValue && meta.ExamRetry.Value > 0)
+                    {
+                        logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                        {
+                            MADUAN = maDuAn,
+                            REPORT_ID = reportId,
+                            API_CODE = apiCode,
+                            TABLE_NAME = "CD45_CHAN_DOAN",
+                            RECORD_ID = rid,
+                            FIELD_NAME = "f6_examination",
+                            OLD_VALUE = $"1 (Khám lần đầu) / Tái khám lần {meta.ExamRetry.Value}",
+                            NEW_VALUE = null,
+                            RULE_CODE = "WARN_F6_VISIT_TYPE_MISMATCH",
+                            SEVERITY = "WARNING",
+                            ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                            MESSAGE = $"Khách hàng {rid} tại Instance #{fv.REPEAT_INSTANCE} ghi nhận 'Khám lần đầu' nhưng lại có 'Tái khám lần {meta.ExamRetry.Value}'.",
+                            CREATED_DATE = DateTime.Now
+                        });
+                    }
+                }
+
+                if (firstVisits.Count > 1)
+                {
+                    var orderedFirst = firstVisits.OrderBy(x => x.NGAY_KHAM ?? DateTime.MaxValue).ThenBy(x => x.REPEAT_INSTANCE ?? int.MaxValue).Skip(1);
+                    foreach (var dupFirst in orderedFirst)
+                    {
+                        logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                        {
+                            MADUAN = maDuAn,
+                            REPORT_ID = reportId,
+                            API_CODE = apiCode,
+                            TABLE_NAME = "CD45_CHAN_DOAN",
+                            RECORD_ID = rid,
+                            FIELD_NAME = "f6_examination",
+                            OLD_VALUE = "1 (Khám lần đầu)",
+                            NEW_VALUE = null,
+                            RULE_CODE = "WARN_F6_VISIT_TYPE_MISMATCH",
+                            SEVERITY = "WARNING",
+                            ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                            MESSAGE = $"Khách hàng {rid} tại Instance #{dupFirst.REPEAT_INSTANCE} vẫn ghi nhận 'Khám lần đầu' trong khi đã có lần Khám đầu trước đó. Theo logic cần là 'Tái khám'.",
+                            CREATED_DATE = DateTime.Now
+                        });
+                    }
+                }
+
+                if (firstVisits.Count == 0 && retryVisits.Count > 0)
+                {
+                    var earliestRetry = retryVisits.OrderBy(x => x.NGAY_KHAM ?? DateTime.MaxValue).ThenBy(x => x.REPEAT_INSTANCE ?? int.MaxValue).First();
+                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                    {
+                        MADUAN = maDuAn,
+                        REPORT_ID = reportId,
+                        API_CODE = apiCode,
+                        TABLE_NAME = "CD45_CHAN_DOAN",
+                        RECORD_ID = rid,
+                        FIELD_NAME = "f6_examination",
+                        OLD_VALUE = "2 (Tái khám)",
+                        NEW_VALUE = null,
+                        RULE_CODE = "WARN_F6_VISIT_TYPE_MISMATCH",
+                        SEVERITY = "WARNING",
+                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                        MESSAGE = $"Khách hàng {rid} tại Instance #{earliestRetry.REPEAT_INSTANCE} ghi nhận 'Tái khám' nhưng chưa có bản ghi 'Khám lần đầu'.",
+                        CREATED_DATE = DateTime.Now
+                    });
+                }
+            }
+
+            // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ theo "2.1 Tái khám lần thứ" (f6_examination_retry)
+            ValidateServiceProgress(
+                entities,
+                x => x.RECORD_ID,
+                x => x.NGAY_KHAM,
+                x => f6OrderMeta.TryGetValue(x, out var meta) ? meta.EffectiveOrder : x.REPEAT_INSTANCE,
+                null,
+                "CD45_CHAN_DOAN",
+                apiCode,
+                reportId,
+                maDuAn,
+                ref logs,
+                checkChronologicalInversion: true,
+                formatOrderLabel: ord => ord == 1 ? "Khám lần đầu" : $"Tái khám lần {ord - 1}",
+                orderFieldName: "f6_examination_retry");
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_KHAM, x => x.COMPLETE_STATUS, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
@@ -1402,7 +1476,9 @@ namespace Common.Common
             string reportId,
             string maDuAn,
             ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs,
-            bool checkChronologicalInversion = true)
+            bool checkChronologicalInversion = true,
+            Func<int, string> formatOrderLabel = null,
+            string orderFieldName = "visit_order")
         {
             if (entities == null || entities.Count == 0 || logs == null) return;
 
@@ -1482,7 +1558,9 @@ namespace Common.Common
                 // VR-05(a): Trùng số lần thứ
                 if (duplicateOrders.Count > 0)
                 {
-                    string dupStr = string.Join(", ", duplicateOrders);
+                    string dupStr = formatOrderLabel != null
+                        ? string.Join(", ", duplicateOrders.OrderBy(o => o).Select(formatOrderLabel))
+                        : string.Join(", ", duplicateOrders.OrderBy(o => o));
                     logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                     {
                         MADUAN = maDuAn,
@@ -1490,8 +1568,8 @@ namespace Common.Common
                         API_CODE = apiCode,
                         TABLE_NAME = tableName,
                         RECORD_ID = rid,
-                        FIELD_NAME = "visit_order",
-                        OLD_VALUE = $"Lần {dupStr}",
+                        FIELD_NAME = orderFieldName,
+                        OLD_VALUE = formatOrderLabel != null ? dupStr : $"Lần {dupStr}",
                         NEW_VALUE = null,
                         RULE_CODE = "ERR_DUPLICATE_VISIT_ORDER",
                         SEVERITY = "ERROR",
@@ -1503,15 +1581,21 @@ namespace Common.Common
 
                 if (orderedEvents.Count >= 2)
                 {
-                    orderedEvents.Sort((a, b) => a.Order.CompareTo(b.Order));
+                    orderedEvents.Sort((a, b) =>
+                    {
+                        int cmp = a.Order.CompareTo(b.Order);
+                        return cmp != 0 ? cmp : a.Date.CompareTo(b.Date);
+                    });
 
                     // VR-05(b): Nghịch đảo thời gian (Ngày lần N+1 < Ngày lần N)
                     if (checkChronologicalInversion)
                     {
                         for (int i = 0; i < orderedEvents.Count - 1; i++)
                         {
-                            if (orderedEvents[i + 1].Date < orderedEvents[i].Date)
+                            if (orderedEvents[i + 1].Order > orderedEvents[i].Order && orderedEvents[i + 1].Date < orderedEvents[i].Date)
                             {
+                                string nextLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Buổi lần {orderedEvents[i + 1].Order}";
+                                string prevLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"buổi lần {orderedEvents[i].Order}";
                                 logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                                 {
                                     MADUAN = maDuAn,
@@ -1525,7 +1609,7 @@ namespace Common.Common
                                     RULE_CODE = "ERR_CHRONOLOGICAL_INVERSION",
                                     SEVERITY = "ERROR",
                                     ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                                    MESSAGE = $"Nghịch đảo thời gian: Buổi lần {orderedEvents[i + 1].Order} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước buổi lần {orderedEvents[i].Order} ({orderedEvents[i].Date:dd/MM/yyyy}).",
+                                    MESSAGE = $"Nghịch đảo thời gian: {nextLabel} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước {prevLabel} ({orderedEvents[i].Date:dd/MM/yyyy}).",
                                     CREATED_DATE = DateTime.Now
                                 });
                             }
@@ -1537,6 +1621,8 @@ namespace Common.Common
                     {
                         if (orderedEvents[i + 1].Order - orderedEvents[i].Order > 1)
                         {
+                            string prevOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"Lần {orderedEvents[i].Order}";
+                            string nextOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Lần {orderedEvents[i + 1].Order}";
                             logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                             {
                                 MADUAN = maDuAn,
@@ -1544,13 +1630,13 @@ namespace Common.Common
                                 API_CODE = apiCode,
                                 TABLE_NAME = tableName,
                                 RECORD_ID = rid,
-                                FIELD_NAME = "visit_order",
-                                OLD_VALUE = $"{orderedEvents[i].Order} -> {orderedEvents[i + 1].Order}",
+                                FIELD_NAME = orderFieldName,
+                                OLD_VALUE = formatOrderLabel != null ? $"{prevOrderStr} -> {nextOrderStr}" : $"{orderedEvents[i].Order} -> {orderedEvents[i + 1].Order}",
                                 NEW_VALUE = null,
                                 RULE_CODE = "WARN_SKIPPED_VISIT_ORDER",
                                 SEVERITY = "WARNING",
                                 ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                                MESSAGE = $"Khách hàng {rid} nhảy cóc số lần dịch vụ {tableName} (có Lần {orderedEvents[i].Order} và Lần {orderedEvents[i + 1].Order} nhưng thiếu các lần ở giữa).",
+                                MESSAGE = $"Khách hàng {rid} nhảy cóc số lần dịch vụ {tableName} (có {prevOrderStr} và {nextOrderStr} nhưng thiếu các lần ở giữa).",
                                 CREATED_DATE = DateTime.Now
                             });
                         }
