@@ -1,1 +1,451 @@
-﻿
+﻿@{
+    ViewBag.Title = "Báo cáo Chỉ số Dự án DREAMH (CD45)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .chiso-table th, .chiso-table td {
+        vertical-align: middle !important;
+        font-size: 0.82rem;
+    }
+    .chiso-table .row-sec {
+        background-color: #eaecf4 !important;
+        font-weight: 700;
+        color: #2e59d9;
+    }
+    .chiso-table .row-main td:nth-child(2) {
+        font-weight: 600;
+    }
+    .chiso-table .row-pct {
+        background-color: #f8f9fc;
+        font-style: italic;
+    }
+    .chiso-table .row-sub td:nth-child(2) {
+        color: #5a5c69;
+    }
+    .chiso-table .row-org {
+        background-color: #fdfdfe;
+    }
+    .cell-clickable {
+        cursor: pointer;
+        color: #2e59d9;
+        font-weight: 600;
+        text-decoration: underline dotted;
+    }
+    .cell-clickable:hover {
+        background-color: #eef2ff !important;
+        color: #1d4ed8;
+    }
+</style>
+
+<div class="container-fluid" x-data="alpineBaoCaoChiSoCD45()">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
+            <i class="fas fa-chart-bar text-primary mr-2"></i>BÁO CÁO CHỈ SỐ DỰ ÁN DREAMH (CD45)
+        </h1>
+        <div class="d-flex align-items-center" style="gap: 8px;">
+            <template x-if="isAdmin">
+                <button type="button" class="btn btn-sm btn-outline-primary shadow-sm" x-on:click="openConfigModal()">
+                    <i class="fas fa-sliders-h mr-1"></i> Cấu hình chỉ tiêu / Tham số
+                </button>
+            </template>
+            <button type="button" class="btn btn-sm btn-success shadow-sm" x-on:click="exportExcel()" :disabled="isLoading || rows.length === 0">
+                <i class="fas fa-file-excel mr-1"></i> Xuất Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow mb-3">
+        <div class="card-header py-2 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold"><i class="fas fa-filter mr-1"></i> Bộ lọc báo cáo chỉ số</h6>
+            <span class="small" x-show="filters.isCumulative">Đang xem số liệu: <strong>Lũy kế</strong></span>
+        </div>
+        <div class="card-body py-3">
+            <div class="row">
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Kỳ báo cáo</label>
+                    <select class="form-control form-control-sm" x-model="filters.periodType" x-on:change="onPeriodChange()">
+                        <option value="12T">12 Tháng (Cả năm)</option>
+                        <option value="6T">6 Tháng</option>
+                        <option value="ALL">Toàn dự án</option>
+                        <option value="TuyChon">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 mb-2" x-show="filters.periodType === '12T' || filters.periodType === '6T'">
+                    <label class="font-weight-bold small">Năm</label>
+                    <select class="form-control form-control-sm" x-model="filters.nam" x-on:change="onPeriodChange()">
+                        <template x-for="y in yearOptions" :key="y">
+                            <option :value="y" x-text="y"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2" x-show="filters.periodType === '6T'">
+                    <label class="font-weight-bold small">Kỳ 6 tháng</label>
+                    <select class="form-control form-control-sm" x-model="filters.halfYear" x-on:change="onPeriodChange()">
+                        <option value="H1">6 Tháng đầu năm (H1)</option>
+                        <option value="H2">6 Tháng cuối năm (H2)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Từ ngày</label>
+                    <input type="text" id="txtFromDate" class="form-control form-control-sm datepicker smart-date"
+                           x-model="filters.fromDate" :readonly="filters.periodType !== 'TuyChon'"
+                           autocomplete="off" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <label class="font-weight-bold small">Đến ngày</label>
+                    <input type="text" id="txtToDate" class="form-control form-control-sm datepicker smart-date"
+                           x-model="filters.toDate" :readonly="filters.periodType !== 'TuyChon'"
+                           autocomplete="off" placeholder="dd/mm/yyyy" />
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="font-weight-bold small mb-0">Tỉnh/TP</label>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="filters.cityMode === 'NEW34' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="switchCityMode('NEW34')" title="34 Tỉnh mới (NQ 202)">34 mới</button>
+                            <button type="button" class="btn btn-xs px-1 py-0 font-weight-bold"
+                                    :class="filters.cityMode === 'OLD63' ? 'btn-primary text-white' : 'btn-light border text-muted'"
+                                    x-on:click="switchCityMode('OLD63')" title="63 Tỉnh cũ lịch sử">63 cũ</button>
+                        </div>
+                    </div>
+                    <select class="form-control form-control-sm" x-model="filters.maTinh" x-on:change="onCityChange()">
+                        <option value="" x-text="isAdmin ? '-- Toàn dự án --' : '-- Tất cả tỉnh được phân quyền --'">-- Toàn dự án --</option>
+                        <template x-for="c in cities" :key="c.CityCode">
+                            <option :value="c.CityCode" x-text="c.CityName"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <label class="font-weight-bold small">Nhóm CBO</label>
+                    <select class="form-control form-control-sm" x-model="filters.maNhom">
+                        <option value="">-- Tất cả nhóm --</option>
+                        <template x-for="n in filteredNhoms" :key="n.manhom_tbh">
+                            <option :value="n.manhom_tbh" x-text="n.tennhom_tbh + ' (' + n.manhom_tbh + ')'"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2 d-flex align-items-end">
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" type="checkbox" id="chkIsCumulative" x-model="filters.isCumulative">
+                        <label class="form-check-label small font-weight-bold" for="chkIsCumulative">
+                            Tính lũy kế đến ngày kết thúc
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-2 d-flex align-items-end justify-content-end" style="gap: 8px;">
+                    <button type="button" class="btn btn-sm btn-primary px-3" x-on:click="search()" :disabled="isLoading">
+                        <i class="fas fa-search mr-1" x-show="!isLoading"></i>
+                        <i class="fas fa-spinner fa-spin mr-1" x-show="isLoading"></i>
+                        Tra cứu báo cáo
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" x-on:click="resetFilters()" :disabled="isLoading">
+                        <i class="fas fa-undo mr-1"></i> Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Banner -->
+    <div class="alert alert-warning py-2 small shadow-sm" x-show="warningMsg" x-cloak>
+        <i class="fas fa-exclamation-triangle mr-1"></i>
+        <span x-text="warningMsg"></span>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row mb-3" x-show="rows.length > 0">
+        <template x-for="card in kpiCards" :key="card.Code">
+            <div class="col-xl col-md-4 col-sm-6 mb-2">
+                <div class="card border-left-primary shadow-sm h-100 py-1">
+                    <div class="card-body py-2 px-3">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" x-text="card.Code + ' - ' + card.Title"></div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" x-text="card.PctText"></div>
+                        <div class="text-xs text-muted mt-1" x-text="card.RatioText"></div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Report Table Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-2 bg-white d-flex flex-wrap justify-content-between align-items-center" style="gap: 8px;">
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn" :class="viewOptions.colMode === 'ALL' ? 'btn-primary' : 'btn-outline-secondary'" x-on:click="viewOptions.colMode = 'ALL'">Tất cả cột</button>
+                <button type="button" class="btn" :class="viewOptions.colMode === 'KP' ? 'btn-primary' : 'btn-outline-secondary'" x-on:click="viewOptions.colMode = 'KP'">Theo Nhóm ĐT</button>
+                <button type="button" class="btn" :class="viewOptions.colMode === 'GT' ? 'btn-primary' : 'btn-outline-secondary'" x-on:click="viewOptions.colMode = 'GT'">Theo Giới tính</button>
+                <button type="button" class="btn" :class="viewOptions.colMode === 'AGE' ? 'btn-primary' : 'btn-outline-secondary'" x-on:click="viewOptions.colMode = 'AGE'">Theo Nhóm tuổi</button>
+            </div>
+            <div class="d-flex align-items-center" style="gap: 16px;">
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="chkShowSubRows" x-model="viewOptions.showSubRows">
+                    <label class="form-check-label small" for="chkShowSubRows">Hiện dòng con (SUB)</label>
+                </div>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="chkShowMetaCols" x-model="viewOptions.showMetaCols">
+                    <label class="form-check-label small" for="chkShowMetaCols">Hiện Nguồn &amp; Ghi chú</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm mb-0 chiso-table">
+                    <thead class="thead-light text-center">
+                        <tr>
+                            <th rowspan="2" style="min-width: 90px;">Mã chỉ số</th>
+                            <th rowspan="2" style="min-width: 300px;">Tên chỉ số / Hoạt động</th>
+                            <th rowspan="2" style="min-width: 75px;">ĐVT</th>
+                            <th rowspan="2" style="min-width: 85px;">Tổng</th>
+                            <th colspan="5" x-show="showGroup('KP')">Nhóm đối tượng</th>
+                            <th colspan="3" x-show="showGroup('GT')">Giới tính</th>
+                            <th colspan="3" x-show="showGroup('AGE')">Nhóm tuổi</th>
+                            <th rowspan="2" x-show="viewOptions.showMetaCols" style="min-width: 150px;">Nguồn dữ liệu</th>
+                            <th rowspan="2" x-show="viewOptions.showMetaCols" style="min-width: 160px;">Ghi chú</th>
+                        </tr>
+                        <tr>
+                            <th x-show="showGroup('KP')" style="min-width: 65px;">PUD</th>
+                            <th x-show="showGroup('KP')" style="min-width: 65px;">PLHIV</th>
+                            <th x-show="showGroup('KP')" style="min-width: 65px;">TG</th>
+                            <th x-show="showGroup('KP')" style="min-width: 65px;">MSM</th>
+                            <th x-show="showGroup('KP')" style="min-width: 65px;">SW</th>
+                            <th x-show="showGroup('GT')" style="min-width: 65px;">Nam</th>
+                            <th x-show="showGroup('GT')" style="min-width: 65px;">Nữ</th>
+                            <th x-show="showGroup('GT')" style="min-width: 65px;">Khác</th>
+                            <th x-show="showGroup('AGE')" style="min-width: 70px;">18-25</th>
+                            <th x-show="showGroup('AGE')" style="min-width: 70px;">26-35</th>
+                            <th x-show="showGroup('AGE')" style="min-width: 70px;">&gt;35</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-if="isLoading">
+                            <tr>
+                                <td :colspan="tableColSpan()" class="text-center py-5 text-primary">
+                                    <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                    Đang tổng hợp số liệu báo cáo chỉ số...
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="!isLoading && visibleRows.length === 0">
+                            <tr>
+                                <td :colspan="tableColSpan()" class="text-center py-4 text-muted">
+                                    Chưa có dữ liệu cho kỳ báo cáo đã chọn.
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-for="(item, idx) in visibleRows" :key="item.Code + '_' + idx">
+                            <tr :class="rowClass(item)">
+                                <td class="text-center font-weight-bold" x-text="item.Code"></td>
+                                <td :style="'padding-left: ' + ((item.IndentLevel || 0) * 16 + 8) + 'px;'"
+                                    :class="{ 'font-weight-bold': item.IsBold }"
+                                    x-text="item.ChiTieu"></td>
+                                <td class="text-center" x-text="item.DonVi"></td>
+                                <td class="text-right" :class="{ 'cell-clickable': canClickCell(item, 'Tong'), 'font-weight-bold': item.IsBold }"
+                                    x-on:click="handleCellClick(item, 'Tong', 'Tổng')"
+                                    x-text="formatCell(item, 'Tong')"></td>
+
+                                <!-- KP -->
+                                <td class="text-right" x-show="showGroup('KP')" :class="{ 'cell-clickable': canClickCell(item, 'PUD') }"
+                                    x-on:click="handleCellClick(item, 'PUD', 'PUD')" x-text="formatCell(item, 'PUD')"></td>
+                                <td class="text-right" x-show="showGroup('KP')" :class="{ 'cell-clickable': canClickCell(item, 'PLHIV') }"
+                                    x-on:click="handleCellClick(item, 'PLHIV', 'PLHIV')" x-text="formatCell(item, 'PLHIV')"></td>
+                                <td class="text-right" x-show="showGroup('KP')" :class="{ 'cell-clickable': canClickCell(item, 'TG') }"
+                                    x-on:click="handleCellClick(item, 'TG', 'TG')" x-text="formatCell(item, 'TG')"></td>
+                                <td class="text-right" x-show="showGroup('KP')" :class="{ 'cell-clickable': canClickCell(item, 'MSM') }"
+                                    x-on:click="handleCellClick(item, 'MSM', 'MSM')" x-text="formatCell(item, 'MSM')"></td>
+                                <td class="text-right" x-show="showGroup('KP')" :class="{ 'cell-clickable': canClickCell(item, 'SW') }"
+                                    x-on:click="handleCellClick(item, 'SW', 'SW')" x-text="formatCell(item, 'SW')"></td>
+
+                                <!-- GT -->
+                                <td class="text-right" x-show="showGroup('GT')" :class="{ 'cell-clickable': canClickCell(item, 'Nam') }"
+                                    x-on:click="handleCellClick(item, 'Nam', 'Nam')" x-text="formatCell(item, 'Nam')"></td>
+                                <td class="text-right" x-show="showGroup('GT')" :class="{ 'cell-clickable': canClickCell(item, 'Nu') }"
+                                    x-on:click="handleCellClick(item, 'Nu', 'Nữ')" x-text="formatCell(item, 'Nu')"></td>
+                                <td class="text-right" x-show="showGroup('GT')" :class="{ 'cell-clickable': canClickCell(item, 'Khac') }"
+                                    x-on:click="handleCellClick(item, 'Khac', 'Khác')" x-text="formatCell(item, 'Khac')"></td>
+
+                                <!-- AGE -->
+                                <td class="text-right" x-show="showGroup('AGE')" :class="{ 'cell-clickable': canClickCell(item, 'Tuoi_18_25') }"
+                                    x-on:click="handleCellClick(item, 'Tuoi_18_25', '18-25 tuổi')" x-text="formatCell(item, 'Tuoi_18_25')"></td>
+                                <td class="text-right" x-show="showGroup('AGE')" :class="{ 'cell-clickable': canClickCell(item, 'Tuoi_26_35') }"
+                                    x-on:click="handleCellClick(item, 'Tuoi_26_35', '26-35 tuổi')" x-text="formatCell(item, 'Tuoi_26_35')"></td>
+                                <td class="text-right" x-show="showGroup('AGE')" :class="{ 'cell-clickable': canClickCell(item, 'Tuoi_Tren35') }"
+                                    x-on:click="handleCellClick(item, 'Tuoi_Tren35', '>35 tuổi')" x-text="formatCell(item, 'Tuoi_Tren35')"></td>
+
+                                <!-- Meta -->
+                                <td class="small text-muted" x-show="viewOptions.showMetaCols" x-text="item.NguonDuLieu"></td>
+                                <td class="small text-muted" x-show="viewOptions.showMetaCols" x-text="item.GhiChu"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Drill-Down -->
+    <div class="modal fade" id="modalChiSoDrillDown" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header py-2 bg-primary text-white">
+                    <h6 class="modal-title font-weight-bold" x-text="drillDown.title">Chi tiết chỉ số</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeModal('#modalChiSoDrillDown')">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 8px;">
+                        <input type="text" class="form-control form-control-sm" style="max-width: 340px;"
+                               placeholder="Tìm nhanh mã KH, tỉnh, nhóm, TCV, chi tiết..."
+                               x-model="drillDown.searchText" />
+                        <div class="d-flex align-items-center" style="gap: 8px;">
+                            <span class="badge badge-info py-1 px-2" x-text="'Hiển thị: ' + filteredDrillDown.length + ' / ' + drillDown.items.length + ' bản ghi'"></span>
+                            <button type="button" class="btn btn-sm btn-success" x-on:click="exportDrillDownExcel()" :disabled="drillDown.items.length === 0">
+                                <i class="fas fa-file-excel mr-1"></i> Xuất danh sách
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 60vh;">
+                        <table class="table table-bordered table-sm table-hover mb-0 small">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-center" style="width: 45px;">STT</th>
+                                    <th>Mã KH / Bản ghi</th>
+                                    <th>Ngày thực hiện</th>
+                                    <th>Tỉnh/TP</th>
+                                    <th>Nhóm CBO</th>
+                                    <th>Tiếp cận viên</th>
+                                    <th>Đối tượng</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr x-show="drillDown.isLoading">
+                                    <td colspan="8" class="text-center py-4 text-primary">
+                                        <i class="fas fa-spinner fa-spin fa-2x d-block mb-2"></i>
+                                        Đang tải danh sách chi tiết...
+                                    </td>
+                                </tr>
+                                <tr x-show="!drillDown.isLoading && filteredDrillDown.length === 0">
+                                    <td colspan="8" class="text-center py-4 text-muted">Không có bản ghi nào phù hợp.</td>
+                                </tr>
+                                <template x-for="(d, idx) in filteredDrillDown" :key="idx">
+                                    <tr>
+                                        <td class="text-center" x-text="idx + 1"></td>
+                                        <td class="font-weight-bold" x-text="d.RECORD_ID"></td>
+                                        <td class="text-center" x-text="d.NGAY_THUC_HIEN"></td>
+                                        <td x-text="d.TEN_TINH"></td>
+                                        <td x-text="d.TEN_NHOM"></td>
+                                        <td x-text="d.TEN_TCV"></td>
+                                        <td x-text="d.DOI_TUONG_TEXT"></td>
+                                        <td x-text="d.CHI_TIET"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeModal('#modalChiSoDrillDown')">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cấu hình chỉ tiêu / Tham số -->
+    <div class="modal fade" id="modalChiSoConfig" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header py-2 bg-primary text-white">
+                    <h6 class="modal-title font-weight-bold"><i class="fas fa-sliders-h mr-1"></i> Cấu hình tham số Báo cáo Chỉ số DREAMH</h6>
+                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeModal('#modalChiSoConfig')">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Năm</label>
+                            <select class="form-control form-control-sm" x-model="configModal.nam" x-on:change="loadConfig()">
+                                <template x-for="y in yearOptions" :key="y">
+                                    <option :value="y" x-text="y"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Kỳ báo cáo</label>
+                            <select class="form-control form-control-sm" x-model="configModal.maKy" x-on:change="loadConfig()">
+                                <option value="12T">12 Tháng (Cả năm)</option>
+                                <option value="6T">6 Tháng</option>
+                                <option value="ALL">Toàn dự án</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm mb-0 small">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Mã tham số</th>
+                                    <th>Chỉ số</th>
+                                    <th>Tên tham số</th>
+                                    <th style="width: 120px;">Giá trị</th>
+                                    <th>Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr x-show="configModal.isLoading">
+                                    <td colspan="5" class="text-center py-3 text-primary">
+                                        <i class="fas fa-spinner fa-spin mr-1"></i> Đang tải cấu hình...
+                                    </td>
+                                </tr>
+                                <template x-for="(cfg, idx) in configModal.items" :key="cfg.MA_THAM_SO + '_' + idx">
+                                    <tr>
+                                        <td class="font-monospace" x-text="cfg.MA_THAM_SO"></td>
+                                        <td class="text-center font-weight-bold" x-text="cfg.CHI_SO_CODE"></td>
+                                        <td x-text="cfg.TEN_THAM_SO"></td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-right" x-model.number="cfg.GIA_TRI" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" x-model="cfg.GHI_CHU" />
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal" x-on:click="closeModal('#modalChiSoConfig')">Đóng</button>
+                    <button type="button" class="btn btn-primary btn-sm" x-on:click="saveConfig()" :disabled="configModal.isSaving">
+                        <i class="fas fa-save mr-1"></i>
+                        <span x-text="configModal.isSaving ? 'Đang lưu...' : 'Lưu cấu hình'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/app/Controller/AlpineBaoCaoChiSoCD45Controller.js?v=@DateTime.Now.Ticks"></script>
+    <script>
+        $(document).ready(function () {
+            if (window.initSmartDateInputs) window.initSmartDateInputs();
+        });
+    </script>
+}
