@@ -103,6 +103,8 @@ namespace Model.ModelExtend.API.CD45
         public byte? HINH_THUC_DIEU_TRI { get; set; }
         public bool? CO_KE_DON_THUOC { get; set; }
         public byte? TUAN_THU { get; set; }
+        public byte? TINH_TRANG_SKTT { get; set; }
+        public bool? DAU_HIEU_NGUY_CO { get; set; }
         public string COMPLETE_STATUS { get; set; }
         public DateTime NGAY_SYNC { get; set; }
     }

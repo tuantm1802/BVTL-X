@@ -73,13 +73,15 @@ namespace BVTL.Tests
                 _da.DeleteTcv(item.ID, "UnitTest", out _);
             }
 
-            // 2. Insert test TCV
+            // 2. Insert test TCV (với GIOI_TINH & LA_TCV_NAM_1)
             var saveModel = new CD45_TcvSaveModel
             {
                 ID = 0,
                 MA_NHOM = testNhom,
                 MA_TCV = testCode,
                 TEN_TCV = testName,
+                GIOI_TINH = 2,
+                LA_TCV_NAM_1 = false,
                 IsActive = true
             };
             bool insertOk = _da.SaveTcv(saveModel, "UnitTest", out msg);
@@ -91,13 +93,21 @@ namespace BVTL.Tests
             Assert.IsNotNull(inserted, "Inserted TCV not found in query");
             int insertedId = inserted.ID;
             Assert.IsTrue(inserted.IsActive, "Newly inserted TCV should be Active");
+            Assert.AreEqual((byte)2, inserted.GIOI_TINH, "GIOI_TINH should persist");
+            Assert.AreEqual(false, inserted.LA_TCV_NAM_1, "LA_TCV_NAM_1 should persist");
 
-            // 4. Update test TCV name
+            // 4. Update test TCV name and attributes
             string updatedName = "TCV Test UnitTest Updated";
             saveModel.ID = insertedId;
             saveModel.TEN_TCV = updatedName;
+            saveModel.GIOI_TINH = 1;
+            saveModel.LA_TCV_NAM_1 = true;
             bool updateOk = _da.SaveTcv(saveModel, "UnitTest", out msg);
             Assert.IsTrue(updateOk, "Update test TCV failed: " + msg);
+            var afterUpdate = _da.GetTcvById(insertedId);
+            Assert.IsNotNull(afterUpdate);
+            Assert.AreEqual((byte)1, afterUpdate.GIOI_TINH);
+            Assert.AreEqual(true, afterUpdate.LA_TCV_NAM_1);
 
             // 5. Toggle status
             bool toggleOk = _da.ToggleStatus(insertedId, "UnitTest", out msg);

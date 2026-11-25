@@ -41,6 +41,8 @@
                     cityName: '',
                     maTcv: '',
                     tenTcv: '',
+                    gioiTinh: '',
+                    laTcvNam1: true,
                     isActive: true,
                     suggestedCode: '',
                     isSaving: false,
@@ -245,6 +247,8 @@
                     self.tcvModal.cityName = '';
                     self.tcvModal.maTcv = '';
                     self.tcvModal.tenTcv = '';
+                    self.tcvModal.gioiTinh = '';
+                    self.tcvModal.laTcvNam1 = true;
                     self.tcvModal.isActive = true;
                     self.tcvModal.suggestedCode = '';
                     self.tcvModal.errorMsg = '';
@@ -275,6 +279,8 @@
                     self.tcvModal.cityName = item.CityName || item.CITY_CODE || '';
                     self.tcvModal.maTcv = '';
                     self.tcvModal.tenTcv = '';
+                    self.tcvModal.gioiTinh = '';
+                    self.tcvModal.laTcvNam1 = true;
                     self.tcvModal.isActive = true;
                     self.tcvModal.suggestedCode = '';
                     self.tcvModal.errorMsg = '';
@@ -295,6 +301,8 @@
                     self.tcvModal.cityName = item.CityName || item.CITY_CODE || '';
                     self.tcvModal.maTcv = item.MA_TCV || '';
                     self.tcvModal.tenTcv = item.TEN_TCV || '';
+                    self.tcvModal.gioiTinh = item.GIOI_TINH != null ? String(item.GIOI_TINH) : '';
+                    self.tcvModal.laTcvNam1 = item.LA_TCV_NAM_1 !== false;
                     self.tcvModal.isActive = item.IsActive !== false;
                     self.tcvModal.suggestedCode = '';
                     self.tcvModal.errorMsg = '';
@@ -377,6 +385,8 @@
                         CITY_CODE: (self.tcvModal.cityCode || '').trim(),
                         MA_TCV: self.tcvModal.maTcv.trim(),
                         TEN_TCV: self.tcvModal.tenTcv.trim(),
+                        GIOI_TINH: self.tcvModal.gioiTinh ? parseInt(self.tcvModal.gioiTinh, 10) : null,
+                        LA_TCV_NAM_1: self.tcvModal.laTcvNam1,
                         IsActive: self.tcvModal.isActive
                     };
 

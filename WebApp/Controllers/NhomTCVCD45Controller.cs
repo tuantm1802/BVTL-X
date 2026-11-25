@@ -114,7 +114,7 @@ namespace WebApp.Controllers
                     ws.Cell(1, 1).Style.Font.Bold = true;
                     ws.Cell(1, 1).Style.Font.FontSize = 14;
 
-                    var headers = new string[] { "STT", "Tỉnh/Thành", "Mã Nhóm", "Xưng danh / Loại hình", "Tên Nhóm CBO", "Chức danh người ký", "Mã TCV", "Tên Tiếp Cận Viên", "Trạng thái", "Ngày cập nhật" };
+                    var headers = new string[] { "STT", "Tỉnh/Thành", "Mã Nhóm", "Xưng danh / Loại hình", "Tên Nhóm CBO", "Chức danh người ký", "Mã TCV", "Tên Tiếp Cận Viên", "Giới tính", "TCV Năm 1", "Trạng thái", "Ngày cập nhật" };
 
                     for (int i = 0; i < headers.Length; i++)
                     {
@@ -129,6 +129,7 @@ namespace WebApp.Controllers
                     int stt = 1;
                     foreach (var item in data)
                     {
+                        bool hasTcv = !string.IsNullOrEmpty(item.MA_TCV) || !string.IsNullOrEmpty(item.TEN_TCV);
                         ws.Cell(row, 1).Value = stt++;
                         ws.Cell(row, 2).Value = item.CityName ?? item.CITY_CODE;
                         ws.Cell(row, 3).Value = item.MA_NHOM;
@@ -137,8 +138,10 @@ namespace WebApp.Controllers
                         ws.Cell(row, 6).Value = item.GetChucDanh();
                         ws.Cell(row, 7).Value = item.MA_TCV ?? "";
                         ws.Cell(row, 8).Value = !string.IsNullOrEmpty(item.TEN_TCV) ? item.TEN_TCV : (string.IsNullOrEmpty(item.MA_TCV) ? "(Chưa có TCV)" : "");
-                        ws.Cell(row, 9).Value = string.IsNullOrEmpty(item.MA_TCV) && string.IsNullOrEmpty(item.TEN_TCV) ? "Chưa có TCV" : (item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động");
-                        ws.Cell(row, 10).Value = item.CreatedDate != DateTime.MinValue ? item.CreatedDate.ToString("dd/MM/yyyy HH:mm") : "";
+                        ws.Cell(row, 9).Value = hasTcv ? item.GetGioiTinhText() : "";
+                        ws.Cell(row, 10).Value = hasTcv ? ((item.LA_TCV_NAM_1 ?? true) ? "Có (Năm 1)" : "Không") : "";
+                        ws.Cell(row, 11).Value = string.IsNullOrEmpty(item.MA_TCV) && string.IsNullOrEmpty(item.TEN_TCV) ? "Chưa có TCV" : (item.IsActive ? "Đang hoạt động" : "Ngừng hoạt động");
+                        ws.Cell(row, 12).Value = item.CreatedDate != DateTime.MinValue ? item.CreatedDate.ToString("dd/MM/yyyy HH:mm") : "";
                         row++;
                     }
 

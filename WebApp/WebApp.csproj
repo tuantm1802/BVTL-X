@@ -233,6 +233,7 @@
     <Compile Include="Controllers\BaoCaoQuyVIIVController.cs" />
     <Compile Include="Controllers\BaoCaoThangCH07Controller.cs" />
     <Compile Include="Controllers\BaoCaoCD45Controller.cs" />
+    <Compile Include="Controllers\BaoCaoChiSoCD45Controller.cs" />
     <Compile Include="Controllers\BaoCaoBacSiCD45Controller.cs" />
     <Compile Include="Controllers\BaoCaoTCVCD45Controller.cs" />
     <Compile Include="Controllers\BaoCaoTuVanCD45Controller.cs" />
@@ -358,6 +359,7 @@
     <Content Include="app\Controller\AlpineChuyenGuiDichVu.js" />
     <Content Include="app\Controller\AlpineCityController.js" />
     <Content Include="app\Controller\AlpineBaoCaoCD45Controller.js" />
+    <Content Include="app\Controller\AlpineBaoCaoChiSoCD45Controller.js" />
     <Content Include="app\Controller\AlpineBaoCaoTCVCD45Controller.js" />
     <Content Include="app\Controller\AlpineDataQualityController.js" />
     <Content Include="app\Controller\AlpineCustomerDetailModal.js" />
@@ -4767,6 +4769,7 @@
     <Content Include="Views\NhomTCVCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoCD45\CauHinhChiTieu.cshtml" />
+    <Content Include="Views\BaoCaoChiSoCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoTCVCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoBacSiCD45\Index.cshtml" />
     <Content Include="Views\BaoCaoTuVanCD45\Index.cshtml" />

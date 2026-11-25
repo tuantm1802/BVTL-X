@@ -517,6 +517,8 @@ namespace Common.Common
                 e.HINH_THUC_DIEU_TRI = item.GetByte("f5_indication");
                 e.CO_KE_DON_THUOC = item.GetBool("f5_prescribe");
                 e.TUAN_THU = item.GetByte("f5_adherence");
+                e.TINH_TRANG_SKTT = item.GetByte("f5_feeling");
+                e.DAU_HIEU_NGUY_CO = item.GetBool("f5_feeling_sign");
 
                 e.COMPLETE_STATUS = item.GetString("f5_phiu_h_tr_tun_th_iu_tr_complete") ?? item.GetString("phiu_h_tr_tun_th_iu_tr_complete");
                 e.NGAY_SYNC = DateTime.Now;

@@ -180,7 +180,10 @@ namespace Model.ModelExtend
         public string CHUC_DANH { get; set; }
         public string MANHOM_TBH { get; set; }
         public string MANHOM_MAP { get; set; }
+        public byte? GIOI_TINH { get; set; }
+        public bool? LA_TCV_NAM_1 { get; set; }
         public int RowIndex { get; set; }
+        public string GetGioiTinhText() => GIOI_TINH == 1 ? "Nam" : (GIOI_TINH == 2 ? "Nữ" : (GIOI_TINH == 3 ? "Khác" : "Chưa cập nhật"));
         public string GetXungDanh() => !string.IsNullOrWhiteSpace(PREFIX) ? PREFIX.Trim() : "Nhóm";
         public string GetShortXungDanh() => !string.IsNullOrWhiteSpace(SHORT_PREFIX) ? SHORT_PREFIX.Trim() : GetXungDanh();
         public string GetChucDanh() => !string.IsNullOrWhiteSpace(CHUC_DANH) ? CHUC_DANH.Trim() : (CITY_CODE == "HCM" || MA_NHOM == "HN_TT" || MA_NHOM == "tt" || (TEN_NHOM != null && TEN_NHOM.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0) ? "Giám đốc" : "Trưởng nhóm");
@@ -208,5 +211,7 @@ namespace Model.ModelExtend
         public string MA_TCV { get; set; }
         public string TEN_TCV { get; set; }
         public bool IsActive { get; set; }
+        public byte? GIOI_TINH { get; set; }
+        public bool LA_TCV_NAM_1 { get; set; } = true;
     }
 }

@@ -75,5 +75,74 @@ namespace Common.Common
 
             return true;
         }
+
+        /// <summary>
+        /// Kiểm toán số học (VR-01) cho Báo cáo Chỉ số CD45:
+        /// Kiểm tra Tong = sum(KP) = sum(GioiTinh) = sum(Tuoi) cho các dòng cấp Khách hàng (PCT, MAIN, SUB có KP/Tuổi),
+        /// và Tong = Nam + Nu + Khac cho các dòng TCV.
+        /// Đồng thời kiểm tra Tử số <= Mẫu số trên các dòng PCT.
+        /// </summary>
+        public static bool ValidateChiSoReportArithmetic(IEnumerable<BaoCaoChiSoCD45Model> rows, out string errorMessage)
+        {
+            errorMessage = null;
+            if (rows == null) return true;
+
+            foreach (var r in rows)
+            {
+                if (r.RowType == "SEC" || r.RowType == "ORG" || r.Tong == null) continue;
+
+                int tong = r.Tong ?? 0;
+
+                if (r.RowType == "TCV")
+                {
+                    int sumSex = (r.Nam ?? 0) + (r.Nu ?? 0) + (r.Khac ?? 0);
+                    if (tong != sumSex)
+                    {
+                        errorMessage = $"Vi phạm VR-01 [Chỉ số TCV]: [{r.Code}] Tổng ({tong}) != Nam + Nữ + Khác ({sumSex}).";
+                        return false;
+                    }
+                    continue;
+                }
+
+                // Các dòng cấp Khách hàng (PCT, MAIN, SUB có phân tách)
+                if (r.PUD.HasValue || r.PLHIV.HasValue || r.TG.HasValue || r.SW.HasValue || r.MSM.HasValue)
+                {
+                    int sumKp = (r.PUD ?? 0) + (r.PLHIV ?? 0) + (r.TG ?? 0) + (r.SW ?? 0) + (r.MSM ?? 0);
+                    if (tong != sumKp)
+                    {
+                        errorMessage = $"Vi phạm VR-01 [Nhóm KP]: [{r.Code}] Tổng ({tong}) != Tổng 5 nhóm KP ({sumKp}).";
+                        return false;
+                    }
+                }
+
+                if (r.Nam.HasValue || r.Nu.HasValue || r.Khac.HasValue)
+                {
+                    int sumSex = (r.Nam ?? 0) + (r.Nu ?? 0) + (r.Khac ?? 0);
+                    if (tong != sumSex)
+                    {
+                        errorMessage = $"Vi phạm VR-01 [Giới tính]: [{r.Code}] Tổng ({tong}) != Nam + Nữ + Khác ({sumSex}).";
+                        return false;
+                    }
+                }
+
+                if (r.Tuoi_18_25.HasValue || r.Tuoi_26_35.HasValue || r.Tuoi_Tren35.HasValue)
+                {
+                    int sumAge = (r.Tuoi_18_25 ?? 0) + (r.Tuoi_26_35 ?? 0) + (r.Tuoi_Tren35 ?? 0);
+                    if (tong != sumAge)
+                    {
+                        errorMessage = $"Vi phạm VR-01 [Nhóm tuổi]: [{r.Code}] Tổng ({tong}) != Tổng 3 nhóm tuổi ({sumAge}).";
+                        return false;
+                    }
+                }
+
+                if (r.RowType == "PCT" && r.Denom_Tong.HasValue && tong > r.Denom_Tong.Value)
+                {
+                    errorMessage = $"Vi phạm Cohort [{r.Code}]: Tử số ({tong}) lớn hơn Mẫu số ({r.Denom_Tong.Value}).";
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

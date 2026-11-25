@@ -67,6 +67,7 @@
     <Compile Include="Admin\ApiDA.cs" />
     <Compile Include="Admin\BaoCaoTongHopDA.cs" />
     <Compile Include="Admin\BaoCaoCD45DA.cs" />
+    <Compile Include="Admin\BaoCaoChiSoCD45DA.cs" />
     <Compile Include="Admin\BaoCaoBacSiCD45DA.cs" />
     <Compile Include="Admin\BaoCaoTuVanCD45DA.cs" />
     <Compile Include="Admin\DashboardCD45DA.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="InterfaceDA\Admin\ISystemMonitorDA.cs" />
     <Compile Include="InterfaceDA\Admin\IBaoCaoTongHopDA.cs" />
     <Compile Include="InterfaceDA\IBaoCaoCD45DA.cs" />
+    <Compile Include="InterfaceDA\Admin\IBaoCaoChiSoCD45DA.cs" />
     <Compile Include="InterfaceDA\Admin\IBaoCaoBacSiCD45DA.cs" />
     <Compile Include="InterfaceDA\Admin\IBaoCaoTuVanCD45DA.cs" />
     <Compile Include="InterfaceDA\Admin\IDashboardCD45DA.cs" />

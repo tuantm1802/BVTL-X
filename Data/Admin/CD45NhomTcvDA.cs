@@ -37,7 +37,9 @@ namespace Data.Admin
                         ISNULL(n.SHORT_PREFIX, ISNULL(tcv.SHORT_PREFIX, N'Nhóm')) AS SHORT_PREFIX,
                         ISNULL(n.CHUC_DANH, ISNULL(tcv.CHUC_DANH, N'Trưởng nhóm')) AS CHUC_DANH,
                         ISNULL(n.manhom_tbh, tcv.MA_NHOM) AS MANHOM_TBH,
-                        ISNULL(n.manhom_tbh_map, tcv.MA_NHOM) AS MANHOM_MAP
+                        ISNULL(n.manhom_tbh_map, tcv.MA_NHOM) AS MANHOM_MAP,
+                        tcv.GIOI_TINH,
+                        ISNULL(tcv.LA_TCV_NAM_1, CAST(1 AS BIT)) AS LA_TCV_NAM_1
                     FROM CD45_NHOM_TCV tcv
                     LEFT JOIN BVTL_CITES c ON tcv.CITY_CODE = c.Code
                     LEFT JOIN BVTL_NHOM_TBH n ON (n.maduan = 'CD45' AND (tcv.MA_NHOM = n.manhom_tbh OR (n.manhom_tbh_map IS NOT NULL AND tcv.MA_NHOM = n.manhom_tbh_map)))
@@ -60,7 +62,9 @@ namespace Data.Admin
                         ISNULL(n.SHORT_PREFIX, N'Nhóm') AS SHORT_PREFIX,
                         ISNULL(n.CHUC_DANH, N'Trưởng nhóm') AS CHUC_DANH,
                         RTRIM(n.manhom_tbh) AS MANHOM_TBH,
-                        ISNULL(n.manhom_tbh_map, RTRIM(n.manhom_tbh)) AS MANHOM_MAP
+                        ISNULL(n.manhom_tbh_map, RTRIM(n.manhom_tbh)) AS MANHOM_MAP,
+                        CAST(NULL AS TINYINT) AS GIOI_TINH,
+                        CAST(1 AS BIT) AS LA_TCV_NAM_1
                     FROM BVTL_NHOM_TBH n
                     LEFT JOIN BVTL_CITES c ON n.city_code = c.Code
                     WHERE (n.maduan = 'CD45' OR n.maduan IS NULL)
@@ -153,6 +157,8 @@ namespace Data.Admin
                     ISNULL(n.CHUC_DANH, ISNULL(tcv.CHUC_DANH, N'Trưởng nhóm')) AS CHUC_DANH,
                     ISNULL(n.manhom_tbh, tcv.MA_NHOM) AS MANHOM_TBH,
                     ISNULL(n.manhom_tbh_map, tcv.MA_NHOM) AS MANHOM_MAP,
+                    tcv.GIOI_TINH,
+                    ISNULL(tcv.LA_TCV_NAM_1, CAST(1 AS BIT)) AS LA_TCV_NAM_1,
                     1 AS RowIndex
                 FROM CD45_NHOM_TCV tcv
                 LEFT JOIN BVTL_CITES c ON tcv.CITY_CODE = c.Code
@@ -258,9 +264,11 @@ namespace Data.Admin
                             CreatedDate = GETDATE(),
                             PREFIX = @p6,
                             SHORT_PREFIX = @p7,
-                            CHUC_DANH = @p8
-                        WHERE ID = @p9 AND MADUAN = 'CD45'";
-                    int affected = db.Database.ExecuteSqlCommand(updateSql, finalMaNhom, finalTenNhom, finalCityCode, maTcv, tenTcv, model.IsActive, prefix, shortPrefix, chucDanh, model.ID);
+                            CHUC_DANH = @p8,
+                            GIOI_TINH = @p9,
+                            LA_TCV_NAM_1 = @p10
+                        WHERE ID = @p11 AND MADUAN = 'CD45'";
+                    int affected = db.Database.ExecuteSqlCommand(updateSql, finalMaNhom, finalTenNhom, finalCityCode, maTcv, tenTcv, model.IsActive, prefix, shortPrefix, chucDanh, (object)model.GIOI_TINH ?? DBNull.Value, model.LA_TCV_NAM_1, model.ID);
                     if (affected > 0)
                     {
                         LogAction("CD45_NHOM_TCV", username, $"Cập nhật TCV ID={model.ID}: Nhóm={finalMaNhom}, Mã={maTcv}, Tên={tenTcv}, Active={model.IsActive}");
@@ -288,9 +296,9 @@ namespace Data.Admin
                     }
 
                     var insertSql = @"
-                        INSERT INTO CD45_NHOM_TCV (MA_NHOM, TEN_NHOM, CITY_CODE, MA_TCV, TEN_TCV, MADUAN, IsActive, CreatedDate, PREFIX, SHORT_PREFIX, CHUC_DANH)
-                        VALUES (@p0, @p1, @p2, @p3, @p4, 'CD45', @p5, GETDATE(), @p6, @p7, @p8)";
-                    db.Database.ExecuteSqlCommand(insertSql, finalMaNhom, finalTenNhom, finalCityCode, maTcv, tenTcv, model.IsActive, prefix, shortPrefix, chucDanh);
+                        INSERT INTO CD45_NHOM_TCV (MA_NHOM, TEN_NHOM, CITY_CODE, MA_TCV, TEN_TCV, MADUAN, IsActive, CreatedDate, PREFIX, SHORT_PREFIX, CHUC_DANH, GIOI_TINH, LA_TCV_NAM_1)
+                        VALUES (@p0, @p1, @p2, @p3, @p4, 'CD45', @p5, GETDATE(), @p6, @p7, @p8, @p9, @p10)";
+                    db.Database.ExecuteSqlCommand(insertSql, finalMaNhom, finalTenNhom, finalCityCode, maTcv, tenTcv, model.IsActive, prefix, shortPrefix, chucDanh, (object)model.GIOI_TINH ?? DBNull.Value, model.LA_TCV_NAM_1);
 
                     LogAction("CD45_NHOM_TCV", username, $"Thêm mới TCV: Nhóm={finalMaNhom}, Mã={maTcv}, Tên={tenTcv}, Active={model.IsActive}");
                     message = $"Thêm mới TCV '{tenTcv}' (Mã {maTcv}) vào nhóm '{finalTenNhom}' thành công!";
