@@ -2539,3 +2539,7 @@ edcap_repeat_instance trên REDCap không khớp thứ tự thời gian thực t
    - Nâng tag Git SemVer 1.8.0 và đồng bộ lên origin/TUANTM_BVTL_V1.0.
    - Đóng gói bản phát hành BVTL_WebApp_Publish_v1.8.0.rar.
    - Triển khai và đối chiếu thành công 100% trên DEV và PROD.
+### Bổ sung Phiên 56 (v1.8.1): Khôi phục & Dựng lại 2 file View bị trống nội dung
+- **Khôi phục WebApp/Views/NhomTCVCD45/Index.cshtml**: Khôi phục từ commit c177907 (1.7.12) và bổ sung 2 trường gioiTinh, laTcvNam1 khớp với AlpineNhomTCVCD45Controller.js.
+- **Dựng lại WebApp/Views/BaoCaoChiSoCD45/Index.cshtml**: Dựng đầy đủ giao diện bộ lọc, thẻ KPI, bảng báo cáo chỉ số DREAMH (phân tổ Nhóm ĐT / Giới tính / Nhóm tuổi), modal Drill-down và modal Cấu hình tham số khớp 100% với AlpineBaoCaoChiSoCD45Controller.js và BaoCaoChiSoCD45Controller.cs.
+- **Phát hành 1.8.1**: Đóng gói BVTL_WebApp_Publish_v1.8.1.rar, đồng bộ Git và triển khai lên cả DEV và PROD.
