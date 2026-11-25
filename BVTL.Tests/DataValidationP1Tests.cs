@@ -355,5 +355,33 @@ namespace BVTL.Tests
             Assert.IsFalse(logs2.Exists(l => l.RULE_CODE == "WARN_F6_VISIT_TYPE_MISMATCH"));
             Assert.IsFalse(logs2.Exists(l => l.RULE_CODE == "ERR_CHRONOLOGICAL_INVERSION"));
         }
+
+        [TestMethod]
+        public void ConvertF2_WhenSkippedOrInvertedOrDuplicateInstance_ShouldIgnoreVisitOrderErrors_ButKeepSameDayDuplicateCheck()
+        {
+            var converter = new ConvertCD45ApiToEntity();
+            var context = new CD45ValidationContext();
+            context.RegisterClientF1("DHN010352", "2", 1, new DateTime(2026, 1, 1));
+
+            // F2 không có số thứ tự: bỏ qua nhảy cóc (1 -> 3), nghịch đảo ngày theo instance (4 trước 3), trùng instance,
+            // nhưng vẫn giữ kiểm tra trùng sự kiện cùng ngày + cùng loại dịch vụ.
+            string json = @"[
+              { ""record_id"": ""DHN010352"", ""redcap_repeat_instance"": ""1"", ""redcap_data_access_group"": ""hn_vut"", ""f2_date"": ""2026-08-01"", ""f2_services"": ""1"", ""f2_truyn_thng_sinh_hot_nhm_vng_trn_chia_s_tr_liu_n_complete"": ""2"" },
+              { ""record_id"": ""DHN010352"", ""redcap_repeat_instance"": ""3"", ""redcap_data_access_group"": ""hn_vut"", ""f2_date"": ""2026-09-19"", ""f2_services"": ""1"", ""f2_truyn_thng_sinh_hot_nhm_vng_trn_chia_s_tr_liu_n_complete"": ""2"" },
+              { ""record_id"": ""DHN010352"", ""redcap_repeat_instance"": ""4"", ""redcap_data_access_group"": ""hn_vut"", ""f2_date"": ""2026-08-28"", ""f2_services"": ""2"", ""f2_truyn_thng_sinh_hot_nhm_vng_trn_chia_s_tr_liu_n_complete"": ""2"" },
+              { ""record_id"": ""DHN010352"", ""redcap_repeat_instance"": ""4"", ""redcap_data_access_group"": ""hn_vut"", ""f2_date"": ""2026-08-28"", ""f2_services"": ""2"", ""f2_truyn_thng_sinh_hot_nhm_vng_trn_chia_s_tr_liu_n_complete"": ""2"" }
+            ]";
+            var apiData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json);
+
+            var entities = new List<CD45_HOAT_DONG_Entity>();
+            var logs = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            converter.ConvertF2(apiData, "CD45", "API_CD45_F2", "REP1", ref entities, ref logs, context);
+
+            Assert.AreEqual(4, entities.Count);
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "WARN_SKIPPED_VISIT_ORDER"), "F2 must not log WARN_SKIPPED_VISIT_ORDER");
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "ERR_CHRONOLOGICAL_INVERSION"), "F2 must not log ERR_CHRONOLOGICAL_INVERSION");
+            Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "ERR_DUPLICATE_VISIT_ORDER"), "F2 must not log ERR_DUPLICATE_VISIT_ORDER");
+            Assert.IsTrue(logs.Exists(l => l.RULE_CODE == "ERR_DUPLICATE_EVENT_SAME_DAY"), "F2 should still detect exact duplicate same-day same-service events");
+        }
     }
 }

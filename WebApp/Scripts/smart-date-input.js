@@ -104,7 +104,7 @@
                 setCursor(cursorOffset);
             }
             syncAlpineDate(input, newVal);
-            if ($ && $(input).data('datepicker')) {
+            if ($ && $(input).data('datepicker') && /^\d{2}\/\d{2}\/\d{4}$/.test(newVal)) {
                 $(input).datepicker('update', newVal);
             }
         }
@@ -388,22 +388,32 @@
                     autoclose: true,
                     todayHighlight: true,
                     forceParse: false
-                }).on('changeDate', function () {
-                    syncAlpineDate(this, $(this).val());
-                }).on('show', function () {
-                    if (this.value) {
-                        $(this).datepicker('update', this.value);
-                    }
                 });
-            } else {
-                // Đảm bảo event changeDate cập nhật Alpine và forceParse tắt
-                if ($this.data('datepicker').o) {
-                    $this.data('datepicker').o.forceParse = false;
-                }
-                $this.off('changeDate.smartSync').on('changeDate.smartSync', function () {
-                    syncAlpineDate(this, $(this).val());
-                });
+            } else if ($this.data('datepicker').o) {
+                $this.data('datepicker').o.forceParse = false;
             }
+
+            // Đồng bộ sự kiện với Alpine.js (dùng namespace .smartSync để không gắn trùng)
+            $this.off('.smartSync')
+                .on('changeDate.smartSync', function () {
+                    syncAlpineDate(this, $(this).val());
+                })
+                .on('show.smartSync', function () {
+                    var dp = $this.data('datepicker');
+                    // Chỉ cập nhật lịch theo giá trị ô input khi popup vừa mở từ trạng thái đóng.
+                    // Khi popup đang mở mà bootstrap-datepicker tự focus lại input (lúc bấm chọn tháng/năm/< >),
+                    // tuyệt đối không gọi 'update' để tránh lịch nhảy ngược về tháng/năm cũ của ô input.
+                    if ($this.data('dp-is-open') || (dp && dp._focused_from)) {
+                        return;
+                    }
+                    $this.data('dp-is-open', true);
+                    if (this.value && /^\d{2}\/\d{2}\/\d{4}$/.test(this.value.trim())) {
+                        $this.datepicker('update', this.value.trim());
+                    }
+                })
+                .on('hide.smartSync', function () {
+                    $this.data('dp-is-open', false);
+                });
 
             // Gắn bộ format thông minh
             setupSmartDateInput(this);

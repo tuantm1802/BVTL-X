@@ -180,8 +180,8 @@ namespace Common.Common
 
             dagCollector.FlushToLogs(maDuAn, apiCode, "CD45_HOAT_DONG", reportId, ref logs);
 
-            // VR-05(a, b, c): Kiểm tra chuỗi tiến trình và lần thứ
-            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HOAT_DONG, x => x.REPEAT_INSTANCE, x => x.LOAI_DV, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs);
+            // VR-05(a): Kiểm tra trùng sự kiện cùng ngày ở F2 (tạm bỏ qua các lỗi liên quan tới số thứ tự do F2 không có trường số thứ tự)
+            ValidateServiceProgress(entities, x => x.RECORD_ID, x => x.NGAY_HOAT_DONG, null, x => x.LOAI_DV, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs, checkChronologicalInversion: false);
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HOAT_DONG, x => x.COMPLETE_STATUS, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
@@ -1538,66 +1538,95 @@ namespace Common.Common
                     }
                 }
 
-                // VR-05(a, b, c): Kiểm tra số lần thứ và đơn điệu thời gian
-                var orderedEvents = new List<(int Order, DateTime Date)>();
-                var seenOrders = new HashSet<int>();
-                var duplicateOrders = new HashSet<int>();
-
-                foreach (var ev in clientEvents)
+                // VR-05(a, b, c): Kiểm tra số lần thứ và đơn điệu thời gian (chỉ chạy khi form có chỉ định getOrder)
+                if (getOrder != null)
                 {
-                    var ord = getOrder(ev);
-                    var d = getDate(ev);
-                    if (ord.HasValue && d.HasValue)
+                    var orderedEvents = new List<(int Order, DateTime Date)>();
+                    var seenOrders = new HashSet<int>();
+                    var duplicateOrders = new HashSet<int>();
+
+                    foreach (var ev in clientEvents)
                     {
-                        if (!seenOrders.Add(ord.Value))
+                        var ord = getOrder(ev);
+                        var d = getDate(ev);
+                        if (ord.HasValue && d.HasValue)
                         {
-                            duplicateOrders.Add(ord.Value);
+                            if (!seenOrders.Add(ord.Value))
+                            {
+                                duplicateOrders.Add(ord.Value);
+                            }
+                            orderedEvents.Add((ord.Value, d.Value));
                         }
-                        orderedEvents.Add((ord.Value, d.Value));
                     }
-                }
 
-                // VR-05(a): Trùng số lần thứ
-                if (duplicateOrders.Count > 0)
-                {
-                    string dupStr = formatOrderLabel != null
-                        ? string.Join(", ", duplicateOrders.OrderBy(o => o).Select(formatOrderLabel))
-                        : string.Join(", ", duplicateOrders.OrderBy(o => o));
-                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                    // VR-05(a): Trùng số lần thứ
+                    if (duplicateOrders.Count > 0)
                     {
-                        MADUAN = maDuAn,
-                        REPORT_ID = reportId,
-                        API_CODE = apiCode,
-                        TABLE_NAME = tableName,
-                        RECORD_ID = rid,
-                        FIELD_NAME = orderFieldName,
-                        OLD_VALUE = formatOrderLabel != null ? dupStr : $"Lần {dupStr}",
-                        NEW_VALUE = null,
-                        RULE_CODE = "ERR_DUPLICATE_VISIT_ORDER",
-                        SEVERITY = "ERROR",
-                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                        MESSAGE = $"Khách hàng {rid} có các buổi dịch vụ {tableName} bị trùng số lần thứ ({dupStr}).",
-                        CREATED_DATE = DateTime.Now
-                    });
-                }
+                        string dupStr = formatOrderLabel != null
+                            ? string.Join(", ", duplicateOrders.OrderBy(o => o).Select(formatOrderLabel))
+                            : string.Join(", ", duplicateOrders.OrderBy(o => o));
+                        logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                        {
+                            MADUAN = maDuAn,
+                            REPORT_ID = reportId,
+                            API_CODE = apiCode,
+                            TABLE_NAME = tableName,
+                            RECORD_ID = rid,
+                            FIELD_NAME = orderFieldName,
+                            OLD_VALUE = formatOrderLabel != null ? dupStr : $"Lần {dupStr}",
+                            NEW_VALUE = null,
+                            RULE_CODE = "ERR_DUPLICATE_VISIT_ORDER",
+                            SEVERITY = "ERROR",
+                            ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                            MESSAGE = $"Khách hàng {rid} có các buổi dịch vụ {tableName} bị trùng số lần thứ ({dupStr}).",
+                            CREATED_DATE = DateTime.Now
+                        });
+                    }
 
-                if (orderedEvents.Count >= 2)
-                {
-                    orderedEvents.Sort((a, b) =>
+                    if (orderedEvents.Count >= 2)
                     {
-                        int cmp = a.Order.CompareTo(b.Order);
-                        return cmp != 0 ? cmp : a.Date.CompareTo(b.Date);
-                    });
+                        orderedEvents.Sort((a, b) =>
+                        {
+                            int cmp = a.Order.CompareTo(b.Order);
+                            return cmp != 0 ? cmp : a.Date.CompareTo(b.Date);
+                        });
 
-                    // VR-05(b): Nghịch đảo thời gian (Ngày lần N+1 < Ngày lần N)
-                    if (checkChronologicalInversion)
-                    {
+                        // VR-05(b): Nghịch đảo thời gian (Ngày lần N+1 < Ngày lần N)
+                        if (checkChronologicalInversion)
+                        {
+                            for (int i = 0; i < orderedEvents.Count - 1; i++)
+                            {
+                                if (orderedEvents[i + 1].Order > orderedEvents[i].Order && orderedEvents[i + 1].Date < orderedEvents[i].Date)
+                                {
+                                    string nextLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Buổi lần {orderedEvents[i + 1].Order}";
+                                    string prevLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"buổi lần {orderedEvents[i].Order}";
+                                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                                    {
+                                        MADUAN = maDuAn,
+                                        REPORT_ID = reportId,
+                                        API_CODE = apiCode,
+                                        TABLE_NAME = tableName,
+                                        RECORD_ID = rid,
+                                        FIELD_NAME = "event_date",
+                                        OLD_VALUE = orderedEvents[i + 1].Date.ToString("yyyy-MM-dd"),
+                                        NEW_VALUE = null,
+                                        RULE_CODE = "ERR_CHRONOLOGICAL_INVERSION",
+                                        SEVERITY = "ERROR",
+                                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                                        MESSAGE = $"Nghịch đảo thời gian: {nextLabel} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước {prevLabel} ({orderedEvents[i].Date:dd/MM/yyyy}).",
+                                        CREATED_DATE = DateTime.Now
+                                    });
+                                }
+                            }
+                        }
+
+                        // VR-05(c): Nhảy cóc số lần
                         for (int i = 0; i < orderedEvents.Count - 1; i++)
                         {
-                            if (orderedEvents[i + 1].Order > orderedEvents[i].Order && orderedEvents[i + 1].Date < orderedEvents[i].Date)
+                            if (orderedEvents[i + 1].Order - orderedEvents[i].Order > 1)
                             {
-                                string nextLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Buổi lần {orderedEvents[i + 1].Order}";
-                                string prevLabel = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"buổi lần {orderedEvents[i].Order}";
+                                string prevOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"Lần {orderedEvents[i].Order}";
+                                string nextOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Lần {orderedEvents[i + 1].Order}";
                                 logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
                                 {
                                     MADUAN = maDuAn,
@@ -1605,42 +1634,16 @@ namespace Common.Common
                                     API_CODE = apiCode,
                                     TABLE_NAME = tableName,
                                     RECORD_ID = rid,
-                                    FIELD_NAME = "event_date",
-                                    OLD_VALUE = orderedEvents[i + 1].Date.ToString("yyyy-MM-dd"),
+                                    FIELD_NAME = orderFieldName,
+                                    OLD_VALUE = formatOrderLabel != null ? $"{prevOrderStr} -> {nextOrderStr}" : $"{orderedEvents[i].Order} -> {orderedEvents[i + 1].Order}",
                                     NEW_VALUE = null,
-                                    RULE_CODE = "ERR_CHRONOLOGICAL_INVERSION",
-                                    SEVERITY = "ERROR",
+                                    RULE_CODE = "WARN_SKIPPED_VISIT_ORDER",
+                                    SEVERITY = "WARNING",
                                     ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                                    MESSAGE = $"Nghịch đảo thời gian: {nextLabel} ({orderedEvents[i + 1].Date:dd/MM/yyyy}) lại diễn ra trước {prevLabel} ({orderedEvents[i].Date:dd/MM/yyyy}).",
+                                    MESSAGE = $"Khách hàng {rid} nhảy cóc số lần dịch vụ {tableName} (có {prevOrderStr} và {nextOrderStr} nhưng thiếu các lần ở giữa).",
                                     CREATED_DATE = DateTime.Now
                                 });
                             }
-                        }
-                    }
-
-                    // VR-05(c): Nhảy cóc số lần
-                    for (int i = 0; i < orderedEvents.Count - 1; i++)
-                    {
-                        if (orderedEvents[i + 1].Order - orderedEvents[i].Order > 1)
-                        {
-                            string prevOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i].Order) : $"Lần {orderedEvents[i].Order}";
-                            string nextOrderStr = formatOrderLabel != null ? formatOrderLabel(orderedEvents[i + 1].Order) : $"Lần {orderedEvents[i + 1].Order}";
-                            logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
-                            {
-                                MADUAN = maDuAn,
-                                REPORT_ID = reportId,
-                                API_CODE = apiCode,
-                                TABLE_NAME = tableName,
-                                RECORD_ID = rid,
-                                FIELD_NAME = orderFieldName,
-                                OLD_VALUE = formatOrderLabel != null ? $"{prevOrderStr} -> {nextOrderStr}" : $"{orderedEvents[i].Order} -> {orderedEvents[i + 1].Order}",
-                                NEW_VALUE = null,
-                                RULE_CODE = "WARN_SKIPPED_VISIT_ORDER",
-                                SEVERITY = "WARNING",
-                                ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
-                                MESSAGE = $"Khách hàng {rid} nhảy cóc số lần dịch vụ {tableName} (có {prevOrderStr} và {nextOrderStr} nhưng thiếu các lần ở giữa).",
-                                CREATED_DATE = DateTime.Now
-                            });
                         }
                     }
                 }

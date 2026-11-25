@@ -2543,3 +2543,21 @@ edcap_repeat_instance trên REDCap không khớp thứ tự thời gian thực t
 - **Khôi phục WebApp/Views/NhomTCVCD45/Index.cshtml**: Khôi phục từ commit c177907 (1.7.12) và bổ sung 2 trường gioiTinh, laTcvNam1 khớp với AlpineNhomTCVCD45Controller.js.
 - **Dựng lại WebApp/Views/BaoCaoChiSoCD45/Index.cshtml**: Dựng đầy đủ giao diện bộ lọc, thẻ KPI, bảng báo cáo chỉ số DREAMH (phân tổ Nhóm ĐT / Giới tính / Nhóm tuổi), modal Drill-down và modal Cấu hình tham số khớp 100% với AlpineBaoCaoChiSoCD45Controller.js và BaoCaoChiSoCD45Controller.cs.
 - **Phát hành 1.8.1**: Đóng gói BVTL_WebApp_Publish_v1.8.1.rar, đồng bộ Git và triển khai lên cả DEV và PROD.
+
+---
+
+## Phiên 57: 25/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Fix lỗi Datepicker trên bộ lọc các báo cáo khi chọn kỳ `Tùy chọn ngày` (`WebApp/Scripts/smart-date-input.js`)**:
+   - Khi người dùng chọn `Kỳ báo cáo = Tùy chọn ngày`, click vào ô `Từ ngày` / `Đến ngày` rồi chuyển sang tháng/năm khác bằng chuột (ví dụ từ tháng 10/11 sang tháng 7 hoặc năm khác), popup lịch lập tức nhảy ngược về tháng/năm hiện tại của ô input.
+   - **Nguyên nhân**: Trong `bootstrap-datepicker.js`, khi click chuyển tháng/năm hoặc nút `<`/`>` bên trong popup, widget gọi `$(this._focused_from).focus()`, kích hoạt lại sự kiện `show` trên ô input. Sự kiện `.on('show', ...)` trong `smart-date-input.js` vô điều kiện gọi `$(this).datepicker('update', this.value)` nên đã ghi đè `viewDate` trở lại tháng/năm của `input.value`. Đồng thời `applyVal` gọi `datepicker('update', newVal)` cả với chuỗi gõ dở dang.
+   - **Giải pháp**: Theo dõi trạng thái mở/đóng qua `dp-is-open` (`.on('show.smartSync')` / `.on('hide.smartSync')`) và `dp._focused_from` để chỉ đồng bộ `datepicker('update', ...)` khi popup vừa mở mới từ trạng thái đóng; và trong `applyVal` chỉ đồng bộ datepicker khi chuỗi đã đầy đủ `dd/mm/yyyy`.
+2. **Tạm thời bỏ qua kiểm tra các lỗi liên quan tới thứ tự ở Form F2 (`Common/Common/ConvertCD45ApiToEntity.cs`)**:
+   - Biểu mẫu F2 (`CD45_HOAT_DONG`) không có trường số thứ tự nghiệp vụ mà chỉ dùng `redcap_repeat_instance`, dẫn đến phát sinh cảnh báo/lỗi giả `WARN_SKIPPED_VISIT_ORDER`, `ERR_CHRONOLOGICAL_INVERSION`, `ERR_DUPLICATE_VISIT_ORDER`.
+   - **Giải pháp**: Cập nhật `ValidateServiceProgress` hỗ trợ bỏ qua các rule kiểm tra thứ tự khi `getOrder == null` (nhưng vẫn giữ kiểm tra trùng sự kiện cùng ngày + cùng loại dịch vụ `ERR_DUPLICATE_EVENT_SAME_DAY`), và cập nhật `ConvertF2` truyền `getOrder: null, checkChronologicalInversion: false`.
+   - Đóng (`IS_RESOLVED = 1`) các log thứ tự F2 đang tồn đọng trên cả `BVTL_REPORTING_DEV` và `BVTL_REPORTING_PROD`.
+3. **Kiểm thử tự động & Phát hành (`v1.8.2`)**:
+   - Bổ sung test `ConvertF2_WhenSkippedOrInvertedOrDuplicateInstance_ShouldIgnoreVisitOrderErrors_ButKeepSameDayDuplicateCheck` trong `BVTL.Tests/DataValidationP1Tests.cs`.
+   - Chạy kiểm thử JS giả lập click chọn năm/tháng trên `smart-date-input.js` (`test_smart_date_nav.js`) và toàn bộ bộ test `BVTL.Tests.dll`.
+   - Đóng gói phát hành `v1.8.2` và triển khai lên cả DEV và PROD.
