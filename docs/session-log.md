@@ -2561,3 +2561,18 @@ edcap_repeat_instance trên REDCap không khớp thứ tự thời gian thực t
    - Bổ sung test `ConvertF2_WhenSkippedOrInvertedOrDuplicateInstance_ShouldIgnoreVisitOrderErrors_ButKeepSameDayDuplicateCheck` trong `BVTL.Tests/DataValidationP1Tests.cs`.
    - Chạy kiểm thử JS giả lập click chọn năm/tháng trên `smart-date-input.js` (`test_smart_date_nav.js`) và toàn bộ bộ test `BVTL.Tests.dll`.
    - Đóng gói phát hành `v1.8.2` và triển khai lên cả DEV và PROD.
+---
+
+## Phiên 57: 28/11/2026 | Thực hiện bởi: Antigravity
+
+### Mục tiêu & Bối cảnh phiên:
+1. **Nâng cấp trích xuất Mã nhóm/TCV & Cảnh báo thiếu Mã TCV (1.8.3)**:
+   - **CD45Helper.cs**: Bổ sung TryExtractByPrefix ưu tiên trường khớp 
+edcap_data_access_group (DAG) và chuẩn hóa số nguyên mã TCV (bỏ số 0 đứng đầu), hỗ trợ đầy đủ hậu tố F7/F8 (_tg, _g3, _ac, ...).
+   - **ConvertCD45ApiToEntity.cs**: Bổ sung CheckMissingTcvByGroup trên các biểu mẫu F2–F8 để cảnh báo nhóm CBO thiếu 100% Mã TCV và gợi ý tên biến REDCap tương ứng bị bỏ sót.
+   - **DataValidationP1Tests.cs**: Bổ sung các bài kiểm thử đơn vị cho ExtractNhomTCV (hậu tố F7/F8, ưu tiên DAG) và ConvertF7 (WARN_MISSING_TCV_BY_GROUP).
+2. **Kiểm thử tự động (BVTL.Tests.dll)**:
+   - Đạt **193/194 tests PASSED** (toàn bộ DataValidationP1Tests mới & cũ đạt 100%; riêng 1 test ReportExportService_ExportTCVCD45ZipAsync_ForHCM_ShouldExportCityAndGroupSummaries báo có 3 file TCV tại HCM do DB DEV thực tế đã phát sinh 3 TCV có số liệu kỳ 08/2026).
+3. **Phát hành & Triển khai (1.8.3)**:
+   - Nâng tag Git SemVer 1.8.3 và đồng bộ lên origin/TUANTM_BVTL_V1.0.
+   - Đóng gói BVTL_WebApp_Publish_v1.8.3.rar, upload FTP và triển khai đồng bộ 100% lên DEV và PROD.
