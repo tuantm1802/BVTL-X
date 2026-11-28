@@ -185,6 +185,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HOAT_DONG, x => x.COMPLETE_STATUS, "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f2_person_", "CD45_HOAT_DONG", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF3(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -343,6 +346,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_SANG_LOC, x => x.COMPLETE_STATUS, "CD45_QST", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f3_person_", "CD45_QST", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF4(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -443,6 +449,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_HO_TRO_XH", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f4_person_", "CD45_HO_TRO_XH", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF5(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -536,6 +545,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_HO_TRO, x => x.COMPLETE_STATUS, "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f5_person_", "CD45_TUAN_THU", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF6(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -784,6 +796,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_KHAM, x => x.COMPLETE_STATUS, "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f6_refer_", "CD45_CHAN_DOAN", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF7(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -1000,6 +1015,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L1", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f7_person_", "CD45_TU_VAN_L1", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF8(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -1201,6 +1219,9 @@ namespace Common.Common
 
             // VR-07(b): Kiểm tra cụm incomplete
             CheckClusterIncomplete(entities, x => x.MA_TCV, x => x.NGAY_TU_VAN, x => x.COMPLETE_STATUS, "CD45_TU_VAN_L2", apiCode, reportId, maDuAn, ref logs, x => x.RECORD_ID, x => x.MA_NHOM, context);
+
+            // Kiểm tra thiếu Mã TCV theo nhóm CBO (gợi ý trường REDCap bị bỏ sót)
+            CheckMissingTcvByGroup(entities, x => x.MA_NHOM, x => x.CITY_CODE, x => x.MA_TCV, "f8_person_", "CD45_TU_VAN_L2", apiCode, reportId, maDuAn, ref logs);
         }
 
         public void ConvertF9(List<DreamhBaseApiModel> apiData, string maDuAn, string apiCode, string reportId,
@@ -1673,6 +1694,67 @@ namespace Common.Common
                 resolveTcvName = (nhom, tcv) => context.GetTcvName(nhom, tcv);
             }
             DataCleanerHelper.CheckClusterIncomplete(entities, getTcv, getDate, getStatus, tableName, apiCode, reportId, maDuAn, ref logs, getRecordId, getMaNhom, resolveTcvName);
+        }
+
+        /// <summary>
+        /// Gom nhóm cảnh báo khi phát hiện nhóm CBO có bản ghi thiếu Mã TCV (giúp phát hiện quên tích trường person/refer trên REDCap Report).
+        /// </summary>
+        private void CheckMissingTcvByGroup<T>(
+            List<T> entities,
+            Func<T, string> getMaNhom,
+            Func<T, string> getCityCode,
+            Func<T, string> getMaTcv,
+            string fieldPrefix,
+            string tableName,
+            string apiCode,
+            string reportId,
+            string maDuAn,
+            ref List<BVTL_DATA_STANDARDIZATION_LOG_Entity> logs)
+        {
+            if (entities == null || entities.Count == 0 || logs == null) return;
+
+            foreach (var grp in entities.GroupBy(x => (getMaNhom(x) ?? string.Empty).Trim(), StringComparer.OrdinalIgnoreCase))
+            {
+                string maNhom = grp.Key;
+                if (string.IsNullOrEmpty(maNhom)) continue;
+
+                int totalCount = grp.Count();
+                int missingCount = grp.Count(x => string.IsNullOrWhiteSpace(getMaTcv(x)));
+                if (missingCount > 0 && (missingCount == totalCount || missingCount >= 3))
+                {
+                    string redcapSuffix = CD45Helper.ToRedcapGroupSuffix(maNhom);
+                    string fieldHint = fieldPrefix + redcapSuffix;
+                    string cityCode = grp.Select(getCityCode).FirstOrDefault(c => !string.IsNullOrWhiteSpace(c));
+                    if (string.IsNullOrWhiteSpace(cityCode))
+                    {
+                        CD45Helper.InferGroupAndCity(null, maNhom, out _, out cityCode);
+                    }
+
+                    string msg = missingCount == totalCount
+                        ? $"Nhóm '{maNhom}' có {missingCount}/{totalCount} (100%) bản ghi trên {apiCode} bị thiếu Mã TCV. Rất có thể trường '{fieldHint}' chưa được tích trong cấu hình REDCap Report #{reportId}."
+                        : $"Nhóm '{maNhom}' có {missingCount}/{totalCount} bản ghi trên {apiCode} bị thiếu Mã TCV. Vui lòng kiểm tra dữ liệu nhập hoặc cấu hình trường '{fieldHint}' trên REDCap Report #{reportId}.";
+
+                    logs.Add(new BVTL_DATA_STANDARDIZATION_LOG_Entity
+                    {
+                        MADUAN = maDuAn,
+                        REPORT_ID = reportId,
+                        API_CODE = apiCode,
+                        TABLE_NAME = tableName,
+                        RECORD_ID = $"BATCH ({missingCount}/{totalCount})",
+                        FIELD_NAME = fieldHint,
+                        OLD_VALUE = $"Thiếu {missingCount}/{totalCount} bản ghi",
+                        NEW_VALUE = null,
+                        RULE_CODE = "WARN_MISSING_TCV_BY_GROUP",
+                        SEVERITY = "WARNING",
+                        ACTION_TAKEN = "FLAGGED_FOR_ADMIN",
+                        IS_RESOLVED = false,
+                        MA_NHOM = maNhom,
+                        CITY_CODE = cityCode,
+                        MESSAGE = msg,
+                        CREATED_DATE = DateTime.Now
+                    });
+                }
+            }
         }
 
         #endregion

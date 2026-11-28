@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Model.ModelExtend.API.CD45
 {
@@ -151,6 +152,78 @@ namespace Model.ModelExtend.API.CD45
             }
         }
 
+        /// <summary>
+        /// Quy đổi mã nhóm chuẩn trong DB (alo, g3vn, lmm...) ngược về hậu tố tên trường REDCap (ac, g3, lmmsm...)
+        /// </summary>
+        public static string ToRedcapGroupSuffix(string maNhomMap)
+        {
+            if (string.IsNullOrWhiteSpace(maNhomMap)) return maNhomMap;
+            string s = maNhomMap.Trim().ToLower();
+            switch (s)
+            {
+                case "alo":
+                    return "ac";
+                case "g3vn":
+                    return "g3";
+                case "lmm":
+                    return "lmmsm";
+                default:
+                    return s;
+            }
+        }
+
+        private static bool TryExtractByPrefix(
+            IDictionary<string, JToken> data,
+            string searchPrefix,
+            string preferredGroup,
+            out string matchedGroup,
+            out string matchedTcv)
+        {
+            matchedGroup = null;
+            matchedTcv = null;
+            if (data == null || data.Count == 0) return false;
+
+            string fallbackGroup = null;
+            string fallbackTcv = null;
+
+            foreach (var kvp in data)
+            {
+                if (!kvp.Key.StartsWith(searchPrefix, StringComparison.OrdinalIgnoreCase)) continue;
+
+                string val = kvp.Value?.ToString()?.Trim();
+                if (string.IsNullOrEmpty(val)) continue;
+
+                if (int.TryParse(val, out int numTcv) && numTcv > 0)
+                {
+                    val = numTcv.ToString();
+                }
+
+                string normGroup = NormalizeGroupSuffix(kvp.Key.Substring(searchPrefix.Length));
+
+                if (!string.IsNullOrEmpty(preferredGroup) && string.Equals(normGroup, preferredGroup, StringComparison.OrdinalIgnoreCase))
+                {
+                    matchedGroup = normGroup;
+                    matchedTcv = val;
+                    return true;
+                }
+
+                if (string.IsNullOrEmpty(fallbackTcv))
+                {
+                    fallbackGroup = normGroup;
+                    fallbackTcv = val;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(fallbackTcv))
+            {
+                matchedGroup = fallbackGroup;
+                matchedTcv = fallbackTcv;
+                return true;
+            }
+
+            return false;
+        }
+
         // 3. Trich xuat Nhóm và TCV tu JSON
         public static (string maNhom, string maTcv) ExtractNhomTCV(DreamhBaseApiModel model, string formPrefix)
         {
@@ -168,63 +241,20 @@ namespace Model.ModelExtend.API.CD45
 
             if (model.AdditionalData != null)
             {
-                // Tim ma TCV tu "{formPrefix}_person_"
-                string searchPrefix = formPrefix + "_person_";
-                foreach (var kvp in model.AdditionalData)
-                {
-                    if (kvp.Key.StartsWith(searchPrefix))
-                    {
-                        string val = kvp.Value?.ToString();
-                        if (!string.IsNullOrEmpty(val))
-                        {
-                            if (string.IsNullOrEmpty(detectedGroup))
-                            {
-                                string rawSuffix = kvp.Key.Substring(searchPrefix.Length);
-                                detectedGroup = NormalizeGroupSuffix(rawSuffix);
-                            }
-                            detectedTcv = val;
-                            break;
-                        }
-                    }
-                }
+                string matchedGroup = null;
+                string matchedTcv = null;
 
-                // Fallback F4, F5, F6
-                if (string.IsNullOrEmpty(detectedTcv))
-                {
-                    string searchPrefix2 = formPrefix + "_tcv_";
-                    string searchPrefix3 = formPrefix + "_refer_";
+                bool found = TryExtractByPrefix(model.AdditionalData, formPrefix + "_person_", detectedGroup, out matchedGroup, out matchedTcv)
+                    || TryExtractByPrefix(model.AdditionalData, formPrefix + "_tcv_", detectedGroup, out matchedGroup, out matchedTcv)
+                    || TryExtractByPrefix(model.AdditionalData, formPrefix + "_refer_", detectedGroup, out matchedGroup, out matchedTcv);
 
-                    foreach (var kvp in model.AdditionalData)
+                if (found)
+                {
+                    if (string.IsNullOrEmpty(detectedGroup))
                     {
-                        if (kvp.Key.StartsWith(searchPrefix2))
-                        {
-                            string val = kvp.Value?.ToString();
-                            if (!string.IsNullOrEmpty(val))
-                            {
-                                if (string.IsNullOrEmpty(detectedGroup))
-                                {
-                                    string rawSuffix = kvp.Key.Substring(searchPrefix2.Length);
-                                    detectedGroup = NormalizeGroupSuffix(rawSuffix);
-                                }
-                                detectedTcv = val;
-                                break;
-                            }
-                        }
-                        if (kvp.Key.StartsWith(searchPrefix3))
-                        {
-                            string val = kvp.Value?.ToString();
-                            if (!string.IsNullOrEmpty(val))
-                            {
-                                if (string.IsNullOrEmpty(detectedGroup))
-                                {
-                                    string rawSuffix = kvp.Key.Substring(searchPrefix3.Length);
-                                    detectedGroup = NormalizeGroupSuffix(rawSuffix);
-                                }
-                                detectedTcv = val;
-                                break;
-                            }
-                        }
+                        detectedGroup = matchedGroup;
                     }
+                    detectedTcv = matchedTcv;
                 }
             }
 

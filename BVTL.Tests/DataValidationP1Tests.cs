@@ -383,5 +383,101 @@ namespace BVTL.Tests
             Assert.IsFalse(logs.Exists(l => l.RULE_CODE == "ERR_DUPLICATE_VISIT_ORDER"), "F2 must not log ERR_DUPLICATE_VISIT_ORDER");
             Assert.IsTrue(logs.Exists(l => l.RULE_CODE == "ERR_DUPLICATE_EVENT_SAME_DAY"), "F2 should still detect exact duplicate same-day same-service events");
         }
+
+        [TestMethod]
+        public void ExtractNhomTCV_F7_And_F8_MissingFields_ShouldMapAllSuffixesAndStripLeadingZeros()
+        {
+            var f7Cases = new (string Field, string RawVal, string ExpectedNhom, string ExpectedTcv)[]
+            {
+                ("f7_person_ad", "3", "ad", "3"),
+                ("f7_person_tg", "2", "tg", "2"),
+                ("f7_person_g3", "5", "g3vn", "5"),
+                ("f7_person_ac", " 04 ", "alo", "4")
+            };
+
+            foreach (var tc in f7Cases)
+            {
+                string json = $@"[{{ ""record_id"": ""DHC070001"", ""{tc.Field}"": ""{tc.RawVal}"" }}]";
+                var model = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json)[0];
+                var res = CD45Helper.ExtractNhomTCV(model, "f7");
+                Assert.AreEqual(tc.ExpectedNhom, res.maNhom, $"Failed group mapping for {tc.Field}");
+                Assert.AreEqual(tc.ExpectedTcv, res.maTcv, $"Failed TCV mapping for {tc.Field}");
+            }
+
+            var f8Cases = new (string Field, string ExpectedNhom)[]
+            {
+                ("f8_person_qhx", "qhx"), ("f8_person_tt", "tt"), ("f8_person_gm", "gm"),
+                ("f8_person_tk", "tk"), ("f8_person_hv", "hv"), ("f8_person_vtbb", "vtbb"),
+                ("f8_person_bm", "bm"), ("f8_person_ct", "ct"), ("f8_person_hd", "hd"),
+                ("f8_person_htn", "htn"), ("f8_person_hn", "hn"), ("f8_person_sv", "sv"),
+                ("f8_person_hs", "hs"), ("f8_person_tg", "tg"), ("f8_person_g3", "g3vn"),
+                ("f8_person_ac", "alo"), ("f8_person_lmmsm", "lmm")
+            };
+
+            foreach (var tc in f8Cases)
+            {
+                string json = $@"[{{ ""record_id"": ""DHN010001"", ""{tc.Field}"": ""7"" }}]";
+                var model = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json)[0];
+                var res = CD45Helper.ExtractNhomTCV(model, "f8");
+                Assert.AreEqual(tc.ExpectedNhom, res.maNhom, $"Failed group mapping for {tc.Field}");
+                Assert.AreEqual("7", res.maTcv, $"Failed TCV mapping for {tc.Field}");
+            }
+        }
+
+        [TestMethod]
+        public void ExtractNhomTCV_WhenMultiplePersonFieldsExist_ShouldPrioritizeFieldMatchingDag()
+        {
+            string json = @"[{
+                ""record_id"": ""DHC070099"",
+                ""redcap_data_access_group"": ""alocare"",
+                ""f7_person_ad"": ""1"",
+                ""f7_person_ac"": ""5""
+            }]";
+            var model = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(json)[0];
+            var res = CD45Helper.ExtractNhomTCV(model, "f7");
+
+            Assert.AreEqual("alo", res.maNhom);
+            Assert.AreEqual("5", res.maTcv);
+        }
+
+        [TestMethod]
+        public void ConvertF7_WhenGroupHas100PercentMissingTcv_ShouldLogWarnMissingTcvByGroup()
+        {
+            var converter = new ConvertCD45ApiToEntity();
+            var context = new CD45ValidationContext();
+            context.RegisterClientF1("DNA190001", "2", 1, new DateTime(2026, 5, 1));
+            context.RegisterClientF1("DNA190002", "2", 1, new DateTime(2026, 5, 1));
+            context.RegisterClientF1("DHC070001", "2", 1, new DateTime(2026, 5, 1));
+            context.RegisterClientF1("DHC070002", "2", 1, new DateTime(2026, 5, 1));
+            context.RegisterClientF1("DHC070003", "2", 1, new DateTime(2026, 5, 1));
+
+            // Nhóm nh_dng (ad): 2/2 thiếu f7_person_ad -> phải cảnh báo
+            // Nhóm alocare (alo): 2/2 thiếu f7_person_ac -> phải cảnh báo
+            string jsonMissing = @"[
+              { ""record_id"": ""DNA190001"", ""redcap_data_access_group"": ""nh_dng"", ""f7_date"": ""2026-06-01"", ""f7_phiu_t_vn_ln_1_complete"": ""2"" },
+              { ""record_id"": ""DNA190002"", ""redcap_data_access_group"": ""nh_dng"", ""f7_date"": ""2026-06-02"", ""f7_phiu_t_vn_ln_1_complete"": ""2"" },
+              { ""record_id"": ""DHC070001"", ""redcap_data_access_group"": ""alocare"", ""f7_date"": ""2026-06-01"", ""f7_phiu_t_vn_ln_1_complete"": ""2"" },
+              { ""record_id"": ""DHC070002"", ""redcap_data_access_group"": ""alocare"", ""f7_date"": ""2026-06-02"", ""f7_phiu_t_vn_ln_1_complete"": ""2"" }
+            ]";
+            var entities1 = new List<CD45_TU_VAN_L1_Entity>();
+            var logs1 = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            converter.ConvertF7(Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonMissing), "CD45", "API_CD45_F7", "2506", ref entities1, ref logs1, context);
+
+            var warnAd = logs1.Find(l => l.RULE_CODE == "WARN_MISSING_TCV_BY_GROUP" && l.MA_NHOM == "ad");
+            var warnAlo = logs1.Find(l => l.RULE_CODE == "WARN_MISSING_TCV_BY_GROUP" && l.MA_NHOM == "alo");
+            Assert.IsNotNull(warnAd);
+            Assert.AreEqual("WARNING", warnAd.SEVERITY);
+            Assert.AreEqual("f7_person_ad", warnAd.FIELD_NAME);
+            Assert.IsNotNull(warnAlo);
+            Assert.AreEqual("f7_person_ac", warnAlo.FIELD_NAME);
+
+            // Nhóm alocare có f7_person_ac = "3" -> không cảnh báo
+            string jsonComplete = @"[{ ""record_id"": ""DHC070003"", ""redcap_data_access_group"": ""alocare"", ""f7_date"": ""2026-06-03"", ""f7_person_ac"": ""3"", ""f7_phiu_t_vn_ln_1_complete"": ""2"" }]";
+            var entities2 = new List<CD45_TU_VAN_L1_Entity>();
+            var logs2 = new List<BVTL_DATA_STANDARDIZATION_LOG_Entity>();
+            converter.ConvertF7(Newtonsoft.Json.JsonConvert.DeserializeObject<List<DreamhBaseApiModel>>(jsonComplete), "CD45", "API_CD45_F7", "2506", ref entities2, ref logs2, context);
+
+            Assert.IsFalse(logs2.Exists(l => l.RULE_CODE == "WARN_MISSING_TCV_BY_GROUP"));
+        }
     }
 }
